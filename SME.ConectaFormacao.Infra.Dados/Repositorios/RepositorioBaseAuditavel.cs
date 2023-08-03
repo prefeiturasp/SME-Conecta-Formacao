@@ -7,12 +7,12 @@ using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios;
 
 public abstract class RepositorioBaseAuditavel<TEntidade> : IRepositorioBaseAuditavel<TEntidade>
-    where TEntidade : EntidadeBaseAuditavel
+    where TEntidade : EntidadeBaseAuditavel    
 {
     protected readonly IContextoAplicacao contexto;
     protected readonly IConectaFormacaoConexao conexao;
 
-    public RepositorioBaseAuditavel(IContextoAplicacao contexto, IConectaFormacaoConexao conexao)
+    public RepositorioBaseAuditavel(IContextoAplicacao contexto,IConectaFormacaoConexao conexao)
     {
         this.contexto = contexto;
         this.conexao = conexao;
@@ -39,8 +39,8 @@ public abstract class RepositorioBaseAuditavel<TEntidade> : IRepositorioBaseAudi
         entidade.AlteradoEm = DateTimeExtension.HorarioBrasilia();
         entidade.AlteradoPor = contexto.NomeUsuario;
         entidade.AlteradoLogin = contexto.UsuarioLogado;
-        await conexao.Obter().UpdateAsync(entidade);
-        return entidade;
+       await conexao.Obter().UpdateAsync(entidade);
+       return entidade;
     }
 
     public async Task Remover(TEntidade entidade)

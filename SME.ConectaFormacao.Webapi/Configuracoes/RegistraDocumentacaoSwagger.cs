@@ -3,40 +3,40 @@ using SME.ConectaFormacao.Aplicacao.Integracoes.Interfaces;
 using SME.ConectaFormacao.Webapi.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Configuracoes;
-
-public static class RegistraDocumentacaoSwagger
-{
-    public static void Registrar(IServiceCollection services)
+ 
+    public static class RegistraDocumentacaoSwagger
     {
-        var sp = services.BuildServiceProvider();
-
-        var versaoService = sp.GetService<IServicoGithub>();
-        var versaoAtual = versaoService?.RecuperarUltimaVersao().Result;
-
-        services.AddSwaggerGen(c =>
+        public static void Registrar(IServiceCollection services)
         {
-            c.SwaggerDoc("v1", new OpenApiInfo
+            var sp = services.BuildServiceProvider();
+
+            var versaoService = sp.GetService<IServicoGithub>();
+            var versaoAtual = versaoService?.RecuperarUltimaVersao().Result;
+
+            services.AddSwaggerGen(c =>
             {
-                Title = $"SME.ConectaFormacao.Webapi",
-                Version = versaoAtual
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = $"SME.ConectaFormacao.Webapi",
+                    Version = versaoAtual
+                });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Para autenticação, incluir 'Bearer' seguido do token JWT",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT"
+                });
+
+                c.OperationFilter<BasicAuthOperationsFilter>();
             });
 
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            services.AddSwaggerGen(o =>
             {
-                In = ParameterLocation.Header,
-                Description = "Para autenticação, incluir 'Bearer' seguido do token JWT",
-                Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer",
-                BearerFormat = "JWT"
+                o.OperationFilter<FiltroIntegracaoExterna>();
             });
-
-            c.OperationFilter<BasicAuthOperationsFilter>();
-        });
-
-        services.AddSwaggerGen(o =>
-        {
-            o.OperationFilter<FiltroIntegracaoExterna>();
-        });
+        }
     }
-}

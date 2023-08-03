@@ -1,7 +1,7 @@
 ﻿namespace SME.ConectaFormacao.Dominio.Contexto;
 
 public interface IContextoAplicacao
-{
+{   
     IDictionary<string, object> Variaveis { get; set; }
 
     string UsuarioLogado { get; }

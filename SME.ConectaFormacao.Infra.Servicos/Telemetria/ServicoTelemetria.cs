@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Telemetria
         public dynamic RegistrarComRetorno<T>(Func<object> acao, string acaoNome, string telemetriaNome, string telemetriaValor, string parametros = "")
         {
             dynamic result = default;
-
+            
             if (_telemetriaOptions.Apm)
             {
                 var transactionElk = Agent.Tracer.CurrentTransaction;
@@ -55,7 +55,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Telemetria
             {
                 result = acao();
             }
-
+            
             return result;
         }
 
@@ -93,7 +93,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Telemetria
                     });
                 }
                 else
-                    await acao();
+                    await acao();                
             }
             else
                 await acao();
@@ -101,7 +101,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Telemetria
 
         public ITransaction Iniciar(string nome, string tipo)
         {
-            return _telemetriaOptions.Apm ?
+            return  _telemetriaOptions.Apm ?
                 Agent.Tracer.StartTransaction(nome, tipo) :
                 null;
         }

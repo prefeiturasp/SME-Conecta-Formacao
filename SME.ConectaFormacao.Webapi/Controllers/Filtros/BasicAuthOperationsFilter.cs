@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -10,8 +12,8 @@ namespace SME.ConectaFormacao.Webapi.Filtros
         {
             var noAuthRequired = context.ApiDescription.CustomAttributes()
                 .Any(attr => attr.GetType() == typeof(AllowAnonymousAttribute));
-
-            if (noAuthRequired)
+        
+            if (noAuthRequired) 
                 return;
 
             operation.Security = new List<OpenApiSecurityRequirement>
@@ -30,7 +32,7 @@ namespace SME.ConectaFormacao.Webapi.Filtros
                         new string[] { }
                     }
                 }
-            };
+            };  
         }
     }
 }

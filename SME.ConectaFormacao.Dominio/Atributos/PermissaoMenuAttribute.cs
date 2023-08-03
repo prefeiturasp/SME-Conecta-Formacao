@@ -1,4 +1,6 @@
-﻿namespace SME.SGP.Infra.Dominio.Atributos
+﻿using System;
+
+namespace SME.SGP.Infra.Dominio.Atributos
 {
     public class PermissaoMenuAttribute : Attribute
     {

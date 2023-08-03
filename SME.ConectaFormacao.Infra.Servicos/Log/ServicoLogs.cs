@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Polly;
 using Polly.Registry;
+using System.Text;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Polly;
-using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Log
 {
@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Log
 
             var body = Encoding.UTF8.GetBytes(logMensagem);
 
-            await policy.ExecuteAsync(async ()
+            await policy.ExecuteAsync(async () 
                 => await PublicarMensagem(body));
         }
 

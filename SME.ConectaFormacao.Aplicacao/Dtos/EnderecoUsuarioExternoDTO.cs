@@ -1,4 +1,7 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.DTOS
+﻿using System.ComponentModel.DataAnnotations;
+using SME.ConectaFormacao.Infra.Dominio.Enumerados;
+
+namespace SME.ConectaFormacao.Aplicacao.DTOS
 {
     public class EnderecoUsuarioExternoDTO
     {

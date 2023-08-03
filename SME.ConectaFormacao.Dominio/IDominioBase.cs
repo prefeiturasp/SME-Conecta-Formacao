@@ -1,6 +1,6 @@
 namespace SME.ConectaFormacao.Dominio.Entidades;
 
-public interface IDominioBase<TEntidade>
+public interface IDominioBase<TEntidade> 
     where TEntidade : EntidadeBase
 {
     Task<TEntidade> ObterPorId(long id);

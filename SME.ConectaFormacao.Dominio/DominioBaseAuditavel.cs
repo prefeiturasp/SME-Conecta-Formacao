@@ -11,7 +11,7 @@ public abstract class DominioBaseAuditavel<TEntidade> : IDominioBaseAuditavel<TE
     {
         _repositorio = repositorio;
     }
-
+    
     public Task<TEntidade> ObterPorId(long id)
     {
         return _repositorio.ObterPorId(id);

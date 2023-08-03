@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.TesteIntegracao
         protected virtual void RegistrarFakes(IServiceCollection services)
         {
             RegistrarCommandFakes(services);
-            RegistrarQueryFakes(services);
+            RegistrarQueryFakes(services);        
         }
 
         protected virtual void RegistrarCommandFakes(IServiceCollection services)
@@ -48,7 +48,7 @@ namespace SME.ConectaFormacao.TesteIntegracao
             _collectionFixture.Database.Inserir(objeto);
             return Task.CompletedTask;
         }
-
+        
         public Task AtualizarNaBase<T>(T objeto) where T : class, new()
         {
             _collectionFixture.Database.Atualizar(objeto);
@@ -60,7 +60,7 @@ namespace SME.ConectaFormacao.TesteIntegracao
             _collectionFixture.Database.Inserir(nomeTabela, campos);
             return Task.CompletedTask;
         }
-
+        
         public Task InserirNaBase(string nomeTabela, string[] campos, string[] valores)
         {
             _collectionFixture.Database.Inserir(nomeTabela, campos, valores);

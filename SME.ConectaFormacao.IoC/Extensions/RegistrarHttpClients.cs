@@ -7,30 +7,30 @@ using SME.ConectaFormacao.Aplicacao.Integracoes.Interfaces;
 
 namespace SME.ConectaFormacao.IoC.Extensions;
 
-internal static class RegistrarHttpClients
-{
-    internal static void AdicionarHttpClients(this IServiceCollection services, IConfiguration configuration)
+    internal static class RegistrarHttpClients
     {
-        services.AddHttpClient<IServicoAcessos, ServicoAcessos>(c =>
-         {
-             c.BaseAddress = new Uri(configuration.GetSection("UrlApiAcessos").Value);
-             c.DefaultRequestHeaders.Add("Accept", "application/json");
-             c.DefaultRequestHeaders.Add("x-api-acessos-key", configuration.GetSection("ApiKeyAcessosApi").Value);
-         });
-
-        services.AddHttpClient(name: "servicoAcessos", c =>
+        internal static void AdicionarHttpClients(this IServiceCollection services, IConfiguration configuration)
         {
-            c.BaseAddress = new Uri(configuration.GetSection("UrlApiAcessos").Value);
-            c.DefaultRequestHeaders.Add("Accept", "application/json");
-            c.DefaultRequestHeaders.Add("x-api-acessos-key", configuration.GetSection("ApiKeyAcessosApi").Value);
+           services.AddHttpClient<IServicoAcessos, ServicoAcessos>(c =>
+            {
+                c.BaseAddress = new Uri(configuration.GetSection("UrlApiAcessos").Value);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+                c.DefaultRequestHeaders.Add("x-api-acessos-key", configuration.GetSection("ApiKeyAcessosApi").Value);
+            });
 
-        }).AddPolicyHandler(GetRetryPolicy());
-    }
+            services.AddHttpClient(name: "servicoAcessos", c =>
+            {
+                c.BaseAddress = new Uri(configuration.GetSection("UrlApiAcessos").Value);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+                c.DefaultRequestHeaders.Add("x-api-acessos-key", configuration.GetSection("ApiKeyAcessosApi").Value);
 
-    private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
-    {
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(3, retryAttempt)));
+            }).AddPolicyHandler(GetRetryPolicy());
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(3, retryAttempt)));
+        }
     }
-}

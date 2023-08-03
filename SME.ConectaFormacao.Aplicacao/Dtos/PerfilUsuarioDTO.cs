@@ -1,12 +1,12 @@
 ﻿
 namespace SME.ConectaFormacao.Aplicacao.DTOS;
-public struct PerfilUsuarioDTO
-{
-    public PerfilUsuarioDTO(Guid perfil, string perfilNome)
+    public struct PerfilUsuarioDTO
     {
-        Perfil = perfil;
-        PerfilNome = perfilNome;
+        public PerfilUsuarioDTO(Guid perfil, string perfilNome)
+        {
+            Perfil = perfil;
+            PerfilNome = perfilNome;
+        }
+        public Guid Perfil { get; set; }
+        public string PerfilNome { get; set; }
     }
-    public Guid Perfil { get; set; }
-    public string PerfilNome { get; set; }
-}

@@ -9,7 +9,7 @@ public class ServicoAcessosFake : IServicoAcessos
     {
         return Task.FromResult(new UsuarioAutenticacaoRetornoDTO()
         {
-
+           
         });
     }
 
@@ -63,4 +63,4 @@ public class ServicoAcessosFake : IServicoAcessos
         return Task.FromResult(string.Empty);
     }
 }
-
+    

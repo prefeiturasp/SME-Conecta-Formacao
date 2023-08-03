@@ -1,6 +1,7 @@
 ﻿using Dapper.FluentMap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using System.Data;
 using System.Globalization;
 using System.Text;
@@ -33,7 +34,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
 
             Services.AddSingleton<IConfiguration>(config);
             Services.AddMemoryCache();
-
+            
             FluentMapper.EntityMaps.Clear();
 
             var culture = CultureInfo.CreateSpecificCulture("pt-BR");

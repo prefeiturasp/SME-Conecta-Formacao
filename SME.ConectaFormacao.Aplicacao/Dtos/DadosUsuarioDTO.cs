@@ -1,4 +1,6 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.DTOS
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SME.ConectaFormacao.Aplicacao.DTOS
 {
     public class DadosUsuarioDTO
     {
