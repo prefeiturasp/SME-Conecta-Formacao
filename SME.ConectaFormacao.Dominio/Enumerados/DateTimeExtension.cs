@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SME.ConectaFormacao.Infra.Dominio.Enumerados
+﻿namespace SME.ConectaFormacao.Infra.Dominio.Enumerados
 {
     public static class DateTimeExtension
     {
@@ -10,7 +8,7 @@ namespace SME.ConectaFormacao.Infra.Dominio.Enumerados
         {
             return data;
         }
-       
+
         public static DateTime HorarioBrasilia()
         {
             return DateTime.UtcNow.AddHours(-3);

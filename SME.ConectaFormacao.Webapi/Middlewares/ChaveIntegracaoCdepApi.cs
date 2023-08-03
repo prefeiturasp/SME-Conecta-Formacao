@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Threading.Tasks;
 
 
 namespace SME.ConectaFormacao.Webapi.Middlewares

@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
-using System.Net;
-using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Serialization;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Servicos.Log;
+using System.Net;
 
 namespace SME.ConectaFormacao.Webapi.Middlewares
 {
@@ -36,14 +34,14 @@ namespace SME.ConectaFormacao.Webapi.Middlewares
                 else
                 {
                     await servicoLogs.Enviar(nex.Message, observacao: nex.Message, rastreamento: nex.StackTrace);
-                    await TratarExcecao(context, new List<string>() {nex.Message});
+                    await TratarExcecao(context, new List<string>() { nex.Message });
                 }
             }
             catch (Exception ex)
             {
                 var mensagem = "Houve um comportamento inesperado do Conecta Formação. Por favor, contate a SME.";
                 await servicoLogs.Enviar(mensagem, observacao: ex.Message, rastreamento: ex.StackTrace);
-                await TratarExcecao(context, new List<string>() {mensagem});
+                await TratarExcecao(context, new List<string>() { mensagem });
             }
         }
 

@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace SME.ConectaFormacao.Dominio.Excecoes;
+﻿namespace SME.ConectaFormacao.Dominio.Excecoes;
 
 public class NegocioException : Exception
 {

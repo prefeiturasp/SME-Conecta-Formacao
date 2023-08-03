@@ -42,7 +42,7 @@ public class RegistradorDeDependencia
         RegistrarProfiles();
         RegistrarHttpClients();
     }
-    
+
     protected virtual void RegistrarProfiles()
     {
         _serviceCollection.AddAutoMapper(typeof(DominioParaDTOProfile));
@@ -53,7 +53,7 @@ public class RegistradorDeDependencia
         var assembly = AppDomain.CurrentDomain.Load("SME.ConectaFormacao.Aplicacao");
         _serviceCollection.AddMediatR(x => x.RegisterServicesFromAssemblies(assembly));
     }
-    
+
     protected virtual void RegistrarLogs()
     {
         _serviceCollection.AddOptions<ConfiguracaoRabbitLogsOptions>()

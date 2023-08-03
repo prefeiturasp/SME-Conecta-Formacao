@@ -1,6 +1,6 @@
 namespace SME.ConectaFormacao.Dominio.Entidades;
 
-public interface IDominioBaseAuditavel<TEntidade> 
+public interface IDominioBaseAuditavel<TEntidade>
     where TEntidade : EntidadeBaseAuditavel
 {
     Task<TEntidade> ObterPorId(long id);
