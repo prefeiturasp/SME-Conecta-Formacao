@@ -1,0 +1,46 @@
+﻿using Microsoft.Extensions.ObjectPool;
+using RabbitMQ.Client;
+using SME.ConectaFormacao.Infra.Servicos.Options;
+
+namespace SME.ConectaFormacao.Infra.Servicos.Log
+{
+    public class RabbitModelPooledObjectPolicy : IPooledObjectPolicy<IModel>
+    {
+        private readonly IConnection conexao;
+
+        public RabbitModelPooledObjectPolicy(ConfiguracaoRabbit configuracaoRabbitOptions)
+        {
+            conexao = GetConnection(configuracaoRabbitOptions ?? throw new ArgumentNullException(nameof(configuracaoRabbitOptions)));
+        }
+        private IConnection GetConnection(ConfiguracaoRabbit configuracaoRabbit)
+        {
+            var factory = new ConnectionFactory()
+            {
+                HostName = configuracaoRabbit.HostName,
+                UserName = configuracaoRabbit.UserName,
+                Password = configuracaoRabbit.Password,
+                VirtualHost = configuracaoRabbit.VirtualHost
+            };
+
+            return factory.CreateConnection();
+        }
+
+        public IModel Create()
+        {
+            var channel = conexao.CreateModel();
+            channel.ConfirmSelect();
+            return channel;
+        }
+
+        public bool Return(IModel obj)
+        {
+            if (obj.IsOpen)
+                return true;
+            else
+            {
+                obj?.Dispose();
+                return false;
+            }
+        }
+    }
+}
