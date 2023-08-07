@@ -2,15 +2,15 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Aplicacao.Servicos;
 using SME.ConectaFormacao.Aplicacao.Servicos.Interface;
-using SME.ConectaFormacao.Infra.Dados;
-using SME.ConectaFormacao.IoC;
-using SME.ConectaFormacao.Aplicacao.Integracoes.Interfaces;
-using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Dominio.Contexto;
-using SME.ConectaFormacao.Webapi.Contexto;
+using SME.ConectaFormacao.Infra.Dados;
+using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
+using SME.ConectaFormacao.IoC;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
+using SME.ConectaFormacao.Webapi.Contexto;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Setup
 {

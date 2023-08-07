@@ -9,17 +9,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers;
 [ApiController]
 [ValidaDto]
 public class UsuarioController: BaseController
-{
-    [HttpPost]
-    [ProducesResponseType(typeof(UsuarioExternoDTO), 200)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
-    public async Task<IActionResult> CadastrarUsuarioExterno(UsuarioExternoDTO usuarioExternoDto, [FromServices] IServicoUsuario servicoUsuario)
-    {
-        return Ok(await servicoUsuario.CadastrarUsuarioExterno(usuarioExternoDto));
-    }
-    
+{   
     [HttpPost("{login}/solicitar-recuperacao-senha")] 
     [ProducesResponseType(typeof(string), 200)]
     [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

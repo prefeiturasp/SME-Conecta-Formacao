@@ -5,8 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
-using SME.ConectaFormacao.Aplicacao.Integracoes;
-using SME.ConectaFormacao.Aplicacao.Integracoes.Interfaces;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Aplicacao.Servicos;
 using SME.ConectaFormacao.Aplicacao.Servicos.Interface;
@@ -103,7 +101,6 @@ public class RegistradorDeDependencia
     protected virtual void RegistrarServicos()
     {
         _serviceCollection.TryAddScoped<IServicoPerfilUsuario, ServicoPerfilUsuario>();
-        _serviceCollection.TryAddScoped<IServicoAcessos, ServicoAcessos>();
     }
     protected virtual void RegistrarHttpClients()
     {
