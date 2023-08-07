@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
-using System.Net;
-using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Serialization;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Servicos.Log;
+using System.Net;
 
 namespace SME.ConectaFormacao.Webapi.Middlewares
 {

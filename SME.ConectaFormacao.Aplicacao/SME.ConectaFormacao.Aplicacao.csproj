@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\SME.ConectaFormacao.Dominio\SME.ConectaFormacao.Dominio.csproj" />
       <ProjectReference Include="..\SME.ConectaFormacao.Infra.Dados\SME.ConectaFormacao.Infra.Dados.csproj" />
+      <ProjectReference Include="..\SME.ConectaFormacao.Infra.Servicos\SME.ConectaFormacao.Infra.Servicos.csproj" />
     </ItemGroup>
 
     <ItemGroup>
