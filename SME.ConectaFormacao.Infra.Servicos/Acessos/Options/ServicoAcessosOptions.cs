@@ -6,6 +6,6 @@
 
         public string UrlApi { get; set; }
         public string KeyApi { get; set; }
-        public bool CodigoSistema { get; set; }
+        public int CodigoSistema { get; set; }
     }
 }

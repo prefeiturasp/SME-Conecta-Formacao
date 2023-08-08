@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using SME.ConectaFormacao.Aplicacao.DTOS;
+﻿using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Log;
+using System.Diagnostics;
 using System.Net;
 
 namespace SME.ConectaFormacao.Webapi.Middlewares
@@ -26,30 +26,31 @@ namespace SME.ConectaFormacao.Webapi.Middlewares
             }
             catch (NegocioException nex)
             {
-                if (nex.Mensagens.Any())
-                {
-                    await servicoLogs.Enviar(string.Join(" - ", nex.Mensagens), observacao: nex.Message, rastreamento: nex.StackTrace);
-                    await TratarExcecao(context, nex.Mensagens);
-                }
-                else
-                {
-                    await servicoLogs.Enviar(nex.Message, observacao: nex.Message, rastreamento: nex.StackTrace);
-                    await TratarExcecao(context, new List<string>() {nex.Message});
-                }
+                var mensagem = nex.Mensagens.Any() ? string.Join(" - ", nex.Mensagens) : nex.Message;
+
+                await servicoLogs.Enviar(mensagem, observacao: nex.Message, rastreamento: nex.StackTrace);
+                await TratarExcecao(context, nex, nex.StatusCode, nex.Mensagens.ToArray());
             }
             catch (Exception ex)
             {
                 var mensagem = "Houve um comportamento inesperado do Conecta Formação. Por favor, contate a SME.";
+
                 await servicoLogs.Enviar(mensagem, observacao: ex.Message, rastreamento: ex.StackTrace);
-                await TratarExcecao(context, new List<string>() {mensagem});
+                await TratarExcecao(context, ex, mensagens: mensagem);
             }
         }
 
-        private async Task TratarExcecao(HttpContext context, List<string> mensagens, int statusCode = (int)HttpStatusCode.InternalServerError)
+        private static async Task TratarExcecao(HttpContext context, Exception exception, int statusCode = (int)HttpStatusCode.InternalServerError, params string[] mensagens)
         {
+
+#if DEBUG
+            if (exception != null)
+                Debug.WriteLine(exception);
+#endif
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(new RetornoBaseDTO(mensagens), new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+            await context.Response.WriteAsync(new RetornoBaseDTO(mensagens.ToList()).ObjetoParaJson());
         }
     }
 
@@ -60,5 +61,4 @@ namespace SME.ConectaFormacao.Webapi.Middlewares
             return builder.UseMiddleware<TratamentoExcecaoGlobalMiddleware>();
         }
     }
-
 }

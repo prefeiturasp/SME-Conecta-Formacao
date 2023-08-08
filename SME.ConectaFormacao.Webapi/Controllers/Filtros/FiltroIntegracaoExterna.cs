@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Webapi.Filtros
 
                 operation.Parameters.Add(new OpenApiParameter
                 {
-                    Name = "x-cdep-api-key",
+                    Name = "x-conecta-formacao-api-key",
                     In = ParameterLocation.Header,
                     Required = false
                 });

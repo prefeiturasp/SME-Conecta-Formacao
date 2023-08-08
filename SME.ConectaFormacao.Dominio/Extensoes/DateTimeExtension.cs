@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SME.ConectaFormacao.Infra.Dominio.Enumerados
+﻿namespace SME.ConectaFormacao.Dominio.Extensoes
 {
     public static class DateTimeExtension
     {
@@ -10,7 +8,7 @@ namespace SME.ConectaFormacao.Infra.Dominio.Enumerados
         {
             return data;
         }
-       
+
         public static DateTime HorarioBrasilia()
         {
             return DateTime.UtcNow.AddHours(-3);
@@ -28,7 +26,7 @@ namespace SME.ConectaFormacao.Infra.Dominio.Enumerados
         {
             if (data.DayOfWeek == DayOfWeek.Saturday)
                 return data;
-            int diferenca = (((int)DayOfWeek.Saturday - (int)data.DayOfWeek + 7) % 7);
+            int diferenca = ((int)DayOfWeek.Saturday - (int)data.DayOfWeek + 7) % 7;
             return data.AddDays(diferenca);
         }
 

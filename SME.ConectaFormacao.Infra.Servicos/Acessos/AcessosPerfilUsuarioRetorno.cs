@@ -1,6 +1,6 @@
 ﻿namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 {
-    public class AcessosRetornoPerfilUsuario
+    public class AcessosPerfisUsuarioRetorno
     {
         public string UsuarioNome { get; set; }
         public string UsuarioLogin { get; set; }

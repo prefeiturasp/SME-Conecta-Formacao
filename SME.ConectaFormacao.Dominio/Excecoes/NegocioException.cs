@@ -1,16 +1,14 @@
-﻿using System.Net;
-
-namespace SME.ConectaFormacao.Dominio.Excecoes;
+﻿namespace SME.ConectaFormacao.Dominio.Excecoes;
 
 public class NegocioException : Exception
 {
-    public NegocioException(string mensagem, int statusCode = 601) : base(mensagem)
+    public NegocioException(string mensagem, int statusCode = 400) : base(mensagem)
     {
         Mensagens = new List<string>();
         StatusCode = statusCode;
     }
 
-    public NegocioException(List<string> mensagens, int statusCode = 601)
+    public NegocioException(List<string> mensagens, int statusCode = 400)
     {
         Mensagens = mensagens;
         StatusCode = statusCode;

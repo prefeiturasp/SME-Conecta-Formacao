@@ -9,11 +9,11 @@ public class ServicoAcessosFake : IServicoAcessos
     {
         return Task.FromResult(new AcessosUsuarioAutenticacaoRetorno()
         {
-           
+
         });
     }
 
-    public Task<AcessosRetornoPerfilUsuario> ObterPerfisUsuario(string login)
+    public Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login)
     {
         throw new NotImplementedException();
     }
@@ -63,4 +63,4 @@ public class ServicoAcessosFake : IServicoAcessos
         return Task.FromResult(string.Empty);
     }
 }
-    
+
