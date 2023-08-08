@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces;
 using SME.ConectaFormacao.Dominio;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.Autenticacao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Autenticacao.ServicosFakes;
@@ -26,6 +27,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Autenticacao
             base.RegistrarQueryFakes(services);
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuarioServicoAcessosPorLoginSenhaQuery, UsuarioAutenticacaoRetornoDTO>), typeof(ObterUsuarioServicoAcessosPorLoginSenhaQueryHandlerFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterPerfisUsuarioServicoAcessosPorLoginQuery, UsuarioPerfisRetornoDTO>), typeof(ObterPerfisUsuarioServicoAcessosPorLoginQueryHandlerFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<VincularPerfilExternoCoreSSOServicoAcessosCommand, bool>), typeof(VincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Autenticação - Deve retornar erro 401 com login ou senha inválida")]
@@ -63,6 +65,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.Autenticacao
             var usuario = usuarios.FirstOrDefault();
             usuario.Nome.ShouldNotBeNull(retorno.UsuarioNome);
             usuario.Login.ShouldNotBeNull(retorno.UsuarioLogin);
+        }
+
+        [Fact(DisplayName = "Autenticação - Deve atribuir o perfil Cursista ao autenticar com login e senha valido")]
+        public async Task Deve_atribuir_perfil_cursista_ao_autenticar_com_login_e_senha_valido()
+        {
+            // arrange
+            var autenticacaoDto = AutenticacaoMock.AutenticacaoUsuarioDTOValido;
+            var casoDeUsoAutenticarUsuario = ObterCasoDeUso<ICasoDeUsoAutenticarUsuario>();
+
+            // act
+            var retorno = await casoDeUsoAutenticarUsuario.Executar(autenticacaoDto);
+
+            // assert
+            retorno.ShouldNotBeNull();
+            retorno.UsuarioLogin.ShouldBe(autenticacaoDto.Login);
+
+            retorno.PerfilUsuario.Any(t => t.Perfil == new Guid(PerfilAutomatico.PERFIL_CURSISTA_GUID)).ShouldBeTrue();
         }
     }
 }
