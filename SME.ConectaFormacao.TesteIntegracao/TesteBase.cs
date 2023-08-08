@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using SME.ConectaFormacao.Aplicacao.Servicos.Interface;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -17,8 +16,8 @@ namespace SME.ConectaFormacao.TesteIntegracao
         {
             _collectionFixture = collectionFixture;
             _collectionFixture.Database.LimparBase();
-            _collectionFixture.IniciarServicos();
 
+            _collectionFixture.IniciarServicos();
             RegistrarFakes(_collectionFixture.Services);
             _collectionFixture.BuildServiceProvider();
         }
@@ -79,15 +78,9 @@ namespace SME.ConectaFormacao.TesteIntegracao
             return _collectionFixture.Database.ObterPorId<T, K>(id);
         }
 
-        protected IServicoUsuario GetServicoUsuario()
+        public T ObterCasoDeUso<T>()
         {
-            return ObterServicoAplicacao<IServicoUsuario>();
-        }
-
-        public T ObterServicoAplicacao<T>()
-            where T : IServicoAplicacao
-        {
-            return ServiceProvider.GetService<T>() ?? throw new Exception($"Serviço {typeof(T).Name} não registrado!");
+            return this.ServiceProvider.GetService<T>() ?? throw new Exception($"Caso de Uso {typeof(T).Name} não registrado!");
         }
     }
 }

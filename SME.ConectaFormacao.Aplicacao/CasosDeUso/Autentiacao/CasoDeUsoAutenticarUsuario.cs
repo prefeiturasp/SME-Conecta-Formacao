@@ -14,14 +14,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao
         {
         }
 
-        public async Task<UsuarioPerfisRetornoDTO> Executar(string login, string senha)
+        public async Task<UsuarioPerfisRetornoDTO> Executar(AutenticacaoDTO autenticacaoDTO)
         {
-            var usuarioAutenticadoRetornoDto = await mediator.Send(new ObterUsuarioServicoAcessosPorLoginSenhaQuery(login, senha));
+            var usuarioAutenticadoRetornoDto = await mediator.Send(new ObterUsuarioServicoAcessosPorLoginSenhaQuery(autenticacaoDTO.Login, autenticacaoDTO.Senha));
 
             if (string.IsNullOrEmpty(usuarioAutenticadoRetornoDto.Login))
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, 401);
 
-            var usuarioPerfisRetornoDto = await mediator.Send(new ObterPerfisUsuarioServicoAcessosPorLoginQuery(login));
+            var usuarioPerfisRetornoDto = await mediator.Send(new ObterPerfisUsuarioServicoAcessosPorLoginQuery(autenticacaoDTO.Login));
             if (usuarioPerfisRetornoDto == null)
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, 401);
 

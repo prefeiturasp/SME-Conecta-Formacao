@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces
 {
     public interface ICasoDeUsoAutenticarUsuario
     {
-        Task<UsuarioPerfisRetornoDTO> Executar(string login, string senha);
+        Task<UsuarioPerfisRetornoDTO> Executar(AutenticacaoDTO autenticacaoDTO);
     }
 }

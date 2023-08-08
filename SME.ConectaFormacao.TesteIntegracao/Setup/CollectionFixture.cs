@@ -18,9 +18,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Database = new InMemoryDatabase();
-
-            IniciarServicos();
-
         }
 
         public void IniciarServicos()
@@ -42,7 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
 
-            new RegistradorDependencias(Services, config).Registrar();
+            new RegistradorDependenciasTeste(Services, config).Registrar();
         }
 
         public void BuildServiceProvider()
