@@ -6,9 +6,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
     public class ServicoParaDTOProfile : Profile
     {
-        protected ServicoParaDTOProfile()
+        public ServicoParaDTOProfile()
         {
-            this.CreateMap<AcessosUsuarioAutenticacaoRetorno, UsuarioAutenticacaoRetornoDTO>();
+            CreateMap<AcessosUsuarioAutenticacaoRetorno, UsuarioAutenticacaoRetornoDTO>();
+            CreateMap<AcessosPerfisUsuarioRetorno, UsuarioPerfisRetornoDTO>();
         }
     }
 }

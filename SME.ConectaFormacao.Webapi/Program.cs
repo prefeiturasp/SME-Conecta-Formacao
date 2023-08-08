@@ -1,4 +1,3 @@
-using System.Configuration;
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.SqlClient;
@@ -7,7 +6,6 @@ using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.IoC;
 using SME.ConectaFormacao.Webapi.Configuracoes;
 using SME.ConectaFormacao.Webapi.Contexto;
-using SME.ConectaFormacao.Webapi.Controllers;
 using SME.ConectaFormacao.Webapi.Filtros;
 using SME.ConectaFormacao.Webapi.Middlewares;
 

@@ -3,7 +3,7 @@
     public interface IServicoAcessos
     {
         Task<AcessosUsuarioAutenticacaoRetorno> Autenticar(string login, string senha);
-        Task<AcessosRetornoPerfilUsuario> ObterPerfisUsuario(string login);
+        Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login);
         Task<bool> UsuarioCadastradoCoreSSO(string login);
         Task<bool> CadastrarUsuarioCoreSSO(string login, string nome, string email, string senha);
         Task<bool> VincularPerfilExternoCoreSSO(string login, Guid perfilId);

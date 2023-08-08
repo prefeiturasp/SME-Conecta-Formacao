@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
         {
             Conexao.Insert(objeto);
         }
-        
+
         public void Atualizar<T>(T objeto) where T : class, new()
         {
             Conexao.Update(objeto);
@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
                 cmd.ExecuteNonQuery();
             }
         }
-        
+
         public void Inserir(string tabela, string[] campos, string[] valores)
         {
             var builder = new StringBuilder();

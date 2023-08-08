@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using SME.ConectaFormacao.Dominio.Constantes;
+﻿using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Options;
 using System.Text;
@@ -20,25 +20,25 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<AcessosUsuarioAutenticacaoRetorno> Autenticar(string login, string senha)
         {
-            var parametros = JsonConvert.SerializeObject(new { login, senha });
+            var parametros = new { login, senha }.ObjetoParaJson();
             var resposta = await _httpClient.PostAsync($"v1/autenticacao/autenticar", new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode)
-                throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS);
+                throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, (int)resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<AcessosUsuarioAutenticacaoRetorno>(json);
+            return json.JsonParaObjeto<AcessosUsuarioAutenticacaoRetorno>();
         }
 
-        public async Task<AcessosRetornoPerfilUsuario> ObterPerfisUsuario(string login)
+        public async Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login)
         {
             var resposta = await _httpClient.GetAsync($"v1/autenticacao/usuarios/{login}/sistemas/{_servicoAcessosOptions.CodigoSistema}/perfis");
 
             if (!resposta.IsSuccessStatusCode)
-                throw new NegocioException(MensagemNegocio.PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN);
+                throw new NegocioException(MensagemNegocio.PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN, (int)resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<AcessosRetornoPerfilUsuario>(json);
+            return json.JsonParaObjeto<AcessosPerfisUsuarioRetorno>();
         }
 
         public async Task<bool> UsuarioCadastradoCoreSSO(string login)
@@ -48,18 +48,18 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             if (!resposta.IsSuccessStatusCode) return false;
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<bool>(json);
+            return json.JsonParaObjeto<bool>();
         }
 
         public async Task<bool> CadastrarUsuarioCoreSSO(string login, string nome, string email, string senha)
         {
-            var parametros = JsonConvert.SerializeObject(new { login, nome, email, senha });
+            var parametros = new { login, nome, email, senha }.ObjetoParaJson();
             var resposta = await _httpClient.PostAsync($"v1/usuarios/cadastrar", new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode) return false;
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<bool>(json);
+            return json.JsonParaObjeto<bool>();
         }
 
         public async Task<bool> VincularPerfilExternoCoreSSO(string login, Guid perfilId)
@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             if (!resposta.IsSuccessStatusCode) return false;
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<bool>(json);
+            return json.JsonParaObjeto<bool>();
         }
 
         public async Task<AcessosDadosUsuario> ObterMeusDados(string login)
@@ -79,18 +79,19 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             if (!resposta.IsSuccessStatusCode) return new AcessosDadosUsuario();
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<AcessosDadosUsuario>(json);
+            return json.JsonParaObjeto<AcessosDadosUsuario>();
         }
 
         public Task<bool> AlterarSenha(string login, string senhaAtual, string senhaNova)
         {
-            return InvocarPutServicoAcessosRetornandoBool($"v1/usuarios/{login}/senha",
-                JsonConvert.SerializeObject(new { login, senhaAtual, senhaNova, sistemaId = _servicoAcessosOptions.CodigoSistema }));
+            var json = new { login, senhaAtual, senhaNova, sistemaId = _servicoAcessosOptions.CodigoSistema }.ObjetoParaJson();
+            return InvocarPutServicoAcessosRetornandoBool($"v1/usuarios/{login}/senha", json);
         }
 
         public Task<bool> AlterarEmail(string login, string email)
         {
-            return InvocarPutServicoAcessosRetornandoBool($"v1/usuarios/{login}/email", JsonConvert.SerializeObject(new { login, email }));
+            var json = new { login, email }.ObjetoParaJson();
+            return InvocarPutServicoAcessosRetornandoBool($"v1/usuarios/{login}/email", json);
         }
 
         private async Task<bool> InvocarPutServicoAcessosRetornandoBool(string rota, string parametros)
@@ -100,8 +101,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             if (!resposta.IsSuccessStatusCode) return false;
 
             var json = await resposta.Content.ReadAsStringAsync();
-            var retorno = JsonConvert.DeserializeObject<bool>(json);
-            return retorno;
+            return json.JsonParaObjeto<bool>();
         }
 
         public async Task<string> SolicitarRecuperacaoSenha(string login)
@@ -111,7 +111,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             if (!resposta.IsSuccessStatusCode) return string.Empty;
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<string>(json);
+            return json.JsonParaObjeto<string>();
         }
 
         public async Task<bool> TokenRecuperacaoSenhaEstaValido(Guid token)
@@ -121,19 +121,18 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             if (!resposta.IsSuccessStatusCode) return false;
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<bool>(json);
+            return json.JsonParaObjeto<bool>();
         }
 
         public async Task<string> AlterarSenhaComTokenRecuperacao(AcessosRecuperacaoSenha recuperacaoSenhaDto)
         {
-            var parametros = JsonConvert.SerializeObject(new { token = recuperacaoSenhaDto.Token, senha = recuperacaoSenhaDto.NovaSenha });
-
+            var parametros = new { token = recuperacaoSenhaDto.Token, senha = recuperacaoSenhaDto.NovaSenha }.ObjetoParaJson();
             var resposta = await _httpClient.PutAsync($"v1/usuarios/sistemas/{_servicoAcessosOptions.CodigoSistema}/senha", new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode) return string.Empty;
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<string>(json);
+            return json.JsonParaObjeto<string>();
         }
     }
 }

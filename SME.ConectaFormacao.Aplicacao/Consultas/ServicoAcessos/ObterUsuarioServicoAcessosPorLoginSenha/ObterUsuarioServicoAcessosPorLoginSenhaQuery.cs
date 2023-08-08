@@ -4,9 +4,9 @@ using SME.ConectaFormacao.Aplicacao.DTOS;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUsuarioServicoAcessoPorLoginSenhaQuery : IRequest<UsuarioAutenticacaoRetornoDTO>
+    public class ObterUsuarioServicoAcessosPorLoginSenhaQuery : IRequest<UsuarioAutenticacaoRetornoDTO>
     {
-        public ObterUsuarioServicoAcessoPorLoginSenhaQuery(string login, string senha)
+        public ObterUsuarioServicoAcessosPorLoginSenhaQuery(string login, string senha)
         {
             Login = login;
             Senha = senha;
@@ -16,9 +16,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Senha { get; }
     }
 
-    public class ObterUsuarioServicoAcessoPorLoginSenhaQueryValidator : AbstractValidator<ObterUsuarioServicoAcessoPorLoginSenhaQuery>
+    public class ObterUsuarioServicoAcessosPorLoginSenhaQueryValidator : AbstractValidator<ObterUsuarioServicoAcessosPorLoginSenhaQuery>
     {
-        public ObterUsuarioServicoAcessoPorLoginSenhaQueryValidator()
+        public ObterUsuarioServicoAcessosPorLoginSenhaQueryValidator()
         {
             RuleFor(t => t.Login)
                 .Empty()
