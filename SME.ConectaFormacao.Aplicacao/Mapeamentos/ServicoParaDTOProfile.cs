@@ -10,6 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
         {
             CreateMap<AcessosUsuarioAutenticacaoRetorno, UsuarioAutenticacaoRetornoDTO>();
             CreateMap<AcessosPerfisUsuarioRetorno, UsuarioPerfisRetornoDTO>();
+            CreateMap<AcessosPerfilUsuario, PerfilUsuarioDTO>();
         }
     }
 }
