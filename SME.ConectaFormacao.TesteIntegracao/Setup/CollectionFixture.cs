@@ -1,7 +1,6 @@
 ﻿using Dapper.FluentMap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using System.Data;
 using System.Globalization;
 using System.Text;
@@ -19,9 +18,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Database = new InMemoryDatabase();
-
-            IniciarServicos();
-
         }
 
         public void IniciarServicos()
@@ -34,7 +30,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
 
             Services.AddSingleton<IConfiguration>(config);
             Services.AddMemoryCache();
-            
+
             FluentMapper.EntityMaps.Clear();
 
             var culture = CultureInfo.CreateSpecificCulture("pt-BR");
@@ -43,7 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
 
-            new RegistradorDependencias(Services, config).Registrar();
+            new RegistradorDependenciasTeste(Services, config).Registrar();
         }
 
         public void BuildServiceProvider()

@@ -1,19 +1,19 @@
-﻿using SME.ConectaFormacao.Aplicacao.DTOS;
-using SME.ConectaFormacao.Aplicacao.Integracoes.Interfaces;
+﻿using SME.ConectaFormacao.Infra.Servicos.Acessos;
+using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
 namespace SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 
 public class ServicoAcessosFake : IServicoAcessos
 {
-    public Task<UsuarioAutenticacaoRetornoDTO> Autenticar(string login, string senha)
+    public Task<AcessosUsuarioAutenticacaoRetorno> Autenticar(string login, string senha)
     {
-        return Task.FromResult(new UsuarioAutenticacaoRetornoDTO()
+        return Task.FromResult(new AcessosUsuarioAutenticacaoRetorno()
         {
-           
+
         });
     }
 
-    public Task<RetornoPerfilUsuarioDTO> ObterPerfisUsuario(string login)
+    public Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login)
     {
         throw new NotImplementedException();
     }
@@ -43,9 +43,9 @@ public class ServicoAcessosFake : IServicoAcessos
         return Task.FromResult(true);
     }
 
-    public Task<DadosUsuarioDTO> ObterMeusDados(string login)
+    public Task<AcessosDadosUsuario> ObterMeusDados(string login)
     {
-        return Task.FromResult(new DadosUsuarioDTO());
+        return Task.FromResult(new AcessosDadosUsuario());
     }
 
     public Task<string> SolicitarRecuperacaoSenha(string login)
@@ -58,9 +58,9 @@ public class ServicoAcessosFake : IServicoAcessos
         return Task.FromResult(true);
     }
 
-    public Task<string> AlterarSenhaComTokenRecuperacao(RecuperacaoSenhaDto recuperacaoSenhaDto)
+    public Task<string> AlterarSenhaComTokenRecuperacao(AcessosRecuperacaoSenha recuperacaoSenhaDto)
     {
         return Task.FromResult(string.Empty);
     }
 }
-    
+

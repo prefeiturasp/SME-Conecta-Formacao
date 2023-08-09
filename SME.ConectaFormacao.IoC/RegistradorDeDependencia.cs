@@ -5,12 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
-using SME.ConectaFormacao.Aplicacao.Integracoes;
-using SME.ConectaFormacao.Aplicacao.Integracoes.Interfaces;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
-using SME.ConectaFormacao.Aplicacao.Servicos;
-using SME.ConectaFormacao.Aplicacao.Servicos.Interface;
 using SME.ConectaFormacao.Infra.Dados;
+using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
+using SME.ConectaFormacao.Infra.Dados.Repositorios;
+using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Options;
 using SME.ConectaFormacao.Infra.Servicos.Polly;
@@ -38,14 +39,14 @@ public class RegistradorDeDependencia
         RegistrarLogs();
         RegistrarPolly();
         RegistrarMapeamentos();
-        RegistrarServicos();
+        RegistrarCasosDeUso();
         RegistrarProfiles();
         RegistrarHttpClients();
     }
-    
+
     protected virtual void RegistrarProfiles()
     {
-        _serviceCollection.AddAutoMapper(typeof(DominioParaDTOProfile));
+        _serviceCollection.AddAutoMapper(typeof(DominioParaDTOProfile), typeof(ServicoParaDTOProfile));
     }
 
     protected virtual void RegistrarMediatr()
@@ -53,7 +54,7 @@ public class RegistradorDeDependencia
         var assembly = AppDomain.CurrentDomain.Load("SME.ConectaFormacao.Aplicacao");
         _serviceCollection.AddMediatR(x => x.RegisterServicesFromAssemblies(assembly));
     }
-    
+
     protected virtual void RegistrarLogs()
     {
         _serviceCollection.AddOptions<ConfiguracaoRabbitLogsOptions>()
@@ -74,6 +75,7 @@ public class RegistradorDeDependencia
     {
         FluentMapper.Initialize(config =>
         {
+            config.AddMap(new UsuarioMap());
 
             config.ForDommel();
         });
@@ -97,14 +99,14 @@ public class RegistradorDeDependencia
 
     protected virtual void RegistrarRepositorios()
     {
-
+        _serviceCollection.TryAddScoped<IRepositorioUsuario, RepositorioUsuario>();
     }
 
-    protected virtual void RegistrarServicos()
+    protected virtual void RegistrarCasosDeUso()
     {
-        _serviceCollection.TryAddScoped<IServicoPerfilUsuario, ServicoPerfilUsuario>();
-        _serviceCollection.TryAddScoped<IServicoAcessos, ServicoAcessos>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAutenticarUsuario, CasoDeUsoAutenticarUsuario>();
     }
+
     protected virtual void RegistrarHttpClients()
     {
         _serviceCollection.AdicionarHttpClients(_configuration);

@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using Polly;
+﻿using Polly;
 using Polly.Registry;
-using System.Text;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Polly;
+using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Log
 {
@@ -20,12 +20,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Log
 
         public async Task Enviar(string mensagem, LogContexto contexto = LogContexto.Geral, LogNivel nivel = LogNivel.Critico, string observacao = "", string rastreamento = "")
         {
-            var logMensagem = JsonConvert.SerializeObject(new LogMensagem(mensagem, contexto.ToString(), nivel.ToString(), observacao, rastreamento),
-                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
+            var logMensagem = new LogMensagem(mensagem, contexto.ToString(), nivel.ToString(), observacao, rastreamento).ObjetoParaJson();
             var body = Encoding.UTF8.GetBytes(logMensagem);
 
-            await policy.ExecuteAsync(async () 
+            await policy.ExecuteAsync(async ()
                 => await PublicarMensagem(body));
         }
 

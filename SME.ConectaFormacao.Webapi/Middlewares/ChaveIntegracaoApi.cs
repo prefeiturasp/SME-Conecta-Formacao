@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Threading.Tasks;
 
 
 namespace SME.ConectaFormacao.Webapi.Middlewares
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class ChaveIntegracaoCdepApi : Attribute, IAsyncActionFilter
+    public class ChaveIntegracaoApi : Attribute, IAsyncActionFilter
     {
-        private const string ChaveIntegracaoHeader = "x-cdep-api-key";
+        private const string ChaveIntegracaoHeader = "x-conecta-formacao-api-key";
         private const string ChaveIntegracaoEnvironmentVariableName = "ChaveIntegracaoApi";
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {

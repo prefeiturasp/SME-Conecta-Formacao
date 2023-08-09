@@ -1,5 +1,4 @@
-﻿using Dapper.FluentMap.Dommel.Mapping;
-using SME.ConectaFormacao.Dominio;
+﻿using SME.ConectaFormacao.Dominio;
 
 namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 {

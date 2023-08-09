@@ -2,17 +2,16 @@ using Dommel;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Repositorios;
-using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios;
 
 public abstract class RepositorioBase<TEntidade> : IRepositorioBase<TEntidade>
-    where TEntidade : EntidadeBase    
+    where TEntidade : EntidadeBase
 {
     protected readonly IContextoAplicacao contexto;
     protected readonly IConectaFormacaoConexao conexao;
 
-    public RepositorioBase(IContextoAplicacao contexto,IConectaFormacaoConexao conexao)
+    public RepositorioBase(IContextoAplicacao contexto, IConectaFormacaoConexao conexao)
     {
         this.contexto = contexto;
         this.conexao = conexao;
@@ -33,8 +32,8 @@ public abstract class RepositorioBase<TEntidade> : IRepositorioBase<TEntidade>
 
     public async Task<TEntidade> Atualizar(TEntidade entidade)
     {
-       await conexao.Obter().UpdateAsync(entidade);
-       return entidade;
+        await conexao.Obter().UpdateAsync(entidade);
+        return entidade;
     }
 
     public async Task Remover(TEntidade entidade)

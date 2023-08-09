@@ -12,14 +12,14 @@ namespace SME.ConectaFormacao.Webapi.Filtros
 
             var attributes = context.MethodInfo.DeclaringType.GetCustomAttributes(true)
                                     .Union(context.MethodInfo.GetCustomAttributes(true))
-                                    .OfType<ChaveIntegracaoCdepApi>();
+                                    .OfType<ChaveIntegracaoApi>();
 
             if (attributes != null && attributes.Any())
             {
 
                 operation.Parameters.Add(new OpenApiParameter
                 {
-                    Name = "x-cdep-api-key",
+                    Name = "x-conecta-formacao-api-key",
                     In = ParameterLocation.Header,
                     Required = false
                 });

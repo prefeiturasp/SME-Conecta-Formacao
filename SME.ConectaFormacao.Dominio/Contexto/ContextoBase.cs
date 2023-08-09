@@ -1,6 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Contexto;
-
-namespace SME.ConectaFormacao.Dominio.Contexto;
+﻿namespace SME.ConectaFormacao.Dominio.Contexto;
 
 public abstract class ContextoBase : IContextoAplicacao
 {

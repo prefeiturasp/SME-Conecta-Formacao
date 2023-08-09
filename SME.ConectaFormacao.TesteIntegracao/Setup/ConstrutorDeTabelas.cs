@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
             var scripts = ObterScripts();
             DirectoryInfo d = new DirectoryInfo(scripts);
 
-            var files = d.GetFiles("*.sql").OrderBy(a => int.Parse(CleanStringOfNonDigits_V1(a.Name.Replace("\uFEFF",""))));
+            var files = d.GetFiles("*.sql").OrderBy(a => int.Parse(CleanStringOfNonDigits_V1(a.Name.Replace("\uFEFF", ""))));
 
             foreach (var file in files)
             {
@@ -134,7 +134,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
                 Console.WriteLine(e);
                 throw;
             }
-            
+
         }
 
         private string ObterScripts()

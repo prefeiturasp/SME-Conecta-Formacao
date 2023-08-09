@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
-using SME.ConectaFormacao.Dominio;
-using SME.ConectaFormacao.Dominio.Repositorios;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Servicos.Interface;
+using SME.ConectaFormacao.Dominio;
+using SME.ConectaFormacao.Dominio.Repositorios;
 
 namespace SME.ConectaFormacao.Aplicacao.Servicos
 {
-    public class ServicoAplicacao<E,D> : IServicoAplicacao where E : EntidadeBase where D : BaseDTO
+    public class ServicoAplicacao<E, D> : IServicoAplicacao where E : EntidadeBase where D : BaseDTO
     {
         private readonly IRepositorioBase<E> repositorio;
         private readonly IMapper mapper;
-        
-        public ServicoAplicacao(IRepositorioBase<E> repositorio, IMapper mapper) 
+
+        public ServicoAplicacao(IRepositorioBase<E> repositorio, IMapper mapper)
         {
             this.repositorio = repositorio ?? throw new ArgumentNullException(nameof(repositorio));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao.Servicos
 
         public async Task<IList<D>> ObterTodos()
         {
-            return (await repositorio.ObterTodos()).Where(w=> !w.Excluido).Select(s=> mapper.Map<D>(s)).ToList();
+            return (await repositorio.ObterTodos()).Where(w => !w.Excluido).Select(s => mapper.Map<D>(s)).ToList();
         }
 
         public async Task<D> Alterar(D entidadeDto)
