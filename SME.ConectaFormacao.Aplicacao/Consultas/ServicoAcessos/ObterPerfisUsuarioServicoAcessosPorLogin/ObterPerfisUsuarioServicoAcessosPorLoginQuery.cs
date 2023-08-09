@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public ObterPerfisUsuarioServicoAcessosPorLoginQueryValidator()
         {
             RuleFor(x => x.Login)
-                .Empty()
+                .NotEmpty()
                 .WithMessage("É necessário informar o login do usuário para obter os perfis");
         }
     }

@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.DTOS;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Usuario.Mocks
 {
-    public class UsuarioMock
+    public class UsuarioMeusDadosMock
     {
         public static string Login;
 

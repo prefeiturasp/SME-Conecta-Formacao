@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public ObterMeusDadosServicoAcessosPorLoginQueryValidator()
         {
             RuleFor(x => x.Login)
-                .Empty()
+                .NotEmpty()
                 .WithMessage("É necessário informar o login para obter o dados do usuário");
         }
     }

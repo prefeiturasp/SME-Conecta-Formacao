@@ -5,7 +5,6 @@ using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
-using SME.ConectaFormacao.TesteIntegracao.Autenticacao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using SME.ConectaFormacao.TesteIntegracao.Usuario.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Usuario.ServicosFakes;
@@ -17,7 +16,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Usuario
     {
         public Ao_obter_dados_do_usuario(CollectionFixture collectionFixture) : base(collectionFixture)
         {
-            UsuarioMock.Montar();
+            UsuarioMeusDadosMock.Montar();
         }
 
         protected override void RegistrarQueryFakes(IServiceCollection services)
@@ -30,7 +29,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Usuario
         public async Task Deve_retornar_dados_usuario_existente()
         {
             // arrange
-            var login = UsuarioMock.Login;
+            var login = UsuarioMeusDadosMock.Login;
             var casoDeUsoUsuarioMeusDados = ObterCasoDeUso<ICasoDeUsoUsuarioMeusDados>();
 
             // act
@@ -45,7 +44,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Usuario
         public async Task Deve_retornar_dados_nulo_para_usuario_nao_encontrado()
         {
             // arrange
-            var login = UsuarioMock.LoginNaoEncontrado;
+            var login = UsuarioMeusDadosMock.LoginNaoEncontrado;
             var casoDeUsoUsuarioMeusDados = ObterCasoDeUso<ICasoDeUsoUsuarioMeusDados>();
 
             // act
