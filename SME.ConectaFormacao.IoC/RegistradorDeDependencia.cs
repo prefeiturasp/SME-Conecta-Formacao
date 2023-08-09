@@ -1,5 +1,7 @@
 ﻿using Dapper.FluentMap;
 using Dapper.FluentMap.Dommel;
+using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -10,6 +12,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
+using SME.ConectaFormacao.Aplicacao.Pipelines;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
@@ -35,6 +38,7 @@ public class RegistradorDeDependencia
     public virtual void Registrar()
     {
         RegistrarMediatr();
+        RegistrarValidadoresFluentValidation();
         RegistrarTelemetria();
         RegistrarConexao();
         RegistrarRepositorios();
@@ -55,6 +59,17 @@ public class RegistradorDeDependencia
     {
         var assembly = AppDomain.CurrentDomain.Load("SME.ConectaFormacao.Aplicacao");
         _serviceCollection.AddMediatR(x => x.RegisterServicesFromAssemblies(assembly));
+    }
+
+    public virtual void RegistrarValidadoresFluentValidation()
+    {
+        var assembly = AppDomain.CurrentDomain.Load("SME.ConectaFormacao.Aplicacao");
+
+        AssemblyScanner
+            .FindValidatorsInAssembly(assembly)
+            .ForEach(result => _serviceCollection.AddScoped(result.InterfaceType, result.ValidatorType));
+
+        _serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidacoesPipeline<,>));
     }
 
     protected virtual void RegistrarLogs()
@@ -107,7 +122,9 @@ public class RegistradorDeDependencia
     protected virtual void RegistrarCasosDeUso()
     {
         _serviceCollection.TryAddScoped<ICasoDeUsoAutenticarUsuario, CasoDeUsoAutenticarUsuario>();
+
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioMeusDados, CasoDeUsoUsuarioMeusDados>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarEmail, CasoDeUsoUsuarioAlterarEmail>();
     }
 
     protected virtual void RegistrarHttpClients()

@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public ObterUsuarioPorLoginQueryValidator()
         {
             RuleFor(x => x.Login)
-                .Empty()
+                .NotEmpty()
                 .WithMessage("É nescessário informar o login para obter o usuário");
         }
     }

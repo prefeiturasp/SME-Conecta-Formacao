@@ -9,8 +9,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.Usuario.ServicosFakes
     {
         public Task<DadosUsuarioDTO> Handle(ObterMeusDadosServicoAcessosPorLoginQuery request, CancellationToken cancellationToken)
         {
-            if (request.Login == UsuarioMock.Login)
-                return Task.FromResult(UsuarioMock.DadosUsuarioDTO);
+            if (request.Login == UsuarioMeusDadosMock.Login)
+                return Task.FromResult(UsuarioMeusDadosMock.DadosUsuarioDTO);
 
             return Task.FromResult(new DadosUsuarioDTO());
         }

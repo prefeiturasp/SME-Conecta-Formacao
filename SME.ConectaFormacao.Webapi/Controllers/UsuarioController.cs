@@ -69,11 +69,9 @@ public class UsuarioController : BaseController
     [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
     [ProducesResponseType(typeof(bool), 200)]
     [Authorize("Bearer")]
-    public async Task<IActionResult> AlterarEmail([FromRoute] string login, [FromBody] EmailUsuarioDTO emailUsuarioDto, [FromServices] IServicoUsuario servicoUsuario)
+    public async Task<IActionResult> AlterarEmail([FromRoute] string login, [FromBody] EmailUsuarioDTO emailUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarEmail casoDeUsoUsuarioAlterarEmail)
     {
-        var retorno = await servicoUsuario.AlterarEmail(login, emailUsuarioDto.Email);
-
-        return Ok(retorno);
+        return Ok(await casoDeUsoUsuarioAlterarEmail.Executar(login, emailUsuarioDto.Email));
     }
 
     [HttpPut("{login}/endereco")]
