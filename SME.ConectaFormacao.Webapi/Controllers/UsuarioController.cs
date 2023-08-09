@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Aplicacao.Servicos.Interface;
 using SME.ConectaFormacao.Webapi.Filtros;
 
@@ -46,11 +47,9 @@ public class UsuarioController : BaseController
     [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
     [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
     [Authorize("Bearer")]
-    public async Task<IActionResult> MeusDados([FromRoute] string login, [FromServices] IServicoUsuario servicoUsuario)
+    public async Task<IActionResult> MeusDados([FromRoute] string login, [FromServices] ICasoDeUsoUsuarioMeusDados casoDeUsoUsuarioMeusDados)
     {
-        var retorno = await servicoUsuario.ObterMeusDados(login);
-
-        return Ok(retorno);
+        return Ok(await casoDeUsoUsuarioMeusDados.Executar(login));
     }
 
     [HttpPut("{login}/senha")]

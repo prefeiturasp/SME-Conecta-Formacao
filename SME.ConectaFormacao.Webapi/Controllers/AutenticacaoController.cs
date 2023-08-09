@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.DTOS;
-using SME.ConectaFormacao.Aplicacao.Interfaces;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
