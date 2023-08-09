@@ -6,7 +6,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
-using SME.ConectaFormacao.Aplicacao.Interfaces;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
@@ -105,6 +107,7 @@ public class RegistradorDeDependencia
     protected virtual void RegistrarCasosDeUso()
     {
         _serviceCollection.TryAddScoped<ICasoDeUsoAutenticarUsuario, CasoDeUsoAutenticarUsuario>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioMeusDados, CasoDeUsoUsuarioMeusDados>();
     }
 
     protected virtual void RegistrarHttpClients()

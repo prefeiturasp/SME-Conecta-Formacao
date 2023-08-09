@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.DTOS;
-using SME.ConectaFormacao.Aplicacao.Interfaces;
-using SME.ConectaFormacao.Dominio;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -29,7 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao
             await ValidarPerfisAutomaticos(usuarioPerfisRetornoDto);
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(usuarioAutenticadoRetornoDto.Login)) ??
-                new Usuario(usuarioAutenticadoRetornoDto.Login, usuarioAutenticadoRetornoDto.Nome);
+                new Dominio.Usuario(usuarioAutenticadoRetornoDto.Login, usuarioAutenticadoRetornoDto.Nome);
 
             usuario.AtualizarUltimoLogin(DateTimeExtension.HorarioBrasilia());
             await mediator.Send(new SalvarUsuarioCommand(usuario));

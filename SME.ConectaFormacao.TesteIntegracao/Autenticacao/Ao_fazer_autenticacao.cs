@@ -4,8 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.DTOS;
-using SME.ConectaFormacao.Aplicacao.Interfaces;
-using SME.ConectaFormacao.Dominio;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.Autenticacao.Mocks;
@@ -59,7 +58,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Autenticacao
             retorno.ShouldNotBeNull();
             retorno.UsuarioLogin.ShouldBe(autenticacaoDto.Login);
 
-            var usuarios = ObterTodos<Usuario>();
+            var usuarios = ObterTodos<Dominio.Usuario>();
             usuarios.Any().ShouldBeTrue();
 
             var usuario = usuarios.FirstOrDefault();
