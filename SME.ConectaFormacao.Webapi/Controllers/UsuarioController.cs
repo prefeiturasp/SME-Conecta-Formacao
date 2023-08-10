@@ -57,11 +57,9 @@ public class UsuarioController : BaseController
     [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
     [ProducesResponseType(typeof(bool), 200)]
     [Authorize("Bearer")]
-    public async Task<IActionResult> AlterarSenha([FromRoute] string login, [FromBody] AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto, [FromServices] IServicoUsuario servicoUsuario)
+    public async Task<IActionResult> AlterarSenha([FromRoute] string login, [FromBody] AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarSenha casoDeUsoUsuarioAlterarSenha)
     {
-        var retorno = await servicoUsuario.AlterarSenha(login, alterarSenhaUsuarioDto);
-
-        return Ok(retorno);
+        return Ok(await casoDeUsoUsuarioAlterarSenha.Executar(login, alterarSenhaUsuarioDto));
     }
 
     [HttpPut("{login}/email")]
@@ -72,29 +70,5 @@ public class UsuarioController : BaseController
     public async Task<IActionResult> AlterarEmail([FromRoute] string login, [FromBody] EmailUsuarioDTO emailUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarEmail casoDeUsoUsuarioAlterarEmail)
     {
         return Ok(await casoDeUsoUsuarioAlterarEmail.Executar(login, emailUsuarioDto.Email));
-    }
-
-    [HttpPut("{login}/endereco")]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
-    [ProducesResponseType(typeof(bool), 200)]
-    [Authorize("Bearer")]
-    public async Task<IActionResult> AlterarEnderecoAcervo([FromRoute] string login, [FromBody] EnderecoUsuarioExternoDTO enderecoTelefoneUsuarioExternoDto, [FromServices] IServicoUsuario servicoUsuario)
-    {
-        var retorno = await servicoUsuario.AlterarEndereco(login, enderecoTelefoneUsuarioExternoDto);
-
-        return Ok(retorno);
-    }
-
-    [HttpPut("{login}/telefone")]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
-    [ProducesResponseType(typeof(bool), 200)]
-    [Authorize("Bearer")]
-    public async Task<IActionResult> AlterarTelefoneAcervo([FromRoute] string login, [FromBody] TelefoneUsuarioExternoDTO telefoneUsuarioExternoDto, [FromServices] IServicoUsuario servicoUsuario)
-    {
-        var retorno = await servicoUsuario.AlterarTelefone(login, telefoneUsuarioExternoDto.Telefone);
-
-        return Ok(retorno);
     }
 }
