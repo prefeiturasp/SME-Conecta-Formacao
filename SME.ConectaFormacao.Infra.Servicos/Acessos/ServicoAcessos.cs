@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var resposta = await _httpClient.PostAsync($"v1/autenticacao/autenticar", new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode)
-                throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, (int)resposta.StatusCode);
+                throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<AcessosUsuarioAutenticacaoRetorno>();
@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var resposta = await _httpClient.GetAsync($"v1/autenticacao/usuarios/{login}/sistemas/{_servicoAcessosOptions.CodigoSistema}/perfis");
 
             if (!resposta.IsSuccessStatusCode)
-                throw new NegocioException(MensagemNegocio.PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN, (int)resposta.StatusCode);
+                throw new NegocioException(MensagemNegocio.PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<AcessosPerfisUsuarioRetorno>();
