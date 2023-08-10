@@ -5,14 +5,14 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 {
     public static class JsonExtensao
     {
-        private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
+        private static readonly JsonSerializerOptions _jsonSerializerOptionsPadrao = new()
         {
             PropertyNameCaseInsensitive = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        public static string ObjetoParaJson(this object objeto) => JsonSerializer.Serialize(objeto, _jsonSerializerOptions);
+        public static string ObjetoParaJson(this object objeto) => JsonSerializer.Serialize(objeto, _jsonSerializerOptionsPadrao);
 
-        public static T JsonParaObjeto<T>(this string json) => JsonSerializer.Deserialize<T>(json, _jsonSerializerOptions);
+        public static T JsonParaObjeto<T>(this string json) => JsonSerializer.Deserialize<T>(json, _jsonSerializerOptionsPadrao);
     }
 }

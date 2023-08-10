@@ -21,11 +21,11 @@ namespace SME.ConectaFormacao.Aplicacao
         public ObterUsuarioServicoAcessosPorLoginSenhaQueryValidator()
         {
             RuleFor(t => t.Login)
-                .Empty()
+                .NotEmpty()
                 .WithMessage("É necessário informar o login para obter o usuário");
 
             RuleFor(t => t.Senha)
-                .Empty()
+                .NotEmpty()
                 .WithMessage("É necessário informar a senha para obter o usuário");
         }
     }

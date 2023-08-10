@@ -19,20 +19,16 @@ namespace SME.ConectaFormacao.Aplicacao
         public SalvarUsuarioCommandValidator()
         {
             RuleFor(x => x.Usuario)
-                .Null()
+                .NotNull()
                 .WithMessage("É nescessário informar o usuário a ser salvo");
 
             RuleFor(x => x.Usuario.Login)
-                .Empty()
+                .NotEmpty()
                 .WithMessage("É nescessário informar o login do usuário a ser salvo");
 
             RuleFor(x => x.Usuario.Nome)
-                .Empty()
+                .NotEmpty()
                 .WithMessage("É nescessário informar o nome do usuário a ser salvo");
-
-            RuleFor(x => x.Usuario.Nome)
-                .EmailAddress()
-                .WithMessage("É nescessário informar um email válido do usuário a ser salvo");
         }
     }
 }
