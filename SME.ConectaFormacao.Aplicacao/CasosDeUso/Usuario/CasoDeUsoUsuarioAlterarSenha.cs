@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
         private static bool SenhaAtendeCriteriosDeSeguranca(string senha)
         {
-            string regexPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)(?!.*[áàâãéèêíïóôõöúçñ])(?=.*[a-zA-Z\d\W]).{8,12}$";
+            string regexPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\w)(?!.*[áàâãéèêíïóôõöúçñ])(?=.*[a-zA-Z\d\w]).{8,12}$";
             Regex regex = new(regexPattern);
 
             return regex.IsMatch(senha);
