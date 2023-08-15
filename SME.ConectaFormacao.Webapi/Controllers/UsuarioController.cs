@@ -2,73 +2,69 @@
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
-using SME.ConectaFormacao.Aplicacao.Servicos.Interface;
-using SME.ConectaFormacao.Webapi.Filtros;
 
-namespace SME.ConectaFormacao.Webapi.Controllers;
-
-[ApiController]
-[ValidaDto]
-public class UsuarioController : BaseController
+namespace SME.ConectaFormacao.Webapi.Controllers
 {
-    [HttpPost("{login}/solicitar-recuperacao-senha")]
-    [ProducesResponseType(typeof(string), 200)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-    [AllowAnonymous]
-    public async Task<IActionResult> SolicitarRecuperacaoSenha([FromRoute] string login, [FromServices] IServicoUsuario servicoUsuario)
+    public class UsuarioController : BaseController
     {
-        return Ok(await servicoUsuario.SolicitarRecuperacaoSenha(login));
-    }
+        [HttpPost("{login}/solicitar-recuperacao-senha")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> SolicitarRecuperacaoSenha([FromRoute] string login, [FromServices] ICasoDeUsoUsuarioSolicitarRecuperacaoSenha casoDeUsoUsuarioSolicitarRecuperacaoSenha)
+        {
+            return Ok(await casoDeUsoUsuarioSolicitarRecuperacaoSenha.Executar(login));
+        }
 
-    [HttpGet("valida-token-recuperacao-senha/{token}")]
-    [ProducesResponseType(typeof(bool), 200)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-    [AllowAnonymous]
-    public async Task<IActionResult> TokenRecuperacaoSenhaEstaValidoAsync([FromRoute] Guid token, [FromServices] IServicoUsuario servicoUsuario)
-    {
-        return Ok(await servicoUsuario.TokenRecuperacaoSenhaEstaValido(token));
-    }
+        [HttpGet("valida-token-recuperacao-senha/{token}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidarTokenRecuperacaoSenha casoDeUsoUsuarioValidarTokenRecuperacaoSenha)
+        {
+            return Ok(await casoDeUsoUsuarioValidarTokenRecuperacaoSenha.Executar(token));
+        }
 
-    [HttpPut("recuperar-senha")]
-    [ProducesResponseType(typeof(UsuarioPerfisRetornoDTO), 200)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
-    [AllowAnonymous]
-    public async Task<IActionResult> RecuperarSenha([FromBody] RecuperacaoSenhaDto recuperacaoSenhaDto, [FromServices] IServicoUsuario servicoUsuario)
-    {
-        return Ok(await servicoUsuario.AlterarSenhaComTokenRecuperacao(recuperacaoSenhaDto));
-    }
+        [HttpPut("recuperar-senha")]
+        [ProducesResponseType(typeof(UsuarioPerfisRetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> RecuperarSenha([FromBody] RecuperacaoSenhaDto recuperacaoSenhaDto, [FromServices] ICasoDeUsoUsuarioRecuperarSenha casoDeUsoUsuarioRecuperarSenha)
+        {
+            return Ok(await casoDeUsoUsuarioRecuperarSenha.Executar(recuperacaoSenhaDto));
+        }
 
-    [HttpGet("{login}")]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
-    [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
-    [Authorize("Bearer")]
-    public async Task<IActionResult> MeusDados([FromRoute] string login, [FromServices] ICasoDeUsoUsuarioMeusDados casoDeUsoUsuarioMeusDados)
-    {
-        return Ok(await casoDeUsoUsuarioMeusDados.Executar(login));
-    }
+        [HttpGet("{login}")]
+        [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> MeusDados([FromRoute] string login, [FromServices] ICasoDeUsoUsuarioMeusDados casoDeUsoUsuarioMeusDados)
+        {
+            return Ok(await casoDeUsoUsuarioMeusDados.Executar(login));
+        }
 
-    [HttpPut("{login}/senha")]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
-    [ProducesResponseType(typeof(bool), 200)]
-    [Authorize("Bearer")]
-    public async Task<IActionResult> AlterarSenha([FromRoute] string login, [FromBody] AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarSenha casoDeUsoUsuarioAlterarSenha)
-    {
-        return Ok(await casoDeUsoUsuarioAlterarSenha.Executar(login, alterarSenhaUsuarioDto));
-    }
+        [HttpPut("{login}/senha")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> AlterarSenha([FromRoute] string login, [FromBody] AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarSenha casoDeUsoUsuarioAlterarSenha)
+        {
+            return Ok(await casoDeUsoUsuarioAlterarSenha.Executar(login, alterarSenhaUsuarioDto));
+        }
 
-    [HttpPut("{login}/email")]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-    [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
-    [ProducesResponseType(typeof(bool), 200)]
-    [Authorize("Bearer")]
-    public async Task<IActionResult> AlterarEmail([FromRoute] string login, [FromBody] EmailUsuarioDTO emailUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarEmail casoDeUsoUsuarioAlterarEmail)
-    {
-        return Ok(await casoDeUsoUsuarioAlterarEmail.Executar(login, emailUsuarioDto.Email));
+        [HttpPut("{login}/email")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> AlterarEmail([FromRoute] string login, [FromBody] EmailUsuarioDTO emailUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarEmail casoDeUsoUsuarioAlterarEmail)
+        {
+            return Ok(await casoDeUsoUsuarioAlterarEmail.Executar(login, emailUsuarioDto.Email));
+        }
     }
 }

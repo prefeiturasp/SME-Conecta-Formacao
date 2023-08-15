@@ -51,9 +51,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.Usuario.Mocks
             var letraMinuscula = random.Char('a', 'z').ToString();
             var letraMaiuscula = random.Char('A', 'Z').ToString();
             var numero = random.Char('0', '9').ToString();
-            
+
             var aleatorio = random.String2(minimo - 3);
-            var aleatorio2 = random.String2(random.Number(0, maximo - minimo)); 
+            var aleatorio2 = random.String2(random.Number(0, maximo - minimo));
 
             var chars = (letraMaiuscula + letraMinuscula + numero + aleatorio + aleatorio2).ToArray();
             var shuffledChars = random.Shuffle(chars).ToArray();

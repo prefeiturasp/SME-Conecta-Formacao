@@ -1,0 +1,20 @@
+﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.TesteIntegracao.Usuario.Mocks;
+
+namespace SME.ConectaFormacao.TesteIntegracao.Usuario.ServicosFakes
+{
+    public class VincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFake : IRequestHandler<VincularPerfilExternoCoreSSOServicoAcessosCommand, bool>
+    {
+        public Task<bool> Handle(VincularPerfilExternoCoreSSOServicoAcessosCommand request, CancellationToken cancellationToken)
+        {
+            var perfilUsuario = UsuarioRecuperarSenhaMock.UsuarioPerfisRetornoDTOValido.PerfilUsuario ?? new List<PerfilUsuarioDTO>();
+            perfilUsuario.Add(new PerfilUsuarioDTO(request.PerfilId, PerfilAutomatico.PERFIL_CURSISTA_DESCRICAO));
+
+            UsuarioRecuperarSenhaMock.UsuarioPerfisRetornoDTOValido.PerfilUsuario = perfilUsuario;
+            return Task.FromResult(true);
+        }
+    }
+}

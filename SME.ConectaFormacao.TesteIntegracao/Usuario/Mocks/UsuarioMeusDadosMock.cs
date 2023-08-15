@@ -6,11 +6,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.Usuario.Mocks
 {
     public class UsuarioMeusDadosMock
     {
-        public static string Login;
+        public static string Login { get; set; }
 
-        public static string LoginNaoEncontrado;
+        public static string LoginNaoEncontrado { get; set; }
 
-        public static DadosUsuarioDTO DadosUsuarioDTO;
+        public static DadosUsuarioDTO DadosUsuarioDTO { get; set; }
 
         public static void Montar()
         {

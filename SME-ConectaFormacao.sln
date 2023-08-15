@@ -15,7 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.ConectaFormacao.Infra.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.ConectaFormacao.Aplicacao", "SME.ConectaFormacao.Aplicacao\SME.ConectaFormacao.Aplicacao.csproj", "{E2E23399-B583-4F85-AC6F-3DAC016BC63A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.ConectaFormacao.TesteIntegracao", "SME.ConectaFormacao.TesteIntegracao\SME.ConectaFormacao.TesteIntegracao.csproj", "{0A8AC8A4-CCCB-41C1-8E63-DA6C01870FA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.ConectaFormacao.TesteIntegracao", "SME.ConectaFormacao.TesteIntegracao\SME.ConectaFormacao.TesteIntegracao.csproj", "{0A8AC8A4-CCCB-41C1-8E63-DA6C01870FA3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3B996AD4-62BF-4BA4-976D-01C4C26CA458}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testes", "testes", "{085C79CC-4DEB-42E1-93A5-D85858E8F5E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +58,15 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{117FFFA0-C476-4429-9FA2-081D93C42ECC} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
+		{AC6B6AF9-25FB-48B9-9EEA-7B88AAA82877} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
+		{F0EA26AF-DC8B-4CF0-8951-4E4122D539CC} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
+		{1CFCD45F-F500-44AC-A921-39256A58FA76} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
+		{4971B2FA-69C3-482E-9907-71F81D882AEA} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
+		{E2E23399-B583-4F85-AC6F-3DAC016BC63A} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
+		{0A8AC8A4-CCCB-41C1-8E63-DA6C01870FA3} = {085C79CC-4DEB-42E1-93A5-D85858E8F5E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C8BFE3B-BC28-4781-A67F-86F9898E68E7}

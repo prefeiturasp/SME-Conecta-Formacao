@@ -4,11 +4,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.Usuario.Mocks
 {
     public class UsuarioAlterarEmailMock
     {
-        public static string Login;
+        public static string Login { get; set; }
 
-        public static string EmailValido;
+        public static string EmailValido { get; set; }
 
-        public static string EmailInvalido;
+        public static string EmailInvalido { get; set; }
 
         public static void Montar()
         {
