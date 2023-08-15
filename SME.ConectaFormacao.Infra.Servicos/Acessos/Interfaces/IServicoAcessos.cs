@@ -12,6 +12,6 @@
         Task<bool> AlterarEmail(string login, string email);
         Task<string> SolicitarRecuperacaoSenha(string login);
         Task<bool> TokenRecuperacaoSenhaEstaValido(Guid token);
-        Task<string> AlterarSenhaComTokenRecuperacao(AcessosRecuperacaoSenha recuperacaoSenhaDto);
+        Task<string> AlterarSenhaComTokenRecuperacao(Guid token, string novaSenha);
     }
 }

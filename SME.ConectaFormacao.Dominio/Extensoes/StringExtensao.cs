@@ -17,5 +17,11 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
             return Convert.ToUInt64(valor).ToString(mascara);
         }
+
+        public static string TratarEmail(this string email)
+        {
+            var inicioServidor = email.LastIndexOf('@');
+            return string.Concat(email.AsSpan(0, 3), new string('*', inicioServidor - 3), email.AsSpan(inicioServidor));
+        }
     }
 }

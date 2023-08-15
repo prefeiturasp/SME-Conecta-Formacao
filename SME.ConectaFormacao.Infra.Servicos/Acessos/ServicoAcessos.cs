@@ -108,10 +108,16 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
         {
             var resposta = await _httpClient.GetAsync($"v1/usuarios/{login}/sistemas/{_servicoAcessosOptions.CodigoSistema}/recuperar-senha");
 
-            if (!resposta.IsSuccessStatusCode) return string.Empty;
-
-            var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<string>();
+            if (resposta.IsSuccessStatusCode)
+            {
+                var json = await resposta.Content.ReadAsStringAsync();
+                return json.JsonParaObjeto<string>();
+            }
+            else
+            {
+                var json = await resposta.Content.ReadAsStringAsync();
+                throw new NegocioException(json);
+            }
         }
 
         public async Task<bool> TokenRecuperacaoSenhaEstaValido(Guid token)
@@ -124,12 +130,16 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             return json.JsonParaObjeto<bool>();
         }
 
-        public async Task<string> AlterarSenhaComTokenRecuperacao(AcessosRecuperacaoSenha recuperacaoSenhaDto)
+        public async Task<string> AlterarSenhaComTokenRecuperacao(Guid token, string novaSenha)
         {
-            var parametros = new { token = recuperacaoSenhaDto.Token, senha = recuperacaoSenhaDto.NovaSenha }.ObjetoParaJson();
+            var parametros = new { token, senha = novaSenha }.ObjetoParaJson();
             var resposta = await _httpClient.PutAsync($"v1/usuarios/sistemas/{_servicoAcessosOptions.CodigoSistema}/senha", new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
-            if (!resposta.IsSuccessStatusCode) return string.Empty;
+            if (!resposta.IsSuccessStatusCode)
+            {
+                var mensagem = await resposta.Content.ReadAsStringAsync();
+                throw new ArgumentNullException(mensagem);
+            }
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<string>();
