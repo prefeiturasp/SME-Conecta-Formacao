@@ -25,8 +25,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.Usuario
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<AlterarEmailServicoAcessosCommand, bool>), typeof(AlterarEmailServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
         }
 
-        [Fact(DisplayName = "Usuário - Deve retornar excessão ao alterar com email inválido")]
-        public async Task Deve_retornar_excessao_ao_alterar_com_email_invalido()
+        [Fact(DisplayName = "Usuário - Deve retornar exceção ao alterar com email inválido")]
+        public async Task Deve_retornar_excecao_ao_alterar_com_email_invalido()
         {
             // arrange
             var login = UsuarioAlterarEmailMock.Login;
@@ -35,12 +35,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.Usuario
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioAlterarEmail>();
 
             // act
-            var excessao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(login, emailInvalido));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(login, emailInvalido));
 
             // assert
-            excessao.ShouldNotBeNull();
-            excessao.StatusCode.ShouldBe(400);
-            excessao.Mensagens.Contains("Email inválido");
+            excecao.ShouldNotBeNull();
+            excecao.StatusCode.ShouldBe(400);
+            excecao.Mensagens.Contains("Email inválido");
         }
 
         [Fact(DisplayName = "Usuário - Deve alterar o email do usuário")]

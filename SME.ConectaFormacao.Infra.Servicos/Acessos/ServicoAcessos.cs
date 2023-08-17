@@ -110,13 +110,13 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
             if (resposta.IsSuccessStatusCode)
             {
-                var json = await resposta.Content.ReadAsStringAsync();
-                return json.JsonParaObjeto<string>();
+                var mensagem = await resposta.Content.ReadAsStringAsync();
+                return mensagem.JsonParaObjeto<string>();
             }
             else
             {
-                var json = await resposta.Content.ReadAsStringAsync();
-                throw new NegocioException(json);
+                var mensagem = await resposta.Content.ReadAsStringAsync();
+                throw new NegocioException(mensagem.JsonParaObjeto<string>());
             }
         }
 
@@ -137,12 +137,14 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
             if (!resposta.IsSuccessStatusCode)
             {
-                var mensagem = await resposta.Content.ReadAsStringAsync();
-                throw new ArgumentNullException(mensagem);
+                var json = await resposta.Content.ReadAsStringAsync();
+                return json.JsonParaObjeto<string>();
             }
-
-            var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<string>();
+            else
+            {
+                var mensagem = await resposta.Content.ReadAsStringAsync();
+                throw new NegocioException(mensagem.JsonParaObjeto<string>());
+            }
         }
     }
 }
