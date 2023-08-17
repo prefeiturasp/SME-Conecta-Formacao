@@ -37,20 +37,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.Usuario
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<VincularPerfilExternoCoreSSOServicoAcessosCommand, bool>), typeof(VincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
         }
 
-        [Fact(DisplayName = "Usuário - Deve retornar excessão ao solicitar recuperãção de senha com login do usuário inválido")]
-        public async Task Deve_retornar_excessao_quando_usuario_nao_encontrado()
+        [Fact(DisplayName = "Usuário - Deve retornar exceção ao solicitar recuperãção de senha com login do usuário inválido")]
+        public async Task Deve_retornar_excecao_quando_usuario_nao_encontrado()
         {
             // arrange
             var loginInvalido = UsuarioRecuperarSenhaMock.LoginInvalido;
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioSolicitarRecuperacaoSenha>();
 
             // act
-            var excessao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(loginInvalido));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(loginInvalido));
 
             // assert
-            excessao.ShouldNotBeNull();
-            excessao.StatusCode.ShouldBe(400);
-            excessao.Mensagens.Contains(MensagemNegocio.LOGIN_NAO_ENCONTRADO);
+            excecao.ShouldNotBeNull();
+            excecao.StatusCode.ShouldBe(400);
+            excecao.Mensagens.Contains(MensagemNegocio.LOGIN_NAO_ENCONTRADO);
         }
 
         [Fact(DisplayName = "Usuário - Deve retornar orientação ao solicitar recuperação de senha com login do usuário válido")]
