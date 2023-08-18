@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Autenticacao.ServicosFakes
     {
         public Task<UsuarioAutenticacaoRetornoDTO> Handle(ObterUsuarioServicoAcessosPorLoginSenhaQuery request, CancellationToken cancellationToken)
         {
-            if (request.Login == AutenticacaoMock.AutenticacaoUsuarioDTOValido.Login)
+            if (request.Login == AutenticacaoMock.AutenticacaoUsuarioDTOValido.Login && AutenticacaoMock.AutenticacaoUsuarioDTOValido.Senha == request.Senha)
             {
                 return Task.FromResult(AutenticacaoMock.UsuarioAutenticacaoRetornoDTOValido);
             }

@@ -20,11 +20,11 @@ namespace SME.ConectaFormacao.Aplicacao
         public VincularPerfilExternoCoreSSOServicoAcessosCommandValidator()
         {
             RuleFor(x => x.Login)
-                .Empty()
+                .NotEmpty()
                 .WithMessage("É nescessário informar o login para vincular o perfil no coreSSO");
 
             RuleFor(x => x.PerfilId)
-                .Empty()
+                .NotEmpty()
                 .WithMessage("É nescessário informar o id do perfil para vincular no coreSSO");
         }
     }

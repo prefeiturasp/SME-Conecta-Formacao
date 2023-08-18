@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var resposta = await _httpClient.PostAsync($"v1/autenticacao/autenticar", new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode)
-                throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, (int)resposta.StatusCode);
+                throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<AcessosUsuarioAutenticacaoRetorno>();
@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var resposta = await _httpClient.GetAsync($"v1/autenticacao/usuarios/{login}/sistemas/{_servicoAcessosOptions.CodigoSistema}/perfis");
 
             if (!resposta.IsSuccessStatusCode)
-                throw new NegocioException(MensagemNegocio.PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN, (int)resposta.StatusCode);
+                throw new NegocioException(MensagemNegocio.PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<AcessosPerfisUsuarioRetorno>();
@@ -108,10 +108,16 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
         {
             var resposta = await _httpClient.GetAsync($"v1/usuarios/{login}/sistemas/{_servicoAcessosOptions.CodigoSistema}/recuperar-senha");
 
-            if (!resposta.IsSuccessStatusCode) return string.Empty;
-
-            var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<string>();
+            if (resposta.IsSuccessStatusCode)
+            {
+                var mensagem = await resposta.Content.ReadAsStringAsync();
+                return mensagem.JsonParaObjeto<string>();
+            }
+            else
+            {
+                var mensagem = await resposta.Content.ReadAsStringAsync();
+                throw new NegocioException(mensagem.JsonParaObjeto<string>());
+            }
         }
 
         public async Task<bool> TokenRecuperacaoSenhaEstaValido(Guid token)
@@ -124,15 +130,21 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             return json.JsonParaObjeto<bool>();
         }
 
-        public async Task<string> AlterarSenhaComTokenRecuperacao(AcessosRecuperacaoSenha recuperacaoSenhaDto)
+        public async Task<string> AlterarSenhaComTokenRecuperacao(Guid token, string novaSenha)
         {
-            var parametros = new { token = recuperacaoSenhaDto.Token, senha = recuperacaoSenhaDto.NovaSenha }.ObjetoParaJson();
+            var parametros = new { token, senha = novaSenha }.ObjetoParaJson();
             var resposta = await _httpClient.PutAsync($"v1/usuarios/sistemas/{_servicoAcessosOptions.CodigoSistema}/senha", new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
-            if (!resposta.IsSuccessStatusCode) return string.Empty;
-
-            var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<string>();
+            if (resposta.IsSuccessStatusCode)
+            {
+                var json = await resposta.Content.ReadAsStringAsync();
+                return json.JsonParaObjeto<string>();
+            }
+            else
+            {
+                var mensagem = await resposta.Content.ReadAsStringAsync();
+                throw new NegocioException(mensagem.JsonParaObjeto<string>());
+            }
         }
     }
 }

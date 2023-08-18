@@ -8,6 +8,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
         {
             PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
