@@ -135,7 +135,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var parametros = new { token, senha = novaSenha }.ObjetoParaJson();
             var resposta = await _httpClient.PutAsync($"v1/usuarios/sistemas/{_servicoAcessosOptions.CodigoSistema}/senha", new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
-            if (!resposta.IsSuccessStatusCode)
+            if (resposta.IsSuccessStatusCode)
             {
                 var json = await resposta.Content.ReadAsStringAsync();
                 return json.JsonParaObjeto<string>();
