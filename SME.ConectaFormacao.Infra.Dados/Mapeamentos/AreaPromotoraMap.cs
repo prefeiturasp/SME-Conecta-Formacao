@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             ToTable("area_promotora");
             Map(c => c.Nome).ToColumn("nome");
             Map(c => c.Email).ToColumn("email");
-            Map(c => c.PerfilId).ToColumn("perfil_id");
+            Map(c => c.GrupoId).ToColumn("grupo_id");
         }
     }
 }
