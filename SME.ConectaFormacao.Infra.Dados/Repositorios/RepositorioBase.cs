@@ -38,11 +38,13 @@ public abstract class RepositorioBase<TEntidade> : IRepositorioBase<TEntidade>
 
     public async Task Remover(TEntidade entidade)
     {
-        throw new NotImplementedException();
+        entidade.Excluido = true;
+        await Atualizar(entidade);
     }
 
     public async Task Remover(long id)
     {
-        throw new NotImplementedException();
+        TEntidade entidade = await ObterPorId(id);
+        await Remover(entidade);
     }
 }
