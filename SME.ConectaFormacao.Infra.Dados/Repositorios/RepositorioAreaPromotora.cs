@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             string query = MontarQueryListagem(nome, tipo);
 
-            if(!string.IsNullOrEmpty(nome))
+            if (!string.IsNullOrEmpty(nome))
                 nome = "%" + nome + "%";
 
             query += " order by nome";
@@ -43,7 +43,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (tipo.GetValueOrDefault() > 0)
                 query += " and tipo = @tipo";
-            
+
             return query;
         }
     }

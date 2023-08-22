@@ -1,5 +1,4 @@
 ﻿using Shouldly;
-using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.TesteIntegracao.AreaPromotora.Mock;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
