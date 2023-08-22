@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS public.area_promotora (
 	tipo smallint NULL,
 	email varchar(100) NULL,
 	grupo_id uuid NULL,
-	situacao smallint NOT NULL,
 	excluido boolean NOT NULL,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,

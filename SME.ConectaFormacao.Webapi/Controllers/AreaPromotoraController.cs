@@ -13,9 +13,20 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> ObterGrupos([FromServices] ICasoDeUsoObterTiposAreaPromotora casoDeUsoObterTiposAreaPromotora)
+        public async Task<IActionResult> ObterTiposAreaPromotora([FromServices] ICasoDeUsoObterTiposAreaPromotora casoDeUsoObterTiposAreaPromotora)
         {
             return Ok(await casoDeUsoObterTiposAreaPromotora.Executar());
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<AreaPromotoraPaginadaDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterAreaPromotoraPaginada([FromServices] ICasoDeUsoObterAreaPromotoraPaginada casoDeUsoObterAreaPromotoraPaginada,
+            [FromQuery] FiltrosAreaPromotoraDTO filtrosAreaPromotoraDTO)
+        {
+            return Ok(await casoDeUsoObterAreaPromotoraPaginada.Executar(filtrosAreaPromotoraDTO));
         }
     }
 }
