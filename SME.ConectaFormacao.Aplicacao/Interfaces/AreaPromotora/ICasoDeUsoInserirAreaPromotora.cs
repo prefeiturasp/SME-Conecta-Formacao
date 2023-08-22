@@ -2,8 +2,8 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora
 {
-    public interface ICasoDeUsoObterTiposAreaPromotora
+    public interface ICasoDeUsoInserirAreaPromotora
     {
-        Task<IEnumerable<AreaPromotoraTipoDTO>> Executar();
+        Task<long> Executar(InserirAreaPromotoraDTO inserirAreaPromotoraDTO);
     }
 }

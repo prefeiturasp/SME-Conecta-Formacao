@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Dtos
+﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora
 {
     public class AreaPromotoraPaginadaDTO
     {

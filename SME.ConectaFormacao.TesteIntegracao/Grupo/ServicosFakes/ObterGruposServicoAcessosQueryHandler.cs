@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
 using SME.ConectaFormacao.TesteIntegracao.Grupo.Mocks;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Grupo.ServicosFakes

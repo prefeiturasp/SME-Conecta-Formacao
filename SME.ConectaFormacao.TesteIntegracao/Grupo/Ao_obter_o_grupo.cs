@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
 using SME.ConectaFormacao.TesteIntegracao.Grupo.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Grupo.ServicosFakes;
@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Grupo
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGruposServicoAcessosQuery, IEnumerable<GrupoDTO>>), typeof(ObterGruposServicoAcessosQueryHandlerFake), ServiceLifetime.Scoped));
         }
 
-        [Fact(DisplayName = "Grupo - Deve retornar os grupos do sistema")]
+        [Fact(DisplayName = "Deve retornar os grupos do sistema")]
         public async Task Deve_retornar_os_grupos_do_sistema()
         {
             // arrange

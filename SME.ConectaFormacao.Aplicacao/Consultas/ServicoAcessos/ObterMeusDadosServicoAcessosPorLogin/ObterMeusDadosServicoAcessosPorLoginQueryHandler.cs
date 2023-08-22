@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao

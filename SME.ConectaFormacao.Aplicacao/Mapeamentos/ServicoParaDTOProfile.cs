@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Aplicacao.Dtos.Autenticacao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
+using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Acessos;
 

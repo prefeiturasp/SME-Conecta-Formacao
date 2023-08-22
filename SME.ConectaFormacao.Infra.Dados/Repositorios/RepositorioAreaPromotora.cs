@@ -1,7 +1,10 @@
 ﻿using Dapper;
+using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Data;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -45,6 +48,27 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query += " and tipo = @tipo";
 
             return query;
+        }
+
+        public async Task<long> Inserir(IDbTransaction transacao, AreaPromotora areaPromotora)
+        {
+            areaPromotora.CriadoEm = DateTimeExtension.HorarioBrasilia();
+            areaPromotora.CriadoPor = contexto.NomeUsuario;
+            areaPromotora.CriadoLogin = contexto.UsuarioLogado;
+            areaPromotora.Id = (long)await conexao.Obter().InsertAsync(areaPromotora, transacao);
+            return areaPromotora.Id;
+        }
+
+        public async Task InserirTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones)
+        {
+            foreach (var telefone in telefones)
+            {
+                telefone.CriadoEm = DateTimeExtension.HorarioBrasilia();
+                telefone.CriadoPor = contexto.NomeUsuario;
+                telefone.CriadoLogin = contexto.UsuarioLogado;
+                telefone.AreaPromotoraId = id;
+                telefone.Id = (long)await conexao.Obter().InsertAsync(telefone, transacao);
+            }
         }
     }
 }

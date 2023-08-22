@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Aplicacao.Dtos.Autenticacao;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
