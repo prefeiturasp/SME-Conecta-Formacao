@@ -4,9 +4,9 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 {
     public enum AreaPromotoraTipo
     {
-        [Display(Description = "Rede Direta")]
+        [Display(Name = "Rede Direta")]
         RedeDireta = 1,
-        [Display(Description = "Rede Parceira")]
+        [Display(Name = "Rede Parceira")]
         RedeParceira = 2
     }
 }
