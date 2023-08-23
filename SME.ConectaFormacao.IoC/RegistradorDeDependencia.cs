@@ -144,6 +144,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraPaginada, CasoDeUsoObterAreaPromotoraPaginada>();
         _serviceCollection.TryAddScoped<ICasoDeUsoInserirAreaPromotora, CasoDeUsoInserirAreaPromotora>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAlterarAreaPromotora, CasoDeUsoAlterarAreaPromotora>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRemoverAreaPromotora, CasoDeUsoRemoverAreaPromotora>();
     }
 
     protected virtual void RegistrarHttpClients()

@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (usuarioPerfisRetornoDto == null)
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, HttpStatusCode.Unauthorized);
 
-            usuarioPerfisRetornoDto = await ValidarPerfisAutomaticos(usuarioPerfisRetornoDto);
+            await ValidarPerfisAutomaticos(usuarioPerfisRetornoDto);
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(usuarioPerfisRetornoDto.UsuarioLogin)) ??
                 new Dominio.Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome);
@@ -33,17 +33,15 @@ namespace SME.ConectaFormacao.Aplicacao
             return usuarioPerfisRetornoDto;
         }
 
-        private async Task<UsuarioPerfisRetornoDTO> ValidarPerfisAutomaticos(UsuarioPerfisRetornoDTO usuarioPerfisRetornoDto)
+        private async Task ValidarPerfisAutomaticos(UsuarioPerfisRetornoDTO usuarioPerfisRetornoDto)
         {
             var perfilCursista = new Guid(PerfilAutomatico.PERFIL_CURSISTA_GUID);
             if (usuarioPerfisRetornoDto.PerfilUsuario == null || !usuarioPerfisRetornoDto.PerfilUsuario.Any(t => t.Perfil == perfilCursista))
             {
                 await mediator.Send(new VincularPerfilExternoCoreSSOServicoAcessosCommand(usuarioPerfisRetornoDto.UsuarioLogin, perfilCursista));
 
-                return await mediator.Send(new ObterPerfisUsuarioServicoAcessosPorLoginQuery(usuarioPerfisRetornoDto.UsuarioLogin));
+                usuarioPerfisRetornoDto = await mediator.Send(new ObterPerfisUsuarioServicoAcessosPorLoginQuery(usuarioPerfisRetornoDto.UsuarioLogin));
             }
-
-            return usuarioPerfisRetornoDto;
         }
     }
 }
