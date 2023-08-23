@@ -13,18 +13,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
     {
         public Ao_inserir_area_promotora(CollectionFixture collectionFixture) : base(collectionFixture)
         {
-            AreaPromotoraInserirMock.Montar();
         }
 
         [Fact(DisplayName = "Área promotora - Deve inserir área promotora válida")]
         public async Task Deve_inserir_area_promotora_valida()
         {
             // arrange 
-            var inserirAreaPromotoraDTO = AreaPromotoraInserirMock.InserirAreaPromotoraDTOValido;
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirAreaPromotora>();
 
             // act
-            var id = await casoDeUso.Executar(inserirAreaPromotoraDTO);
+            var id = await casoDeUso.Executar(areaPromotoraDTO);
 
             // assert
             id.ShouldBeGreaterThan(0);
@@ -32,10 +31,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
             var areaPromotora = ObterPorId<Dominio.Entidades.AreaPromotora, long>(id);
             areaPromotora.ShouldNotBeNull();
 
-            areaPromotora.Nome.ShouldBe(inserirAreaPromotoraDTO.Nome);
-            areaPromotora.Email.ShouldBe(inserirAreaPromotoraDTO.Email);
-            areaPromotora.Tipo.ShouldBe(inserirAreaPromotoraDTO.Tipo);
-            areaPromotora.GrupoId.ShouldBe(inserirAreaPromotoraDTO.GrupoId);
+            areaPromotora.Nome.ShouldBe(areaPromotoraDTO.Nome);
+            areaPromotora.Email.ShouldBe(areaPromotoraDTO.Email);
+            areaPromotora.Tipo.ShouldBe(areaPromotoraDTO.Tipo);
+            areaPromotora.GrupoId.ShouldBe(areaPromotoraDTO.GrupoId);
 
             var telefones = ObterTodos<AreaPromotoraTelefone>();
             telefones.ShouldNotBeNull();
@@ -44,8 +43,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
             {
                 telefone.AreaPromotoraId.ShouldBe(id);
 
-                var inserirAreaPromotoraTelefoneDTO = inserirAreaPromotoraDTO.Telefones.FirstOrDefault(t => t.Telefone.SomenteNumeros() == telefone.Telefone);
-                inserirAreaPromotoraTelefoneDTO.ShouldNotBeNull();
+                var areaPromotoraTelefoneDTO = areaPromotoraDTO.Telefones.FirstOrDefault(t => t.Telefone.SomenteNumeros() == telefone.Telefone);
+                areaPromotoraTelefoneDTO.ShouldNotBeNull();
             }
         }
 
@@ -53,11 +52,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
         public async Task Deve_retornar_excecoes_preenchimento_invalido_ao_inserir()
         {
             // arrange 
-            var inserirAreaPromotoraDTO = AreaPromotoraInserirMock.InserirAreaPromotoraDTOInvalido;
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOInvalido();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirAreaPromotora>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(() => casoDeUso.Executar(inserirAreaPromotoraDTO));
+            var excecao = await Should.ThrowAsync<NegocioException>(() => casoDeUso.Executar(areaPromotoraDTO));
 
             // assert
             excecao.ShouldNotBeNull();

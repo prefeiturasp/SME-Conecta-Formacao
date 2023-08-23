@@ -4,23 +4,25 @@ using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class InserirAreaPromotoraCommand : IRequest<long>
+    public class AlterarAreaPromotoraCommand : IRequest<bool>
     {
-        public InserirAreaPromotoraCommand(AreaPromotoraDTO areaPromotoraDTO)
+        public AlterarAreaPromotoraCommand(long id, AreaPromotoraDTO areaPromotoraDTO)
         {
+            Id = id;
             AreaPromotoraDTO = areaPromotoraDTO;
         }
 
+        public long Id { get; }
         public AreaPromotoraDTO AreaPromotoraDTO { get; }
     }
 
-    public class InserirAreaPromotoraCommandValidator : AbstractValidator<InserirAreaPromotoraCommand>
+    public class AlterarAreaPromotoraCommandValidator : AbstractValidator<AlterarAreaPromotoraCommand>
     {
-        public InserirAreaPromotoraCommandValidator()
+        public AlterarAreaPromotoraCommandValidator()
         {
             RuleFor(x => x.AreaPromotoraDTO.Nome)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o nome para inserir a área promotora");
+                .WithMessage("É nescessário informar o nome para alterar a área promotora");
 
             RuleFor(x => x.AreaPromotoraDTO.Nome)
                 .MaximumLength(50)
@@ -28,11 +30,11 @@ namespace SME.ConectaFormacao.Aplicacao
 
             RuleFor(x => x.AreaPromotoraDTO.GrupoId)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o perfil para inserir a área promotora");
+                .WithMessage("É nescessário informar o perfil para alterar a área promotora");
 
             RuleFor(x => x.AreaPromotoraDTO.Email)
                 .EmailAddress()
-                .WithMessage("É nescessário informar um email válido para inserir a área promotora");
+                .WithMessage("É nescessário informar um email válido para alterar a área promotora");
         }
     }
 }

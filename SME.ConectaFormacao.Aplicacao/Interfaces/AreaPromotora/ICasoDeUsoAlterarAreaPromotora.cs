@@ -2,8 +2,8 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora
 {
-    public interface ICasoDeUsoInserirAreaPromotora
+    public interface ICasoDeUsoAlterarAreaPromotora
     {
-        Task<long> Executar(AreaPromotoraDTO areaPromotoraDTO);
+        Task<bool> Executar(long id, AreaPromotoraDTO areaPromotoraDTO);
     }
 }

@@ -18,7 +18,7 @@ CREATE index if not exists area_promotora_excluido_idx ON public.area_promotora 
 
 CREATE TABLE IF NOT EXISTS public.area_promotora_telefone (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY( NO MINVALUE NO MAXVALUE NO CYCLE),
-	area_promotora_id int NOT null,
+	area_promotora_id int8 NOT null,
 	telefone varchar(12) NOT null,
 	excluido boolean NOT NULL,
 	criado_em timestamp NOT NULL,

@@ -1,47 +1,21 @@
 ﻿using Bogus;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
-using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora.Mock
 {
     public class AreaPromotoraPaginacaoMock
     {
-        public static IEnumerable<Dominio.Entidades.AreaPromotora> AreasPromotoras { get; set; }
-
-        public static FiltrosAreaPromotoraDTO FiltrosAreaPromotoraDTOValido { get; set; }
-
-        public static FiltrosAreaPromotoraDTO FiltrosAreaPromotoraDTOVazio { get; set; }
-
-        public static FiltrosAreaPromotoraDTO FiltrosAreaPromotoraDTOInvalido { get; set; }
-
-        public static void Montar()
+        public static FiltrosAreaPromotoraDTO GerarFiltrosAreaPromotoraDTOVazio()
         {
-            var faker = new Faker<Dominio.Entidades.AreaPromotora>("pt_BR");
-            faker.RuleFor(x => x.Id, f => f.Random.Number());
-            faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
-            faker.RuleFor(x => x.Tipo, f => f.PickRandom<AreaPromotoraTipo>());
-            faker.RuleFor(x => x.GrupoId, Guid.NewGuid());
-            faker.RuleFor(x => x.Excluido, false);
-            faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.CriadoLogin, f => f.Name.FirstName());
-            AreasPromotoras = faker.Generate(15);
+            return new FiltrosAreaPromotoraDTO();
+        }
 
-            var areaPromotora = AreasPromotoras.FirstOrDefault();
-            FiltrosAreaPromotoraDTOValido = new FiltrosAreaPromotoraDTO()
-            {
-                Nome = areaPromotora.Nome,
-                Tipo = (short)areaPromotora.Tipo
-            };
-
-            FiltrosAreaPromotoraDTOVazio = new FiltrosAreaPromotoraDTO();
-
-            FiltrosAreaPromotoraDTOInvalido = new FiltrosAreaPromotoraDTO()
-            {
-                Nome = FiltrosAreaPromotoraDTOValido.Nome + " invalido",
-                Tipo = FiltrosAreaPromotoraDTOValido.Tipo
-            };
+        public static FiltrosAreaPromotoraDTO GerarFiltrosAreaPromotoraDTOInvalido()
+        {
+            var filtroInvalidoFaker = new Faker<FiltrosAreaPromotoraDTO>();
+            filtroInvalidoFaker.RuleFor(x => x.Nome, f => f.Random.AlphaNumeric(14));
+            filtroInvalidoFaker.RuleFor(x => x.Tipo, f => (short)f.Random.Number(0, 3));
+            return filtroInvalidoFaker.Generate();
         }
     }
 }

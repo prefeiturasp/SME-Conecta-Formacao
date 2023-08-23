@@ -59,6 +59,34 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return areaPromotora.Id;
         }
 
+        public Task<bool> Atualizar(IDbTransaction transacao, AreaPromotora areaPromotora)
+        {
+            areaPromotora.AlteradoEm = DateTimeExtension.HorarioBrasilia();
+            areaPromotora.AlteradoPor = contexto.NomeUsuario;
+            areaPromotora.AlteradoLogin = contexto.UsuarioLogado;
+
+            return conexao.Obter().UpdateAsync(areaPromotora, transacao);
+        }
+
+        public Task<IEnumerable<AreaPromotoraTelefone>> ObterTelefonesPorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            area_promotora_id, 
+                            telefone,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                        	alterado_em,    
+	                        alterado_por,
+	                        criado_login,
+	                        alterado_login
+                        from area_promotora_telefone 
+                        where not excluido and area_promotora_id = @id";
+
+            return conexao.Obter().QueryAsync<AreaPromotoraTelefone>(query, new { id });
+        }
+
         public async Task InserirTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones)
         {
             foreach (var telefone in telefones)
@@ -68,6 +96,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 telefone.CriadoLogin = contexto.UsuarioLogado;
                 telefone.AreaPromotoraId = id;
                 telefone.Id = (long)await conexao.Obter().InsertAsync(telefone, transacao);
+            }
+        }
+
+        public async Task RemoverTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones)
+        {
+            foreach (var telefone in telefones)
+            {
+                telefone.AlteradoEm = DateTimeExtension.HorarioBrasilia();
+                telefone.AlteradoPor = contexto.NomeUsuario;
+                telefone.AlteradoLogin = contexto.UsuarioLogado;
+                telefone.Excluido = true;
+                await conexao.Obter().UpdateAsync(telefone, transacao);
             }
         }
     }

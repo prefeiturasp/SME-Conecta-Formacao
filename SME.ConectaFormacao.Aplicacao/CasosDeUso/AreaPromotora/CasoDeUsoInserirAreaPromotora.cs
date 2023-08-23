@@ -10,9 +10,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora
         {
         }
 
-        public async Task<long> Executar(InserirAreaPromotoraDTO inserirAreaPromotoraDTO)
+        public async Task<long> Executar(AreaPromotoraDTO areaPromotoraDTO)
         {
-            return await mediator.Send(new InserirAreaPromotoraCommand(inserirAreaPromotoraDTO));
+            return await mediator.Send(new InserirAreaPromotoraCommand(areaPromotoraDTO));
         }
     }
 }

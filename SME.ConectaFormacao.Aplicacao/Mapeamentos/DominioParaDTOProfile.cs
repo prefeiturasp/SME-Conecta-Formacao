@@ -12,8 +12,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<AreaPromotora, AreaPromotoraPaginadaDTO>()
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(x => x.Tipo.Nome()));
 
-            CreateMap<InserirAreaPromotoraDTO, AreaPromotora>().ReverseMap();
-            CreateMap<InserirAreaPromotoraTelefoneDTO, AreaPromotoraTelefone>()
+            CreateMap<AreaPromotoraDTO, AreaPromotora>().ReverseMap();
+            CreateMap<AreaPromotoraTelefoneDTO, AreaPromotoraTelefone>()
                 .ForMember(dest => dest.Telefone, opt => opt.MapFrom(x => x.Telefone.SomenteNumeros()))
                 .ReverseMap();
         }

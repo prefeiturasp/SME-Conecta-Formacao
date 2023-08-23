@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(InserirAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
-            var areaPromotora = _mapper.Map<AreaPromotora>(request.InserirAreaPromotoraDTO);
+            var areaPromotora = _mapper.Map<AreaPromotora>(request.AreaPromotoraDTO);
 
             var transacao = _transacao.Iniciar();
             try
