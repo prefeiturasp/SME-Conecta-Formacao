@@ -1,5 +1,6 @@
 ﻿using Bogus;
-using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Aplicacao.Dtos.Autenticacao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Autenticacao.Mocks

@@ -10,16 +10,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
     {
         public Ao_oter_areas_promotoras_paginada(CollectionFixture collectionFixture) : base(collectionFixture)
         {
-            AreaPromotoraPaginacaoMock.Montar();
         }
 
         [Fact(DisplayName = "Área promotora - Deve retornar registros consulta paginada com filtro")]
         public async Task Deve_retornar_registros_com_filtro()
         {
             // arrange
-            await InserirNaBase(AreaPromotoraPaginacaoMock.AreasPromotoras);
+            var areasPromotoras = AreaPromotoraMock.GerarAreaPromotora(15);
+            await InserirNaBase(areasPromotoras);
 
-            var filtro = AreaPromotoraPaginacaoMock.FiltrosAreaPromotoraDTOValido;
+            var filtro = new Aplicacao.Dtos.AreaPromotora.FiltrosAreaPromotoraDTO()
+            {
+                Nome = areasPromotoras.FirstOrDefault().Nome,
+                Tipo = (short)areasPromotoras.FirstOrDefault().Tipo
+            };
+
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterAreaPromotoraPaginada>();
 
             // act
@@ -34,9 +39,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
         public async Task Deve_retornar_registros_sem_filtros()
         {
             // arrange
-            await InserirNaBase(AreaPromotoraPaginacaoMock.AreasPromotoras);
+            var areasPromotoras = AreaPromotoraMock.GerarAreaPromotora(15);
+            await InserirNaBase(areasPromotoras);
 
-            var filtro = AreaPromotoraPaginacaoMock.FiltrosAreaPromotoraDTOVazio;
+            var filtro = AreaPromotoraPaginacaoMock.GerarFiltrosAreaPromotoraDTOVazio();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterAreaPromotoraPaginada>();
 
             // act
@@ -51,9 +57,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
         public async Task Nao_deve_retornar_registros_filtros_invalidos()
         {
             // arrange
-            await InserirNaBase(AreaPromotoraPaginacaoMock.AreasPromotoras);
+            var areasPromotoras = AreaPromotoraMock.GerarAreaPromotora(15);
+            await InserirNaBase(areasPromotoras);
 
-            var filtro = AreaPromotoraPaginacaoMock.FiltrosAreaPromotoraDTOInvalido;
+            var filtro = AreaPromotoraPaginacaoMock.GerarFiltrosAreaPromotoraDTOInvalido();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterAreaPromotoraPaginada>();
 
             // act

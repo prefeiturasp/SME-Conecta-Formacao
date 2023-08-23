@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Dominio.Contexto;
 

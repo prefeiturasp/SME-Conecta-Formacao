@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 

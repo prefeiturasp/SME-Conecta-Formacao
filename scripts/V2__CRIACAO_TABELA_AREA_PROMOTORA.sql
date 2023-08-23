@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS public.area_promotora (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY( NO MINVALUE NO MAXVALUE NO CYCLE),
-	nome varchar(50) NULL,
-	tipo smallint NULL,
+	nome varchar(50) NOT NULL,
+	tipo smallint NOT NULL,
 	email varchar(100) NULL,
-	grupo_id uuid NULL,
+	grupo_id uuid NOT NULL,
 	excluido boolean NOT NULL,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
@@ -18,8 +18,8 @@ CREATE index if not exists area_promotora_excluido_idx ON public.area_promotora 
 
 CREATE TABLE IF NOT EXISTS public.area_promotora_telefone (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY( NO MINVALUE NO MAXVALUE NO CYCLE),
-	area_promotora_id int not null,
-	telefone varchar(12) not null,
+	area_promotora_id int8 NOT null,
+	telefone varchar(12) NOT null,
 	excluido boolean NOT NULL,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
