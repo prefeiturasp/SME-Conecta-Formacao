@@ -9,4 +9,5 @@ public class MensagemNegocio
     public const string LOGIN_OU_SENHA_ATUAL_NAO_COMFEREM = "Usuário ou senha atual não conferem";
     public const string LOGIN_NAO_ENCONTRADO = "Usuário não encontrado";
     public const string ORIENTACOES_RECUPERACAO_SENHA = "As orientações para recuperação de senha foram enviados para {0}, verifique sua caixa de entrada!";
+    public const string AREA_PROMOTORA_NAO_ENCONTRADA = "Área promotora não encontrada";
 }

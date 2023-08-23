@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.DTOS;
+﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 public class UsuarioPerfisRetornoDTO
 {
     public string UsuarioNome { get; set; }
