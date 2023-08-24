@@ -16,11 +16,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
         {
         }
 
-        [Fact(DisplayName = "Área promotora - Deve alterar área promotora válida")]
-        public async Task Deve_alterar_area_promotora_valida()
+        [Fact(DisplayName = "Área promotora - Deve alterar área promotora válida rede parceira com email sem dominio @sme e @edu.sme")]
+        public async Task Deve_alterar_area_promotora_valida_rede_parceira_com_email_sem_dominio_sme()
         {
             // arrange 
-            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido();
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceira);
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
             await InserirNaBase(areaPromotora);
@@ -64,12 +64,79 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
             telefones.Any(t => t.Telefone == areaPromotoraTelefoneManter.Telefone).ShouldBeTrue();
         }
 
+        [Fact(DisplayName = "Área promotora - Deve alterar área promotora válida rede direta com email com dominio @sme e @edu.sme")]
+        public async Task Deve_alterar_area_promotora_valida_rede_parceira_rede_direta_com_email_com_dominio_sme()
+        {
+            // arrange 
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeDireta, "@sme.com.br");
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
+            await InserirNaBase(areaPromotora);
+
+            var areaPromotoraTelefoneExcluir = AreaPromotoraMock.GerarAreaTelefone(areaPromotora.Id);
+            await InserirNaBase(areaPromotoraTelefoneExcluir);
+
+            var areaPromotoraTelefoneManter = AreaPromotoraMock.GerarAreaTelefone(areaPromotora.Id, areaPromotoraDTO.Telefones.FirstOrDefault().Telefone);
+            await InserirNaBase(areaPromotoraTelefoneManter);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarAreaPromotora>();
+
+            // act
+            await casoDeUso.Executar(areaPromotora.Id, areaPromotoraDTO);
+
+            // assert
+            var areaPromotoraRetorno = ObterPorId<Dominio.Entidades.AreaPromotora, long>(areaPromotora.Id);
+            areaPromotoraRetorno.ShouldNotBeNull();
+
+            areaPromotoraRetorno.Nome.ShouldBe(areaPromotoraDTO.Nome);
+            areaPromotoraRetorno.Email.ShouldBe(areaPromotoraDTO.Email);
+            areaPromotoraRetorno.Tipo.ShouldBe(areaPromotoraDTO.Tipo);
+            areaPromotoraRetorno.GrupoId.ShouldBe(areaPromotoraDTO.GrupoId);
+
+            var telefones = ObterTodos<AreaPromotoraTelefone>();
+            telefones.ShouldNotBeNull();
+
+            telefones.Any(t => t.Telefone == areaPromotoraTelefoneExcluir.Telefone && t.Excluido).ShouldBeTrue();
+
+            telefones = telefones.Where(x => !x.Excluido).ToList();
+
+            telefones.Count.ShouldBe(areaPromotoraDTO.Telefones.Count());
+            foreach (var telefone in telefones)
+            {
+                telefone.AreaPromotoraId.ShouldBe(areaPromotora.Id);
+
+                var areaPromotoraTelefoneDTO = areaPromotoraDTO.Telefones.FirstOrDefault(t => t.Telefone.SomenteNumeros() == telefone.Telefone);
+                areaPromotoraTelefoneDTO.ShouldNotBeNull();
+            }
+
+            telefones.Any(t => t.Telefone == areaPromotoraTelefoneManter.Telefone).ShouldBeTrue();
+        }
+
+        [Fact(DisplayName = "Área promotora - Deve retornar exceções ao alterar email informado fora do dominio sme quando tipo for rede direta")]
+        public async Task Deve_retornar_excecoes_area_promotora_tipo_rede_direta_com_email_fora_do_dominio_sme()
+        {
+            // arrange 
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeDireta);
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
+            await InserirNaBase(areaPromotora);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarAreaPromotora>();
+
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(() => casoDeUso.Executar(areaPromotora.Id, areaPromotoraDTO));
+
+            // assert
+            excecao.ShouldNotBeNull();
+            excecao.Mensagens.Contains(MensagemNegocio.AREA_CONHECIMENTO_EMAIL_FORA_DOMINIO_REDE_DIRETA).ShouldBeTrue();
+        }
+
         [Fact(DisplayName = "Área promotora - Deve retornar exceções area promotora não encontrada")]
         public async Task Deve_retornar_excecoes_area_promotora_nao_encontrada()
         {
             // arrange 
             var id = AreaPromotoraSalvarMock.GerarIdAleatorio();
-            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOInvalido();
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceira);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarAreaPromotora>();
 
@@ -78,7 +145,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
 
             // assert
             excecao.ShouldNotBeNull();
-            excecao.Mensagens.Contains(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA);
+            excecao.Mensagens.Contains(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA).ShouldBeTrue();
         }
 
         [Fact(DisplayName = "Área promotora - Deve retornar exceções preenchimento inválido ao retornar")]
@@ -97,9 +164,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
             // assert
             excecao.ShouldNotBeNull();
 
-            excecao.Mensagens.Contains("É nescessário informar o nome para alterar a área promotora");
-            excecao.Mensagens.Contains("É nescessário informar o perfil para alterar a área promotora");
-            excecao.Mensagens.Contains("É nescessário informar um email válido para alterar a área promotora");
+            excecao.Mensagens.Contains("É nescessário informar a área promotora para alterar").ShouldBeTrue();
+            excecao.Mensagens.Contains("É nescessário informar o perfil para alterar a área promotora").ShouldBeTrue();
         }
     }
 }

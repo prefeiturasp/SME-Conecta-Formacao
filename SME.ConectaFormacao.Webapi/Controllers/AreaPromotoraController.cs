@@ -32,6 +32,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterAreaPromotoraPaginada.Executar(filtrosAreaPromotoraDTO));
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(AreaPromotoraCompletoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterAreaPromotoraPorId(
+            [FromServices] ICasoDeUsoObterAreaPromotoraPorId casoDeUsoObterAreaPromotoraPorId,
+            [FromRoute] long id)
+        {
+            return Ok(await casoDeUsoObterAreaPromotoraPorId.Executar(id));
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(long), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -45,7 +57,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Authorize("Bearer")]
@@ -55,6 +67,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromBody] AreaPromotoraDTO areaPromotoraDTO)
         {
             return Ok(await casoDeUsoAlterarAreaPromotora.Executar(id, areaPromotoraDTO));
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> RemoverAreaPromotora(
+            [FromServices] ICasoDeUsoRemoverAreaPromotora casoDeUsoRemoverAreaPromotora,
+            [FromRoute] long id)
+        {
+            return Ok(await casoDeUsoRemoverAreaPromotora.Executar(id));
         }
     }
 }
