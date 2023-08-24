@@ -45,7 +45,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Authorize("Bearer")]
@@ -55,6 +55,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromBody] AreaPromotoraDTO areaPromotoraDTO)
         {
             return Ok(await casoDeUsoAlterarAreaPromotora.Executar(id, areaPromotoraDTO));
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> RemoverAreaPromotora(
+            [FromServices] ICasoDeUsoRemoverAreaPromotora casoDeUsoRemoverAreaPromotora,
+            [FromRoute] long id)
+        {
+            return Ok(await casoDeUsoRemoverAreaPromotora.Executar(id));
         }
     }
 }

@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Net;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -25,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var areaPromotora = await _repositorioAreaPromotora.ObterPorId(request.Id);
             if (areaPromotora == null)
-                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA);
+                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
             areaPromotora.Alterar(
                 request.AreaPromotoraDTO.Nome,

@@ -68,6 +68,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().UpdateAsync(areaPromotora, transacao);
         }
 
+        public Task<bool> Remover(IDbTransaction transacao, AreaPromotora areaPromotora)
+        {
+            areaPromotora.AlteradoEm = DateTimeExtension.HorarioBrasilia();
+            areaPromotora.AlteradoPor = contexto.NomeUsuario;
+            areaPromotora.AlteradoLogin = contexto.UsuarioLogado;
+            areaPromotora.Excluido = true;
+
+            return conexao.Obter().UpdateAsync(areaPromotora, transacao);
+        }
+
         public Task<IEnumerable<AreaPromotoraTelefone>> ObterTelefonesPorId(long id)
         {
             var query = @"select 

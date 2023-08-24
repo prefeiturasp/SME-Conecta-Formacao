@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Grupo
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGruposServicoAcessosQuery, IEnumerable<GrupoDTO>>), typeof(ObterGruposServicoAcessosQueryHandlerFake), ServiceLifetime.Scoped));
         }
 
-        [Fact(DisplayName = "Deve retornar os grupos do sistema")]
+        [Fact(DisplayName = "Grupo - Deve retornar os grupos do sistema")]
         public async Task Deve_retornar_os_grupos_do_sistema()
         {
             // arrange
