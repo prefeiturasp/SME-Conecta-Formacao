@@ -6,12 +6,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora.Mock
 {
     public static class AreaPromotoraSalvarMock
     {
-        public static AreaPromotoraDTO GerarAreaPromotoraDTOValido()
+        public static AreaPromotoraDTO GerarAreaPromotoraDTOValido(AreaPromotoraTipo? areaPromotoraTipo = null, string dominio = null)
         {
             var faker = new Faker<AreaPromotoraDTO>("pt_BR");
             faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
-            faker.RuleFor(x => x.Tipo, f => f.PickRandom<AreaPromotoraTipo>());
-            faker.RuleFor(x => x.Email, f => f.Person.Email);
+            faker.RuleFor(x => x.Tipo, f => areaPromotoraTipo.HasValue ? areaPromotoraTipo : f.PickRandom<AreaPromotoraTipo>());
+            faker.RuleFor(x => x.Email, f => string.IsNullOrEmpty(dominio) ? f.Person.Email : string.Concat(f.Name.FirstName(), dominio));
             faker.RuleFor(x => x.GrupoId, Guid.NewGuid());
             faker.RuleFor(x => x.Telefones, f => f.Make(3, () => new AreaPromotoraTelefoneDTO { Telefone = f.Phone.PhoneNumber("(##) #####-####") }));
             return faker.Generate();
@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora.Mock
 
         public static long GerarIdAleatorio()
         {
-            return new Faker().Random.Number();
+            return new Faker().Random.Long(1);
         }
     }
 }

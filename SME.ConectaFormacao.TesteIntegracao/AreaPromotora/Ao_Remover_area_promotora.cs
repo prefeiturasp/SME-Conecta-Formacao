@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
 
             // assert
             excecao.ShouldNotBeNull();
-            excecao.Mensagens.Contains(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA);
+            excecao.Mensagens.Contains(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA).ShouldBeTrue();
         }
     }
 }
