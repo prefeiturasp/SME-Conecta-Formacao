@@ -87,9 +87,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             excluido,
                             criado_em,
 	                        criado_por,
+                            criado_login,
                         	alterado_em,    
 	                        alterado_por,
-	                        criado_login,
 	                        alterado_login
                         from area_promotora_telefone 
                         where not excluido and area_promotora_id = @id";
