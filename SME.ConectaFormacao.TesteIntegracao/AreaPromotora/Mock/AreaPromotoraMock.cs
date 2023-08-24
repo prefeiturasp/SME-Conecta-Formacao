@@ -17,6 +17,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora.Mock
             faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
             faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.CriadoLogin, f => f.Name.FirstName());
+            faker.RuleFor(x => x.AlteradoPor, f => f.Name.FullName());
+            faker.RuleFor(x => x.AlteradoEm, DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.AlteradoLogin, f => f.Name.FirstName());
             return faker;
         }
 
