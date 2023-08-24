@@ -11,12 +11,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class AlterarAreaPromotoraCommandHandler : IRequestHandler<AlterarAreaPromotoraCommand, bool>
     {
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
 
-        public AlterarAreaPromotoraCommandHandler(IMapper mapper, ITransacao transacao, IRepositorioAreaPromotora repositorioAreaPromotora)
+        public AlterarAreaPromotoraCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioAreaPromotora repositorioAreaPromotora)
         {
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
@@ -24,6 +26,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(AlterarAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
+            await _mediator.Send(new ValidarEmailsAreaPromotoraCommand(request.AreaPromotoraDTO.Email, request.AreaPromotoraDTO.Tipo), cancellationToken);
+
             var areaPromotora = await _repositorioAreaPromotora.ObterPorId(request.Id);
             if (areaPromotora == null)
                 throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, HttpStatusCode.NotFound);

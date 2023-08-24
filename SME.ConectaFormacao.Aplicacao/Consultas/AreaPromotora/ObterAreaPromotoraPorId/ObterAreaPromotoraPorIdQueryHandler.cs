@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<AreaPromotoraCompletoDTO> Handle(ObterAreaPromotoraPorIdQuery request, CancellationToken cancellationToken)
         {
             var areaPromotora = await _repositorioAreaPromotora.ObterPorId(request.Id);
-            if (areaPromotora == null && areaPromotora.Excluido)
+            if (areaPromotora == null || areaPromotora.Excluido)
                 throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
             areaPromotora.Telefones = await _repositorioAreaPromotora.ObterTelefonesPorId(request.Id);

@@ -8,21 +8,25 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class InserirAreaPromotoraCommandHandler : IRequestHandler<InserirAreaPromotoraCommand, long>
     {
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
 
-        public InserirAreaPromotoraCommandHandler(IMapper mapper, ITransacao transacao, IRepositorioAreaPromotora repositorioAreaPromotora)
+        public InserirAreaPromotoraCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioAreaPromotora repositorioAreaPromotora)
         {
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
+
         }
 
         public async Task<long> Handle(InserirAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
-            var areaPromotora = _mapper.Map<AreaPromotora>(request.AreaPromotoraDTO);
+            await _mediator.Send(new ValidarEmailsAreaPromotoraCommand(request.AreaPromotoraDTO.Email, request.AreaPromotoraDTO.Tipo), cancellationToken);
 
+            var areaPromotora = _mapper.Map<AreaPromotora>(request.AreaPromotoraDTO);
             var transacao = _transacao.Iniciar();
             try
             {
