@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS public.criterio_validacao_inscricao (
 
 CREATE index if not exists criterio_validacao_inscricao_excluido_idx ON public.criterio_validacao_inscricao (excluido);
 
-insert into criterio_validacao_inscricao (nome, unico, criado_em, criado_por, criado_login, excluido) values ('Não há critérios para validação das inscrições', true, now(), 'Sistema', 'Sistema', false);
-insert into criterio_validacao_inscricao (nome, unico, criado_em, criado_por, criado_login, excluido) values ('Será priorizada a inscrição de um servidor por Unidade Educacional', false, now(), 'Sistema', 'Sistema', false);
-insert into criterio_validacao_inscricao (nome, unico, criado_em, criado_por, criado_login, excluido) values ('As inscrições serão validadas pela ordem de cadastro no link, considerando as especificações do público-alvo', false, now(), 'Sistema', 'Sistema', false);
-insert into criterio_validacao_inscricao (nome, unico, criado_em, criado_por, criado_login, excluido) values ('Será priorizada a inscrição de quem não realizou a formação em outras edições', false, now(), 'Sistema', 'Sistema', false);
-insert into criterio_validacao_inscricao (nome, unico, criado_em, criado_por, criado_login, excluido) values ('Não terá prioridade o servidor que desistiu de formações anteriores sem justificativa', false, now(), 'Sistema', 'Sistema', false);
+insert into criterio_validacao_inscricao (nome, unico, criado_em, criado_por, criado_login, excluido) values ('NÃ£o hÃ¡ critÃ©rios para validaÃ§Ã£o das inscriÃ§Ãµes', true, now(), 'Sistema', 'Sistema', false);
+insert into criterio_validacao_inscricao (nome, unico, criado_em, criado_por, criado_login, excluido) values ('SerÃ¡ priorizada a inscriÃ§Ã£o de um servidor por Unidade Educacional', false, now(), 'Sistema', 'Sistema', false);
+insert into criterio_validacao_inscricao (nome, unico, criado_em, criado_por, criado_login, excluido) values ('As inscriÃ§Ãµes serÃ£o validadas pela ordem de cadastro no link, considerando as especificaÃ§Ãµes do pÃºblico-alvo', false, now(), 'Sistema', 'Sistema', false);
+insert into criterio_validacao_inscricao (nome, unico, criado_em, criado_por, criado_login, excluido) values ('SerÃ¡ priorizada a inscriÃ§Ã£o de quem nÃ£o realizou a formaÃ§Ã£o em outras ediÃ§Ãµes', false, now(), 'Sistema', 'Sistema', false);
+insert into criterio_validacao_inscricao (nome, unico, criado_em, criado_por, criado_login, excluido) values ('NÃ£o terÃ¡ prioridade o servidor que desistiu de formaÃ§Ãµes anteriores sem justificativa', false, now(), 'Sistema', 'Sistema', false);
