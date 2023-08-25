@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -36,13 +37,13 @@ namespace SME.ConectaFormacao.TesteIntegracao
         {
         }
 
-        public Task InserirNaBase<T>(IEnumerable<T> objetos) where T : class, new()
+        public Task InserirNaBase<T>(IEnumerable<T> objetos) where T : EntidadeBase, new()
         {
             _collectionFixture.Database.Inserir(objetos);
             return Task.CompletedTask;
         }
 
-        public Task InserirNaBase<T>(T objeto) where T : class, new()
+        public Task InserirNaBase<T>(T objeto) where T : EntidadeBase, new()
         {
             _collectionFixture.Database.Inserir(objeto);
             return Task.CompletedTask;

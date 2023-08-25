@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
@@ -6,7 +8,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
     {
         public DominioParaDTOProfile()
         {
-
+            CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
         }
     }
 }

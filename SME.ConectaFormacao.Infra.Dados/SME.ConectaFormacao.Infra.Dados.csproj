@@ -17,8 +17,4 @@
       <PackageReference Include="Npgsql" Version="6.0.9" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Repositorios\Interfaces" />
-    </ItemGroup>
-
 </Project>
