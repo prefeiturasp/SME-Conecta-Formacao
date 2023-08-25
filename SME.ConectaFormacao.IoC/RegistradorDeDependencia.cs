@@ -93,6 +93,7 @@ public class RegistradorDeDependencia
         FluentMapper.Initialize(config =>
         {
             config.AddMap(new UsuarioMap());
+            config.AddMap(new CriterioValidacaoInscricaoMap());
 
             config.ForDommel();
         });
