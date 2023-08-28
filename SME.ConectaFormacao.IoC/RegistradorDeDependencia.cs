@@ -93,6 +93,7 @@ public class RegistradorDeDependencia
         FluentMapper.Initialize(config =>
         {
             config.AddMap(new UsuarioMap());
+            config.AddMap(new CargoFuncaoMap());
 
             config.ForDommel();
         });
@@ -117,6 +118,7 @@ public class RegistradorDeDependencia
     protected virtual void RegistrarRepositorios()
     {
         _serviceCollection.TryAddScoped<IRepositorioUsuario, RepositorioUsuario>();
+        _serviceCollection.TryAddScoped<IRepositorioCargoFuncao, RepositorioCargoFuncao>();
     }
 
     protected virtual void RegistrarCasosDeUso()
