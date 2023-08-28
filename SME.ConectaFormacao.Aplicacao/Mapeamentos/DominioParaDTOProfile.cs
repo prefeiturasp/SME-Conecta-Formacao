@@ -9,6 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
         public DominioParaDTOProfile()
         {
             CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
+            CreateMap<CargoFuncao, CargoFuncaoDTO>();
         }
     }
 }
