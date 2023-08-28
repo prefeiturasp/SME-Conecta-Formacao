@@ -99,6 +99,12 @@ public class RegistradorDeDependencia
             config.AddMap(new RoteiroPropostaFormativaMap());
             config.AddMap(new CargoFuncaoMap());
 
+            config.AddMap(new PropostaMap());
+            config.AddMap(new PropostaPublicoAlvoMap());
+            config.AddMap(new PropostaFuncaoEspecificaMap());
+            config.AddMap(new PropostaCriterioValidacaoInscricaoMap());
+            config.AddMap(new PropostaVagaRemanecenteMap());
+
             config.ForDommel();
         });
     }
@@ -125,6 +131,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioCriterioAvaliacaoInscricao, RepositorioCriterioAvaliacaoInscricao>();
         _serviceCollection.TryAddScoped<IRepositorioRoteiroPropostaFormativa, RepositorioRoteiroPropostaFormativa>();
         _serviceCollection.TryAddScoped<IRepositorioCargoFuncao, RepositorioCargoFuncao>();
+        _serviceCollection.TryAddScoped<IRepositorioProposta, RepositorioProposta>();
     }
 
     protected virtual void RegistrarCasosDeUso()
