@@ -18,6 +18,6 @@
             }
         }
         public int TotalRegistros { get; private set; }
-        public int NumeroRegistros { get; set; }
+        private int NumeroRegistros { get; set; }
     }
 }
