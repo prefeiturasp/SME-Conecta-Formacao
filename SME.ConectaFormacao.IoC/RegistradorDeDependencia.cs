@@ -96,6 +96,7 @@ public class RegistradorDeDependencia
         {
             config.AddMap(new UsuarioMap());
             config.AddMap(new RoteiroPropostaFormativaMap());
+            config.AddMap(new CargoFuncaoMap());
 
             config.ForDommel();
         });
@@ -121,6 +122,7 @@ public class RegistradorDeDependencia
     {
         _serviceCollection.TryAddScoped<IRepositorioUsuario, RepositorioUsuario>();
         _serviceCollection.TryAddScoped<IRepositorioRoteiroPropostaFormativa, RepositorioRoteiroPropostaFormativa>();
+        _serviceCollection.TryAddScoped<IRepositorioCargoFuncao, RepositorioCargoFuncao>();
     }
 
     protected virtual void RegistrarCasosDeUso()
