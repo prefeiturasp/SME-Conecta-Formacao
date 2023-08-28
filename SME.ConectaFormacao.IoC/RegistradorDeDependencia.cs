@@ -95,6 +95,7 @@ public class RegistradorDeDependencia
         FluentMapper.Initialize(config =>
         {
             config.AddMap(new UsuarioMap());
+            config.AddMap(new CriterioValidacaoInscricaoMap());
             config.AddMap(new RoteiroPropostaFormativaMap());
             config.AddMap(new CargoFuncaoMap());
 
@@ -121,6 +122,7 @@ public class RegistradorDeDependencia
     protected virtual void RegistrarRepositorios()
     {
         _serviceCollection.TryAddScoped<IRepositorioUsuario, RepositorioUsuario>();
+        _serviceCollection.TryAddScoped<IRepositorioCriterioAvaliacaoInscricao, RepositorioCriterioAvaliacaoInscricao>();
         _serviceCollection.TryAddScoped<IRepositorioRoteiroPropostaFormativa, RepositorioRoteiroPropostaFormativa>();
         _serviceCollection.TryAddScoped<IRepositorioCargoFuncao, RepositorioCargoFuncao>();
     }
