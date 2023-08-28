@@ -12,6 +12,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
@@ -149,6 +150,7 @@ public class RegistradorDeDependencia
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterCargoFuncao, CasoDeUsoObterCargoFuncao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterCriterioValidacaoInscricao, CasoDeUsoObterCriterioValidacaoInscricao>();
     }
 
     protected virtual void RegistrarHttpClients()

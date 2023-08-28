@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao

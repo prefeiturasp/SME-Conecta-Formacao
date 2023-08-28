@@ -1,6 +1,6 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
 
-namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
+namespace SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao
 {
     public class CargoFuncaoDTO
     {

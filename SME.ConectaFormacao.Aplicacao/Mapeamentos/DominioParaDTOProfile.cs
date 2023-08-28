@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 
@@ -10,6 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
         {
             CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
             CreateMap<CargoFuncao, CargoFuncaoDTO>();
+            CreateMap<CriterioValidacaoInscricao, CriterioValidacaoInscricaoDTO>();
         }
     }
 }

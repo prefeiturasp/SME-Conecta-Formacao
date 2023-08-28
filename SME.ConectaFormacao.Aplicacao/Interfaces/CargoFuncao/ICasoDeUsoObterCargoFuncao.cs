@@ -1,7 +1,7 @@
-﻿using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
-namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
+namespace SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao
 {
     public interface ICasoDeUsoObterCargoFuncao
     {
