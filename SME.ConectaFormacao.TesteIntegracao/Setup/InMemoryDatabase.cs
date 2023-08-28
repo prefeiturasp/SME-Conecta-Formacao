@@ -1,6 +1,7 @@
 using Dommel;
 using Npgsql;
 using Postgres2Go;
+using SME.ConectaFormacao.Dominio;
 using System.Text;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Setup
@@ -30,17 +31,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
             Conexao.Open();
         }
 
-        public void Inserir<T>(IEnumerable<T> objetos) where T : class, new()
+        public void Inserir<T>(IEnumerable<T> objetos) where T : EntidadeBase, new()
         {
             foreach (var objeto in objetos)
             {
-                Conexao.Insert(objeto);
+                objeto.Id = (long)Conexao.Insert(objeto);
             }
         }
 
-        public void Inserir<T>(T objeto) where T : class, new()
+        public void Inserir<T>(T objeto) where T : EntidadeBase, new()
         {
-            Conexao.Insert(objeto);
+            objeto.Id = (long)Conexao.Insert(objeto);
         }
 
         public void Atualizar<T>(T objeto) where T : class, new()
