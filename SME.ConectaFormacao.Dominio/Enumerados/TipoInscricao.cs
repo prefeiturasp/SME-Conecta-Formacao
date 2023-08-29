@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
-    public enum TipoIscricao
+    public enum TipoInscricao
     {
         [Display(Name = "Optativa")]
         Optativa = 1,
