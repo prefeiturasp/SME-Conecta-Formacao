@@ -5,9 +5,9 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterModalidadeQueryHandler : IRequestHandler<ObterModalidadeQuery, IEnumerable<RetornoListagemDTO>>
+    public class ObterModalidadesQueryHandler : IRequestHandler<ObterModalidadesQuery, IEnumerable<RetornoListagemDTO>>
     {
-        public Task<IEnumerable<RetornoListagemDTO>> Handle(ObterModalidadeQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<RetornoListagemDTO>> Handle(ObterModalidadesQuery request, CancellationToken cancellationToken)
         {
             var lista = Enum.GetValues(typeof(Modalidade))
                 .Cast<Modalidade>()

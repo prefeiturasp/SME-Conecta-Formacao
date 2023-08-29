@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<IEnumerable<RetornoListagemDTO>> Executar()
         {
-            return await mediator.Send(ObterModalidadeQuery.Instancia);
+            return await mediator.Send(ObterModalidadesQuery.Instancia);
         }
     }
 }
