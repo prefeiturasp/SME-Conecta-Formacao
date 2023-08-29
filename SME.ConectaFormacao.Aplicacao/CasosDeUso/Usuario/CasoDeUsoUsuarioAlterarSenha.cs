@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;

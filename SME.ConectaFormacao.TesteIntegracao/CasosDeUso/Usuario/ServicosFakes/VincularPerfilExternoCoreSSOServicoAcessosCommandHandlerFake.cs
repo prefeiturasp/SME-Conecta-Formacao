@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks;
 

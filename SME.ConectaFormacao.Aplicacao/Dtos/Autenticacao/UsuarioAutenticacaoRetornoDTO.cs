@@ -1,9 +1,9 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.DTOS
+﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Autenticacao
 {
-    public class DadosUsuarioDTO
+
+    public class UsuarioAutenticacaoRetornoDTO
     {
         public string Nome { get; set; }
-        public string Cpf { get; set; }
         public string Login { get; set; }
         public string Email { get; set; }
     }

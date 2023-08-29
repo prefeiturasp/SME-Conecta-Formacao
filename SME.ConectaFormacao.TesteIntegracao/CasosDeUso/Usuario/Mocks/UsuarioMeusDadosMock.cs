@@ -1,6 +1,6 @@
 ﻿using Bogus;
 using Bogus.Extensions.Brazil;
-using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks
 {

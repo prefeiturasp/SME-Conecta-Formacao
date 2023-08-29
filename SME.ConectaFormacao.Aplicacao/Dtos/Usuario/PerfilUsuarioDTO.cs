@@ -1,5 +1,4 @@
-﻿
-namespace SME.ConectaFormacao.Aplicacao.DTOS;
+﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 public struct PerfilUsuarioDTO
 {
     public PerfilUsuarioDTO(Guid perfil, string perfilNome)
