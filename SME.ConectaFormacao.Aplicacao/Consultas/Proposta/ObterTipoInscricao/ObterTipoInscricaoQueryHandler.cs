@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public Task<IEnumerable<RetornoListagemDTO>> Handle(ObterTipoInscricaoQuery request, CancellationToken cancellationToken)
         {
             var lista = Enum.GetValues(typeof(TipoInscricao))
-                .Cast<TipoFormacao>()
+                .Cast<TipoInscricao>()
                 .Select(v => new RetornoListagemDTO
                 {
                     Id = (short)v,
