@@ -153,6 +153,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterCriterioValidacaoInscricao, CasoDeUsoObterCriterioValidacaoInscricao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoFormacao, CasoDeUsoObterTipoFormacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoInscricao, CasoDeUsoObterTipoInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterModalidades, CasoDeUsoObterModalidades>();
     }
 
     protected virtual void RegistrarHttpClients()
