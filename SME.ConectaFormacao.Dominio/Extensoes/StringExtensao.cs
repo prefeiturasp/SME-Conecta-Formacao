@@ -23,5 +23,11 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             var inicioServidor = email.LastIndexOf('@');
             return string.Concat(email.AsSpan(0, 3), new string('*', inicioServidor - 3), email.AsSpan(inicioServidor));
         }
+
+        public static bool EmailEhValido(this string email)
+        {
+            var regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+            return Regex.IsMatch(email, regex);
+        }
     }
 }

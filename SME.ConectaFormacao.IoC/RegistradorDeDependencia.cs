@@ -7,9 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
+using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Aplicacao.Pipelines;
@@ -93,6 +97,8 @@ public class RegistradorDeDependencia
         FluentMapper.Initialize(config =>
         {
             config.AddMap(new UsuarioMap());
+            config.AddMap(new AreaPromotoraMap());
+            config.AddMap(new AreaPromotoraTelefoneMap());
 
             config.ForDommel();
         });
@@ -117,6 +123,7 @@ public class RegistradorDeDependencia
     protected virtual void RegistrarRepositorios()
     {
         _serviceCollection.TryAddScoped<IRepositorioUsuario, RepositorioUsuario>();
+        _serviceCollection.TryAddScoped<IRepositorioAreaPromotora, RepositorioAreaPromotora>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -130,6 +137,15 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioSolicitarRecuperacaoSenha, CasoDeUsoUsuarioSolicitarRecuperacaoSenha>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioValidarTokenRecuperacaoSenha, CasoDeUsoUsuarioValidarTokenRecuperacaoSenha>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioRecuperarSenha, CasoDeUsoUsuarioRecuperarSenha>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterGrupos, CasoDeUsoObterGrupos>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTiposAreaPromotora, CasoDeUsoObterTiposAreaPromotora>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraPaginada, CasoDeUsoObterAreaPromotoraPaginada>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraPorId, CasoDeUsoObterAreaPromotoraPorId>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoInserirAreaPromotora, CasoDeUsoInserirAreaPromotora>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAlterarAreaPromotora, CasoDeUsoAlterarAreaPromotora>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRemoverAreaPromotora, CasoDeUsoRemoverAreaPromotora>();
     }
 
     protected virtual void RegistrarHttpClients()

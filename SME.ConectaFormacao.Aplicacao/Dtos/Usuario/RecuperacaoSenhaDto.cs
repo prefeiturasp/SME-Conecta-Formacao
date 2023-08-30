@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SME.ConectaFormacao.Aplicacao.DTOS
+namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
 {
     public class RecuperacaoSenhaDto
     {
