@@ -1,18 +1,19 @@
 ﻿using FluentValidation;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
     public class ValidarEmailsAreaPromotoraCommand : IRequest
     {
-        public ValidarEmailsAreaPromotoraCommand(string email, AreaPromotoraTipo areaPromotoraTipo)
+        public ValidarEmailsAreaPromotoraCommand(IEnumerable<AreaPromotoraEmailDTO> emails, AreaPromotoraTipo areaPromotoraTipo)
         {
-            Email = email;
+            Emails = emails;
             Tipo = areaPromotoraTipo;
         }
 
-        public string Email { get; }
+        public IEnumerable<AreaPromotoraEmailDTO> Emails { get; set; }
         public AreaPromotoraTipo Tipo { get; set; }
     }
 
@@ -20,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         public ValidarEmailsAreaPromotoraCommandValidator()
         {
-            RuleFor(x => x.Email)
+            RuleFor(x => x.Emails)
                 .NotEmpty()
                 .WithMessage("É nescessário informar o email da área promotora para validar");
 

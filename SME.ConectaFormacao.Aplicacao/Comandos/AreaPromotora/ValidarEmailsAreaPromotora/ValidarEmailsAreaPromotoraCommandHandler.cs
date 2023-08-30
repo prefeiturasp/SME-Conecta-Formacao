@@ -10,17 +10,18 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         public Task Handle(ValidarEmailsAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrEmpty(request.Email))
+            if (request.Emails.Any())
             {
                 var mensagens = new List<string>();
 
-                var emails = request.Email.Split(';');
-                foreach (var email in emails)
+                foreach (var email in request.Emails)
                 {
-                    if (!email.EmailEhValido())
+                    var emailValidar = email.Email.ToLower();
+
+                    if (!emailValidar.EmailEhValido())
                         mensagens.Add(string.Format(MensagemNegocio.EMAIL_INVALIDO, email));
-                    else if (request.Tipo == AreaPromotoraTipo.RedeDireta && !email.ToLower().Contains("@sme") && !email.ToLower().Contains("@edu.sme"))
-                        throw new NegocioException(MensagemNegocio.AREA_CONHECIMENTO_EMAIL_FORA_DOMINIO_REDE_DIRETA);
+                    else if (request.Tipo == AreaPromotoraTipo.RedeDireta && !emailValidar.ToLower().Contains("@sme") && !emailValidar.ToLower().Contains("@edu.sme"))
+                        throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_EMAIL_FORA_DOMINIO_REDE_DIRETA);
                 }
 
                 if (mensagens.Any())

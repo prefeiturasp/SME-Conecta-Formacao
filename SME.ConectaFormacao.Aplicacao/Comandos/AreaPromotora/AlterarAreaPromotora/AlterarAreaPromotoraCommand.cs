@@ -31,10 +31,6 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(x => x.AreaPromotoraDTO.GrupoId)
                 .NotEmpty()
                 .WithMessage("É nescessário informar o perfil para alterar a área promotora");
-
-            RuleFor(x => x.AreaPromotoraDTO.Email)
-                .MaximumLength(100)
-                .WithMessage("O email não pode conter mais que 50 caracteres para alterar a área promotora");
         }
     }
 }
