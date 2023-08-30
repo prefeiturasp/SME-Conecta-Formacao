@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Aplicacao.DTOS;
+﻿using Elastic.Apm;
+using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Log;
@@ -36,6 +37,8 @@ namespace SME.ConectaFormacao.Webapi.Middlewares
                 var mensagem = "Houve um comportamento inesperado do Conecta Formação. Por favor, contate a SME.";
 
                 await servicoLogs.Enviar(mensagem, observacao: ex.Message, rastreamento: ex.StackTrace);
+                Agent.Tracer.CurrentTransaction?.CaptureException(ex);
+
                 await TratarExcecao(context, ex, mensagens: mensagem);
             }
         }
