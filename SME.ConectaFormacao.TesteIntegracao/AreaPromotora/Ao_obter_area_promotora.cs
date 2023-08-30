@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
             retorno.ShouldNotBeNull();
             retorno.Nome.ShouldBe(areaPromotora.Nome);
             retorno.Tipo.ShouldBe(areaPromotora.Tipo);
-            retorno.Email.ShouldBe(areaPromotora.Email);
+            string.Join(";", retorno.Emails.Select(t => t.Email)).ShouldBe(areaPromotora.Email);
             retorno.GrupoId.ShouldBe(areaPromotora.GrupoId);
             retorno.Telefones.FirstOrDefault().Telefone.ShouldBe(telefone.Telefone.AplicarMascara(@"\(00\) 00000\-0000"));
 
@@ -58,7 +58,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
             retorno.ShouldNotBeNull();
             retorno.Nome.ShouldBe(areaPromotora.Nome);
             retorno.Tipo.ShouldBe(areaPromotora.Tipo);
-            retorno.Email.ShouldBe(areaPromotora.Email);
+            string.Join(";", retorno.Emails.Select(t => t.Email)).ShouldBe(areaPromotora.Email);
             retorno.GrupoId.ShouldBe(areaPromotora.GrupoId);
             retorno.Telefones.Any().ShouldBeFalse();
 
