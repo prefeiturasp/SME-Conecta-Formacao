@@ -17,12 +17,14 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<AreaPromotora, AreaPromotoraCompletoDTO>();
 
-            CreateMap<AreaPromotoraDTO, AreaPromotora>().ReverseMap();
+            CreateMap<AreaPromotoraDTO, AreaPromotora>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(x => string.Join(";", x.Emails.Select(t => t.Email))))
+                .ReverseMap()
+                .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO { Email = t })));
 
             CreateMap<AreaPromotoraTelefone, AreaPromotoraTelefoneDTO>()
-                .ForMember(dest => dest.Telefone, opt => opt.MapFrom(x => x.Telefone.Length > 10 ? x.Telefone.AplicarMascara(@"\(00\) 00000\-0000") : x.Telefone.AplicarMascara(@"\(00\) 0000\-0000")));
-
-            CreateMap<AreaPromotoraTelefoneDTO, AreaPromotoraTelefone>()
+                .ForMember(dest => dest.Telefone, opt => opt.MapFrom(x => x.Telefone.Length > 10 ? x.Telefone.AplicarMascara(@"\(00\) 00000\-0000") : x.Telefone.AplicarMascara(@"\(00\) 0000\-0000")))
+                .ReverseMap()
                 .ForMember(dest => dest.Telefone, opt => opt.MapFrom(x => x.Telefone.SomenteNumeros()));
         }
     }

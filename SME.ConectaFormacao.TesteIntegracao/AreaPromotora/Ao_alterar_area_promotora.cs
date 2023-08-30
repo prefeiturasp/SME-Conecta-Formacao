@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
             areaPromotoraRetorno.ShouldNotBeNull();
 
             areaPromotoraRetorno.Nome.ShouldBe(areaPromotoraDTO.Nome);
-            areaPromotoraRetorno.Email.ShouldBe(areaPromotoraDTO.Email);
+            areaPromotoraRetorno.Email.ShouldBe(string.Join(";", areaPromotoraDTO.Emails.Select(t => t.Email)));
             areaPromotoraRetorno.Tipo.ShouldBe(areaPromotoraDTO.Tipo);
             areaPromotoraRetorno.GrupoId.ShouldBe(areaPromotoraDTO.GrupoId);
 
@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora
             areaPromotoraRetorno.ShouldNotBeNull();
 
             areaPromotoraRetorno.Nome.ShouldBe(areaPromotoraDTO.Nome);
-            areaPromotoraRetorno.Email.ShouldBe(areaPromotoraDTO.Email);
+            areaPromotoraRetorno.Email.ShouldBe(string.Join(";", areaPromotoraDTO.Emails.Select(t => t.Email)));
             areaPromotoraRetorno.Tipo.ShouldBe(areaPromotoraDTO.Tipo);
             areaPromotoraRetorno.GrupoId.ShouldBe(areaPromotoraDTO.GrupoId);
 

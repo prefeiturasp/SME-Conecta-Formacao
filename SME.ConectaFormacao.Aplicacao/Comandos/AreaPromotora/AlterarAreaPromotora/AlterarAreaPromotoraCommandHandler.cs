@@ -26,36 +26,36 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(AlterarAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new ValidarEmailsAreaPromotoraCommand(request.AreaPromotoraDTO.Email, request.AreaPromotoraDTO.Tipo), cancellationToken);
+            await _mediator.Send(new ValidarEmailsAreaPromotoraCommand(request.AreaPromotoraDTO.Emails, request.AreaPromotoraDTO.Tipo), cancellationToken);
 
             var areaPromotora = await _repositorioAreaPromotora.ObterPorId(request.Id);
             if (areaPromotora == null)
                 throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
-            areaPromotora.Alterar(
-                request.AreaPromotoraDTO.Nome,
-                request.AreaPromotoraDTO.Tipo,
-                request.AreaPromotoraDTO.Email,
-                request.AreaPromotoraDTO.GrupoId
-                );
+            var areaPromotoraDepois = _mapper.Map<AreaPromotora>(request.AreaPromotoraDTO);
+
+            areaPromotoraDepois.Id = areaPromotora.Id;
+            areaPromotoraDepois.CriadoEm = areaPromotora.CriadoEm;
+            areaPromotoraDepois.CriadoPor = areaPromotora.CriadoPor;
+            areaPromotoraDepois.CriadoLogin = areaPromotora.CriadoLogin;
 
             var telefonesAntes = await _repositorioAreaPromotora.ObterTelefonesPorId(request.Id);
 
             var telefonesDepois = _mapper.Map<IEnumerable<AreaPromotoraTelefone>>(request.AreaPromotoraDTO.Telefones);
 
-            var telefonesNovos = telefonesDepois.Where(w => !telefonesAntes.Any(a => a.Telefone == w.Telefone));
-            var telefonesExcluidos = telefonesAntes.Where(w => !telefonesDepois.Any(a => a.Telefone == w.Telefone));
+            var telefonesInserir = telefonesDepois.Where(w => !telefonesAntes.Any(a => a.Telefone == w.Telefone));
+            var telefonesExcluir = telefonesAntes.Where(w => !telefonesDepois.Any(a => a.Telefone == w.Telefone));
 
             var transacao = _transacao.Iniciar();
             try
             {
-                await _repositorioAreaPromotora.Atualizar(transacao, areaPromotora);
+                await _repositorioAreaPromotora.Atualizar(transacao, areaPromotoraDepois);
 
-                if (telefonesNovos != null && telefonesNovos.Any())
-                    await _repositorioAreaPromotora.InserirTelefones(transacao, request.Id, telefonesNovos);
+                if (telefonesInserir != null && telefonesInserir.Any())
+                    await _repositorioAreaPromotora.InserirTelefones(transacao, request.Id, telefonesInserir);
 
-                if (telefonesExcluidos != null && telefonesExcluidos.Any())
-                    await _repositorioAreaPromotora.RemoverTelefones(transacao, request.Id, telefonesExcluidos);
+                if (telefonesExcluir != null && telefonesExcluir.Any())
+                    await _repositorioAreaPromotora.RemoverTelefones(transacao, request.Id, telefonesExcluir);
 
                 transacao.Commit();
 
