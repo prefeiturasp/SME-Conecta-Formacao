@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(InserirAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new ValidarEmailsAreaPromotoraCommand(request.AreaPromotoraDTO.Email, request.AreaPromotoraDTO.Tipo), cancellationToken);
+            await _mediator.Send(new ValidarEmailsAreaPromotoraCommand(request.AreaPromotoraDTO.Emails, request.AreaPromotoraDTO.Tipo), cancellationToken);
 
             var areaPromotora = _mapper.Map<AreaPromotora>(request.AreaPromotoraDTO);
             var transacao = _transacao.Iniciar();
