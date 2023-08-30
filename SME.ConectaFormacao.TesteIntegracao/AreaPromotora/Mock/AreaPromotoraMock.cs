@@ -12,6 +12,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.AreaPromotora.Mock
             var faker = new Faker<Dominio.Entidades.AreaPromotora>("pt_BR");
             faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
             faker.RuleFor(x => x.Tipo, f => f.PickRandom<AreaPromotoraTipo>());
+            faker.RuleFor(x => x.Email, f => f.Person.Email);
             faker.RuleFor(x => x.GrupoId, Guid.NewGuid());
             faker.RuleFor(x => x.Excluido, false);
             faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
