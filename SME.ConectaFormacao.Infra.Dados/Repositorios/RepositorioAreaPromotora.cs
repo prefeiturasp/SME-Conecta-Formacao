@@ -18,10 +18,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
-            string query = MontarQueryListagem(nome, tipo);
-
-            if (!string.IsNullOrEmpty(nome))
-                nome = "%" + nome + "%";
+            string query = MontarQueryListagem(ref nome, tipo);
 
             query += " order by nome";
             query += " limit @numeroRegistros offset @registrosIgnorados";
@@ -31,18 +28,22 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<int> ObterTotalRegistrosPorFiltros(string nome, short? tipo)
         {
-            string query = string.Concat("select count(1) from (", MontarQueryListagem(nome, tipo), ") tb");
+            string query = string.Concat("select count(1) from (", MontarQueryListagem(ref nome, tipo), ") tb");
+
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { nome, tipo });
         }
 
-        private static string MontarQueryListagem(string nome, short? tipo)
+        private static string MontarQueryListagem(ref string nome, short? tipo)
         {
             var query = @"select id, nome, tipo
                           from area_promotora
                           where not excluido ";
 
             if (!string.IsNullOrEmpty(nome))
-                query += " and nome like @nome";
+            {
+                nome = "%" + nome.ToLower() + "%";
+                query += $" and lower(nome) like @nome";
+            }
 
             if (tipo.GetValueOrDefault() > 0)
                 query += " and tipo = @tipo";
@@ -119,6 +120,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 telefone.Excluido = true;
                 await conexao.Obter().UpdateAsync(telefone, transacao);
             }
+        }
+
+        public Task<bool> ExistePorGrupoId(Guid grupoId, long ignorarAreaPromotoraId)
+        {
+            var query = @"select count(1) from area_promotora where grupo_id = @grupoId";
+
+            if (ignorarAreaPromotoraId > 0)
+                query += " and id <> @ignorarAreaPromotoraId";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { grupoId, ignorarAreaPromotoraId });
         }
     }
 }

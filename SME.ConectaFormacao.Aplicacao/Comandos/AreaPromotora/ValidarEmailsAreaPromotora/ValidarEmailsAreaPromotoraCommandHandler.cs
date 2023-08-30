@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     if (!emailValidar.EmailEhValido())
                         mensagens.Add(string.Format(MensagemNegocio.EMAIL_INVALIDO, email));
                     else if (request.Tipo == AreaPromotoraTipo.RedeDireta && !emailValidar.ToLower().Contains("@sme") && !emailValidar.ToLower().Contains("@edu.sme"))
-                        throw new NegocioException(MensagemNegocio.AREA_CONHECIMENTO_EMAIL_FORA_DOMINIO_REDE_DIRETA);
+                        throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_EMAIL_FORA_DOMINIO_REDE_DIRETA);
                 }
 
                 if (mensagens.Any())
