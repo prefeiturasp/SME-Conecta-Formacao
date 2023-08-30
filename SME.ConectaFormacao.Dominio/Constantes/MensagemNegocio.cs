@@ -10,6 +10,8 @@ public class MensagemNegocio
     public const string LOGIN_NAO_ENCONTRADO = "Usuário não encontrado";
     public const string ORIENTACOES_RECUPERACAO_SENHA = "As orientações para recuperação de senha foram enviados para {0}, verifique sua caixa de entrada!";
     public const string AREA_PROMOTORA_NAO_ENCONTRADA = "Área promotora não encontrada";
-    public const string AREA_CONHECIMENTO_EMAIL_FORA_DOMINIO_REDE_DIRETA = "Para área promotora do tipo rede direta é permitido somente emails com o domínio @SME ou @EDU.SME";
+    public const string AREA_PROMOTORA_EMAIL_FORA_DOMINIO_REDE_DIRETA = "Para área promotora do tipo rede direta é permitido somente emails com o domínio @SME ou @EDU.SME";
+    public const string AREA_PROMOTORA_EXISTE_GRUPO_CADASTRADO = "Já existe uma área promotora cadastrada para o grupo selecionado";
     public const string EMAIL_INVALIDO = "Email {0} é inválido";
+
 }

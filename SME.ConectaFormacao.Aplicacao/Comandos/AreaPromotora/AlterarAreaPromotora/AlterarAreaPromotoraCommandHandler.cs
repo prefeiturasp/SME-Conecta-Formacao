@@ -28,6 +28,8 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             await _mediator.Send(new ValidarEmailsAreaPromotoraCommand(request.AreaPromotoraDTO.Emails, request.AreaPromotoraDTO.Tipo), cancellationToken);
 
+            await _mediator.Send(new ValidarGrupoAreaPromotoraCommand(request.AreaPromotoraDTO.GrupoId, request.Id));
+
             var areaPromotora = await _repositorioAreaPromotora.ObterPorId(request.Id);
             if (areaPromotora == null)
                 throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
