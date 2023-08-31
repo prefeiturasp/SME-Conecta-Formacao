@@ -27,18 +27,14 @@ public abstract class RepositorioBaseAuditavel<TEntidade> : IRepositorioBaseAudi
 
     public async Task<long> Inserir(TEntidade entidade)
     {
-        entidade.CriadoEm = DateTimeExtension.HorarioBrasilia();
-        entidade.CriadoPor = contexto.NomeUsuario;
-        entidade.CriadoLogin = contexto.UsuarioLogado;
+        PreencherAuditoriaCriacao(entidade);
         entidade.Id = (long)await conexao.Obter().InsertAsync(entidade);
         return entidade.Id;
     }
 
     public async Task<TEntidade> Atualizar(TEntidade entidade)
     {
-        entidade.AlteradoEm = DateTimeExtension.HorarioBrasilia();
-        entidade.AlteradoPor = contexto.NomeUsuario;
-        entidade.AlteradoLogin = contexto.UsuarioLogado;
+        PreencherAuditoriaAlteracao(entidade);
         await conexao.Obter().UpdateAsync(entidade);
         return entidade;
     }
@@ -53,5 +49,19 @@ public abstract class RepositorioBaseAuditavel<TEntidade> : IRepositorioBaseAudi
     {
         TEntidade entidade = await ObterPorId(id);
         await Remover(entidade);
+    }
+
+    protected void PreencherAuditoriaCriacao<T>(T entidade) where T : EntidadeBaseAuditavel
+    {
+        entidade.CriadoEm = DateTimeExtension.HorarioBrasilia();
+        entidade.CriadoPor = contexto.NomeUsuario;
+        entidade.CriadoLogin = contexto.UsuarioLogado;
+    }
+
+    protected void PreencherAuditoriaAlteracao<T>(T entidade) where T : EntidadeBaseAuditavel
+    {
+        entidade.AlteradoEm = DateTimeExtension.HorarioBrasilia();
+        entidade.AlteradoPor = contexto.NomeUsuario;
+        entidade.AlteradoLogin = contexto.UsuarioLogado;
     }
 }

@@ -7,13 +7,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
     public class AreaPromotoraMock
     {
 
-        private static Faker<Dominio.Entidades.AreaPromotora> Gerador()
+        private static Faker<Dominio.Entidades.AreaPromotora> Gerador(Guid? grupoId = null)
         {
             var faker = new Faker<Dominio.Entidades.AreaPromotora>("pt_BR");
             faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
             faker.RuleFor(x => x.Tipo, f => f.PickRandom<AreaPromotoraTipo>());
             faker.RuleFor(x => x.Email, f => f.Person.Email);
-            faker.RuleFor(x => x.GrupoId, Guid.NewGuid());
+            faker.RuleFor(x => x.GrupoId, grupoId.HasValue ? grupoId : Guid.NewGuid());
             faker.RuleFor(x => x.Excluido, false);
             faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
             faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
@@ -24,14 +24,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
             return faker;
         }
 
-        public static Dominio.Entidades.AreaPromotora GerarAreaPromotora()
+        public static Dominio.Entidades.AreaPromotora GerarAreaPromotora(Guid? grupoId = null)
         {
-            return Gerador().Generate();
+            return Gerador(grupoId).Generate();
         }
 
-        public static IEnumerable<Dominio.Entidades.AreaPromotora> GerarAreaPromotora(int quantidade)
+        public static IEnumerable<Dominio.Entidades.AreaPromotora> GerarAreaPromotora(int quantidade, Guid? grupoId = null)
         {
-            return Gerador().Generate(quantidade);
+            return Gerador(grupoId).Generate(quantidade);
         }
 
         public static Dominio.Entidades.AreaPromotoraTelefone GerarAreaTelefone(long areaPromotoraId, string telefone = null)

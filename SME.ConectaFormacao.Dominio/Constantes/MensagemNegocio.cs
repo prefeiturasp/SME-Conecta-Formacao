@@ -13,4 +13,7 @@ public class MensagemNegocio
     public const string AREA_PROMOTORA_EMAIL_FORA_DOMINIO_REDE_DIRETA = "Para área promotora do tipo rede direta é permitido somente e-mails com o domínio @SME ou @EDU.SME";
     public const string AREA_PROMOTORA_EXISTE_GRUPO_CADASTRADO = "Já existe uma área promotora cadastrada para o perfil selecionado";
     public const string EMAIL_INVALIDO = "E-mail {0} é inválido";
+
+    public const string PROPOSTA_FUNCAO_ESPECIFICA_OUTROS_OBRIGATORIO = "É nescessário informar função específicas outros";
+    public const string PROPOSTA_CRITERIO_VALIDACAO_INSCRICAO_OUTROS_OBRIGATORIO = "É nescessário informar crítério validação inscrição outros";
 }
