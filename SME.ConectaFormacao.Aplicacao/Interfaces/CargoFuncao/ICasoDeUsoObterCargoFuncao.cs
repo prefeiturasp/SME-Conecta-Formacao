@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao
 {
     public interface ICasoDeUsoObterCargoFuncao
     {
-        Task<IEnumerable<CargoFuncaoDTO>> Executar(CargoFuncaoTipo? tipo);
+        Task<IEnumerable<CargoFuncaoDTO>> Executar(CargoFuncaoTipo? tipo, bool exibirOpcaoOutros);
     }
 }
