@@ -1,5 +1,6 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -22,7 +23,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterCargoFuncao>();
 
             // act 
-            var retorno = await casoDeUso.Executar(Dominio.Enumerados.CargoFuncaoTipo.Cargo);
+            var retorno = await casoDeUso.Executar(Dominio.Enumerados.CargoFuncaoTipo.Cargo, false);
 
             // assert
             retorno.Count().ShouldBe(cargosEFuncoes.Count(c => c.Tipo == Dominio.Enumerados.CargoFuncaoTipo.Cargo));
@@ -38,7 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterCargoFuncao>();
 
             // act 
-            var retorno = await casoDeUso.Executar(Dominio.Enumerados.CargoFuncaoTipo.Funcao);
+            var retorno = await casoDeUso.Executar(Dominio.Enumerados.CargoFuncaoTipo.Funcao, false);
 
             // assert
             retorno.Count().ShouldBe(cargosEFuncoes.Count(c => c.Tipo == Dominio.Enumerados.CargoFuncaoTipo.Funcao));
@@ -54,10 +55,27 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterCargoFuncao>();
 
             // act 
-            var retorno = await casoDeUso.Executar(null);
+            var retorno = await casoDeUso.Executar(null, false);
 
             // assert
             retorno.Count().ShouldBe(cargosEFuncoes.Count());
+        }
+
+        [Fact(DisplayName = "Cargo Função - Deve obter todos os cargos e funções opção outros")]
+        public async Task Deve_obter_todos_cargos_funcoes_opcao_outros()
+        {
+            // arrange 
+            var cargosEFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosEFuncoes);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterCargoFuncao>();
+
+            // act 
+            var retorno = await casoDeUso.Executar(null, true);
+
+            // assert
+            retorno.Count().ShouldBe(cargosEFuncoes.Count() + 1);
+            retorno.Any(t => t.Id == (long)OpcaoListagem.Outros).ShouldBeTrue();
         }
     }
 }

@@ -14,7 +14,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RoteiroPropostaFormativaDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterRoteiroPropostaFormativa([FromServices] ICasoDeUsoObterRoteiroPropostaFormativa casoDeUsoObterRoteiroPropostaFormativa)
+        public async Task<IActionResult> ObterRoteiroPropostaFormativa(
+            [FromServices] ICasoDeUsoObterRoteiroPropostaFormativa casoDeUsoObterRoteiroPropostaFormativa)
         {
             return Ok(await casoDeUsoObterRoteiroPropostaFormativa.Executar());
         }
@@ -24,9 +25,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterCriterioValidacaoInscricao(
-            [FromServices] ICasoDeUsoObterCriterioValidacaoInscricao casoDeUsoObterCriterioValidacaoInscricao)
+            [FromServices] ICasoDeUsoObterCriterioValidacaoInscricao casoDeUsoObterCriterioValidacaoInscricao,
+            [FromQuery] bool exibirOpcaoOutros = false)
         {
-            return Ok(await casoDeUsoObterCriterioValidacaoInscricao.Executar());
+            return Ok(await casoDeUsoObterCriterioValidacaoInscricao.Executar(exibirOpcaoOutros));
         }
 
         [HttpGet("tipo-formacao")]
@@ -53,7 +55,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterModalidades([FromServices] ICasoDeUsoObterModalidades casoDeUsoObterModalidades)
+        public async Task<IActionResult> ObterModalidades(
+            [FromServices] ICasoDeUsoObterModalidades casoDeUsoObterModalidades)
         {
             return Ok(await casoDeUsoObterModalidades.Executar());
         }
@@ -67,6 +70,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromBody] PropostaDTO propostaDTO)
         {
             return Ok(await casoDeUsoInserirProposta.Executar(propostaDTO));
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> AlterarProposta(
+            [FromServices] ICasoDeUsoAlterarProposta casoDeUsoAlterarProposta,
+            [FromRoute] long id,
+            [FromBody] PropostaDTO propostaDTO)
+        {
+            return Ok(await casoDeUsoAlterarProposta.Executar(id, propostaDTO));
         }
     }
 }
