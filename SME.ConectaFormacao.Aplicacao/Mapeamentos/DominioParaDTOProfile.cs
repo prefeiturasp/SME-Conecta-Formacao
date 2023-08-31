@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
+using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -27,6 +29,16 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Telefone, opt => opt.MapFrom(x => x.Telefone.Length > 10 ? x.Telefone.AplicarMascara(@"\(00\) 00000\-0000") : x.Telefone.AplicarMascara(@"\(00\) 0000\-0000")))
                 .ReverseMap()
                 .ForMember(dest => dest.Telefone, opt => opt.MapFrom(x => x.Telefone.SomenteNumeros()));
+
+            CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
+            CreateMap<CargoFuncao, CargoFuncaoDTO>();
+            CreateMap<CriterioValidacaoInscricao, CriterioValidacaoInscricaoDTO>();
+
+            CreateMap<Proposta, PropostaDTO>().ReverseMap();
+            CreateMap<PropostaCriterioValidacaoInscricao, PropostaCriterioValidacaoInscricaoDTO>().ReverseMap();
+            CreateMap<PropostaFuncaoEspecifica, PropostaFuncaoEspecificaDTO>().ReverseMap();
+            CreateMap<PropostaVagaRemanecente, PropostaVagaRemanecenteDTO>().ReverseMap();
+            CreateMap<PropostaPublicoAlvo, PropostaPublicoAlvoDTO>().ReverseMap();
         }
     }
 }
