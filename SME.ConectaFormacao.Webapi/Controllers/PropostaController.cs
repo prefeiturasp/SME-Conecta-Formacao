@@ -23,7 +23,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(IEnumerable<CriterioValidacaoInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterCriterioValidacaoInscricao([FromServices] ICasoDeUsoObterCriterioValidacaoInscricao casoDeUsoObterCriterioValidacaoInscricao)
+        public async Task<IActionResult> ObterCriterioValidacaoInscricao(
+            [FromServices] ICasoDeUsoObterCriterioValidacaoInscricao casoDeUsoObterCriterioValidacaoInscricao)
         {
             return Ok(await casoDeUsoObterCriterioValidacaoInscricao.Executar());
         }
@@ -32,16 +33,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterTipoFormacao([FromServices] ICasoDeUsoObterTipoFormacao casoDeUsoObterTipoFormacao)
+        public async Task<IActionResult> ObterTipoFormacao(
+            [FromServices] ICasoDeUsoObterTipoFormacao casoDeUsoObterTipoFormacao)
         {
             return Ok(await casoDeUsoObterTipoFormacao.Executar());
         }
-        
+
         [HttpGet("tipo-inscricao")]
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterTipoInscricao([FromServices] ICasoDeUsoObterTipoInscricao casoDeUsoObterTipoInscricao)
+        public async Task<IActionResult> ObterTipoInscricao(
+            [FromServices] ICasoDeUsoObterTipoInscricao casoDeUsoObterTipoInscricao)
         {
             return Ok(await casoDeUsoObterTipoInscricao.Executar());
         }
@@ -53,6 +56,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ObterModalidades([FromServices] ICasoDeUsoObterModalidades casoDeUsoObterModalidades)
         {
             return Ok(await casoDeUsoObterModalidades.Executar());
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> InserirProposta(
+            [FromServices] ICasoDeUsoInserirProposta casoDeUsoInserirProposta,
+            [FromBody] PropostaDTO propostaDTO)
+        {
+            return Ok(await casoDeUsoInserirProposta.Executar(propostaDTO));
         }
     }
 }
