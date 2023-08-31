@@ -1,4 +1,5 @@
-﻿using Dommel;
+﻿using Dapper;
+using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -10,6 +11,32 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
     {
         public RepositorioProposta(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
+        }
+
+        public async Task<bool> Atualizar(IDbTransaction transacao, Proposta proposta)
+        {
+            PreencherAuditoriaAlteracao(proposta);
+            return await conexao.Obter().UpdateAsync(proposta, transacao);
+        }
+
+        public async Task RemoverCriteriosValidacaoInscricao(IDbTransaction transacao, IEnumerable<PropostaCriterioValidacaoInscricao> criteriosValidacaoInscricao)
+        {
+            foreach (var criterioValidacaoInscricao in criteriosValidacaoInscricao)
+            {
+                PreencherAuditoriaAlteracao(criterioValidacaoInscricao);
+                criterioValidacaoInscricao.Excluido = true;
+                await conexao.Obter().UpdateAsync(criterioValidacaoInscricao, transacao);
+            }
+        }
+
+        public async Task RemoverVagasRemanecentes(IDbTransaction transacao, IEnumerable<PropostaVagaRemanecente> vagasRemanecentes)
+        {
+            foreach (var vagaRemanecente in vagasRemanecentes)
+            {
+                PreencherAuditoriaAlteracao(vagaRemanecente);
+                vagaRemanecente.Excluido = true;
+                await conexao.Obter().UpdateAsync(vagaRemanecente, transacao);
+            }
         }
 
         public async Task<long> Inserir(IDbTransaction transacao, Proposta proposta)
@@ -51,7 +78,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
-        public async Task InserirvagasRemanecentes(IDbTransaction transacao, long id, IEnumerable<PropostaVagaRemanecente> vagasRemanecentes)
+        public async Task InserirVagasRemanecentes(IDbTransaction transacao, long id, IEnumerable<PropostaVagaRemanecente> vagasRemanecentes)
         {
             foreach (var vagaRemanecente in vagasRemanecentes)
             {
@@ -59,6 +86,98 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
                 vagaRemanecente.PropostaId = id;
                 vagaRemanecente.Id = (long)await conexao.Obter().InsertAsync(vagaRemanecente, transacao);
+            }
+        }
+
+        public Task<IEnumerable<PropostaCriterioValidacaoInscricao>> ObterCriteriosValidacaoInscricaoPorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            criterio_validacao_inscricao_id,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_criterio_validacao_inscricao 
+                        where proposta_id = @id";
+            return conexao.Obter().QueryAsync<PropostaCriterioValidacaoInscricao>(query, new { id });
+        }
+
+        public Task<IEnumerable<PropostaFuncaoEspecifica>> ObterFuncoesEspecificasPorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            cargo_funcao_id,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_funcao_especifica 
+                        where proposta_id = @id";
+            return conexao.Obter().QueryAsync<PropostaFuncaoEspecifica>(query, new { id });
+        }
+
+        public Task<IEnumerable<PropostaPublicoAlvo>> ObterPublicoAlvoPorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            cargo_funcao_id,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_publico_alvo 
+                        where proposta_id = @id";
+            return conexao.Obter().QueryAsync<PropostaPublicoAlvo>(query, new { id });
+        }
+
+        public Task<IEnumerable<PropostaVagaRemanecente>> ObterVagasRemacenentesPorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            cargo_funcao_id,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_vaga_remanecente 
+                        where proposta_id = @id";
+            return conexao.Obter().QueryAsync<PropostaVagaRemanecente>(query, new { id });
+        }
+
+        public async Task RemoverFuncoesEspecificas(IDbTransaction transacao, IEnumerable<PropostaFuncaoEspecifica> funcoesEspecificas)
+        {
+            foreach (var funcaoEspecifica in funcoesEspecificas)
+            {
+                PreencherAuditoriaAlteracao(funcaoEspecifica);
+                funcaoEspecifica.Excluido = true;
+                await conexao.Obter().UpdateAsync(funcaoEspecifica, transacao);
+            }
+        }
+
+        public async Task RemoverPublicosAlvo(IDbTransaction transacao, IEnumerable<PropostaPublicoAlvo> publicoAlvo)
+        {
+            foreach (var publico in publicoAlvo)
+            {
+                PreencherAuditoriaAlteracao(publico);
+                publico.Excluido = true;
+                await conexao.Obter().UpdateAsync(publico, transacao);
             }
         }
     }

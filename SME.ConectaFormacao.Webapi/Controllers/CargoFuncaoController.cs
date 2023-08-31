@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterCargoFuncao(
-            [FromServices] ICasoDeUsoObterCargoFuncao casoDeUsoObterCargoFuncao, 
+            [FromServices] ICasoDeUsoObterCargoFuncao casoDeUsoObterCargoFuncao,
             [FromRoute] CargoFuncaoTipo? tipo,
             [FromQuery] bool exibirOpcaoOutros = false)
         {

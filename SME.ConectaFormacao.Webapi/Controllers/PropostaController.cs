@@ -71,5 +71,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoInserirProposta.Executar(propostaDTO));
         }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> AlterarProposta(
+           [FromServices] ICasoDeUsoAlterarProposta casoDeUsoAlterarProposta,
+           [FromRoute] long id,
+           [FromBody] PropostaDTO propostaDTO)
+        {
+            return Ok(await casoDeUsoAlterarProposta.Executar(id, propostaDTO));
+        }
     }
 }
