@@ -34,6 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<CargoFuncao, CargoFuncaoDTO>();
             CreateMap<CriterioValidacaoInscricao, CriterioValidacaoInscricaoDTO>();
 
+            CreateMap<Proposta, PropostaCompletoDTO>();
             CreateMap<Proposta, PropostaDTO>().ReverseMap();
             CreateMap<PropostaCriterioValidacaoInscricao, PropostaCriterioValidacaoInscricaoDTO>().ReverseMap();
             CreateMap<PropostaFuncaoEspecifica, PropostaFuncaoEspecificaDTO>().ReverseMap();

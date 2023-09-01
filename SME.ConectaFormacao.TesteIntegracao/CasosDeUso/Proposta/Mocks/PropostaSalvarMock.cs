@@ -58,6 +58,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return Gerador(tipoFormacao, modalidade, propostaPublicoAlvos, propostaFuncaoEspecificas, propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros).Generate();
         }
 
+        public static long GerarIdAleatorio()
+        {
+            return new Faker().Random.Long(1);
+        }
+
         public static Guid GrupoUsuarioLogadoId { get; set; }
 
     }

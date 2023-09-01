@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
             var faker = new Faker<AreaPromotoraDTO>("pt_BR");
             faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
             faker.RuleFor(x => x.Tipo, f => areaPromotoraTipo.HasValue ? areaPromotoraTipo : f.PickRandom<AreaPromotoraTipo>());
-            faker.RuleFor(x => x.Emails, f => f.Make(2, () => new AreaPromotoraEmailDTO { Email = string.IsNullOrEmpty(dominio) ? f.Person.Email : string.Concat(f.Name.FirstName(), dominio) }));
+            faker.RuleFor(x => x.Emails, f => f.Make(2, () => new AreaPromotoraEmailDTO { Email = string.IsNullOrEmpty(dominio) ? f.Person.Email : string.Concat(f.Person.Email.Substring(0, f.Person.Email.IndexOf('@')), dominio) }));
             faker.RuleFor(x => x.GrupoId, Guid.NewGuid());
             faker.RuleFor(x => x.Telefones, f => f.Make(3, () => new AreaPromotoraTelefoneDTO { Telefone = f.Phone.PhoneNumber("(##) #####-####") }));
             return faker.Generate();
