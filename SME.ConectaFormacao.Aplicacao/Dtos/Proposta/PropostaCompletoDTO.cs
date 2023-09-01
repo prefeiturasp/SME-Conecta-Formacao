@@ -1,8 +1,9 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
-    public class PropostaDTO
+    public class PropostaCompletoDTO
     {
         public TipoFormacao? TipoFormacao { get; set; }
         public Modalidade? Modalidade { get; set; }
@@ -10,6 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? NomeFormacao { get; set; }
         public int? QuantidadeTurmas { get; set; }
         public int? QuantidadeVagasTurma { get; set; }
+        public int QuantidadeTotal => QuantidadeTurmas.GetValueOrDefault() * QuantidadeVagasTurma.GetValueOrDefault();
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecificaDTO> FuncoesEspecificas { get; set; }
         public string FuncaoEspecificaOutros { get; set; }
@@ -17,5 +19,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaCriterioValidacaoInscricaoDTO> CriteriosValidacaoInscricao { get; set; }
         public string CriterioValidacaoInscricaoOutros { get; set; }
         public SituacaoRegistro Situacao { get; set; }
+        public AuditoriaDTO Auditoria { get; set; }
     }
 }
