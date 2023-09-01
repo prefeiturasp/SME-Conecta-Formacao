@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
@@ -64,6 +65,82 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.AlteradoLogin, f => f.Name.FirstName());
 
             return faker.Generate();
+        }
+
+        public static IEnumerable<PropostaPublicoAlvo> GerarPublicoAlvo(long propostaId, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes)
+        {
+            if (cargosFuncoes != null && cargosFuncoes.Any())
+            {
+                var quantidade = new Randomizer().Number(1, cargosFuncoes.Count());
+                return cargosFuncoes
+                    .Select(t => new PropostaPublicoAlvo
+                    {
+                        PropostaId = propostaId,
+                        CargoFuncaoId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    }).Take(quantidade);
+            }
+
+            return default;
+        }
+
+        public static IEnumerable<PropostaFuncaoEspecifica> GerarFuncoesEspecificas(long propostaId, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes)
+        {
+            if (cargosFuncoes != null && cargosFuncoes.Any())
+            {
+                var quantidade = new Randomizer().Number(1, cargosFuncoes.Count());
+                return cargosFuncoes
+                    .Select(t => new PropostaFuncaoEspecifica
+                    {
+                        PropostaId = propostaId,
+                        CargoFuncaoId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    }).Take(quantidade);
+            }
+
+            return default;
+        }
+
+        public static IEnumerable<PropostaVagaRemanecente> GerarVagasRemanecentes(long propostaId, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes)
+        {
+            if (cargosFuncoes != null && cargosFuncoes.Any())
+            {
+                var quantidade = new Randomizer().Number(1, cargosFuncoes.Count());
+                return cargosFuncoes
+                    .Select(t => new PropostaVagaRemanecente
+                    {
+                        PropostaId = propostaId,
+                        CargoFuncaoId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    }).Take(quantidade);
+            }
+
+            return default;
+        }
+
+        public static IEnumerable<PropostaCriterioValidacaoInscricao> GerarCritariosValidacaoInscricao(long propostaId, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
+        {
+            if (criteriosValidacaoInscricao != null && criteriosValidacaoInscricao.Any())
+            {
+                var quantidade = new Randomizer().Number(1, criteriosValidacaoInscricao.Count());
+                return criteriosValidacaoInscricao
+                    .Select(t => new PropostaCriterioValidacaoInscricao
+                    {
+                        PropostaId = propostaId,
+                        CriterioValidacaoInscricaoId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    }).Take(quantidade);
+            }
+
+            return default;
         }
     }
 }

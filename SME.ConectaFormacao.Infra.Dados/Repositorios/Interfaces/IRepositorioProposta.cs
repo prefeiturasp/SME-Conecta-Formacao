@@ -20,5 +20,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaVagaRemanecente>> ObterVagasRemacenentesPorId(long id);
         Task RemoverFuncoesEspecificas(IDbTransaction transacao, IEnumerable<PropostaFuncaoEspecifica> funcoesEspecificas);
         Task RemoverPublicosAlvo(IDbTransaction transacao, IEnumerable<PropostaPublicoAlvo> publicoAlvo);
+        Task Remover(IDbTransaction transacao, Proposta proposta);
     }
 }

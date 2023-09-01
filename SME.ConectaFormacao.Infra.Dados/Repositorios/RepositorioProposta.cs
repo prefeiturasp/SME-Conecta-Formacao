@@ -180,5 +180,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 await conexao.Obter().UpdateAsync(publico, transacao);
             }
         }
+
+        public async Task Remover(IDbTransaction transacao, Proposta proposta)
+        {
+            PreencherAuditoriaAlteracao(proposta);
+            proposta.Excluido = true;
+            await conexao.Obter().UpdateAsync(proposta, transacao);
+        }
     }
 }
