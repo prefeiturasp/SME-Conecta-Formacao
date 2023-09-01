@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         }
 
         [Fact(DisplayName = "Proposta - Deve obter por id válido")]
-        public async Task Deve_obter_por_id_com_telefone_valido()
+        public async Task Deve_obter_por_id_valido()
         {
             // arrange
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
@@ -78,64 +78,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             await InserirNaBase(proposta);
 
-            if (cargosFuncoes != null && cargosFuncoes.Any())
-            {
-                var publicosAlvo = cargosFuncoes
-                    .Where(t => t.Tipo == CargoFuncaoTipo.Cargo)
-                    .Select(t => new PropostaPublicoAlvo
-                    {
-                        PropostaId = proposta.Id,
-                        CargoFuncaoId = t.Id,
-                        CriadoEm = t.CriadoEm,
-                        CriadoPor = t.CriadoPor,
-                        CriadoLogin = t.CriadoLogin,
-                    });
 
-                await InserirNaBase(publicosAlvo.ElementAt(0));
-                await InserirNaBase(publicosAlvo.ElementAt(1));
+            var publicosAlvo = PropostaMock.GerarPublicoAlvo(proposta.Id, cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo));
+            if (publicosAlvo != null)
+                await InserirNaBase(publicosAlvo);
 
-                var funcoesEspecifica = cargosFuncoes
-                    .Where(t => t.Tipo == CargoFuncaoTipo.Funcao)
-                    .Select(t => new PropostaFuncaoEspecifica
-                    {
-                        PropostaId = proposta.Id,
-                        CargoFuncaoId = t.Id,
-                        CriadoEm = t.CriadoEm,
-                        CriadoPor = t.CriadoPor,
-                        CriadoLogin = t.CriadoLogin,
-                    });
+            var funcoesEspecifica = PropostaMock.GerarFuncoesEspecificas(proposta.Id, cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao));
+            if (funcoesEspecifica != null)
+                await InserirNaBase(funcoesEspecifica);
 
-                await InserirNaBase(funcoesEspecifica.ElementAt(0));
-                await InserirNaBase(funcoesEspecifica.ElementAt(1));
+            var vagasRemanecentes = PropostaMock.GerarVagasRemanecentes(proposta.Id, cargosFuncoes);
+            if (vagasRemanecentes != null)
+                await InserirNaBase(vagasRemanecentes);
 
-                var vagasRemanecentes = cargosFuncoes
-                    .Select(t => new PropostaVagaRemanecente
-                    {
-                        PropostaId = proposta.Id,
-                        CargoFuncaoId = t.Id,
-                        CriadoEm = t.CriadoEm,
-                        CriadoPor = t.CriadoPor,
-                        CriadoLogin = t.CriadoLogin,
-                    });
-
-                await InserirNaBase(vagasRemanecentes.ElementAt(0));
-                await InserirNaBase(vagasRemanecentes.ElementAt(1));
-            }
-
-            if (criteriosValidacaoInscricao != null && criteriosValidacaoInscricao.Any())
-            {
-                var criterios = criteriosValidacaoInscricao
-                    .Select(t => new PropostaCriterioValidacaoInscricao
-                    {
-                        PropostaId = proposta.Id,
-                        CriterioValidacaoInscricaoId = t.Id,
-                        CriadoEm = t.CriadoEm,
-                        CriadoPor = t.CriadoPor,
-                        CriadoLogin = t.CriadoLogin,
-                    });
-
-                await InserirNaBase(criterios.ElementAt(0));
-            }
+            var criterios = PropostaMock.GerarCritariosValidacaoInscricao(proposta.Id, criteriosValidacaoInscricao);
+            if (criterios != null)
+                await InserirNaBase(criterios);
 
             return proposta;
         }

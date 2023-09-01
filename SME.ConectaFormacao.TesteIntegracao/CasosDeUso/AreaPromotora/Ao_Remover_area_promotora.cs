@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         }
 
         [Fact(DisplayName = "Área promotora - Deve remover área promotora válida")]
-        public async Task Deve_alterar_area_promotora_valida()
+        public async Task Deve_remover_area_promotora_valida()
         {
             // arrange 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
