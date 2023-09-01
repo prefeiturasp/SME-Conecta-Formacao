@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Shouldly;
-using SME.ConectaFormacao.Aplicacao;
+﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -11,48 +7,21 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
-    public class Ao_inserir_proposta : TesteBase
+    public class Ao_alterar_proposta : TesteBase
     {
-        public Ao_inserir_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_alterar_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
 
-        protected override void RegistrarQueryFakes(IServiceCollection services)
-        {
-            base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoUsuarioLogadoQuery, Guid>), typeof(ObterGrupoUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
-        }
-
-        [Fact(DisplayName = "Proposta - Deve inserir rascunho sem nenhuma informação preenchida")]
-        public async Task Deve_inserir_proposta_rascunho_sem_informacao_preenchida()
+        [Fact(DisplayName = "Proposta - Deve alterar rascunho para ativo")]
+        public async Task Deve_alterar_proposta_rascunho_sem_informacao_preenchida()
         {
             // arrange
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
-
-            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOVazio(SituacaoRegistro.Rascunho);
-
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
-
-            // act 
-            var id = await casoDeUso.Executar(propostaDTO);
-
-            // assert
-            id.ShouldBeGreaterThan(0);
-
-            ValidarProposta(propostaDTO, id);
-        }
-
-        [Fact(DisplayName = "Proposta - Deve inserir proposta válida")]
-        public async Task Deve_inserir_proposta_valida()
-        {
-            //arrange
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -61,6 +30,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
+
+            var proposta = PropostaMock.GerarPropostaRascunho(areaPromotora.Id);
+            await InserirNaBase(proposta);
 
             var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
             var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
@@ -76,10 +48,49 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 vagasRemanecentesDTO,
                 SituacaoRegistro.Ativo);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var id = await casoDeUso.Executar(proposta.Id, propostaDTO);
+
+            // assert
+            id.ShouldBeGreaterThan(0);
+
+            ValidarProposta(propostaDTO, id);
+            ValidarPropostaPublicoAlvo(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaFuncaoEspecifica(propostaDTO.FuncoesEspecificas, id);
+            ValidarPropostaVagaRemanecente(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricao(propostaDTO.CriteriosValidacaoInscricao, id);
+        }
+
+        [Fact(DisplayName = "Proposta - Deve alterar proposta válida")]
+        public async Task Deve_alterar_proposta_valida()
+        {
+            //arrange
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
+
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Modalidade.Presencial,
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
+                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
+                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
+                SituacaoRegistro.Ativo);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
+
+            // act 
+            var id = await casoDeUso.Executar(proposta.Id, propostaDTO);
 
             // assert
             id.ShouldBeGreaterThan(0);
@@ -98,23 +109,31 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
+
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOVazio(SituacaoRegistro.Ativo);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(propostaDTO));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, propostaDTO));
 
             // assert
-            excecao.Mensagens.Contains("É nescessário informar o tipo de formação para inserir a proposta").ShouldBeTrue();
-            excecao.Mensagens.Contains("É nescessário informar a modalidade para inserir a proposta").ShouldBeTrue();
-            excecao.Mensagens.Contains("É nescessário informar o tipo de inscrição para inserir a proposta").ShouldBeTrue();
-            excecao.Mensagens.Contains("É nescessário informar o público alvo para inserir a proposta").ShouldBeTrue();
-            excecao.Mensagens.Contains("É nescessário informar os critérios de validação das inscrições para inserir a proposta").ShouldBeTrue();
+            excecao.Mensagens.Contains("É nescessário informar o tipo de formação para alterar a proposta").ShouldBeTrue();
+            excecao.Mensagens.Contains("É nescessário informar a modalidade para alterar a proposta").ShouldBeTrue();
+            excecao.Mensagens.Contains("É nescessário informar o tipo de inscrição para alterar a proposta").ShouldBeTrue();
+            excecao.Mensagens.Contains("É nescessário informar o público alvo para alterar a proposta").ShouldBeTrue();
+            excecao.Mensagens.Contains("É nescessário informar os critérios de validação das inscrições para alterar a proposta").ShouldBeTrue();
         }
 
-        [Fact(DisplayName = "Proposta - Deve inserir quando o tipo de formação for evento e modalidade hibrida")]
-        public async Task Deve_inserir_proposta_tipo_formacao_evento_e_modalidade_hibrido_valido()
+        [Fact(DisplayName = "Proposta - Deve alterar quando o tipo de formação for evento e modalidade hibrida")]
+        public async Task Deve_alterar_proposta_tipo_formacao_evento_e_modalidade_hibrido_valido()
         {
             // arrange
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
@@ -125,6 +144,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
 
             var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
             var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
@@ -140,10 +161,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                vagasRemanecentesDTO,
                SituacaoRegistro.Ativo);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var id = await casoDeUso.Executar(proposta.Id, propostaDTO);
 
             // assert
             id.ShouldBeGreaterThan(0);
@@ -168,6 +189,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
 
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
+
             var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
             var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
             var criteriosDTO = criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id });
@@ -182,10 +205,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                vagasRemanecentesDTO,
                SituacaoRegistro.Ativo);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(propostaDTO));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, propostaDTO));
 
             // assert
             excecao.Mensagens.Contains("É permitido a modalidade Híbrido somente para o tipo de formação evento").ShouldBeTrue();
@@ -204,6 +227,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
 
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
+
             var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
             var criteriosDTO = criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id });
             var vagasRemanecentesDTO = cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id });
@@ -221,17 +246,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             propostaDTO.FuncaoEspecificaOutros = string.Empty;
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(propostaDTO));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, propostaDTO));
 
             // assert
-            excecao.Mensagens.Contains("É nescessário informar função específicas outros para inserir a proposta").ShouldBeTrue();
+            excecao.Mensagens.Contains("É nescessário informar função específicas outros para alterar a proposta").ShouldBeTrue();
         }
 
-        [Fact(DisplayName = "Proposta - Deve inserir quando função especificas outros for válido")]
-        public async Task Deve_inserir_proposta_funcao_especifica_outros_valido()
+        [Fact(DisplayName = "Proposta - Deve alterar quando função especificas outros for válido")]
+        public async Task Deve_alterar_proposta_funcao_especifica_outros_valido()
         {
             // arrange
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
@@ -242,6 +267,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
 
             var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
             var criteriosDTO = criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id });
@@ -258,18 +285,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                vagasRemanecentesDTO,
                SituacaoRegistro.Ativo, gerarFuncaoEspecificaOutros: true);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var id = await casoDeUso.Executar(proposta.Id, propostaDTO);
 
             // assert
             id.ShouldBeGreaterThan(0);
 
             ValidarProposta(propostaDTO, id);
-            ValidarPropostaPublicoAlvo(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaVagaRemanecente(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricao(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaPublicoAlvo(publicosAlvoDTO, id);
+            ValidarPropostaVagaRemanecente(vagasRemanecentesDTO, id);
+            ValidarPropostaCriterioValidacaoInscricao(criteriosDTO, id);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção quando critério validação inscrição outros estiver habilitado")]
@@ -281,6 +308,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
             await InserirNaBase(cargosFuncoes);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, null);
 
             var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
             var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
@@ -299,17 +328,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             propostaDTO.FuncaoEspecificaOutros = string.Empty;
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(propostaDTO));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, propostaDTO));
 
             // assert
-            excecao.Mensagens.Contains("É nescessário informar critérios de validação das inscrições outros para inserir a proposta").ShouldBeTrue();
+            excecao.Mensagens.Contains("É nescessário informar critérios de validação das inscrições outros para alterar a proposta").ShouldBeTrue();
         }
 
-        [Fact(DisplayName = "Proposta - Deve inserir quando critério validação inscrição outros for válido")]
-        public async Task Deve_inserir_proposta_criterio_validacao_inscricao_outros_valido()
+        [Fact(DisplayName = "Proposta - Deve alterar quando critério validação inscrição outros for válido")]
+        public async Task Deve_alterar_proposta_criterio_validacao_inscricao_outros_valido()
         {
             // arrange
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
@@ -317,6 +346,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
             await InserirNaBase(cargosFuncoes);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, null);
 
             var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
             var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
@@ -333,20 +364,92 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                vagasRemanecentesDTO,
                SituacaoRegistro.Ativo, gerarCriterioValidacaoInscricaoOutros: true);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var id = await casoDeUso.Executar(proposta.Id, propostaDTO);
 
             // assert
             id.ShouldBeGreaterThan(0);
 
             ValidarProposta(propostaDTO, id);
-            ValidarPropostaPublicoAlvo(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaVagaRemanecente(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricao(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaPublicoAlvo(publicosAlvoDTO, id);
+            ValidarPropostaVagaRemanecente(vagasRemanecentesDTO, id);
+            ValidarPropostaCriterioValidacaoInscricao(criteriosDTO, id);
         }
 
+        private async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
+        {
+            var proposta = PropostaMock.GerarPropostaValida(
+                areaPromotora.Id,
+                TipoFormacao.Curso,
+                Modalidade.Presencial,
+                SituacaoRegistro.Ativo,
+                false, false);
+
+            await InserirNaBase(proposta);
+
+            if (cargosFuncoes != null && cargosFuncoes.Any())
+            {
+                var publicosAlvo = cargosFuncoes
+                    .Where(t => t.Tipo == CargoFuncaoTipo.Cargo)
+                    .Select(t => new PropostaPublicoAlvo
+                    {
+                        PropostaId = proposta.Id,
+                        CargoFuncaoId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    });
+
+                await InserirNaBase(publicosAlvo.ElementAt(0));
+                await InserirNaBase(publicosAlvo.ElementAt(1));
+
+                var funcoesEspecifica = cargosFuncoes
+                    .Where(t => t.Tipo == CargoFuncaoTipo.Funcao)
+                    .Select(t => new PropostaFuncaoEspecifica
+                    {
+                        PropostaId = proposta.Id,
+                        CargoFuncaoId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    });
+
+                await InserirNaBase(funcoesEspecifica.ElementAt(0));
+                await InserirNaBase(funcoesEspecifica.ElementAt(1));
+
+                var vagasRemanecentes = cargosFuncoes
+                    .Select(t => new PropostaVagaRemanecente
+                    {
+                        PropostaId = proposta.Id,
+                        CargoFuncaoId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    });
+
+                await InserirNaBase(vagasRemanecentes.ElementAt(0));
+                await InserirNaBase(vagasRemanecentes.ElementAt(1));
+            }
+
+            if (criteriosValidacaoInscricao != null && criteriosValidacaoInscricao.Any())
+            {
+                var criterios = criteriosValidacaoInscricao
+                    .Select(t => new PropostaCriterioValidacaoInscricao
+                    {
+                        PropostaId = proposta.Id,
+                        CriterioValidacaoInscricaoId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    });
+
+                await InserirNaBase(criterios.ElementAt(0));
+            }
+
+            return proposta;
+        }
 
         private void ValidarProposta(PropostaDTO propostaDTO, long id)
         {
@@ -370,7 +473,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
         private void ValidarPropostaCriterioValidacaoInscricao(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> criteriosDTO, long id)
         {
-            var criterioValidacaoInscricaos = ObterTodos<PropostaCriterioValidacaoInscricao>();
+            var criterioValidacaoInscricaos = ObterTodos<PropostaCriterioValidacaoInscricao>().Where(t => !t.Excluido);
             foreach (var criterioValidacaoInscricao in criterioValidacaoInscricaos)
             {
                 criterioValidacaoInscricao.PropostaId.ShouldBe(id);
@@ -380,7 +483,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
         private void ValidarPropostaVagaRemanecente(IEnumerable<PropostaVagaRemanecenteDTO> vagasRemanecentesDTO, long id)
         {
-            var vagasRemanecentes = ObterTodos<PropostaVagaRemanecente>();
+            var vagasRemanecentes = ObterTodos<PropostaVagaRemanecente>().Where(t => !t.Excluido);
             foreach (var vagaRemanecente in vagasRemanecentes)
             {
                 vagaRemanecente.PropostaId.ShouldBe(id);
@@ -390,7 +493,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
         private void ValidarPropostaFuncaoEspecifica(IEnumerable<PropostaFuncaoEspecificaDTO> funcoesEspecificaDTO, long id)
         {
-            var funcoesEspecificas = ObterTodos<PropostaFuncaoEspecifica>();
+            var funcoesEspecificas = ObterTodos<PropostaFuncaoEspecifica>().Where(t => !t.Excluido);
             foreach (var funcaoEspecifica in funcoesEspecificas)
             {
                 funcaoEspecifica.PropostaId.ShouldBe(id);
@@ -400,7 +503,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
         private void ValidarPropostaPublicoAlvo(IEnumerable<PropostaPublicoAlvoDTO> publicosAlvoDTO, long id)
         {
-            var publicosAlvo = ObterTodos<PropostaPublicoAlvo>();
+            var publicosAlvo = ObterTodos<PropostaPublicoAlvo>().Where(t => !t.Excluido);
             foreach (var publicoAlvo in publicosAlvo)
             {
                 publicoAlvo.PropostaId.ShouldBe(id);

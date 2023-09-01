@@ -50,7 +50,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     await _repositorioProposta.InserirCriteriosValidacaoInscricao(transacao, id, criteriosValidacaoInscricao);
 
                 if (vagasRemanecentes.Any())
-                    await _repositorioProposta.InserirvagasRemanecentes(transacao, id, vagasRemanecentes);
+                    await _repositorioProposta.InserirVagasRemanecentes(transacao, id, vagasRemanecentes);
 
                 transacao.Commit();
 

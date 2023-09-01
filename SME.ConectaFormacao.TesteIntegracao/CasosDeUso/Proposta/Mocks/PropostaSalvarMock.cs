@@ -22,10 +22,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.Modalidade, modalidade);
             faker.RuleFor(x => x.TipoInscricao, f => f.PickRandom<TipoInscricao>());
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
-            faker.RuleFor(x => x.PublicosAlvo, propostaPublicoAlvos);
-            faker.RuleFor(x => x.FuncoesEspecificas, propostaFuncaoEspecificas);
-            faker.RuleFor(x => x.CriteriosValidacaoInscricao, propostaCriterioValidacaoInscricaos);
-            faker.RuleFor(x => x.VagasRemanecentes, propostaVagaRemanecentes);
+            faker.RuleFor(x => x.PublicosAlvo, f => new PropostaPublicoAlvoDTO[] { f.PickRandom(propostaPublicoAlvos) });
+            faker.RuleFor(x => x.FuncoesEspecificas, f => new PropostaFuncaoEspecificaDTO[] { f.PickRandom(propostaFuncaoEspecificas) });
+            faker.RuleFor(x => x.CriteriosValidacaoInscricao, f => new PropostaCriterioValidacaoInscricaoDTO[] { f.PickRandom(propostaCriterioValidacaoInscricaos) });
+            faker.RuleFor(x => x.VagasRemanecentes, f => new PropostaVagaRemanecenteDTO[] { f.PickRandom(propostaVagaRemanecentes) });
             faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Number(1, 999));
             faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Number(1, 999));
 
