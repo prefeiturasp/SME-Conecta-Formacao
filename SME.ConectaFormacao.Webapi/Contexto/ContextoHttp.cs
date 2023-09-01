@@ -36,6 +36,14 @@ public class ContextoHttp : ContextoBase
             Variaveis.Add("TemAuthorizationHeader", true);
             Variaveis.Add("TokenAtual", authorizationHeader.Value.Single().Split(' ').Last());
         }
+
+        var numeroPagina = httpContextAccessor.HttpContext?.Request?.Headers["numeroPagina"];
+        if(numeroPagina.HasValue)
+            Variaveis.Add("NumeroPagina", numeroPagina.ToString());
+
+        var numeroRegistros = httpContextAccessor.HttpContext?.Request?.Headers["numeroRegistros"];
+        if (numeroRegistros.HasValue)
+            Variaveis.Add("NumeroRegistros", numeroRegistros.ToString());
     }
 
     private IEnumerable<InternalClaim> GetInternalClaim()
