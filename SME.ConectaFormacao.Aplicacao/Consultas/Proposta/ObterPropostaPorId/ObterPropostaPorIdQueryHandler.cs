@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PropostaCompletoDTO> Handle(ObterPropostaPorIdQuery request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id);
-            if (proposta == null)
+            if (proposta == null || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
             proposta.PublicosAlvo = await _repositorioProposta.ObterPublicoAlvoPorId(request.Id);
