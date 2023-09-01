@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        [Fact(DisplayName = "Proposta - Deve alterar rascunho para ativo")]
+        [Fact(DisplayName = "Proposta - Deve alterar rascunho sem informação preenchida")]
         public async Task Deve_alterar_proposta_rascunho_sem_informacao_preenchida()
         {
             // arrange
@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 funcoesEspecificaDTO,
                 criteriosDTO,
                 vagasRemanecentesDTO,
-                SituacaoRegistro.Ativo);
+                SituacaoRegistro.Rascunho);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
