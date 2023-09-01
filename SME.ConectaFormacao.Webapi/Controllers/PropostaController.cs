@@ -94,5 +94,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoAlterarProposta.Executar(id, propostaDTO));
         }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> RemoverProposta(
+          [FromServices] ICasoDeUsoRemoverProposta casoDeUsoRemoverProposta,
+          [FromRoute] long id)
+        {
+            return Ok(await casoDeUsoRemoverProposta.Executar(id));
+        }
     }
 }
