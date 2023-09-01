@@ -2,7 +2,6 @@
 using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Data;
 
@@ -53,27 +52,23 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<long> Inserir(IDbTransaction transacao, AreaPromotora areaPromotora)
         {
-            areaPromotora.CriadoEm = DateTimeExtension.HorarioBrasilia();
-            areaPromotora.CriadoPor = contexto.NomeUsuario;
-            areaPromotora.CriadoLogin = contexto.UsuarioLogado;
+            PreencherAuditoriaCriacao(areaPromotora);
+
             areaPromotora.Id = (long)await conexao.Obter().InsertAsync(areaPromotora, transacao);
             return areaPromotora.Id;
         }
 
         public Task<bool> Atualizar(IDbTransaction transacao, AreaPromotora areaPromotora)
         {
-            areaPromotora.AlteradoEm = DateTimeExtension.HorarioBrasilia();
-            areaPromotora.AlteradoPor = contexto.NomeUsuario;
-            areaPromotora.AlteradoLogin = contexto.UsuarioLogado;
+            PreencherAuditoriaAlteracao(areaPromotora);
 
             return conexao.Obter().UpdateAsync(areaPromotora, transacao);
         }
 
         public Task<bool> Remover(IDbTransaction transacao, AreaPromotora areaPromotora)
         {
-            areaPromotora.AlteradoEm = DateTimeExtension.HorarioBrasilia();
-            areaPromotora.AlteradoPor = contexto.NomeUsuario;
-            areaPromotora.AlteradoLogin = contexto.UsuarioLogado;
+            PreencherAuditoriaAlteracao(areaPromotora);
+
             areaPromotora.Excluido = true;
 
             return conexao.Obter().UpdateAsync(areaPromotora, transacao);
@@ -102,9 +97,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             foreach (var telefone in telefones)
             {
-                telefone.CriadoEm = DateTimeExtension.HorarioBrasilia();
-                telefone.CriadoPor = contexto.NomeUsuario;
-                telefone.CriadoLogin = contexto.UsuarioLogado;
+                PreencherAuditoriaCriacao(telefone);
+
                 telefone.AreaPromotoraId = id;
                 telefone.Id = (long)await conexao.Obter().InsertAsync(telefone, transacao);
             }
@@ -114,9 +108,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             foreach (var telefone in telefones)
             {
-                telefone.AlteradoEm = DateTimeExtension.HorarioBrasilia();
-                telefone.AlteradoPor = contexto.NomeUsuario;
-                telefone.AlteradoLogin = contexto.UsuarioLogado;
+                PreencherAuditoriaAlteracao(telefone);
+
                 telefone.Excluido = true;
                 await conexao.Obter().UpdateAsync(telefone, transacao);
             }
@@ -130,6 +123,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query += " and id <> @ignorarAreaPromotoraId";
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { grupoId, ignorarAreaPromotoraId });
+        }
+
+        public Task<AreaPromotora> ObterPorGrupoId(Guid grupoId)
+        {
+            var query = @"select id, nome from area_promotora where grupo_id = @grupoId";
+
+            return conexao.Obter().QueryFirstAsync<AreaPromotora>(query, new { grupoId });
         }
     }
 }

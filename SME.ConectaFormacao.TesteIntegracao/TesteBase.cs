@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.TesteIntegracao
         {
         }
 
-        public Task InserirNaBase<T>(IEnumerable<T> objetos) where T : class, new()
+        public Task InserirNaBase<T>(IEnumerable<T> objetos) where T : EntidadeBase, new()
         {
             _collectionFixture.Database.Inserir(objetos);
             return Task.CompletedTask;

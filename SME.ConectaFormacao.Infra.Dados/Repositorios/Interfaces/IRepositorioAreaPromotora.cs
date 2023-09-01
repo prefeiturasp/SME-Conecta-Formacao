@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> ObterTotalRegistrosPorFiltros(string nome, short? tipo);
         Task InserirTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones);
         Task RemoverTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones);
+        Task<AreaPromotora> ObterPorGrupoId(Guid grupoId);
         Task<bool> ExistePorGrupoId(Guid grupoId, long ignorarAreaPromotoraId);
     }
 }
