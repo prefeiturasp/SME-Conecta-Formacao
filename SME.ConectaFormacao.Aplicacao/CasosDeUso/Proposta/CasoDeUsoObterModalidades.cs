@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
@@ -10,9 +11,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<IEnumerable<RetornoListagemDTO>> Executar()
+        public async Task<IEnumerable<RetornoListagemDTO>> Executar(TipoFormacao tipoFormacaoId)
         {
-            return await mediator.Send(ObterModalidadesQuery.Instancia);
+            return await mediator.Send(new ObterModalidadesQuery(tipoFormacaoId));
         }
     }
 }
