@@ -38,7 +38,7 @@ public class ContextoHttp : ContextoBase
         }
 
         var numeroPagina = httpContextAccessor.HttpContext?.Request?.Headers["numeroPagina"];
-        if(numeroPagina.HasValue)
+        if (numeroPagina.HasValue)
             Variaveis.Add("NumeroPagina", numeroPagina.ToString());
 
         var numeroRegistros = httpContextAccessor.HttpContext?.Request?.Headers["numeroRegistros"];
