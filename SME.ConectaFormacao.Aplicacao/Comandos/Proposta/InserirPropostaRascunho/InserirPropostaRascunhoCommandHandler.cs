@@ -24,15 +24,12 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var proposta = _mapper.Map<Proposta>(request.PropostaDTO);
             proposta.AreaPromotoraId = request.AreaPromotoraId;
-            proposta.Situacao = Dominio.Enumerados.SituacaoRegistro.Rascunho;
+            proposta.Situacao = SituacaoRegistro.Rascunho;
 
             var publicosAlvo = _mapper.Map<IEnumerable<PropostaPublicoAlvo>>(request.PropostaDTO.PublicosAlvo);
             var funcoesEspecificas = _mapper.Map<IEnumerable<PropostaFuncaoEspecifica>>(request.PropostaDTO.FuncoesEspecificas);
             var criteriosValidacaoInscricao = _mapper.Map<IEnumerable<PropostaCriterioValidacaoInscricao>>(request.PropostaDTO.CriteriosValidacaoInscricao);
             var vagasRemanecentes = _mapper.Map<IEnumerable<PropostaVagaRemanecente>>(request.PropostaDTO.VagasRemanecentes);
-
-            funcoesEspecificas = funcoesEspecificas.Where(t => t.Id != (long)OpcaoListagem.Outros);
-            criteriosValidacaoInscricao = criteriosValidacaoInscricao.Where(t => t.Id != (long)OpcaoListagem.Outros);
 
             var transacao = _transacao.Iniciar();
 

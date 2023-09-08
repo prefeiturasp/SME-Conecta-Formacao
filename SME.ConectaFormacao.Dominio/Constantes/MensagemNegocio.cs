@@ -14,4 +14,7 @@ public class MensagemNegocio
     public const string AREA_PROMOTORA_EXISTE_GRUPO_CADASTRADO = "Já existe uma área promotora cadastrada para o perfil selecionado";
     public const string EMAIL_INVALIDO = "E-mail {0} é inválido";
     public const string PROPOSTA_NAO_ENCONTRADA = "Proposta não encontrada";
+
+    public const string PROPOSTA_FUNCAO_ESPECIFICA_OUTROS = "É nescessário informar função específicas outros da proposta";
+    public const string PROPOSTA_CRITERIO_VALIDACAO_INSCRICAO_OUTROS = "É nescessário informar critérios de validação das inscrições outros da proposta";
 }

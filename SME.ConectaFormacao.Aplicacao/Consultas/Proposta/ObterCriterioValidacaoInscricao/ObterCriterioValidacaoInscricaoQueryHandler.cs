@@ -8,9 +8,9 @@ namespace SME.ConectaFormacao.Aplicacao
     public class ObterCriterioValidacaoInscricaoQueryHandler : IRequestHandler<ObterCriterioValidacaoInscricaoQuery, IEnumerable<CriterioValidacaoInscricaoDTO>>
     {
         private readonly IMapper _mapper;
-        private readonly IRepositorioCriterioAvaliacaoInscricao _repositorioCriterioAvaliacaoInscricao;
+        private readonly IRepositorioCriterioValidacaoInscricao _repositorioCriterioAvaliacaoInscricao;
 
-        public ObterCriterioValidacaoInscricaoQueryHandler(IMapper mapper, IRepositorioCriterioAvaliacaoInscricao repositorioCriterioAvaliacaoInscricao)
+        public ObterCriterioValidacaoInscricaoQueryHandler(IMapper mapper, IRepositorioCriterioValidacaoInscricao repositorioCriterioAvaliacaoInscricao)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioCriterioAvaliacaoInscricao = repositorioCriterioAvaliacaoInscricao ?? throw new ArgumentNullException(nameof(repositorioCriterioAvaliacaoInscricao));
@@ -18,8 +18,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<CriterioValidacaoInscricaoDTO>> Handle(ObterCriterioValidacaoInscricaoQuery request, CancellationToken cancellationToken)
         {
-            var criterios = await _repositorioCriterioAvaliacaoInscricao.ObterTodos();
-            return _mapper.Map<IEnumerable<CriterioValidacaoInscricaoDTO>>(criterios);
+            var criterios = await _repositorioCriterioAvaliacaoInscricao.ObterIgnorandoExcluidos(request.ExibirOutros);
+            return _mapper.Map<IEnumerable<CriterioValidacaoInscricaoDTO>>(criterios.OrderBy(o => o.Ordem));
         }
     }
 }

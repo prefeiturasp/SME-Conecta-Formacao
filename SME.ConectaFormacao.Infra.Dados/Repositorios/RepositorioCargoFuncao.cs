@@ -12,16 +12,32 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public Task<IEnumerable<CargoFuncao>> ObterPorTipo(CargoFuncaoTipo? tipo)
+        public Task<bool> ExisteCargoFuncaoOutros(long[] ids)
         {
-            var query = @"select id, nome, tipo from cargo_funcao ";
+            var query = "select count(1) from cargo_funcao where id = any(@ids) and outros and not excluido limit 1";
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { ids });
+        }
+
+        public Task<IEnumerable<CargoFuncao>> ObterIgnorandoExcluidosPorTipo(CargoFuncaoTipo? tipo, bool exibirOutros)
+        {
+            var tipos = new short[] {
+                (short)CargoFuncaoTipo.Outros,
+                (short)tipo.GetValueOrDefault()
+            };
+
+            var query = @"select id, nome, tipo, outros 
+                          from cargo_funcao 
+                          where not excluido";
 
             if (tipo.HasValue)
-                query += " where tipo = @tipo ";
+                query += " and tipo = any(@tipos)";
 
-            query += " order by nome";
+            if (!exibirOutros)
+                query += " and not outros ";
 
-            return conexao.Obter().QueryAsync<CargoFuncao>(query, new { tipo });
+            query += " order by ordem";
+
+            return conexao.Obter().QueryAsync<CargoFuncao>(query, new { tipos });
         }
     }
 }

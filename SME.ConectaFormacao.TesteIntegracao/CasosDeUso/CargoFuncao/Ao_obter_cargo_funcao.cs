@@ -1,6 +1,5 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -65,7 +64,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao
         public async Task Deve_obter_todos_cargos_funcoes_opcao_outros()
         {
             // arrange 
-            var cargosEFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            var cargosEFuncoes = CargoFuncaoMock.GerarCargoFuncao(10, true);
             await InserirNaBase(cargosEFuncoes);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterCargoFuncao>();
@@ -74,8 +73,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao
             var retorno = await casoDeUso.Executar(null, true);
 
             // assert
-            retorno.Count().ShouldBe(cargosEFuncoes.Count() + 1);
-            retorno.Any(t => t.Id == (long)OpcaoListagem.Outros).ShouldBeTrue();
+            retorno.Count().ShouldBe(cargosEFuncoes.Count());
+            retorno.Any(t => t.Outros).ShouldBeTrue();
         }
     }
 }
