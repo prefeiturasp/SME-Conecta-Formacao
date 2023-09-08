@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<CargoFuncaoDTO>> Handle(ObterCargoFuncaoQuery request, CancellationToken cancellationToken)
         {
-            var cargosFuncoes = await _repositorioCargoFuncao.ObterPorTipo(request.Tipo);
+            var cargosFuncoes = await _repositorioCargoFuncao.ObterIgnorandoExcluidosPorTipo(request.Tipo, request.ExibirOutros);
             return _mapper.Map<IEnumerable<CargoFuncaoDTO>>(cargosFuncoes);
         }
     }

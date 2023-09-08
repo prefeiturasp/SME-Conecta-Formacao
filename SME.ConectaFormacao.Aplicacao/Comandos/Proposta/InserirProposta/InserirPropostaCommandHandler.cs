@@ -9,12 +9,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class InserirPropostaCommandHandler : IRequestHandler<InserirPropostaCommand, long>
     {
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioProposta _repositorioProposta;
 
-        public InserirPropostaCommandHandler(IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
+        public InserirPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
         {
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
@@ -22,6 +24,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(InserirPropostaCommand request, CancellationToken cancellationToken)
         {
+            await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
+            await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
+
             var proposta = _mapper.Map<Proposta>(request.PropostaDTO);
             proposta.AreaPromotoraId = request.AreaPromotoraId;
             proposta.Situacao = SituacaoRegistro.Ativo;
@@ -30,9 +35,6 @@ namespace SME.ConectaFormacao.Aplicacao
             var funcoesEspecificas = _mapper.Map<IEnumerable<PropostaFuncaoEspecifica>>(request.PropostaDTO.FuncoesEspecificas);
             var criteriosValidacaoInscricao = _mapper.Map<IEnumerable<PropostaCriterioValidacaoInscricao>>(request.PropostaDTO.CriteriosValidacaoInscricao);
             var vagasRemanecentes = _mapper.Map<IEnumerable<PropostaVagaRemanecente>>(request.PropostaDTO.VagasRemanecentes);
-
-            funcoesEspecificas = funcoesEspecificas.Where(t => t.CargoFuncaoId != (long)OpcaoListagem.Outros);
-            criteriosValidacaoInscricao = criteriosValidacaoInscricao.Where(t => t.CriterioValidacaoInscricaoId != (long)OpcaoListagem.Outros).ToList();
 
             var transacao = _transacao.Iniciar();
 

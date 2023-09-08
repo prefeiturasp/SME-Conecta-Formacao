@@ -11,12 +11,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class AlterarPropostaCommandHandler : IRequestHandler<AlterarPropostaCommand, long>
     {
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioProposta _repositorioProposta;
 
-        public AlterarPropostaCommandHandler(IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
+        public AlterarPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
         {
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
@@ -27,6 +29,9 @@ namespace SME.ConectaFormacao.Aplicacao
             var proposta = await _repositorioProposta.ObterPorId(request.Id);
             if (proposta == null)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
+
+            await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
+            await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
 
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
 
@@ -43,12 +48,12 @@ namespace SME.ConectaFormacao.Aplicacao
             var publicoAlvoExcluir = publicoAlvoAntes.Where(w => !publicoAlvoDepois.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
 
             var funcoesEspecificasAntes = await _repositorioProposta.ObterFuncoesEspecificasPorId(request.Id);
-            var funcoesEspecificasDepois = _mapper.Map<IEnumerable<PropostaFuncaoEspecifica>>(request.PropostaDTO.FuncoesEspecificas).Where(t => t.CargoFuncaoId != (long)OpcaoListagem.Outros);
+            var funcoesEspecificasDepois = _mapper.Map<IEnumerable<PropostaFuncaoEspecifica>>(request.PropostaDTO.FuncoesEspecificas);
             var funcoesEspecificasInserir = funcoesEspecificasDepois.Where(w => !funcoesEspecificasAntes.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
             var funcoesEspecificasExcluir = funcoesEspecificasAntes.Where(w => !funcoesEspecificasDepois.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
 
             var criteriosValidacaoInscricaoAntes = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
-            var criteriosValidacaoInscricaoDepois = _mapper.Map<IEnumerable<PropostaCriterioValidacaoInscricao>>(request.PropostaDTO.CriteriosValidacaoInscricao).Where(t => t.CriterioValidacaoInscricaoId != (long)OpcaoListagem.Outros);
+            var criteriosValidacaoInscricaoDepois = _mapper.Map<IEnumerable<PropostaCriterioValidacaoInscricao>>(request.PropostaDTO.CriteriosValidacaoInscricao);
             var criteriosValidacaoInscricaoInserir = criteriosValidacaoInscricaoDepois.Where(w => !criteriosValidacaoInscricaoAntes.Any(a => a.CriterioValidacaoInscricaoId == w.CriterioValidacaoInscricaoId));
             var criteriosValidacaoInscricaoExcluir = criteriosValidacaoInscricaoAntes.Where(w => !criteriosValidacaoInscricaoDepois.Any(a => a.CriterioValidacaoInscricaoId == w.CriterioValidacaoInscricaoId));
 

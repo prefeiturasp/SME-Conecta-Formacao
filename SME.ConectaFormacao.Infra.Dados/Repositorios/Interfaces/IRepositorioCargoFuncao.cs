@@ -6,6 +6,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
     public interface IRepositorioCargoFuncao : IRepositorioBaseAuditavel<CargoFuncao>
     {
-        Task<IEnumerable<CargoFuncao>> ObterPorTipo(CargoFuncaoTipo? tipo);
+        Task<bool> ExisteCargoFuncaoOutros(long[] ids);
+        Task<IEnumerable<CargoFuncao>> ObterIgnorandoExcluidosPorTipo(CargoFuncaoTipo? tipo, bool exibirOutros);
     }
 }
