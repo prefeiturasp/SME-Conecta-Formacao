@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var proposta = _mapper.Map<Proposta>(request.PropostaDTO);
             proposta.AreaPromotoraId = request.AreaPromotoraId;
-            proposta.Situacao = SituacaoRegistro.Ativo;
+            proposta.Situacao = SituacaoProposta.Ativo;
 
             var publicosAlvo = _mapper.Map<IEnumerable<PropostaPublicoAlvo>>(request.PropostaDTO.PublicosAlvo);
             var funcoesEspecificas = _mapper.Map<IEnumerable<PropostaFuncaoEspecifica>>(request.PropostaDTO.FuncoesEspecificas);

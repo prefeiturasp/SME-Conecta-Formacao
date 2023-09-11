@@ -8,9 +8,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao.Mocks
     {
         private static Faker<Dominio.Entidades.CargoFuncao> Gerador(CargoFuncaoTipo? cargoFuncaoTipo = null, bool outros = false)
         {
+            var opcoesCargoFuncao = new CargoFuncaoTipo[] { CargoFuncaoTipo.Cargo, CargoFuncaoTipo.Funcao };
+
+            if (outros)
+                opcoesCargoFuncao = new CargoFuncaoTipo[] { CargoFuncaoTipo.Outros };
+
             var faker = new Faker<Dominio.Entidades.CargoFuncao>();
             faker.RuleFor(dest => dest.Nome, f => f.Commerce.Department());
-            faker.RuleFor(dest => dest.Tipo, f => cargoFuncaoTipo.HasValue ? cargoFuncaoTipo : f.PickRandom<CargoFuncaoTipo>());
+            faker.RuleFor(dest => dest.Tipo, f => cargoFuncaoTipo.HasValue ? cargoFuncaoTipo : f.PickRandom<CargoFuncaoTipo>(opcoesCargoFuncao));
             faker.RuleFor(dest => dest.Outros, outros);
             faker.RuleFor(dest => dest.CriadoEm, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(dest => dest.CriadoPor, f => f.Person.FullName);

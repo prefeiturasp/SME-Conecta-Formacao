@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string NomeFormacao { get; set; }
         public int? QuantidadeTurmas { get; set; }
         public int? QuantidadeVagasTurma { get; set; }
-        public SituacaoRegistro Situacao { get; set; }
+        public SituacaoProposta Situacao { get; set; }
         public string FuncaoEspecificaOutros { get; set; }
         public string CriterioValidacaoInscricaoOutros { get; set; }
 

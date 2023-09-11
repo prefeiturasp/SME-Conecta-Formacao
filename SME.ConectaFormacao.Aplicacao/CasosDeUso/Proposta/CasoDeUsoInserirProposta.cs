@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             var grupoUsuarioLogadoId = await mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
             var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorGrupoIdQuery(grupoUsuarioLogadoId));
 
-            if (propostaDTO.Situacao == Dominio.Enumerados.SituacaoRegistro.Ativo)
+            if (propostaDTO.Situacao == Dominio.Enumerados.SituacaoProposta.Ativo)
                 return await mediator.Send(new InserirPropostaCommand(areaPromotora.Id, propostaDTO));
 
             return await mediator.Send(new InserirPropostaRascunhoCommand(areaPromotora.Id, propostaDTO));
