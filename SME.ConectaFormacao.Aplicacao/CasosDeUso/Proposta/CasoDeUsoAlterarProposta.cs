@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         public async Task<long> Executar(long id, PropostaDTO propostaDTO)
         {
 
-            if (propostaDTO.Situacao == Dominio.Enumerados.SituacaoRegistro.Rascunho)
+            if (propostaDTO.Situacao == Dominio.Enumerados.SituacaoProposta.Rascunho)
                 return await mediator.Send(new AlterarPropostaRascunhoCommand(id, propostaDTO));
             return await mediator.Send(new AlterarPropostaCommand(id, propostaDTO));
         }

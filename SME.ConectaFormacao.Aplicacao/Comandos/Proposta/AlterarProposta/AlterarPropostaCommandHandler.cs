@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaDepois.CriadoEm = proposta.CriadoEm;
             propostaDepois.CriadoPor = proposta.CriadoPor;
             propostaDepois.CriadoLogin = proposta.CriadoLogin;
-            propostaDepois.Situacao = SituacaoRegistro.Ativo;
+            propostaDepois.Situacao = SituacaoProposta.Ativo;
 
             var publicoAlvoAntes = await _repositorioProposta.ObterPublicoAlvoPorId(request.Id);
             var publicoAlvoDepois = _mapper.Map<IEnumerable<PropostaPublicoAlvo>>(request.PropostaDTO.PublicosAlvo);

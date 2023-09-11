@@ -83,7 +83,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 areaPromotora.Id,
                 TipoFormacao.Curso,
                 Modalidade.Presencial,
-                SituacaoRegistro.Ativo,
+                SituacaoProposta.Ativo,
                 false, false);
 
             await InserirNaBase(proposta);

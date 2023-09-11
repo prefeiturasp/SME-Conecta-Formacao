@@ -63,6 +63,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterModalidades.Executar(tipoFormacao));
         }
 
+        [HttpGet("situacao")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterSituacoes(
+            [FromServices] ICasoDeUsoObterSituacoesProposta casoDeUsoObterSituacoesProposta)
+        {
+            return Ok(await casoDeUsoObterSituacoesProposta.Executar());
+        }
+
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PropostaCompletoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
