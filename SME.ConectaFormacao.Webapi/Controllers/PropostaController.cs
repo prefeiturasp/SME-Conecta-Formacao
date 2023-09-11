@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
@@ -51,21 +52,32 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterTipoInscricao.Executar());
         }
 
-        [HttpGet("modalidades")]
+        [HttpGet("modalidades/tipo-formacao/{tipoFormacao}")]
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterModalidades(
-            [FromServices] ICasoDeUsoObterModalidades casoDeUsoObterModalidades)
+            [FromServices] ICasoDeUsoObterModalidades casoDeUsoObterModalidades,
+            [FromRoute] TipoFormacao tipoFormacao)
         {
-            return Ok(await casoDeUsoObterModalidades.Executar());
+            return Ok(await casoDeUsoObterModalidades.Executar(tipoFormacao));
+        }
+
+        [HttpGet("situacao")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterSituacoes(
+            [FromServices] ICasoDeUsoObterSituacoesProposta casoDeUsoObterSituacoesProposta)
+        {
+            return Ok(await casoDeUsoObterSituacoesProposta.Executar());
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PropostaCompletoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> AlterarProposta(
+        public async Task<IActionResult> ObterPropostaPorId(
             [FromServices] ICasoDeUsoObterPropostaPorId casoDeUsoObterPropostaPorId,
             [FromRoute] long id)
         {

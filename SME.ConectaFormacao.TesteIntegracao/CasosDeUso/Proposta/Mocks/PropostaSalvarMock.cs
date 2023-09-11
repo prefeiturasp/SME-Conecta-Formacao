@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncaoEspecificas,
             IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos,
             IEnumerable<PropostaVagaRemanecenteDTO> propostaVagaRemanecentes,
-            SituacaoRegistro situacao,
+            SituacaoProposta situacao,
             bool gerarFuncaoEspecificaOutros,
             bool gerarCriterioValidacaoInscricaoOutros)
         {
@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         }
 
 
-        public static PropostaDTO GerarPropostaDTOVazio(SituacaoRegistro situacaoRegistro)
+        public static PropostaDTO GerarPropostaDTOVazio(SituacaoProposta situacaoRegistro)
         {
             return new PropostaDTO { Situacao = situacaoRegistro };
         }
@@ -53,7 +53,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncaoEspecificas,
             IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos,
             IEnumerable<PropostaVagaRemanecenteDTO> propostaVagaRemanecentes,
-            SituacaoRegistro situacao, bool gerarFuncaoEspecificaOutros = false, bool gerarCriterioValidacaoInscricaoOutros = false)
+            SituacaoProposta situacao, bool gerarFuncaoEspecificaOutros = false, bool gerarCriterioValidacaoInscricaoOutros = false)
         {
             return Gerador(tipoFormacao, modalidade, propostaPublicoAlvos, propostaFuncaoEspecificas, propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros).Generate();
         }

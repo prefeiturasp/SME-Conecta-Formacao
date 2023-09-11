@@ -17,6 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao
                     Descricao = v.Nome()
                 });
 
+            if (request.TipoFormacao == TipoFormacao.Curso)
+                lista = lista.Where(t => (Modalidade)t.Id != Modalidade.Hibrido);
+
             return Task.FromResult(lista);
         }
     }

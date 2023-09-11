@@ -7,6 +7,8 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Cargo")]
         Cargo = 1,
         [Display(Name = "Função")]
-        Funcao = 2
+        Funcao = 2,
+        [Display(Name = "Outros")]
+        Outros = 3
     }
 }

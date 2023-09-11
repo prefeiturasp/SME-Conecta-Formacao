@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaDepois.CriadoEm = proposta.CriadoEm;
             propostaDepois.CriadoPor = proposta.CriadoPor;
             propostaDepois.CriadoLogin = proposta.CriadoLogin;
-            propostaDepois.Situacao = SituacaoRegistro.Rascunho;
+            propostaDepois.Situacao = SituacaoProposta.Rascunho;
 
             var publicoAlvoAntes = await _repositorioProposta.ObterPublicoAlvoPorId(request.Id);
             var publicoAlvoDepois = _mapper.Map<IEnumerable<PropostaPublicoAlvo>>(request.PropostaDTO.PublicosAlvo);
@@ -43,12 +43,12 @@ namespace SME.ConectaFormacao.Aplicacao
             var publicoAlvoExcluir = publicoAlvoAntes.Where(w => !publicoAlvoDepois.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
 
             var funcoesEspecificasAntes = await _repositorioProposta.ObterFuncoesEspecificasPorId(request.Id);
-            var funcoesEspecificasDepois = _mapper.Map<IEnumerable<PropostaFuncaoEspecifica>>(request.PropostaDTO.FuncoesEspecificas).Where(t => t.CargoFuncaoId != (long)OpcaoListagem.Outros);
+            var funcoesEspecificasDepois = _mapper.Map<IEnumerable<PropostaFuncaoEspecifica>>(request.PropostaDTO.FuncoesEspecificas);
             var funcoesEspecificasInserir = funcoesEspecificasDepois.Where(w => !funcoesEspecificasAntes.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
             var funcoesEspecificasExcluir = funcoesEspecificasAntes.Where(w => !funcoesEspecificasDepois.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
 
             var criteriosValidacaoInscricaoAntes = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
-            var criteriosValidacaoInscricaoDepois = _mapper.Map<IEnumerable<PropostaCriterioValidacaoInscricao>>(request.PropostaDTO.CriteriosValidacaoInscricao).Where(t => t.CriterioValidacaoInscricaoId != (long)OpcaoListagem.Outros);
+            var criteriosValidacaoInscricaoDepois = _mapper.Map<IEnumerable<PropostaCriterioValidacaoInscricao>>(request.PropostaDTO.CriteriosValidacaoInscricao);
             var criteriosValidacaoInscricaoInserir = criteriosValidacaoInscricaoDepois.Where(w => !criteriosValidacaoInscricaoAntes.Any(a => a.CriterioValidacaoInscricaoId == w.CriterioValidacaoInscricaoId));
             var criteriosValidacaoInscricaoExcluir = criteriosValidacaoInscricaoAntes.Where(w => !criteriosValidacaoInscricaoDepois.Any(a => a.CriterioValidacaoInscricaoId == w.CriterioValidacaoInscricaoId));
 

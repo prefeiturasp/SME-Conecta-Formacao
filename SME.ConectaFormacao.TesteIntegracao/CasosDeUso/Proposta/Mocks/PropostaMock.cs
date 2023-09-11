@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             long areaPromotoraId,
            TipoFormacao tipoFormacao,
            Modalidade modalidade,
-           SituacaoRegistro situacao,
+           SituacaoProposta situacao,
            bool gerarFuncaoEspecificaOutros,
            bool gerarCriterioValidacaoInscricaoOutros)
         {
@@ -45,7 +45,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         public static Dominio.Entidades.Proposta GerarPropostaValida(long areaPromotoraId,
             TipoFormacao tipoFormacao,
             Modalidade modalidade,
-            SituacaoRegistro situacao,
+            SituacaoProposta situacao,
             bool gerarFuncaoEspecificaOutros,
             bool gerarCriterioValidacaoInscricaoOutros)
         {

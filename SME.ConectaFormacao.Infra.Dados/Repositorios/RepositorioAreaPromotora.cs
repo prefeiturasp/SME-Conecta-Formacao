@@ -117,7 +117,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<bool> ExistePorGrupoId(Guid grupoId, long ignorarAreaPromotoraId)
         {
-            var query = @"select count(1) from area_promotora where grupo_id = @grupoId";
+            var query = @"select count(1) from area_promotora where grupo_id = @grupoId and not excluido";
 
             if (ignorarAreaPromotoraId > 0)
                 query += " and id <> @ignorarAreaPromotoraId";

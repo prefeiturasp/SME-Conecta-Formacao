@@ -137,7 +137,7 @@ public class RegistradorDeDependencia
     {
         _serviceCollection.TryAddScoped<IRepositorioUsuario, RepositorioUsuario>();
 
-        _serviceCollection.TryAddScoped<IRepositorioCriterioAvaliacaoInscricao, RepositorioCriterioAvaliacaoInscricao>();
+        _serviceCollection.TryAddScoped<IRepositorioCriterioValidacaoInscricao, RepositorioCriterioValidacaoInscricao>();
         _serviceCollection.TryAddScoped<IRepositorioRoteiroPropostaFormativa, RepositorioRoteiroPropostaFormativa>();
         _serviceCollection.TryAddScoped<IRepositorioCargoFuncao, RepositorioCargoFuncao>();
         _serviceCollection.TryAddScoped<IRepositorioProposta, RepositorioProposta>();
@@ -176,6 +176,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoAlterarProposta, CasoDeUsoAlterarProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaPorId, CasoDeUsoObterPropostaPorId>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverProposta, CasoDeUsoRemoverProposta>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterSituacoesProposta, CasoDeUsoObterSituacoesProposta>();
     }
 
     protected virtual void RegistrarHttpClients()

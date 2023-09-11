@@ -9,6 +9,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             ToTable("cargo_funcao");
             Map(c => c.Nome).ToColumn("nome");
             Map(c => c.Tipo).ToColumn("tipo");
+            Map(c => c.Outros).ToColumn("outros");
+            Map(c => c.Ordem).ToColumn("ordem");
         }
     }
 }

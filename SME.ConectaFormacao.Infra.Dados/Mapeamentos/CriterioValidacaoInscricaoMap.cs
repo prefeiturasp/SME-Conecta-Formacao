@@ -9,6 +9,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             ToTable("criterio_validacao_inscricao");
             Map(c => c.Nome).ToColumn("nome");
             Map(c => c.Unico).ToColumn("unico");
+            Map(c => c.Outros).ToColumn("outros");
+            Map(c => c.Ordem).ToColumn("ordem");
         }
     }
 }

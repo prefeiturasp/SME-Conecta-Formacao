@@ -7,5 +7,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao
         public long Id { get; set; }
         public string Nome { get; set; }
         public CargoFuncaoTipo Tipo { get; set; }
+        public bool Outros { get; set; }
     }
 }
