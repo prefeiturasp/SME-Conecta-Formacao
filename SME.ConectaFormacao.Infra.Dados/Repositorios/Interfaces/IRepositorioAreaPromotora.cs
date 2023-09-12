@@ -16,5 +16,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task RemoverTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones);
         Task<AreaPromotora> ObterPorGrupoId(Guid grupoId);
         Task<bool> ExistePorGrupoId(Guid grupoId, long ignorarAreaPromotoraId);
+        Task<IEnumerable<AreaPromotora>> ObterLista();
     }
 }

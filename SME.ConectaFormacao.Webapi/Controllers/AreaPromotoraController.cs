@@ -44,6 +44,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterAreaPromotoraPorId.Executar(id));
         }
 
+
+        [HttpGet("lista")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterAreaPromotoraLista(
+            [FromServices] ICasoDeUsoObterAreaPromotoraLista casoDeUsoObterAreaPromotoraLista)
+        {
+            return Ok(await casoDeUsoObterAreaPromotoraLista.Executar());
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(long), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
