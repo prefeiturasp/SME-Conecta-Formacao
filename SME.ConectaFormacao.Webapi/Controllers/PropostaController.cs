@@ -11,6 +11,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     [Authorize("Bearer")]
     public class PropostaController : BaseController
     {
+        [HttpGet("infornacoes-cadastrante")]
+        [ProducesResponseType(typeof(PropostaInformacoesCadastranteDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterInformacoesCadastrante(
+            [FromServices] ICasoDeUsoObterInformacoesCadastrante casoDeUsoObterInformacoesCadastrante)
+        {
+            return Ok(await casoDeUsoObterInformacoesCadastrante.Executar());
+        }
+
         [HttpGet("roteiro")]
         [ProducesResponseType(typeof(RoteiroPropostaFormativaDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

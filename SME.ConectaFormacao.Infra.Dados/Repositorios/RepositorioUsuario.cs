@@ -16,7 +16,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"select 
                             id, 
                             login,                             
-                            nome,                             
+                            nome,       
+                            email,
                             ultimo_login, 
                             expiracao_recuperacao_senha, 
                             token_recuperacao_senha,

@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
@@ -24,6 +25,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
             return faker;
         }
 
+        private static Faker<AreaPromotoraTelefone> GeradorTelefone(long areaPromotoraId, string telefone)
+        {
+            var faker = new Faker<AreaPromotoraTelefone>();
+            faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
+            faker.RuleFor(x => x.Telefone, f => string.IsNullOrEmpty(telefone) ? f.Phone.PhoneNumber("###########") : telefone.SomenteNumeros());
+            faker.RuleFor(x => x.Excluido, false);
+            faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
+            faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.CriadoLogin, f => f.Name.FirstName());
+            return faker;
+        }
+
         public static Dominio.Entidades.AreaPromotora GerarAreaPromotora(Guid? grupoId = null)
         {
             return Gerador(grupoId).Generate();
@@ -34,16 +47,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
             return Gerador(grupoId).Generate(quantidade);
         }
 
-        public static Dominio.Entidades.AreaPromotoraTelefone GerarAreaTelefone(long areaPromotoraId, string telefone = null)
+        public static AreaPromotoraTelefone GerarAreaTelefone(long areaPromotoraId, string telefone = null)
         {
-            var faker = new Faker<Dominio.Entidades.AreaPromotoraTelefone>();
+            return GeradorTelefone(areaPromotoraId, telefone).Generate();
+        }
+
+        public static IEnumerable<AreaPromotoraTelefone> GerarAreaTelefone(int quantidade, long areaPromotoraId, string telefone = null)
+        {
+            var faker = new Faker<AreaPromotoraTelefone>();
             faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
             faker.RuleFor(x => x.Telefone, f => string.IsNullOrEmpty(telefone) ? f.Phone.PhoneNumber("###########") : telefone.SomenteNumeros());
             faker.RuleFor(x => x.Excluido, false);
             faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
             faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.CriadoLogin, f => f.Name.FirstName());
-            return faker.Generate();
+            return faker.Generate(quantidade);
         }
     }
 }

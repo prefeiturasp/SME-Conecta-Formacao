@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public Task<RoteiroPropostaFormativa> ObterUltimoRoteiroAtivo()
         {
             var query = @"select id, descricao from roteiro_proposta_formativa where not excluido order by id desc limit 1";
-            return conexao.Obter().QueryFirstAsync<RoteiroPropostaFormativa>(query);
+            return conexao.Obter().QueryFirstOrDefaultAsync<RoteiroPropostaFormativa>(query);
         }
     }
 }
