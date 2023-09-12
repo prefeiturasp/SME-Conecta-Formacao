@@ -2,7 +2,6 @@
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao.Mocks;
@@ -12,7 +11,7 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
-    public class Ao_remover_proposta : TesteBase
+    public class Ao_remover_proposta : TestePropostaBase
     {
         public Ao_remover_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
         {
@@ -75,37 +74,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert 
             excecao.ShouldNotBeNull();
             excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA).ShouldBeTrue();
-        }
-
-        private async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
-        {
-            var proposta = PropostaMock.GerarPropostaValida(
-                areaPromotora.Id,
-                TipoFormacao.Curso,
-                Modalidade.Presencial,
-                SituacaoProposta.Ativo,
-                false, false);
-
-            await InserirNaBase(proposta);
-
-
-            var publicosAlvo = PropostaMock.GerarPublicoAlvo(proposta.Id, cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo));
-            if (publicosAlvo != null)
-                await InserirNaBase(publicosAlvo);
-
-            var funcoesEspecifica = PropostaMock.GerarFuncoesEspecificas(proposta.Id, cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao));
-            if (funcoesEspecifica != null)
-                await InserirNaBase(funcoesEspecifica);
-
-            var vagasRemanecentes = PropostaMock.GerarVagasRemanecentes(proposta.Id, cargosFuncoes);
-            if (vagasRemanecentes != null)
-                await InserirNaBase(vagasRemanecentes);
-
-            var criterios = PropostaMock.GerarCritariosValidacaoInscricao(proposta.Id, criteriosValidacaoInscricao);
-            if (criterios != null)
-                await InserirNaBase(criterios);
-
-            return proposta;
         }
     }
 }

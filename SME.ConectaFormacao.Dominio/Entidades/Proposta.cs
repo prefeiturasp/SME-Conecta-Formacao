@@ -15,6 +15,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string FuncaoEspecificaOutros { get; set; }
         public string CriterioValidacaoInscricaoOutros { get; set; }
 
+        public AreaPromotora AreaPromotora { get; set; }
+
         public IEnumerable<PropostaPublicoAlvo> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecifica> FuncoesEspecificas { get; set; }
         public IEnumerable<PropostaCriterioValidacaoInscricao> CriteriosValidacaoInscricao { get; set; }

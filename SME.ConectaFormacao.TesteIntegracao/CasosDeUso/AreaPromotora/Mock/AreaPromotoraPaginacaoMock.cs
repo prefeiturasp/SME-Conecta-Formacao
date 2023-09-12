@@ -5,14 +5,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
 {
     public class AreaPromotoraPaginacaoMock
     {
-        public static FiltrosAreaPromotoraDTO GerarFiltrosAreaPromotoraDTOVazio()
+        public static AreaPromotoraFiltrosDTO GerarFiltrosAreaPromotoraDTOVazio()
         {
-            return new FiltrosAreaPromotoraDTO();
+            return new AreaPromotoraFiltrosDTO();
         }
 
-        public static FiltrosAreaPromotoraDTO GerarFiltrosAreaPromotoraDTOInvalido()
+        public static AreaPromotoraFiltrosDTO GerarFiltrosAreaPromotoraDTOInvalido()
         {
-            var filtroInvalidoFaker = new Faker<FiltrosAreaPromotoraDTO>();
+            var filtroInvalidoFaker = new Faker<AreaPromotoraFiltrosDTO>();
             filtroInvalidoFaker.RuleFor(x => x.Nome, f => f.Random.AlphaNumeric(14));
             filtroInvalidoFaker.RuleFor(x => x.Tipo, f => (short)f.Random.Number(0, 3));
             return filtroInvalidoFaker.Generate();

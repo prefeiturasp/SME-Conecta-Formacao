@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
             var areasPromotoras = AreaPromotoraMock.GerarAreaPromotora(15);
             await InserirNaBase(areasPromotoras);
 
-            var filtro = new Aplicacao.Dtos.AreaPromotora.FiltrosAreaPromotoraDTO()
+            var filtro = new Aplicacao.Dtos.AreaPromotora.AreaPromotoraFiltrosDTO()
             {
                 Nome = areasPromotoras.FirstOrDefault().Nome,
                 Tipo = (short)areasPromotoras.FirstOrDefault().Tipo
