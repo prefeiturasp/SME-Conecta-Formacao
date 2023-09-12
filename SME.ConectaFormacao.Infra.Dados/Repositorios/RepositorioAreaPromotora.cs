@@ -131,5 +131,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryFirstAsync<AreaPromotora>(query, new { grupoId });
         }
+
+        public Task<IEnumerable<AreaPromotora>> ObterLista()
+        {
+            var query = @"select id, nome from area_promotora where not excluido order by nome";
+
+            return conexao.Obter().QueryAsync<AreaPromotora>(query);
+        }
     }
 }
