@@ -127,9 +127,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<AreaPromotora> ObterPorGrupoId(Guid grupoId)
         {
-            var query = @"select id, nome from area_promotora where grupo_id = @grupoId";
+            var query = @"select id, nome, tipo, email from area_promotora where grupo_id = @grupoId";
 
-            return conexao.Obter().QueryFirstAsync<AreaPromotora>(query, new { grupoId });
+            return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { grupoId });
         }
 
         public Task<IEnumerable<AreaPromotora>> ObterLista()

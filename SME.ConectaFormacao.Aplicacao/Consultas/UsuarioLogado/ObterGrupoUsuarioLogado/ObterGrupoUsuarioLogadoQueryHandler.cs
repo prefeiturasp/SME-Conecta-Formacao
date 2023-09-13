@@ -5,7 +5,7 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterGrupoUsuarioLogadoQueryHandler : IRequestHandler<ObterGrupoUsuarioLogadoQuery, Guid>
     {
-        private IContextoAplicacao _contextoAplicacao;
+        private readonly IContextoAplicacao _contextoAplicacao;
 
         public ObterGrupoUsuarioLogadoQueryHandler(IContextoAplicacao contextoAplicacao)
         {

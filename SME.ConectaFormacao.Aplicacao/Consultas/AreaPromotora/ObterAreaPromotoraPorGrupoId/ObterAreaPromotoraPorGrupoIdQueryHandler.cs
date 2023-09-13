@@ -5,16 +5,20 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterAreaPromotoraPorGrupoIdQueryHandler : IRequestHandler<ObterAreaPromotoraPorGrupoIdQuery, Dominio.Entidades.AreaPromotora>
     {
-        private IRepositorioAreaPromotora _repositorioAreaPromotora;
+        private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
 
         public ObterAreaPromotoraPorGrupoIdQueryHandler(IRepositorioAreaPromotora repositorioAreaPromotora)
         {
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
         }
 
-        public Task<Dominio.Entidades.AreaPromotora> Handle(ObterAreaPromotoraPorGrupoIdQuery request, CancellationToken cancellationToken)
+        public async Task<Dominio.Entidades.AreaPromotora> Handle(ObterAreaPromotoraPorGrupoIdQuery request, CancellationToken cancellationToken)
         {
-            return _repositorioAreaPromotora.ObterPorGrupoId(request.GrupoId);
+            var areaPromotora = await _repositorioAreaPromotora.ObterPorGrupoId(request.GrupoId);
+            if (areaPromotora != null)
+                areaPromotora.Telefones = await _repositorioAreaPromotora.ObterTelefonesPorId(areaPromotora.Id);
+
+            return areaPromotora;
         }
     }
 }
