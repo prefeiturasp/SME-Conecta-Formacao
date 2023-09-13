@@ -21,9 +21,10 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PaginacaoResultadoDTO<PropostaPaginadaDTO>> Handle(ObterPropostaPaginadaQuery request, CancellationToken cancellationToken)
         {
             var totalRegistrosFiltro = await _repositorioProposta.ObterTotalRegistrosPorFiltros(
+                request.PropostaFiltrosDTO.Id,
                 request.PropostaFiltrosDTO.AreaPromotoraId,
                 request.PropostaFiltrosDTO.Modalidade,
-                request.PropostaFiltrosDTO.PublicoAlvoId,
+                request.PropostaFiltrosDTO.PublicoAlvoIds,
                 request.PropostaFiltrosDTO.NomeFormacao,
                 request.PropostaFiltrosDTO.NumeroHomologacao,
                 request.PropostaFiltrosDTO.PeriodoRealizacaoInicio,
@@ -36,9 +37,10 @@ namespace SME.ConectaFormacao.Aplicacao
                 propostas = await _repositorioProposta.ObterDadosPaginados(
                 request.NumeroPagina,
                 request.NumeroRegistros,
+                request.PropostaFiltrosDTO.Id,
                 request.PropostaFiltrosDTO.AreaPromotoraId,
                 request.PropostaFiltrosDTO.Modalidade,
-                request.PropostaFiltrosDTO.PublicoAlvoId,
+                request.PropostaFiltrosDTO.PublicoAlvoIds,
                 request.PropostaFiltrosDTO.NomeFormacao,
                 request.PropostaFiltrosDTO.NumeroHomologacao,
                 request.PropostaFiltrosDTO.PeriodoRealizacaoInicio,

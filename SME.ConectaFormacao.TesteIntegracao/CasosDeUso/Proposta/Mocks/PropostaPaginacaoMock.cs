@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
                 AreaPromotoraId = areaPromotora.Id,
                 Modalidade = propostaFiltro.Modalidade,
                 NomeFormacao = propostaFiltro.NomeFormacao,
-                PublicoAlvoId = propostaFiltro.PublicosAlvo.FirstOrDefault().Id,
+                PublicoAlvoIds = propostaFiltro.PublicosAlvo.Select(t => t.CargoFuncaoId).ToArray(),
                 Situacao = propostaFiltro.Situacao
             };
         }
