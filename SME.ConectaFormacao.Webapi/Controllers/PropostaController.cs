@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     [Authorize("Bearer")]
     public class PropostaController : BaseController
     {
-        [HttpGet("infornacoes-cadastrante")]
+        [HttpGet("informacoes-cadastrante")]
         [ProducesResponseType(typeof(PropostaInformacoesCadastranteDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
