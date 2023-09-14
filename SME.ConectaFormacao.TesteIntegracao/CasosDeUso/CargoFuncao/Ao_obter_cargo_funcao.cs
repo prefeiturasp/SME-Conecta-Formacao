@@ -1,6 +1,6 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 

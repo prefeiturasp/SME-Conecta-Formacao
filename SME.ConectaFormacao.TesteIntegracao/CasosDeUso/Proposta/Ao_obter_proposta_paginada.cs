@@ -1,9 +1,8 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -82,7 +81,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
 
-            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
+            var propostas = await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
 
             var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOInvalido();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPaginacao>();

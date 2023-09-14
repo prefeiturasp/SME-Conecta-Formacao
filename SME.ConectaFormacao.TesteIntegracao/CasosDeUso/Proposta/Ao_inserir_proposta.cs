@@ -6,19 +6,17 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
-    public class Ao_inserir_proposta : TesteBase
+    public class Ao_inserir_proposta : TestePropostaBase
     {
         public Ao_inserir_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
         {
@@ -28,6 +26,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             base.RegistrarQueryFakes(services);
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoUsuarioLogadoQuery, Guid>), typeof(ObterGrupoUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<MoverArquivoTemporarioParaFisicoServicoArmazenamentoCommand, string>), typeof(MoverArquivoTemporarioParaFisicoServicoArmazenamentoCommandHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Proposta - Deve inserir rascunho sem nenhuma informação preenchida")]
@@ -47,7 +46,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             id.ShouldBeGreaterThan(0);
 
-            ValidarProposta(propostaDTO, id);
+            ValidarPropostaDTO(propostaDTO, id);
         }
 
         [Fact(DisplayName = "Proposta - Deve inserir proposta válida")]
@@ -68,6 +67,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var criteriosDTO = criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id });
             var vagasRemanecentesDTO = cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id });
 
+            var arquivo = ArquivoMock.GerarArquivo(TipoArquivo.Temp);
+            await InserirNaBase(arquivo);
+
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
                 Modalidade.Presencial,
@@ -75,7 +77,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 funcoesEspecificaDTO,
                 criteriosDTO,
                 vagasRemanecentesDTO,
-                SituacaoProposta.Ativo);
+                SituacaoProposta.Ativo,
+                arquivoImagemDivulgacaoId: arquivo.Id);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
@@ -85,11 +88,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             id.ShouldBeGreaterThan(0);
 
-            ValidarProposta(propostaDTO, id);
-            ValidarPropostaPublicoAlvo(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaFuncaoEspecifica(propostaDTO.FuncoesEspecificas, id);
-            ValidarPropostaVagaRemanecente(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricao(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaDTO(propostaDTO, id);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, id);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarArquivoImagemDivulgacao(propostaDTO.ArquivoImagemDivulgacaoId, arquivo.Id);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção para campos obrigatórios")]
@@ -149,11 +153,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             id.ShouldBeGreaterThan(0);
 
-            ValidarProposta(propostaDTO, id);
-            ValidarPropostaPublicoAlvo(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaFuncaoEspecifica(propostaDTO.FuncoesEspecificas, id);
-            ValidarPropostaVagaRemanecente(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricao(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaDTO(propostaDTO, id);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, id);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção quando o tipo de formação for curso e modalidade hibrida")]
@@ -273,10 +277,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             id.ShouldBeGreaterThan(0);
 
-            ValidarProposta(propostaDTO, id);
-            ValidarPropostaPublicoAlvo(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaVagaRemanecente(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricao(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaDTO(propostaDTO, id);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção quando critério validação inscrição outros estiver habilitado")]
@@ -354,71 +358,49 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             id.ShouldBeGreaterThan(0);
 
-            ValidarProposta(propostaDTO, id);
-            ValidarPropostaPublicoAlvo(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaVagaRemanecente(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricao(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaDTO(propostaDTO, id);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
         }
 
-
-        private void ValidarProposta(PropostaDTO propostaDTO, long id)
+        [Fact(DisplayName = "Proposta - Deve retornar exceção ao informar arquivo imagem divulgação não encontrado")]
+        public async Task Deve_retornar_excecao_arquivo_nao_informado()
         {
-            var proposta = ObterPorId<Dominio.Entidades.Proposta, long>(id);
+            //arrange
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
 
-            proposta.TipoFormacao.ShouldBe(propostaDTO.TipoFormacao);
-            proposta.Modalidade.ShouldBe(propostaDTO.Modalidade);
-            proposta.TipoInscricao.ShouldBe(propostaDTO.TipoInscricao);
-            proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
-            proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
-            proposta.QuantidadeVagasTurma.ShouldBe(propostaDTO.QuantidadeVagasTurma);
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
 
-            if (!string.IsNullOrEmpty(propostaDTO.FuncaoEspecificaOutros))
-                proposta.FuncaoEspecificaOutros.ShouldBe(propostaDTO.FuncaoEspecificaOutros);
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
 
-            if (!string.IsNullOrEmpty(propostaDTO.CriterioValidacaoInscricaoOutros))
-                proposta.CriterioValidacaoInscricaoOutros.ShouldBe(propostaDTO.CriterioValidacaoInscricaoOutros);
+            var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
+            var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
+            var criteriosDTO = criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id });
+            var vagasRemanecentesDTO = cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id });
 
-            proposta.Situacao.ShouldBe(propostaDTO.Situacao);
-        }
+            var arquivoId = 1;
 
-        private void ValidarPropostaCriterioValidacaoInscricao(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> criteriosDTO, long id)
-        {
-            var criterioValidacaoInscricaos = ObterTodos<PropostaCriterioValidacaoInscricao>();
-            foreach (var criterioValidacaoInscricao in criterioValidacaoInscricaos)
-            {
-                criterioValidacaoInscricao.PropostaId.ShouldBe(id);
-                criteriosDTO.FirstOrDefault(t => t.CriterioValidacaoInscricaoId == criterioValidacaoInscricao.CriterioValidacaoInscricaoId).ShouldNotBeNull();
-            }
-        }
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Modalidade.Presencial,
+                publicosAlvoDTO,
+                funcoesEspecificaDTO,
+                criteriosDTO,
+                vagasRemanecentesDTO,
+                SituacaoProposta.Ativo,
+                arquivoImagemDivulgacaoId: arquivoId);
 
-        private void ValidarPropostaVagaRemanecente(IEnumerable<PropostaVagaRemanecenteDTO> vagasRemanecentesDTO, long id)
-        {
-            var vagasRemanecentes = ObterTodos<PropostaVagaRemanecente>();
-            foreach (var vagaRemanecente in vagasRemanecentes)
-            {
-                vagaRemanecente.PropostaId.ShouldBe(id);
-                vagasRemanecentesDTO.FirstOrDefault(t => t.CargoFuncaoId == vagaRemanecente.CargoFuncaoId).ShouldNotBeNull();
-            }
-        }
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
-        private void ValidarPropostaFuncaoEspecifica(IEnumerable<PropostaFuncaoEspecificaDTO> funcoesEspecificaDTO, long id)
-        {
-            var funcoesEspecificas = ObterTodos<PropostaFuncaoEspecifica>();
-            foreach (var funcaoEspecifica in funcoesEspecificas)
-            {
-                funcaoEspecifica.PropostaId.ShouldBe(id);
-                funcoesEspecificaDTO.FirstOrDefault(t => t.CargoFuncaoId == funcaoEspecifica.CargoFuncaoId).ShouldNotBeNull();
-            }
-        }
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(propostaDTO));
 
-        private void ValidarPropostaPublicoAlvo(IEnumerable<PropostaPublicoAlvoDTO> publicosAlvoDTO, long id)
-        {
-            var publicosAlvo = ObterTodos<PropostaPublicoAlvo>();
-            foreach (var publicoAlvo in publicosAlvo)
-            {
-                publicoAlvo.PropostaId.ShouldBe(id);
-                publicosAlvoDTO.FirstOrDefault(t => t.CargoFuncaoId == publicoAlvo.CargoFuncaoId).ShouldNotBeNull();
-            }
+            // assert
+            excecao.Mensagens.Contains(MensagemNegocio.ARQUIVO_NAO_ENCONTRADO).ShouldBeTrue();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.ServicosFakes
 {

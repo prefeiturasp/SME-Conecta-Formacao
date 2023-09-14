@@ -26,9 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
-            var proposta = await _repositorioProposta.ObterPorId(request.Id);
-            if (proposta == null)
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
+            var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
@@ -90,6 +88,14 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (vagasRemanecentesExcluir.Any())
                     await _repositorioProposta.RemoverVagasRemanecentes(transacao, vagasRemanecentesExcluir);
+
+                if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())
+                {
+                    await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(propostaDepois.ArquivoImagemDivulgacaoId), cancellationToken);
+
+                    if (proposta.ArquivoImagemDivulgacaoId.HasValue)
+                        await _mediator.Send(new RemoverArquivoPorIdCommand(proposta.ArquivoImagemDivulgacaoId.Value), cancellationToken);
+                }
 
                 transacao.Commit();
 

@@ -3,11 +3,11 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
+namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
     public class PropostaMock
     {
-        private static Faker<Dominio.Entidades.Proposta> Gerador(
+        private static Faker<Proposta> Gerador(
             long areaPromotoraId,
            TipoFormacao tipoFormacao,
            Modalidade modalidade,
@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
            bool gerarFuncaoEspecificaOutros,
            bool gerarCriterioValidacaoInscricaoOutros)
         {
-            var faker = new Faker<Dominio.Entidades.Proposta>();
+            var faker = new Faker<Proposta>();
             faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
             faker.RuleFor(x => x.Modalidade, modalidade);
@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return faker;
         }
 
-        public static Dominio.Entidades.Proposta GerarPropostaValida(long areaPromotoraId,
+        public static Proposta GerarPropostaValida(long areaPromotoraId,
             TipoFormacao tipoFormacao,
             Modalidade modalidade,
             SituacaoProposta situacao,
@@ -52,9 +52,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return Gerador(areaPromotoraId, tipoFormacao, modalidade, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros);
         }
 
-        public static Dominio.Entidades.Proposta GerarPropostaRascunho(long areaPromotoraId)
+        public static Proposta GerarPropostaRascunho(long areaPromotoraId)
         {
-            var faker = new Faker<Dominio.Entidades.Proposta>();
+            var faker = new Faker<Proposta>();
             faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
             faker.RuleFor(x => x.Excluido, false);
             faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return faker.Generate();
         }
 
-        public static IEnumerable<PropostaPublicoAlvo> GerarPublicoAlvo(long propostaId, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes)
+        public static IEnumerable<PropostaPublicoAlvo> GerarPublicoAlvo(long propostaId, IEnumerable<CargoFuncao> cargosFuncoes)
         {
             if (cargosFuncoes != null && cargosFuncoes.Any())
             {
@@ -86,7 +86,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return default;
         }
 
-        public static IEnumerable<PropostaFuncaoEspecifica> GerarFuncoesEspecificas(long propostaId, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes)
+        public static IEnumerable<PropostaFuncaoEspecifica> GerarFuncoesEspecificas(long propostaId, IEnumerable<CargoFuncao> cargosFuncoes)
         {
             if (cargosFuncoes != null && cargosFuncoes.Any())
             {
@@ -105,7 +105,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return default;
         }
 
-        public static IEnumerable<PropostaVagaRemanecente> GerarVagasRemanecentes(long propostaId, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes)
+        public static IEnumerable<PropostaVagaRemanecente> GerarVagasRemanecentes(long propostaId, IEnumerable<CargoFuncao> cargosFuncoes)
         {
             if (cargosFuncoes != null && cargosFuncoes.Any())
             {

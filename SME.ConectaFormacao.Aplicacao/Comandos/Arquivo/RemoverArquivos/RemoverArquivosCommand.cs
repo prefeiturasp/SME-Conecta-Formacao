@@ -14,9 +14,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<Arquivo> Arquivos { get; }
     }
 
-    public class RemoverArquivoCommandValidator : AbstractValidator<RemoverArquivosCommand>
+    public class RemoverArquivosCommandValidator : AbstractValidator<RemoverArquivosCommand>
     {
-        public RemoverArquivoCommandValidator()
+        public RemoverArquivosCommandValidator()
         {
             RuleFor(x => x.Arquivos)
                 .NotEmpty()

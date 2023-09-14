@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
@@ -160,6 +160,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             auditoriaDTO.AlteradoEm.GetValueOrDefault().Hour.ShouldBe(entidadeAuditavel.AlteradoEm.GetValueOrDefault().Hour);
             auditoriaDTO.AlteradoPor.ShouldBe(entidadeAuditavel.AlteradoPor);
             auditoriaDTO.AlteradoLogin.ShouldBe(entidadeAuditavel.AlteradoLogin);
+        }
+
+        protected static void ValidarArquivoImagemDivulgacao(long? arquivoImagemDivulgacaoId, long arquivoId)
+        {
+            arquivoImagemDivulgacaoId.ShouldBe(arquivoId);
         }
     }
 }

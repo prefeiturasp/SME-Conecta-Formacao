@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public SituacaoProposta Situacao { get; set; }
         public string FuncaoEspecificaOutros { get; set; }
         public string CriterioValidacaoInscricaoOutros { get; set; }
+        public long? ArquivoImagemDivulgacaoId { get; set; }
 
         public AreaPromotora AreaPromotora { get; set; }
 
