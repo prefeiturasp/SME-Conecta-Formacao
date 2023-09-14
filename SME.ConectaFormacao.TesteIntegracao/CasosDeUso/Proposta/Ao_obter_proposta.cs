@@ -1,9 +1,14 @@
-﻿using Shouldly;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Shouldly;
+using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -13,6 +18,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
     {
         public Ao_obter_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
         {
+        }
+
+        protected override void RegistrarCommandFakes(IServiceCollection services)
+        {
+            base.RegistrarCommandFakes(services);
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterEnderecoArquivoServicoArmazenamentoQuery, string>), typeof(ObterEnderecoArquivoServicoArmazenamentoQueryHandlerFake), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Proposta - Deve obter por id válido")]
@@ -28,7 +39,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
 
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
+            var arquivo = ArquivoMock.GerarArquivo();
+            await InserirNaBase(arquivo);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, arquivo);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
 
@@ -44,6 +58,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaCompletoDTO.CriteriosValidacaoInscricao, proposta.Id);
 
             ValidarAuditoriaDTO(proposta, propostaCompletoDTO.Auditoria);
+            ValidarArquivoImagemDivulgacao(proposta.ArquivoImagemDivulgacaoId, propostaCompletoDTO.ArquivoImagemDivulgacaoId);
+
+            propostaCompletoDTO.ArquivoImagemDivulgacao.ShouldNotBeNull();
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção ao obter por id inválido")]

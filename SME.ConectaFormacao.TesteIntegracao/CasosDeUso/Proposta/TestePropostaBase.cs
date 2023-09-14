@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
+        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao, Dominio.Entidades.Arquivo arquivo = null)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
@@ -22,6 +22,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 Modalidade.Presencial,
                 SituacaoProposta.Ativo,
                 false, false);
+
+            if (arquivo != null)
+            {
+                proposta.ArquivoImagemDivulgacaoId = arquivo.Id;
+            }
 
             await InserirNaBase(proposta);
 
@@ -162,7 +167,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             auditoriaDTO.AlteradoLogin.ShouldBe(entidadeAuditavel.AlteradoLogin);
         }
 
-        protected static void ValidarArquivoImagemDivulgacao(long? arquivoImagemDivulgacaoId, long arquivoId)
+        protected static void ValidarArquivoImagemDivulgacao(long? arquivoImagemDivulgacaoId, long? arquivoId)
         {
             arquivoImagemDivulgacaoId.ShouldBe(arquivoId);
         }
