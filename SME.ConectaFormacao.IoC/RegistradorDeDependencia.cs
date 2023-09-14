@@ -8,12 +8,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
@@ -25,6 +27,7 @@ using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Options;
 using SME.ConectaFormacao.Infra.Servicos.Polly;
@@ -56,6 +59,12 @@ public class RegistradorDeDependencia
         RegistrarCasosDeUso();
         RegistrarProfiles();
         RegistrarHttpClients();
+        RegistrarServicoArmazenamento();
+    }
+
+    private void RegistrarServicoArmazenamento()
+    {
+        _serviceCollection.ConfigurarArmazenamento(_configuration);
     }
 
     protected virtual void RegistrarProfiles()
@@ -113,6 +122,8 @@ public class RegistradorDeDependencia
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
 
+            config.AddMap(new ArquivoMap());
+
             config.ForDommel();
         });
     }
@@ -136,13 +147,12 @@ public class RegistradorDeDependencia
     protected virtual void RegistrarRepositorios()
     {
         _serviceCollection.TryAddScoped<IRepositorioUsuario, RepositorioUsuario>();
-
         _serviceCollection.TryAddScoped<IRepositorioCriterioValidacaoInscricao, RepositorioCriterioValidacaoInscricao>();
         _serviceCollection.TryAddScoped<IRepositorioRoteiroPropostaFormativa, RepositorioRoteiroPropostaFormativa>();
         _serviceCollection.TryAddScoped<IRepositorioCargoFuncao, RepositorioCargoFuncao>();
         _serviceCollection.TryAddScoped<IRepositorioProposta, RepositorioProposta>();
-
         _serviceCollection.TryAddScoped<IRepositorioAreaPromotora, RepositorioAreaPromotora>();
+        _serviceCollection.TryAddScoped<IRepositorioArquivo, RepositorioArquivo>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -180,6 +190,10 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterSituacoesProposta, CasoDeUsoObterSituacoesProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaPaginacao, CasoDeUsoObterPropostaPaginacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterInformacoesCadastrante, CasoDeUsoObterInformacoesCadastrante>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoArquivoCarregarTemporario, CasoDeUsoArquivoCarregarTemporario>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoArquivoBaixar, CasoDeUsoArquivoBaixar>();
     }
 
     protected virtual void RegistrarHttpClients()

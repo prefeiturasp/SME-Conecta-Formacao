@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public long? Id { get; set; }
         public long? AreaPromotoraId { get; set; }
         public Modalidade? Modalidade { get; set; }
-        public long[] PublicoAlvoIds { get; set; }
+        public long[]? PublicoAlvoIds { get; set; }
         public string? NomeFormacao { get; set; }
         public long? NumeroHomologacao { get; set; }
         public DateTime? PeriodoRealizacaoInicio { get; set; }

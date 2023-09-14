@@ -389,38 +389,5 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaVagaRemanecenteDTO(vagasRemanecentesDTO, id);
             ValidarPropostaCriterioValidacaoInscricaoDTO(criteriosDTO, id);
         }
-
-        //private async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
-        //{
-        //    var proposta = PropostaMock.GerarPropostaValida(
-        //        areaPromotora.Id,
-        //        TipoFormacao.Curso,
-        //        Modalidade.Presencial,
-        //        SituacaoProposta.Ativo,
-        //        false, false);
-
-        //    await InserirNaBase(proposta);
-
-
-        //    var publicosAlvo = PropostaMock.GerarPublicoAlvo(proposta.Id, cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo));
-        //    if (publicosAlvo != null)
-        //        await InserirNaBase(publicosAlvo);
-
-        //    var funcoesEspecifica = PropostaMock.GerarFuncoesEspecificas(proposta.Id, cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao));
-        //    if (funcoesEspecifica != null)
-        //        await InserirNaBase(funcoesEspecifica);
-
-        //    var vagasRemanecentes = PropostaMock.GerarVagasRemanecentes(proposta.Id, cargosFuncoes);
-        //    if (vagasRemanecentes != null)
-        //        await InserirNaBase(vagasRemanecentes);
-
-        //    var criterios = PropostaMock.GerarCritariosValidacaoInscricao(proposta.Id, criteriosValidacaoInscricao);
-        //    if (criterios != null)
-        //        await InserirNaBase(criterios);
-
-        //    return proposta;
-        //}
-
-
     }
 }
