@@ -18,4 +18,10 @@ public class MensagemNegocio
 
     public const string PROPOSTA_FUNCAO_ESPECIFICA_OUTROS = "É nescessário informar função específicas outros da proposta";
     public const string PROPOSTA_CRITERIO_VALIDACAO_INSCRICAO_OUTROS = "É nescessário informar critérios de validação das inscrições outros da proposta";
+
+    public const string ARQUIVO_VAZIO = "É nescessário informar o arquivo a ser carregado";
+    public const string ARQUIVO_NENHUM_ARQUIVO_ENCONTRADO = "Nenhum arquivo encontrado";
+    public const string ARQUIVO_NAO_ENCONTRADO = "Arquivo não encontrado";
+    public const string ARQUIVO_FISICO_NAO_ENCONTRADO = "Arquivo físico não encontrado";
+    public const string ARQUIVO_MAIOR_QUE_10_MB = "O tamanho máximo permitido para o arquivo é de 10MB";
 }
