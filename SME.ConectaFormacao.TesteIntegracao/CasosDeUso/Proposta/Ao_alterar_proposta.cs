@@ -1,17 +1,11 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Shouldly;
-using SME.ConectaFormacao.Aplicacao;
+﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -21,13 +15,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
     {
         public Ao_alterar_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
         {
-        }
-
-        protected override void RegistrarCommandFakes(IServiceCollection services)
-        {
-            base.RegistrarCommandFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<RemoverArquivoServicoArmazenamentoCommand, bool>), typeof(RemoverArquivoServicoArmazenamentoCommandHandlerFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<MoverArquivoTemporarioParaFisicoServicoArmazenamentoCommand, string>), typeof(MoverArquivoTemporarioParaFisicoServicoArmazenamentoCommandHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Proposta - Deve alterar rascunho sem informação preenchida")]
@@ -90,9 +77,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
 
-            var arquivo = ArquivoMock.GerarArquivo();
-            await InserirNaBase(arquivo);
-
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
                 Modalidade.Presencial,
@@ -100,7 +84,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
                 criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
                 cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
-                SituacaoProposta.Ativo, arquivoImagemDivulgacaoId: arquivo.Id);
+                SituacaoProposta.Ativo);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
@@ -115,7 +99,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, id);
             ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarArquivoImagemDivulgacao(propostaDTO.ArquivoImagemDivulgacaoId, arquivo.Id);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção para campos obrigatórios")]
@@ -404,41 +387,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaPublicoAlvoDTO(publicosAlvoDTO, id);
             ValidarPropostaVagaRemanecenteDTO(vagasRemanecentesDTO, id);
             ValidarPropostaCriterioValidacaoInscricaoDTO(criteriosDTO, id);
-        }
-
-        [Fact(DisplayName = "Proposta - Deve retornar exceção ao alterar o arquivo imagem divulgação não encontrado")]
-        public async Task Deve_retornar_excecao_arquivo_nao_informado()
-        {
-            //arrange
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
-
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
-
-            var arquivoId = 1;
-
-            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
-                TipoFormacao.Curso,
-                Modalidade.Presencial,
-                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
-                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
-                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
-                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
-                SituacaoProposta.Ativo, arquivoImagemDivulgacaoId: arquivoId);
-
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
-
-            // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, propostaDTO));
-
-            // assert
-            excecao.Mensagens.Contains(MensagemNegocio.ARQUIVO_NAO_ENCONTRADO).ShouldBeTrue();
         }
     }
 }

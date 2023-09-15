@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao, Dominio.Entidades.Arquivo arquivo = null)
+        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
@@ -22,11 +22,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 Modalidade.Presencial,
                 SituacaoProposta.Ativo,
                 false, false);
-
-            if (arquivo != null)
-            {
-                proposta.ArquivoImagemDivulgacaoId = arquivo.Id;
-            }
 
             await InserirNaBase(proposta);
 
@@ -165,11 +160,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             auditoriaDTO.AlteradoEm.GetValueOrDefault().Hour.ShouldBe(entidadeAuditavel.AlteradoEm.GetValueOrDefault().Hour);
             auditoriaDTO.AlteradoPor.ShouldBe(entidadeAuditavel.AlteradoPor);
             auditoriaDTO.AlteradoLogin.ShouldBe(entidadeAuditavel.AlteradoLogin);
-        }
-
-        protected static void ValidarArquivoImagemDivulgacao(long? arquivoImagemDivulgacaoId, long? arquivoId)
-        {
-            arquivoImagemDivulgacaoId.ShouldBe(arquivoId);
         }
     }
 }

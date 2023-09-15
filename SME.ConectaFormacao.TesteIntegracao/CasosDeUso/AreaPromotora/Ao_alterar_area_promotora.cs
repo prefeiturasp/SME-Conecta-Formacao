@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         public async Task Deve_alterar_area_promotora_valida_rede_parceira_com_email_sem_dominio_sme()
         {
             // arrange 
-            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceira);
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria);
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
             await InserirNaBase(areaPromotora);
@@ -137,7 +137,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         {
             // arrange 
             var id = AreaPromotoraSalvarMock.GerarIdAleatorio();
-            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceira);
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarAreaPromotora>();
 
@@ -178,7 +178,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
 
             var areaPromotora = areasPromotora.FirstOrDefault();
 
-            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceira);
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria);
 
             areaPromotoraDTO.GrupoId = areasPromotora.LastOrDefault().GrupoId;
 
