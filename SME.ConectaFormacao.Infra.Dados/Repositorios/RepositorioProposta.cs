@@ -209,7 +209,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query.AppendLine(" and p.modalidade = @modalidade");
 
             if (publicoAlvoIds != null && publicoAlvoIds.Any())
-                query.AppendLine(" and exists(select 1 from proposta_publico_alvo ppa where not ppa.excluido and ppa.proposta_id = p.id and ppa.id = any(@publicoAlvoIds) limit 1)");
+                query.AppendLine(" and exists(select 1 from proposta_publico_alvo ppa where not ppa.excluido and ppa.proposta_id = p.id and ppa.cargo_funcao_id = any(@publicoAlvoIds) limit 1)");
 
             if (!string.IsNullOrEmpty(nomeFormacao))
             {
