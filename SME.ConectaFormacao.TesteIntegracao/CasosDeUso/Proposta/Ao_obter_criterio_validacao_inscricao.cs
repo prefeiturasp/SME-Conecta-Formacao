@@ -1,6 +1,6 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 

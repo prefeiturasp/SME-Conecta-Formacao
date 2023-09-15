@@ -6,14 +6,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterAreasPromotorasPaginadasQuery : IRequest<PaginacaoResultadoDTO<AreaPromotoraPaginadaDTO>>
     {
-        public ObterAreasPromotorasPaginadasQuery(FiltrosAreaPromotoraDTO filtros, int numeroPagina, int numeroRegistros)
+        public ObterAreasPromotorasPaginadasQuery(AreaPromotoraFiltrosDTO filtros, int numeroPagina, int numeroRegistros)
         {
             Filtros = filtros;
             NumeroPagina = numeroPagina;
             NumeroRegistros = numeroRegistros;
         }
 
-        public FiltrosAreaPromotoraDTO Filtros { get; }
+        public AreaPromotoraFiltrosDTO Filtros { get; }
         public int NumeroPagina { get; }
         public int NumeroRegistros { get; }
     }

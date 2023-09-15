@@ -2,8 +2,10 @@
 using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Data;
+using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -186,6 +188,87 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             PreencherAuditoriaAlteracao(proposta);
             proposta.Excluido = true;
             await conexao.Obter().UpdateAsync(proposta, transacao);
+        }
+
+
+        private static string MontarQueryPaginacao(long? id, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("select p.*, ap.* ");
+            query.AppendLine("from proposta p ");
+            query.AppendLine("left join area_promotora ap on ap.id = p.area_promotora_id and not ap.excluido");
+            query.AppendLine("where not p.excluido ");
+
+            if (id.GetValueOrDefault() > 0)
+                query.AppendLine(" and p.id = @id");
+
+            if (areaPromotoraId.GetValueOrDefault() > 0)
+                query.AppendLine(" and p.area_promotora_id = @areaPromotoraId");
+
+            if (modalidade.GetValueOrDefault() > 0)
+                query.AppendLine(" and p.modalidade = @modalidade");
+
+            if (publicoAlvoIds != null && publicoAlvoIds.Any())
+                query.AppendLine(" and exists(select 1 from proposta_publico_alvo ppa where not ppa.excluido and ppa.proposta_id = p.id and ppa.id = any(@publicoAlvoIds) limit 1)");
+
+            if (!string.IsNullOrEmpty(nomeFormacao))
+            {
+                nomeFormacao = "%" + nomeFormacao.ToLower() + "%";
+                query.AppendLine(" and lower(p.nome_formacao) like @nomeFormacao");
+            }
+
+            if (situacao.GetValueOrDefault() > 0)
+                query.AppendLine(" and p.situacao = @situacao");
+
+            return query.ToString();
+        }
+
+        public Task<int> ObterTotalRegistrosPorFiltros(long? id, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao)
+        {
+            string query = string.Concat("select count(1) from (", MontarQueryPaginacao(id, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao), ") tb");
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new
+            {
+                id,
+                areaPromotoraId,
+                modalidade,
+                publicoAlvoIds,
+                nomeFormacao,
+                numeroHomologacao,
+                periodoRealizacaoInicio,
+                periodoRealizacaoFim,
+                situacao
+            });
+        }
+
+        public Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? id, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao)
+        {
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            string query = MontarQueryPaginacao(id, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao);
+
+            query += " order by p.criado_em desc";
+            query += " limit @numeroRegistros offset @registrosIgnorados";
+
+            return conexao.Obter().QueryAsync<Proposta, AreaPromotora, Proposta>(query, (proposta, areaPromotora) =>
+            {
+                proposta.AreaPromotora = areaPromotora;
+                return proposta;
+            },
+            new
+            {
+                id,
+                numeroRegistros,
+                registrosIgnorados,
+                areaPromotoraId,
+                modalidade,
+                publicoAlvoIds,
+                nomeFormacao,
+                numeroHomologacao,
+                periodoRealizacaoInicio,
+                periodoRealizacaoFim,
+                situacao
+            },
+            splitOn: "id, id");
         }
     }
 }

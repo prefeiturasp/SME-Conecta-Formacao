@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [Authorize("Bearer")]
         public async Task<IActionResult> ObterAreaPromotoraPaginada(
             [FromServices] ICasoDeUsoObterAreaPromotoraPaginada casoDeUsoObterAreaPromotoraPaginada,
-            [FromQuery] FiltrosAreaPromotoraDTO filtrosAreaPromotoraDTO)
+            [FromQuery] AreaPromotoraFiltrosDTO filtrosAreaPromotoraDTO)
         {
             return Ok(await casoDeUsoObterAreaPromotoraPaginada.Executar(filtrosAreaPromotoraDTO));
         }

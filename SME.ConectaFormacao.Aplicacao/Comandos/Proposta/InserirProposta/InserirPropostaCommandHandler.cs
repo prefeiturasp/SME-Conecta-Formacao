@@ -54,6 +54,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (vagasRemanecentes.Any())
                     await _repositorioProposta.InserirVagasRemanecentes(transacao, id, vagasRemanecentes);
 
+                await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(proposta.ArquivoImagemDivulgacaoId), cancellationToken);
+
                 transacao.Commit();
 
                 return id;

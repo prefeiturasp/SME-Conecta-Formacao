@@ -23,6 +23,7 @@ public class ContextoHttp : ContextoBase
         Variaveis.Add("UsuarioLogado", httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Sistema");
         Variaveis.Add("NomeUsuario", httpContextAccessor.HttpContext?.User?.FindFirst("Nome")?.Value ?? "Sistema");
         Variaveis.Add("PerfilUsuario", ObterPerfilAtual());
+        Variaveis.Add("EmailUsuario", httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == "email")?.Value ?? string.Empty);
 
         var authorizationHeader = httpContextAccessor.HttpContext?.Request?.Headers["authorization"];
 
@@ -37,13 +38,13 @@ public class ContextoHttp : ContextoBase
             Variaveis.Add("TokenAtual", authorizationHeader.Value.Single().Split(' ').Last());
         }
 
-        var numeroPagina = httpContextAccessor.HttpContext?.Request?.Headers["numeroPagina"];
-        if (numeroPagina.HasValue)
-            Variaveis.Add("NumeroPagina", numeroPagina.ToString());
+        var numeroPagina = httpContextAccessor.HttpContext?.Request?.Headers["numeroPagina"].ToString();
+        if (!string.IsNullOrEmpty(numeroPagina))
+            Variaveis.Add("NumeroPagina", numeroPagina);
 
-        var numeroRegistros = httpContextAccessor.HttpContext?.Request?.Headers["numeroRegistros"];
-        if (numeroRegistros.HasValue)
-            Variaveis.Add("NumeroRegistros", numeroRegistros.ToString());
+        var numeroRegistros = httpContextAccessor.HttpContext?.Request?.Headers["numeroRegistros"].ToString();
+        if (!string.IsNullOrEmpty(numeroRegistros))
+            Variaveis.Add("NumeroRegistros", numeroRegistros);
     }
 
     private IEnumerable<InternalClaim> GetInternalClaim()

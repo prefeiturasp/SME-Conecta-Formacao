@@ -19,6 +19,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaCriterioValidacaoInscricaoDTO> CriteriosValidacaoInscricao { get; set; }
         public string CriterioValidacaoInscricaoOutros { get; set; }
         public SituacaoProposta Situacao { get; set; }
+        public long? ArquivoImagemDivulgacaoId { get; set; }
+        public string? ArquivoImagemDivulgacao { get; set; }
         public AuditoriaDTO Auditoria { get; set; }
     }
 }

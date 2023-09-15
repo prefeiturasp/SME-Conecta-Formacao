@@ -11,6 +11,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     [Authorize("Bearer")]
     public class PropostaController : BaseController
     {
+        [HttpGet("informacoes-cadastrante")]
+        [ProducesResponseType(typeof(PropostaInformacoesCadastranteDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterInformacoesCadastrante(
+            [FromServices] ICasoDeUsoObterInformacoesCadastrante casoDeUsoObterInformacoesCadastrante)
+        {
+            return Ok(await casoDeUsoObterInformacoesCadastrante.Executar());
+        }
+
         [HttpGet("roteiro")]
         [ProducesResponseType(typeof(RoteiroPropostaFormativaDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -82,6 +92,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromRoute] long id)
         {
             return Ok(await casoDeUsoObterPropostaPorId.Executar(id));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaPaginadaDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterPropostaPaginada(
+            [FromServices] ICasoDeUsoObterPropostaPaginacao casoDeUsoObterPropostaPaginacao,
+            [FromQuery] PropostaFiltrosDTO propostaFiltrosDTO)
+        {
+            return Ok(await casoDeUsoObterPropostaPaginacao.Executar(propostaFiltrosDTO));
         }
 
         [HttpPost]
