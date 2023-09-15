@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
     {
         [Display(Name = "Rede Direta")]
         RedeDireta = 1,
-        [Display(Name = "Rede Parceira")]
-        RedeParceira = 2
+        [Display(Name = "Rede Parceria")]
+        RedeParceria = 2
     }
 }

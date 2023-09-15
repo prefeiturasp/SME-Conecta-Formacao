@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         public async Task Deve_inserir_area_promotora_valida_rede_parceira_com_email_sem_dominio_sme()
         {
             // arrange 
-            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceira);
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirAreaPromotora>();
 
@@ -124,7 +124,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
             await InserirNaBase(areaPromotora);
 
-            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceira);
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria);
 
             areaPromotoraDTO.GrupoId = areaPromotora.GrupoId;
 
