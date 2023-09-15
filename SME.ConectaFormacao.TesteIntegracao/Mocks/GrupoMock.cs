@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks
+namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
     public static class GrupoMock
     {

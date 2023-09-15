@@ -2,7 +2,7 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Arquivo.Mocks
+namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
     public class ArquivoMock
     {

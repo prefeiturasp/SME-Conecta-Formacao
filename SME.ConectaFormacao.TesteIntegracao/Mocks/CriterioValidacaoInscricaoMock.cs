@@ -2,7 +2,7 @@
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
+namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
     public class CriterioValidacaoInscricaoMock
     {

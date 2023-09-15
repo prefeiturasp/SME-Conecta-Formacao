@@ -14,19 +14,19 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioProposta _repositorioProposta;
+        private readonly IMediator _mediator;
 
-        public AlterarPropostaRascunhoCommandHandler(IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
+        public AlterarPropostaRascunhoCommandHandler(IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta, IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<long> Handle(AlterarPropostaRascunhoCommand request, CancellationToken cancellationToken)
         {
-            var proposta = await _repositorioProposta.ObterPorId(request.Id);
-            if (proposta == null)
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
+            var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
 
@@ -85,6 +85,14 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (vagasRemanecentesExcluir.Any())
                     await _repositorioProposta.RemoverVagasRemanecentes(transacao, vagasRemanecentesExcluir);
+
+                if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())
+                {
+                    await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(propostaDepois.ArquivoImagemDivulgacaoId), cancellationToken);
+
+                    if (proposta.ArquivoImagemDivulgacaoId.HasValue)
+                        await _mediator.Send(new RemoverArquivoPorIdCommand(proposta.ArquivoImagemDivulgacaoId.Value), cancellationToken);
+                }
 
                 transacao.Commit();
 

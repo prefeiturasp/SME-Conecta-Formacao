@@ -2,7 +2,7 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao.Mocks
+namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
     public class CargoFuncaoMock
     {
@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao.Mocks
 
             var faker = new Faker<Dominio.Entidades.CargoFuncao>();
             faker.RuleFor(dest => dest.Nome, f => f.Commerce.Department());
-            faker.RuleFor(dest => dest.Tipo, f => cargoFuncaoTipo.HasValue ? cargoFuncaoTipo : f.PickRandom<CargoFuncaoTipo>(opcoesCargoFuncao));
+            faker.RuleFor(dest => dest.Tipo, f => cargoFuncaoTipo.HasValue ? cargoFuncaoTipo : f.PickRandom(opcoesCargoFuncao));
             faker.RuleFor(dest => dest.Outros, outros);
             faker.RuleFor(dest => dest.CriadoEm, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(dest => dest.CriadoPor, f => f.Person.FullName);

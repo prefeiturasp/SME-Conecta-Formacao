@@ -17,6 +17,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.QuantidadeVagasTurma).ToColumn("quantidade_vagas_turma");
             Map(c => c.FuncaoEspecificaOutros).ToColumn("funcao_especifica_outros");
             Map(c => c.CriterioValidacaoInscricaoOutros).ToColumn("criterio_validacao_inscricao_outros");
+            Map(c => c.ArquivoImagemDivulgacaoId).ToColumn("arquivo_imagem_divulgacao_id");
             Map(c => c.Situacao).ToColumn("situacao");
         }
     }

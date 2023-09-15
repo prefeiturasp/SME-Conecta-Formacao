@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Arquivo.ServicosFakes
+namespace SME.ConectaFormacao.TesteIntegracao.ServicosFakes
 {
     public class RemoverArquivoServicoArmazenamentoCommandHandlerFake : IRequestHandler<RemoverArquivoServicoArmazenamentoCommand, bool>
     {

@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
+        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao, Dominio.Entidades.Arquivo arquivo = null)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
@@ -22,6 +22,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 Modalidade.Presencial,
                 SituacaoProposta.Ativo,
                 false, false);
+
+            if (arquivo != null)
+            {
+                proposta.ArquivoImagemDivulgacaoId = arquivo.Id;
+            }
 
             await InserirNaBase(proposta);
 
@@ -160,6 +165,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             auditoriaDTO.AlteradoEm.GetValueOrDefault().Hour.ShouldBe(entidadeAuditavel.AlteradoEm.GetValueOrDefault().Hour);
             auditoriaDTO.AlteradoPor.ShouldBe(entidadeAuditavel.AlteradoPor);
             auditoriaDTO.AlteradoLogin.ShouldBe(entidadeAuditavel.AlteradoLogin);
+        }
+
+        protected static void ValidarArquivoImagemDivulgacao(long? arquivoImagemDivulgacaoId, long? arquivoId)
+        {
+            arquivoImagemDivulgacaoId.ShouldBe(arquivoId);
         }
     }
 }
