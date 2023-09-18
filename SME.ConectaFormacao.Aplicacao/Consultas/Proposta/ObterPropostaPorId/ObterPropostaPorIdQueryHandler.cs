@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (proposta.ArquivoImagemDivulgacaoId.HasValue)
             {
                 var arquivo = await _repositorioArquivo.ObterPorId(proposta.ArquivoImagemDivulgacaoId.Value);
-                propostaCompletaDTO.ImagemDivulgacao = _mapper.Map<PropostaImagemDivulgacaoDTO>(arquivo);
+                propostaCompletaDTO.ArquivoImagemDivulgacao = _mapper.Map<PropostaImagemDivulgacaoDTO>(arquivo);
             }
 
             return propostaCompletaDTO;
