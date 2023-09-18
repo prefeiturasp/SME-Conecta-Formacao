@@ -52,6 +52,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(x => x.Situacao.Nome()))
                 .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(x => x.AreaPromotora.Nome));
 
+            CreateMap<Arquivo, PropostaImagemDivulgacaoDTO>()
+                .ForMember(dest => dest.ArquivoId, opt => opt.MapFrom(x => x.Id));
+
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
 
