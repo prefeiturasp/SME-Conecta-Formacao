@@ -13,9 +13,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncaoEspecificas,
             IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos,
             IEnumerable<PropostaVagaRemanecenteDTO> propostaVagaRemanecentes,
-            SituacaoRegistro situacao,
+            SituacaoProposta situacao,
             bool gerarFuncaoEspecificaOutros,
-            bool gerarCriterioValidacaoInscricaoOutros)
+            bool gerarCriterioValidacaoInscricaoOutros,
+            long? arquivoImagemDivulgacaoId)
         {
             var faker = new Faker<PropostaDTO>();
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
@@ -35,13 +36,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             if (gerarCriterioValidacaoInscricaoOutros)
                 faker.RuleFor(x => x.CriterioValidacaoInscricaoOutros, f => f.Lorem.Sentence(3));
 
+            if (arquivoImagemDivulgacaoId.HasValue)
+                faker.RuleFor(x => x.ArquivoImagemDivulgacaoId, arquivoImagemDivulgacaoId);
+
             faker.RuleFor(x => x.Situacao, situacao);
 
             return faker;
         }
 
 
-        public static PropostaDTO GerarPropostaDTOVazio(SituacaoRegistro situacaoRegistro)
+        public static PropostaDTO GerarPropostaDTOVazio(SituacaoProposta situacaoRegistro)
         {
             return new PropostaDTO { Situacao = situacaoRegistro };
         }
@@ -53,9 +57,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncaoEspecificas,
             IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos,
             IEnumerable<PropostaVagaRemanecenteDTO> propostaVagaRemanecentes,
-            SituacaoRegistro situacao, bool gerarFuncaoEspecificaOutros = false, bool gerarCriterioValidacaoInscricaoOutros = false)
+            SituacaoProposta situacao, bool gerarFuncaoEspecificaOutros = false, bool gerarCriterioValidacaoInscricaoOutros = false,
+            long? arquivoImagemDivulgacaoId = null)
         {
-            return Gerador(tipoFormacao, modalidade, propostaPublicoAlvos, propostaFuncaoEspecificas, propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros).Generate();
+            return Gerador(tipoFormacao, modalidade, propostaPublicoAlvos, propostaFuncaoEspecificas, propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId).Generate();
         }
 
         public static long GerarIdAleatorio()

@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [Authorize("Bearer")]
         public async Task<IActionResult> ObterAreaPromotoraPaginada(
             [FromServices] ICasoDeUsoObterAreaPromotoraPaginada casoDeUsoObterAreaPromotoraPaginada,
-            [FromQuery] FiltrosAreaPromotoraDTO filtrosAreaPromotoraDTO)
+            [FromQuery] AreaPromotoraFiltrosDTO filtrosAreaPromotoraDTO)
         {
             return Ok(await casoDeUsoObterAreaPromotoraPaginada.Executar(filtrosAreaPromotoraDTO));
         }
@@ -42,6 +42,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromRoute] long id)
         {
             return Ok(await casoDeUsoObterAreaPromotoraPorId.Executar(id));
+        }
+
+
+        [HttpGet("lista")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterAreaPromotoraLista(
+            [FromServices] ICasoDeUsoObterAreaPromotoraLista casoDeUsoObterAreaPromotoraLista)
+        {
+            return Ok(await casoDeUsoObterAreaPromotoraLista.Executar());
         }
 
         [HttpPost]
