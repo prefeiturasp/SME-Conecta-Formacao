@@ -8,20 +8,20 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostaPorIdQueryHandler : IRequestHandler<ObterPropostaPorIdQuery, PropostaCompletoDTO>
+    public class ObterPropostaCompletaPorIdQueryHandler : IRequestHandler<ObterPropostaCompletaPorIdQuery, PropostaCompletoDTO>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly IRepositorioArquivo _repositorioArquivo;
 
-        public ObterPropostaPorIdQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta, IRepositorioArquivo repositorioArquivo)
+        public ObterPropostaCompletaPorIdQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta, IRepositorioArquivo repositorioArquivo)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _repositorioArquivo = repositorioArquivo ?? throw new ArgumentNullException(nameof(repositorioArquivo));
         }
 
-        public async Task<PropostaCompletoDTO> Handle(ObterPropostaPorIdQuery request, CancellationToken cancellationToken)
+        public async Task<PropostaCompletoDTO> Handle(ObterPropostaCompletaPorIdQuery request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id);
             if (proposta == null || proposta.Excluido)

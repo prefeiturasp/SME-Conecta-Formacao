@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
-    public class PropostaMock
+    public class PropostaMock : BaseMocks
     {
         private static Faker<Proposta> Gerador(
             long areaPromotoraId,
