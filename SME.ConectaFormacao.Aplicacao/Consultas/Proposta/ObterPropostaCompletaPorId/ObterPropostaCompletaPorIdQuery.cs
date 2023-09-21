@@ -4,9 +4,9 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostaPorIdQuery : IRequest<PropostaCompletoDTO>
+    public class ObterPropostaCompletaPorIdQuery : IRequest<PropostaCompletoDTO>
     {
-        public ObterPropostaPorIdQuery(long id)
+        public ObterPropostaCompletaPorIdQuery(long id)
         {
             Id = id;
         }
@@ -14,9 +14,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public long Id { get; }
     }
 
-    public class ObterPropostaPorIdQueryValidator : AbstractValidator<ObterPropostaPorIdQuery>
+    public class ObterPropostaCompletaPorIdQueryValidator : AbstractValidator<ObterPropostaCompletaPorIdQuery>
     {
-        public ObterPropostaPorIdQueryValidator()
+        public ObterPropostaCompletaPorIdQueryValidator()
         {
             RuleFor(x => x.Id)
                 .NotEmpty()
