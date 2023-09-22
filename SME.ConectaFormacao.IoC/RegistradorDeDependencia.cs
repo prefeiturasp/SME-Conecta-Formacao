@@ -190,10 +190,12 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterSituacoesProposta, CasoDeUsoObterSituacoesProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaPaginacao, CasoDeUsoObterPropostaPaginacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterInformacoesCadastrante, CasoDeUsoObterInformacoesCadastrante>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTurmasProposta, CasoDeUsoObterTurmasProposta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoCarregarTemporario, CasoDeUsoArquivoCarregarTemporario>();
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoBaixar, CasoDeUsoArquivoBaixar>();
+
     }
 
     protected virtual void RegistrarHttpClients()

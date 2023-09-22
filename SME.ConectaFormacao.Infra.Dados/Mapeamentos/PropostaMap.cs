@@ -19,6 +19,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.CriterioValidacaoInscricaoOutros).ToColumn("criterio_validacao_inscricao_outros");
             Map(c => c.ArquivoImagemDivulgacaoId).ToColumn("arquivo_imagem_divulgacao_id");
             Map(c => c.Situacao).ToColumn("situacao");
+            Map(c => c.DataInscricaoInicio).ToColumn("data_inscricao_inicio");
+            Map(c => c.DataInscricaoFim).ToColumn("data_inscricao_fim");
+            Map(c => c.DataRealizacaoInicio).ToColumn("data_realizacao_inicio");
+            Map(c => c.DataRealizacaoFim).ToColumn("data_realizacao_fim");
         }
     }
 }
