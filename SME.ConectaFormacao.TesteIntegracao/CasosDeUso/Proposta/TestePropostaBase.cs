@@ -168,33 +168,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             }
         }
 
-        protected void ValidarPropostaEncontro(IEnumerable<PropostaEncontroDTO> encontrosDTO, long id)
-        {
-            var encontros = ObterTodos<PropostaEncontro>();
-            var turmas = ObterTodos<PropostaEncontroTurma>();
-            var datas = ObterTodos<PropostaEncontroData>();
-
-            foreach (var encontroDTO in encontrosDTO)
-            {
-                var encontro = encontros.FirstOrDefault(t =>
-                    t.PropostaId == id &&
-                    t.HoraInicio == encontroDTO.HoraInicio &&
-                    t.HoraFim == encontroDTO.HoraFim &&
-                    t.Local == encontroDTO.Local
-                    );
-                encontro.ShouldNotBeNull();
-
-                foreach (var dataDTO in encontroDTO.Datas)
-                {
-                    var data = datas.FirstOrDefault(t =>
-                        t.PropostaEncontroId == encontro.Id &&
-                        t.DataInicio.GetValueOrDefault().Date == dataDTO.DataInicio.Date &&
-                        t.DataFim.GetValueOrDefault().Date == dataDTO.DataFim.GetValueOrDefault().Date);
-                    data.ShouldNotBeNull();
-                }
-            }
-        }
-
         protected static void ValidarAuditoriaDTO(Dominio.EntidadeBaseAuditavel entidadeAuditavel, AuditoriaDTO auditoriaDTO)
         {
             auditoriaDTO.CriadoEm.Date.ShouldBe(entidadeAuditavel.CriadoEm.Date);

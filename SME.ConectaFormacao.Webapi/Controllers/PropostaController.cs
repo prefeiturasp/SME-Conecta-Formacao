@@ -159,5 +159,28 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoRemoverProposta.Executar(id));
         }
+
+        [HttpPost("{propostaId}/encontro")]
+        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> SalvarEncontro(
+            [FromServices] ICasoDeUsoSalvarPropostaEncontro casoDeUsoSalvarPropostaEncontro,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaEncontroDTO propostaEncontroDTO)
+        {
+            return Ok(await casoDeUsoSalvarPropostaEncontro.Executar(propostaId, propostaEncontroDTO));
+        }
+
+        [HttpDelete("encontro/{id}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> RemoverPropostaEncontro(
+            [FromServices] ICasoDeUsoRemoverPropostaEncontro casoDeUsoRemoverPropostaEncontro,
+            [FromRoute] long id)
+        {
+            return Ok(await casoDeUsoRemoverPropostaEncontro.Executar(id));
+        }
     }
 }
