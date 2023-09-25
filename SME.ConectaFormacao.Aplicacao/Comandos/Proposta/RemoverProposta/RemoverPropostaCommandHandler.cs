@@ -19,31 +19,33 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(RemoverPropostaCommand request, CancellationToken cancellationToken)
         {
-            var proposta = await _repositorioProposta.ObterPorId(request.Id);
-            if (proposta == null)
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
+            var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
             proposta.PublicosAlvo = await _repositorioProposta.ObterPublicoAlvoPorId(request.Id);
             proposta.FuncoesEspecificas = await _repositorioProposta.ObterFuncoesEspecificasPorId(request.Id);
             proposta.CriteriosValidacaoInscricao = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
             proposta.VagasRemanecentes = await _repositorioProposta.ObterVagasRemacenentesPorId(request.Id);
+            proposta.Encontros = await _repositorioProposta.ObterEncontrosPorId(request.Id);
 
             var transacao = _transacao.Iniciar();
             try
             {
                 if (proposta.PublicosAlvo.Any())
-                    await _repositorioProposta.RemoverPublicosAlvo(transacao, proposta.PublicosAlvo);
+                    await _repositorioProposta.RemoverPublicosAlvo(proposta.PublicosAlvo);
 
                 if (proposta.FuncoesEspecificas.Any())
-                    await _repositorioProposta.RemoverFuncoesEspecificas(transacao, proposta.FuncoesEspecificas);
+                    await _repositorioProposta.RemoverFuncoesEspecificas(proposta.FuncoesEspecificas);
 
                 if (proposta.CriteriosValidacaoInscricao.Any())
-                    await _repositorioProposta.RemoverCriteriosValidacaoInscricao(transacao, proposta.CriteriosValidacaoInscricao);
+                    await _repositorioProposta.RemoverCriteriosValidacaoInscricao(proposta.CriteriosValidacaoInscricao);
 
                 if (proposta.VagasRemanecentes.Any())
-                    await _repositorioProposta.RemoverVagasRemanecentes(transacao, proposta.VagasRemanecentes);
+                    await _repositorioProposta.RemoverVagasRemanecentes(proposta.VagasRemanecentes);
 
-                await _repositorioProposta.Remover(transacao, proposta);
+                if (proposta.Encontros.Any())
+                    await _repositorioProposta.RemoverEncontros(proposta.Encontros);
+
+                await _repositorioProposta.Remover(proposta);
 
                 transacao.Commit();
 

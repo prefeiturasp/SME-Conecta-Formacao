@@ -4,7 +4,6 @@ using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System.Data;
 using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
@@ -15,79 +14,94 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public async Task<bool> Atualizar(IDbTransaction transacao, Proposta proposta)
+        public Task RemoverCriteriosValidacaoInscricao(IEnumerable<PropostaCriterioValidacaoInscricao> criteriosValidacaoInscricao)
         {
-            PreencherAuditoriaAlteracao(proposta);
-            return await conexao.Obter().UpdateAsync(proposta, transacao);
-        }
+            var criterioValidacaoInscricao = criteriosValidacaoInscricao.First();
+            PreencherAuditoriaAlteracao(criterioValidacaoInscricao);
 
-        public async Task RemoverCriteriosValidacaoInscricao(IDbTransaction transacao, IEnumerable<PropostaCriterioValidacaoInscricao> criteriosValidacaoInscricao)
-        {
-            foreach (var criterioValidacaoInscricao in criteriosValidacaoInscricao)
+            var parametros = new
             {
-                PreencherAuditoriaAlteracao(criterioValidacaoInscricao);
-                criterioValidacaoInscricao.Excluido = true;
-                await conexao.Obter().UpdateAsync(criterioValidacaoInscricao, transacao);
-            }
+                ids = criteriosValidacaoInscricao.Select(t => t.Id).ToArray(),
+                criterioValidacaoInscricao.AlteradoEm,
+                criterioValidacaoInscricao.AlteradoPor,
+                criterioValidacaoInscricao.AlteradoLogin
+            };
+
+            var query = @"update proposta_criterio_validacao_inscricao 
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
-        public async Task RemoverVagasRemanecentes(IDbTransaction transacao, IEnumerable<PropostaVagaRemanecente> vagasRemanecentes)
+        public Task RemoverVagasRemanecentes(IEnumerable<PropostaVagaRemanecente> vagasRemanecentes)
         {
-            foreach (var vagaRemanecente in vagasRemanecentes)
+            var vagaRemanecente = vagasRemanecentes.First();
+            PreencherAuditoriaAlteracao(vagaRemanecente);
+
+            var parametros = new
             {
-                PreencherAuditoriaAlteracao(vagaRemanecente);
-                vagaRemanecente.Excluido = true;
-                await conexao.Obter().UpdateAsync(vagaRemanecente, transacao);
-            }
+                ids = vagasRemanecentes.Select(t => t.Id).ToArray(),
+                vagaRemanecente.AlteradoEm,
+                vagaRemanecente.AlteradoPor,
+                vagaRemanecente.AlteradoLogin
+            };
+
+            var query = @"update proposta_vaga_remanecente 
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
-        public async Task<long> Inserir(IDbTransaction transacao, Proposta proposta)
-        {
-            PreencherAuditoriaCriacao(proposta);
-            proposta.Id = (long)await conexao.Obter().InsertAsync(proposta, transacao);
-            return proposta.Id;
-        }
-
-        public async Task InserirCriteriosValidacaoInscricao(IDbTransaction transacao, long id, IEnumerable<PropostaCriterioValidacaoInscricao> criteriosValidacaoInscricao)
+        public async Task InserirCriteriosValidacaoInscricao(long id, IEnumerable<PropostaCriterioValidacaoInscricao> criteriosValidacaoInscricao)
         {
             foreach (var criterioValidacaoInscricao in criteriosValidacaoInscricao)
             {
                 PreencherAuditoriaCriacao(criterioValidacaoInscricao);
                 criterioValidacaoInscricao.PropostaId = id;
-                criterioValidacaoInscricao.Id = (long)await conexao.Obter().InsertAsync(criterioValidacaoInscricao, transacao);
+                criterioValidacaoInscricao.Id = (long)await conexao.Obter().InsertAsync(criterioValidacaoInscricao);
             }
         }
 
-        public async Task InserirFuncoesEspecificas(IDbTransaction transacao, long id, IEnumerable<PropostaFuncaoEspecifica> funcoesEspecificas)
+        public async Task InserirFuncoesEspecificas(long id, IEnumerable<PropostaFuncaoEspecifica> funcoesEspecificas)
         {
             foreach (var funcaoEspecifica in funcoesEspecificas)
             {
                 PreencherAuditoriaCriacao(funcaoEspecifica);
 
                 funcaoEspecifica.PropostaId = id;
-                funcaoEspecifica.Id = (long)await conexao.Obter().InsertAsync(funcaoEspecifica, transacao);
+                funcaoEspecifica.Id = (long)await conexao.Obter().InsertAsync(funcaoEspecifica);
             }
         }
 
-        public async Task InserirPublicosAlvo(IDbTransaction transacao, long id, IEnumerable<PropostaPublicoAlvo> publicosAlvo)
+        public async Task InserirPublicosAlvo(long id, IEnumerable<PropostaPublicoAlvo> publicosAlvo)
         {
             foreach (var publicoAlvo in publicosAlvo)
             {
                 PreencherAuditoriaCriacao(publicoAlvo);
 
                 publicoAlvo.PropostaId = id;
-                publicoAlvo.Id = (long)await conexao.Obter().InsertAsync(publicoAlvo, transacao);
+                publicoAlvo.Id = (long)await conexao.Obter().InsertAsync(publicoAlvo);
             }
         }
 
-        public async Task InserirVagasRemanecentes(IDbTransaction transacao, long id, IEnumerable<PropostaVagaRemanecente> vagasRemanecentes)
+        public async Task InserirVagasRemanecentes(long id, IEnumerable<PropostaVagaRemanecente> vagasRemanecentes)
         {
             foreach (var vagaRemanecente in vagasRemanecentes)
             {
                 PreencherAuditoriaCriacao(vagaRemanecente);
 
                 vagaRemanecente.PropostaId = id;
-                vagaRemanecente.Id = (long)await conexao.Obter().InsertAsync(vagaRemanecente, transacao);
+                vagaRemanecente.Id = (long)await conexao.Obter().InsertAsync(vagaRemanecente);
             }
         }
 
@@ -163,33 +177,53 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<PropostaVagaRemanecente>(query, new { id });
         }
 
-        public async Task RemoverFuncoesEspecificas(IDbTransaction transacao, IEnumerable<PropostaFuncaoEspecifica> funcoesEspecificas)
+        public Task RemoverFuncoesEspecificas(IEnumerable<PropostaFuncaoEspecifica> funcoesEspecificas)
         {
-            foreach (var funcaoEspecifica in funcoesEspecificas)
+            var funcaoEspecifica = funcoesEspecificas.First();
+            PreencherAuditoriaAlteracao(funcaoEspecifica);
+
+            var parametros = new
             {
-                PreencherAuditoriaAlteracao(funcaoEspecifica);
-                funcaoEspecifica.Excluido = true;
-                await conexao.Obter().UpdateAsync(funcaoEspecifica, transacao);
-            }
+                ids = funcoesEspecificas.Select(t => t.Id).ToArray(),
+                funcaoEspecifica.AlteradoEm,
+                funcaoEspecifica.AlteradoPor,
+                funcaoEspecifica.AlteradoLogin
+            };
+
+            var query = @"update proposta_funcao_especifica
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
-        public async Task RemoverPublicosAlvo(IDbTransaction transacao, IEnumerable<PropostaPublicoAlvo> publicoAlvo)
+        public Task RemoverPublicosAlvo(IEnumerable<PropostaPublicoAlvo> publicosAlvo)
         {
-            foreach (var publico in publicoAlvo)
+            var publicoAlvo = publicosAlvo.First();
+            PreencherAuditoriaAlteracao(publicoAlvo);
+
+            var parametros = new
             {
-                PreencherAuditoriaAlteracao(publico);
-                publico.Excluido = true;
-                await conexao.Obter().UpdateAsync(publico, transacao);
-            }
-        }
+                ids = publicosAlvo.Select(t => t.Id).ToArray(),
+                publicoAlvo.AlteradoEm,
+                publicoAlvo.AlteradoPor,
+                publicoAlvo.AlteradoLogin
+            };
 
-        public async Task Remover(IDbTransaction transacao, Proposta proposta)
-        {
-            PreencherAuditoriaAlteracao(proposta);
-            proposta.Excluido = true;
-            await conexao.Obter().UpdateAsync(proposta, transacao);
-        }
+            var query = @"update proposta_publico_alvo
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
 
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
 
         private static string MontarQueryPaginacao(long? id, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao)
         {
@@ -269,6 +303,177 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 situacao
             },
             splitOn: "id, id");
+        }
+
+        public Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            hora_inicio,
+                            hora_fim,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_encontro 
+                        where proposta_id = @id";
+            return conexao.Obter().QueryAsync<PropostaEncontro>(query, new { id });
+        }
+
+        public async Task InserirEncontros(long id, IEnumerable<PropostaEncontro> encontros)
+        {
+            foreach (var encontro in encontros)
+            {
+                PreencherAuditoriaCriacao(encontro);
+
+                encontro.PropostaId = id;
+                encontro.Id = (long)await conexao.Obter().InsertAsync(encontro);
+            }
+        }
+
+        public async Task InserirEncontroTurmas(long propostaEncontroId, IEnumerable<PropostaEncontroTurma> turmas)
+        {
+            foreach (var turma in turmas)
+            {
+                PreencherAuditoriaCriacao(turma);
+
+                turma.PropostaEncontroId = propostaEncontroId;
+                turma.Id = (long)await conexao.Obter().InsertAsync(turma);
+            }
+        }
+
+        public async Task InserirEncontroDatas(long propostaEncontroId, IEnumerable<PropostaEncontroData> datas)
+        {
+            foreach (var data in datas)
+            {
+                PreencherAuditoriaCriacao(data);
+
+                data.PropostaEncontroId = propostaEncontroId;
+                data.Id = (long)await conexao.Obter().InsertAsync(data);
+            }
+        }
+
+        public Task RemoverEncontros(IEnumerable<PropostaEncontro> encontros)
+        {
+            var encontro = encontros.First();
+            PreencherAuditoriaAlteracao(encontro);
+
+            var parametros = new
+            {
+                ids = encontros.Select(t => t.Id).ToArray(),
+                encontro.AlteradoEm,
+                encontro.AlteradoPor,
+                encontro.AlteradoLogin
+            };
+
+            var query = @"
+                    update proposta_encontro_turma set excluido = true, alterado_em = @AlteradoEm, alterado_por = @AlteradoPor, alterado_login = @AlteradoLogin where not excluido and proposta_encontro_id = any(@ids);
+                    update proposta_encontro_data set excluido = true, alterado_em = @AlteradoEm, alterado_por = @AlteradoPor, alterado_login = @AlteradoLogin where not excluido and proposta_encontro_id = any(@ids);
+                    update proposta_encontro set excluido = true, alterado_em = @AlteradoEm, alterado_por = @AlteradoPor, alterado_login = @AlteradoLogin where  not excluido and id = any(@ids);
+                    ";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+
+        public async Task AtualizarEncontro(PropostaEncontro encontro)
+        {
+            PreencherAuditoriaAlteracao(encontro);
+            await conexao.Obter().UpdateAsync(encontro);
+        }
+
+        public Task<IEnumerable<PropostaEncontroData>> ObterEncontroDatasPorEncontroIds(long[] encontroIds)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_encontro_id, 
+                            data_inicio,
+                            data_fim,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_encontro_data 
+                        where proposta_encontro_id = any(@encontroIds) and not excluido";
+            return conexao.Obter().QueryAsync<PropostaEncontroData>(query, new { encontroIds });
+        }
+
+        public Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroIds(long[] encontroIds)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_encontro_id, 
+                            turma,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_encontro_turma 
+                        where proposta_encontro_id = any(@encontroIds) and not excluido";
+            return conexao.Obter().QueryAsync<PropostaEncontroTurma>(query, new { encontroIds });
+        }
+
+        public Task RemoverEncontroTurmas(IEnumerable<PropostaEncontroTurma> turmas)
+        {
+            var turma = turmas.First();
+            PreencherAuditoriaAlteracao(turma);
+
+            var parametros = new
+            {
+                ids = turmas.Select(t => t.Id).ToArray(),
+                turma.AlteradoEm,
+                turma.AlteradoPor,
+                turma.AlteradoLogin
+            };
+
+            var query = @"update proposta_encontro_turma
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+
+        public Task RemoverEncontroDatas(IEnumerable<PropostaEncontroData> datas)
+        {
+            var data = datas.First();
+            PreencherAuditoriaAlteracao(data);
+
+            var parametros = new
+            {
+                ids = datas.Select(t => t.Id).ToArray(),
+                data.AlteradoEm,
+                data.AlteradoPor,
+                data.AlteradoLogin
+            };
+
+            var query = @"update proposta_encontro_data
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+
+        public async Task AtualizarEncontroData(PropostaEncontroData datas)
+        {
+            PreencherAuditoriaAlteracao(datas);
+            await conexao.Obter().UpdateAsync(datas);
         }
     }
 }

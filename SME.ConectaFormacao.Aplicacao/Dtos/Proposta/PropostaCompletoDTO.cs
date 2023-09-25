@@ -9,8 +9,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public Modalidade? Modalidade { get; set; }
         public TipoInscricao? TipoInscricao { get; set; }
         public string? NomeFormacao { get; set; }
-        public int? QuantidadeTurmas { get; set; }
-        public int? QuantidadeVagasTurma { get; set; }
+        public short? QuantidadeTurmas { get; set; }
+        public short? QuantidadeVagasTurma { get; set; }
         public int QuantidadeTotal => QuantidadeTurmas.GetValueOrDefault() * QuantidadeVagasTurma.GetValueOrDefault();
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecificaDTO> FuncoesEspecificas { get; set; }

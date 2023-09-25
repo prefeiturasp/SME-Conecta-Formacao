@@ -41,7 +41,12 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<CargoFuncao, CargoFuncaoDTO>();
             CreateMap<CriterioValidacaoInscricao, CriterioValidacaoInscricaoDTO>();
             CreateMap<Proposta, PropostaCompletoDTO>();
-            CreateMap<Proposta, PropostaDTO>().ReverseMap();
+            CreateMap<Proposta, PropostaDTO>()
+                .ForMember(dest => dest.PublicosAlvo, opt => opt.MapFrom(o => o.PublicosAlvo))
+                .ForMember(dest => dest.FuncoesEspecificas, opt => opt.MapFrom(o => o.FuncoesEspecificas))
+                .ForMember(dest => dest.VagasRemanecentes, opt => opt.MapFrom(o => o.VagasRemanecentes))
+                .ForMember(dest => dest.CriteriosValidacaoInscricao, opt => opt.MapFrom(o => o.CriteriosValidacaoInscricao))
+                .ReverseMap();
             CreateMap<PropostaCriterioValidacaoInscricao, PropostaCriterioValidacaoInscricaoDTO>().ReverseMap();
             CreateMap<PropostaFuncaoEspecifica, PropostaFuncaoEspecificaDTO>().ReverseMap();
             CreateMap<PropostaVagaRemanecente, PropostaVagaRemanecenteDTO>().ReverseMap();
@@ -55,9 +60,16 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<Arquivo, PropostaImagemDivulgacaoDTO>()
                 .ForMember(dest => dest.ArquivoId, opt => opt.MapFrom(x => x.Id));
 
+            CreateMap<PropostaEncontro, PropostaEncontroDTO>()
+                .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => o.Datas))
+                .ReverseMap();
+
+            CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>().ReverseMap();
+            CreateMap<PropostaEncontroData, PropostaEncontroDataDTO>().ReverseMap();
+
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
-
         }
     }
 }
