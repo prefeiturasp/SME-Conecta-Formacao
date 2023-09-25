@@ -475,5 +475,36 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             PreencherAuditoriaAlteracao(datas);
             await conexao.Obter().UpdateAsync(datas);
         }
+
+        public Task<int> ObterTotalEncontros(long propostaId)
+        {
+            var query = @"select count(1) from proposta_encontro where not excluido and proposta_id = @propostaId";
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
+        }
+
+        public Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId)
+        {
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            hora_inicio,
+                            hora_fim,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_encontro 
+                        where proposta_id = @id";
+
+            query += " order by id";
+            query += " limit @numeroRegistros offset @registrosIgnorados";
+
+            return conexao.Obter().QueryAsync<PropostaEncontro>(query, new { numeroRegistros, registrosIgnorados, propostaId });
+        }
     }
 }

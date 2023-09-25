@@ -159,5 +159,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoRemoverProposta.Executar(id));
         }
+
+        [HttpGet("{id}/encontro")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaEncontroDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterEncontrosPaginado(
+          [FromServices] ICasoDeUsoObterPropostaEncontroPaginacao casoDeUsoObterPropostaEncontroPaginacao,
+          [FromRoute] long id)
+        {
+            return Ok(await casoDeUsoObterPropostaEncontroPaginacao.Executar(id));
+        }
     }
 }
