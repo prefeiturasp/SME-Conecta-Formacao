@@ -26,11 +26,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task InserirEncontroDatas(long propostaId, IEnumerable<PropostaEncontroData> datas);
         Task RemoverEncontros(IEnumerable<PropostaEncontro> encontros);
         Task AtualizarEncontro(PropostaEncontro encontro);
-        Task<IEnumerable<PropostaEncontroData>> ObterEncontroDatasPorEncontroId(long encontroId);
-        Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(long encontroId);
+        Task<IEnumerable<PropostaEncontroData>> ObterEncontroDatasPorEncontroId(params long[] encontroId);
+        Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(params long[] encontroId);
         Task RemoverEncontroTurmas(IEnumerable<PropostaEncontroTurma> turmas);
         Task RemoverEncontroDatas(IEnumerable<PropostaEncontroData> datas);
         Task AtualizarEncontroData(PropostaEncontroData data);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorId(long propostaId);
+        Task<int> ObterTotalEncontros(long propostaId);
+        Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId);
     }
 }

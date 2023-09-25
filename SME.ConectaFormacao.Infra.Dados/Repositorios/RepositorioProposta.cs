@@ -382,7 +382,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             await conexao.Obter().UpdateAsync(encontro);
         }
 
-        public Task<IEnumerable<PropostaEncontroData>> ObterEncontroDatasPorEncontroId(long encontroId)
+        public Task<IEnumerable<PropostaEncontroData>> ObterEncontroDatasPorEncontroId(params long[] encontroIds)
         {
             var query = @"select 
                             id, 
@@ -397,11 +397,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_encontro_data 
-                        where proposta_encontro_id = @encontroId and not excluido";
-            return conexao.Obter().QueryAsync<PropostaEncontroData>(query, new { encontroId });
+                        where proposta_encontro_id = any(@encontroIds) and not excluido";
+            return conexao.Obter().QueryAsync<PropostaEncontroData>(query, new { encontroIds });
         }
 
-        public Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(long encontroId)
+        public Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(params long[] encontroIds)
         {
             var query = @"select 
                             id, 
@@ -415,8 +415,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_encontro_turma 
-                        where proposta_encontro_id = @encontroId and not excluido";
-            return conexao.Obter().QueryAsync<PropostaEncontroTurma>(query, new { encontroId });
+                        where proposta_encontro_id = any(@encontroIds) and not excluido";
+            return conexao.Obter().QueryAsync<PropostaEncontroTurma>(query, new { encontroIds });
         }
 
         public Task RemoverEncontroTurmas(IEnumerable<PropostaEncontroTurma> turmas)
@@ -490,6 +490,37 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         from proposta_encontro 
                         where proposta_id = @propostaId and not excluido";
             return conexao.Obter().QueryAsync<PropostaEncontro>(query, new { propostaId });
+        }
+
+        public Task<int> ObterTotalEncontros(long propostaId)
+        {
+            var query = @"select count(1) from proposta_encontro where not excluido and proposta_id = @propostaId";
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
+        }
+
+        public Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId)
+        {
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            hora_inicio,
+                            hora_fim,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_encontro 
+                        where proposta_id = @id";
+
+            query += " order by id";
+            query += " limit @numeroRegistros offset @registrosIgnorados";
+
+            return conexao.Obter().QueryAsync<PropostaEncontro>(query, new { numeroRegistros, registrosIgnorados, propostaId });
         }
     }
 }
