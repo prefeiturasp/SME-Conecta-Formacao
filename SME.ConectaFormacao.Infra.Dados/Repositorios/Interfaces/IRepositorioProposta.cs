@@ -31,5 +31,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task RemoverEncontroTurmas(IEnumerable<PropostaEncontroTurma> turmasExcluir);
         Task RemoverEncontroDatas(IEnumerable<PropostaEncontroData> datasExcluir);
         Task AtualizarEncontroData(PropostaEncontroData dataAlterar);
+        Task<int> ObterTotalEncontros(long propostaId);
+        Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId);
     }
 }
