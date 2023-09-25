@@ -13,10 +13,12 @@ namespace SME.ConectaFormacao.TesteIntegracao
 
         public ServiceProvider ServiceProvider => _collectionFixture.ServiceProvider;
 
-        public TesteBase(CollectionFixture collectionFixture)
+        public TesteBase(CollectionFixture collectionFixture, bool limparBanco = true)
         {
             _collectionFixture = collectionFixture;
-            _collectionFixture.Database.LimparBase();
+
+            if (limparBanco)
+                _collectionFixture.Database.LimparBase();
 
             _collectionFixture.IniciarServicos();
             RegistrarFakes(_collectionFixture.Services);

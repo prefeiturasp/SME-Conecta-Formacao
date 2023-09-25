@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
 {
     public class Ao_obter_tipos_area_promotora : TesteBase
     {
-        public Ao_obter_tipos_area_promotora(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_obter_tipos_area_promotora(CollectionFixture collectionFixture) : base(collectionFixture, false)
         {
         }
 

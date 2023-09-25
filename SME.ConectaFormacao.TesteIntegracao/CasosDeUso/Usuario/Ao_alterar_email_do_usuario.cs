@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
 {
     public class Ao_alterar_email_do_usuario : TesteBase
     {
-        public Ao_alterar_email_do_usuario(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_alterar_email_do_usuario(CollectionFixture collectionFixture) : base(collectionFixture, false)
         {
             UsuarioAlterarEmailMock.Montar();
         }
