@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
     public class Ao_obter_tipo_inscricao : TesteBase
     {
-        public Ao_obter_tipo_inscricao(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_obter_tipo_inscricao(CollectionFixture collectionFixture) : base(collectionFixture, false)
         {
         }
 
