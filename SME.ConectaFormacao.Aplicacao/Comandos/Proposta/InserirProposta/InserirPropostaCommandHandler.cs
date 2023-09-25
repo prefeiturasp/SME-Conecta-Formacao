@@ -31,28 +31,21 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.AreaPromotoraId = request.AreaPromotoraId;
             proposta.Situacao = SituacaoProposta.Ativo;
 
-            var publicosAlvo = _mapper.Map<IEnumerable<PropostaPublicoAlvo>>(request.PropostaDTO.PublicosAlvo);
-            var funcoesEspecificas = _mapper.Map<IEnumerable<PropostaFuncaoEspecifica>>(request.PropostaDTO.FuncoesEspecificas);
-            var criteriosValidacaoInscricao = _mapper.Map<IEnumerable<PropostaCriterioValidacaoInscricao>>(request.PropostaDTO.CriteriosValidacaoInscricao);
-            var vagasRemanecentes = _mapper.Map<IEnumerable<PropostaVagaRemanecente>>(request.PropostaDTO.VagasRemanecentes);
-
             var transacao = _transacao.Iniciar();
 
             try
             {
-                var id = await _repositorioProposta.Inserir(transacao, proposta);
+                var id = await _repositorioProposta.Inserir(proposta);
 
-                if (publicosAlvo.Any())
-                    await _repositorioProposta.InserirPublicosAlvo(transacao, id, publicosAlvo);
+                await _mediator.Send(new SalvarPropostaPublicoAlvoCommand(id, proposta.PublicosAlvo), cancellationToken);
 
-                if (funcoesEspecificas.Any())
-                    await _repositorioProposta.InserirFuncoesEspecificas(transacao, id, funcoesEspecificas);
+                await _mediator.Send(new SalvarPropostaFuncaoEspecificaCommand(id, proposta.FuncoesEspecificas), cancellationToken);
 
-                if (criteriosValidacaoInscricao.Any())
-                    await _repositorioProposta.InserirCriteriosValidacaoInscricao(transacao, id, criteriosValidacaoInscricao);
+                await _mediator.Send(new SalvarPropostaCriteriosValidacaoInscricaoCommand(id, proposta.CriteriosValidacaoInscricao), cancellationToken);
 
-                if (vagasRemanecentes.Any())
-                    await _repositorioProposta.InserirVagasRemanecentes(transacao, id, vagasRemanecentes);
+                await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(id, proposta.VagasRemanecentes), cancellationToken);
+
+                await _mediator.Send(new SalvarPropostaEncontroCommand(id, proposta.Encontros), cancellationToken);
 
                 await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(proposta.ArquivoImagemDivulgacaoId), cancellationToken);
 

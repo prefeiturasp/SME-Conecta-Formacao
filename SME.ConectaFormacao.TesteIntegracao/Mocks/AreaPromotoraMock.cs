@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
-    public class AreaPromotoraMock
+    public class AreaPromotoraMock : BaseMock
     {
 
         private static Faker<AreaPromotora> Gerador(Guid? grupoId = null)
@@ -16,12 +16,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.Email, f => f.Person.Email);
             faker.RuleFor(x => x.GrupoId, grupoId.HasValue ? grupoId : Guid.NewGuid());
             faker.RuleFor(x => x.Excluido, false);
-            faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.CriadoLogin, f => f.Name.FirstName());
-            faker.RuleFor(x => x.AlteradoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.AlteradoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.AlteradoLogin, f => f.Name.FirstName());
+            AuditoriaFaker(faker);
             return faker;
         }
 
@@ -31,9 +26,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
             faker.RuleFor(x => x.Telefone, f => string.IsNullOrEmpty(telefone) ? f.Phone.PhoneNumber("###########") : telefone.SomenteNumeros());
             faker.RuleFor(x => x.Excluido, false);
-            faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.CriadoLogin, f => f.Name.FirstName());
+            AuditoriaFaker(faker);
             return faker;
         }
 
@@ -58,9 +51,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
             faker.RuleFor(x => x.Telefone, f => string.IsNullOrEmpty(telefone) ? f.Phone.PhoneNumber("###########") : telefone.SomenteNumeros());
             faker.RuleFor(x => x.Excluido, false);
-            faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.CriadoLogin, f => f.Name.FirstName());
+            AuditoriaFaker(faker);
             return faker.Generate(quantidade);
         }
     }

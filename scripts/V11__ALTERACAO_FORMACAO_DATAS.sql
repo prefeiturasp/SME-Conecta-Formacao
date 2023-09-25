@@ -7,8 +7,8 @@ alter table proposta add if not exists data_inscricao_fim timestamp;
 create table if not exists public.proposta_encontro (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	proposta_id int8 not null,
-	hora_inicio time null,
-	hora_fim time null,
+	hora_inicio varchar(5) null,
+	hora_fim varchar(5) null,
 	tipo smallint null,
 	local varchar(200) null,
 	criado_em timestamp NOT NULL,

@@ -20,8 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(RemoverAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
-            var areaPromotora = await _repositorioAreaPromotora.ObterPorId(request.Id);
-            if (areaPromotora == null)
+            var areaPromotora = await _repositorioAreaPromotora.ObterPorId(request.Id) ??
                 throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
             var telefones = await _repositorioAreaPromotora.ObterTelefonesPorId(request.Id);

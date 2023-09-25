@@ -119,6 +119,10 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaFuncaoEspecificaMap());
             config.AddMap(new PropostaCriterioValidacaoInscricaoMap());
             config.AddMap(new PropostaVagaRemanecenteMap());
+            config.AddMap(new PropostaEncontroMap());
+            config.AddMap(new PropostaEncontroDataMap());
+            config.AddMap(new PropostaEncontroTurmaMap());
+
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
 

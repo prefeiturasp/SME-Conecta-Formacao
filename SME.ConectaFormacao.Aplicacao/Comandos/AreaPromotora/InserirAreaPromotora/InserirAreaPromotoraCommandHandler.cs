@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             await _mediator.Send(new ValidarEmailsAreaPromotoraCommand(request.AreaPromotoraDTO.Emails, request.AreaPromotoraDTO.Tipo), cancellationToken);
 
-            await _mediator.Send(new ValidarGrupoAreaPromotoraCommand(request.AreaPromotoraDTO.GrupoId));
+            await _mediator.Send(new ValidarGrupoAreaPromotoraCommand(request.AreaPromotoraDTO.GrupoId), cancellationToken);
 
             var areaPromotora = _mapper.Map<AreaPromotora>(request.AreaPromotoraDTO);
             var transacao = _transacao.Iniciar();

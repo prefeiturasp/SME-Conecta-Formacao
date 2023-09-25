@@ -1,10 +1,9 @@
 ﻿using Bogus;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
-    public class ArquivoMock
+    public class ArquivoMock : BaseMock
     {
         private static Faker<Dominio.Entidades.Arquivo> Gerador(TipoArquivo? tipo)
         {
@@ -15,12 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(t => t.TipoConteudo, "image/jpg");
             faker.RuleFor(t => t.Tipo, f => tipo.HasValue ? tipo : f.PickRandom<TipoArquivo>());
             faker.RuleFor(x => x.Excluido, false);
-            faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.CriadoLogin, f => f.Name.FirstName());
-            faker.RuleFor(x => x.AlteradoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.AlteradoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.AlteradoLogin, f => f.Name.FirstName());
+            AuditoriaFaker(faker);
 
             return faker;
         }

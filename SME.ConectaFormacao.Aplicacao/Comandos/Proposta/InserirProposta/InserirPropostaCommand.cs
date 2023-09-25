@@ -52,11 +52,11 @@ namespace SME.ConectaFormacao.Aplicacao
                 .WithMessage("É nescessário informar os critérios de validação das inscrições para inserir a proposta");
 
             RuleFor(f => f.PropostaDTO.QuantidadeTurmas)
-                .GreaterThan(0)
+                .NotEmpty()
                 .WithMessage("É nescessário informar a quantidade de turmas para inserir a proposta");
 
             RuleFor(f => f.PropostaDTO.QuantidadeVagasTurma)
-                .GreaterThan(0)
+                .NotEmpty()
                 .WithMessage("É nescessário informar a quantidade de vagas por turma para inserir a proposta");
         }
     }
