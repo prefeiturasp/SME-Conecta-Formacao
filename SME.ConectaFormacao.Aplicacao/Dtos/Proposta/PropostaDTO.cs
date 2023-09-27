@@ -20,7 +20,14 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public DateTime? DataRealizacaoFim { get; set; }
         public DateTime? DataInscricaoInicio { get; set; }
         public DateTime? DataInscricaoFim { get; set; }
-
+        public string CargaHorariaPresencial { get; set; }
+        public string CargaHorariaSincrona { get; set; }
+        public string CargaHorariaDistancia { get; set; }
+        public string Justificativa { get; set; }
+        public string Objetivos { get; set; }
+        public string ConteudoProgramatico { get; set; }
+        public string ProcedimentoMetadologico { get; set; }
+        public string Referencia { get; set; }
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecificaDTO> FuncoesEspecificas { get; set; }
         public IEnumerable<PropostaVagaRemanecenteDTO> VagasRemanecentes { get; set; }
