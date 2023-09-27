@@ -61,7 +61,7 @@ pipeline {
 
       stage('Flyway') {
          agent { kubernetes { 
-                  label 'flywayr'
+                  label 'flyway'
                   defaultContainer 'flyway'
                 }
               }
