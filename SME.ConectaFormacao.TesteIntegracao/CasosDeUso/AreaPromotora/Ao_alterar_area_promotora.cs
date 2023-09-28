@@ -165,8 +165,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
             // assert
             excecao.ShouldNotBeNull();
 
-            excecao.Mensagens.Contains("É nescessário informar a área promotora para alterar").ShouldBeTrue();
-            excecao.Mensagens.Contains("É nescessário informar o perfil para alterar a área promotora").ShouldBeTrue();
+            excecao.Mensagens.Contains("É necessário informar a área promotora para alterar").ShouldBeTrue();
+            excecao.Mensagens.Contains("É necessário informar o perfil para alterar a área promotora").ShouldBeTrue();
         }
 
         [Fact(DisplayName = "Área promotora - Deve retornar exceções ao alterar um grupo existente")]

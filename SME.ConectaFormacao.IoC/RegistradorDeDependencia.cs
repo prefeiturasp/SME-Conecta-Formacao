@@ -113,7 +113,8 @@ public class RegistradorDeDependencia
             config.AddMap(new CriterioValidacaoInscricaoMap());
             config.AddMap(new RoteiroPropostaFormativaMap());
             config.AddMap(new CargoFuncaoMap());
-
+            config.AddMap(new PalavraChaveMap());
+            
             config.AddMap(new PropostaMap());
             config.AddMap(new PropostaPublicoAlvoMap());
             config.AddMap(new PropostaFuncaoEspecificaMap());
@@ -122,7 +123,8 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaEncontroMap());
             config.AddMap(new PropostaEncontroDataMap());
             config.AddMap(new PropostaEncontroTurmaMap());
-
+            config.AddMap(new PropostaPalavraChaveMap());
+            
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
 

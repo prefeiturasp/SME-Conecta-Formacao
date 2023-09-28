@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Nome)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o nome do arquivo para ser removido");
+                .WithMessage("É necessário informar o nome do arquivo para ser removido");
         }
     }
 }

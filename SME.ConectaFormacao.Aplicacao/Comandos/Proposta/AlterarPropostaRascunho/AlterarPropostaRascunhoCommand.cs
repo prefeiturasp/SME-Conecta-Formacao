@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(f => f.Id)
                 .GreaterThan(0)
-                .WithMessage("É nescessário informar o Id para alterar a proposta");
+                .WithMessage("É necessário informar o Id para alterar a proposta");
         }
     }
 }

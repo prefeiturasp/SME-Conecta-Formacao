@@ -21,11 +21,11 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Token)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o token de recuperação de senha para alterar a senha");
+                .WithMessage("É necessário informar o token de recuperação de senha para alterar a senha");
 
             RuleFor(x => x.NovaSenha)
                 .NotEmpty()
-                .WithMessage("É nescessário informar a nova senha de recuperação de senha para alterar");
+                .WithMessage("É necessário informar a nova senha de recuperação de senha para alterar");
         }
     }
 }

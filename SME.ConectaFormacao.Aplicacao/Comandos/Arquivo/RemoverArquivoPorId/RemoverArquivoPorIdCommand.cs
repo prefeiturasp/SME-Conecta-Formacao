@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Id)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o id do arquivo para remover");
+                .WithMessage("É necessário informar o id do arquivo para remover");
         }
     }
 }

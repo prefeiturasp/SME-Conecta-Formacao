@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.PropostaId)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o id da proposta para obter os encontros paginados");
+                .WithMessage("É necessário informar o id da proposta para obter os encontros paginados");
         }
     }
 }

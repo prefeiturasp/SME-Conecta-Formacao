@@ -21,11 +21,11 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Login)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o login para vincular o perfil no coreSSO");
+                .WithMessage("É necessário informar o login para vincular o perfil no coreSSO");
 
             RuleFor(x => x.PerfilId)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o id do perfil para vincular no coreSSO");
+                .WithMessage("É necessário informar o id do perfil para vincular no coreSSO");
         }
     }
 }

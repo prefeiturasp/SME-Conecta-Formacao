@@ -34,5 +34,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaCriterioValidacaoInscricao> CriteriosValidacaoInscricao { get; set; }
         public IEnumerable<PropostaVagaRemanecente> VagasRemanecentes { get; set; }
         public IEnumerable<PropostaEncontro> Encontros { get; set; }
+        public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; }
     }
 }

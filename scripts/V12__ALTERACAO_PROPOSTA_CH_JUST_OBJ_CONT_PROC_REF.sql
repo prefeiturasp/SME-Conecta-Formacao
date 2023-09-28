@@ -24,6 +24,13 @@ create table if not exists public.proposta_palavra_chave (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	proposta_id int8 not null,
 	palavra_chave_id int8 not null,	
+	criado_em timestamp NOT NULL,
+	criado_por varchar(200) NOT NULL,
+	alterado_em timestamp NULL,
+	alterado_por varchar(200) NULL,
+	criado_login varchar(200) NOT NULL,
+	alterado_login varchar(200) NULL,
+	excluido boolean NOT NULL,
 	constraint proposta_palavra_chave_pk primary key (id),
 	constraint proposta_palavra_chave_proposta_fk foreign key (proposta_id) references proposta (id),
 	constraint proposta_palavra_chave_palavra_chave_fk foreign key (palavra_chave_id) references palavra_chave (id)	

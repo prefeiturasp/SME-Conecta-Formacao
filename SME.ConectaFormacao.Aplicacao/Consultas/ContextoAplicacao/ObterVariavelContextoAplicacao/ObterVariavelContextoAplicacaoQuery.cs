@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Nome)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o nome da variável para obter do contexto da aplicação");
+                .WithMessage("É necessário informar o nome da variável para obter do contexto da aplicação");
         }
     }
 }
