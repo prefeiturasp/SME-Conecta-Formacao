@@ -251,6 +251,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query.AppendLine(" and lower(p.nome_formacao) like @nomeFormacao");
             }
 
+            if(periodoRealizacaoInicio.HasValue)
+                query.AppendLine(" and data_realizacao_inicio::date >= @periodoRealizacaoInicio");
+
+            if (periodoRealizacaoFim.HasValue)
+                query.AppendLine(" and data_realizacao_fim::date <= @periodoRealizacaoFim");
+
             if (situacao.GetValueOrDefault() > 0)
                 query.AppendLine(" and p.situacao = @situacao");
 
@@ -268,8 +274,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 publicoAlvoIds,
                 nomeFormacao,
                 numeroHomologacao,
-                periodoRealizacaoInicio,
-                periodoRealizacaoFim,
+                periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
+                periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                 situacao
             });
         }
@@ -298,8 +304,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 publicoAlvoIds,
                 nomeFormacao,
                 numeroHomologacao,
-                periodoRealizacaoInicio,
-                periodoRealizacaoFim,
+                periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
+                periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                 situacao
             },
             splitOn: "id, id");
@@ -320,7 +326,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_encontro 
-                        where id = @id";
+                        where id = @encontroId";
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaEncontro>(query, new { encontroId });
         }
 
@@ -515,7 +521,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_encontro 
-                        where proposta_id = @id";
+                        where not excluido and proposta_id = @propostaId";
 
             query += " order by id";
             query += " limit @numeroRegistros offset @registrosIgnorados";

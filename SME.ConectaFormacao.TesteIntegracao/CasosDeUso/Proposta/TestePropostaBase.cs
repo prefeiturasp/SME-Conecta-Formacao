@@ -99,6 +99,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
             proposta.QuantidadeVagasTurma.ShouldBe(propostaDTO.QuantidadeVagasTurma);
 
+            proposta.DataRealizacaoInicio.ShouldBe(propostaDTO.DataRealizacaoInicio);
+            proposta.DataRealizacaoFim.ShouldBe(propostaDTO.DataRealizacaoFim);
+
+            proposta.DataInscricaoInicio.ShouldBe(propostaDTO.DataInscricaoInicio);
+            proposta.DataInscricaoFim.ShouldBe(propostaDTO.DataInscricaoFim);
+
             if (!string.IsNullOrEmpty(propostaDTO.FuncaoEspecificaOutros))
                 proposta.FuncaoEspecificaOutros.ShouldBe(propostaDTO.FuncaoEspecificaOutros);
 

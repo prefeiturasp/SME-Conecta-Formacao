@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var encontroAntes = await _repositorioProposta.ObterEncontroPorId(request.EncontroDTO.Id);
 
             var encontroDepois = _mapper.Map<PropostaEncontro>(request.EncontroDTO);
-
+            
             var transacao = _transacao.Iniciar();
             try
             {
@@ -34,6 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao
                         encontroAntes.HoraFim != encontroDepois.HoraFim ||
                         encontroAntes.Local != encontroDepois.Local)
                     {
+                        encontroDepois.PropostaId = request.PropostaId;
                         encontroDepois.ManterCriador(encontroAntes);
                         await _repositorioProposta.AtualizarEncontro(encontroDepois);
                     }
