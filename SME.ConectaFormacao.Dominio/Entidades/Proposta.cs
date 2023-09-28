@@ -9,8 +9,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public Modalidade? Modalidade { get; set; }
         public TipoInscricao? TipoInscricao { get; set; }
         public string NomeFormacao { get; set; }
-        public int? QuantidadeTurmas { get; set; }
-        public int? QuantidadeVagasTurma { get; set; }
+        public short? QuantidadeTurmas { get; set; }
+        public short? QuantidadeVagasTurma { get; set; }
         public SituacaoProposta Situacao { get; set; }
         public string FuncaoEspecificaOutros { get; set; }
         public string CriterioValidacaoInscricaoOutros { get; set; }
@@ -25,5 +25,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaFuncaoEspecifica> FuncoesEspecificas { get; set; }
         public IEnumerable<PropostaCriterioValidacaoInscricao> CriteriosValidacaoInscricao { get; set; }
         public IEnumerable<PropostaVagaRemanecente> VagasRemanecentes { get; set; }
+        public IEnumerable<PropostaEncontro> Encontros { get; set; }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using Bogus;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
-    public class CargoFuncaoMock
+    public class CargoFuncaoMock : BaseMock
     {
         private static Faker<Dominio.Entidades.CargoFuncao> Gerador(CargoFuncaoTipo? cargoFuncaoTipo = null, bool outros = false)
         {
@@ -17,9 +16,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(dest => dest.Nome, f => f.Commerce.Department());
             faker.RuleFor(dest => dest.Tipo, f => cargoFuncaoTipo.HasValue ? cargoFuncaoTipo : f.PickRandom(opcoesCargoFuncao));
             faker.RuleFor(dest => dest.Outros, outros);
-            faker.RuleFor(dest => dest.CriadoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(dest => dest.CriadoPor, f => f.Person.FullName);
-            faker.RuleFor(dest => dest.CriadoLogin, f => f.Person.FirstName);
+            AuditoriaFaker(faker);
             return faker;
         }
 

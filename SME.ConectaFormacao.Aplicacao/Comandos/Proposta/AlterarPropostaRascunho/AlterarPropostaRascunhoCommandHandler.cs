@@ -32,59 +32,21 @@ namespace SME.ConectaFormacao.Aplicacao
 
             propostaDepois.Id = proposta.Id;
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
-            propostaDepois.CriadoEm = proposta.CriadoEm;
-            propostaDepois.CriadoPor = proposta.CriadoPor;
-            propostaDepois.CriadoLogin = proposta.CriadoLogin;
             propostaDepois.Situacao = SituacaoProposta.Rascunho;
-
-            var publicoAlvoAntes = await _repositorioProposta.ObterPublicoAlvoPorId(request.Id);
-            var publicoAlvoDepois = _mapper.Map<IEnumerable<PropostaPublicoAlvo>>(request.PropostaDTO.PublicosAlvo);
-            var publicoAlvoInserir = publicoAlvoDepois.Where(w => !publicoAlvoAntes.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
-            var publicoAlvoExcluir = publicoAlvoAntes.Where(w => !publicoAlvoDepois.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
-
-            var funcoesEspecificasAntes = await _repositorioProposta.ObterFuncoesEspecificasPorId(request.Id);
-            var funcoesEspecificasDepois = _mapper.Map<IEnumerable<PropostaFuncaoEspecifica>>(request.PropostaDTO.FuncoesEspecificas);
-            var funcoesEspecificasInserir = funcoesEspecificasDepois.Where(w => !funcoesEspecificasAntes.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
-            var funcoesEspecificasExcluir = funcoesEspecificasAntes.Where(w => !funcoesEspecificasDepois.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
-
-            var criteriosValidacaoInscricaoAntes = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
-            var criteriosValidacaoInscricaoDepois = _mapper.Map<IEnumerable<PropostaCriterioValidacaoInscricao>>(request.PropostaDTO.CriteriosValidacaoInscricao);
-            var criteriosValidacaoInscricaoInserir = criteriosValidacaoInscricaoDepois.Where(w => !criteriosValidacaoInscricaoAntes.Any(a => a.CriterioValidacaoInscricaoId == w.CriterioValidacaoInscricaoId));
-            var criteriosValidacaoInscricaoExcluir = criteriosValidacaoInscricaoAntes.Where(w => !criteriosValidacaoInscricaoDepois.Any(a => a.CriterioValidacaoInscricaoId == w.CriterioValidacaoInscricaoId));
-
-            var vagasRemanecentesAntes = await _repositorioProposta.ObterVagasRemacenentesPorId(request.Id);
-            var vagasRemanecentesDepois = _mapper.Map<IEnumerable<PropostaVagaRemanecente>>(request.PropostaDTO.VagasRemanecentes);
-            var vagasRemanecentesInserir = vagasRemanecentesDepois.Where(w => !vagasRemanecentesAntes.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
-            var vagasRemanecentesExcluir = vagasRemanecentesAntes.Where(w => !vagasRemanecentesDepois.Any(a => a.CargoFuncaoId == w.CargoFuncaoId));
+            propostaDepois.ManterCriador(proposta);
 
             var transacao = _transacao.Iniciar();
             try
             {
-                await _repositorioProposta.Atualizar(transacao, propostaDepois);
+                await _repositorioProposta.Atualizar(propostaDepois);
 
-                if (publicoAlvoInserir.Any())
-                    await _repositorioProposta.InserirPublicosAlvo(transacao, request.Id, publicoAlvoInserir);
+                await _mediator.Send(new SalvarPropostaPublicoAlvoCommand(request.Id, propostaDepois.PublicosAlvo), cancellationToken);
 
-                if (publicoAlvoExcluir.Any())
-                    await _repositorioProposta.RemoverPublicosAlvo(transacao, publicoAlvoExcluir);
+                await _mediator.Send(new SalvarPropostaFuncaoEspecificaCommand(request.Id, propostaDepois.FuncoesEspecificas), cancellationToken);
 
-                if (funcoesEspecificasInserir.Any())
-                    await _repositorioProposta.InserirFuncoesEspecificas(transacao, request.Id, funcoesEspecificasInserir);
+                await _mediator.Send(new SalvarPropostaCriteriosValidacaoInscricaoCommand(request.Id, propostaDepois.CriteriosValidacaoInscricao), cancellationToken);
 
-                if (funcoesEspecificasExcluir.Any())
-                    await _repositorioProposta.RemoverFuncoesEspecificas(transacao, funcoesEspecificasExcluir);
-
-                if (criteriosValidacaoInscricaoInserir.Any())
-                    await _repositorioProposta.InserirCriteriosValidacaoInscricao(transacao, request.Id, criteriosValidacaoInscricaoInserir);
-
-                if (criteriosValidacaoInscricaoExcluir.Any())
-                    await _repositorioProposta.RemoverCriteriosValidacaoInscricao(transacao, criteriosValidacaoInscricaoExcluir);
-
-                if (vagasRemanecentesInserir.Any())
-                    await _repositorioProposta.InserirVagasRemanecentes(transacao, request.Id, vagasRemanecentesInserir);
-
-                if (vagasRemanecentesExcluir.Any())
-                    await _repositorioProposta.RemoverVagasRemanecentes(transacao, vagasRemanecentesExcluir);
+                await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(request.Id, propostaDepois.VagasRemanecentes), cancellationToken);
 
                 if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())
                 {

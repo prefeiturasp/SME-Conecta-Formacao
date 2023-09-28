@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
 {
     public class Ao_recuperar_senha_do_usuario : TesteBase
     {
-        public Ao_recuperar_senha_do_usuario(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_recuperar_senha_do_usuario(CollectionFixture collectionFixture) : base(collectionFixture, false)
         {
             UsuarioRecuperarSenhaMock.Montar();
         }

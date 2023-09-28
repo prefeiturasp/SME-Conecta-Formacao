@@ -1,9 +1,9 @@
 ﻿using Bogus;
 using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
 
-namespace SME.ConectaFormacao.TesteIntegracao.Mocks
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks
 {
-    public static class GrupoMock
+    public static class AoObterGrupoMock
     {
         public static IEnumerable<GrupoDTO> Grupos { get; set; }
 

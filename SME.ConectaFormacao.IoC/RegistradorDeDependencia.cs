@@ -119,6 +119,10 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaFuncaoEspecificaMap());
             config.AddMap(new PropostaCriterioValidacaoInscricaoMap());
             config.AddMap(new PropostaVagaRemanecenteMap());
+            config.AddMap(new PropostaEncontroMap());
+            config.AddMap(new PropostaEncontroDataMap());
+            config.AddMap(new PropostaEncontroTurmaMap());
+
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
 
@@ -191,6 +195,12 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaPaginacao, CasoDeUsoObterPropostaPaginacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterInformacoesCadastrante, CasoDeUsoObterInformacoesCadastrante>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTurmasProposta, CasoDeUsoObterTurmasProposta>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoEncontro, CasoDeUsoObterTipoEncontro>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaEncontroPaginacao, CasoDeUsoObterPropostaEncontroPaginacao>();
+
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRemoverPropostaEncontro, CasoDeUsoRemoverPropostaEncontro>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoCarregarTemporario, CasoDeUsoArquivoCarregarTemporario>();
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();

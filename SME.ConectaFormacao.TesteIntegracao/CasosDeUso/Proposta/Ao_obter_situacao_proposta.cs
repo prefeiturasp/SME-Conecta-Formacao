@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
     public class Ao_obter_situacao_proposta : TesteBase
     {
-        public Ao_obter_situacao_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_obter_situacao_proposta(CollectionFixture collectionFixture) : base(collectionFixture, false)
         {
         }
 

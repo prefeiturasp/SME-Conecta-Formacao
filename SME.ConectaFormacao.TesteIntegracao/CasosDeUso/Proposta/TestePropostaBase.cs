@@ -54,6 +54,25 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.CriteriosValidacaoInscricao = criterios;
             }
 
+            var encontros = PropostaMock.GerarEncontros(proposta.Id);
+            if (encontros != null)
+            {
+                await InserirNaBase(encontros);
+
+                foreach (var encontro in encontros)
+                {
+                    var turmas = PropostaMock.GerarPropostaEncontroTurmas(encontro.Id, proposta.QuantidadeTurmas.GetValueOrDefault());
+                    await InserirNaBase(turmas);
+                    encontro.Turmas = turmas;
+
+                    var datas = PropostaMock.GerarPropostaEncontroDatas(encontro.Id);
+                    await InserirNaBase(datas);
+                    encontro.Datas = datas;
+                }
+
+                proposta.Encontros = encontros;
+            }
+
             return proposta;
         }
 
@@ -79,6 +98,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
             proposta.QuantidadeVagasTurma.ShouldBe(propostaDTO.QuantidadeVagasTurma);
+
+            proposta.DataRealizacaoInicio.ShouldBe(propostaDTO.DataRealizacaoInicio);
+            proposta.DataRealizacaoFim.ShouldBe(propostaDTO.DataRealizacaoFim);
+
+            proposta.DataInscricaoInicio.ShouldBe(propostaDTO.DataInscricaoInicio);
+            proposta.DataInscricaoFim.ShouldBe(propostaDTO.DataInscricaoFim);
 
             if (!string.IsNullOrEmpty(propostaDTO.FuncaoEspecificaOutros))
                 proposta.FuncaoEspecificaOutros.ShouldBe(propostaDTO.FuncaoEspecificaOutros);
