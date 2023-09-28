@@ -25,6 +25,5 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaFuncaoEspecificaDTO> FuncoesEspecificas { get; set; }
         public IEnumerable<PropostaVagaRemanecenteDTO> VagasRemanecentes { get; set; }
         public IEnumerable<PropostaCriterioValidacaoInscricaoDTO> CriteriosValidacaoInscricao { get; set; }
-        public IEnumerable<PropostaEncontroDTO> Encontros { get; set; }
     }
 }

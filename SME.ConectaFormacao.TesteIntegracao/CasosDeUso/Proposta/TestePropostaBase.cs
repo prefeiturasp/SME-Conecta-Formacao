@@ -99,6 +99,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
             proposta.QuantidadeVagasTurma.ShouldBe(propostaDTO.QuantidadeVagasTurma);
 
+            proposta.DataRealizacaoInicio.ShouldBe(propostaDTO.DataRealizacaoInicio);
+            proposta.DataRealizacaoFim.ShouldBe(propostaDTO.DataRealizacaoFim);
+
+            proposta.DataInscricaoInicio.ShouldBe(propostaDTO.DataInscricaoInicio);
+            proposta.DataInscricaoFim.ShouldBe(propostaDTO.DataInscricaoFim);
+
             if (!string.IsNullOrEmpty(propostaDTO.FuncaoEspecificaOutros))
                 proposta.FuncaoEspecificaOutros.ShouldBe(propostaDTO.FuncaoEspecificaOutros);
 
@@ -165,33 +171,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             {
                 publicoAlvo.PropostaId.ShouldBe(id);
                 publicosAlvoDTO.FirstOrDefault(t => t.CargoFuncaoId == publicoAlvo.CargoFuncaoId).ShouldNotBeNull();
-            }
-        }
-
-        protected void ValidarPropostaEncontro(IEnumerable<PropostaEncontroDTO> encontrosDTO, long id)
-        {
-            var encontros = ObterTodos<PropostaEncontro>();
-            var turmas = ObterTodos<PropostaEncontroTurma>();
-            var datas = ObterTodos<PropostaEncontroData>();
-
-            foreach (var encontroDTO in encontrosDTO)
-            {
-                var encontro = encontros.FirstOrDefault(t =>
-                    t.PropostaId == id &&
-                    t.HoraInicio == encontroDTO.HoraInicio &&
-                    t.HoraFim == encontroDTO.HoraFim &&
-                    t.Local == encontroDTO.Local
-                    );
-                encontro.ShouldNotBeNull();
-
-                foreach (var dataDTO in encontroDTO.Datas)
-                {
-                    var data = datas.FirstOrDefault(t =>
-                        t.PropostaEncontroId == encontro.Id &&
-                        t.DataInicio.GetValueOrDefault().Date == dataDTO.DataInicio.Date &&
-                        t.DataFim.GetValueOrDefault().Date == dataDTO.DataFim.GetValueOrDefault().Date);
-                    data.ShouldNotBeNull();
-                }
             }
         }
 
