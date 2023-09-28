@@ -251,7 +251,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query.AppendLine(" and lower(p.nome_formacao) like @nomeFormacao");
             }
 
-            if(periodoRealizacaoInicio.HasValue)
+            if (periodoRealizacaoInicio.HasValue)
                 query.AppendLine(" and data_realizacao_inicio::date >= @periodoRealizacaoInicio");
 
             if (periodoRealizacaoFim.HasValue)

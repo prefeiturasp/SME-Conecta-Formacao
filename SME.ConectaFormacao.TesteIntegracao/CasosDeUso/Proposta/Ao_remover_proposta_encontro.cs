@@ -4,11 +4,6 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
@@ -19,7 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        [Fact(DisplayName ="Proposta Encontro - deve remover encontro da proposta")]
+        [Fact(DisplayName = "Proposta Encontro - deve remover encontro da proposta")]
         public async Task Deve_remover_encontro_proposta_valida()
         {
             // arrange
