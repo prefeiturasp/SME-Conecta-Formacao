@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
             
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(100);
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
 
             var propostas = await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves);
@@ -57,7 +57,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
             
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(100);
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
 
             await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves);
@@ -87,7 +87,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
             
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(100);
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
 
             await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves);
