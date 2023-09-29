@@ -393,5 +393,6 @@ FodyWeavers.xsd
 *.msp
 
 # JetBrains Rider
+.idea/
 *.sln.iml
 /SME.ConectaFormacao.TesteIntegracao/coveragereport
