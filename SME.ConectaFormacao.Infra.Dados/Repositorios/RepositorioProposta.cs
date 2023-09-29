@@ -513,6 +513,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             proposta_id, 
                             hora_inicio,
                             hora_fim,
+                            tipo,
+                            local,
                             excluido,
                             criado_em,
 	                        criado_por,
