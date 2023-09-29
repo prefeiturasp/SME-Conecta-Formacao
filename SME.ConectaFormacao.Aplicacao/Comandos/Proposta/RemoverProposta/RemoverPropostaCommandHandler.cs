@@ -26,6 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.CriteriosValidacaoInscricao = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
             proposta.VagasRemanecentes = await _repositorioProposta.ObterVagasRemacenentesPorId(request.Id);
             proposta.Encontros = await _repositorioProposta.ObterEncontrosPorId(request.Id);
+            proposta.PalavrasChaves = await _repositorioProposta.ObterPalavraChavePorId(request.Id);
 
             var transacao = _transacao.Iniciar();
             try
@@ -44,6 +45,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (proposta.Encontros.Any())
                     await _repositorioProposta.RemoverEncontros(proposta.Encontros);
+                
+                if (proposta.PalavrasChaves.Any())
+                    await _repositorioProposta.RemoverPalavrasChaves(proposta.PalavrasChaves);
 
                 await _repositorioProposta.Remover(proposta);
 

@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.PropostaId)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o id da proposta para salvar os funções específicas");
+                .WithMessage("É necessário informar o id da proposta para salvar os funções específicas");
         }
     }
 }

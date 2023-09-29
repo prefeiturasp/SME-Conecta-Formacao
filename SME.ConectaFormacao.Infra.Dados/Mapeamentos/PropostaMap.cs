@@ -23,6 +23,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.DataInscricaoFim).ToColumn("data_inscricao_fim");
             Map(c => c.DataRealizacaoInicio).ToColumn("data_realizacao_inicio");
             Map(c => c.DataRealizacaoFim).ToColumn("data_realizacao_fim");
+            Map(c => c.CargaHorariaPresencial).ToColumn("carga_horaria_presencial");
+            Map(c => c.CargaHorariaSincrona).ToColumn("carga_horaria_sincrona");
+            Map(c => c.CargaHorariaDistancia).ToColumn("carga_horaria_distancia");
+            Map(c => c.Justificativa).ToColumn("justificativa");
+            Map(c => c.Objetivos).ToColumn("objetivos");
+            Map(c => c.ConteudoProgramatico).ToColumn("conteudo_programatico");
+            Map(c => c.ProcedimentoMetadologico).ToColumn("procedimento_metodologico");
+            Map(c => c.Referencia).ToColumn("referencia");
         }
     }
 }

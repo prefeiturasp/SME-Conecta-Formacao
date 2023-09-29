@@ -33,5 +33,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task AtualizarEncontroData(PropostaEncontroData dataAlterar);
         Task<int> ObterTotalEncontros(long propostaId);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId);
+        Task<IEnumerable<PropostaPalavraChave>> ObterPalavraChavePorId(long id);
+        Task RemoverPalavrasChaves(IEnumerable<PropostaPalavraChave> palavrasChaves);
+        Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves);
     }
 }

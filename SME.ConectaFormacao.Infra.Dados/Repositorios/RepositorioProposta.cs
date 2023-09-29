@@ -490,7 +490,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             id, 
                             proposta_id, 
                             hora_inicio,
-                            hora_fim,
+                            hora_fim,                              
                             excluido,
                             criado_em,
 	                        criado_por,
@@ -505,6 +505,59 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             query += " limit @numeroRegistros offset @registrosIgnorados";
 
             return conexao.Obter().QueryAsync<PropostaEncontro>(query, new { numeroRegistros, registrosIgnorados, propostaId });
+        }
+        
+        public async Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves)
+        {
+            foreach (var palavraChave in palavrasChaves)
+            {
+                PreencherAuditoriaCriacao(palavraChave);
+
+                palavraChave.PropostaId = id;
+                palavraChave.Id = (long)await conexao.Obter().InsertAsync(palavraChave);
+            }
+        }
+        
+        public Task<IEnumerable<PropostaPalavraChave>> ObterPalavraChavePorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            palavra_chave_id,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_palavra_chave 
+                        where proposta_id = @id";
+            return conexao.Obter().QueryAsync<PropostaPalavraChave>(query, new { id });
+        }
+        
+        public Task RemoverPalavrasChaves(IEnumerable<PropostaPalavraChave> palavrasChaves)
+        {
+            var palavraChave = palavrasChaves.First();
+            PreencherAuditoriaAlteracao(palavraChave);
+
+            var parametros = new
+            {
+                ids = palavrasChaves.Select(t => t.Id).ToArray(),
+                palavraChave.AlteradoEm,
+                palavraChave.AlteradoPor,
+                palavraChave.AlteradoLogin
+            };
+
+            var query = @"update proposta_palavra_chave
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
         }
     }
 }

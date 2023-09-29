@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Arquivo.FormFile)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o arquivo para o armazenamento físico");
+                .WithMessage("É necessário informar o arquivo para o armazenamento físico");
         }
     }
 }

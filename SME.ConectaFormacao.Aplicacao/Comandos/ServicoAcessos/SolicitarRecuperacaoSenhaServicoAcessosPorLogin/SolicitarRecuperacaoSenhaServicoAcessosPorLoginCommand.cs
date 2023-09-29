@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Login)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o login para solicitar a recuperação de senha");
+                .WithMessage("É necessário informar o login para solicitar a recuperação de senha");
         }
     }
 }

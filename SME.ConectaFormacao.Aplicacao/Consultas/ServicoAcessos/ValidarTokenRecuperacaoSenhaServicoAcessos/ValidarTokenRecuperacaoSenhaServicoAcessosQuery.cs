@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Token)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o token para validar a recuperação de senha");
+                .WithMessage("É necessário informar o token para validar a recuperação de senha");
         }
     }
 }

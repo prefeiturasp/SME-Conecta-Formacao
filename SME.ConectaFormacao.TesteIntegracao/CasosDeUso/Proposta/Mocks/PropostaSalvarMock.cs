@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -51,6 +52,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncaoEspecificas,
             IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos,
             IEnumerable<PropostaVagaRemanecenteDTO> propostaVagaRemanecentes,
+            IEnumerable<PropostaPalavraChaveDTO> palavrasChaves,
             SituacaoProposta situacao,
             bool gerarFuncaoEspecificaOutros,
             bool gerarCriterioValidacaoInscricaoOutros,
@@ -67,6 +69,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.VagasRemanecentes, f => new PropostaVagaRemanecenteDTO[] { f.PickRandom(propostaVagaRemanecentes) });
             faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Short(1, 99));
             faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 99));
+            faker.RuleFor(x => x.PalavrasChaves, f => palavrasChaves.Take(5)); //Melhorar isso
+            faker.RuleFor(x => x.Justificativa, f => f.Lorem.Sentence(100));
+            faker.RuleFor(x => x.Objetivos, f => f.Lorem.Sentence(100));
+            faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(100));
+            faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(100));
+            faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(100));
 
             if (gerarFuncaoEspecificaOutros)
                 faker.RuleFor(x => x.FuncaoEspecificaOutros, f => f.Lorem.Sentence(3));
@@ -95,10 +103,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncaoEspecificas,
             IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos,
             IEnumerable<PropostaVagaRemanecenteDTO> propostaVagaRemanecentes,
+            IEnumerable<PropostaPalavraChaveDTO> propostaPalavrasChaves,
             SituacaoProposta situacao, bool gerarFuncaoEspecificaOutros = false, bool gerarCriterioValidacaoInscricaoOutros = false,
             long? arquivoImagemDivulgacaoId = null)
         {
-            var propostaDTO = Gerador(tipoFormacao, modalidade, propostaPublicoAlvos, propostaFuncaoEspecificas, propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId).Generate();
+            var propostaDTO = Gerador(tipoFormacao, modalidade, propostaPublicoAlvos, propostaFuncaoEspecificas, 
+                propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, propostaPalavrasChaves,
+                situacao, gerarFuncaoEspecificaOutros, 
+                gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId).Generate();
             propostaDTO.Encontros = PropostaSalvarMock.GerarEncontro(2, propostaDTO.QuantidadeTurmas.GetValueOrDefault());
 
             return propostaDTO;

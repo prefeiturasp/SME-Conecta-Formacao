@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Nome)
                .NotEmpty()
-               .WithMessage("É nescessário informar o nome do arquivo para ser mover para o repositório fisico");
+               .WithMessage("É necessário informar o nome do arquivo para ser mover para o repositório fisico");
         }
     }
 }
