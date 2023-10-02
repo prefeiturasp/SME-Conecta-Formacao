@@ -5,13 +5,13 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ValidarCriterioValidacaoInscricaoOutrosCommand : IRequest
     {
-        public ValidarCriterioValidacaoInscricaoOutrosCommand(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos, string criterioValidacaoInscricaoOutros)
+        public ValidarCriterioValidacaoInscricaoOutrosCommand(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos, string? criterioValidacaoInscricaoOutros)
         {
             PropostaCriterioValidacaoInscricaos = propostaCriterioValidacaoInscricaos;
             CriterioValidacaoInscricaoOutros = criterioValidacaoInscricaoOutros;
         }
 
         public IEnumerable<PropostaCriterioValidacaoInscricaoDTO> PropostaCriterioValidacaoInscricaos { get; }
-        public string CriterioValidacaoInscricaoOutros { get; set; }
+        public string? CriterioValidacaoInscricaoOutros { get; set; }
     }
 }

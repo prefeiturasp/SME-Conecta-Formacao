@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
-    public class PropostaMock
+    public class PropostaMock : BaseMock
     {
         private static Faker<Proposta> Gerador(
             long areaPromotoraId,
@@ -21,15 +21,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.Modalidade, modalidade);
             faker.RuleFor(x => x.TipoInscricao, f => f.PickRandom<TipoInscricao>());
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
-            faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Number(1, 999));
-            faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Number(1, 999));
+            faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Short(1, 999));
+            faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 999));
             faker.RuleFor(x => x.Excluido, false);
-            faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.CriadoLogin, f => f.Name.FirstName());
-            faker.RuleFor(x => x.AlteradoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.AlteradoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.AlteradoLogin, f => f.Name.FirstName());
+            AuditoriaFaker(faker);
 
             if (gerarFuncaoEspecificaOutros)
                 faker.RuleFor(x => x.FuncaoEspecificaOutros, f => f.Lorem.Sentence(3));
@@ -57,12 +52,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             var faker = new Faker<Proposta>();
             faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
             faker.RuleFor(x => x.Excluido, false);
-            faker.RuleFor(x => x.CriadoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.CriadoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.CriadoLogin, f => f.Name.FirstName());
-            faker.RuleFor(x => x.AlteradoPor, f => f.Name.FullName());
-            faker.RuleFor(x => x.AlteradoEm, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.AlteradoLogin, f => f.Name.FirstName());
+            AuditoriaFaker(faker);
 
             return faker.Generate();
         }
@@ -141,6 +131,49 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             }
 
             return default;
+        }
+
+        public static IEnumerable<PropostaEncontro> GerarEncontros(long propostaId)
+        {
+            var quantidade = new Randomizer().Number(1, 9);
+
+            var faker = new Faker<PropostaEncontro>();
+            faker.RuleFor(x => x.PropostaId, propostaId);
+            faker.RuleFor(x => x.Tipo, f => f.PickRandom<TipoEncontro>());
+            faker.RuleFor(x => x.HoraInicio, f => DateTimeExtension.HorarioBrasilia().ToString("HH:mm"));
+            faker.RuleFor(x => x.HoraFim, f => DateTimeExtension.HorarioBrasilia().AddMinutes(quantidade).ToString("HH:mm"));
+            faker.RuleFor(x => x.Local, f => f.Lorem.Sentence(3));
+            faker.RuleFor(x => x.Excluido, false);
+
+            AuditoriaFaker(faker);
+
+            return faker.Generate(quantidade);
+        }
+
+        public static IEnumerable<PropostaEncontroTurma> GerarPropostaEncontroTurmas(long propostaEncontroId, short quantidadeTurmas)
+        {
+            var quantidade = new Randomizer().Number(1, 9);
+
+            var faker = new Faker<PropostaEncontroTurma>();
+            faker.RuleFor(x => x.PropostaEncontroId, propostaEncontroId);
+            faker.RuleFor(x => x.Turma, f => f.Random.Short(1, quantidadeTurmas));
+            faker.RuleFor(x => x.Excluido, false);
+            AuditoriaFaker(faker);
+
+            return faker.Generate(quantidade);
+        }
+
+        public static IEnumerable<PropostaEncontroData> GerarPropostaEncontroDatas(long propostaEncontroId)
+        {
+            var quantidade = new Randomizer().Number(1, 9);
+
+            var faker = new Faker<PropostaEncontroData>();
+            faker.RuleFor(x => x.PropostaEncontroId, propostaEncontroId);
+            faker.RuleFor(x => x.DataInicio, DateTime.Now);
+            faker.RuleFor(x => x.DataFim, f => f.Random.Bool() ? f.Date.Future() : null);
+            AuditoriaFaker(faker);
+
+            return faker.Generate(quantidade);
         }
     }
 }

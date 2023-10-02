@@ -5,13 +5,13 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ValidarFuncaoEspecificaOutrosCommand : IRequest
     {
-        public ValidarFuncaoEspecificaOutrosCommand(IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncoesEspecificas, string funcaoEspecificaOutros)
+        public ValidarFuncaoEspecificaOutrosCommand(IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncoesEspecificas, string? funcaoEspecificaOutros)
         {
             PropostaFuncoesEspecificas = propostaFuncoesEspecificas;
             FuncaoEspecificaOutros = funcaoEspecificaOutros;
         }
 
         public IEnumerable<PropostaFuncaoEspecificaDTO> PropostaFuncoesEspecificas { get; }
-        public string FuncaoEspecificaOutros { get; set; }
+        public string? FuncaoEspecificaOutros { get; set; }
     }
 }

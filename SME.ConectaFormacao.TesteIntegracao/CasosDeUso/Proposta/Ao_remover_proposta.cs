@@ -46,17 +46,29 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             foreach (var criterioValidacaoInscricao in criterioValidacaoInscricaos)
                 criterioValidacaoInscricao.Excluido.ShouldBeTrue();
 
-            var vagasRemanecentes = ObterTodos<PropostaVagaRemanecente>().Where(t => !t.Excluido);
+            var vagasRemanecentes = ObterTodos<PropostaVagaRemanecente>();
             foreach (var vagaRemanecente in vagasRemanecentes)
                 vagaRemanecente.Excluido.ShouldBeTrue();
 
-            var funcoesEspecificas = ObterTodos<PropostaFuncaoEspecifica>().Where(t => !t.Excluido);
+            var funcoesEspecificas = ObterTodos<PropostaFuncaoEspecifica>();
             foreach (var funcaoEspecifica in funcoesEspecificas)
                 funcaoEspecifica.Excluido.ShouldBeTrue();
 
-            var publicosAlvo = ObterTodos<PropostaPublicoAlvo>().Where(t => !t.Excluido);
+            var publicosAlvo = ObterTodos<PropostaPublicoAlvo>();
             foreach (var publicoAlvo in publicosAlvo)
                 publicoAlvo.Excluido.ShouldBeTrue();
+
+            var encontros = ObterTodos<PropostaEncontro>();
+            foreach (var encontro in encontros)
+                encontro.Excluido.ShouldBeTrue();
+
+            var encontroTurmas = ObterTodos<PropostaEncontroTurma>();
+            foreach (var turma in encontroTurmas)
+                turma.Excluido.ShouldBeTrue();
+
+            var encontroDatas = ObterTodos<PropostaEncontroData>();
+            foreach (var data in encontroDatas)
+                data.Excluido.ShouldBeTrue();
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção ao remover por id inválido")]

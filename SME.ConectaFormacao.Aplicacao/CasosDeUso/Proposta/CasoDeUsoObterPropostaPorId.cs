@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<PropostaCompletoDTO> Executar(long id)
         {
-            return await mediator.Send(new ObterPropostaPorIdQuery(id));
+            return await mediator.Send(new ObterPropostaCompletaPorIdQuery(id));
         }
     }
 }

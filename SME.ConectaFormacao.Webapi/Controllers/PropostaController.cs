@@ -83,6 +83,27 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterSituacoesProposta.Executar());
         }
 
+        [HttpGet("tipo-encontro")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterTipoEncontro(
+            [FromServices] ICasoDeUsoObterTipoEncontro casoDeUsoObterTipoEncontro)
+        {
+            return Ok(await casoDeUsoObterTipoEncontro.Executar());
+        }
+
+        [HttpGet("{id}/turma")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterTurmas(
+            [FromServices] ICasoDeUsoObterTurmasProposta casoDeUsoObterTurmasProposta,
+            [FromRoute] long id)
+        {
+            return Ok(await casoDeUsoObterTurmasProposta.Executar(id));
+        }
+
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PropostaCompletoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -137,6 +158,40 @@ namespace SME.ConectaFormacao.Webapi.Controllers
           [FromRoute] long id)
         {
             return Ok(await casoDeUsoRemoverProposta.Executar(id));
+        }
+
+        [HttpGet("{propostaId}/encontro")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaEncontroDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterPropostaEncontrosPaginado(
+            [FromServices] ICasoDeUsoObterPropostaEncontroPaginacao casoDeUsoObterPropostaEncontroPaginacao,
+            [FromRoute] long propostaId)
+        {
+            return Ok(await casoDeUsoObterPropostaEncontroPaginacao.Executar(propostaId));
+        }
+
+        [HttpPost("{propostaId}/encontro")]
+        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> SalvarPropostaEncontro(
+            [FromServices] ICasoDeUsoSalvarPropostaEncontro casoDeUsoSalvarPropostaEncontro,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaEncontroDTO propostaEncontroDTO)
+        {
+            return Ok(await casoDeUsoSalvarPropostaEncontro.Executar(propostaId, propostaEncontroDTO));
+        }
+
+        [HttpDelete("encontro/{id}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> RemoverPropostaEncontro(
+            [FromServices] ICasoDeUsoRemoverPropostaEncontro casoDeUsoRemoverPropostaEncontro,
+            [FromRoute] long id)
+        {
+            return Ok(await casoDeUsoRemoverPropostaEncontro.Executar(id));
         }
     }
 }
