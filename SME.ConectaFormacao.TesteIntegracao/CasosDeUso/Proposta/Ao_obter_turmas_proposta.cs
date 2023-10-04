@@ -26,8 +26,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var criterioValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criterioValidacaoInscricao);
+            
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
 
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosEFuncoes, criterioValidacaoInscricao);
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosEFuncoes, criterioValidacaoInscricao,palavrasChaves);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterTurmasProposta>();
 

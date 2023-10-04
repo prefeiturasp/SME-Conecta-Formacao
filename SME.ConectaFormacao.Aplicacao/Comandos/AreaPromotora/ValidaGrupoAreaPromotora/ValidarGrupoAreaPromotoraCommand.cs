@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.GrupoId)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o perfil para inserir a área promotora");
+                .WithMessage("É necessário informar o perfil para inserir a área promotora");
         }
     }
 }

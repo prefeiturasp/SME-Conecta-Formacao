@@ -23,15 +23,15 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Login)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o login do usuário para alterar a senha");
+                .WithMessage("É necessário informar o login do usuário para alterar a senha");
 
             RuleFor(x => x.SenhaAtual)
                 .NotEmpty()
-                .WithMessage("É nescessário informar a senha atual do usuário para alterar a senha");
+                .WithMessage("É necessário informar a senha atual do usuário para alterar a senha");
 
             RuleFor(x => x.NovaSenha)
                 .NotEmpty()
-                .WithMessage("É nescessário informar a nova senha do usuário para alterar a senha");
+                .WithMessage("É necessário informar a nova senha do usuário para alterar a senha");
         }
     }
 }

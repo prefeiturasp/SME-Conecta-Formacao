@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.AreaPromotoraDTO.Nome)
                 .NotEmpty()
-                .WithMessage("É nescessário informar a área promotora para inserir");
+                .WithMessage("É necessário informar a área promotora para inserir");
 
             RuleFor(x => x.AreaPromotoraDTO.Nome)
                 .MaximumLength(50)
@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             RuleFor(x => x.AreaPromotoraDTO.GrupoId)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o perfil para inserir a área promotora");
+                .WithMessage("É necessário informar o perfil para inserir a área promotora");
         }
     }
 }
