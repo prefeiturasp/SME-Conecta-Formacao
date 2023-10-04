@@ -48,8 +48,6 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(request.Id, propostaDepois.VagasRemanecentes), cancellationToken);
 
-                await _mediator.Send(new SalvarPropostaEncontroCommand(request.Id, propostaDepois.Encontros), cancellationToken);
-                
                 await _mediator.Send(new SalvarPalavraChaveCommand(request.Id, propostaDepois.PalavrasChaves), cancellationToken);
 
                 if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())

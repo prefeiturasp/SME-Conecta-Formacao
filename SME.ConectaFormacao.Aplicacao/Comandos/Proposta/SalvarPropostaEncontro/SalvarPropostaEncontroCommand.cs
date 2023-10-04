@@ -1,19 +1,19 @@
 ﻿using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarPropostaEncontroCommand : IRequest<bool>
+    public class SalvarPropostaEncontroCommand : IRequest<long>
     {
-        public SalvarPropostaEncontroCommand(long propostaId, IEnumerable<PropostaEncontro> encontros)
+        public SalvarPropostaEncontroCommand(long propostaId, PropostaEncontroDTO encontroDTO)
         {
             PropostaId = propostaId;
-            Encontros = encontros;
+            EncontroDTO = encontroDTO;
         }
 
         public long PropostaId { get; }
-        public IEnumerable<PropostaEncontro> Encontros { get; }
+        public PropostaEncontroDTO EncontroDTO { get; }
     }
 
     public class SalvarPropostaEncontroCommandValidator : AbstractValidator<SalvarPropostaEncontroCommand>

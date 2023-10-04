@@ -93,7 +93,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, id);
             ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarPropostaEncontro(propostaDTO.Encontros, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
         }
 
@@ -172,7 +171,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, id);
             ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarPropostaEncontro(propostaDTO.Encontros, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
         }
 
@@ -310,7 +308,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
             ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarPropostaEncontro(propostaDTO.Encontros, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
         }
 

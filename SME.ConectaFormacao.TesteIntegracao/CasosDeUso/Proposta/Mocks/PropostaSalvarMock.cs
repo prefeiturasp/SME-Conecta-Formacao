@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return faker.Generate(quantidade);
         }
 
-        private static Faker<PropostaEncontroDTO> GeradorEncontro(int quantidadeTurmas)
+        public static Faker<PropostaEncontroDTO> GeradorEncontro(int quantidadeTurmas)
         {
             var faker = new Faker<PropostaEncontroDTO>();
             faker.RuleFor(x => x.Tipo, f => f.PickRandom<TipoEncontro>());
@@ -40,9 +40,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return faker;
         }
 
-        public static IEnumerable<PropostaEncontroDTO> GerarEncontro(int quantidade, int quantidadeTurmas)
+        public static PropostaEncontroDTO GerarEncontro(short quantidadeTurmas)
         {
-            return GeradorEncontro(quantidadeTurmas).Generate(quantidade);
+            return GeradorEncontro(quantidadeTurmas);
         }
 
         private static Faker<PropostaDTO> Gerador(
@@ -111,7 +111,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
                 propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, propostaPalavrasChaves,
                 situacao, gerarFuncaoEspecificaOutros, 
                 gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId).Generate();
-            propostaDTO.Encontros = PropostaSalvarMock.GerarEncontro(2, propostaDTO.QuantidadeTurmas.GetValueOrDefault());
 
             return propostaDTO;
         }

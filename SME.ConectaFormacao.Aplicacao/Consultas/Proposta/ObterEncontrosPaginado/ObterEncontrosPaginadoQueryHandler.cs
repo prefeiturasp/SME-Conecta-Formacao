@@ -28,8 +28,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 encontros = await _repositorioProposta.ObterEncontrosPaginados(request.NumeroPagina, request.NumeroRegistros, request.PropostaId);
 
                 var ids = encontros.Select(t => t.Id).ToArray();
-                var datas = await _repositorioProposta.ObterEncontroDatasPorEncontroIds(ids);
-                var turmas = await _repositorioProposta.ObterEncontroTurmasPorEncontroIds(ids);
+                var datas = await _repositorioProposta.ObterEncontroDatasPorEncontroId(ids);
+                var turmas = await _repositorioProposta.ObterEncontroTurmasPorEncontroId(ids);
 
                 foreach (var encontro in encontros)
                 {
