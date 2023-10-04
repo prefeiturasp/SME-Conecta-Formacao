@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Arquivos)
                 .NotEmpty()
-                .WithMessage("É nescessário informar ao menos um arquivos para ser removido");
+                .WithMessage("É necessário informar ao menos um arquivos para ser removido");
         }
     }
 }

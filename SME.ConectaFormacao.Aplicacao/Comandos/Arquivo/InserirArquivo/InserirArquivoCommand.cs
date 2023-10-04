@@ -20,15 +20,15 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Arquivo.Nome)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o nome do arquivo para inserir");
+                .WithMessage("É necessário informar o nome do arquivo para inserir");
 
             RuleFor(x => x.Arquivo.TipoConteudo)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o tipo de conteudo do arquivo para inserir");
+                .WithMessage("É necessário informar o tipo de conteudo do arquivo para inserir");
 
             RuleFor(x => x.Arquivo.FormFile)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o arquivo para inserir");
+                .WithMessage("É necessário informar o arquivo para inserir");
         }
     }
 }

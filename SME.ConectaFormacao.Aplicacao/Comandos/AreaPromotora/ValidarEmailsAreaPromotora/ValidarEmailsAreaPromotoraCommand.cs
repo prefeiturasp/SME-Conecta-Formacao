@@ -23,11 +23,11 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Emails)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o email da área promotora para validar");
+                .WithMessage("É necessário informar o email da área promotora para validar");
 
             RuleFor(x => x.Tipo)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o tipo da área promotora para validar o email");
+                .WithMessage("É necessário informar o tipo da área promotora para validar o email");
         }
     }
 }

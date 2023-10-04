@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.NomeArquivoFisico)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o nome do arquivo fisico para obter o endereço");
+                .WithMessage("É necessário informar o nome do arquivo fisico para obter o endereço");
         }
     }
 }

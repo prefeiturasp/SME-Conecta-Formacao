@@ -26,8 +26,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
+            
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
 
-            var propostas = await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
+            var propostas = await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves);
 
             var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOValido(areaPromotora, propostas);
 
@@ -53,8 +56,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
+            
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
 
-            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
+            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves);
 
             var filtro = new PropostaFiltrosDTO();
 
@@ -80,8 +86,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
+            
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
 
-            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao);
+            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves);
 
             var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOInvalido();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPaginacao>();

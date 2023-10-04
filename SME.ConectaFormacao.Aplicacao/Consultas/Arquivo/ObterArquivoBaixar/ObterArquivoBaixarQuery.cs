@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(b => b.Codigo)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o código do arquivo para baixar");
+                .WithMessage("É necessário informar o código do arquivo para baixar");
         }
     }
 }
