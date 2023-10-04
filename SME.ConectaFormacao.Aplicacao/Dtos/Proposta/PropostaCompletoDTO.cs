@@ -31,10 +31,10 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public SituacaoProposta Situacao { get; set; }
         public PropostaImagemDivulgacaoDTO? ArquivoImagemDivulgacao { get; set; }
         public AuditoriaDTO Auditoria { get; set; }
-        public IEnumerable<PropostaPalavraChaveDTO> PalavrasChaves { get; set; }
         public DateTime? DataRealizacaoInicio { get; set; }
         public DateTime? DataRealizacaoFim { get; set; }
         public DateTime? DataInscricaoInicio { get; set; }
         public DateTime? DataInscricaoFim { get; set; }
+        public IEnumerable<PropostaPalavraChaveDTO> PalavrasChaves { get; set; }
     }
 }
