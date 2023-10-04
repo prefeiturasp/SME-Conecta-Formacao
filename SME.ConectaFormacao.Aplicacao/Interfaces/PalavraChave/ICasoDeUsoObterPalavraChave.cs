@@ -1,9 +1,9 @@
-﻿using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos;
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave
 {
     public interface ICasoDeUsoObterPalavraChave
     {
-        Task<IEnumerable<PalavraChaveDTO>> Executar();
+        Task<IEnumerable<RetornoListagemDTO>> Executar();
     }
 }

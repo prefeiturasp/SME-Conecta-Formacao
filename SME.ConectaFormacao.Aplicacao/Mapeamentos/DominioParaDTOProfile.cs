@@ -36,6 +36,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<AreaPromotora, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
+            
+            CreateMap<PalavraChave, RetornoListagemDTO>()
+                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
 
             // -> Proposta
             CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
