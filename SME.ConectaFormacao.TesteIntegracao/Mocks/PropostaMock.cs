@@ -24,6 +24,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Short(1, 999));
             faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 999));
             faker.RuleFor(x => x.Excluido, false);
+            faker.RuleFor(x => x.CargaHorariaPresencial, f => string.Format("{0}:{1}",f.Random.Short(100, 999).ToString(),f.Random.Short(10, 99).ToString()));
+            faker.RuleFor(x => x.CargaHorariaSincrona, f => string.Format("{0}:{1}",f.Random.Short(100, 999).ToString(),f.Random.Short(10, 99).ToString()));
+            faker.RuleFor(x => x.CargaHorariaSincrona, f => string.Format("{0}:{1}",f.Random.Short(100, 999).ToString(),f.Random.Short(10, 99).ToString()));
+            faker.RuleFor(x => x.Justificativa, f => f.Lorem.Sentence(200));
+            faker.RuleFor(x => x.Objetivos, f => f.Lorem.Sentence(200));
+            faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(200));
+            faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(200));
+            faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(200));
             AuditoriaFaker(faker);
 
             if (gerarFuncaoEspecificaOutros)
@@ -174,6 +182,25 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             AuditoriaFaker(faker);
 
             return faker.Generate(quantidade);
+        }
+        
+        public static IEnumerable<PropostaPalavraChave> GerarPalavrasChaves(long propostaId, IEnumerable<PalavraChave> palavrasChaves)
+        {
+            if (palavrasChaves != null && palavrasChaves.Any())
+            {
+                var quantidade = new Randomizer().Number(1, palavrasChaves.Count());
+                return palavrasChaves
+                    .Select(t => new PropostaPalavraChave
+                    {
+                        PropostaId = propostaId,
+                        PalavraChaveId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    }).Take(quantidade);
+            }
+
+            return default;
         }
     }
 }

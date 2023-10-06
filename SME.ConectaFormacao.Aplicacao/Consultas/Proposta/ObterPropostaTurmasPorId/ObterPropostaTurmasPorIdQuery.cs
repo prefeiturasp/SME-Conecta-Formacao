@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Id)
              .NotEmpty()
-             .WithMessage("É nescessário informar o id para obter as turmas da proposta");
+             .WithMessage("É necessário informar o id para obter as turmas da proposta");
         }
     }
 }

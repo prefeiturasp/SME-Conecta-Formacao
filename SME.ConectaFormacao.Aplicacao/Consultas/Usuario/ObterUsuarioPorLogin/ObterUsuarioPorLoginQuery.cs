@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Login)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o login para obter o usuário");
+                .WithMessage("É necessário informar o login para obter o usuário");
         }
     }
 }

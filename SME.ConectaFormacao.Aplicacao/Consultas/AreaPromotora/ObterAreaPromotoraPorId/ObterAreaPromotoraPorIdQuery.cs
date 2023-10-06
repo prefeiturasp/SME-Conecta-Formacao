@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Id)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o id da área promotora para obter os dados");
+                .WithMessage("É necessário informar o id da área promotora para obter os dados");
         }
     }
 }

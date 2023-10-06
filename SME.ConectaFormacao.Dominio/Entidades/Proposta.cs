@@ -21,10 +21,19 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public DateTime? DataInscricaoFim { get; set; }
 
         public AreaPromotora AreaPromotora { get; set; }
+        public string CargaHorariaPresencial { get; set; }
+        public string CargaHorariaSincrona { get; set; }
+        public string CargaHorariaDistancia { get; set; }
+        public string Justificativa { get; set; }
+        public string Objetivos { get; set; }
+        public string ConteudoProgramatico { get; set; }
+        public string ProcedimentoMetadologico { get; set; }
+        public string Referencia { get; set; }
         public IEnumerable<PropostaPublicoAlvo> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecifica> FuncoesEspecificas { get; set; }
         public IEnumerable<PropostaCriterioValidacaoInscricao> CriteriosValidacaoInscricao { get; set; }
         public IEnumerable<PropostaVagaRemanecente> VagasRemanecentes { get; set; }
         public IEnumerable<PropostaEncontro> Encontros { get; set; }
+        public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; }
     }
 }

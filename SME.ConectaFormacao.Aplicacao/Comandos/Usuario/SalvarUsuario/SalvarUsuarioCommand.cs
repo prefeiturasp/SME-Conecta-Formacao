@@ -20,15 +20,15 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Usuario)
                 .NotNull()
-                .WithMessage("É nescessário informar o usuário a ser salvo");
+                .WithMessage("É necessário informar o usuário a ser salvo");
 
             RuleFor(x => x.Usuario.Login)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o login do usuário a ser salvo");
+                .WithMessage("É necessário informar o login do usuário a ser salvo");
 
             RuleFor(x => x.Usuario.Nome)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o nome do usuário a ser salvo");
+                .WithMessage("É necessário informar o nome do usuário a ser salvo");
         }
     }
 }

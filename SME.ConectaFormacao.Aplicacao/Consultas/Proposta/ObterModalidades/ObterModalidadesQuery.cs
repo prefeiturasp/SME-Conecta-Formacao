@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.TipoFormacao)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o tipo de formação para obter as modalidades");
+                .WithMessage("É necessário informar o tipo de formação para obter as modalidades");
         }
     }
 }

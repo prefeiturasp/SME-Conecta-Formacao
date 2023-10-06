@@ -1,5 +1,6 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
+using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -14,7 +15,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
+        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora, 
+            IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,
+            IEnumerable<PalavraChave> palavrasChaves)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
@@ -69,6 +72,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                     await InserirNaBase(datas);
                     encontro.Datas = datas;
                 }
+                
+                var palavrasChavesDaProposta = PropostaMock.GerarPalavrasChaves(proposta.Id, palavrasChaves);
+                if (palavrasChavesDaProposta != null)
+                {
+                    await InserirNaBase(palavrasChavesDaProposta);
+                    proposta.PalavrasChaves = palavrasChavesDaProposta;
+                }
 
                 proposta.Encontros = encontros;
             }
@@ -76,13 +86,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             return proposta;
         }
 
-        protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade, Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
+        protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade, 
+            Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, 
+            IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,IEnumerable<PalavraChave> palavrasChaves)
         {
             var lista = new List<Dominio.Entidades.Proposta>();
 
             for (int i = 0; i < quantidade; i++)
             {
-                lista.Add(await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao));
+                lista.Add(await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves));
             }
 
             return lista;
@@ -98,6 +110,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
             proposta.QuantidadeVagasTurma.ShouldBe(propostaDTO.QuantidadeVagasTurma);
+            proposta.Justificativa.ShouldBe(propostaDTO.Justificativa);
+            proposta.Objetivos.ShouldBe(propostaDTO.Objetivos);
+            proposta.ConteudoProgramatico.ShouldBe(propostaDTO.ConteudoProgramatico);
+            proposta.ProcedimentoMetadologico.ShouldBe(propostaDTO.ProcedimentoMetadologico);
+            proposta.Referencia.ShouldBe(propostaDTO.Referencia);
+            
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaPresencial))
+                proposta.CargaHorariaPresencial.ShouldBe(propostaDTO.CargaHorariaPresencial);
 
             proposta.DataRealizacaoInicio.ShouldBe(propostaDTO.DataRealizacaoInicio);
             proposta.DataRealizacaoFim.ShouldBe(propostaDTO.DataRealizacaoFim);
@@ -105,12 +125,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.DataInscricaoInicio.ShouldBe(propostaDTO.DataInscricaoInicio);
             proposta.DataInscricaoFim.ShouldBe(propostaDTO.DataInscricaoFim);
 
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaSincrona))
+                proposta.CargaHorariaSincrona.ShouldBe(propostaDTO.CargaHorariaSincrona);
+            
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaDistancia))
+                proposta.CargaHorariaDistancia.ShouldBe(propostaDTO.CargaHorariaDistancia);
+            
             if (!string.IsNullOrEmpty(propostaDTO.FuncaoEspecificaOutros))
                 proposta.FuncaoEspecificaOutros.ShouldBe(propostaDTO.FuncaoEspecificaOutros);
 
             if (!string.IsNullOrEmpty(propostaDTO.CriterioValidacaoInscricaoOutros))
                 proposta.CriterioValidacaoInscricaoOutros.ShouldBe(propostaDTO.CriterioValidacaoInscricaoOutros);
-
+            
             proposta.Situacao.ShouldBe(propostaDTO.Situacao);
         }
 
@@ -124,13 +150,27 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
             proposta.QuantidadeVagasTurma.ShouldBe(propostaDTO.QuantidadeVagasTurma);
+            proposta.Justificativa.ShouldBe(propostaDTO.Justificativa);
+            proposta.Objetivos.ShouldBe(propostaDTO.Objetivos);
+            proposta.ConteudoProgramatico.ShouldBe(propostaDTO.ConteudoProgramatico);
+            proposta.ProcedimentoMetadologico.ShouldBe(propostaDTO.ProcedimentoMetadologico);
+            proposta.Referencia.ShouldBe(propostaDTO.Referencia);
+            
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaPresencial))
+                proposta.CargaHorariaPresencial.ShouldBe(propostaDTO.CargaHorariaPresencial);
 
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaSincrona))
+                proposta.CargaHorariaSincrona.ShouldBe(propostaDTO.CargaHorariaSincrona);
+            
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaDistancia))
+                proposta.CargaHorariaDistancia.ShouldBe(propostaDTO.CargaHorariaDistancia);
+            
             if (!string.IsNullOrEmpty(propostaDTO.FuncaoEspecificaOutros))
                 proposta.FuncaoEspecificaOutros.ShouldBe(propostaDTO.FuncaoEspecificaOutros);
 
             if (!string.IsNullOrEmpty(propostaDTO.CriterioValidacaoInscricaoOutros))
                 proposta.CriterioValidacaoInscricaoOutros.ShouldBe(propostaDTO.CriterioValidacaoInscricaoOutros);
-
+            
             proposta.Situacao.ShouldBe(propostaDTO.Situacao);
         }
 
@@ -185,6 +225,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             auditoriaDTO.AlteradoEm.GetValueOrDefault().Hour.ShouldBe(entidadeAuditavel.AlteradoEm.GetValueOrDefault().Hour);
             auditoriaDTO.AlteradoPor.ShouldBe(entidadeAuditavel.AlteradoPor);
             auditoriaDTO.AlteradoLogin.ShouldBe(entidadeAuditavel.AlteradoLogin);
+        }
+        
+        protected void ValidarPropostaPalavrasChavesDTO(IEnumerable<PropostaPalavraChaveDTO> propostaPalavrasChavesDTO, long id)
+        {
+            var palavrasChaves = ObterTodos<PropostaPalavraChave>().Where(t => !t.Excluido);
+            foreach (var palavraChave in palavrasChaves)
+            {
+                palavraChave.PropostaId.ShouldBe(id);
+                propostaPalavrasChavesDTO.Any(t => t.PalavraChaveId == palavraChave.Id).ShouldBeTrue();
+            }
         }
     }
 }

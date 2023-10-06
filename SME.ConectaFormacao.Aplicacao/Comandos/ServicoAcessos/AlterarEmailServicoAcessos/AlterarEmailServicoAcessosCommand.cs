@@ -21,15 +21,15 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.Login)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o login para alterar o email do usuário");
+                .WithMessage("É necessário informar o login para alterar o email do usuário");
 
             RuleFor(x => x.Email)
                 .NotEmpty()
-                .WithMessage("É nescessário informar o novo email para ser alterado do usuário");
+                .WithMessage("É necessário informar o novo email para ser alterado do usuário");
 
             RuleFor(x => x.Email)
                 .EmailAddress()
-                .WithMessage("É nescessário informar o um email válido para ser alterado do usuário");
+                .WithMessage("É necessário informar o um email válido para ser alterado do usuário");
         }
     }
 }
