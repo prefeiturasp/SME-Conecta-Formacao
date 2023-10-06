@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.Proposta.CriterioCertificacao;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados;
@@ -46,6 +47,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(id, proposta.VagasRemanecentes), cancellationToken);
 
                 await _mediator.Send(new SalvarPalavraChaveCommand(id, proposta.PalavrasChaves), cancellationToken);
+                await _mediator.Send(new SalvarCriterioCertificacaoCommand(id, proposta.CriterioCertificacao), cancellationToken);
 
                 await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(proposta.ArquivoImagemDivulgacaoId), cancellationToken);
 
