@@ -11,6 +11,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
@@ -19,6 +20,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
@@ -116,6 +118,7 @@ public class RegistradorDeDependencia
             config.AddMap(new RoteiroPropostaFormativaMap());
             config.AddMap(new CargoFuncaoMap());
             config.AddMap(new PalavraChaveMap());
+            config.AddMap(new CriterioCertificacaoMap());
             
             config.AddMap(new PropostaMap());
             config.AddMap(new PropostaPublicoAlvoMap());
@@ -162,6 +165,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioAreaPromotora, RepositorioAreaPromotora>();
         _serviceCollection.TryAddScoped<IRepositorioArquivo, RepositorioArquivo>();
         _serviceCollection.TryAddScoped<IRepositorioPalavraChave, RepositorioPalavraChave>();
+        _serviceCollection.TryAddScoped<IRepositorioCriterioCertificacao, RepositorioCriterioCertificacao>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -181,6 +185,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterCriterioValidacaoInscricao, CasoDeUsoObterCriterioValidacaoInscricao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterGrupos, CasoDeUsoObterGrupos>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPalavraChave, CasoDeUsoObterPalavraChave>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoCriterioCertificacao, CasoDeUsoCriterioCertificacao>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTiposAreaPromotora, CasoDeUsoObterTiposAreaPromotora>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraPaginada, CasoDeUsoObterAreaPromotoraPaginada>();
