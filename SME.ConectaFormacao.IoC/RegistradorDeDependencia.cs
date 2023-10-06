@@ -134,6 +134,8 @@ public class RegistradorDeDependencia
             config.AddMap(new AreaPromotoraTelefoneMap());
 
             config.AddMap(new ArquivoMap());
+            
+            config.AddMap(new ParametroSistemaMap());
 
             config.ForDommel();
         });
@@ -166,6 +168,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioArquivo, RepositorioArquivo>();
         _serviceCollection.TryAddScoped<IRepositorioPalavraChave, RepositorioPalavraChave>();
         _serviceCollection.TryAddScoped<IRepositorioCriterioCertificacao, RepositorioCriterioCertificacao>();
+        _serviceCollection.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -208,6 +211,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTurmasProposta, CasoDeUsoObterTurmasProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoEncontro, CasoDeUsoObterTipoEncontro>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaEncontroPaginacao, CasoDeUsoObterPropostaEncontroPaginacao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterComunicadoAcaoFormativa, CasoDeUsoObterComunicadoComunicadoAcaoFormativa>();
 
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
