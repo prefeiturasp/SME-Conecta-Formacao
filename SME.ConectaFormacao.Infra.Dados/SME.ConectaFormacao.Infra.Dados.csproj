@@ -16,5 +16,4 @@
       <PackageReference Include="Dommel" Version="3.0.0" />      
       <PackageReference Include="Npgsql" Version="6.0.9" />
     </ItemGroup>
-
 </Project>

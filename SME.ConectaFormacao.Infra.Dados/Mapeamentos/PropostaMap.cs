@@ -31,6 +31,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.ConteudoProgramatico).ToColumn("conteudo_programatico");
             Map(c => c.ProcedimentoMetadologico).ToColumn("procedimento_metodologico");
             Map(c => c.Referencia).ToColumn("referencia");
+            Map(t => t.CursoComCertificado).ToColumn("curso_com_certificado");
+            Map(t => t.AcaoInformativa).ToColumn("acao_informativa");
+            Map(t => t.AcaoFormativaTexto).ToColumn("acao_formativa_texto");
+            Map(t => t.AcaoFormativaLink).ToColumn("acao_formativa_link");
+            Map(t => t.DescricaoDaAtividade).ToColumn("descricao_atividade");
         }
     }
 }

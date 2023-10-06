@@ -127,6 +127,7 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaVagaRemanecenteMap());
             config.AddMap(new PropostaEncontroMap());
             config.AddMap(new PropostaEncontroDataMap());
+            config.AddMap(new PropostaCriterioCertificacaoMap());
             config.AddMap(new PropostaEncontroTurmaMap());
             config.AddMap(new PropostaPalavraChaveMap());
             
