@@ -19,7 +19,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComunicadoAcaoFormativa>();
 
             // act 
-            var retorno = await casoDeUso.Executar();
+            var retorno = await casoDeUso.Executar(1);
+            var retorno = await casoDeUso.Executar(1);
 
             // assert 
             retorno.ShouldNotBeNull();

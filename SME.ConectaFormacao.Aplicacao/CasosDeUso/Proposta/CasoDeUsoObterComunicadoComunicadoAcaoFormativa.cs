@@ -12,16 +12,28 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<ComunicadoAcaoFormativaDTO> Executar()
+        public async Task<ComunicadoAcaoFormativaDTO> Executar(long propostaId)
         {
-            var comunicadoAcaoFormativaTexto = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.ComunicadoAcaoFormativaDescricao, DateTimeExtension.HorarioBrasilia().Year));
-            var comunicadoAcaoFormativaUrl = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.ComunicadoAcaoFormativaUrl, DateTimeExtension.HorarioBrasilia().Year));
-
-            return new ComunicadoAcaoFormativaDTO()
+            var proposta = await mediator.Send(new ObterPropostaCompletaPorIdQuery(propostaId));
+            if (proposta.AcaoInformativa)
             {
-                Descricao = comunicadoAcaoFormativaTexto.Valor,
-                Url = comunicadoAcaoFormativaUrl.Valor
-            };
+                return new ComunicadoAcaoFormativaDTO()
+                {
+                    Descricao = proposta.AcaoFormativaTexto,
+                    Url = proposta.AcaoFormativaLink
+                };
+            }
+            else
+            {
+                var comunicadoAcaoFormativaTexto = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.ComunicadoAcaoFormativaDescricao, DateTimeExtension.HorarioBrasilia().Year));
+                var comunicadoAcaoFormativaUrl = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.ComunicadoAcaoFormativaUrl, DateTimeExtension.HorarioBrasilia().Year));
+
+                return new ComunicadoAcaoFormativaDTO()
+                {
+                    Descricao = comunicadoAcaoFormativaTexto.Valor,
+                    Url = comunicadoAcaoFormativaUrl.Valor
+                };
+            }
         }
     }
 }
