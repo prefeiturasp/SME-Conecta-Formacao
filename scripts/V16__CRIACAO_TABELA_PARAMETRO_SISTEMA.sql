@@ -3,7 +3,7 @@ create table if not exists public.parametro_sistema (
 	nome varchar(50) NOT NULL,
 	tipo int4 NOT NULL,
 	descricao varchar(200) NOT NULL,
-	valor varchar(100) NOT NULL,
+	valor text NOT NULL,
 	ano int4 NULL,
 	ativo bool NOT NULL DEFAULT true,
 	criado_em timestamp NOT NULL,
