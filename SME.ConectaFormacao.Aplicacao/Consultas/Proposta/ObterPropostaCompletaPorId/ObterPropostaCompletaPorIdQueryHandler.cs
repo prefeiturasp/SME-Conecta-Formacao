@@ -32,6 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.CriteriosValidacaoInscricao = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
             proposta.VagasRemanecentes = await _repositorioProposta.ObterVagasRemacenentesPorId(request.Id);
             proposta.PalavrasChaves = await _repositorioProposta.ObterPalavraChavePorId(request.Id);
+            proposta.CriterioCertificacao = await _repositorioProposta.ObterCriterioCertificacaoPorPropostaId(request.Id);
 
             var propostaCompletaDTO = _mapper.Map<PropostaCompletoDTO>(proposta);
             propostaCompletaDTO.Auditoria = _mapper.Map<AuditoriaDTO>(proposta);
