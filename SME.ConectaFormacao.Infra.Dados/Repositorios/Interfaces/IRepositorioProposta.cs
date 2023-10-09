@@ -37,5 +37,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaPalavraChave>> ObterPalavraChavePorId(long id);
         Task RemoverPalavrasChaves(IEnumerable<PropostaPalavraChave> palavrasChaves);
         Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves);
+        Task<IEnumerable<PropostaCriterioCertificacao>> ObterCriterioCertificacaoPorPropostaId(long propostaId);
+        Task InserirCriterioCertificacao(long id, IEnumerable<PropostaCriterioCertificacao> criterios);
+        Task RemoverCriterioCertificacao(IEnumerable<PropostaCriterioCertificacao> criterios);
     }
 }

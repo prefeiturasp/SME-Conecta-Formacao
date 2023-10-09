@@ -34,5 +34,11 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaCriterioValidacaoInscricaoDTO> CriteriosValidacaoInscricao { get; set; }
         public IEnumerable<PropostaEncontroDTO>? Encontros { get; set; }
         public IEnumerable<PropostaPalavraChaveDTO> PalavrasChaves { get; set; }
+        public IEnumerable<CriterioCertificacaoDTO> CriterioCertificacao { get; set; }
+        public bool CursoComCertificado { get; set; }
+        public bool AcaoInformativa { get; set; }
+        public string? DescricaoDaAtividade { get; set; }
+        public string? AcaoFormativaTexto { get; set; }
+        public string? AcaoFormativaLink { get; set; }
     }
 }

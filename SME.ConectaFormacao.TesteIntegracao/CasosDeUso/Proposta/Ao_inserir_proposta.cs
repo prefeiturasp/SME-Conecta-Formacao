@@ -64,6 +64,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
 
+            var criterios = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5, false);
+            await InserirNaBase(criterios);
+            
+
             var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
             var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
             var criteriosDTO = criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id });
