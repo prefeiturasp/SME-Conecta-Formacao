@@ -20,7 +20,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // act 
             var retorno = await casoDeUso.Executar(1);
-            var retorno = await casoDeUso.Executar(1);
 
             // assert 
             retorno.ShouldNotBeNull();
