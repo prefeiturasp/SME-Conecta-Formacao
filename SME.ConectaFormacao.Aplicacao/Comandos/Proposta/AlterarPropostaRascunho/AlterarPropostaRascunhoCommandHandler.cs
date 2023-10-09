@@ -35,6 +35,8 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
             propostaDepois.Situacao = SituacaoProposta.Rascunho;
             propostaDepois.ManterCriador(proposta);
+            propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
+            propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
 
             var transacao = _transacao.Iniciar();
             try
