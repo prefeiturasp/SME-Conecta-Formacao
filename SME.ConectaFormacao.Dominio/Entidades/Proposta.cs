@@ -35,5 +35,11 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaVagaRemanecente> VagasRemanecentes { get; set; }
         public IEnumerable<PropostaEncontro> Encontros { get; set; }
         public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; }
+        public IEnumerable<PropostaCriterioCertificacao> CriterioCertificacao { get; set; }
+        public bool CursoComCertificado { get; set; }
+        public bool AcaoInformativa { get; set; }
+        public string? DescricaoDaAtividade { get; set; }
+        public string? AcaoFormativaTexto { get; set; }
+        public string? AcaoFormativaLink { get; set; }
     }
 }
