@@ -64,7 +64,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaVagaRemanecente, PropostaVagaRemanecenteDTO>().ReverseMap();
             CreateMap<PropostaPublicoAlvo, PropostaPublicoAlvoDTO>().ReverseMap();
             CreateMap<PropostaPalavraChave, PropostaPalavraChaveDTO>().ReverseMap();
-            CreateMap<CriterioCertificacao, CriterioCertificacaoDTO>().ReverseMap();
+            CreateMap<PropostaCriterioCertificacao, CriterioCertificacaoDTO>().ReverseMap();
             CreateMap<Proposta, PropostaPaginadaDTO>()
                 .ForMember(dest => dest.TipoFormacao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
                 .ForMember(dest => dest.Modalidade, opt => opt.MapFrom(x => x.Modalidade.HasValue ? x.Modalidade.Nome() : null))

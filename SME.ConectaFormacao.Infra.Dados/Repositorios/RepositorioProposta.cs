@@ -575,7 +575,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @" select 
                             id, 
                             proposta_id, 
-                            criterio_certificacao_id 
+                            criterio_certificacao_id, 
                             excluido,
                             criado_em,
 	                        criado_por,
