@@ -194,13 +194,13 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoRemoverPropostaEncontro.Executar(id));
         }
         
-        [HttpGet("comunicado-acao-formativa")]
+        [HttpGet("comunicado-acao-formativa/{propostaId}")]
         [ProducesResponseType(typeof(ComunicadoAcaoFormativaDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterComunicadoAcaoFormativaPorParametro([FromServices] ICasoDeUsoObterComunicadoAcaoFormativa casoDeUsoObterComunicadoAcaoFormativa)
+        public async Task<IActionResult> ObterComunicadoAcaoFormativaPorParametro([FromServices] ICasoDeUsoObterComunicadoAcaoFormativa casoDeUsoObterComunicadoAcaoFormativa,[FromRoute] long propostaId)
         {
-            return Ok(await casoDeUsoObterComunicadoAcaoFormativa.Executar());
+            return Ok(await casoDeUsoObterComunicadoAcaoFormativa.Executar(propostaId));
         }
     }
 }
