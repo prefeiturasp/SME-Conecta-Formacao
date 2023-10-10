@@ -542,6 +542,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
         
+        public async Task InserirCriterioCertificacao(long id, IEnumerable<PropostaCriterioCertificacao> criterios)
+        {
+            foreach (var criterio in criterios)
+            {
+                PreencherAuditoriaCriacao(criterio);
+
+                criterio.PropostaId = id;
+                criterio.Id = (long)await conexao.Obter().InsertAsync(criterio);
+            }
+        }
+        
         public Task<IEnumerable<PropostaPalavraChave>> ObterPalavraChavePorId(long id)
         {
             var query = @"select 
@@ -558,6 +569,23 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         from proposta_palavra_chave 
                         where proposta_id = @id and not excluido ";
             return conexao.Obter().QueryAsync<PropostaPalavraChave>(query, new { id });
+        }        
+        public Task<IEnumerable<PropostaCriterioCertificacao>> ObterCriterioCertificacaoPorPropostaId(long propostaId)
+        {
+            var query = @" select 
+                            id, 
+                            proposta_id, 
+                            criterio_certificacao_id, 
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_criterio_certificacao pcc  
+                        where proposta_id = @propostaId and not excluido ";
+            return conexao.Obter().QueryAsync<PropostaCriterioCertificacao>(query, new { propostaId });
         }
         
         public Task RemoverPalavrasChaves(IEnumerable<PropostaPalavraChave> palavrasChaves)
@@ -574,6 +602,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             };
 
             var query = @"update proposta_palavra_chave
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+        public Task RemoverCriterioCertificacao(IEnumerable<PropostaCriterioCertificacao> criterios)
+        {
+            var criterio = criterios.First();
+            PreencherAuditoriaAlteracao(criterio);
+
+            var parametros = new
+            {
+                ids = criterios.Select(t => t.Id).ToArray(),
+                criterio.AlteradoEm,
+                criterio.AlteradoPor,
+                criterio.AlteradoLogin
+            };
+
+            var query = @"update proposta_criterio_certificacao
                           set 
                             excluido = true, 
                             alterado_em = @AlteradoEm, 

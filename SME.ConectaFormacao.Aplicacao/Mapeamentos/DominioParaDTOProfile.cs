@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -39,11 +40,15 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             
             CreateMap<PalavraChave, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
+            
+            CreateMap<CriterioCertificacao, RetornoListagemDTO>()
+                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Descricao));
 
             // -> Proposta
             CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
             CreateMap<CargoFuncao, CargoFuncaoDTO>();
             CreateMap<PalavraChave, PalavraChaveDTO>();
+            CreateMap<PropostaCriterioCertificacao, PropostaCriterioCertificacaoDto>();
             CreateMap<CriterioValidacaoInscricao, CriterioValidacaoInscricaoDTO>();
             CreateMap<Proposta, PropostaCompletoDTO>();
             CreateMap<Proposta, PropostaDTO>()
@@ -52,12 +57,14 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.VagasRemanecentes, opt => opt.MapFrom(o => o.VagasRemanecentes))
                 .ForMember(dest => dest.CriteriosValidacaoInscricao, opt => opt.MapFrom(o => o.CriteriosValidacaoInscricao))
                 .ForMember(dest => dest.PalavrasChaves, opt => opt.MapFrom(o => o.PalavrasChaves))
+                .ForMember(dest => dest.CriterioCertificacao, opt => opt.MapFrom(o => o.CriterioCertificacao))
                 .ReverseMap();
             CreateMap<PropostaCriterioValidacaoInscricao, PropostaCriterioValidacaoInscricaoDTO>().ReverseMap();
             CreateMap<PropostaFuncaoEspecifica, PropostaFuncaoEspecificaDTO>().ReverseMap();
             CreateMap<PropostaVagaRemanecente, PropostaVagaRemanecenteDTO>().ReverseMap();
             CreateMap<PropostaPublicoAlvo, PropostaPublicoAlvoDTO>().ReverseMap();
             CreateMap<PropostaPalavraChave, PropostaPalavraChaveDTO>().ReverseMap();
+            CreateMap<PropostaCriterioCertificacao, CriterioCertificacaoDTO>().ReverseMap();
             CreateMap<Proposta, PropostaPaginadaDTO>()
                 .ForMember(dest => dest.TipoFormacao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
                 .ForMember(dest => dest.Modalidade, opt => opt.MapFrom(x => x.Modalidade.HasValue ? x.Modalidade.Nome() : null))
