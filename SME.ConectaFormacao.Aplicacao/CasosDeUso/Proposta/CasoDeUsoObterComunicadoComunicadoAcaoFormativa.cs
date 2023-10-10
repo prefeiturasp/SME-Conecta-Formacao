@@ -14,6 +14,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<ComunicadoAcaoFormativaDTO> Executar(long propostaId)
         {
+            if(propostaId == 0) return await ObterComunicaddoParametroSistema();
+
             var proposta = await mediator.Send(new ObterPropostaCompletaPorIdQuery(propostaId));
             if (proposta.AcaoInformativa)
             {
@@ -25,15 +27,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             }
             else
             {
-                var comunicadoAcaoFormativaTexto = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.ComunicadoAcaoFormativaDescricao, DateTimeExtension.HorarioBrasilia().Year));
-                var comunicadoAcaoFormativaUrl = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.ComunicadoAcaoFormativaUrl, DateTimeExtension.HorarioBrasilia().Year));
-
-                return new ComunicadoAcaoFormativaDTO()
-                {
-                    Descricao = comunicadoAcaoFormativaTexto.Valor,
-                    Url = comunicadoAcaoFormativaUrl.Valor
-                };
+                return await ObterComunicaddoParametroSistema();
             }
+        }
+
+        private async Task<ComunicadoAcaoFormativaDTO> ObterComunicaddoParametroSistema()
+        {
+            var comunicadoAcaoFormativaTexto = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.ComunicadoAcaoFormativaDescricao, DateTimeExtension.HorarioBrasilia().Year));
+            var comunicadoAcaoFormativaUrl = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.ComunicadoAcaoFormativaUrl, DateTimeExtension.HorarioBrasilia().Year));
+
+            return new ComunicadoAcaoFormativaDTO()
+            {
+                Descricao = comunicadoAcaoFormativaTexto.Valor,
+                Url = comunicadoAcaoFormativaUrl.Valor
+            };
         }
     }
 }
