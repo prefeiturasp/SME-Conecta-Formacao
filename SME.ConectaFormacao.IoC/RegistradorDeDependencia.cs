@@ -174,6 +174,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPalavraChave, RepositorioPalavraChave>();
         _serviceCollection.TryAddScoped<IRepositorioCriterioCertificacao, RepositorioCriterioCertificacao>();
         _serviceCollection.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();
+        _serviceCollection.TryAddScoped<IRepositorioPropostaTutor, RepositorioPropostaTutor>();
+        _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
     }
 
     protected virtual void RegistrarCasosDeUso()
