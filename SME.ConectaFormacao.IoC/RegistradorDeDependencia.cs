@@ -130,6 +130,8 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaCriterioCertificacaoMap());
             config.AddMap(new PropostaEncontroTurmaMap());
             config.AddMap(new PropostaPalavraChaveMap());
+            config.AddMap(new PropostaRegenteTurmaMap());
+            config.AddMap(new PropostaRegenteMap());
             
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
