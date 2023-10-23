@@ -40,5 +40,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaCriterioCertificacao>> ObterCriterioCertificacaoPorPropostaId(long propostaId);
         Task InserirCriterioCertificacao(long id, IEnumerable<PropostaCriterioCertificacao> criterios);
         Task RemoverCriterioCertificacao(IEnumerable<PropostaCriterioCertificacao> criterios);
+        Task InserirPropostaRegente(long propostaId,PropostaRegente regente);
+        Task InserirPropostaRegenteTurma(long propostaRegenteId,PropostaRegenteTurma regenteTurma);
     }
 }
