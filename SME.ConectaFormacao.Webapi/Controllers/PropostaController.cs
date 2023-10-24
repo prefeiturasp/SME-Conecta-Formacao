@@ -202,5 +202,14 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterComunicadoAcaoFormativa.Executar(propostaId));
         }
+
+        [HttpGet("nome-profissional/{registroFuncional}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterNomeProfissionalTutorRegente([FromRoute] string registroFuncional, [FromServices] ICasoDeUsoObterNomeRegenteTutor useCase)
+        {
+            return Ok(await useCase.Executar(registroFuncional));
+        }
     }
 }
