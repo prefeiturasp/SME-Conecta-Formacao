@@ -329,6 +329,28 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where id = @encontroId";
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaEncontro>(query, new { encontroId });
         }
+        
+        public Task<PropostaRegente> ObterPropostaRegentePorId(long id)
+        {
+            var query = @"SELECT
+	                        id,
+	                        proposta_id,
+	                        profissional_rede_municipal,
+	                        registro_funcional,
+	                        nome_regente,
+	                        mini_biografia,
+	                        criado_em,
+	                        criado_por,
+	                        alterado_em,
+	                        alterado_por,
+	                        criado_login,
+	                        alterado_login,
+	                        excluido
+                        FROM
+	                        public.proposta_regente
+	                        where id = @id;";
+            return conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new { id });
+        }
 
         public async Task InserirEncontro(long propostaId, PropostaEncontro encontro)
         {
@@ -654,6 +676,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
+        public  Task<IEnumerable<PropostaRegenteTurma>> ObterRegenteTurmasPorRegenteId(params long[] regenteIds)
+        {
+            var query = @"SELECT
+	                        id,
+	                        proposta_regente_id,
+	                        turma,
+	                        criado_em,
+	                        criado_por,
+	                        alterado_em,
+	                        alterado_por,
+	                        criado_login,
+	                        alterado_login,
+	                        excluido
+                        FROM
+	                        public.proposta_regente_turma
+	                        where proposta_regente_id = any(@regenteIds) 
+	                        and not excluido ";
+            return conexao.Obter().QueryAsync<PropostaRegenteTurma>(query, new { regenteIds });
+        }
+
         public async Task InserirPropostaTutor(long propostaId, PropostaTutor tutor)
         {
             PreencherAuditoriaCriacao(tutor);
@@ -767,6 +809,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           where not excluido and id = any(@ids)";
 
             return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+        public async Task AtualizarPropostaRegente(PropostaRegente propostaRegente)
+        {
+            PreencherAuditoriaAlteracao(propostaRegente);
+            await conexao.Obter().UpdateAsync(propostaRegente);
         }
     }
 }
