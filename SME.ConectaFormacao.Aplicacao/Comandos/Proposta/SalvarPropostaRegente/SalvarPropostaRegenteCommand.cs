@@ -23,6 +23,11 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Proposta.SalvarPropostaRegente
             RuleFor(x => x.PropostaId)
                 .NotEmpty()
                 .WithMessage("É necessário informar o id da proposta para salvar o regente");
+            RuleFor(x => x.propostaRegenteDTO.NomeRegente)
+                .MinimumLength(1).WithMessage("Informe o nome do Regente");
+            
+            RuleFor(x => x.propostaRegenteDTO.Turmas)
+                .Must(x => x.Any()).WithMessage("Informe uma Turma");
         }
     }
 }
