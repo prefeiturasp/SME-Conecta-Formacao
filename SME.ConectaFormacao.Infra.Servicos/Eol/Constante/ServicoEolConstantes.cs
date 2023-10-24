@@ -2,6 +2,6 @@
 {
     public class ServicoEolConstantes
     {
-        public const string OBTERNOMEPROFISSIONAL = "funcionarios/obterNomeProfissional/";
+        public const string OBTERNOMEPROFISSIONAL = "funcionarios/obterNomeServidor/";
     }
 }
