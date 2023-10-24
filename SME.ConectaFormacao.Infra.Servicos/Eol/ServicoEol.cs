@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
         
         public async Task<string> ObterNomeProfissionalPorRegistroFuncional(string registroFuncional)
         {
-            var resposta = await _httpClient.GetAsync($"{ServicoEolConstantes.OBTER_NOME_PROFISSIONAL}{registroFuncional}");
+            var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.OBTER_NOME_PROFISSIONAL, registroFuncional));
             if (resposta.IsSuccessStatusCode)
             {
                 var json = await resposta.Content.ReadAsStringAsync();
