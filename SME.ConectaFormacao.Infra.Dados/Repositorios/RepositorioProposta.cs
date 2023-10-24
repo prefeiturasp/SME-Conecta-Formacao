@@ -634,5 +634,139 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
+
+        public async Task InserirPropostaRegente(long propostaId, PropostaRegente regente)
+        {
+            PreencherAuditoriaCriacao(regente);
+
+            regente.PropostaId = propostaId;
+            regente.Id = (long)await conexao.Obter().InsertAsync(regente);
+        }
+
+        public async Task InserirPropostaRegenteTurma(long propostaRegenteId, IEnumerable<PropostaRegenteTurma> regenteTurma)
+        {
+            foreach (var regente in regenteTurma)
+            {
+                PreencherAuditoriaCriacao(regente);
+
+                regente.PropostaRegenteId = propostaRegenteId;
+                regente.Id = (long)await conexao.Obter().InsertAsync(regente);
+            }
+        }
+
+        public async Task InserirPropostaTutor(long propostaId, PropostaTutor tutor)
+        {
+            PreencherAuditoriaCriacao(tutor);
+
+            tutor.PropostaId = propostaId;
+            tutor.Id = (long)await conexao.Obter().InsertAsync(tutor);
+        }
+
+        public async Task InserirPropostaTutorTurma(long propostaTutorId, IEnumerable<PropostaTutorTurma> tutorTurma)
+        {
+            foreach (var tutor in tutorTurma)
+            {
+                PreencherAuditoriaCriacao(tutor);
+
+                tutor.PropostaTutorId = propostaTutorId;
+                tutor.Id = (long)await conexao.Obter().InsertAsync(tutor);
+            }
+        }
+
+        public Task ExcluirPropostasRegente(IEnumerable<PropostaRegente> propostaRegentes)
+        {
+            var data = propostaRegentes.First();
+            PreencherAuditoriaAlteracao(data);
+
+            var parametros = new
+            {
+                ids = propostaRegentes.Select(t => t.Id).ToArray(),
+                data.AlteradoEm,
+                data.AlteradoPor,
+                data.AlteradoLogin
+            };
+
+            var query = @"update proposta_regente
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+
+        public Task ExcluirPropostasTutor(IEnumerable<PropostaTutor> propostaTutors)
+        {
+            var data = propostaTutors.First();
+            PreencherAuditoriaAlteracao(data);
+
+            var parametros = new
+            {
+                ids = propostaTutors.Select(t => t.Id).ToArray(),
+                data.AlteradoEm,
+                data.AlteradoPor,
+                data.AlteradoLogin
+            };
+
+            var query = @"update proposta_tutor
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+
+        public  Task ExcluirPropostaTutorTurma(IEnumerable<PropostaTutorTurma> tutorTurmas)
+        {
+            var data = tutorTurmas.First();
+            PreencherAuditoriaAlteracao(data);
+
+            var parametros = new
+            {
+                ids = tutorTurmas.Select(t => t.Id).ToArray(),
+                data.AlteradoEm,
+                data.AlteradoPor,
+                data.AlteradoLogin
+            };
+
+            var query = @"update proposta_tutor_turma
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+
+        public Task ExcluirPropostaRegenteTurma(IEnumerable<PropostaRegenteTurma> regenteTurmas)
+        {
+            var data = regenteTurmas.First();
+            PreencherAuditoriaAlteracao(data);
+
+            var parametros = new
+            {
+                ids = regenteTurmas.Select(t => t.Id).ToArray(),
+                data.AlteradoEm,
+                data.AlteradoPor,
+                data.AlteradoLogin
+            };
+
+            var query = @"update proposta_regente_turma
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
     }
 }

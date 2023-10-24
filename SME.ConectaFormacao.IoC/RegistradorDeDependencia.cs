@@ -130,6 +130,10 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaCriterioCertificacaoMap());
             config.AddMap(new PropostaEncontroTurmaMap());
             config.AddMap(new PropostaPalavraChaveMap());
+            config.AddMap(new PropostaRegenteTurmaMap());
+            config.AddMap(new PropostaRegenteMap());
+            config.AddMap(new PropostaTutorTurmaMap());
+            config.AddMap(new PropostaTutorMap());
             
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
@@ -170,6 +174,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPalavraChave, RepositorioPalavraChave>();
         _serviceCollection.TryAddScoped<IRepositorioCriterioCertificacao, RepositorioCriterioCertificacao>();
         _serviceCollection.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();
+        _serviceCollection.TryAddScoped<IRepositorioPropostaTutor, RepositorioPropostaTutor>();
+        _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
     }
 
     protected virtual void RegistrarCasosDeUso()
