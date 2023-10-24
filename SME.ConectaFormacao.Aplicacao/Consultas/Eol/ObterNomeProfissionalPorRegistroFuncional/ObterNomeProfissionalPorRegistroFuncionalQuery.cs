@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using SME.ConectaFormacao.Dominio.Constantes;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterNomeProfissionalPorRegistroFuncional
 {
@@ -18,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterNomeProfissionalPorRe
         {
             RuleFor(x => x.RegistroFuncional)
                 .NotEmpty()
-                .WithMessage("É necessário informar um RF válido para obter o nome do profissional");
+                .WithMessage(MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO_RF_INVALIDO);
         }
     }
 }
