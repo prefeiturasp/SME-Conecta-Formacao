@@ -25,4 +25,5 @@ public class MensagemNegocio
     public const string ARQUIVO_NAO_ENCONTRADO = "Arquivo não encontrado";
     public const string ARQUIVO_FISICO_NAO_ENCONTRADO = "Arquivo físico não encontrado";
     public const string ARQUIVO_MAIOR_QUE_10_MB = "O tamanho máximo permitido para o arquivo é de 10MB";
+    public const string PROFISSIONAL_NAO_LOCALIZADO = "Não foi possível encontrar nenhum profissional com o RF informado";
 }
