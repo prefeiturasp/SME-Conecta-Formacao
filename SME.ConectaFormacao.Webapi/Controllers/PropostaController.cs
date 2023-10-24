@@ -203,7 +203,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterComunicadoAcaoFormativa.Executar(propostaId));
         }
 
-        [HttpGet("obter-nome-profissional/{registroFuncional}")]
+        [HttpGet("nome-profissional/{registroFuncional}")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
