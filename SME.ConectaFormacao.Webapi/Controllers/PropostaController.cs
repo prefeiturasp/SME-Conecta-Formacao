@@ -232,5 +232,23 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar(propostaId));
         }
+        [HttpGet("regente/{regenteId}")]
+        [ProducesResponseType(typeof(PropostaRegenteDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterPropostaRegentePorId([FromRoute] long regenteId, 
+            [FromServices] ICasoDeUsoObterPropostaRegentePorId useCase)
+        {
+            return Ok(await useCase.Executar(regenteId));
+        }
+        [HttpDelete("regente/{regenteId}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ExcluirRegente([FromRoute] long regenteId, 
+            [FromServices] ICasoDeUsoRemoverPropostaRegente useCase)
+        {
+            return Ok(await useCase.Executar(regenteId));
+        }
     }
 }
