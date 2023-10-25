@@ -50,7 +50,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Proposta.SalvarPropostaRegente
                     await _repositorioProposta.InserirPropostaRegenteTurma(regenteDepois.Id, turmasInserir);
 
                 if (turmasExcluir.Any())
-                    await _repositorioProposta.ExcluirPropostaRegenteTurma(turmasExcluir);
+                    await _repositorioProposta.ExcluirPropostaRegenteTurmas(turmasExcluir);
 
                 transacao.Commit();
                 return regenteDepois.Id;

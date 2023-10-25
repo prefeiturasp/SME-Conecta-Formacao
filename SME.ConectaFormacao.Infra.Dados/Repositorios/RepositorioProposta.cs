@@ -348,7 +348,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        excluido
                         FROM
 	                        public.proposta_regente
-	                        where id = @id;";
+	                        where not excluido and  id = @id;";
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new { id });
         }
 
@@ -771,6 +771,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
+        public async Task ExcluirPropostaRegente(long regenteId)
+        {
+            var data = await ObterPropostaRegentePorId(regenteId);
+            PreencherAuditoriaAlteracao(data);
+
+            var parametros = new
+            {
+                id = regenteId,
+                data.AlteradoEm,
+                data.AlteradoPor,
+                data.AlteradoLogin
+            };
+
+            var query = @"update proposta_regente
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = @id ";
+            
+            await conexao.Obter().ExecuteAsync(query, parametros);
+        }
         public Task ExcluirPropostasTutor(IEnumerable<PropostaTutor> propostaTutors)
         {
             var data = propostaTutors.First();
@@ -819,7 +842,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
-        public Task ExcluirPropostaRegenteTurma(IEnumerable<PropostaRegenteTurma> regenteTurmas)
+        public Task ExcluirPropostaRegenteTurmas(IEnumerable<PropostaRegenteTurma> regenteTurmas)
         {
             var data = regenteTurmas.First();
             PreencherAuditoriaAlteracao(data);

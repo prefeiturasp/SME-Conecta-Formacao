@@ -223,6 +223,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaRegente, CasoDeUsoSalvarPropostaRegente>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaRegentePaginacao, CasoDeUsoObterPropostaRegentePaginacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaRegentePorId, CasoDeUsoObterPropostaRegentePorId>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRemoverPropostaRegente, CasoDeUsoRemoverPropostaRegente>();
+
 
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
