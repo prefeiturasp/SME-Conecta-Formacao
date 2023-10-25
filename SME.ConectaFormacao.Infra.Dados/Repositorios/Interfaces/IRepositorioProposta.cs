@@ -52,7 +52,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task ExcluirPropostaTutorTurma(IEnumerable<PropostaTutorTurma> tutorTurmas);
         Task ExcluirPropostaRegenteTurmas(IEnumerable<PropostaRegenteTurma> regenteTurmas);
         Task<PropostaRegente> ObterPropostaRegentePorId(long id);
+        Task<PropostaTutor> ObterPropostaTutorPorId(long id);
         Task AtualizarPropostaRegente(PropostaRegente propostaRegente);
         Task<int> ObterTotalRegentes(long propostaId);
+        Task AtualizarPropostaTutor(PropostaTutor propostaTutor);
+        Task<IEnumerable<PropostaTutorTurma>> ObterTutorTurmasPorTutorId(params long[] tutorIds);
     }
 }

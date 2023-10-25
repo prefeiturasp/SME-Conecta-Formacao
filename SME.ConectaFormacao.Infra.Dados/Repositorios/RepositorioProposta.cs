@@ -351,6 +351,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        where not excluido and  id = @id;";
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new { id });
         }
+        public Task<PropostaTutor> ObterPropostaTutorPorId(long id)
+        {
+            var query = @"select
+	                            id,
+	                            proposta_id,
+	                            profissional_rede_municipal,
+	                            registro_funcional,
+	                            nome_tutor,
+	                            criado_em,
+	                            criado_por,
+	                            alterado_em,
+	                            alterado_por,
+	                            criado_login,
+	                            alterado_login,
+	                            excluido
+                            from
+	                            public.proposta_tutor
+	                        where not excluido and  id = @id;";
+            return conexao.Obter().QueryFirstOrDefaultAsync<PropostaTutor>(query, new { id });
+        }
 
         public async Task InserirEncontro(long propostaId, PropostaEncontro encontro)
         {
@@ -869,6 +889,30 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             PreencherAuditoriaAlteracao(propostaRegente);
             await conexao.Obter().UpdateAsync(propostaRegente);
+        }
+        public async Task AtualizarPropostaTutor(PropostaTutor propostaTutor)
+        {
+            PreencherAuditoriaAlteracao(propostaTutor);
+            await conexao.Obter().UpdateAsync(propostaTutor);
+        }
+        public  Task<IEnumerable<PropostaTutorTurma>> ObterTutorTurmasPorTutorId(params long[] tutorIds)
+        {
+            var query = @"select
+	                            id,
+	                            proposta_tutor_id,
+	                            turma,
+	                            criado_em,
+	                            criado_por,
+	                            alterado_em,
+	                            alterado_por,
+	                            criado_login,
+	                            alterado_login,
+	                            excluido
+                            from
+	                            public.proposta_tutor_turma
+	                        where proposta_tutor_id = any(@tutorIds) 
+	                        and not excluido ";
+            return conexao.Obter().QueryAsync<PropostaTutorTurma>(query, new { tutorIds });
         }
     }
 }
