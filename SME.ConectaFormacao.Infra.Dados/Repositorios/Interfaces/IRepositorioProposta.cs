@@ -34,6 +34,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorId(long propostaId);
         Task<int> ObterTotalEncontros(long propostaId);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId);
+        Task<IEnumerable<PropostaRegente>> ObterRegentesPaginado(int numeroPagina, int numeroRegistros, long propostaId);
         Task<IEnumerable<PropostaPalavraChave>> ObterPalavraChavePorId(long id);
         Task RemoverPalavrasChaves(IEnumerable<PropostaPalavraChave> palavrasChaves);
         Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves);
@@ -52,5 +53,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task ExcluirPropostaRegenteTurma(IEnumerable<PropostaRegenteTurma> regenteTurmas);
         Task<PropostaRegente> ObterPropostaRegentePorId(long id);
         Task AtualizarPropostaRegente(PropostaRegente propostaRegente);
+        Task<int> ObterTotalRegentes(long propostaId);
     }
 }
