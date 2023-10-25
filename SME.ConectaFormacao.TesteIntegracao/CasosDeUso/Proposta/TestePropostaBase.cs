@@ -108,6 +108,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaRegente.MiniBiografia.ShouldBe(regenteDto.MiniBiografia);
             propostaRegente.ProfissionalRedeMunicipal.ShouldBe(regenteDto.ProfissionalRedeMunicipal);
         }
+        protected void ValidarPropostaTutorDTO(PropostaTutorDTO tutorDto, long id)
+        {
+            var propostaTutor = ObterPorId<PropostaTutor, long>(id);
+            propostaTutor.NomeTutor.ShouldBe(tutorDto.NomeTutor);
+            propostaTutor.RegistroFuncional.ShouldBe(tutorDto.RegistroFuncional);
+            propostaTutor.ProfissionalRedeMunicipal.ShouldBe(tutorDto.ProfissionalRedeMunicipal);
+        }
         protected void ValidarPropostaDTO(PropostaDTO propostaDTO, long id)
         {
             var proposta = ObterPorId<Dominio.Entidades.Proposta, long>(id);
