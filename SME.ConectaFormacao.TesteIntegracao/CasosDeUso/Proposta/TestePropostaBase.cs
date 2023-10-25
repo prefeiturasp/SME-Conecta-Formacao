@@ -100,6 +100,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             return lista;
         }
 
+        protected void ValidarPropostaRegenteDTO(PropostaRegenteDTO regenteDto, long id)
+        {
+            var propostaRegente = ObterPorId<PropostaRegente, long>(id);
+            propostaRegente.NomeRegente.ShouldBe(regenteDto.NomeRegente);
+            propostaRegente.RegistroFuncional.ShouldBe(regenteDto.RegistroFuncional);
+            propostaRegente.MiniBiografia.ShouldBe(regenteDto.MiniBiografia);
+            propostaRegente.ProfissionalRedeMunicipal.ShouldBe(regenteDto.ProfissionalRedeMunicipal);
+        }
         protected void ValidarPropostaDTO(PropostaDTO propostaDTO, long id)
         {
             var proposta = ObterPorId<Dominio.Entidades.Proposta, long>(id);

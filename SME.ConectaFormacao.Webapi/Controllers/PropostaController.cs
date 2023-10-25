@@ -211,5 +211,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar(registroFuncional));
         }
+        
+        [HttpPost("{propostaId}/regente")]
+        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> SalvarPropostaProfissionalRegente([FromServices] ICasoDeUsoSalvarPropostaRegente casoDeUsoSalvarPropostaRegente,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaRegenteDTO propostaRegenteDto)
+        {
+            return Ok(await casoDeUsoSalvarPropostaRegente.Executar(propostaId, propostaRegenteDto));
+        }
     }
 }
