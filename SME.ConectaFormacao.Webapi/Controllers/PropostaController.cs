@@ -222,5 +222,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoSalvarPropostaRegente.Executar(propostaId, propostaRegenteDto));
         }
+
+        [HttpGet("{propostaId}/regente")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaRegenteDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterPropostaRegentePaginado([FromRoute] long propostaId, 
+            [FromServices] ICasoDeUsoObterPropostaRegentePaginacao useCase)
+        {
+            return Ok(await useCase.Executar(propostaId));
+        }
     }
 }
