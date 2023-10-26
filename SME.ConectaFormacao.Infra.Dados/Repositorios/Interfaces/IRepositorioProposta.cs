@@ -57,5 +57,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> ObterTotalRegentes(long propostaId);
         Task AtualizarPropostaTutor(PropostaTutor propostaTutor);
         Task<IEnumerable<PropostaTutorTurma>> ObterTutorTurmasPorTutorId(params long[] tutorIds);
+        Task ExcluirPropostaTutor(long tutorId);
     }
 }
