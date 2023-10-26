@@ -34,11 +34,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorId(long propostaId);
         Task<int> ObterTotalEncontros(long propostaId);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId);
+        Task<IEnumerable<PropostaRegente>> ObterRegentesPaginado(int numeroPagina, int numeroRegistros, long propostaId);
         Task<IEnumerable<PropostaPalavraChave>> ObterPalavraChavePorId(long id);
         Task RemoverPalavrasChaves(IEnumerable<PropostaPalavraChave> palavrasChaves);
         Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves);
         Task<IEnumerable<PropostaCriterioCertificacao>> ObterCriterioCertificacaoPorPropostaId(long propostaId);
         Task InserirCriterioCertificacao(long id, IEnumerable<PropostaCriterioCertificacao> criterios);
         Task RemoverCriterioCertificacao(IEnumerable<PropostaCriterioCertificacao> criterios);
+        Task InserirPropostaRegente(long propostaId,PropostaRegente regente);
+        Task InserirPropostaRegenteTurma(long propostaRegenteId,IEnumerable<PropostaRegenteTurma> regenteTurma);
+        Task<IEnumerable<PropostaRegenteTurma>> ObterRegenteTurmasPorRegenteId(params long[] regenteId);
+        Task InserirPropostaTutor(long propostaId,PropostaTutor tutor);
+        Task InserirPropostaTutorTurma(long propostaTutorId,IEnumerable<PropostaTutorTurma> tutorTurma);
+        Task ExcluirPropostasRegente(IEnumerable<PropostaRegente> propostaRegentes);
+        Task ExcluirPropostaRegente(long propostaRegenteId);
+        Task ExcluirPropostasTutor(IEnumerable<PropostaTutor> propostaTutors);
+        Task ExcluirPropostaTutorTurma(IEnumerable<PropostaTutorTurma> tutorTurmas);
+        Task ExcluirPropostaRegenteTurmas(IEnumerable<PropostaRegenteTurma> regenteTurmas);
+        Task<PropostaRegente> ObterPropostaRegentePorId(long id);
+        Task<PropostaTutor> ObterPropostaTutorPorId(long id);
+        Task AtualizarPropostaRegente(PropostaRegente propostaRegente);
+        Task<int> ObterTotalRegentes(long propostaId);
+        Task AtualizarPropostaTutor(PropostaTutor propostaTutor);
+        Task<IEnumerable<PropostaTutorTurma>> ObterTutorTurmasPorTutorId(params long[] tutorIds);
+        Task ExcluirPropostaTutor(long tutorId);
     }
 }

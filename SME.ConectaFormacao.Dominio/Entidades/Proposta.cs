@@ -36,6 +36,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaEncontro> Encontros { get; set; }
         public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; }
         public IEnumerable<PropostaCriterioCertificacao> CriterioCertificacao { get; set; }
+        public IEnumerable<PropostaRegente> Regentes { get; set; } = new List<PropostaRegente>();
+        public IEnumerable<PropostaTutor> Tutores { get; set; } = new List<PropostaTutor>();
         public bool CursoComCertificado { get; set; }
         public bool AcaoInformativa { get; set; }
         public string? DescricaoDaAtividade { get; set; }

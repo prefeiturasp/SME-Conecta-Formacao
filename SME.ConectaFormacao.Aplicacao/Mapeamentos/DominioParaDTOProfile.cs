@@ -78,9 +78,19 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
                 .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => o.Datas))
                 .ReverseMap();
+            
+            CreateMap<PropostaRegente, PropostaRegenteDTO>()
+                .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ReverseMap();
+            
+            CreateMap<PropostaTutor, PropostaTutorDTO>()
+                .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ReverseMap();
 
             CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>().ReverseMap();
             CreateMap<PropostaEncontroData, PropostaEncontroDataDTO>().ReverseMap();
+            CreateMap<PropostaRegenteTurma, PropostaRegenteTurmaDTO>().ReverseMap();
+            CreateMap<PropostaTutorTurma, PropostaTutorTurmaDTO>().ReverseMap();
 
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
