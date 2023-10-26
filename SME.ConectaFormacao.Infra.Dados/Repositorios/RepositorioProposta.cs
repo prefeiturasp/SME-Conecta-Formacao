@@ -550,7 +550,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"select count(1) from proposta_regente where not excluido and proposta_id = @propostaId";
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
         }
-
+        public Task<int> ObterTotalTutores(long propostaId)
+        {
+            var query = @"select count(1) from proposta_tutor where not excluido and proposta_id = @propostaId";
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
+        }
         public Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId)
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
@@ -603,6 +607,33 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             query += " limit @numeroRegistros offset @registrosIgnorados";
 
             return conexao.Obter().QueryAsync<PropostaRegente>(query, new { numeroRegistros, registrosIgnorados, propostaId });
+        }
+        
+        public Task<IEnumerable<PropostaTutor>> ObterTutoresPaginado(int numeroPagina, int numeroRegistros, long propostaId)
+        {
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            var query = @"select
+	                        id,
+	                        proposta_id,
+	                        profissional_rede_municipal,
+	                        registro_funcional,
+	                        nome_tutor,
+	                        criado_em,
+	                        criado_por,
+	                        alterado_em,
+	                        alterado_por,
+	                        criado_login,
+	                        alterado_login,
+	                        excluido
+                        from
+	                        public.proposta_tutor
+	                        where not excluido and proposta_id = @propostaId";
+
+            query += " order by id";
+            query += " limit @numeroRegistros offset @registrosIgnorados";
+
+            return conexao.Obter().QueryAsync<PropostaTutor>(query, new { numeroRegistros, registrosIgnorados, propostaId });
         }
         
         public async Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves)
