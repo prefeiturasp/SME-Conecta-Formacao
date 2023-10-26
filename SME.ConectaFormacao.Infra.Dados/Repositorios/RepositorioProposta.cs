@@ -814,6 +814,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             
             await conexao.Obter().ExecuteAsync(query, parametros);
         }
+        public async Task ExcluirPropostaTutor(long tutorId)
+        {
+            var data = await ObterPropostaTutorPorId(tutorId);
+            PreencherAuditoriaAlteracao(data);
+
+            var parametros = new
+            {
+                id = tutorId,
+                data.AlteradoEm,
+                data.AlteradoPor,
+                data.AlteradoLogin
+            };
+
+            var query = @"update proposta_tutor
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = @id ";
+            
+            await conexao.Obter().ExecuteAsync(query, parametros);
+        }
         public Task ExcluirPropostasTutor(IEnumerable<PropostaTutor> propostaTutors)
         {
             var data = propostaTutors.First();

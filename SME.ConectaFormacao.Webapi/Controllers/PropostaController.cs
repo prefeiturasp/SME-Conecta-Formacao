@@ -261,5 +261,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoSalvarPropostaTutor.Executar(propostaId, propostaTutorDto));
         }
+        
+        [HttpDelete("tutor/{tutorId}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ExcluirTutor([FromRoute] long tutorId, 
+            [FromServices] ICasoDeUsoRemoverPropostaTutor useCase)
+        {
+            return Ok(await useCase.Executar(tutorId));
+        }
     }
 }
