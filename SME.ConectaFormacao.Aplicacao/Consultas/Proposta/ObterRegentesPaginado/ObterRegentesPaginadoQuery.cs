@@ -15,8 +15,8 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentesPaginado
         }
 
         public long PropostaId { get; set; }
-        public int NumeroPagina { get; }
-        public int NumeroRegistros { get; }
+        public int NumeroPagina { get; set; }
+        public int NumeroRegistros { get; set; }
     }
     public class ObterRegentesPaginadoQueryValidator : AbstractValidator<ObterRegentesPaginadoQuery>
     {
