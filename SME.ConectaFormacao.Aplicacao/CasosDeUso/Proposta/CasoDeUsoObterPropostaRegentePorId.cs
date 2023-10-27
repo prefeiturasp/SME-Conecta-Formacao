@@ -1,3 +1,4 @@
+using System.Net;
 using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentePorId;
@@ -5,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegenteTurmaPorRegen
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Excecoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
@@ -20,6 +22,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         public async Task<PropostaRegenteDTO> Executar(long regenteId)
         {
             var regente = await mediator.Send(new ObterRegentePorIdQuery(regenteId));
+            if (regente == null)
+                throw new NegocioException("Registro não encontrado", HttpStatusCode.NoContent);
             var turmas = await mediator.Send(new ObterRegenteTurmaPorRegenteIdQuery(regenteId));
 
             var regenteDto = _mapper.Map<PropostaRegenteDTO>(regente);
