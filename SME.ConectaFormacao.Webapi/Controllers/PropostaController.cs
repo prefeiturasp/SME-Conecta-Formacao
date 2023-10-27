@@ -277,8 +277,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterPropostaTutorPaginado([FromRoute] long propostaId, 
             [FromServices] ICasoDeUsoObterPropostaTutorPaginacao useCase)
-        {
+        { 
             return Ok(await useCase.Executar(propostaId));
+        }
+        [HttpGet("tutor/{tutorId}")]
+        [ProducesResponseType(typeof(PropostaTutorDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterPropostaTutorPorId([FromRoute] long tutorId, 
+            [FromServices] ICasoDeUsoObterPropostaTutorPorId useCase)
+        {
+            return Ok(await useCase.Executar(tutorId));
         }
     }
 }
