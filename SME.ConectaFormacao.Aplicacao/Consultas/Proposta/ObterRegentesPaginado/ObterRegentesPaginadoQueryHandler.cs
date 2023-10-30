@@ -30,8 +30,21 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentesPaginado
                 foreach (var regente in regentes)
                     regente.Turmas = turmas.Where(x => x.PropostaRegenteId == regente.Id);
             }
-            var items = _mapper.Map<IEnumerable<PropostaRegenteDTO>>(regentes);
+            var items = MapearNomesTurmas(regentes);
             return new PaginacaoResultadoDTO<PropostaRegenteDTO>(items, totalRegistros, request.NumeroRegistros);
+        }
+
+        private IEnumerable<PropostaRegenteDTO> MapearNomesTurmas(IEnumerable<PropostaRegente> listaRegentes )
+        {
+           var items =  _mapper.Map<IEnumerable<PropostaRegenteDTO>>(listaRegentes);
+           var retorno =  new List<PropostaRegenteDTO>();
+           foreach (var item in items)
+           {
+               item.NomesTurmas = string.Join(",",item.Turmas.Select(x => "Turma " + x.Turma));
+               retorno.Add(item);
+           }
+
+           return retorno;
         }
     }
 }
