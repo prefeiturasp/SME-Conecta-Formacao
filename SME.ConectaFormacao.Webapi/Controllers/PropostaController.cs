@@ -202,5 +202,92 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterComunicadoAcaoFormativa.Executar(propostaId));
         }
+
+        [HttpGet("nome-profissional/{registroFuncional}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterNomeProfissionalTutorRegente([FromRoute] string registroFuncional, [FromServices] ICasoDeUsoObterNomeRegenteTutor useCase)
+        {
+            return Ok(await useCase.Executar(registroFuncional));
+        }
+        
+        [HttpPost("{propostaId}/regente")]
+        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> SalvarPropostaProfissionalRegente([FromServices] ICasoDeUsoSalvarPropostaRegente casoDeUsoSalvarPropostaRegente,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaRegenteDTO propostaRegenteDto)
+        {
+            return Ok(await casoDeUsoSalvarPropostaRegente.Executar(propostaId, propostaRegenteDto));
+        }
+
+        [HttpGet("{propostaId}/regente")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaRegenteDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterPropostaRegentePaginado([FromRoute] long propostaId, 
+            [FromServices] ICasoDeUsoObterPropostaRegentePaginacao useCase)
+        {
+            return Ok(await useCase.Executar(propostaId));
+        }
+        [HttpGet("regente/{regenteId}")]
+        [ProducesResponseType(typeof(PropostaRegenteDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterPropostaRegentePorId([FromRoute] long regenteId, 
+            [FromServices] ICasoDeUsoObterPropostaRegentePorId useCase)
+        {
+            return Ok(await useCase.Executar(regenteId));
+        }
+        
+        [HttpDelete("regente/{regenteId}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ExcluirRegente([FromRoute] long regenteId, 
+            [FromServices] ICasoDeUsoRemoverPropostaRegente useCase)
+        {
+            return Ok(await useCase.Executar(regenteId));
+        }
+        [HttpPost("{propostaId}/tutor")]
+        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> SalvarPropostaProfissionalTutor([FromServices] ICasoDeUsoSalvarPropostaTutor casoDeUsoSalvarPropostaTutor,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaTutorDTO propostaTutorDto)
+        {
+            return Ok(await casoDeUsoSalvarPropostaTutor.Executar(propostaId, propostaTutorDto));
+        }
+        
+        [HttpDelete("tutor/{tutorId}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ExcluirTutor([FromRoute] long tutorId, 
+            [FromServices] ICasoDeUsoRemoverPropostaTutor useCase)
+        {
+            return Ok(await useCase.Executar(tutorId));
+        }
+        [HttpGet("{propostaId}/tutor")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaTutorDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterPropostaTutorPaginado([FromRoute] long propostaId, 
+            [FromServices] ICasoDeUsoObterPropostaTutorPaginacao useCase)
+        { 
+            return Ok(await useCase.Executar(propostaId));
+        }
+        [HttpGet("tutor/{tutorId}")]
+        [ProducesResponseType(typeof(PropostaTutorDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterPropostaTutorPorId([FromRoute] long tutorId, 
+            [FromServices] ICasoDeUsoObterPropostaTutorPorId useCase)
+        {
+            return Ok(await useCase.Executar(tutorId));
+        }
     }
 }
