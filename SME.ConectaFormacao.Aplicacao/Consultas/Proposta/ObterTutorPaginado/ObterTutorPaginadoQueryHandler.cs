@@ -30,8 +30,20 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterTutorPaginado
                 foreach (var tutor in tutores)
                     tutor.Turmas = turmas.Where(x => x.PropostaTutorId == tutor.Id);
             }
-            var items = _mapper.Map<IEnumerable<PropostaTutorDTO>>(tutores);
+            var items = MapearNomesTurmas(tutores);
             return new PaginacaoResultadoDTO<PropostaTutorDTO>(items, totalRegistros, request.NumeroRegistros);
+        }
+        private IEnumerable<PropostaTutorDTO> MapearNomesTurmas(IEnumerable<PropostaTutor> listaTutores )
+        {
+            var items =  _mapper.Map<IEnumerable<PropostaTutorDTO>>(listaTutores);
+            var retorno =  new List<PropostaTutorDTO>();
+            foreach (var item in items)
+            {
+                item.NomesTurmas = string.Join(",",item.Turmas.Select(x => "Turma " + x.Turma));
+                retorno.Add(item);
+            }
+
+            return retorno;
         }
     }
 }
