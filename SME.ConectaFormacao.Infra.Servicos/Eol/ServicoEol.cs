@@ -1,3 +1,4 @@
+using System.Net;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -17,7 +18,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
         public async Task<string> ObterNomeProfissionalPorRegistroFuncional(string registroFuncional)
         {
             var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.OBTER_NOME_PROFISSIONAL, registroFuncional));
-            if (resposta.IsSuccessStatusCode)
+            if (resposta.IsSuccessStatusCode && resposta.StatusCode != HttpStatusCode.NoContent)
             {
                 var json = await resposta.Content.ReadAsStringAsync();
                 return json.JsonParaObjeto<string>();
