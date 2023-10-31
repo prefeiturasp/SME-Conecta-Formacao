@@ -1,8 +1,6 @@
 ﻿using System.Net;
 using AutoMapper;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterTutorPorId;
-using SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterTutorTurmaPorTutorId;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;

@@ -1,5 +1,4 @@
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Comandos.Proposta.SalvarPropostaRegente;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 
