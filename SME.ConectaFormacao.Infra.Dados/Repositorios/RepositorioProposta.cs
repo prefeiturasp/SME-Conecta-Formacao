@@ -943,11 +943,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task AtualizarPropostaRegente(PropostaRegente propostaRegente)
         {
             PreencherAuditoriaAlteracao(propostaRegente);
+            propostaRegente.NomeRegente = propostaRegente.NomeRegente.ToUpper();
             await conexao.Obter().UpdateAsync(propostaRegente);
         }
         public async Task AtualizarPropostaTutor(PropostaTutor propostaTutor)
         {
             PreencherAuditoriaAlteracao(propostaTutor);
+            propostaTutor.NomeTutor = propostaTutor.NomeTutor?.ToUpper(); 
             await conexao.Obter().UpdateAsync(propostaTutor);
         }
         public  Task<IEnumerable<PropostaTutorTurma>> ObterTutorTurmasPorTutorId(params long[] tutorIds)
