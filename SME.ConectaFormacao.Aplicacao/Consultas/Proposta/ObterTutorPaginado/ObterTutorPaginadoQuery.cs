@@ -3,7 +3,7 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterTutorPaginado
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterTutorPaginadoQuery : IRequest<PaginacaoResultadoDTO<PropostaTutorDTO>>
     {

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Comandos.Proposta.RemoverPropostaTutor
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class RemoverPropostaTutorCommandHandler : IRequestHandler<RemoverPropostaTutorCommand,bool>
     {

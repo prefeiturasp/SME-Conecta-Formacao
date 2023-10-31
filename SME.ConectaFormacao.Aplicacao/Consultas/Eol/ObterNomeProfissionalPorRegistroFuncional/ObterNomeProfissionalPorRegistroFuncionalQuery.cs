@@ -2,7 +2,7 @@
 using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterNomeProfissionalPorRegistroFuncional
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterNomeProfissionalPorRegistroFuncionalQuery : IRequest<string>
     {
