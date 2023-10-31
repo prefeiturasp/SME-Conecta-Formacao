@@ -2,7 +2,7 @@
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterTutorTurmaPorTutorId
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterTutorTurmaPorTutorIdQueryHandler : IRequestHandler<ObterTutorTurmaPorTutorIdQuery, IEnumerable<PropostaTutorTurma>>
     {

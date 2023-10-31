@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterNomeProfissionalPorRegistroFuncional
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterNomeProfissionalPorRegistroFuncionalQueryHandler :IRequestHandler<ObterNomeProfissionalPorRegistroFuncionalQuery,string>
     {

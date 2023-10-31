@@ -2,7 +2,7 @@ using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
-namespace SME.ConectaFormacao.Aplicacao.Comandos.Proposta.SalvarPropostaTutor
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarPropostaTutorCommand : IRequest<long>
     {

@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterTutorPaginado;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
