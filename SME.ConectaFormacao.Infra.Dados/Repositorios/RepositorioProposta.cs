@@ -745,6 +745,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             PreencherAuditoriaCriacao(regente);
 
             regente.PropostaId = propostaId;
+            regente.NomeRegente = regente.NomeRegente.ToUpper();
             regente.Id = (long)await conexao.Obter().InsertAsync(regente);
         }
 
@@ -782,7 +783,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task InserirPropostaTutor(long propostaId, PropostaTutor tutor)
         {
             PreencherAuditoriaCriacao(tutor);
-
+            tutor.NomeTutor = tutor.NomeTutor?.ToUpper();
             tutor.PropostaId = propostaId;
             tutor.Id = (long)await conexao.Obter().InsertAsync(tutor);
         }
