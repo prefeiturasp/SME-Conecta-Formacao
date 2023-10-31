@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var retorno =  new List<PropostaTutorDTO>();
             foreach (var item in items)
             {
-                item.NomesTurmas = string.Join(",",item.Turmas.Select(x => "Turma " + x.Turma));
+                item.NomesTurmas = string.Join(", ",item.Turmas.Select(x => "Turma " + x.Turma));
                 retorno.Add(item);
             }
 
