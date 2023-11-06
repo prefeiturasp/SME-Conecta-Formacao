@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             if (resposta.IsSuccessStatusCode && resposta.StatusCode != HttpStatusCode.NoContent)
             {
                 var json = await resposta.Content.ReadAsStringAsync();
-                return json.JsonParaObjeto<string>();
+                return json.JsonParaObjeto<string>().ToUpper();
             }
             else
                 throw new NegocioException(MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO, resposta.StatusCode);

@@ -1,6 +1,6 @@
 using System.Net;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterNomeProfissionalPorRegistroFuncional;
+using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 

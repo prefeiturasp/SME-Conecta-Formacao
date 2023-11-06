@@ -2,7 +2,7 @@
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterTutorTurmaPorTutorId
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterTutorTurmaPorTutorIdQuery : IRequest<IEnumerable<PropostaTutorTurma>>
     {

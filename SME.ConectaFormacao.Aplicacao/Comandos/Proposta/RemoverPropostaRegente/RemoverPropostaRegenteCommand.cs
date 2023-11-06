@@ -1,7 +1,7 @@
 using FluentValidation;
 using MediatR;
 
-namespace SME.ConectaFormacao.Aplicacao.Comandos.Proposta.RemoverPropostaRegente
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class RemoverPropostaRegenteCommand : IRequest<bool>
     {

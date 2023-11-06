@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentesPaginado
            var retorno =  new List<PropostaRegenteDTO>();
            foreach (var item in items)
            {
-               item.NomesTurmas = string.Join(",",item.Turmas.Select(x => "Turma " + x.Turma));
+               item.NomesTurmas = string.Join(", ",item.Turmas.Select(x => "Turma " + x.Turma));
                retorno.Add(item);
            }
 

@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Comandos.Proposta.SalvarPropostaRegente
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarPropostaRegenteCommandHandler : IRequestHandler<SalvarPropostaRegenteCommand, long>
     {

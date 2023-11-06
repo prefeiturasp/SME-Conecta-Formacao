@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterTutorPaginado
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterTutorPaginadoQueryHandler :IRequestHandler<ObterTutorPaginadoQuery,PaginacaoResultadoDTO<PropostaTutorDTO>>
     {
@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterTutorPaginado
             var retorno =  new List<PropostaTutorDTO>();
             foreach (var item in items)
             {
-                item.NomesTurmas = string.Join(",",item.Turmas.Select(x => "Turma " + x.Turma));
+                item.NomesTurmas = string.Join(", ",item.Turmas.Select(x => "Turma " + x.Turma));
                 retorno.Add(item);
             }
 
