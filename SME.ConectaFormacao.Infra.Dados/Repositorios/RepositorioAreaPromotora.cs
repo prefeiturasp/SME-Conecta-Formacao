@@ -13,6 +13,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
+        public async Task<AreaPromotora?> ObterAreaPromotoraPorIdComDre(long areaPromotoraId)
+        {
+            var query = @" select ap.*, d.*
+                             from area_promotora ap
+                             left join dre d on ap.dreid = d.id
+                            where not ap.excluido and ap.id = @areaPromotoraId ";
+
+            return (await conexao.Obter().QueryAsync<AreaPromotora, Dre, AreaPromotora>(query, (areaPromotora, dre) =>
+            {
+                areaPromotora.AdicionarDre(dre);
+                return areaPromotora;
+            },new{ areaPromotoraId })).FirstOrDefault();
+        }
+
         public Task<IEnumerable<AreaPromotora>> ObterDadosPaginados(string nome, short? tipo, int numeroPagina, int numeroRegistros)
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;

@@ -11,5 +11,11 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public long? DreId { get; set; }
         public Dre? Dre { get; set; }
         public IEnumerable<AreaPromotoraTelefone> Telefones { get; set; }
+
+        public void AdicionarDre(Dre? dre)
+        {
+            Dre = dre;
+            DreId = dre?.Id;
+        }
     }
 }

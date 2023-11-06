@@ -21,9 +21,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             // -> Area Promotora
             CreateMap<AreaPromotora, AreaPromotoraPaginadaDTO>()
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(x => x.Tipo.Nome()))
-                .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre.Nome));
+                .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre!.Nome));
 
             CreateMap<AreaPromotora, AreaPromotoraCompletoDTO>()
+                .ForMember(dest => dest.DreId, opt => opt.MapFrom(x => x.DreId))
+                .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre!.Nome))
                 .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO { Email = t })));
 
             CreateMap<AreaPromotora, AreaPromotoraDTO>()
