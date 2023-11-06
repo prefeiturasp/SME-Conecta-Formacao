@@ -143,6 +143,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new {grupoId, ignorarAreaPromotoraId});
         }
+        
+        public Task<bool> ExistePorGrupoIdEDreId(long dreId,Guid grupoId,  long ignorarAreaPromotoraId)
+        {
+            var query = @"select count(1) from area_promotora 
+                            where grupo_id = @grupoId 
+                            and dreid  = @dreId
+                            and not excluido";
+            
+            if (ignorarAreaPromotoraId > 0)
+                query += " and id <> @ignorarAreaPromotoraId";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new {grupoId, dreId});
+        }
 
         public Task<AreaPromotora> ObterPorGrupoId(Guid grupoId)
         {
