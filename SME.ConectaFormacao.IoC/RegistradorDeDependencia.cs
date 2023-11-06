@@ -12,6 +12,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Dre;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
@@ -21,6 +22,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Dre;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
@@ -141,6 +143,7 @@ public class RegistradorDeDependencia
             config.AddMap(new ArquivoMap());
             
             config.AddMap(new ParametroSistemaMap());
+            config.AddMap(new DreMap());
 
             config.ForDommel();
         });
@@ -176,6 +179,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaTutor, RepositorioPropostaTutor>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
+        _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -228,6 +232,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverPropostaTutor, CasoDeUsoRemoverPropostaTutor>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaTutorPaginacao, CasoDeUsoObterPropostaTutorPaginacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaTutorPorId, CasoDeUsoObterPropostaTutorPorId>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
 
 
 

@@ -41,6 +41,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PalavraChave, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
             
+            CreateMap<Dre, RetornoListagemDTO>()
+                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
+            
             CreateMap<CriterioCertificacao, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Descricao));
 

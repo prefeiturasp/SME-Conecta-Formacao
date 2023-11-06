@@ -8,6 +8,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public AreaPromotoraTipo Tipo { get; set; }
         public string Email { get; set; }
         public Guid GrupoId { get; set; }
+        public long? DreId { get; set; }
         public IEnumerable<AreaPromotoraTelefone> Telefones { get; set; }
     }
 }
