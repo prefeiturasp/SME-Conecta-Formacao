@@ -20,7 +20,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             // -> Area Promotora
             CreateMap<AreaPromotora, AreaPromotoraPaginadaDTO>()
-                .ForMember(dest => dest.Tipo, opt => opt.MapFrom(x => x.Tipo.Nome()));
+                .ForMember(dest => dest.Tipo, opt => opt.MapFrom(x => x.Tipo.Nome()))
+                .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre.Nome));
 
             CreateMap<AreaPromotora, AreaPromotoraCompletoDTO>()
                 .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO { Email = t })));
@@ -84,10 +85,12 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             
             CreateMap<PropostaRegente, PropostaRegenteDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ForMember(dest =>  dest.NomesTurmas,  opt => opt.MapFrom(o  =>  string.Join(", ",o.Turmas.Select(x => "Turma " + x.Turma)) ))
                 .ReverseMap();
             
             CreateMap<PropostaTutor, PropostaTutorDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ForMember(dest =>  dest.NomesTurmas,  opt => opt.MapFrom(o  =>  string.Join(", ",o.Turmas.Select(x => "Turma " + x.Turma)) ))
                 .ReverseMap();
 
             CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>().ReverseMap();
