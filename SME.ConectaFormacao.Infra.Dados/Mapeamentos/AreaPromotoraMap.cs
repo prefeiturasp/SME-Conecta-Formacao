@@ -12,6 +12,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.Tipo).ToColumn("tipo");
             Map(c => c.Email).ToColumn("email");
             Map(c => c.GrupoId).ToColumn("grupo_id");
+            Map(c => c.DreId).ToColumn("dreid");
         }
     }
 }

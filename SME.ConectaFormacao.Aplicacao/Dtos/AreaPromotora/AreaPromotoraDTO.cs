@@ -8,6 +8,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora
         [Required(ErrorMessage = "É necessário informar a Área promotora")]
         [MaxLength(50, ErrorMessage = "A Área promotora não pode conter mais que 50 caracteres")]
         public string Nome { get; set; }
+        public long? DreId { get; set; }
         [Required(ErrorMessage = "É necessário informar o Tipo")]
         public AreaPromotoraTipo Tipo { get; set; }
         [Required(ErrorMessage = "É necessário informar o Perfil")]
