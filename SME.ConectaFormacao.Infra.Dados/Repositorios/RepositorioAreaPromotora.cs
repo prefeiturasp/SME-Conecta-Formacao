@@ -19,33 +19,38 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             string query = MontarQueryListagem(ref nome, tipo);
 
-            query += " order by nome";
+            query += " order by ap.nome";
             query += " limit @numeroRegistros offset @registrosIgnorados";
 
-            return conexao.Obter().QueryAsync<AreaPromotora>(query, new { nome, tipo, numeroRegistros, registrosIgnorados });
+            return conexao.Obter().QueryAsync<AreaPromotora, Dre, AreaPromotora>(query, (areaPromotora, dre) =>
+            {
+                areaPromotora.Dre = dre;
+                return areaPromotora;
+            }, new {nome, tipo, numeroRegistros, registrosIgnorados});
         }
 
         public Task<int> ObterTotalRegistrosPorFiltros(string nome, short? tipo)
         {
             string query = string.Concat("select count(1) from (", MontarQueryListagem(ref nome, tipo), ") tb");
 
-            return conexao.Obter().ExecuteScalarAsync<int>(query, new { nome, tipo });
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new {nome, tipo});
         }
 
         private static string MontarQueryListagem(ref string nome, short? tipo)
         {
-            var query = @"select id, nome, tipo
-                          from area_promotora
-                          where not excluido ";
+            var query = @"select ap.*, d.*
+                          from area_promotora ap
+                          left join dre d  on ap.dreid = d.id 
+                          where not ap.excluido ";
 
             if (!string.IsNullOrEmpty(nome))
             {
                 nome = "%" + nome.ToLower() + "%";
-                query += $" and lower(nome) like @nome";
+                query += $" and lower(ap.nome) like @nome";
             }
 
             if (tipo.GetValueOrDefault() > 0)
-                query += " and tipo = @tipo";
+                query += " and ap.tipo = @tipo";
 
             return query;
         }
@@ -54,7 +59,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             PreencherAuditoriaCriacao(areaPromotora);
 
-            areaPromotora.Id = (long)await conexao.Obter().InsertAsync(areaPromotora, transacao);
+            areaPromotora.Id = (long) await conexao.Obter().InsertAsync(areaPromotora, transacao);
             return areaPromotora.Id;
         }
 
@@ -90,7 +95,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         from area_promotora_telefone 
                         where not excluido and area_promotora_id = @id";
 
-            return conexao.Obter().QueryAsync<AreaPromotoraTelefone>(query, new { id });
+            return conexao.Obter().QueryAsync<AreaPromotoraTelefone>(query, new {id});
         }
 
         public async Task InserirTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones)
@@ -100,7 +105,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(telefone);
 
                 telefone.AreaPromotoraId = id;
-                telefone.Id = (long)await conexao.Obter().InsertAsync(telefone, transacao);
+                telefone.Id = (long) await conexao.Obter().InsertAsync(telefone, transacao);
             }
         }
 
@@ -122,14 +127,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (ignorarAreaPromotoraId > 0)
                 query += " and id <> @ignorarAreaPromotoraId";
 
-            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { grupoId, ignorarAreaPromotoraId });
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new {grupoId, ignorarAreaPromotoraId});
         }
 
         public Task<AreaPromotora> ObterPorGrupoId(Guid grupoId)
         {
             var query = @"select id, nome, tipo, email from area_promotora where grupo_id = @grupoId";
 
-            return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { grupoId });
+            return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new {grupoId});
         }
 
         public Task<IEnumerable<AreaPromotora>> ObterLista()
