@@ -1,11 +1,18 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Elastic.Apm;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.Options;
+using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
+using System.Text;
 
 namespace SME.ConectaFormacao.Infra
 {
@@ -100,6 +107,18 @@ namespace SME.ConectaFormacao.Infra
                 }
             }
         }
+        private Dictionary<string, object> ObterArgumentoDaFila(string fila, string exchangeDeadLetter)
+        {
+            var args = new Dictionary<string, object>();
+
+            if (!string.IsNullOrEmpty(exchangeDeadLetter))
+                args.Add("x-dead-letter-exchange", exchangeDeadLetter);
+
+            if (Comandos.ContainsKey(fila) && Comandos[fila].ModeLazy)
+                args.Add("x-queue-mode", "lazy");
+
+            return args;
+        }
         private Dictionary<string, object> ObterArgumentoDaFilaDeadLetter(string fila, string exchange)
         {
             var argsDlq = new Dictionary<string, object>();
@@ -114,14 +133,156 @@ namespace SME.ConectaFormacao.Infra
 
             return argsDlq;
         }
-        public Task StartAsync(CancellationToken cancellationToken)
+        private ulong GetRetryCount(IBasicProperties properties)
         {
-            throw new NotImplementedException();
+            if (properties.Headers.NaoEhNulo() && properties.Headers.ContainsKey("x-death"))
+            {
+                var deathProperties = (List<object>)properties.Headers["x-death"];
+                var lastRetry = (Dictionary<string, object>)deathProperties[0];
+                var count = lastRetry["count"];
+                return (ulong)Convert.ToInt64(count);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public async Task TratarMensagem(BasicDeliverEventArgs ea)
+        {
+            var mensagem = Encoding.UTF8.GetString(ea.Body.Span);
+            var rota = ea.RoutingKey;
+
+            await servicoMensageriaMetricas.Obtido(rota);
+
+            if (Comandos.ContainsKey(rota))
+            {
+                var mensagemRabbit = JsonConvert.DeserializeObject<MensagemRabbit>(mensagem);
+                var comandoRabbit = Comandos[rota];
+
+                var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, apmTransactionType) : null;
+                try
+                {
+                    using var scope = serviceScopeFactory.CreateScope();
+                    AtribuirContextoAplicacao(mensagemRabbit, scope);
+
+                    IRabbitUseCase casoDeUso = (IRabbitUseCase)scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso);
+
+                    await servicoTelemetria.RegistrarAsync(
+                            async () => await casoDeUso.Executar(mensagemRabbit),
+                            "RabbitMQ",
+                            rota,
+                            rota,
+                            mensagem);
+
+                    canalRabbit.BasicAck(ea.DeliveryTag, false);
+                    await servicoMensageriaMetricas.Concluido(rota);
+                }
+                catch (NegocioException nex)
+                {
+                    transacao?.CaptureException(nex);
+
+                    canalRabbit.BasicAck(ea.DeliveryTag, false);
+                    await servicoMensageriaMetricas.Concluido(rota);
+
+                    await RegistrarErroTratamentoMensagem(ea, mensagemRabbit, nex, LogNivel.Negocio, $"Erros: {nex.Message}");
+
+                    if (mensagemRabbit.NotificarErroUsuario)
+                        NotificarErroUsuario(nex.Message, mensagemRabbit.UsuarioLogadoRF, comandoRabbit.NomeProcesso);
+                }
+                catch (ValidacaoException vex)
+                {
+                    transacao?.CaptureException(vex);
+
+                    canalRabbit.BasicAck(ea.DeliveryTag, false);
+                    await servicoMensageriaMetricas.Concluido(rota);
+
+                    await RegistrarErroTratamentoMensagem(ea, mensagemRabbit, vex, LogNivel.Negocio, $"Erros: {JsonConvert.SerializeObject(vex.Mensagens())}");
+
+                    if (mensagemRabbit.NotificarErroUsuario)
+                        NotificarErroUsuario($"Ocorreu um erro interno, por favor tente novamente", mensagemRabbit.UsuarioLogadoRF, comandoRabbit.NomeProcesso);
+                }
+                catch (Exception ex)
+                {
+                    transacao?.CaptureException(ex);
+
+                    var rejeicoes = GetRetryCount(ea.BasicProperties);
+                    if (++rejeicoes >= comandoRabbit.QuantidadeReprocessamentoDeadLetter)
+                    {
+                        canalRabbit.BasicAck(ea.DeliveryTag, false);
+
+                        var filaLimbo = $"{ea.RoutingKey}.limbo";
+                        await servicoMensageria.Publicar(mensagemRabbit, filaLimbo, ExchangeRabbit.ConectaDeadLetter, "PublicarDeadLetter");
+                    }
+                    else canalRabbit.BasicReject(ea.DeliveryTag, false);
+
+                    await servicoMensageriaMetricas.Erro(rota);
+                    await RegistrarErroTratamentoMensagem(ea, mensagemRabbit, ex, LogNivel.Critico, $"Erros: {ex.Message}");
+
+                    if (mensagemRabbit.NotificarErroUsuario)
+                        NotificarErroUsuario($"Ocorreu um erro interno, por favor tente novamente", mensagemRabbit.UsuarioLogadoRF, comandoRabbit.NomeProcesso);
+                }
+                finally
+                {
+                    transacao?.End();
+                }
+            }
+            else
+            {
+                canalRabbit.BasicReject(ea.DeliveryTag, false);
+                await servicoMensageriaMetricas.Erro(rota);
+
+                var mensagemRabbit = JsonConvert.DeserializeObject<MensagemRabbit>(mensagem);
+                await RegistrarErroTratamentoMensagem(ea, mensagemRabbit, null, LogNivel.Critico, $"Rota não registrada");
+            }
+        }
+        protected virtual Task RegistrarErroTratamentoMensagem(BasicDeliverEventArgs ea, MensagemRabbit mensagemRabbit, Exception ex, LogNivel logNivel, string observacao)
+        {
+            return Task.CompletedTask;
+        }
+
+
+        protected virtual Task RegistrarErro(string mensagem, LogNivel logNivel, string observacao = "", string rastreamento = "", string excecaoInterna = "")
+        {
+            return Task.CompletedTask;
+        }
+        protected virtual void AtribuirContextoAplicacao(MensagemRabbit mensagemRabbit, IServiceScope scope)
+        {
+        }
+        protected virtual void NotificarErroUsuario(string message, string usuarioRf, string nomeProcesso)
+        {
+        }
+        public Task StartAsync(CancellationToken stoppingToken)
+        {
+            stoppingToken.ThrowIfCancellationRequested();
+            var consumer = new EventingBasicConsumer(canalRabbit);
+
+            consumer.Received += async (ch, ea) =>
+            {
+                try
+                {
+                    await TratarMensagem(ea);
+                }
+                catch (Exception ex)
+                {
+                    await RegistrarErro($"Erro ao tratar mensagem {ea.DeliveryTag} - {ea.RoutingKey}", LogNivel.Critico, ex.Message);
+                    canalRabbit.BasicReject(ea.DeliveryTag, false);
+                }
+            };
+
+            RegistrarConsumerConecta(consumer, tipoRotas);
+            return Task.CompletedTask;
+        }
+        private void RegistrarConsumerConecta(EventingBasicConsumer consumer, Type tipoRotas)
+        {
+            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>())
+                canalRabbit.BasicConsume(fila, false, consumer);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            canalRabbit.Close();
+            conexaoRabbit.Close();
+            return Task.CompletedTask;
         }
     }
 }
