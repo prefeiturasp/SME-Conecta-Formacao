@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3B996AD4-62B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testes", "testes", "{085C79CC-4DEB-42E1-93A5-D85858E8F5E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Conecta.Worker.Rabbbit", "SME.Conecta.Worker.Rabbbit\SME.Conecta.Worker.Rabbbit.csproj", "{9A1D1EA4-16CB-43EF-9757-7CEEF39D64E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{0A8AC8A4-CCCB-41C1-8E63-DA6C01870FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A8AC8A4-CCCB-41C1-8E63-DA6C01870FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A8AC8A4-CCCB-41C1-8E63-DA6C01870FA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A1D1EA4-16CB-43EF-9757-7CEEF39D64E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A1D1EA4-16CB-43EF-9757-7CEEF39D64E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A1D1EA4-16CB-43EF-9757-7CEEF39D64E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A1D1EA4-16CB-43EF-9757-7CEEF39D64E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{4971B2FA-69C3-482E-9907-71F81D882AEA} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
 		{E2E23399-B583-4F85-AC6F-3DAC016BC63A} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
 		{0A8AC8A4-CCCB-41C1-8E63-DA6C01870FA3} = {085C79CC-4DEB-42E1-93A5-D85858E8F5E3}
+		{9A1D1EA4-16CB-43EF-9757-7CEEF39D64E9} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C8BFE3B-BC28-4781-A67F-86F9898E68E7}

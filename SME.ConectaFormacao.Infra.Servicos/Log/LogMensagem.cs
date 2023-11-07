@@ -2,7 +2,7 @@
 {
     public class LogMensagem
     {
-        public LogMensagem(string mensagem, string contexto = "", string nivel = "", string observacao = "", string rastreamento = "", string projeto = "ConectaFormacao")
+        public LogMensagem(string mensagem, string contexto = "", string nivel = "", string observacao = "", string rastreamento = "", string projeto = "ConectaFormacao", string excecaoInterna = "")
         {
             Mensagem = mensagem;
             Contexto = contexto;
@@ -10,6 +10,7 @@
             Observacao = observacao;
             Rastreamento = rastreamento;
             Projeto = projeto;
+            ExcecaoInterna = excecaoInterna;
         }
 
         public string Mensagem { get; }
@@ -18,5 +19,6 @@
         public string Observacao { get; }
         public string Rastreamento { get; }
         public string Projeto { get; }
+        public string ExcecaoInterna { get; set; }
     }
 }
