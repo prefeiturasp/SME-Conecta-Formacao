@@ -154,7 +154,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (ignorarAreaPromotoraId > 0)
                 query += " and id <> @ignorarAreaPromotoraId";
 
-            return conexao.Obter().ExecuteScalarAsync<bool>(query, new {grupoId, dreId});
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new {grupoId, dreId, ignorarAreaPromotoraId });
         }
 
         public Task<AreaPromotora> ObterPorGrupoId(Guid grupoId)
