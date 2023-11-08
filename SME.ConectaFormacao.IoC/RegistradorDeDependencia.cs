@@ -64,6 +64,7 @@ public class RegistradorDeDependencia
         RegistrarConexao();
         RegistrarRepositorios();
         RegistrarLogs();
+        RegistrarRabbit();
         RegistrarPolly();
         RegistrarMapeamentos();
         RegistrarCasosDeUso();
@@ -79,19 +80,20 @@ public class RegistradorDeDependencia
 
     public void RegistarParaWorkers()
     {
-        Registrar();
-        //RegistrarMediatr();
-        //RegistrarValidadoresFluentValidation();
-        //RegistrarTelemetria();
-        //ConfigurarMensageria();
-        //RegistrarConexao();
-        //RegistrarRepositorios();
-        //RegistrarLogs();
-        //RegistrarPolly();
-        //RegistrarMapeamentos();
-        //RegistrarCasosDeUsoWorker();
-        //RegistrarProfiles();
-        //RegistrarHttpClients();
+        //Registrar();
+        RegistrarMediatr();
+        RegistrarValidadoresFluentValidation();
+        RegistrarTelemetria();
+        ConfigurarMensageria();
+        RegistrarRabbit();
+        RegistrarConexao();
+        RegistrarRepositoriosWorker();
+        RegistrarLogs();
+        RegistrarPolly();
+        RegistrarMapeamentos();
+        RegistrarCasosDeUsoWorker();
+        RegistrarProfiles();
+        RegistrarHttpClients();
     }
 
     protected virtual void RegistrarProfiles()
@@ -127,6 +129,21 @@ public class RegistradorDeDependencia
             var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitLogsOptions>>().Value;
             var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>().Value;
             return new ConexoesRabbitLogs(options, provider);
+        });
+
+        _serviceCollection.AddSingleton<IServicoLogs, ServicoLogs>();
+    }
+    protected virtual void RegistrarRabbit()
+    {
+        _serviceCollection.AddOptions<ConfiguracaoRabbitOptions>()
+            .Bind(_configuration.GetSection(ConfiguracaoRabbitOptions.Secao), c => c.BindNonPublicProperties = true);
+
+        _serviceCollection.AddSingleton<ConfiguracaoRabbitOptions>();
+        _serviceCollection.AddSingleton<IConexoesRabbit>(serviceProvider =>
+        {
+            var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitOptions>>().Value;
+            var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>().Value;
+            return new ConexoesRabbitAcessos(options, provider);
         });
 
         _serviceCollection.AddSingleton<IServicoLogs, ServicoLogs>();
