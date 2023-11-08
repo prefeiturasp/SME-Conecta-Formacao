@@ -15,7 +15,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection serices)
     {
         var registrarDependencias = new RegistradorDeDependencia(serices, Configuration);
-        registrarDependencias.RegistarParaWorkers();
+        registrarDependencias.Registrar();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

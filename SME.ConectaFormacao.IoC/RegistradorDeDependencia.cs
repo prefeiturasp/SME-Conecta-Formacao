@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using Microsoft.Win32;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
@@ -76,24 +77,6 @@ public class RegistradorDeDependencia
     private void RegistrarServicoArmazenamento()
     {
         _serviceCollection.ConfigurarArmazenamento(_configuration);
-    }
-
-    public void RegistarParaWorkers()
-    {
-        //Registrar();
-        RegistrarMediatr();
-        RegistrarValidadoresFluentValidation();
-        RegistrarTelemetria();
-        ConfigurarMensageria();
-        RegistrarRabbit();
-        RegistrarConexao();
-        RegistrarRepositoriosWorker();
-        RegistrarLogs();
-        RegistrarPolly();
-        RegistrarMapeamentos();
-        RegistrarCasosDeUsoWorker();
-        RegistrarProfiles();
-        RegistrarHttpClients();
     }
 
     protected virtual void RegistrarProfiles()
@@ -224,10 +207,6 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
         _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
     }
-    protected virtual void RegistrarRepositoriosWorker()
-    {
-        _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
-    }
 
     protected virtual void RegistrarCasosDeUso()
     {
@@ -289,12 +268,6 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoBaixar, CasoDeUsoArquivoBaixar>();
 
-        _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreSyncUseCase, ExecutarSincronizacaoInstitucionalDreSyncUseCase>();
-        _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
-    }
-
-    protected void RegistrarCasosDeUsoWorker()
-    {
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreSyncUseCase, ExecutarSincronizacaoInstitucionalDreSyncUseCase>();
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
     }

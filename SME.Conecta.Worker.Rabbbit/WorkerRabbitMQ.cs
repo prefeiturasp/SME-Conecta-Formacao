@@ -10,7 +10,7 @@ namespace SME.Conecta.Worker
 {
     public sealed class WorkerRabbitMQ : WorkerRabbitConecta
     {
-        private WorkerRabbitMQ(IServiceScopeFactory serviceScopeFactory,
+        public WorkerRabbitMQ(IServiceScopeFactory serviceScopeFactory,
             IServicoTelemetria servicoTelemetria,
             IServicoMensageriaConecta servicoMensageria,
             IServicoMensageriaMetricas servicoMensageriaMetricas,
