@@ -36,6 +36,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
+using SME.ConectaFormacao.Infra.Servicos.Mensageria.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Options;
 using SME.ConectaFormacao.Infra.Servicos.Polly;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.IoC;
@@ -59,6 +60,7 @@ public class RegistradorDeDependencia
         RegistrarMediatr();
         RegistrarValidadoresFluentValidation();
         RegistrarTelemetria();
+        ConfigurarMensageria();
         RegistrarConexao();
         RegistrarRepositorios();
         RegistrarLogs();
@@ -77,18 +79,19 @@ public class RegistradorDeDependencia
 
     public void RegistarParaWorkers()
     {
-        _serviceCollection.AddHttpContextAccessor();
-        RegistrarMediatr();
-        RegistrarValidadoresFluentValidation();
-        RegistrarTelemetria();
-        RegistrarConexao();
-        RegistrarRepositorios();
-        RegistrarLogs();
-        RegistrarPolly();
-        RegistrarMapeamentos();
-        RegistrarCasosDeUsoWorker();
-        RegistrarProfiles();
-        RegistrarHttpClients();
+        Registrar();
+        //RegistrarMediatr();
+        //RegistrarValidadoresFluentValidation();
+        //RegistrarTelemetria();
+        //ConfigurarMensageria();
+        //RegistrarConexao();
+        //RegistrarRepositorios();
+        //RegistrarLogs();
+        //RegistrarPolly();
+        //RegistrarMapeamentos();
+        //RegistrarCasosDeUsoWorker();
+        //RegistrarProfiles();
+        //RegistrarHttpClients();
     }
 
     protected virtual void RegistrarProfiles()
@@ -172,6 +175,11 @@ public class RegistradorDeDependencia
         _serviceCollection.ConfigurarTelemetria(_configuration);
     }
 
+    protected virtual void ConfigurarMensageria()
+    {
+        _serviceCollection.ConfigurarMensageria(_configuration);
+    }
+
     protected virtual void RegistrarConexao()
     {
         _serviceCollection.AddScoped<IConectaFormacaoConexao, ConectaFormacaoConexao>(_ => new ConectaFormacaoConexao(_configuration.GetConnectionString("conexao")));
@@ -197,6 +205,10 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaTutor, RepositorioPropostaTutor>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
+        _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
+    }
+    protected virtual void RegistrarRepositoriosWorker()
+    {
         _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
     }
 
@@ -259,6 +271,9 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoCarregarTemporario, CasoDeUsoArquivoCarregarTemporario>();
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoBaixar, CasoDeUsoArquivoBaixar>();
+
+        _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreSyncUseCase, ExecutarSincronizacaoInstitucionalDreSyncUseCase>();
+        _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
     }
 
     protected void RegistrarCasosDeUsoWorker()

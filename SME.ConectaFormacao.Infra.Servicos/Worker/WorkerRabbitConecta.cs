@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Log;
+using SME.ConectaFormacao.Infra.Servicos.Mensageria;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.Options;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;

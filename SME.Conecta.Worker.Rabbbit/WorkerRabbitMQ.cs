@@ -2,6 +2,7 @@
 using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Mensageria;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.Options;
 
