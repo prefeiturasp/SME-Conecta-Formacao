@@ -6,4 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SME.ConectaFormacao.Aplicacao\SME.ConectaFormacao.Aplicacao.csproj" />
+    <ProjectReference Include="..\SME.ConectaFormacao.Dominio\SME.ConectaFormacao.Dominio.csproj" />
+    <ProjectReference Include="..\SME.ConectaFormacao.Infra.Dados\SME.ConectaFormacao.Infra.Dados.csproj" />
+    <ProjectReference Include="..\SME.ConectaFormacao.Infra.Servicos\SME.ConectaFormacao.Infra.Servicos.csproj" />
+    <ProjectReference Include="..\SME.ConectaFormacao.IoC\SME.ConectaFormacao.IoC.csproj" />
+  </ItemGroup>
+
 </Project>

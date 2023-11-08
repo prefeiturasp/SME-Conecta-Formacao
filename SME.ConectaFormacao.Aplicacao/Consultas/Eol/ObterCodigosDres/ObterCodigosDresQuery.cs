@@ -1,6 +1,10 @@
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterCodigosDres;
+using MediatR;
+using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
-public class ObterCodigosDresQuery
+namespace SME.ConectaFormacao.Aplicacao;
+
+public class ObterCodigosDresQuery : IRequest<IEnumerable<DreNomeAbreviacaoDTO>>
 {
-    
+    private static ObterCodigosDresQuery _instance;
+    public static ObterCodigosDresQuery Instance => _instance ??= new();
 }

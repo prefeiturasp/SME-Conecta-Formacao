@@ -1,6 +1,9 @@
-namespace SME.ConectaFormacao.Aplicacao.Interfaces.SincronizacaoInstitucional;
+using SME.ConectaFormacao.Infra;
 
-public class IExecutarSincronizacaoInstitucionalDreSyncUseCase
+namespace SME.ConectaFormacao.Aplicacao
 {
+    public interface IExecutarSincronizacaoInstitucionalDreSyncUseCase : IRabbitUseCase
+    {
     
+    }
 }

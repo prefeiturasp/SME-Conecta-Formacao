@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
@@ -52,6 +53,7 @@ public class RegistradorDeDependencia
         _serviceCollection = serviceCollection;
         _configuration = configuration;
     }
+
     public virtual void Registrar()
     {
         RegistrarMediatr();
@@ -71,6 +73,22 @@ public class RegistradorDeDependencia
     private void RegistrarServicoArmazenamento()
     {
         _serviceCollection.ConfigurarArmazenamento(_configuration);
+    }
+
+    public void RegistarParaWorkers()
+    {
+        _serviceCollection.AddHttpContextAccessor();
+        RegistrarMediatr();
+        RegistrarValidadoresFluentValidation();
+        RegistrarTelemetria();
+        RegistrarConexao();
+        RegistrarRepositorios();
+        RegistrarLogs();
+        RegistrarPolly();
+        RegistrarMapeamentos();
+        RegistrarCasosDeUsoWorker();
+        RegistrarProfiles();
+        RegistrarHttpClients();
     }
 
     protected virtual void RegistrarProfiles()
@@ -121,7 +139,7 @@ public class RegistradorDeDependencia
             config.AddMap(new CargoFuncaoMap());
             config.AddMap(new PalavraChaveMap());
             config.AddMap(new CriterioCertificacaoMap());
-            
+
             config.AddMap(new PropostaMap());
             config.AddMap(new PropostaPublicoAlvoMap());
             config.AddMap(new PropostaFuncaoEspecificaMap());
@@ -136,12 +154,12 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaRegenteMap());
             config.AddMap(new PropostaTutorTurmaMap());
             config.AddMap(new PropostaTutorMap());
-            
+
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
 
             config.AddMap(new ArquivoMap());
-            
+
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
 
@@ -235,14 +253,18 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
 
 
-
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverPropostaEncontro, CasoDeUsoRemoverPropostaEncontro>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoCarregarTemporario, CasoDeUsoArquivoCarregarTemporario>();
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoBaixar, CasoDeUsoArquivoBaixar>();
+    }
 
+    protected void RegistrarCasosDeUsoWorker()
+    {
+        _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreSyncUseCase, ExecutarSincronizacaoInstitucionalDreSyncUseCase>();
+        _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
     }
 
     protected virtual void RegistrarHttpClients()

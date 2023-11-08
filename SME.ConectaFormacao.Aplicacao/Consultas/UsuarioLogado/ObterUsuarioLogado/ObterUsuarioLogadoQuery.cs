@@ -1,6 +1,12 @@
-namespace SME.ConectaFormacao.Aplicacao.Consultas.UsuarioLogado.ObterUsuarioLogado;
+using MediatR;
+using SME.ConectaFormacao.Dominio;
 
-public class ObterUsuarioLogadoQuery
+namespace SME.ConectaFormacao.Aplicacao
 {
-    
+    public class ObterUsuarioLogadoQuery : IRequest<Usuario>
+    {
+        private static ObterUsuarioLogadoQuery _instancia;
+
+        public static ObterUsuarioLogadoQuery Instancia => _instancia ??= new();
+    }
 }
