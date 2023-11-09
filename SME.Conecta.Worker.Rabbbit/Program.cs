@@ -1,7 +1,4 @@
-//namespace SME.Conecta.Worker;
-using Elastic.Apm.Api;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using SME.Conecta.Worker;
@@ -10,9 +7,6 @@ using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Infra.Servicos.Options;
 using SME.ConectaFormacao.IoC;
 using SME.ConectaFormacao.IoC.Extensions;
-using System;
-using System.Text;
-using System.Web;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +16,7 @@ registradorDeDependencia.Registrar();
 var serviceProvider = builder.Services.BuildServiceProvider();
 var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitOptions>>().Value;
 
-builder.Services.AddSingleton<IConnectionFactory>(serviceProvider => 
+builder.Services.AddSingleton<IConnectionFactory>(serviceProvider =>
 {
     var factory = new ConnectionFactory
     {
