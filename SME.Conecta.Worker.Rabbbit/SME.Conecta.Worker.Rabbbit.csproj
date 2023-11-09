@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Startup.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SME.ConectaFormacao.Aplicacao\SME.ConectaFormacao.Aplicacao.csproj" />
     <ProjectReference Include="..\SME.ConectaFormacao.Dominio\SME.ConectaFormacao.Dominio.csproj" />
     <ProjectReference Include="..\SME.ConectaFormacao.Infra.Dados\SME.ConectaFormacao.Infra.Dados.csproj" />
