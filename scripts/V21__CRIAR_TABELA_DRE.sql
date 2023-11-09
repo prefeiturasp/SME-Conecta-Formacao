@@ -3,7 +3,7 @@ CREATE TABLE public.dre (
 	dre_id varchar(15) NULL,
 	abreviacao varchar(10) NULL,
 	nome varchar(100) NULL,
-	data_atualizacao date NOT NULL,
+	data_atualizacao timestamp NOT NULL,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
 	alterado_em timestamp NULL,
