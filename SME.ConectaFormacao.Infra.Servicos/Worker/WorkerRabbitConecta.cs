@@ -61,7 +61,6 @@ namespace SME.ConectaFormacao.Infra
             canalRabbit.ExchangeDeclare(ExchangeRabbit.Logs, ExchangeType.Direct, true, false);
 
             Comandos = new Dictionary<string, ComandoRabbit>();
-            RegistrarUseCases();
             DeclararFilas();
         }
 

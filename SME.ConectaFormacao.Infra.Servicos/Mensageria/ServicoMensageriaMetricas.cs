@@ -71,7 +71,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Mensageria
         private Task PublicarMetrica(TipoAcaoMensageria tipoAcao, string rota)
                         => Publicar(new MetricaMensageria(tipoAcao.ToString(), rota),
                                     RotasRabbitLogs.RotaMetricas,
-                                    ExchangeRabbit.QueueLogs,
+                                    ExchangeRabbit.Logs,
                                     "Publicar Metrica Mensageria");
     }
 }

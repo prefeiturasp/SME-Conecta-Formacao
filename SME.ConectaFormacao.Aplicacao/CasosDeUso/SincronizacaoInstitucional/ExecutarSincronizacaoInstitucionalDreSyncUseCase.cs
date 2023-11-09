@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 try
                 {
-                    var publicarTratamentoDre = await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.SincronizaEstruturaInstitucionalDreTratar, dre, param.CodigoCorrelacao, null));
+                    var publicarTratamentoDre = await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.SincronizaEstruturaInstitucionalDreTratar, dre, Guid.NewGuid(), null));
                     if (!publicarTratamentoDre)
                     {
                         await mediator.Send(new SalvarLogViaRabbitCommand($"Não foi possível inserir a Dre : {publicarTratamentoDre} na fila de sync.", LogNivel.Negocio, LogContexto.SincronizacaoInstitucional));

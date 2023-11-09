@@ -4,21 +4,21 @@ namespace SME.ConectaFormacao.Infra
 {
     public class MensagemRabbit
     {
-        public MensagemRabbit(string action, object mensagem, Guid codigoCorrelacao, string usuarioLogadoRF, bool notificarErroUsuario = false, string perfilUsuario = null, string administrador = null)
+        public MensagemRabbit(string action, object mensagem, Guid? codigoCorrelacao, string usuarioLogadoRF, bool notificarErroUsuario = false, string perfilUsuario = null, string administrador = null)
         {
             Action = action;
             Mensagem = mensagem;
-            CodigoCorrelacao = codigoCorrelacao;
+            CodigoCorrelacao = codigoCorrelacao ?? Guid.NewGuid();
             NotificarErroUsuario = notificarErroUsuario;
             UsuarioLogadoRF = usuarioLogadoRF;
             PerfilUsuario = perfilUsuario;
             Administrador = administrador;
         }
 
-        public MensagemRabbit(object mensagem, Guid codigoCorrelacao, string usuarioLogadoNomeCompleto, string usuarioLogadoRF, Guid? perfil, bool notificarErroUsuario = false, string administrador = null, string acao = null)
+        public MensagemRabbit(object mensagem, Guid? codigoCorrelacao, string usuarioLogadoNomeCompleto, string usuarioLogadoRF, Guid? perfil, bool notificarErroUsuario = false, string administrador = null, string acao = null)
         {
             Mensagem = mensagem;
-            CodigoCorrelacao = codigoCorrelacao;
+            CodigoCorrelacao = codigoCorrelacao ?? Guid.NewGuid(); ;
             UsuarioLogadoNomeCompleto = usuarioLogadoNomeCompleto;
             UsuarioLogadoRF = usuarioLogadoRF;
             NotificarErroUsuario = notificarErroUsuario;

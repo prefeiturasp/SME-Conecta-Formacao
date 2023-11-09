@@ -25,8 +25,9 @@ public class TrataSincronizacaoInstitucionalDreCommandHandler : IRequestHandler<
             var dreConecta = await _repositorioDre.ObterDrePorCodigo(request.NomeAbreviacaoDto.Codigo);
             if (VerificaSeTemAlteracao(request.NomeAbreviacaoDto, dreConecta))
             {
-                var mapper = _mapper.Map<Dre>(dreConecta);
-                await _repositorioDre.Atualizar(mapper);
+                var mapper = _mapper.Map<Dre>(request.NomeAbreviacaoDto);
+                mapper.Id = dreConecta.Id;
+                await _repositorioDre.AtualizarDreComEol(mapper);
             }
         }
         else
