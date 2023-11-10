@@ -24,14 +24,17 @@
 
     <ItemGroup>
         <Compile Remove="Consultas\Usuario\ObterAdministradorDoSuporte\**"/>
+        <Compile Remove="Consultas\Grupo\**" />
     </ItemGroup>
 
     <ItemGroup>
         <EmbeddedResource Remove="Consultas\Usuario\ObterAdministradorDoSuporte\**"/>
+        <EmbeddedResource Remove="Consultas\Grupo\**" />
     </ItemGroup>
 
     <ItemGroup>
         <None Remove="Consultas\Usuario\ObterAdministradorDoSuporte\**"/>
+        <None Remove="Consultas\Grupo\**" />
     </ItemGroup>
 
 </Project>
