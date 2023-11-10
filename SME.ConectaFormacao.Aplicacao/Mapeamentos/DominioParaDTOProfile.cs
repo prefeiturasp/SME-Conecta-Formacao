@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
@@ -20,13 +21,16 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             // -> Area Promotora
             CreateMap<AreaPromotora, AreaPromotoraPaginadaDTO>()
-                .ForMember(dest => dest.Tipo, opt => opt.MapFrom(x => x.Tipo.Nome()));
+                .ForMember(dest => dest.Tipo, opt => opt.MapFrom(x => x.Tipo.Nome()))
+                .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre!.Nome));
 
             CreateMap<AreaPromotora, AreaPromotoraCompletoDTO>()
-                .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO { Email = t })));
+                .ForMember(dest => dest.DreId, opt => opt.MapFrom(x => x.DreId))
+                .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre!.Nome))
+                .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO {Email = t})));
 
             CreateMap<AreaPromotora, AreaPromotoraDTO>()
-                .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO { Email = t })))
+                .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO {Email = t})))
                 .ReverseMap()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(x => string.Join(";", x.Emails.Select(t => t.Email))));
 
@@ -37,10 +41,15 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<AreaPromotora, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
-            
+
             CreateMap<PalavraChave, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
-            
+
+            CreateMap<Dre, RetornoListagemDTO>()
+                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
+
+            CreateMap<Dre, DreNomeAbreviacaoDTO>().ReverseMap();
+
             CreateMap<CriterioCertificacao, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Descricao));
 
@@ -78,13 +87,15 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
                 .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => o.Datas))
                 .ReverseMap();
-            
+
             CreateMap<PropostaRegente, PropostaRegenteDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => "Turma " + x.Turma))))
                 .ReverseMap();
-            
+
             CreateMap<PropostaTutor, PropostaTutorDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => "Turma " + x.Turma))))
                 .ReverseMap();
 
             CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>().ReverseMap();

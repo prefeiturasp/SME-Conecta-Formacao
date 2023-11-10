@@ -13,6 +13,7 @@ public class MensagemNegocio
     public const string AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO = "Nenhuma área promotora foi encontrada para o perfil do usuário logado";
     public const string AREA_PROMOTORA_EMAIL_FORA_DOMINIO_REDE_DIRETA = "Para área promotora do tipo rede direta é permitido somente e-mails com o domínio @SME ou @EDU.SME";
     public const string AREA_PROMOTORA_EXISTE_GRUPO_CADASTRADO = "Já existe uma área promotora cadastrada para o perfil selecionado";
+    public const string AREA_PROMOTORA_EXISTE_GRUPO_DRE_CADASTRADO = "Já existe uma área promotora cadastrada para o perfil e dre selecionado";
     public const string EMAIL_INVALIDO = "E-mail {0} é inválido";
     public const string PROPOSTA_NAO_ENCONTRADA = "Proposta não encontrada";
 
@@ -27,4 +28,6 @@ public class MensagemNegocio
     public const string ARQUIVO_MAIOR_QUE_10_MB = "O tamanho máximo permitido para o arquivo é de 10MB";
     public const string PROFISSIONAL_NAO_LOCALIZADO = "Não foi possível encontrar nenhum profissional com o RF informado";
     public const string PROFISSIONAL_NAO_LOCALIZADO_RF_INVALIDO = "É necessário informar um RF válido para obter o nome do profissional";
+    public const string CODIGOS_DRE_NAO_LOCALIZADO = "Nenhum código de Dre foi encontrado";
+    public const string NENHUMA_DRE_ENCONTRADA_NO_EOL = "Não foi possível localizar as Dres no EOL para a sincronização instituicional";
 }

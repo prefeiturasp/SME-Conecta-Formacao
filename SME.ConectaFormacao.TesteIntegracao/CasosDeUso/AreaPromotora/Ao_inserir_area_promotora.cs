@@ -100,6 +100,46 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
             excecao.Mensagens.Contains(MensagemNegocio.AREA_PROMOTORA_EMAIL_FORA_DOMINIO_REDE_DIRETA).ShouldBeTrue();
         }
 
+        [Fact(DisplayName = "Área promotora - Deve retornar exceções ao inserir perfil do Tipo Dre , para Um Perfil e Dre Já existente")]
+        public async Task Deve_retornar_excecoes_inserir_area_promotora_perfil_tipo_dre_para_um_perfil_dre_existente()
+        {
+            // arrange
+            var dre = AreaPromotoraSalvarMock.GerarDreValida();
+            await InserirNaBase(dre!.FirstOrDefault()!);
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraComDreDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria, dre!.FirstOrDefault()!.Id);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirAreaPromotora>();
+
+            // act
+            await casoDeUso.Executar(areaPromotoraDTO);
+            var excecao = await Should.ThrowAsync<NegocioException>(() => casoDeUso.Executar(areaPromotoraDTO));
+
+            // assert
+            excecao.ShouldNotBeNull();
+            excecao.Mensagens.Contains(MensagemNegocio.AREA_PROMOTORA_EXISTE_GRUPO_DRE_CADASTRADO).ShouldBeTrue();
+        }
+
+        [Fact(DisplayName = "Área promotora - Deve Cadastrar um Area Promotora com DRE")]
+        public async Task Deve_cadastrar_area_promotora_com_Dre()
+        {
+            var dre = AreaPromotoraSalvarMock.GerarDreValida();
+            await InserirNaBase(dre!.FirstOrDefault()!);
+            var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraComDreDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria, dre!.FirstOrDefault()!.Id);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirAreaPromotora>();
+
+            var todosAreas =  ObterTodos<Dominio.Entidades.AreaPromotora>();
+            todosAreas.Count.ShouldBeEquivalentTo(0);
+
+            await casoDeUso.Executar(areaPromotoraDTO);
+
+            var todosAreasDepois = ObterTodos<Dominio.Entidades.AreaPromotora>();
+            todosAreasDepois.Count.ShouldBeEquivalentTo(1);
+
+        }
+
+
+
         [Fact(DisplayName = "Área promotora - Deve retornar exceções preenchimento inválido ao inserir")]
         public async Task Deve_retornar_excecoes_preenchimento_invalido_ao_inserir()
         {

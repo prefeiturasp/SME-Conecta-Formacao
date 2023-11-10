@@ -26,9 +26,13 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(AlterarAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
+            if (request.AreaPromotoraDTO.DreId != null)
+                await _mediator.Send(new ValidarPerfilDreAreaPromotoraCommand((long) request.AreaPromotoraDTO.DreId, request.AreaPromotoraDTO.GrupoId,request.Id), cancellationToken);
+
             await _mediator.Send(new ValidarEmailsAreaPromotoraCommand(request.AreaPromotoraDTO.Emails, request.AreaPromotoraDTO.Tipo), cancellationToken);
 
-            await _mediator.Send(new ValidarGrupoAreaPromotoraCommand(request.AreaPromotoraDTO.GrupoId, request.Id), cancellationToken);
+            if (request.AreaPromotoraDTO.DreId == null)
+                await _mediator.Send(new ValidarGrupoAreaPromotoraCommand(request.AreaPromotoraDTO.GrupoId, request.Id), cancellationToken);
 
             var areaPromotora = await _repositorioAreaPromotora.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
             var areaPromotoraDepois = _mapper.Map<AreaPromotora>(request.AreaPromotoraDTO);

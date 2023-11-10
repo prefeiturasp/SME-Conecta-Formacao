@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
@@ -33,6 +34,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
+using SME.ConectaFormacao.Infra.Servicos.Mensageria.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Options;
 using SME.ConectaFormacao.Infra.Servicos.Polly;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.IoC;
@@ -50,14 +52,17 @@ public class RegistradorDeDependencia
         _serviceCollection = serviceCollection;
         _configuration = configuration;
     }
+
     public virtual void Registrar()
     {
         RegistrarMediatr();
         RegistrarValidadoresFluentValidation();
         RegistrarTelemetria();
+        ConfigurarMensageria();
         RegistrarConexao();
         RegistrarRepositorios();
         RegistrarLogs();
+        RegistrarRabbit();
         RegistrarPolly();
         RegistrarMapeamentos();
         RegistrarCasosDeUso();
@@ -108,6 +113,21 @@ public class RegistradorDeDependencia
 
         _serviceCollection.AddSingleton<IServicoLogs, ServicoLogs>();
     }
+    protected virtual void RegistrarRabbit()
+    {
+        _serviceCollection.AddOptions<ConfiguracaoRabbitOptions>()
+            .Bind(_configuration.GetSection(ConfiguracaoRabbitOptions.Secao), c => c.BindNonPublicProperties = true);
+
+        _serviceCollection.AddSingleton<ConfiguracaoRabbitOptions>();
+        _serviceCollection.AddSingleton<IConexoesRabbit>(serviceProvider =>
+        {
+            var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitOptions>>().Value;
+            var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>().Value;
+            return new ConexoesRabbitAcessos(options, provider);
+        });
+
+        _serviceCollection.AddSingleton<IServicoLogs, ServicoLogs>();
+    }
 
     protected virtual void RegistrarMapeamentos()
     {
@@ -119,7 +139,7 @@ public class RegistradorDeDependencia
             config.AddMap(new CargoFuncaoMap());
             config.AddMap(new PalavraChaveMap());
             config.AddMap(new CriterioCertificacaoMap());
-            
+
             config.AddMap(new PropostaMap());
             config.AddMap(new PropostaPublicoAlvoMap());
             config.AddMap(new PropostaFuncaoEspecificaMap());
@@ -134,13 +154,14 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaRegenteMap());
             config.AddMap(new PropostaTutorTurmaMap());
             config.AddMap(new PropostaTutorMap());
-            
+
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
 
             config.AddMap(new ArquivoMap());
-            
+
             config.AddMap(new ParametroSistemaMap());
+            config.AddMap(new DreMap());
 
             config.ForDommel();
         });
@@ -149,6 +170,11 @@ public class RegistradorDeDependencia
     protected virtual void RegistrarTelemetria()
     {
         _serviceCollection.ConfigurarTelemetria(_configuration);
+    }
+
+    protected virtual void ConfigurarMensageria()
+    {
+        _serviceCollection.ConfigurarMensageria(_configuration);
     }
 
     protected virtual void RegistrarConexao()
@@ -176,6 +202,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaTutor, RepositorioPropostaTutor>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
+        _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -228,7 +255,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverPropostaTutor, CasoDeUsoRemoverPropostaTutor>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaTutorPaginacao, CasoDeUsoObterPropostaTutorPaginacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaTutorPorId, CasoDeUsoObterPropostaTutorPorId>();
-
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
 
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
@@ -238,6 +265,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();
         _serviceCollection.TryAddScoped<ICasoDeUsoArquivoBaixar, CasoDeUsoArquivoBaixar>();
 
+        _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreSyncUseCase, ExecutarSincronizacaoInstitucionalDreSyncUseCase>();
+        _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
     }
 
     protected virtual void RegistrarHttpClients()
