@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.ServicoFake
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.ServicoFake
 {
     internal class PublicarNaFilaRabbitCommandFake : IRequestHandler<PublicarNaFilaRabbitCommand, bool>
     {

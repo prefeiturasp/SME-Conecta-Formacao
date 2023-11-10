@@ -3,18 +3,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.ServicoFake;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.Mock;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.ServicoFake;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using System.Text.Json;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
 {
-    public class Ao_sincronizar_dres : TestePropostaBase
+    public class Ao_sincronizar_dres : TesteBase
     {
         public Ao_sincronizar_dres(CollectionFixture collectionFixture) : base(collectionFixture)
         {
@@ -29,9 +27,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         [Fact(DisplayName = "Area Promotora - Deve Inserir uma que não existe")]
         public async Task Deve_inserir_uma_Dre()
         {
-            var dre = AreaPromotoraSalvarMock.GerarDreValida();
+            var dre = SincronizarDreMock.GerarDreValida();
             await InserirNaBase(dre!.FirstOrDefault()!);
-            var todosAreasAntes = ObterTodos<Dre>();
+            var todosAreasAntes = ObterTodos<Dominio.Entidades.Dre>();
             todosAreasAntes.Count.ShouldBeEquivalentTo(1);
 
             var codigoDre = "67";
@@ -39,7 +37,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
             var mensagem = JsonSerializer.Serialize(new DreNomeAbreviacaoDTO(codigoDre, "Nome da Dre", "abr Dre"));
             await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
 
-            var todosAreasDepois = ObterTodos<Dre>();
+            var todosAreasDepois = ObterTodos<Dominio.Entidades.Dre>();
             todosAreasDepois.Count.ShouldBeEquivalentTo(2);
             todosAreasDepois.Count(x => x.Codigo == codigoDre).ShouldBeEquivalentTo(1);
 
@@ -56,9 +54,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         [Fact(DisplayName = "Area Promotora - Deve atualizar uma dre")]
         public async Task Deve_atualizar_uma_Dre()
         {
-            var dre = AreaPromotoraSalvarMock.GerarDreValida();
+            var dre = SincronizarDreMock.GerarDreValida();
             await InserirNaBase(dre!.FirstOrDefault()!);
-            var todosAreasAntes = ObterTodos<Dre>();
+            var todosAreasAntes = ObterTodos<Dominio.Entidades.Dre>();
             todosAreasAntes.Count.ShouldBeEquivalentTo(1);
 
             var nomeDre = "Nome da Dre atualizado";
@@ -69,7 +67,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
             await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
 
 
-            var todosAreasDepois = ObterTodos<Dre>();
+            var todosAreasDepois = ObterTodos<Dominio.Entidades.Dre>();
             todosAreasDepois.Count.ShouldBeEquivalentTo(1);
             todosAreasDepois.Count(x => x.Nome == nomeDre && x.Abreviacao == abreviacao).ShouldBeEquivalentTo(1);
         }

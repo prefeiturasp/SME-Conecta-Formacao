@@ -1,8 +1,6 @@
 ﻿using Bogus;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
@@ -30,16 +28,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
             faker.RuleFor(x => x.Telefones, f => f.Make(3, () => new AreaPromotoraTelefoneDTO { Telefone = f.Phone.PhoneNumber("(##) #####-####") }));
             faker.RuleFor(x => x.DreId, f => dreId ?? f.Random.Int(min:1, max:100));
             return faker.Generate();
-        }
-        public static IEnumerable<Dre> GerarDreValida(int quantidade = 1)
-        {
-            var faker = new Faker<Dre>();
-            faker.RuleFor(x => x.Codigo, f => f.Random.Int(min: 1, max: 100).ToString());
-            faker.RuleFor(x => x.Abreviacao, "Dre XYZ");
-            faker.RuleFor(x => x.Nome, "Nome Da Dre");
-            faker.RuleFor(x => x.DataAtualizacao, DateTimeExtension.HorarioBrasilia());
-            AuditoriaFaker(faker);
-            return faker.Generate(quantidade);
         }
 
         public static AreaPromotoraDTO GerarAreaPromotoraDTOInvalido()
