@@ -2,6 +2,6 @@
 {
     public interface ICasoDeUsoEnviarPropostaParaDf
     {
-        Task Executar(long propostaId);
+        Task<bool> Executar(long propostaId);
     }
 }
