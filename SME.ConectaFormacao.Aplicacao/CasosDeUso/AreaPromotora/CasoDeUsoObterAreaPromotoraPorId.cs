@@ -12,7 +12,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora
 
         public async Task<AreaPromotoraCompletoDTO> Executar(long id)
         {
-            return await mediator.Send(new ObterAreaPromotoraPorIdQuery(id));
+            var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorIdQuery(id));
+            var grupo = await mediator.Send(new ObterGrupoPorIdQuery(areaPromotora.GrupoId));
+            areaPromotora.VisaoId = grupo.VisaoId;
+            return areaPromotora;
         }
     }
 }
