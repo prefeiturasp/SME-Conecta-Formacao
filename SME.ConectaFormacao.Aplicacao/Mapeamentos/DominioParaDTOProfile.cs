@@ -59,7 +59,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PalavraChave, PalavraChaveDTO>();
             CreateMap<PropostaCriterioCertificacao, PropostaCriterioCertificacaoDto>();
             CreateMap<CriterioValidacaoInscricao, CriterioValidacaoInscricaoDTO>();
-            CreateMap<Proposta, PropostaCompletoDTO>();
+            CreateMap<Proposta, PropostaCompletoDTO>()
+                .ForMember(dest => dest.NomeSituacao, opt => opt.MapFrom(x => x.Situacao.Nome()));
             CreateMap<Proposta, PropostaDTO>()
                 .ForMember(dest => dest.PublicosAlvo, opt => opt.MapFrom(o => o.PublicosAlvo))
                 .ForMember(dest => dest.FuncoesEspecificas, opt => opt.MapFrom(o => o.FuncoesEspecificas))
