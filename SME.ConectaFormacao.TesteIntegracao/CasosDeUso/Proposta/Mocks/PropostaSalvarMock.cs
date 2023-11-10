@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -216,6 +215,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         }
 
         public static Guid GrupoUsuarioLogadoId { get; set; }
+        
 
     }
 }
