@@ -30,4 +30,5 @@ public class MensagemNegocio
     public const string PROFISSIONAL_NAO_LOCALIZADO_RF_INVALIDO = "É necessário informar um RF válido para obter o nome do profissional";
     public const string CODIGOS_DRE_NAO_LOCALIZADO = "Nenhum código de Dre foi encontrado";
     public const string NENHUMA_DRE_ENCONTRADA_NO_EOL = "Não foi possível localizar as Dres no EOL para a sincronização instituicional";
+    public const string PROPOSTA_NAO_ESTAR_COMO_CADASTRADA = "Proposta deve estar com situação de cadastrada para ser enviada para o DF";
 }

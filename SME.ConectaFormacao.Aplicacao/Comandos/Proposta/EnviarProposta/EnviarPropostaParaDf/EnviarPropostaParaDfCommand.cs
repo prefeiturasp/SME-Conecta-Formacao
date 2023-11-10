@@ -3,7 +3,7 @@ using MediatR;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class EnviarPropostaParaDfCommand : IRequest
+    public class EnviarPropostaParaDfCommand : IRequest<bool>
     {
         public EnviarPropostaParaDfCommand(long propostaId)
         {
