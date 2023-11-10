@@ -1,6 +1,7 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso;
 using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLogViaRabbit;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
@@ -19,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var dres = await mediator.Send(ObterCodigosDresQuery.Instance);
             if (dres.EhNulo() || !dres.Any())
             {
-                throw new NegocioException("Não foi possível localizar as Dres no EOL para a sincronização instituicional");
+                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL);
             }
 
             foreach (var dre in dres)
@@ -29,12 +30,12 @@ namespace SME.ConectaFormacao.Aplicacao
                     var publicarTratamentoDre = await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.SincronizaEstruturaInstitucionalDreTratar, dre, Guid.NewGuid(), null));
                     if (!publicarTratamentoDre)
                     {
-                        await mediator.Send(new SalvarLogViaRabbitCommand($"Não foi possível inserir a Dre : {publicarTratamentoDre} na fila de sync.", LogNivel.Negocio, LogContexto.SincronizacaoInstitucional));
+                        await mediator.Send(new SalvarLogViaRabbitCommand($"Não foi possível inserir a Dre : {publicarTratamentoDre}  na fila de sync.", LogNivel.Negocio, LogContexto.SincronizacaoInstitucional));
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw new NegocioException($"Não foi possível realizar a sincronização da dre ${dre?.Nome}");
+                    throw new NegocioException($"Não foi possível realizar a sincronização da dre {dre?.Nome}");
                 }
             }
 

@@ -35,8 +35,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
         {
             var faker = new Faker<Dre>();
             faker.RuleFor(x => x.Codigo, f => f.Random.Int(min: 1, max: 100).ToString());
-            faker.RuleFor(x => x.Abreviacao, f => f.Name.FindName().Substring(10));
-            faker.RuleFor(x => x.Nome, f => f.Name.FullName());
+            faker.RuleFor(x => x.Abreviacao, "Dre XYZ");
+            faker.RuleFor(x => x.Nome, "Nome Da Dre");
             faker.RuleFor(x => x.DataAtualizacao, DateTimeExtension.HorarioBrasilia());
             AuditoriaFaker(faker);
             return faker.Generate(quantidade);
