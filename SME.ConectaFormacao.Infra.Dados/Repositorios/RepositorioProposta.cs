@@ -635,7 +635,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryAsync<PropostaTutor>(query, new { numeroRegistros, registrosIgnorados, propostaId });
         }
-        
+
+        public Task EnviarPropostaParaDf(long propostaId)
+        {
+            var aguardandoDf = (int) SituacaoProposta.AguardandoAnaliseDf;
+            var query = @"update 
+                            proposta
+                            set situacao  = @aguardandoDf
+                          where id = @propostaId ";
+
+            return conexao.Obter().ExecuteAsync(query, new {propostaId,aguardandoDf});
+        }
+
         public async Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves)
         {
             foreach (var palavraChave in palavrasChaves)
