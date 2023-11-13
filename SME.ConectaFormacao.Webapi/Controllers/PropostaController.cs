@@ -148,7 +148,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoAlterarProposta.Executar(id, propostaDTO));
         }
-
+        
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -288,6 +288,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoObterPropostaTutorPorId useCase)
         {
             return Ok(await useCase.Executar(tutorId));
+        }
+        
+        [HttpPut("{propostaId}/enviardf")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> EnviarPropostaParaDf
+        ([FromRoute] long propostaId,
+            [FromServices]ICasoDeUsoEnviarPropostaParaDf useCase)
+        {
+            return Ok(await useCase.Executar(propostaId));
         }
     }
 }
