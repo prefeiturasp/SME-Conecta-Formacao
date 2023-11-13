@@ -14,5 +14,6 @@
         Task<bool> TokenRecuperacaoSenhaEstaValido(Guid token);
         Task<string> AlterarSenhaComTokenRecuperacao(Guid token, string novaSenha);
         Task<IEnumerable<AcessosGrupo>> ObterGrupos();
+        Task<AcessosGrupo> ObterGrupoPorId(Guid grupoId);
     }
 }

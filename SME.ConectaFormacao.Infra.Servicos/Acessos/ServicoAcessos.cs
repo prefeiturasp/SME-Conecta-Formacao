@@ -162,5 +162,20 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
                 throw new NegocioException(mensagem.JsonParaObjeto<string>());
             }
         }
+        public async Task<AcessosGrupo> ObterGrupoPorId(Guid grupoId)
+        {
+            var resposta = await _httpClient.GetAsync($"v1/grupos/sistema/{_servicoAcessosOptions.CodigoSistema}/{grupoId}");
+
+            if (resposta.IsSuccessStatusCode)
+            {
+                var json = await resposta.Content.ReadAsStringAsync();
+                return json.JsonParaObjeto<AcessosGrupo>();
+            }
+            else
+            {
+                var mensagem = await resposta.Content.ReadAsStringAsync();
+                throw new NegocioException(mensagem.JsonParaObjeto<string>());
+            }
+        }
     }
 }

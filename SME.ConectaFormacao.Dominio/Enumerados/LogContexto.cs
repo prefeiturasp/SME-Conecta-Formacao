@@ -2,6 +2,7 @@
 {
     public enum LogContexto
     {
-        Geral
+        Geral,
+        SincronizacaoInstitucional
     }
 }
