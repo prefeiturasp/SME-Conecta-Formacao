@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.Mock;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.ServicoFake;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using System.Text.Json;
 using Xunit;
@@ -27,7 +28,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
         [Fact(DisplayName = "Area Promotora - Deve Inserir uma que não existe")]
         public async Task Deve_inserir_uma_Dre()
         {
-            var dre = SincronizarDreMock.GerarDreValida();
+            var dre = DreMock.GerarDreValida();
             await InserirNaBase(dre!.FirstOrDefault()!);
             var todosAreasAntes = ObterTodos<Dominio.Entidades.Dre>();
             todosAreasAntes.Count.ShouldBeEquivalentTo(1);
@@ -54,7 +55,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
         [Fact(DisplayName = "Area Promotora - Deve atualizar uma dre")]
         public async Task Deve_atualizar_uma_Dre()
         {
-            var dre = SincronizarDreMock.GerarDreValida();
+            var dre = DreMock.GerarDreValida();
             await InserirNaBase(dre!.FirstOrDefault()!);
             var todosAreasAntes = ObterTodos<Dominio.Entidades.Dre>();
             todosAreasAntes.Count.ShouldBeEquivalentTo(1);

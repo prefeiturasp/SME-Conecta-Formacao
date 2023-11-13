@@ -14,9 +14,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public SalvarPropostaTutorCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao)
         {
-            _mapper = mapper;
-            _repositorioProposta = repositorioProposta;
-            _transacao = transacao;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
         }
 
         public async Task<long> Handle(SalvarPropostaTutorCommand request, CancellationToken cancellationToken)
@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
                 else
                     await _repositorioProposta.InserirPropostaTutor(request.PropostaId, tutorDepois);
-                
+
                 var turmasAntes = await _repositorioProposta.ObterTutorTurmasPorTutorId(tutorDepois.Id);
                 var turmasInserir = tutorDepois.Turmas.Where(w => !turmasAntes.Any(a => a.Id == w.Id));
                 var turmasExcluir = turmasAntes.Where(w => !tutorDepois.Turmas.Any(a => a.Id == w.Id));
@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 transacao.Commit();
                 return tutorDepois.Id;
             }
-            catch (Exception e)
+            catch
             {
                 transacao.Rollback();
                 throw;
