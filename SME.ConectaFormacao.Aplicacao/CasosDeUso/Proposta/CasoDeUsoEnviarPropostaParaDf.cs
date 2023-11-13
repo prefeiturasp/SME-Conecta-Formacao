@@ -16,11 +16,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
             
-            if (proposta == null)
+            if (proposta == null || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
             
             if (proposta.Situacao != SituacaoProposta.Cadastrada)
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTAR_COMO_CADASTRADA);
+                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA);
 
             return await mediator.Send(new EnviarPropostaParaDfCommand(propostaId));
         }
