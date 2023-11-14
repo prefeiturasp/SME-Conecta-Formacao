@@ -438,5 +438,100 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(criteriosDTO, id);
             ValidarPropostaPalavrasChavesDTO(palavrasChavesDTO, id);
         }
+
+        [Fact(DisplayName = "Proposta - Deve salvar Proposta  com situação Cadastrada e com todos os campos Obrigatorios")]
+        public async Task Deve_enviar_proposta_com_todos_campos_obrigatorios()
+        {
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+            
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves);
+            
+            var tutor = AreaPromotoraMock.GerarTutor(proposta.Id);
+            await InserirNaBase(tutor);
+            var tutorTurma = AreaPromotoraMock.GerarTutorTurma(1);
+            await InserirNaBase(tutorTurma);
+
+            var regente = AreaPromotoraMock.GerarRegente(proposta.Id); 
+            await InserirNaBase(regente);
+            var regenteTurma = AreaPromotoraMock.GerarRegenteTurma(1);
+            await InserirNaBase(regenteTurma);
+            
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Modalidade.Presencial,
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
+                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
+                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
+                palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
+                SituacaoProposta.Cadastrada);
+            
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
+            var data = DateTime.Now;
+            propostaDTO.DataInscricaoInicio = data;
+            propostaDTO.DataInscricaoFim = data;
+            propostaDTO.DataRealizacaoInicio = data;
+            propostaDTO.DataRealizacaoFim = data;
+            propostaDTO.CargaHorariaPresencial = "00:12";
+            propostaDTO.QuantidadeTurmas = 1;
+            // act 
+            var id = await casoDeUso.Executar(proposta.Id, propostaDTO);
+
+            // assert
+            id.ShouldBeGreaterThan(0);
+
+            ValidarPropostaDTO(propostaDTO, id);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, id);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
+        }
+
+        [Fact(DisplayName = "Proposta - Não Deve salvar Proposta  com situação Cadastrada sem todos os campos Obrigatorios")]
+        public async Task Nao_deve_enviar_proposta_sem_todos_campos_obrigatorios()
+        {
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+            
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves);
+            
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Modalidade.Presencial,
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
+                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
+                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
+                palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
+                SituacaoProposta.Cadastrada);
+            
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, propostaDTO));
+            excecao.ShouldNotBeNull();
+            excecao.Mensagens.Contains(MensagemNegocio.NAO_EXISTE_NENHUM_REGENTE).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.NAO_EXISTE_NENHUM_TUTOR).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.PERIODO_REALIZACAO_NAO_INFORMADO).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.PERIODO_INCRICAO_NAO_INFORMADO).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.CARGA_HORARIA_NAO_INFORMADA).ShouldBeTrue();
+        }
     }
 }

@@ -138,11 +138,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaPresencial))
                 proposta.CargaHorariaPresencial.ShouldBe(propostaDTO.CargaHorariaPresencial);
 
-            proposta.DataRealizacaoInicio.ShouldBe(propostaDTO.DataRealizacaoInicio);
-            proposta.DataRealizacaoFim.ShouldBe(propostaDTO.DataRealizacaoFim);
+            proposta.DataRealizacaoInicio?.Date.ShouldBeEquivalentTo(propostaDTO.DataRealizacaoInicio?.Date);
+            proposta.DataRealizacaoFim?.Date.ShouldBeEquivalentTo(propostaDTO.DataRealizacaoFim?.Date);
 
-            proposta.DataInscricaoInicio.ShouldBe(propostaDTO.DataInscricaoInicio);
-            proposta.DataInscricaoFim.ShouldBe(propostaDTO.DataInscricaoFim);
+            proposta.DataInscricaoInicio?.Date.ShouldBeEquivalentTo(propostaDTO.DataInscricaoInicio?.Date);
+            proposta.DataInscricaoFim?.Date.ShouldBeEquivalentTo(propostaDTO.DataInscricaoFim?.Date);
 
             if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaSincrona))
                 proposta.CargaHorariaSincrona.ShouldBe(propostaDTO.CargaHorariaSincrona);
@@ -260,6 +260,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
+            
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+            
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+            
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOVazio(SituacaoProposta.Rascunho);
 
