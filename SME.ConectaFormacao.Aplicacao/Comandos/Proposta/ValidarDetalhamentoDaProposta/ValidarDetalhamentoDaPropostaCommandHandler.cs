@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 erros.Add(MensagemNegocio.PROCEDIMENTOS_METODOLOGICOS_NAO_INFORMADO);
             if (string.IsNullOrEmpty(proposta.Referencia))
                 erros.Add(MensagemNegocio.REFERENCIA_NAO_INFORMADA);
-            if (proposta.PalavrasChaves.Count() >= 3 && proposta.PalavrasChaves.Count() <= 5)
+            if (!proposta.PalavrasChaves.Any() || proposta.PalavrasChaves.Count() > 5)
                 erros.Add(MensagemNegocio.PALAVRA_CHAVE_NAO_INFORMADA);
 
             return erros;
