@@ -19,10 +19,10 @@ namespace SME.ConectaFormacao.Aplicacao
             var erros = new List<string>();
             var proposta = request.PropostaDto;
             if(proposta.DataRealizacaoInicio == null || proposta.DataRealizacaoFim == null)
-                erros.Add(string.Format(MensagemNegocio.CAMPO_OBRIGATORIO_NAO_INFORMADO," as datas do período de realização "));
+                erros.Add(MensagemNegocio.PERIODO_REALIZACAO_NAO_INFORMADO);
             
             if(proposta.DataInscricaoInicio == null || proposta.DataInscricaoFim == null)
-                erros.Add(string.Format(MensagemNegocio.CAMPO_OBRIGATORIO_NAO_INFORMADO," as datas do período de inscrição "));
+                erros.Add(MensagemNegocio.PERIODO_INCRICAO_NAO_INFORMADO);
 
             var quantidadeDeTurmasComEncontro = await _repositorioProposta.ObterQuantidadeDeTurmasComEncontro(request.PropostaId);
             if(quantidadeDeTurmasComEncontro < proposta.QuantidadeTurmas)

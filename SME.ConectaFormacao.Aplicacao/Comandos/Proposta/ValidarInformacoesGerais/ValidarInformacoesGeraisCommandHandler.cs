@@ -12,19 +12,19 @@ namespace SME.ConectaFormacao.Aplicacao
             var proposta = request.PropostaDTO;
             
             if(proposta.TipoFormacao == null)
-                erros.Add(string.Format(MensagemNegocio.CAMPO_OBRIGATORIO_NAO_INFORMADO,"o tipo da formação"));
+                erros.Add(MensagemNegocio.TIPO_FORMACAO_NAO_INFORMADO);
             if(proposta.Modalidade == null)
-                erros.Add(string.Format(MensagemNegocio.CAMPO_OBRIGATORIO_NAO_INFORMADO,"a modalidade"));
+                erros.Add(MensagemNegocio.MODALIDADE_NAO_INFORMADA);
             if(proposta.TipoInscricao == null)
-                erros.Add(string.Format(MensagemNegocio.CAMPO_OBRIGATORIO_NAO_INFORMADO,"o tipo da inscrição"));
+                erros.Add(MensagemNegocio.TIPO_INSCRICAO_NAO_INFORMADA);
             if(string.IsNullOrWhiteSpace(proposta.NomeFormacao))
-                erros.Add(string.Format(MensagemNegocio.CAMPO_OBRIGATORIO_NAO_INFORMADO,"o nome da formação"));
+                erros.Add(MensagemNegocio.NOME_FORMACAO_NAO_INFORMADO);
             if(proposta.PublicosAlvo.Any())
-                erros.Add(string.Format(MensagemNegocio.CAMPO_OBRIGATORIO_NAO_INFORMADO,"o público alvo"));
+                erros.Add(MensagemNegocio.PUBLICO_ALVO_NAO_INFORMADO);
             if(proposta.QuantidadeTurmas == 0 || proposta.QuantidadeTurmas == null)
-                erros.Add(string.Format(MensagemNegocio.CAMPO_OBRIGATORIO_NAO_INFORMADO,"a quantidade de turmas"));
+                erros.Add(MensagemNegocio.QUANTIDADE_DE_TURMAS_NAO_INFORMADA);
             if(proposta.QuantidadeVagasTurma == 0 || proposta.QuantidadeVagasTurma == null)
-                erros.Add(string.Format(MensagemNegocio.CAMPO_OBRIGATORIO_NAO_INFORMADO,"a quantidade de vagas por turma"));
+                erros.Add(MensagemNegocio.QUANTIDADE_DE__VAGAS_POR_TURMAS_NAO_INFORMADA);
 
             if (erros.Any())
                 throw new NegocioException(erros);

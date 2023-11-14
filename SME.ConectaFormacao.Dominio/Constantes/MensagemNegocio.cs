@@ -2,7 +2,24 @@ namespace SME.ConectaFormacao.Dominio.Constantes;
 
 public class MensagemNegocio
 {
-    public const string CAMPO_OBRIGATORIO_NAO_INFORMADO = "É necessário informar {0}";
+    public const string PERIODO_REALIZACAO_NAO_INFORMADO = "É necessário informar as datas do período de realização";
+    public const string PERIODO_INCRICAO_NAO_INFORMADO = "É necessário informar as datas do período de inscrição";
+    public const string TIPO_FORMACAO_NAO_INFORMADO = "É necessário informar o tipo da formação";
+    public const string MODALIDADE_NAO_INFORMADA = "É necessário informar a modalidade";
+    public const string TIPO_INSCRICAO_NAO_INFORMADA = "É necessário informar o tipo da inscrição";
+    public const string NOME_FORMACAO_NAO_INFORMADO = "É necessário informar o nome da formação";
+    public const string PUBLICO_ALVO_NAO_INFORMADO = "É necessário informar o público alvo";
+    public const string QUANTIDADE_DE_TURMAS_NAO_INFORMADA = "É necessário informar a quantidade de turmas";
+    public const string QUANTIDADE_DE__VAGAS_POR_TURMAS_NAO_INFORMADA = "É necessário informar a quantidade de vagas por turma";
+    
+    public const string CARGA_HORARIA_NAO_INFORMADA = "É necessário informar a carga horária presencial";
+    public const string JUSTIFICATIVA_NAO_INFORMADA = "É necessário informar a justificativa";
+    public const string OBJETIVO_NAO_INFORMADO = "É necessário informar os objetivos";
+    public const string CONTEUDO_PROGRAMATICO_NAO_INFORMADO = "É necessário informar o conteúdo programático";
+    public const string PROCEDIMENTOS_METODOLOGICOS_NAO_INFORMADO = "É necessário informar os procedimentos metodológicos";
+    public const string REFERENCIA_NAO_INFORMADA = "É necessário informar as referências";
+    public const string PALAVRA_CHAVE_NAO_INFORMADA = "É necessário informar no mínimo 3 e no máximo 5 palavras chaves";
+    
     public const string QUANTIDADE_TURMAS_COM_ENCONTRO_INFERIOR_QUANTIDADE_DE_TURMAS = "A quantidade de turmas com encontro é inferior a quantidade de turmas informada";
     public const string PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN = "Os perfis do usuário não foram localizados! Verifique o usuário.";
     public const string USUARIO_OU_SENHA_INVALIDOS = "Usuário ou senha inválidos";
