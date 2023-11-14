@@ -32,28 +32,9 @@ namespace SME.ConectaFormacao.Aplicacao
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
 
 
-
-            /*
-             * 4 - Detalhamento
-                    Carga horária presencial: Obrigatório quando a modalidade for presencial
-                    Justificativa
-                    Objetivos
-                    Conteúdo programático
-                    Procedimentos metodológicos
-                    Referências
-                    Palavras-chave: Obrigatório no mínimo 3 e no máximo 5
-             */
-            /* 5 - Certificação:
-                    Curso com certificação: Sim/Não
-                    Critérios para certificação: Quando informado "Sim" no campo anterior deverá ser selecionado pelo menos 3 critérios
-                    Descrição da atividade obrigatória para certificação: É obrigatório quando selecionado o critério "Realização de atividade obrigatória".
-                    Declaro a ação formativa está em conformidade com o Comunicado nº1.043, de 16 de dezembro de 2020
-             * 
-             */
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
             propostaDepois.Id = proposta.Id;
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
-            propostaDepois.Situacao = SituacaoProposta.Ativo;
             propostaDepois.ManterCriador(proposta);
             propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
             propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
@@ -65,6 +46,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
                 propostaDepois.Situacao = SituacaoProposta.Cadastrada;
             }
+            else
+                propostaDepois.Situacao = SituacaoProposta.Ativo;
+            
             var transacao = _transacao.Iniciar();
             try
             {
