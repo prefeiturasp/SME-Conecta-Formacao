@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
-             // 1 - Validar se tem regente e tutor 1 de cada
+            await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id), cancellationToken);
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
             /*
