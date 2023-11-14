@@ -11,7 +11,7 @@ public class MensagemNegocio
     public const string PUBLICO_ALVO_NAO_INFORMADO = "É necessário informar o público alvo";
     public const string QUANTIDADE_DE_TURMAS_NAO_INFORMADA = "É necessário informar a quantidade de turmas";
     public const string QUANTIDADE_DE__VAGAS_POR_TURMAS_NAO_INFORMADA = "É necessário informar a quantidade de vagas por turma";
-    public const string CRITERIOS_PARA_CERTIFICACAO_NAO_INFORMADA = "É necessário informar ao menos 3 critérios para certificação";
+    public const string CRITERIOS_PARA_CERTIFICACAO_NAO_INFORMADO = "É necessário informar ao menos 3 critérios para certificação";
     public const string ACAO_INFORMATIVA_NAO_ACEITA = "É necessário aceitar a ação formativa";
     public const string DESCRICAO_DA_CERTIFICACAO_NAO_INFORMADA = "É necessario informar descrição da atividade para certificação";
     

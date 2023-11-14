@@ -442,6 +442,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         [Fact(DisplayName = "Proposta - Deve salvar Proposta  com situação Cadastrada e com todos os campos Obrigatorios")]
         public async Task Deve_enviar_proposta_com_todos_campos_obrigatorios()
         {
+            var criteriosCertificacao = PropostaMock.GerarCriteriosCertificacao();
+            await InserirNaBase(criteriosCertificacao);
+            
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -478,12 +481,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
             var data = DateTime.Now;
+            propostaDTO.CriterioCertificacao = PropostaSalvarMock.GerarCriterioCertificacaoDTO(3);
+            propostaDTO.CursoComCertificado = true;
             propostaDTO.DataInscricaoInicio = data;
             propostaDTO.DataInscricaoFim = data;
             propostaDTO.DataRealizacaoInicio = data;
             propostaDTO.DataRealizacaoFim = data;
             propostaDTO.CargaHorariaPresencial = "00:12";
             propostaDTO.QuantidadeTurmas = 1;
+            propostaDTO.AcaoInformativa = true;
+            propostaDTO.DescricaoDaAtividade = "Descrição";
             // act 
             var id = await casoDeUso.Executar(proposta.Id, propostaDTO);
 

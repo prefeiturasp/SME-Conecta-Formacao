@@ -171,6 +171,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker.Generate(quantidade);
         }
 
+        public static IEnumerable<CriterioCertificacao> GerarCriteriosCertificacao()
+        {
+            var quantidade = new Randomizer().Number(1, 9);
+            var faker = new Faker<CriterioCertificacao>();
+            faker.RuleFor(x => x.Descricao, f => f.Name.FirstName());
+            AuditoriaFaker(faker);
+            return faker.Generate(quantidade);
+        }
         public static IEnumerable<PropostaEncontroData> GerarPropostaEncontroDatas(long propostaEncontroId)
         {
             var quantidade = new Randomizer().Number(1, 9);
