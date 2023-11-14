@@ -459,14 +459,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves);
             
-            var tutor = AreaPromotoraMock.GerarTutor(proposta.Id);
+            var tutor = PropostaMock.GerarTutor(proposta.Id);
             await InserirNaBase(tutor);
-            var tutorTurma = AreaPromotoraMock.GerarTutorTurma(1);
+            var tutorTurma = PropostaMock.GerarTutorTurmas(1,2);
             await InserirNaBase(tutorTurma);
 
-            var regente = AreaPromotoraMock.GerarRegente(proposta.Id); 
+            var regente = PropostaMock.GerarRegente(proposta.Id); 
             await InserirNaBase(regente);
-            var regenteTurma = AreaPromotoraMock.GerarRegenteTurma(1);
+            var regenteTurma = PropostaMock.GerarRegenteTurmas(1,2);
             await InserirNaBase(regenteTurma);
             
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(

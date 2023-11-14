@@ -56,42 +56,5 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker.Generate(quantidade);
         }
 
-        public static PropostaRegente GerarRegente(long propostaId)
-        {
-            var faker = new Faker<PropostaRegente>();
-            faker.RuleFor(x => x.PropostaId, propostaId);
-            faker.RuleFor(x => x.ProfissionalRedeMunicipal, false);
-            faker.RuleFor(x => x.RegistroFuncional, string.Empty);
-            faker.RuleFor(x => x.NomeRegente, f => f.Name.FindName());
-            faker.RuleFor(x => x.MiniBiografia, f => f.Company.CompanyName());
-            AuditoriaFaker(faker);
-            return faker.Generate();
-        }
-        public static PropostaRegenteTurma GerarRegenteTurma(long regenteId)
-        {
-            var faker = new Faker<PropostaRegenteTurma>();
-            faker.RuleFor(x => x.PropostaRegenteId, regenteId);
-            faker.RuleFor(x => x.Turma, 1);
-            AuditoriaFaker(faker);
-            return faker.Generate();
-        }
-        public static PropostaTutorTurma GerarTutorTurma(long tutorId)
-        {
-            var faker = new Faker<PropostaTutorTurma>();
-            faker.RuleFor(x => x.PropostaTutorId, tutorId);
-            faker.RuleFor(x => x.Turma, 1);
-            AuditoriaFaker(faker);
-            return faker.Generate();
-        }
-        public static PropostaTutor GerarTutor(long propostaId)
-        {
-            var faker = new Faker<PropostaTutor>();
-            faker.RuleFor(x => x.PropostaId, propostaId);
-            faker.RuleFor(x => x.ProfissionalRedeMunicipal, false);
-            faker.RuleFor(x => x.RegistroFuncional, string.Empty);
-            faker.RuleFor(x => x.NomeTutor, f => f.Name.FindName());
-            AuditoriaFaker(faker);
-            return faker.Generate();
-        }
     }
 }
