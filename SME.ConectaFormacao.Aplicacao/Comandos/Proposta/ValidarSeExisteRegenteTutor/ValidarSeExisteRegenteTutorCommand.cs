@@ -3,7 +3,7 @@ using MediatR;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarSeExisteRegenteTutorCommand : IRequest
+    public class ValidarSeExisteRegenteTutorCommand : IRequest<IEnumerable<string>>
     {
         public ValidarSeExisteRegenteTutorCommand(long propostaId)
         {
