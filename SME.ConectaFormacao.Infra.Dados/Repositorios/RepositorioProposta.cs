@@ -647,6 +647,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteAsync(query, new {propostaId,aguardandoDf});
         }
 
+        public async Task<int> ObterQuantidadeDeTurmasComEncontro(long propostaId)
+        {
+            var query = @"select  count(distinct pet.turma)  
+	                         from proposta_encontro_turma pet
+	                         inner join proposta_encontro pe on pet.proposta_encontro_id = pe.id 
+	                         where pe.proposta_id = @propostaId ";
+            return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
+        }
+
         public async Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves)
         {
             foreach (var palavraChave in palavrasChaves)

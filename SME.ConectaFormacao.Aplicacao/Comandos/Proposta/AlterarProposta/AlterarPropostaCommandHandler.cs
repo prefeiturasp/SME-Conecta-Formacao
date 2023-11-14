@@ -32,13 +32,8 @@ namespace SME.ConectaFormacao.Aplicacao
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
             await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
+            await _mediator.Send(new ValidarDatasExistentesNaPropostaCommand(request.Id,request.PropostaDTO), cancellationToken);
 
-            /*
-             * 3 - Datas
-                    Período de realização
-                    Cronograma de encontros: Pelo menos um encontro por turma
-                    Período de inscrição
-             */
             /*
              * 4 - Detalhamento
                     Carga horária presencial: Obrigatório quando a modalidade for presencial
