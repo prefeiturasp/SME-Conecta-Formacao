@@ -2,6 +2,7 @@ namespace SME.ConectaFormacao.Dominio.Constantes;
 
 public class MensagemNegocio
 {
+    public const string CAMPO_OBRIGATORIO_NAO_INFORMADO = "É necessário informar {0}";
     public const string PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN = "Os perfis do usuário não foram localizados! Verifique o usuário.";
     public const string USUARIO_OU_SENHA_INVALIDOS = "Usuário ou senha inválidos";
     public const string CONFIRMACAO_SENHA_INVALIDA = "Confirmação de senha não confere";

@@ -31,17 +31,8 @@ namespace SME.ConectaFormacao.Aplicacao
             await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id), cancellationToken);
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
-            /*
-             * 2 - Informações Gerais
-             * Tipo de formação
-                Modalidade
-                Tipo de inscrição
-                Nome da formação
-                Público alvo
-                Critérios para validação das inscrições
-                Quantidade de turmas
-                Vagas por turma
-             */
+            await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
+
             /*
              * 3 - Datas
                     Período de realização
