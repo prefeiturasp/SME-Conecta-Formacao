@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarInformacoesGeraisCommand : IRequest
+    public class ValidarInformacoesGeraisCommand : IRequest<IEnumerable<string>>
     {
         public ValidarInformacoesGeraisCommand(PropostaDTO propostaDto)
         {

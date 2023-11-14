@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarSeExisteRegenteTutorCommandHandler : IRequestHandler<ValidarSeExisteRegenteTutorCommand>
+    public class ValidarSeExisteRegenteTutorCommandHandler : IRequestHandler<ValidarSeExisteRegenteTutorCommand,IEnumerable<string>>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 
@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public async Task Handle(ValidarSeExisteRegenteTutorCommand request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> Handle(ValidarSeExisteRegenteTutorCommand request, CancellationToken cancellationToken)
         {
             var erros = new List<string>();
             var totalRegentes = await _repositorioProposta.ObterTotalRegentes(request.PropostaId);
@@ -23,9 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var totalTutores = await _repositorioProposta.ObterTotalTutores(request.PropostaId);
             if(totalTutores == 0)
                 erros.Add(MensagemNegocio.NAO_EXISTE_NENHUM_TUTOR);
-
-            if (erros.Any())
-                throw new NegocioException(erros);
+            return erros;
         }
     }
 }

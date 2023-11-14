@@ -4,9 +4,9 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarInformacoesGeraisCommandHandler : IRequestHandler<ValidarInformacoesGeraisCommand>
+    public class ValidarInformacoesGeraisCommandHandler : IRequestHandler<ValidarInformacoesGeraisCommand,IEnumerable<string>>
     {
-        public async Task Handle(ValidarInformacoesGeraisCommand request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> Handle(ValidarInformacoesGeraisCommand request, CancellationToken cancellationToken)
         {
             var erros = new List<string>();
             var proposta = request.PropostaDTO;
@@ -26,8 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if(proposta.QuantidadeVagasTurma == 0 || proposta.QuantidadeVagasTurma == null)
                 erros.Add(MensagemNegocio.QUANTIDADE_DE__VAGAS_POR_TURMAS_NAO_INFORMADA);
 
-            if (erros.Any())
-                throw new NegocioException(erros);
+            return erros;
         }
     }
 }

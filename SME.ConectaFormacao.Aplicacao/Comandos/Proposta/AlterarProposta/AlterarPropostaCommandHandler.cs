@@ -40,15 +40,30 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
             if (request.PropostaDTO.Situacao == SituacaoProposta.Cadastrada)
             {
-                await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id), cancellationToken);
-                await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
-                await _mediator.Send(new ValidarDatasExistentesNaPropostaCommand(request.Id, request.PropostaDTO), cancellationToken);
-                await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
+                var erros = new List<string>();
+                var errosTutorRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id), cancellationToken);
+                if (errosTutorRegente.Any())
+                    erros.AddRange(errosTutorRegente);
+                
+                var errosInformacoesGerais = await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
+                if (errosInformacoesGerais.Any())
+                    erros.AddRange(errosInformacoesGerais);
+                
+                var errosDatas = await _mediator.Send(new ValidarDatasExistentesNaPropostaCommand(request.Id, request.PropostaDTO), cancellationToken);
+                if (errosDatas.Any())
+                    erros.AddRange(errosDatas);
+                
+                var errosDetalhamento = await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
+                if (errosDetalhamento.Any())
+                    erros.AddRange(errosDetalhamento);
+
+                if (erros.Any())
+                    throw new NegocioException(erros);
                 propostaDepois.Situacao = SituacaoProposta.Cadastrada;
             }
             else
                 propostaDepois.Situacao = SituacaoProposta.Ativo;
-            
+
             var transacao = _transacao.Iniciar();
             try
             {
@@ -63,7 +78,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(request.Id, propostaDepois.VagasRemanecentes), cancellationToken);
 
                 await _mediator.Send(new SalvarPalavraChaveCommand(request.Id, propostaDepois.PalavrasChaves), cancellationToken);
-                
+
                 await _mediator.Send(new SalvarCriterioCertificacaoCommand(request.Id, propostaDepois.CriterioCertificacao), cancellationToken);
 
                 if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())

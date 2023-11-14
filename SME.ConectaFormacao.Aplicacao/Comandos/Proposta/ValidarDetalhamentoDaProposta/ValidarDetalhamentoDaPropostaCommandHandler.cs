@@ -5,9 +5,9 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarDetalhamentoDaPropostaCommandHandler : IRequestHandler<ValidarDetalhamentoDaPropostaCommand>
+    public class ValidarDetalhamentoDaPropostaCommandHandler : IRequestHandler<ValidarDetalhamentoDaPropostaCommand, IEnumerable<string>>
     {
-        public async Task Handle(ValidarDetalhamentoDaPropostaCommand request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> Handle(ValidarDetalhamentoDaPropostaCommand request, CancellationToken cancellationToken)
         {
             var erros = new List<string>();
             var proposta = request.PropostaDto;
@@ -27,8 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (proposta.PalavrasChaves.Count() >= 3 && proposta.PalavrasChaves.Count() <= 5)
                 erros.Add(MensagemNegocio.PALAVRA_CHAVE_NAO_INFORMADA);
 
-            if (erros.Any())
-                throw new NegocioException(erros);
+            return erros;
         }
     }
 }
