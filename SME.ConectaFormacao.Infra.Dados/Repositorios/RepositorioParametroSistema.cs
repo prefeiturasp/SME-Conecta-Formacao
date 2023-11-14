@@ -17,7 +17,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"select *
                             from parametro_sistema ps
                            where ano = @ano
-                             and tipo = @tipo";
+                             and tipo = @tipo
+                             and not excluido
+                             and ativo";
 
             return await conexao.Obter().QueryFirstOrDefaultAsync<ParametroSistema>(query, new { tipo, ano });
         }

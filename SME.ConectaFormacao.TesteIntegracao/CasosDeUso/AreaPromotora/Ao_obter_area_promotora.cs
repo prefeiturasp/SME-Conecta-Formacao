@@ -1,10 +1,16 @@
-﻿using Shouldly;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Shouldly;
+using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
+using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -15,6 +21,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
     {
         public Ao_obter_area_promotora(CollectionFixture collectionFixture) : base(collectionFixture)
         {
+        }
+
+        protected override void RegistrarQueryFakes(IServiceCollection services)
+        {
+            base.RegistrarQueryFakes(services);
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoPorIdQuery, GrupoDTO>), typeof(ObterGrupoPorIdQueryHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Área promotora - Deve obter por id com telefone válido")]
