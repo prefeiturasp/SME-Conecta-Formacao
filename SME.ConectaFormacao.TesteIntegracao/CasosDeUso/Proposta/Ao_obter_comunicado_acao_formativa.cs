@@ -1,14 +1,15 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
-    public class Ao_obter_comunicado_acao_formativa : TesteBase
+    public class Ao_obter_comunicado_acao_formativa : TestePropostaBase
     {
-        public Ao_obter_comunicado_acao_formativa(CollectionFixture collectionFixture) : base(collectionFixture, false)
+        public Ao_obter_comunicado_acao_formativa(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
 
@@ -16,10 +17,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_comunicado_acao_formativa()
         {
             // arrange 
+            var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
+            await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
+
+            var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
+            await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
+            
+            var proposta = await InserirNaBaseProposta();
+
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComunicadoAcaoFormativa>();
 
             // act 
-            var retorno = await casoDeUso.Executar(1);
+            var retorno = await casoDeUso.Executar(proposta.Id);
 
             // assert 
             retorno.ShouldNotBeNull();

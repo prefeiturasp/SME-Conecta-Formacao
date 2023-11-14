@@ -75,6 +75,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
 
             return faker;
         }
+
         public static PropostaTutorDTO GerarTutor(short quantidadeTurmas)
         {
             return GeradorTutor(quantidadeTurmas);

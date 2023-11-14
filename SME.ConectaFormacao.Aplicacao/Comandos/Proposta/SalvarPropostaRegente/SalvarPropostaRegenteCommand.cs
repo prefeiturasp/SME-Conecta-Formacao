@@ -9,11 +9,11 @@ namespace SME.ConectaFormacao.Aplicacao
         public SalvarPropostaRegenteCommand(long propostaId, PropostaRegenteDTO propostaRegenteDto)
         {
             PropostaId = propostaId;
-            propostaRegenteDTO = propostaRegenteDto;
+            PropostaRegenteDTO = propostaRegenteDto;
         }
 
         public long PropostaId { get; }
-        public PropostaRegenteDTO propostaRegenteDTO { get; }
+        public PropostaRegenteDTO PropostaRegenteDTO { get; }
 
     }
     public class SalvarPropostaRegenteCommandValidator : AbstractValidator<SalvarPropostaRegenteCommand>
@@ -23,13 +23,13 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(x => x.PropostaId)
                 .NotEmpty()
                 .WithMessage("É necessário informar o id da proposta para salvar o regente");
-            RuleFor(x => x.propostaRegenteDTO.NomeRegente)
+            RuleFor(x => x.PropostaRegenteDTO.NomeRegente)
                 .NotEmpty()
                 .NotNull()
                 .MinimumLength(1).WithMessage("Informe o nome do Regente");
             
-            RuleFor(x => x.propostaRegenteDTO.Turmas)
-                .Must(x => x.Any()).WithMessage("É necessário informar uma Turma para para cadastrar um regente");
+            RuleFor(x => x.PropostaRegenteDTO.Turmas)
+                .Must(x => x.Any()).WithMessage("É necessário informar uma Turma para cadastrar um regente");
         }
     }
 }
