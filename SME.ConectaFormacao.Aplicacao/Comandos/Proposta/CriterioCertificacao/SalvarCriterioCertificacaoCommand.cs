@@ -2,7 +2,7 @@ using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
 
-namespace SME.ConectaFormacao.Aplicacao.Comandos.Proposta.CriterioCertificacao
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarCriterioCertificacaoCommand : IRequest<bool>
     {
