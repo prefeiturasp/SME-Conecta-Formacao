@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.Proposta.CriterioCertificacao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -27,10 +28,43 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
-
+             // 1 - Validar se tem regente e tutor 1 de cada
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
-
+            /*
+             * 2 - Informações Gerais
+             * Tipo de formação
+                Modalidade
+                Tipo de inscrição
+                Nome da formação
+                Público alvo
+                Critérios para validação das inscrições
+                Quantidade de turmas
+                Vagas por turma
+             */
+            /*
+             * 3 - Datas
+                    Período de realização
+                    Cronograma de encontros: Pelo menos um encontro por turma
+                    Período de inscrição
+             */
+            /*
+             * 4 - Detalhamento
+                    Carga horária presencial: Obrigatório quando a modalidade for presencial
+                    Justificativa
+                    Objetivos
+                    Conteúdo programático
+                    Procedimentos metodológicos
+                    Referências
+                    Palavras-chave: Obrigatório no mínimo 3 e no máximo 5
+             */
+            /* 5 - Certificação:
+                    Curso com certificação: Sim/Não
+                    Critérios para certificação: Quando informado "Sim" no campo anterior deverá ser selecionado pelo menos 3 critérios
+                    Descrição da atividade obrigatória para certificação: É obrigatório quando selecionado o critério "Realização de atividade obrigatória".
+                    Declaro a ação formativa está em conformidade com o Comunicado nº1.043, de 16 de dezembro de 2020
+             * 
+             */
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
             propostaDepois.Id = proposta.Id;
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
@@ -51,6 +85,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(request.Id, propostaDepois.VagasRemanecentes), cancellationToken);
 
                 await _mediator.Send(new SalvarPalavraChaveCommand(request.Id, propostaDepois.PalavrasChaves), cancellationToken);
+                
+                await _mediator.Send(new SalvarCriterioCertificacaoCommand(request.Id, propostaDepois.CriterioCertificacao), cancellationToken);
 
                 if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())
                 {
