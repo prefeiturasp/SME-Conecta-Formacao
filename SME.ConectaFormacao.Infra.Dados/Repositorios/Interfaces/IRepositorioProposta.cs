@@ -61,5 +61,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task ExcluirPropostaTutor(long tutorId);
         Task<IEnumerable<PropostaTutor>> ObterTutoresPaginado(int numeroPagina, int numeroRegistros, long propostaId);
         Task EnviarPropostaParaDf(long propostaId);
+        Task<int> ObterQuantidadeDeTurmasComEncontro(long propostaId);
     }
 }

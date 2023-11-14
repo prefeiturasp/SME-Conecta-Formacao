@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.Proposta.CriterioCertificacao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -27,16 +28,27 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
-
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
+
 
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
             propostaDepois.Id = proposta.Id;
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
-            propostaDepois.Situacao = SituacaoProposta.Ativo;
             propostaDepois.ManterCriador(proposta);
-
+            propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
+            propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
+            if (request.PropostaDTO.Situacao == SituacaoProposta.Cadastrada)
+            {
+                await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id), cancellationToken);
+                await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
+                await _mediator.Send(new ValidarDatasExistentesNaPropostaCommand(request.Id, request.PropostaDTO), cancellationToken);
+                await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
+                propostaDepois.Situacao = SituacaoProposta.Cadastrada;
+            }
+            else
+                propostaDepois.Situacao = SituacaoProposta.Ativo;
+            
             var transacao = _transacao.Iniciar();
             try
             {
@@ -51,6 +63,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(request.Id, propostaDepois.VagasRemanecentes), cancellationToken);
 
                 await _mediator.Send(new SalvarPalavraChaveCommand(request.Id, propostaDepois.PalavrasChaves), cancellationToken);
+                
+                await _mediator.Send(new SalvarCriterioCertificacaoCommand(request.Id, propostaDepois.CriterioCertificacao), cancellationToken);
 
                 if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())
                 {
