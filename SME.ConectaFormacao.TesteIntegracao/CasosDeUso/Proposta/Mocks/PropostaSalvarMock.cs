@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -192,6 +191,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
                 retorno.Add(new PropostaTutorTurmaDTO(){Turma = tutorTurma.Turma});
             return retorno;
         }
+
+        public static IEnumerable<CriterioCertificacaoDTO> GerarCriterioCertificacaoDTO(int quantidade)
+        {
+            var faker = new Faker<CriterioCertificacaoDTO>();
+            faker.RuleFor(x => x.CriterioCertificacaoId, 1);
+            return faker.Generate(quantidade);
+        }
         internal static PropostaDTO GerarPropostaDTOValida(
             TipoFormacao tipoFormacao,
             Modalidade modalidade,
@@ -217,6 +223,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         }
 
         public static Guid GrupoUsuarioLogadoId { get; set; }
+        
 
     }
 }

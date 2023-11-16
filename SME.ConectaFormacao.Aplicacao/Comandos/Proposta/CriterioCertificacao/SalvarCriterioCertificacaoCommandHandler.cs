@@ -1,7 +1,7 @@
 using MediatR;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Comandos.Proposta.CriterioCertificacao
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarCriterioCertificacaoCommandHandler : IRequestHandler<SalvarCriterioCertificacaoCommand, bool>
     {
