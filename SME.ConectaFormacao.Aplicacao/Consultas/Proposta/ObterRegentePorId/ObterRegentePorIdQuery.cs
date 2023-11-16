@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentePorId
 {
-    public class ObterRegentePorIdQuery: IRequest<PropostaRegente>
+    public class ObterRegentePorIdQuery : IRequest<PropostaRegente>
     {
         public ObterRegentePorIdQuery(long regenteId)
         {

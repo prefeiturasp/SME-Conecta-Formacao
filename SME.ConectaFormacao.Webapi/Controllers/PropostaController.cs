@@ -148,7 +148,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoAlterarProposta.Executar(id, propostaDTO));
         }
-        
+
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -193,12 +193,12 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoRemoverPropostaEncontro.Executar(id));
         }
-        
+
         [HttpGet("comunicado-acao-formativa/{propostaId}")]
         [ProducesResponseType(typeof(ComunicadoAcaoFormativaDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterComunicadoAcaoFormativaPorParametro([FromServices] ICasoDeUsoObterComunicadoAcaoFormativa casoDeUsoObterComunicadoAcaoFormativa,[FromRoute] long propostaId)
+        public async Task<IActionResult> ObterComunicadoAcaoFormativaPorParametro([FromServices] ICasoDeUsoObterComunicadoAcaoFormativa casoDeUsoObterComunicadoAcaoFormativa, [FromRoute] long propostaId)
         {
             return Ok(await casoDeUsoObterComunicadoAcaoFormativa.Executar(propostaId));
         }
@@ -211,7 +211,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar(registroFuncional));
         }
-        
+
         [HttpPost("{propostaId}/regente")]
         [ProducesResponseType(typeof(long), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -227,7 +227,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaRegenteDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterPropostaRegentePaginado([FromRoute] long propostaId, 
+        public async Task<IActionResult> ObterPropostaRegentePaginado([FromRoute] long propostaId,
             [FromServices] ICasoDeUsoObterPropostaRegentePaginacao useCase)
         {
             return Ok(await useCase.Executar(propostaId));
@@ -236,17 +236,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(PropostaRegenteDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterPropostaRegentePorId([FromRoute] long regenteId, 
+        public async Task<IActionResult> ObterPropostaRegentePorId([FromRoute] long regenteId,
             [FromServices] ICasoDeUsoObterPropostaRegentePorId useCase)
         {
             return Ok(await useCase.Executar(regenteId));
         }
-        
+
         [HttpDelete("regente/{regenteId}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ExcluirRegente([FromRoute] long regenteId, 
+        public async Task<IActionResult> ExcluirRegente([FromRoute] long regenteId,
             [FromServices] ICasoDeUsoRemoverPropostaRegente useCase)
         {
             return Ok(await useCase.Executar(regenteId));
@@ -261,12 +261,12 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoSalvarPropostaTutor.Executar(propostaId, propostaTutorDto));
         }
-        
+
         [HttpDelete("tutor/{tutorId}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ExcluirTutor([FromRoute] long tutorId, 
+        public async Task<IActionResult> ExcluirTutor([FromRoute] long tutorId,
             [FromServices] ICasoDeUsoRemoverPropostaTutor useCase)
         {
             return Ok(await useCase.Executar(tutorId));
@@ -275,28 +275,28 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaTutorDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterPropostaTutorPaginado([FromRoute] long propostaId, 
+        public async Task<IActionResult> ObterPropostaTutorPaginado([FromRoute] long propostaId,
             [FromServices] ICasoDeUsoObterPropostaTutorPaginacao useCase)
-        { 
+        {
             return Ok(await useCase.Executar(propostaId));
         }
         [HttpGet("tutor/{tutorId}")]
         [ProducesResponseType(typeof(PropostaTutorDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterPropostaTutorPorId([FromRoute] long tutorId, 
+        public async Task<IActionResult> ObterPropostaTutorPorId([FromRoute] long tutorId,
             [FromServices] ICasoDeUsoObterPropostaTutorPorId useCase)
         {
             return Ok(await useCase.Executar(tutorId));
         }
-        
+
         [HttpPut("{propostaId}/enviardf")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> EnviarPropostaParaDf
         ([FromRoute] long propostaId,
-            [FromServices]ICasoDeUsoEnviarPropostaParaDf useCase)
+            [FromServices] ICasoDeUsoEnviarPropostaParaDf useCase)
         {
             return Ok(await useCase.Executar(propostaId));
         }

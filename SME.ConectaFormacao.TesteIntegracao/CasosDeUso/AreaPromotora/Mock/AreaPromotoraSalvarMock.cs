@@ -5,7 +5,7 @@ using SME.ConectaFormacao.TesteIntegracao.Mocks;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
 {
-    public  class AreaPromotoraSalvarMock : BaseMock
+    public class AreaPromotoraSalvarMock : BaseMock
     {
         public static AreaPromotoraDTO GerarAreaPromotoraDTOValido(AreaPromotoraTipo? areaPromotoraTipo = null, string dominio = null)
         {
@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
             return faker.Generate();
         }
 
-        public static AreaPromotoraDTO GerarAreaPromotoraComDreDTOValido(AreaPromotoraTipo? areaPromotoraTipo = null,long? dreId = null ,string dominio = null)
+        public static AreaPromotoraDTO GerarAreaPromotoraComDreDTOValido(AreaPromotoraTipo? areaPromotoraTipo = null, long? dreId = null, string dominio = null)
         {
             var faker = new Faker<AreaPromotoraDTO>("pt_BR");
             faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock
             faker.RuleFor(x => x.Emails, f => f.Make(2, () => new AreaPromotoraEmailDTO { Email = string.IsNullOrEmpty(dominio) ? f.Person.Email : string.Concat(f.Person.Email[..f.Person.Email.IndexOf('@')], dominio) }));
             faker.RuleFor(x => x.GrupoId, Guid.NewGuid());
             faker.RuleFor(x => x.Telefones, f => f.Make(3, () => new AreaPromotoraTelefoneDTO { Telefone = f.Phone.PhoneNumber("(##) #####-####") }));
-            faker.RuleFor(x => x.DreId, f => dreId ?? f.Random.Int(min:1, max:100));
+            faker.RuleFor(x => x.DreId, f => dreId ?? f.Random.Int(min: 1, max: 100));
             return faker.Generate();
         }
 

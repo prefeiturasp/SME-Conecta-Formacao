@@ -45,7 +45,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (proposta.Encontros.Any())
                     await _repositorioProposta.RemoverEncontros(proposta.Encontros);
-                
+
                 if (proposta.PalavrasChaves.Any())
                     await _repositorioProposta.RemoverPalavrasChaves(proposta.PalavrasChaves);
 

@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         public ObterTutorTurmaPorTutorIdQueryValidator()
         {
-            RuleFor(x =>x.TutorId).GreaterThan(0).WithMessage("Informe o Id do Tutor");
+            RuleFor(x => x.TutorId).GreaterThan(0).WithMessage("Informe o Id do Tutor");
         }
     }
 }

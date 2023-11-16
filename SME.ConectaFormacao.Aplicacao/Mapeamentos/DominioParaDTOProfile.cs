@@ -27,10 +27,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<AreaPromotora, AreaPromotoraCompletoDTO>()
                 .ForMember(dest => dest.DreId, opt => opt.MapFrom(x => x.DreId))
                 .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre!.Nome))
-                .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO {Email = t})));
+                .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO { Email = t })));
 
             CreateMap<AreaPromotora, AreaPromotoraDTO>()
-                .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO {Email = t})))
+                .ForMember(dst => dst.Emails, map => map.MapFrom(src => src.Email.Split(';', StringSplitOptions.None).Select(t => new AreaPromotoraEmailDTO { Email = t })))
                 .ReverseMap()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(x => string.Join(";", x.Emails.Select(t => t.Email))));
 

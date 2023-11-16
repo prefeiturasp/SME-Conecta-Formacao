@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long PropostaId { get; set; }
         public int NumeroPagina { get; set; }
         public int NumeroRegistros { get; set; }
-        
+
         public class ObterTutorPaginadoQueryValidator : AbstractValidator<ObterTutorPaginadoQuery>
         {
             public ObterTutorPaginadoQueryValidator()

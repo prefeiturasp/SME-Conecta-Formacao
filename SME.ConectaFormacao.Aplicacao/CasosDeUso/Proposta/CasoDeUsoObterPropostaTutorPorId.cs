@@ -8,10 +8,10 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
-    public class CasoDeUsoObterPropostaTutorPorId : CasoDeUsoAbstrato,ICasoDeUsoObterPropostaTutorPorId
+    public class CasoDeUsoObterPropostaTutorPorId : CasoDeUsoAbstrato, ICasoDeUsoObterPropostaTutorPorId
     {
         private readonly IMapper _mapper;
-        public CasoDeUsoObterPropostaTutorPorId(IMediator mediator,IMapper mapper) : base(mediator)
+        public CasoDeUsoObterPropostaTutorPorId(IMediator mediator, IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
             var turmasDto = new List<PropostaTutorTurmaDTO>();
             foreach (var turma in turmas)
-                turmasDto.Add(new PropostaTutorTurmaDTO() {Turma = turma.Turma});
+                turmasDto.Add(new PropostaTutorTurmaDTO() { Turma = turma.Turma });
             return turmasDto;
         }
     }

@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao
 {
-    public class CasoDeUsoCriterioCertificacao: CasoDeUsoAbstrato, ICasoDeUsoCriterioCertificacao
+    public class CasoDeUsoCriterioCertificacao : CasoDeUsoAbstrato, ICasoDeUsoCriterioCertificacao
     {
         public CasoDeUsoCriterioCertificacao(IMediator mediator) : base(mediator)
         {

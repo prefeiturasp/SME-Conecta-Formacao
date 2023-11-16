@@ -3,7 +3,7 @@ using MediatR;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand :IRequest
+    public class ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand : IRequest
     {
         public ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(long propostaId, string? registroFuncional, string? nomeRegente, int[] turmas)
         {

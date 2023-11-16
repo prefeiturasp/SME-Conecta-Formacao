@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
             IEnumerable<int> turmasExistentes = await _repositorioProposta.ObterTurmasJaExistenteParaTutor(request.PropostaId, request.NomeTutor, request.RegistroFuncional, request.Turmas);
             foreach (var turma in request.Turmas)
                 if (turmasExistentes.Contains(turma))
-                    erros.Add(string.Format(MensagemNegocio.JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR,request.NomeTutor,turma));
+                    erros.Add(string.Format(MensagemNegocio.JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR, request.NomeTutor, turma));
 
             if (erros.Any())
                 throw new NegocioException(erros);

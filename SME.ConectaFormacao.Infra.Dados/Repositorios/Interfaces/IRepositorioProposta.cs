@@ -42,11 +42,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaCriterioCertificacao>> ObterCriterioCertificacaoPorPropostaId(long propostaId);
         Task InserirCriterioCertificacao(long id, IEnumerable<PropostaCriterioCertificacao> criterios);
         Task RemoverCriterioCertificacao(IEnumerable<PropostaCriterioCertificacao> criterios);
-        Task InserirPropostaRegente(long propostaId,PropostaRegente regente);
-        Task InserirPropostaRegenteTurma(long propostaRegenteId,IEnumerable<PropostaRegenteTurma> regenteTurma);
+        Task InserirPropostaRegente(long propostaId, PropostaRegente regente);
+        Task InserirPropostaRegenteTurma(long propostaRegenteId, IEnumerable<PropostaRegenteTurma> regenteTurma);
         Task<IEnumerable<PropostaRegenteTurma>> ObterRegenteTurmasPorRegenteId(params long[] regenteId);
-        Task InserirPropostaTutor(long propostaId,PropostaTutor tutor);
-        Task InserirPropostaTutorTurma(long propostaTutorId,IEnumerable<PropostaTutorTurma> tutorTurma);
+        Task InserirPropostaTutor(long propostaId, PropostaTutor tutor);
+        Task InserirPropostaTutorTurma(long propostaTutorId, IEnumerable<PropostaTutorTurma> tutorTurma);
         Task ExcluirPropostasRegente(IEnumerable<PropostaRegente> propostaRegentes);
         Task ExcluirPropostaRegente(long propostaRegenteId);
         Task ExcluirPropostasTutor(IEnumerable<PropostaTutor> propostaTutors);

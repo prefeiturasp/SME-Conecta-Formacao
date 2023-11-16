@@ -1,6 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
-
-namespace SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave
+﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave
 {
     public class PalavraChaveDTO
     {

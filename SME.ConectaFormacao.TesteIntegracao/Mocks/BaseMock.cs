@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using Bogus.DataSets;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Extensoes;
 

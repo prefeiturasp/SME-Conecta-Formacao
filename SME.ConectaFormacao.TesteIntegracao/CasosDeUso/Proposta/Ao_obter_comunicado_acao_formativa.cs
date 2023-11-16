@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
-            
+
             var proposta = await InserirNaBaseProposta();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComunicadoAcaoFormativa>();

@@ -11,9 +11,9 @@ namespace SME.ConectaFormacao.Aplicacao
         }
 
         public long PropostaId { get; set; }
-        
+
     }
-    public class ValidarSeExisteRegenteTutorCommandValidator: AbstractValidator<ValidarSeExisteRegenteTutorCommand>
+    public class ValidarSeExisteRegenteTutorCommandValidator : AbstractValidator<ValidarSeExisteRegenteTutorCommand>
     {
         public ValidarSeExisteRegenteTutorCommandValidator()
         {

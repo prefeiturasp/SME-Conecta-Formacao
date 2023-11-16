@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterGrupoPorIdQueryHandler : IRequestHandler<ObterGrupoPorIdQuery,GrupoDTO>
+    public class ObterGrupoPorIdQueryHandler : IRequestHandler<ObterGrupoPorIdQuery, GrupoDTO>
     {
         private readonly IMapper _mapper;
         private readonly IServicoAcessos _servicoAcessos;

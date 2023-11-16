@@ -10,7 +10,6 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
-using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -36,13 +35,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var proposta = await InserirNaBaseProposta();
             var tutor = PropostaSalvarMock.GerarTutor(1);
             await useCase.Executar(proposta.Id, tutor);
-            
+
             // act
             var excecao = await Should.ThrowAsync<NegocioException>(useCase.Executar(proposta.Id, tutor));
-            
+
             // assert
             excecao.ShouldNotBeNull();
-            excecao.Mensagens.Contains(string.Format(MensagemNegocio.JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR,tutor.NomeTutor,tutor.Turmas.FirstOrDefault().Turma)).ShouldBeTrue();
+            excecao.Mensagens.Contains(string.Format(MensagemNegocio.JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR, tutor.NomeTutor, tutor.Turmas.FirstOrDefault().Turma)).ShouldBeTrue();
         }
         [Fact(DisplayName = "Proposta - Deve Cadastrar um novo Tutor")]
         public async Task Deve_inserir_tutor()
@@ -60,7 +59,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             id.ShouldBeGreaterThan(0);
             ValidarPropostaTutorDTO(tutorDto, id);
         }
-        
+
         [Fact(DisplayName = "Proposta - Deve Atualizar um Tutor Existente")]
         public async Task Deve_atualizar_tutor_existente()
         {
@@ -80,7 +79,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var propostaTutorExistenteModificado = ObterPorId<PropostaTutor, long>(tutorExistente.Id);
             propostaTutorExistenteModificado.NomeTutor.ShouldBe(tutorDto.NomeTutor.ToUpper());
         }
-        
+
         [Fact(DisplayName = "Proposta - Não Deve criar um Tutor sem Informar Turmas")]
         public async Task Nao_deve_criar_tutor_sem_informar_turmas()
         {
@@ -97,7 +96,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             excecao.Mensagens.Contains("É necessário informar uma Turma para para cadastrar um tutor").ShouldBeTrue();
         }
-        
+
         [Fact(DisplayName = "Proposta - Não Deve criar um Tutor sem Informar o nome do Tutor")]
         public async Task Nao_deve_criar_tutor_sem_informar_o_nome_do_tutor()
         {

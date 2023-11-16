@@ -1,7 +1,5 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso;
-using SME.ConectaFormacao.Aplicacao.Comandos;
-using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 

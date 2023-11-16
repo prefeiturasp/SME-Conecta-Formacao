@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
     public interface IRepositorioPropostaRegente : IRepositorioBaseAuditavel<PropostaRegente>
     {
-    
+
     }
 }

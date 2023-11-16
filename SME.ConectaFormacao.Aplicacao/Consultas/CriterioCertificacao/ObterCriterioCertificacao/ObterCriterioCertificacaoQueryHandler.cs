@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.CriterioCertificacao.ObterCrit
         private readonly IMapper _mapper;
         private readonly IRepositorioCriterioCertificacao _repositorio;
 
-        public ObterCriterioCertificacaoQueryHandler(IMapper mapper,IRepositorioCriterioCertificacao repositorio)
+        public ObterCriterioCertificacaoQueryHandler(IMapper mapper, IRepositorioCriterioCertificacao repositorio)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorio = repositorio ?? throw new ArgumentNullException(nameof(repositorio));
