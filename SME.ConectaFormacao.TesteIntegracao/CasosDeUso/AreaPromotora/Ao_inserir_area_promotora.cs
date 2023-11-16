@@ -1,11 +1,18 @@
-﻿using Shouldly;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Shouldly;
+using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -16,7 +23,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         public Ao_inserir_area_promotora(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
-
 
         [Fact(DisplayName = "Área promotora - Deve inserir área promotora válida rede parceira com email sem dominio @sme e @edu.sme")]
         public async Task Deve_inserir_area_promotora_valida_rede_parceira_com_email_sem_dominio_sme()
@@ -104,7 +110,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         public async Task Deve_retornar_excecoes_inserir_area_promotora_perfil_tipo_dre_para_um_perfil_dre_existente()
         {
             // arrange
-            var dre = AreaPromotoraSalvarMock.GerarDreValida();
+            var dre = DreMock.GerarDreValida();
             await InserirNaBase(dre!.FirstOrDefault()!);
             var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraComDreDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria, dre!.FirstOrDefault()!.Id);
 
@@ -122,7 +128,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         [Fact(DisplayName = "Área promotora - Deve Cadastrar um Area Promotora com DRE")]
         public async Task Deve_cadastrar_area_promotora_com_Dre()
         {
-            var dre = AreaPromotoraSalvarMock.GerarDreValida();
+            var dre = DreMock.GerarDreValida();
             await InserirNaBase(dre!.FirstOrDefault()!);
             var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraComDreDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria, dre!.FirstOrDefault()!.Id);
 

@@ -75,6 +75,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
 
             return faker;
         }
+
         public static PropostaTutorDTO GerarTutor(short quantidadeTurmas)
         {
             return GeradorTutor(quantidadeTurmas);
@@ -189,6 +190,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             foreach (var tutorTurma in tutorTurmas)
                 retorno.Add(new PropostaTutorTurmaDTO(){Turma = tutorTurma.Turma});
             return retorno;
+        }
+
+        public static IEnumerable<CriterioCertificacaoDTO> GerarCriterioCertificacaoDTO(int quantidade)
+        {
+            var faker = new Faker<CriterioCertificacaoDTO>();
+            faker.RuleFor(x => x.CriterioCertificacaoId, 1);
+            return faker.Generate(quantidade);
         }
         internal static PropostaDTO GerarPropostaDTOValida(
             TipoFormacao tipoFormacao,

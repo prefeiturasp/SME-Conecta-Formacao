@@ -27,15 +27,45 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
-
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
+
 
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
             propostaDepois.Id = proposta.Id;
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
-            propostaDepois.Situacao = SituacaoProposta.Ativo;
             propostaDepois.ManterCriador(proposta);
+            propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
+            propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
+            if (request.PropostaDTO.Situacao == SituacaoProposta.Cadastrada)
+            {
+                var erros = new List<string>();
+                var errosTutorRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id), cancellationToken);
+                if (errosTutorRegente.Any())
+                    erros.AddRange(errosTutorRegente);
+
+                var errosInformacoesGerais = await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
+                if (errosInformacoesGerais.Any())
+                    erros.AddRange(errosInformacoesGerais);
+
+                var errosDatas = await _mediator.Send(new ValidarDatasExistentesNaPropostaCommand(request.Id, request.PropostaDTO), cancellationToken);
+                if (errosDatas.Any())
+                    erros.AddRange(errosDatas);
+
+                var errosDetalhamento = await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
+                if (errosDetalhamento.Any())
+                    erros.AddRange(errosDetalhamento);
+
+                var errosCritériosCertificacao = await _mediator.Send(new ValidarCertificacaoPropostaCommand(request.PropostaDTO), cancellationToken);
+                if (errosCritériosCertificacao.Any())
+                    erros.AddRange(errosCritériosCertificacao);
+
+                if (erros.Any())
+                    throw new NegocioException(erros);
+                propostaDepois.Situacao = SituacaoProposta.Cadastrada;
+            }
+            else
+                propostaDepois.Situacao = SituacaoProposta.Ativo;
 
             var transacao = _transacao.Iniciar();
             try
@@ -51,6 +81,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(request.Id, propostaDepois.VagasRemanecentes), cancellationToken);
 
                 await _mediator.Send(new SalvarPalavraChaveCommand(request.Id, propostaDepois.PalavrasChaves), cancellationToken);
+
+                await _mediator.Send(new SalvarCriterioCertificacaoCommand(request.Id, propostaDepois.CriterioCertificacao), cancellationToken);
 
                 if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())
                 {

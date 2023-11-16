@@ -21,9 +21,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(SalvarPropostaRegenteCommand request, CancellationToken cancellationToken)
         {
-            var regenteAntes = await _repositorioProposta.ObterPropostaRegentePorId(request.propostaRegenteDTO.Id);
+            var regenteAntes = await _repositorioProposta.ObterPropostaRegentePorId(request.PropostaRegenteDTO.Id);
 
-            var regenteDepois = _mapper.Map<PropostaRegente>(request.propostaRegenteDTO);
+            var regenteDepois = _mapper.Map<PropostaRegente>(request.PropostaRegenteDTO);
             var transacao = _transacao.Iniciar();
             try
             {
@@ -55,7 +55,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 transacao.Commit();
                 return regenteDepois.Id;
             }
-            catch (Exception e)
+            catch
             {
                 transacao.Rollback();
                 throw;
