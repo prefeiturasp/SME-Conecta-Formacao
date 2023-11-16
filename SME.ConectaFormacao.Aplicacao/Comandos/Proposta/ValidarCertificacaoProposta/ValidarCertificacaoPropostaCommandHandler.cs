@@ -5,11 +5,11 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ValidarCertificacaoPropostaCommandHandler : IRequestHandler<ValidarCertificacaoPropostaCommand, IEnumerable<string>>
     {
+        private const int QUANTIDADE_MINIMA_CRITERIO_CERTIFICACAO = 3;
         public async Task<IEnumerable<string>> Handle(ValidarCertificacaoPropostaCommand request, CancellationToken cancellationToken)
         {
             var erros = new List<string>();
             var proposta = request.PropostaDto;
-            const int QUANTIDADE_MINIMA_CRITERIO_CERTIFICACAO = 3;
 
             if (!proposta.AcaoInformativa)
                 erros.Add(MensagemNegocio.ACAO_INFORMATIVA_NAO_ACEITA);

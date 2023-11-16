@@ -6,12 +6,12 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ValidarDetalhamentoDaPropostaCommandHandler : IRequestHandler<ValidarDetalhamentoDaPropostaCommand, IEnumerable<string>>
     {
+        private const int QUANTIDADE_MINIMA_DE_PALAVRAS_CHAVES = 3;
+        private const int QUANTIDADE_MAXIMA_DE_PALAVRAS_CHAVES = 5;
         public async Task<IEnumerable<string>> Handle(ValidarDetalhamentoDaPropostaCommand request, CancellationToken cancellationToken)
         {
             var erros = new List<string>();
             var proposta = request.PropostaDto;
-            const int QUANTIDADE_MINIMA_DE_PALAVRAS_CHAVES = 3;
-            const int QUANTIDADE_MAXIMA_DE_PALAVRAS_CHAVES = 5;
             if (proposta.Modalidade is Modalidade.Presencial && string.IsNullOrEmpty(proposta.CargaHorariaPresencial))
                 erros.Add(MensagemNegocio.CARGA_HORARIA_NAO_INFORMADA);
             if (string.IsNullOrEmpty(proposta.Justificativa))
