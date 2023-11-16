@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -22,7 +23,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         protected override void RegistrarFakes(IServiceCollection services)
         {
             base.RegistrarFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterParametroSistemaPorTipoEAnoQuery, Dominio.Entidades.ParametroSistema>), typeof(ObterParametroSistemaPorTipoEAnoQueryFaker), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoUsuarioLogadoQuery,Guid>), typeof(ObterGrupoUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
         }
 
@@ -30,6 +30,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         [Fact(DisplayName = "Proposta - Deve Enviar para o DF uma Proposta com Situação Cadastrada")]
         public async Task Enviar_para_df_proposta_cadastrada()
         {
+            var parametroSistemaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
+            await InserirNaBase(parametroSistemaDescricao);
+            var parametroSistemaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
+            await InserirNaBase(parametroSistemaUrl);
+            
             var id = await CriarPropostaNaBase(SituacaoProposta.Cadastrada);
 
             var obterProposaAntes = ObterPorId<Dominio.Entidades.Proposta, long>(id);
@@ -44,6 +49,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         [Fact(DisplayName = "Proposta - Não Deve Enviar para o DF uma Proposta com Situação Diferente de Cadastrada")]
         public async Task Nao_deve_enviar_para_df_proposta_diferente_de_cadastrada()
         {
+            var parametroSistemaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
+            await InserirNaBase(parametroSistemaDescricao);
+            var parametroSistemaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
+            await InserirNaBase(parametroSistemaUrl);
+            
             var id = await CriarPropostaNaBase(SituacaoProposta.Rascunho);
 
             var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaDf>();
@@ -54,6 +64,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         [Fact(DisplayName = "Proposta - Não Deve Enviar para o DF uma Proposta Excluida")]
         public async Task Nao_deve_enviar_uma_proposta_excluida()
         {
+            var parametroSistemaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
+            await InserirNaBase(parametroSistemaDescricao);
+            var parametroSistemaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
+            await InserirNaBase(parametroSistemaUrl);
+            
             var id = await CriarPropostaNaBase(SituacaoProposta.Cadastrada);
 
             var useCaseDeleteProposta = ObterCasoDeUso<ICasoDeUsoRemoverProposta>();
