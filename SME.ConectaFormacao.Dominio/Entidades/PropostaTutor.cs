@@ -6,6 +6,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public bool ProfissionalRedeMunicipal { get; set; }
         public string? RegistroFuncional { get; set; }
         public string? NomeTutor { get; set; }
-        public IEnumerable<PropostaTutorTurma> Turmas { get; set; } = new List<PropostaTutorTurma>();  
+        public IEnumerable<PropostaTutorTurma> Turmas { get; set; } = new List<PropostaTutorTurma>();
     }
 }

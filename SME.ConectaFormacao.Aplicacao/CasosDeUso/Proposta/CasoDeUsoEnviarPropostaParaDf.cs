@@ -15,10 +15,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         public async Task<bool> Executar(long propostaId)
         {
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
-            
+
             if (proposta == null || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-            
+
             if (proposta.Situacao != SituacaoProposta.Cadastrada)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA);
 

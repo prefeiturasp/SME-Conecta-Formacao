@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol.IoC
             var servicoEolOptions = new ServicoEolOptions();
             configuration.GetSection(ServicoEolOptions.Secao).Bind(servicoEolOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(servicoEolOptions);
-            
+
             services.AddHttpClient<IServicoEol, ServicoEol>(c =>
             {
                 c.BaseAddress = new Uri(servicoEolOptions.UrlApiEol);

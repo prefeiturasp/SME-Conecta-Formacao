@@ -7,7 +7,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterTutorPaginadoQueryHandler :IRequestHandler<ObterTutorPaginadoQuery,PaginacaoResultadoDTO<PropostaTutorDTO>>
+    public class ObterTutorPaginadoQueryHandler : IRequestHandler<ObterTutorPaginadoQuery, PaginacaoResultadoDTO<PropostaTutorDTO>>
     {
         private readonly IMapper _mapper;
 

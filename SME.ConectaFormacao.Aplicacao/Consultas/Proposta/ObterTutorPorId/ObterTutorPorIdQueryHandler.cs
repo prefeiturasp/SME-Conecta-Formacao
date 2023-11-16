@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterTutorPorIdQueryHandler :IRequestHandler<ObterTutorPorIdQuery, PropostaTutor>
+    public class ObterTutorPorIdQueryHandler : IRequestHandler<ObterTutorPorIdQuery, PropostaTutor>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 

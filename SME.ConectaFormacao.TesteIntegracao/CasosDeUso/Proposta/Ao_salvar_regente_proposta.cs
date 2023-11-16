@@ -1,4 +1,3 @@
-using Bogus;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -6,12 +5,11 @@ using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
-using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -45,7 +43,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             id.ShouldBeGreaterThan(0);
             ValidarPropostaRegenteDTO(regenteDto, id);
         }
+        [Fact(DisplayName = "Proposta - Não Deve Cadastrar um novo Regente com Turma Duplicada")]
+        public async Task Nao_deve_cadastrar_regente_com_turma_duplicada()
+        {
+            // arrange
+            var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaRegente>();
+            var proposta = await InserirNaBaseProposta();
+            var regente = PropostaSalvarMock.GerarRegente(1);
+            await useCase.Executar(proposta.Id, regente);
 
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(useCase.Executar(proposta.Id, regente));
+
+            // assert
+            excecao.ShouldNotBeNull();
+            excecao.Mensagens.Contains(string.Format(MensagemNegocio.JA_EXISTE_ESSA_TURMA_PARA_ESSE_REGENTE, regente.NomeRegente, regente.Turmas.FirstOrDefault().Turma)).ShouldBeTrue();
+        }
         [Fact(DisplayName = "Proposta - Deve Atualizar um Regente Existente")]
         public async Task Deve_atualizar_regente_existente()
         {

@@ -23,10 +23,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         protected override void RegistrarFakes(IServiceCollection services)
         {
             base.RegistrarFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoUsuarioLogadoQuery,Guid>), typeof(ObterGrupoUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoUsuarioLogadoQuery, Guid>), typeof(ObterGrupoUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
         }
 
-        
+
         [Fact(DisplayName = "Proposta - Deve Enviar para o DF uma Proposta com Situação Cadastrada")]
         public async Task Enviar_para_df_proposta_cadastrada()
         {
@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(parametroSistemaDescricao);
             var parametroSistemaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroSistemaUrl);
-            
+
             var id = await CriarPropostaNaBase(SituacaoProposta.Cadastrada);
 
             var obterProposaAntes = ObterPorId<Dominio.Entidades.Proposta, long>(id);
@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaDf>();
             await casoUsoEnviarDf.Executar(id);
-            
+
             var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(id);
             obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AguardandoAnaliseDf);
         }
@@ -53,14 +53,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(parametroSistemaDescricao);
             var parametroSistemaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroSistemaUrl);
-            
+
             var id = await CriarPropostaNaBase(SituacaoProposta.Rascunho);
 
             var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaDf>();
             var excecao = await Should.ThrowAsync<NegocioException>(casoUsoEnviarDf.Executar(id));
             excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA).ShouldBeTrue();
         }
-        
+
         [Fact(DisplayName = "Proposta - Não Deve Enviar para o DF uma Proposta Excluida")]
         public async Task Nao_deve_enviar_uma_proposta_excluida()
         {
@@ -68,12 +68,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(parametroSistemaDescricao);
             var parametroSistemaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroSistemaUrl);
-            
+
             var id = await CriarPropostaNaBase(SituacaoProposta.Cadastrada);
 
             var useCaseDeleteProposta = ObterCasoDeUso<ICasoDeUsoRemoverProposta>();
             await useCaseDeleteProposta.Executar(id);
-            
+
             var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaDf>();
             var excecao = await Should.ThrowAsync<NegocioException>(casoUsoEnviarDf.Executar(id));
             excecao.ShouldNotBeNull();

@@ -1,18 +1,11 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Shouldly;
-using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
+﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.Mock;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -134,7 +127,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirAreaPromotora>();
 
-            var todosAreas =  ObterTodos<Dominio.Entidades.AreaPromotora>();
+            var todosAreas = ObterTodos<Dominio.Entidades.AreaPromotora>();
             todosAreas.Count.ShouldBeEquivalentTo(0);
 
             await casoDeUso.Executar(areaPromotoraDTO);

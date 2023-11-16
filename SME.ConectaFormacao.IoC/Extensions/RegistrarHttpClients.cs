@@ -10,6 +10,6 @@ internal static class RegistrarHttpClients
     internal static void AdicionarHttpClients(this IServiceCollection services, IConfiguration configuration)
     {
         ServicoAcessosCHelper.ConfigurarServicoAcessos(services, configuration);
-        ServicoEolCHelper.ConfigurarServicoEol(services,configuration);
+        ServicoEolCHelper.ConfigurarServicoEol(services, configuration);
     }
 }

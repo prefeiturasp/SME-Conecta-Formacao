@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegenteTurmaPorRegenteId
 {
-    public class ObterRegenteTurmaPorRegenteIdQueryHandler: IRequestHandler<ObterRegenteTurmaPorRegenteIdQuery, IEnumerable<PropostaRegenteTurma>>
+    public class ObterRegenteTurmaPorRegenteIdQueryHandler : IRequestHandler<ObterRegenteTurmaPorRegenteIdQuery, IEnumerable<PropostaRegenteTurma>>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 
@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegenteTurmaPorR
 
         public async Task<IEnumerable<PropostaRegenteTurma>> Handle(ObterRegenteTurmaPorRegenteIdQuery request, CancellationToken cancellationToken)
         {
-            return await  _repositorioProposta.ObterRegenteTurmasPorRegenteId(request.RegenteId);
+            return await _repositorioProposta.ObterRegenteTurmasPorRegenteId(request.RegenteId);
         }
     }
 }

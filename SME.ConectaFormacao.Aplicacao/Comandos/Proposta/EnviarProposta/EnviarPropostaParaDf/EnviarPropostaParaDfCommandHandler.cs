@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class EnviarPropostaParaDfCommandHandler: IRequestHandler<EnviarPropostaParaDfCommand,bool>
+    public class EnviarPropostaParaDfCommandHandler : IRequestHandler<EnviarPropostaParaDfCommand, bool>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 
@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
         }
 
         public async Task<bool> Handle(EnviarPropostaParaDfCommand request, CancellationToken cancellationToken)
-        { 
+        {
             await _repositorioProposta.EnviarPropostaParaDf(request.PropostaId);
             return true;
         }

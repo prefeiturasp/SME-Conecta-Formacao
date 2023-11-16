@@ -17,9 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao
             var criterioCertificacaoAntes = await _repositorioProposta.ObterCriterioCertificacaoPorPropostaId(request.PropostaId);
 
             var criteriosInserir = request.CriterioCertificacaos.Where(w => !criterioCertificacaoAntes.Any(a => a.CriterioCertificacaoId == w.CriterioCertificacaoId));
-            
+
             var criteriosExcluir = criterioCertificacaoAntes.Where(w => !request.CriterioCertificacaos.Any(a => a.CriterioCertificacaoId == w.CriterioCertificacaoId));
-            
+
             if (criteriosInserir.Any())
                 await _repositorioProposta.InserirCriterioCertificacao(request.PropostaId, criteriosInserir);
 

@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotEmpty()
                 .NotNull()
                 .MinimumLength(1).WithMessage("Informe o nome do Tutor");
-            
+
             RuleFor(x => x.PropostaTutorDto.Turmas)
                 .Must(x => x.Any()).WithMessage("É necessário informar uma Turma para para cadastrar um tutor");
         }

@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<PropostaTutorTurma>> Handle(ObterTutorTurmaPorTutorIdQuery request, CancellationToken cancellationToken)
         {
-            return await  _repositorioProposta.ObterTutorTurmasPorTutorId(request.TutorId);
+            return await _repositorioProposta.ObterTutorTurmasPorTutorId(request.TutorId);
         }
     }
 }

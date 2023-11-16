@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
-    public class CasoDeUsoRemoverPropostaTutor: CasoDeUsoAbstrato, ICasoDeUsoRemoverPropostaTutor
+    public class CasoDeUsoRemoverPropostaTutor : CasoDeUsoAbstrato, ICasoDeUsoRemoverPropostaTutor
     {
         public CasoDeUsoRemoverPropostaTutor(IMediator mediator) : base(mediator)
         {

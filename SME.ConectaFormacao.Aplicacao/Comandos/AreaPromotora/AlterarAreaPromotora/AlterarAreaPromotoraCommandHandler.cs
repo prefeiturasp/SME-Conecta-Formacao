@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<bool> Handle(AlterarAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
             if (request.AreaPromotoraDTO.DreId != null)
-                await _mediator.Send(new ValidarPerfilDreAreaPromotoraCommand((long) request.AreaPromotoraDTO.DreId, request.AreaPromotoraDTO.GrupoId,request.Id), cancellationToken);
+                await _mediator.Send(new ValidarPerfilDreAreaPromotoraCommand((long)request.AreaPromotoraDTO.DreId, request.AreaPromotoraDTO.GrupoId, request.Id), cancellationToken);
 
             await _mediator.Send(new ValidarEmailsAreaPromotoraCommand(request.AreaPromotoraDTO.Emails, request.AreaPromotoraDTO.Tipo), cancellationToken);
 

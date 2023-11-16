@@ -58,27 +58,27 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(f => f.PropostaDTO.QuantidadeVagasTurma)
                 .NotEmpty()
                 .WithMessage("É necessário informar a quantidade de vagas por turma para alterar a proposta");
-            
+
             RuleFor(f => f.PropostaDTO.Justificativa)
                 .NotEmpty()
                 .WithMessage("É necessário informar a justificativa para alterar a proposta");
-            
+
             RuleFor(f => f.PropostaDTO.Objetivos)
                 .NotEmpty()
                 .WithMessage("É necessário informar os objetivos para alterar a proposta");
-            
+
             RuleFor(f => f.PropostaDTO.ConteudoProgramatico)
                 .NotEmpty()
                 .WithMessage("É necessário informar o conteúdo programático para alterar a proposta");
-            
+
             RuleFor(f => f.PropostaDTO.ProcedimentoMetadologico)
                 .NotEmpty()
                 .WithMessage("É necessário informar os procedimentos metadológicos para alterar a proposta");
-            
+
             RuleFor(f => f.PropostaDTO.Referencia)
                 .NotEmpty()
                 .WithMessage("É necessário informar a referência para alterar a proposta");
-            
+
             RuleFor(f => f.PropostaDTO.PalavrasChaves)
                 .NotNull()
                 .WithMessage("É necessário informar as palavras-chaves para alterar a proposta");

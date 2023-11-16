@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class RemoverPropostaRegenteCommandHandler : IRequestHandler<RemoverPropostaRegenteCommand,bool>
+    public class RemoverPropostaRegenteCommandHandler : IRequestHandler<RemoverPropostaRegenteCommand, bool>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 

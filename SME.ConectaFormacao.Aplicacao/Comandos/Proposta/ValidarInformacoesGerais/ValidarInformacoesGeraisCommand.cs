@@ -1,6 +1,5 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
-using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {

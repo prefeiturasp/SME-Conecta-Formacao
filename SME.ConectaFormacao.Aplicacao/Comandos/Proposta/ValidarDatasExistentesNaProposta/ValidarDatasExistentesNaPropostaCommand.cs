@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarDatasExistentesNaPropostaCommand :IRequest<IEnumerable<string>>
+    public class ValidarDatasExistentesNaPropostaCommand : IRequest<IEnumerable<string>>
     {
         public ValidarDatasExistentesNaPropostaCommand(long propostaId, PropostaDTO propostaDto)
         {

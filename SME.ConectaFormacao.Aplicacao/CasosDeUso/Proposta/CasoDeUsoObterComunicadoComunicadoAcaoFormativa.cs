@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<ComunicadoAcaoFormativaDTO> Executar(long propostaId)
         {
-            if(propostaId == 0) return await ObterComunicaddoParametroSistema();
+            if (propostaId == 0) return await ObterComunicaddoParametroSistema();
 
             var proposta = await mediator.Send(new ObterPropostaCompletaPorIdQuery(propostaId));
             if (proposta.AcaoInformativa)

@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes
 {
-    public class ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFake : IRequestHandler<ObterNomeProfissionalPorRegistroFuncionalQuery,string>
+    public class ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFake : IRequestHandler<ObterNomeProfissionalPorRegistroFuncionalQuery, string>
     {
         public async Task<string> Handle(ObterNomeProfissionalPorRegistroFuncionalQuery request, CancellationToken cancellationToken)
         {
