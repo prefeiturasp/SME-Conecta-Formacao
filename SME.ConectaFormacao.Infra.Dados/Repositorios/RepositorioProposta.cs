@@ -68,7 +68,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             {
                 PreencherAuditoriaCriacao(criterioValidacaoInscricao);
                 criterioValidacaoInscricao.PropostaId = propostaId;
-                criterioValidacaoInscricao.Id = (long)await conexao.Obter().InsertAsync(criterioValidacaoInscricao);
+                criterioValidacaoInscricao.Id = (long) await conexao.Obter().InsertAsync(criterioValidacaoInscricao);
             }
         }
 
@@ -79,7 +79,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(funcaoEspecifica);
 
                 funcaoEspecifica.PropostaId = propostaId;
-                funcaoEspecifica.Id = (long)await conexao.Obter().InsertAsync(funcaoEspecifica);
+                funcaoEspecifica.Id = (long) await conexao.Obter().InsertAsync(funcaoEspecifica);
             }
         }
 
@@ -90,7 +90,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(publicoAlvo);
 
                 publicoAlvo.PropostaId = propostaId;
-                publicoAlvo.Id = (long)await conexao.Obter().InsertAsync(publicoAlvo);
+                publicoAlvo.Id = (long) await conexao.Obter().InsertAsync(publicoAlvo);
             }
         }
 
@@ -101,7 +101,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(vagaRemanecente);
 
                 vagaRemanecente.PropostaId = propostaId;
-                vagaRemanecente.Id = (long)await conexao.Obter().InsertAsync(vagaRemanecente);
+                vagaRemanecente.Id = (long) await conexao.Obter().InsertAsync(vagaRemanecente);
             }
         }
 
@@ -120,7 +120,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_login
                         from proposta_criterio_validacao_inscricao 
                         where proposta_id = @propostaId and not excluido";
-            return conexao.Obter().QueryAsync<PropostaCriterioValidacaoInscricao>(query, new { propostaId });
+            return conexao.Obter().QueryAsync<PropostaCriterioValidacaoInscricao>(query, new {propostaId});
         }
 
         public Task<IEnumerable<PropostaFuncaoEspecifica>> ObterFuncoesEspecificasPorId(long propostaId)
@@ -138,7 +138,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_login
                         from proposta_funcao_especifica 
                         where proposta_id = @propostaId and not excluido";
-            return conexao.Obter().QueryAsync<PropostaFuncaoEspecifica>(query, new { propostaId });
+            return conexao.Obter().QueryAsync<PropostaFuncaoEspecifica>(query, new {propostaId});
         }
 
         public Task<IEnumerable<PropostaPublicoAlvo>> ObterPublicoAlvoPorId(long propostaId)
@@ -156,7 +156,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_login
                         from proposta_publico_alvo 
                         where proposta_id = @propostaId and not excluido";
-            return conexao.Obter().QueryAsync<PropostaPublicoAlvo>(query, new { propostaId });
+            return conexao.Obter().QueryAsync<PropostaPublicoAlvo>(query, new {propostaId});
         }
 
         public Task<IEnumerable<PropostaVagaRemanecente>> ObterVagasRemacenentesPorId(long propostaId)
@@ -174,7 +174,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_login
                         from proposta_vaga_remanecente 
                         where proposta_id = @propostaId and not excluido";
-            return conexao.Obter().QueryAsync<PropostaVagaRemanecente>(query, new { propostaId });
+            return conexao.Obter().QueryAsync<PropostaVagaRemanecente>(query, new {propostaId});
         }
 
         public Task RemoverFuncoesEspecificas(IEnumerable<PropostaFuncaoEspecifica> funcoesEspecificas)
@@ -290,25 +290,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             query += " limit @numeroRegistros offset @registrosIgnorados";
 
             return conexao.Obter().QueryAsync<Proposta, AreaPromotora, Proposta>(query, (proposta, areaPromotora) =>
-            {
-                proposta.AreaPromotora = areaPromotora;
-                return proposta;
-            },
-            new
-            {
-                propostaId,
-                numeroRegistros,
-                registrosIgnorados,
-                areaPromotoraId,
-                modalidade,
-                publicoAlvoIds,
-                nomeFormacao,
-                numeroHomologacao,
-                periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
-                periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
-                situacao
-            },
-            splitOn: "id, id");
+                {
+                    proposta.AreaPromotora = areaPromotora;
+                    return proposta;
+                },
+                new
+                {
+                    propostaId,
+                    numeroRegistros,
+                    registrosIgnorados,
+                    areaPromotoraId,
+                    modalidade,
+                    publicoAlvoIds,
+                    nomeFormacao,
+                    numeroHomologacao,
+                    periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
+                    periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
+                    situacao
+                },
+                splitOn: "id, id");
         }
 
         public Task<PropostaEncontro> ObterEncontroPorId(long encontroId)
@@ -327,9 +327,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_login
                         from proposta_encontro 
                         where id = @encontroId";
-            return conexao.Obter().QueryFirstOrDefaultAsync<PropostaEncontro>(query, new { encontroId });
+            return conexao.Obter().QueryFirstOrDefaultAsync<PropostaEncontro>(query, new {encontroId});
         }
-        
+
         public Task<PropostaRegente> ObterPropostaRegentePorId(long id)
         {
             var query = @"SELECT
@@ -349,8 +349,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         FROM
 	                        public.proposta_regente
 	                        where not excluido and  id = @id;";
-            return conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new { id });
+            return conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new {id});
         }
+
         public Task<PropostaTutor> ObterPropostaTutorPorId(long id)
         {
             var query = @"select
@@ -369,7 +370,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             from
 	                            public.proposta_tutor
 	                        where not excluido and  id = @id;";
-            return conexao.Obter().QueryFirstOrDefaultAsync<PropostaTutor>(query, new { id });
+            return conexao.Obter().QueryFirstOrDefaultAsync<PropostaTutor>(query, new {id});
         }
 
         public async Task InserirEncontro(long propostaId, PropostaEncontro encontro)
@@ -377,7 +378,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             PreencherAuditoriaCriacao(encontro);
 
             encontro.PropostaId = propostaId;
-            encontro.Id = (long)await conexao.Obter().InsertAsync(encontro);
+            encontro.Id = (long) await conexao.Obter().InsertAsync(encontro);
         }
 
         public async Task InserirEncontroTurmas(long propostaEncontroId, IEnumerable<PropostaEncontroTurma> turmas)
@@ -387,7 +388,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(turma);
 
                 turma.PropostaEncontroId = propostaEncontroId;
-                turma.Id = (long)await conexao.Obter().InsertAsync(turma);
+                turma.Id = (long) await conexao.Obter().InsertAsync(turma);
             }
         }
 
@@ -398,7 +399,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(data);
 
                 data.PropostaEncontroId = propostaEncontroId;
-                data.Id = (long)await conexao.Obter().InsertAsync(data);
+                data.Id = (long) await conexao.Obter().InsertAsync(data);
             }
         }
 
@@ -446,7 +447,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_login
                         from proposta_encontro_data 
                         where proposta_encontro_id = any(@encontroIds) and not excluido";
-            return conexao.Obter().QueryAsync<PropostaEncontroData>(query, new { encontroIds });
+            return conexao.Obter().QueryAsync<PropostaEncontroData>(query, new {encontroIds});
         }
 
         public Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(params long[] encontroIds)
@@ -464,7 +465,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_login
                         from proposta_encontro_turma 
                         where proposta_encontro_id = any(@encontroIds) and not excluido";
-            return conexao.Obter().QueryAsync<PropostaEncontroTurma>(query, new { encontroIds });
+            return conexao.Obter().QueryAsync<PropostaEncontroTurma>(query, new {encontroIds});
         }
 
         public Task RemoverEncontroTurmas(IEnumerable<PropostaEncontroTurma> turmas)
@@ -537,24 +538,27 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_login
                         from proposta_encontro 
                         where proposta_id = @propostaId and not excluido";
-            return conexao.Obter().QueryAsync<PropostaEncontro>(query, new { propostaId });
+            return conexao.Obter().QueryAsync<PropostaEncontro>(query, new {propostaId});
         }
 
         public Task<int> ObterTotalEncontros(long propostaId)
         {
             var query = @"select count(1) from proposta_encontro where not excluido and proposta_id = @propostaId";
-            return conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new {propostaId});
         }
+
         public Task<int> ObterTotalRegentes(long propostaId)
         {
             var query = @"select count(1) from proposta_regente where not excluido and proposta_id = @propostaId";
-            return conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new {propostaId});
         }
+
         public Task<int> ObterTotalTutores(long propostaId)
         {
             var query = @"select count(1) from proposta_tutor where not excluido and proposta_id = @propostaId";
-            return conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new {propostaId});
         }
+
         public Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId)
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
@@ -579,8 +583,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             query += " order by id";
             query += " limit @numeroRegistros offset @registrosIgnorados";
 
-            return conexao.Obter().QueryAsync<PropostaEncontro>(query, new { numeroRegistros, registrosIgnorados, propostaId });
+            return conexao.Obter().QueryAsync<PropostaEncontro>(query, new {numeroRegistros, registrosIgnorados, propostaId});
         }
+
         public Task<IEnumerable<PropostaRegente>> ObterRegentesPaginado(int numeroPagina, int numeroRegistros, long propostaId)
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
@@ -606,9 +611,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             query += " order by id";
             query += " limit @numeroRegistros offset @registrosIgnorados";
 
-            return conexao.Obter().QueryAsync<PropostaRegente>(query, new { numeroRegistros, registrosIgnorados, propostaId });
+            return conexao.Obter().QueryAsync<PropostaRegente>(query, new {numeroRegistros, registrosIgnorados, propostaId});
         }
-        
+
         public Task<IEnumerable<PropostaTutor>> ObterTutoresPaginado(int numeroPagina, int numeroRegistros, long propostaId)
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
@@ -633,7 +638,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             query += " order by id";
             query += " limit @numeroRegistros offset @registrosIgnorados";
 
-            return conexao.Obter().QueryAsync<PropostaTutor>(query, new { numeroRegistros, registrosIgnorados, propostaId });
+            return conexao.Obter().QueryAsync<PropostaTutor>(query, new {numeroRegistros, registrosIgnorados, propostaId});
         }
 
         public Task EnviarPropostaParaDf(long propostaId)
@@ -644,7 +649,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             set situacao  = @aguardandoDf
                           where id = @propostaId ";
 
-            return conexao.Obter().ExecuteAsync(query, new {propostaId,aguardandoDf});
+            return conexao.Obter().ExecuteAsync(query, new {propostaId, aguardandoDf});
         }
 
         public async Task<int> ObterQuantidadeDeTurmasComEncontro(long propostaId)
@@ -653,9 +658,52 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                         from proposta_encontro_turma pet
 	                         inner join proposta_encontro pe on pet.proposta_encontro_id = pe.id 
 	                         where pe.proposta_id = @propostaId ";
-            return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
+            return await conexao.Obter().ExecuteScalarAsync<int>(query, new {propostaId});
         }
 
+        public async Task<IEnumerable<int>> ObterTurmasJaExistenteParaRegente(long propostaId, string? nomeRegente, string? registroFuncional, int[] turmas)
+        {
+            var query = new StringBuilder(@"select
+	                                            distinct prt.turma
+                                            from
+	                                            proposta_regente pr
+                                            inner join proposta_regente_turma prt on
+	                                            pr.id = prt.proposta_regente_id
+                                            where
+	                                            not pr.excluido
+	                                            and not prt.excluido 
+	                                            and pr.proposta_id = @propostaId
+	                                            and prt.turma = any(@turmas)");
+            
+            if (!string.IsNullOrEmpty(registroFuncional))
+                query.AppendLine(" and pr.registro_funcional = @registroFuncional ");
+            if (string.IsNullOrEmpty(registroFuncional) && !string.IsNullOrEmpty(nomeRegente))
+                query.AppendLine(" and pr.nome_regente = @nomeRegente ");
+            
+            return await conexao.Obter().QueryAsync<int>(query.ToString(), new {propostaId,nomeRegente,registroFuncional,turmas});
+        }
+
+        public async Task<IEnumerable<int>> ObterTurmasJaExistenteParaTutor(long propostaId, string? nomeTutor, string? registroFuncional, int[] turmas)
+        {
+            var query = new StringBuilder(@"select
+	                                            distinct ptt.turma
+                                            from
+	                                            proposta_tutor pt
+                                            inner join proposta_tutor_turma ptt on
+	                                            pt.id = ptt.proposta_tutor_id 
+                                            where
+	                                            not pt.excluido
+	                                            and not ptt.excluido 
+	                                            and pt.proposta_id = @propostaId
+	                                            and ptt.turma = any(@turmas) ");
+            
+            if (!string.IsNullOrEmpty(registroFuncional))
+                query.AppendLine(" and pt.registro_funcional = @registroFuncional ");
+            if (string.IsNullOrEmpty(registroFuncional) && !string.IsNullOrEmpty(nomeTutor))
+                query.AppendLine(" and pt.nome_tutor = @nomeTutor ");
+            
+            return await conexao.Obter().QueryAsync<int>(query.ToString(), new {propostaId,nomeTutor,registroFuncional,turmas});
+        }
         public async Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves)
         {
             foreach (var palavraChave in palavrasChaves)
@@ -663,10 +711,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(palavraChave);
 
                 palavraChave.PropostaId = id;
-                palavraChave.Id = (long)await conexao.Obter().InsertAsync(palavraChave);
+                palavraChave.Id = (long) await conexao.Obter().InsertAsync(palavraChave);
             }
         }
-        
+
         public async Task InserirCriterioCertificacao(long id, IEnumerable<PropostaCriterioCertificacao> criterios)
         {
             foreach (var criterio in criterios)
@@ -674,10 +722,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(criterio);
 
                 criterio.PropostaId = id;
-                criterio.Id = (long)await conexao.Obter().InsertAsync(criterio);
+                criterio.Id = (long) await conexao.Obter().InsertAsync(criterio);
             }
         }
-        
+
         public Task<IEnumerable<PropostaPalavraChave>> ObterPalavraChavePorId(long id)
         {
             var query = @"select 
@@ -693,8 +741,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_login
                         from proposta_palavra_chave 
                         where proposta_id = @id and not excluido ";
-            return conexao.Obter().QueryAsync<PropostaPalavraChave>(query, new { id });
-        }        
+            return conexao.Obter().QueryAsync<PropostaPalavraChave>(query, new {id});
+        }
+
         public Task<IEnumerable<PropostaCriterioCertificacao>> ObterCriterioCertificacaoPorPropostaId(long propostaId)
         {
             var query = @" select 
@@ -710,9 +759,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_login
                         from proposta_criterio_certificacao pcc  
                         where proposta_id = @propostaId and not excluido ";
-            return conexao.Obter().QueryAsync<PropostaCriterioCertificacao>(query, new { propostaId });
+            return conexao.Obter().QueryAsync<PropostaCriterioCertificacao>(query, new {propostaId});
         }
-        
+
         public Task RemoverPalavrasChaves(IEnumerable<PropostaPalavraChave> palavrasChaves)
         {
             var palavraChave = palavrasChaves.First();
@@ -736,6 +785,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
+
         public Task RemoverCriterioCertificacao(IEnumerable<PropostaCriterioCertificacao> criterios)
         {
             var criterio = criterios.First();
@@ -766,7 +816,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             regente.PropostaId = propostaId;
             regente.NomeRegente = regente.NomeRegente.ToUpper();
-            regente.Id = (long)await conexao.Obter().InsertAsync(regente);
+            regente.Id = (long) await conexao.Obter().InsertAsync(regente);
         }
 
         public async Task InserirPropostaRegenteTurma(long propostaRegenteId, IEnumerable<PropostaRegenteTurma> regenteTurma)
@@ -776,11 +826,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(regente);
 
                 regente.PropostaRegenteId = propostaRegenteId;
-                regente.Id = (long)await conexao.Obter().InsertAsync(regente);
+                regente.Id = (long) await conexao.Obter().InsertAsync(regente);
             }
         }
 
-        public  Task<IEnumerable<PropostaRegenteTurma>> ObterRegenteTurmasPorRegenteId(params long[] regenteIds)
+        public Task<IEnumerable<PropostaRegenteTurma>> ObterRegenteTurmasPorRegenteId(params long[] regenteIds)
         {
             var query = @"SELECT
 	                        id,
@@ -797,7 +847,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        public.proposta_regente_turma
 	                        where proposta_regente_id = any(@regenteIds) 
 	                        and not excluido ";
-            return conexao.Obter().QueryAsync<PropostaRegenteTurma>(query, new { regenteIds });
+            return conexao.Obter().QueryAsync<PropostaRegenteTurma>(query, new {regenteIds});
         }
 
         public async Task InserirPropostaTutor(long propostaId, PropostaTutor tutor)
@@ -805,7 +855,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             PreencherAuditoriaCriacao(tutor);
             tutor.NomeTutor = tutor.NomeTutor?.ToUpper();
             tutor.PropostaId = propostaId;
-            tutor.Id = (long)await conexao.Obter().InsertAsync(tutor);
+            tutor.Id = (long) await conexao.Obter().InsertAsync(tutor);
         }
 
         public async Task InserirPropostaTutorTurma(long propostaTutorId, IEnumerable<PropostaTutorTurma> tutorTurma)
@@ -815,7 +865,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(tutor);
 
                 tutor.PropostaTutorId = propostaTutorId;
-                tutor.Id = (long)await conexao.Obter().InsertAsync(tutor);
+                tutor.Id = (long) await conexao.Obter().InsertAsync(tutor);
             }
         }
 
@@ -863,9 +913,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             alterado_por = @AlteradoPor, 
                             alterado_login = @AlteradoLogin 
                           where not excluido and id = @id ";
-            
+
             await conexao.Obter().ExecuteAsync(query, parametros);
         }
+
         public async Task ExcluirPropostaTutor(long tutorId)
         {
             var data = await ObterPropostaTutorPorId(tutorId);
@@ -886,9 +937,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             alterado_por = @AlteradoPor, 
                             alterado_login = @AlteradoLogin 
                           where not excluido and id = @id ";
-            
+
             await conexao.Obter().ExecuteAsync(query, parametros);
         }
+
         public Task ExcluirPropostasTutor(IEnumerable<PropostaTutor> propostaTutors)
         {
             var data = propostaTutors.First();
@@ -913,7 +965,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
-        public  Task ExcluirPropostaTutorTurma(IEnumerable<PropostaTutorTurma> tutorTurmas)
+        public Task ExcluirPropostaTutorTurma(IEnumerable<PropostaTutorTurma> tutorTurmas)
         {
             var data = tutorTurmas.First();
             PreencherAuditoriaAlteracao(data);
@@ -960,19 +1012,22 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
+
         public async Task AtualizarPropostaRegente(PropostaRegente propostaRegente)
         {
             PreencherAuditoriaAlteracao(propostaRegente);
             propostaRegente.NomeRegente = propostaRegente.NomeRegente.ToUpper();
             await conexao.Obter().UpdateAsync(propostaRegente);
         }
+
         public async Task AtualizarPropostaTutor(PropostaTutor propostaTutor)
         {
             PreencherAuditoriaAlteracao(propostaTutor);
-            propostaTutor.NomeTutor = propostaTutor.NomeTutor?.ToUpper(); 
+            propostaTutor.NomeTutor = propostaTutor.NomeTutor?.ToUpper();
             await conexao.Obter().UpdateAsync(propostaTutor);
         }
-        public  Task<IEnumerable<PropostaTutorTurma>> ObterTutorTurmasPorTutorId(params long[] tutorIds)
+
+        public Task<IEnumerable<PropostaTutorTurma>> ObterTutorTurmasPorTutorId(params long[] tutorIds)
         {
             var query = @"select
 	                            id,
@@ -989,7 +1044,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                            public.proposta_tutor_turma
 	                        where proposta_tutor_id = any(@tutorIds) 
 	                        and not excluido ";
-            return conexao.Obter().QueryAsync<PropostaTutorTurma>(query, new { tutorIds });
+            return conexao.Obter().QueryAsync<PropostaTutorTurma>(query, new {tutorIds});
         }
     }
 }

@@ -70,7 +70,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             var faker = new Faker<PropostaTutorDTO>();
             faker.RuleFor(x => x.ProfissionalRedeMunicipal, f => true);
             faker.RuleFor(x => x.RegistroFuncional, f => f.Random.Short(100,1000).ToString());
-            faker.RuleFor(x => x.NomeTutor, f => f.Person.FullName);
+            faker.RuleFor(x => x.NomeTutor, f => f.Person.FullName.ToUpper());
             faker.RuleFor(x => x.Turmas, GerarPropostaTutorTurmas(quantidadeTurmas));
 
             return faker;

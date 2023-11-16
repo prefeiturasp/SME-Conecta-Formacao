@@ -11,16 +11,21 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly ITransacao _transacao;
+        private readonly IMediator _mediator;
 
-        public SalvarPropostaTutorCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao)
+        public SalvarPropostaTutorCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao,IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<long> Handle(SalvarPropostaTutorCommand request, CancellationToken cancellationToken)
         {
+            var arrayTurma = request.PropostaTutorDto.Turmas.Select(x => x.Turma).ToArray();
+            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaId, request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, arrayTurma));
+            
             var tutorAntes = await _repositorioProposta.ObterPropostaTutorPorId(request.PropostaTutorDto.Id);
 
             var tutorDepois = _mapper.Map<PropostaTutor>(request.PropostaTutorDto);

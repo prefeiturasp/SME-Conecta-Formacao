@@ -8,19 +8,23 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarPropostaRegenteCommandHandler : IRequestHandler<SalvarPropostaRegenteCommand, long>
     {
-        public SalvarPropostaRegenteCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao)
-        {
-            _mapper = mapper;
-            _repositorioProposta = repositorioProposta;
-            _transacao = transacao;
-        }
-
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly ITransacao _transacao;
+        private readonly IMediator _mediator;
+
+        public SalvarPropostaRegenteCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao, IMediator mediator)
+        {
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
 
         public async Task<long> Handle(SalvarPropostaRegenteCommand request, CancellationToken cancellationToken)
         {
+            var arrayTurma = request.PropostaRegenteDTO.Turmas.Select(x => x.Turma).ToArray();
+            await _mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(request.PropostaId, request.PropostaRegenteDTO.RegistroFuncional, request.PropostaRegenteDTO.NomeRegente, arrayTurma));
             var regenteAntes = await _repositorioProposta.ObterPropostaRegentePorId(request.PropostaRegenteDTO.Id);
 
             var regenteDepois = _mapper.Map<PropostaRegente>(request.PropostaRegenteDTO);
@@ -41,7 +45,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
                 else
                     await _repositorioProposta.InserirPropostaRegente(request.PropostaId, regenteDepois);
-                
+
                 var turmasAntes = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(regenteDepois.Id);
                 var turmasInserir = regenteDepois.Turmas.Where(w => !turmasAntes.Any(a => a.Id == w.Id));
                 var turmasExcluir = turmasAntes.Where(w => !regenteDepois.Turmas.Any(a => a.Id == w.Id));
