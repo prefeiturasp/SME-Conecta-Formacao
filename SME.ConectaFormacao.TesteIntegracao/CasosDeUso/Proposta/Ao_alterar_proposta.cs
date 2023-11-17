@@ -550,7 +550,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
             var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(propostaId, propostaDTO));
             excecao.ShouldNotBeNull();
-            excecao.Mensagens.Contains(MensagemNegocio.NAO_EXISTE_NENHUM_REGENTE).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.QUANTIDADE_TURMAS_COM_REGENTE).ShouldBeTrue();
             excecao.Mensagens.Contains(MensagemNegocio.NAO_EXISTE_NENHUM_TUTOR).ShouldBeTrue();
             excecao.Mensagens.Contains(MensagemNegocio.PERIODO_REALIZACAO_NAO_INFORMADO).ShouldBeTrue();
             excecao.Mensagens.Contains(MensagemNegocio.PERIODO_INCRICAO_NAO_INFORMADO).ShouldBeTrue();
