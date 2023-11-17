@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var atividadeObrigatorio = proposta.CriterioCertificacao?.Where(x => x.CriterioCertificacaoId == REALIZACAO_COM_ATIVIDADE_OBRIGATORIA);
 
-            if (atividadeObrigatorio != null && string.IsNullOrEmpty(proposta.DescricaoDaAtividade))
+            if (atividadeObrigatorio.Any() && string.IsNullOrEmpty(proposta.DescricaoDaAtividade))
                 erros.Add(MensagemNegocio.DESCRICAO_DA_CERTIFICACAO_NAO_INFORMADA);
 
             return erros;
