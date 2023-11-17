@@ -709,7 +709,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (!string.IsNullOrEmpty(registroFuncional))
                 query.AppendLine(" and pt.registro_funcional = @registroFuncional ");
             if (string.IsNullOrEmpty(registroFuncional) && !string.IsNullOrEmpty(nomeTutor))
-                query.AppendLine(" and pt.nome_tutor = @nomeTutor ");
+                query.AppendLine(" and trim(pt.nome_tutor) = @nomeTutor ");
 
             return await conexao.Obter().QueryAsync<int>(query.ToString(), new { propostaId, nomeTutor, registroFuncional, turmas });
         }

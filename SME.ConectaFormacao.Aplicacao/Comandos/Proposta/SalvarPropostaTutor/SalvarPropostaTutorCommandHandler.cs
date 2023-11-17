@@ -23,19 +23,23 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(SalvarPropostaTutorCommand request, CancellationToken cancellationToken)
         {
-            var arrayTurma = request.PropostaTutorDto.Turmas.Select(x => x.Turma).ToArray();
-            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaId, request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, arrayTurma));
-
             var tutorAntes = await _repositorioProposta.ObterPropostaTutorPorId(request.PropostaTutorDto.Id);
-
             var tutorDepois = _mapper.Map<PropostaTutor>(request.PropostaTutorDto);
+            tutorDepois.NomeTutor = tutorDepois.NomeTutor.Trim();
+            var turmasAntes = await _repositorioProposta.ObterTutorTurmasPorTutorId(tutorDepois.Id);
+
+            var arrayTurma = request.PropostaTutorDto.Turmas.Select(x => x.Turma);
+            var turmaConsulta = arrayTurma.Where(w => !turmasAntes.Any(a => a.Turma == w)).ToArray();
+            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaId, request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, turmaConsulta));
+
+
             var transacao = _transacao.Iniciar();
             try
             {
                 if (tutorAntes != null)
                 {
                     if (tutorAntes.ProfissionalRedeMunicipal != tutorDepois.ProfissionalRedeMunicipal
-                        || tutorAntes.RegistroFuncional != tutorDepois.RegistroFuncional
+                        || tutorAntes.RegistroFuncional.Trim() != tutorDepois.RegistroFuncional
                         || tutorAntes.NomeTutor != tutorDepois.NomeTutor)
                     {
                         tutorDepois.PropostaId = request.PropostaId;
@@ -46,7 +50,6 @@ namespace SME.ConectaFormacao.Aplicacao
                 else
                     await _repositorioProposta.InserirPropostaTutor(request.PropostaId, tutorDepois);
 
-                var turmasAntes = await _repositorioProposta.ObterTutorTurmasPorTutorId(tutorDepois.Id);
                 var turmasInserir = tutorDepois.Turmas.Where(w => !turmasAntes.Any(a => a.Id == w.Id));
                 var turmasExcluir = turmasAntes.Where(w => !tutorDepois.Turmas.Any(a => a.Id == w.Id));
 

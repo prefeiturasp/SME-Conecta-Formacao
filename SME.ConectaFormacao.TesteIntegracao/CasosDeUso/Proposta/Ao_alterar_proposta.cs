@@ -551,10 +551,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(propostaId, propostaDTO));
             excecao.ShouldNotBeNull();
             excecao.Mensagens.Contains(MensagemNegocio.QUANTIDADE_TURMAS_COM_REGENTE).ShouldBeTrue();
-            excecao.Mensagens.Contains(MensagemNegocio.NAO_EXISTE_NENHUM_TUTOR).ShouldBeTrue();
             excecao.Mensagens.Contains(MensagemNegocio.PERIODO_REALIZACAO_NAO_INFORMADO).ShouldBeTrue();
             excecao.Mensagens.Contains(MensagemNegocio.PERIODO_INCRICAO_NAO_INFORMADO).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.QUANTIDADE_TURMAS_COM_ENCONTRO_INFERIOR_QUANTIDADE_DE_TURMAS).ShouldBeTrue();
             excecao.Mensagens.Contains(MensagemNegocio.CARGA_HORARIA_NAO_INFORMADA).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.ACAO_INFORMATIVA_NAO_ACEITA).ShouldBeTrue();
         }
     }
 }
