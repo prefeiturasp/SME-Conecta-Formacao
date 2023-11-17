@@ -208,6 +208,7 @@ public class RegistradorDeDependencia
     protected virtual void RegistrarCasosDeUso()
     {
         _serviceCollection.TryAddScoped<ICasoDeUsoAutenticarUsuario, CasoDeUsoAutenticarUsuario>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAutenticarAlterarPerfil, CasoDeUsoAutenticarAlterarPerfil>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioMeusDados, CasoDeUsoUsuarioMeusDados>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarEmail, CasoDeUsoUsuarioAlterarEmail>();

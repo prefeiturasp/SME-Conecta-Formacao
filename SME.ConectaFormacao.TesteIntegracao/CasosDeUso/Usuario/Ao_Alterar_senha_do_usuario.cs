@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             // assert
             excecao.ShouldNotBeNull();
             excecao.StatusCode.ShouldBe(400);
-            excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.LOGIN_OU_SENHA_ATUAL_NAO_COMFEREM);
+            excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.LOGIN_OU_SENHA_ATUAL_NAO_CONFEREM);
         }
 
         [Fact(DisplayName = "Usuário - Deve retornar exceção ao tentar alterar senha com confirmação inválida")]

@@ -6,12 +6,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterTokenAcessoQuery : IRequest<UsuarioPerfisRetornoDTO>
     {
-        public ObterTokenAcessoQuery(string login)
+        public ObterTokenAcessoQuery(string login, Guid? perfilUsuarioId)
         {
             Login = login;
+            PerfilUsuarioId = perfilUsuarioId;
         }
 
         public string Login { get; }
+        public Guid? PerfilUsuarioId { get; set; }
     }
 
     public class ObterTokenAcessoQueryValidator : AbstractValidator<ObterTokenAcessoQuery>

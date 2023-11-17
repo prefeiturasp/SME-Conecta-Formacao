@@ -41,6 +41,17 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             return json.JsonParaObjeto<AcessosPerfisUsuarioRetorno>();
         }
 
+        public async Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login, Guid perfilUsuarioId)
+        {
+            var resposta = await _httpClient.GetAsync($"v1/autenticacao/usuarios/{login}/sistemas/{_servicoAcessosOptions.CodigoSistema}/perfis/{perfilUsuarioId}");
+
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<AcessosPerfisUsuarioRetorno>();
+        }
+
         public async Task<bool> UsuarioCadastradoCoreSSO(string login)
         {
             var resposta = await _httpClient.GetAsync($"v1/usuarios/{login}/cadastrado");

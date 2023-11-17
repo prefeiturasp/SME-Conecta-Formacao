@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio;
+﻿using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 {

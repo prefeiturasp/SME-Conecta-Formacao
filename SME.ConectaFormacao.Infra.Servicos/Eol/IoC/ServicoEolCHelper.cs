@@ -1,10 +1,10 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Extensions.Http;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Options;
-using Microsoft.Extensions.Configuration;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Eol.Options;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Eol.IoC
 {
