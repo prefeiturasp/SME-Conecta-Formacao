@@ -40,9 +40,9 @@ namespace SME.ConectaFormacao.Aplicacao
             if (request.PropostaDTO.Situacao == SituacaoProposta.Cadastrada)
             {
                 var erros = new List<string>();
-                var errosTutorRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id), cancellationToken);
-                if (errosTutorRegente.Any())
-                    erros.AddRange(errosTutorRegente);
+                var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
+                if (!string.IsNullOrEmpty(errosRegente))
+                    erros.Add(errosRegente);
 
                 var errosInformacoesGerais = await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
                 if (errosInformacoesGerais.Any())

@@ -549,7 +549,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<int> ObterTotalRegentes(long propostaId)
         {
-            var query = @"select count(1) from proposta_regente where not excluido and proposta_id = @propostaId";
+            var query = @"select
+	                        count(distinct prt.turma)
+                        from
+	                        proposta_regente_turma prt
+                        inner join proposta_regente pr on
+	                        prt.proposta_regente_id = pr.id
+                        where
+	                        not prt.excluido
+	                        and not pr.excluido
+	                        and pr.proposta_id = @propostaId ";
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
         }
 
@@ -678,7 +687,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (!string.IsNullOrEmpty(registroFuncional))
                 query.AppendLine(" and pr.registro_funcional = @registroFuncional ");
             if (string.IsNullOrEmpty(registroFuncional) && !string.IsNullOrEmpty(nomeRegente))
-                query.AppendLine(" and pr.nome_regente = @nomeRegente ");
+                query.AppendLine(" and trim(pr.nome_regente) = @nomeRegente ");
 
             return await conexao.Obter().QueryAsync<int>(query.ToString(), new { propostaId, nomeRegente, registroFuncional, turmas });
         }
@@ -700,7 +709,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (!string.IsNullOrEmpty(registroFuncional))
                 query.AppendLine(" and pt.registro_funcional = @registroFuncional ");
             if (string.IsNullOrEmpty(registroFuncional) && !string.IsNullOrEmpty(nomeTutor))
-                query.AppendLine(" and pt.nome_tutor = @nomeTutor ");
+                query.AppendLine(" and trim(pt.nome_tutor) = @nomeTutor ");
 
             return await conexao.Obter().QueryAsync<int>(query.ToString(), new { propostaId, nomeTutor, registroFuncional, turmas });
         }
