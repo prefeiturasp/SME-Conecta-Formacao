@@ -5,7 +5,7 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ValidarSeExisteRegenteTutorCommand : IRequest<string>
     {
-        public ValidarSeExisteRegenteTutorCommand(long propostaId,short quantidadeTurmas)
+        public ValidarSeExisteRegenteTutorCommand(long propostaId, short quantidadeTurmas)
         {
             PropostaId = propostaId;
             QuantidadeTurmas = quantidadeTurmas;

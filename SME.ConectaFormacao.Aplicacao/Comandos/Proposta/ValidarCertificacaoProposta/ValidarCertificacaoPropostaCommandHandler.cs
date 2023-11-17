@@ -16,9 +16,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 erros.Add(MensagemNegocio.ACAO_INFORMATIVA_NAO_ACEITA);
             if (proposta.CursoComCertificado && proposta.CriterioCertificacao.Count() < QUANTIDADE_MINIMA_CRITERIO_CERTIFICACAO)
                 erros.Add(MensagemNegocio.CRITERIOS_PARA_CERTIFICACAO_NAO_INFORMADO);
-            
+
             var atividadeObrigatorio = proposta.CriterioCertificacao?.Where(x => x.CriterioCertificacaoId == REALIZACAO_COM_ATIVIDADE_OBRIGATORIA);
-            
+
             if (atividadeObrigatorio != null && string.IsNullOrEmpty(proposta.DescricaoDaAtividade))
                 erros.Add(MensagemNegocio.DESCRICAO_DA_CERTIFICACAO_NAO_INFORMADA);
 

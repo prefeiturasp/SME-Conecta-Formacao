@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var totalRegentes = await _repositorioProposta.ObterTotalRegentes(request.PropostaId);
             if (totalRegentes < request.QuantidadeTurmas)
-                   return MensagemNegocio.QUANTIDADE_TURMAS_COM_REGENTE;
+                return MensagemNegocio.QUANTIDADE_TURMAS_COM_REGENTE;
             return string.Empty;
         }
     }
