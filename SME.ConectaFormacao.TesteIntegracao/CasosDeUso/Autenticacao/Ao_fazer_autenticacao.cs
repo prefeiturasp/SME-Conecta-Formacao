@@ -59,7 +59,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao
             retorno.ShouldNotBeNull();
             retorno.UsuarioLogin.ShouldBe(autenticacaoDto.Login);
 
-            var usuarios = ObterTodos<Dominio.Usuario>();
+            var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
             usuarios.Any().ShouldBeTrue();
 
             var usuario = usuarios.FirstOrDefault();
@@ -82,6 +82,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao
             retorno.UsuarioLogin.ShouldBe(autenticacaoDto.Login);
 
             retorno.PerfilUsuario.Any(t => t.Perfil == new Guid(PerfilAutomatico.PERFIL_CURSISTA_GUID)).ShouldBeTrue();
+        }
+
+        [Fact(DisplayName = "Autenticação - Deve retornar erro 401 com login ou senha inválida")]
+        public async Task Deve_retornar_erro_401_com_login_nao_encontrado()
+        {
+            // arrange
+            var autenticacaoDto = AutenticacaoMock.AutenticacaoUsuarioDTOInvalido;
+            var casoDeUsoAutenticarUsuario = ObterCasoDeUso<ICasoDeUsoAutenticarUsuario>();
+
+            // act
+            var exception = await Should.ThrowAsync<NegocioException>(casoDeUsoAutenticarUsuario.Executar(autenticacaoDto));
+
+            // assert
+            exception.ShouldNotBeNull();
+            exception.StatusCode.ShouldBe(401);
         }
     }
 }

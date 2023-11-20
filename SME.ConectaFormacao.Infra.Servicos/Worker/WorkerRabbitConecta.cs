@@ -189,18 +189,6 @@ namespace SME.ConectaFormacao.Infra
                     if (mensagemRabbit.NotificarErroUsuario)
                         NotificarErroUsuario(nex.Message, mensagemRabbit.UsuarioLogadoRF, comandoRabbit.NomeProcesso);
                 }
-                catch (ValidacaoException vex)
-                {
-                    transacao?.CaptureException(vex);
-
-                    canalRabbit.BasicAck(ea.DeliveryTag, false);
-                    await servicoMensageriaMetricas.Concluido(rota);
-
-                    await RegistrarErroTratamentoMensagem(ea, mensagemRabbit, vex, LogNivel.Negocio, $"Erros: {JsonConvert.SerializeObject(vex.Mensagens())}");
-
-                    if (mensagemRabbit.NotificarErroUsuario)
-                        NotificarErroUsuario($"Ocorreu um erro interno, por favor tente novamente", mensagemRabbit.UsuarioLogadoRF, comandoRabbit.NomeProcesso);
-                }
                 catch (Exception ex)
                 {
                     transacao?.CaptureException(ex);

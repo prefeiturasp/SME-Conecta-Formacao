@@ -15,5 +15,7 @@
         Task<string> AlterarSenhaComTokenRecuperacao(Guid token, string novaSenha);
         Task<IEnumerable<AcessosGrupo>> ObterGrupos();
         Task<AcessosGrupo> ObterGrupoPorId(Guid grupoId);
+        Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login, Guid perfilUsuarioId);
+        Task<AcessosPerfisUsuarioRetorno> RevalidarToken(string token);
     }
 }

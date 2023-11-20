@@ -13,6 +13,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.ServicosFa
             {
                 return Task.FromResult(AutenticacaoMock.UsuarioPerfisRetornoDTOValido);
             }
+            else if (request.Login == AutenticacaoMock.UsuarioLogado.Login)
+            {
+                return Task.FromResult(new UsuarioPerfisRetornoDTO
+                {
+                    UsuarioLogin = AutenticacaoMock.UsuarioLogado.Login,
+                    UsuarioNome = AutenticacaoMock.UsuarioLogado.Nome,
+                    Email = AutenticacaoMock.UsuarioLogado.Email
+                });
+            }
 
             return Task.FromResult(new UsuarioPerfisRetornoDTO());
         }
