@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterListaDre([FromServices] ICasoDeUsoObterListaDre useCase)
         {
             return Ok(await useCase.Executar());
