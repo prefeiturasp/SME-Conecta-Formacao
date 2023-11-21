@@ -8,7 +8,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
         public BaseMap()
         {
             Map(c => c.Id).ToColumn("id").IsIdentity().IsKey();
-            Map(c => c.Excluido).ToColumn("excluido");
         }
     }
 }

@@ -6,6 +6,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
     {
         public BaseMapAuditavel()
         {
+            Map(c => c.Excluido).ToColumn("excluido");
             Map(c => c.CriadoEm).ToColumn("criado_em");
             Map(c => c.CriadoPor).ToColumn("criado_por");
             Map(c => c.AlteradoEm).ToColumn("alterado_em");
