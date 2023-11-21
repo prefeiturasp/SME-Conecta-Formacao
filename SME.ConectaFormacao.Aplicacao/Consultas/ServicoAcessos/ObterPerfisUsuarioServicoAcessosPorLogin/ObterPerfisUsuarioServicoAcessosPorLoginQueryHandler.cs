@@ -18,7 +18,10 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<UsuarioPerfisRetornoDTO> Handle(ObterPerfisUsuarioServicoAcessosPorLoginQuery request, CancellationToken cancellationToken)
         {
-            var retornoPerfis = await _servicoAcessos.ObterPerfisUsuario(request.Login);
+            var retornoPerfis = request.PerfilUsuarioId.HasValue ?
+                await _servicoAcessos.ObterPerfisUsuario(request.Login, request.PerfilUsuarioId.Value) :
+                await _servicoAcessos.ObterPerfisUsuario(request.Login);
+
             return _mapper.Map<UsuarioPerfisRetornoDTO>(retornoPerfis);
         }
     }

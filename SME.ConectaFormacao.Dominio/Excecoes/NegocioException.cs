@@ -10,7 +10,7 @@ public class NegocioException : Exception
         StatusCode = (int)statusCode;
     }
 
-    public NegocioException(List<string> mensagens, HttpStatusCode statusCode = HttpStatusCode.BadRequest)
+    public NegocioException(List<string> mensagens, HttpStatusCode statusCode = HttpStatusCode.BadRequest) : base(string.Join(",", mensagens))
     {
         Mensagens = mensagens;
         StatusCode = (int)statusCode;

@@ -28,7 +28,7 @@ public class MensagemNegocio
     public const string USUARIO_OU_SENHA_INVALIDOS = "Usuário ou senha inválidos";
     public const string CONFIRMACAO_SENHA_INVALIDA = "Confirmação de senha não confere";
     public const string SENHA_NAO_ATENDE_CRITERIOS_SEGURANCA = "A senha não atendo os critérios de segurança: \r\nUma letra maiúscula \r\nUma letra minúscula \r\nUm algarismo (número) ou um símbolo (caractere especial) \r\nNão é permitido caracteres acentuados \r\nDeve ter no mínimo 8 e no máximo 12 caracteres.";
-    public const string LOGIN_OU_SENHA_ATUAL_NAO_COMFEREM = "Usuário ou senha atual não conferem";
+    public const string LOGIN_OU_SENHA_ATUAL_NAO_CONFEREM = "Usuário ou senha atual não conferem";
     public const string LOGIN_NAO_ENCONTRADO = "Usuário não encontrado";
     public const string ORIENTACOES_RECUPERACAO_SENHA = "As orientações para recuperação de senha foram enviados para {0}, verifique sua caixa de entrada!";
     public const string AREA_PROMOTORA_NAO_ENCONTRADA = "Área promotora não encontrada";
@@ -38,6 +38,7 @@ public class MensagemNegocio
     public const string AREA_PROMOTORA_EXISTE_GRUPO_DRE_CADASTRADO = "Já existe uma área promotora cadastrada para o perfil e dre selecionado";
     public const string EMAIL_INVALIDO = "E-mail {0} é inválido";
     public const string PROPOSTA_NAO_ENCONTRADA = "Proposta não encontrada";
+    public const string TOKEN_INVALIDO = "Token inválido";
 
     public const string PROPOSTA_FUNCAO_ESPECIFICA_OUTROS = "É necessário informar função específicas outros da proposta";
     public const string PROPOSTA_CRITERIO_VALIDACAO_INSCRICAO_OUTROS = "É necessário informar critérios de validação das inscrições outros da proposta";

@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao
             if (string.IsNullOrEmpty(usuarioAutenticadoRetornoDto.Login))
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, HttpStatusCode.Unauthorized);
 
-            return await mediator.Send(new ObterTokenAcessoQuery(usuarioAutenticadoRetornoDto.Login));
+            return await mediator.Send(new ObterTokenAcessoQuery(usuarioAutenticadoRetornoDto.Login, null));
         }
     }
 }

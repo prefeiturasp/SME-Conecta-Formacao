@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         public async Task<UsuarioPerfisRetornoDTO> Executar(RecuperacaoSenhaDto recuperacaoSenhaDto)
         {
             var login = await mediator.Send(new AlterarSenhaServicoAcessosPorTokenCommand(recuperacaoSenhaDto.Token, recuperacaoSenhaDto.NovaSenha));
-            return await mediator.Send(new ObterTokenAcessoQuery(login));
+            return await mediator.Send(new ObterTokenAcessoQuery(login, null));
         }
     }
 }

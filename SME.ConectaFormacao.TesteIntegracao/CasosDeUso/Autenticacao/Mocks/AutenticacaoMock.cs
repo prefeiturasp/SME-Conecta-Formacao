@@ -15,10 +15,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.Mocks
 
         public static AutenticacaoDTO AutenticacaoUsuarioDTOInvalido { get; set; }
 
+        public static Dominio.Entidades.Usuario UsuarioLogado { get; set; }
+
         public static void Montar()
         {
             MontarAutenticacaoValida();
             MontarAutenticacaoInvalida();
+            MontarUsuarioAutenticado();
         }
 
         private static void MontarAutenticacaoValida()
@@ -57,6 +60,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.Mocks
                 Login = faker.Person.FirstName,
                 Senha = new Faker().Random.AlphaNumeric(10)
             };
+        }
+
+        public static void MontarUsuarioAutenticado()
+        {
+            var faker = new Faker<Dominio.Entidades.Usuario>("pt_BR");
+
+            faker.RuleFor(x => x.Login, f => f.Person.FirstName);
+            faker.RuleFor(x => x.Nome, f => f.Person.FullName);
+            faker.RuleFor(x => x.Email, f => f.Person.Email);
+
+            UsuarioLogado = faker.Generate();
         }
     }
 }
