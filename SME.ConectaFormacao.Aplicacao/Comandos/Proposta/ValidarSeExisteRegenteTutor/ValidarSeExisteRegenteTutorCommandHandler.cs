@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<string> Handle(ValidarSeExisteRegenteTutorCommand request, CancellationToken cancellationToken)
         {
             var totalRegentes = await _repositorioProposta.ObterTotalRegentes(request.PropostaId);
-            if (totalRegentes < request.QuantidadeTurmas)
+            if (request.QuantidadeTurmas != totalRegentes)
                 return MensagemNegocio.QUANTIDADE_TURMAS_COM_REGENTE;
             return string.Empty;
         }
