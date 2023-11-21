@@ -181,6 +181,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.ConteudoProgramatico.ShouldBe(propostaDTO.ConteudoProgramatico);
             proposta.ProcedimentoMetadologico.ShouldBe(propostaDTO.ProcedimentoMetadologico);
             proposta.Referencia.ShouldBe(propostaDTO.Referencia);
+            proposta.FormacaoHomologada.ShouldBe(propostaDTO.FormacaoHomologada);
 
             if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaPresencial))
                 proposta.CargaHorariaPresencial.ShouldBe(propostaDTO.CargaHorariaPresencial);
@@ -221,6 +222,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.ConteudoProgramatico.ShouldBe(propostaDTO.ConteudoProgramatico);
             proposta.ProcedimentoMetadologico.ShouldBe(propostaDTO.ProcedimentoMetadologico);
             proposta.Referencia.ShouldBe(propostaDTO.Referencia);
+            proposta.FormacaoHomologada.ShouldBe(propostaDTO.FormacaoHomologada);
 
             if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaPresencial))
                 proposta.CargaHorariaPresencial.ShouldBe(propostaDTO.CargaHorariaPresencial);

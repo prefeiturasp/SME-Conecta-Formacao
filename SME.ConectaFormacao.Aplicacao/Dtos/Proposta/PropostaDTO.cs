@@ -40,5 +40,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? DescricaoDaAtividade { get; set; }
         public string? AcaoFormativaTexto { get; set; }
         public string? AcaoFormativaLink { get; set; }
+        public bool FormacaoHomologada { get; set; }
     }
 }

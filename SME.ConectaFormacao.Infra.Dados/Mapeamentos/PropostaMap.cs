@@ -36,6 +36,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.AcaoFormativaTexto).ToColumn("acao_formativa_texto");
             Map(t => t.AcaoFormativaLink).ToColumn("acao_formativa_link");
             Map(t => t.DescricaoDaAtividade).ToColumn("descricao_atividade");
+            Map(t => t.FormacaoHomologada).ToColumn("formacao_homologada");
         }
     }
 }

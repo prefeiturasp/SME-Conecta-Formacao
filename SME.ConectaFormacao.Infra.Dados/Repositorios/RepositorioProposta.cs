@@ -225,7 +225,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
-        private static string MontarQueryPaginacao(long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao)
+        private static string MontarQueryPaginacao(long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
         {
             var query = new StringBuilder();
             query.AppendLine("select p.*, ap.* ");
@@ -259,13 +259,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (situacao.GetValueOrDefault() > 0)
                 query.AppendLine(" and p.situacao = @situacao");
+            
+            if (formacaoHomologada.HasValue)
+                query.AppendLine(" and p.formacao_homologada = @formacaoHomologada");
 
             return query.ToString();
         }
 
-        public Task<int> ObterTotalRegistrosPorFiltros(long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao)
+        public Task<int> ObterTotalRegistrosPorFiltros(long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
         {
-            string query = string.Concat("select count(1) from (", MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao), ") tb");
+            string query = string.Concat("select count(1) from (", MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao,formacaoHomologada), ") tb");
             return conexao.Obter().ExecuteScalarAsync<int>(query, new
             {
                 propostaId,
@@ -276,15 +279,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 numeroHomologacao,
                 periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
                 periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
-                situacao
+                situacao,
+                formacaoHomologada
             });
         }
 
-        public Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao)
+        public Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
-            string query = MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao);
+            string query = MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao,formacaoHomologada);
 
             query += " order by p.criado_em desc";
             query += " limit @numeroRegistros offset @registrosIgnorados";
@@ -306,7 +310,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     numeroHomologacao,
                     periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
                     periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
-                    situacao
+                    situacao,
+                    formacaoHomologada
                 },
                 splitOn: "id, id");
         }
