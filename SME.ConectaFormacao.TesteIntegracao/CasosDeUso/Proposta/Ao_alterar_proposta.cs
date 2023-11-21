@@ -553,7 +553,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             excecao.Mensagens.Contains(MensagemNegocio.QUANTIDADE_TURMAS_COM_REGENTE).ShouldBeTrue();
             excecao.Mensagens.Contains(MensagemNegocio.PERIODO_REALIZACAO_NAO_INFORMADO).ShouldBeTrue();
             excecao.Mensagens.Contains(MensagemNegocio.PERIODO_INCRICAO_NAO_INFORMADO).ShouldBeTrue();
-            excecao.Mensagens.Contains(MensagemNegocio.QUANTIDADE_TURMAS_COM_ENCONTRO_INFERIOR_QUANTIDADE_DE_TURMAS).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.QUANTIDADE_TURMAS_COM_ENCONTRO_DIFERENTE_QUANTIDADE_DE_TURMAS).ShouldBeTrue();
             excecao.Mensagens.Contains(MensagemNegocio.CARGA_HORARIA_NAO_INFORMADA).ShouldBeTrue();
             excecao.Mensagens.Contains(MensagemNegocio.ACAO_INFORMATIVA_NAO_ACEITA).ShouldBeTrue();
         }

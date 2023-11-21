@@ -24,8 +24,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 erros.Add(MensagemNegocio.PERIODO_INCRICAO_NAO_INFORMADO);
 
             var quantidadeDeTurmasComEncontro = await _repositorioProposta.ObterQuantidadeDeTurmasComEncontro(request.PropostaId);
-            if (quantidadeDeTurmasComEncontro < proposta.QuantidadeTurmas)
-                erros.Add(MensagemNegocio.QUANTIDADE_TURMAS_COM_ENCONTRO_INFERIOR_QUANTIDADE_DE_TURMAS);
+            if (quantidadeDeTurmasComEncontro != proposta.QuantidadeTurmas)
+                erros.Add(MensagemNegocio.QUANTIDADE_TURMAS_COM_ENCONTRO_DIFERENTE_QUANTIDADE_DE_TURMAS);
 
             return erros;
         }
