@@ -10,7 +10,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             ToTable("grupo_gestao");
             Map(c => c.GrupoId).ToColumn("grupo_id");
             Map(c => c.Nome).ToColumn("nome");
-            Map(c => c.Excluido).Ignore();
         }
     }
 }

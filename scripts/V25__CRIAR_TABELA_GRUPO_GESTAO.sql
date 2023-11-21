@@ -1,7 +1,8 @@
 CREATE TABLE if not exists public.grupo_gestao  (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	grupo_id uuid,
-	nome varchar(200) NULL
+	nome varchar(200) NULL,
+	excluido boolean default ('false')
 );
 CREATE INDEX if not exists grupo_gestao_id_idx ON public.grupo_gestao (id);
 
