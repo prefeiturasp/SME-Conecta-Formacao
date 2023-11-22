@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
@@ -468,18 +469,25 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
 
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
+            var propostaId = await CriarPropostaNaBase(SituacaoProposta.Cadastrada);
 
-            var tutor = PropostaMock.GerarTutor(proposta.Id);
+            var tutor = PropostaMock.GerarTutor(propostaId);
             await InserirNaBase(tutor);
-            var tutorTurma = PropostaMock.GerarTutorTurmas(1, 2);
+            var tutorTurma = PropostaMock.GerarTutorTurmas(tutor.First().Id,1);
             await InserirNaBase(tutorTurma);
 
-            var regente = PropostaMock.GerarRegente(proposta.Id);
+            var regente = PropostaMock.GerarRegente(propostaId);
             await InserirNaBase(regente);
-            var regenteTurma = PropostaMock.GerarRegenteTurmas(1, 2);
+            var regenteTurma = PropostaMock.GerarRegenteTurmas(regente.First().Id,  1);
             await InserirNaBase(regenteTurma);
 
+            var encontro = PropostaMock.GerarEncontros(propostaId);
+            await InserirNaBase(encontro);
+            var encontroTurma = PropostaMock.GerarPropostaEncontroTurmas(encontro.First().Id,1);
+            await InserirNaBase(encontroTurma);
+            var encontroDatas = PropostaMock.GerarPropostaEncontroDatas(encontro.First().Id);
+            await InserirNaBase(encontroDatas);
+ 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
                 Modalidade.Presencial,
@@ -500,10 +508,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaDTO.DataRealizacaoFim = data;
             propostaDTO.CargaHorariaPresencial = "00:12";
             propostaDTO.QuantidadeTurmas = 1;
+            propostaDTO.QuantidadeVagasTurma  = 1;
             propostaDTO.AcaoInformativa = true;
             propostaDTO.DescricaoDaAtividade = "Descrição";
             // act 
-            var id = await casoDeUso.Executar(proposta.Id, propostaDTO);
+            var id = await casoDeUso.Executar(propostaId, propostaDTO);
 
             // assert
             id.ShouldBeGreaterThan(0);

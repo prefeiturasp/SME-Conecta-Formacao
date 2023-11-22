@@ -160,15 +160,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
         public static IEnumerable<PropostaEncontroTurma> GerarPropostaEncontroTurmas(long propostaEncontroId, short quantidadeTurmas)
         {
-            var quantidade = new Randomizer().Number(1, 9);
-
             var faker = new Faker<PropostaEncontroTurma>();
             faker.RuleFor(x => x.PropostaEncontroId, propostaEncontroId);
-            faker.RuleFor(x => x.Turma, f => f.Random.Short(1, quantidadeTurmas));
+            faker.RuleFor(x => x.Turma, f => quantidadeTurmas);
             faker.RuleFor(x => x.Excluido, false);
             AuditoriaFaker(faker);
 
-            return faker.Generate(quantidade);
+            return faker.Generate(quantidadeTurmas);
         }
 
         public static IEnumerable<CriterioCertificacao> GerarCriteriosCertificacao()
@@ -226,9 +224,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
         public static IEnumerable<PropostaTutorTurma> GerarTutorTurmas(long propostaTutorId, short quantidadeTurmas)
         {
-            var random = new Random().Next(1, quantidadeTurmas);
 
-            for (int i = 1; i <= random; i++)
+            for (int i = 1; i <= quantidadeTurmas; i++)
             {
                 var turma = new PropostaTutorTurma
                 {
@@ -257,9 +254,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
         public static IEnumerable<PropostaRegenteTurma> GerarRegenteTurmas(long propostaRegenteId, short quantidadeTurmas)
         {
-            var random = new Random().Next(1, quantidadeTurmas);
 
-            for (int i = 1; i <= random; i++)
+            for (int i = 1; i <= quantidadeTurmas; i++)
             {
                 var turma = new PropostaRegenteTurma
                 {
