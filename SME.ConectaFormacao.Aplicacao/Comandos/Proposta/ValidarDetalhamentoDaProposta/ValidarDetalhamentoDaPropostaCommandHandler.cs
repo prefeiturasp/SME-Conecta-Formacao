@@ -8,11 +8,13 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private const int QUANTIDADE_MINIMA_DE_PALAVRAS_CHAVES = 3;
         private const int QUANTIDADE_MAXIMA_DE_PALAVRAS_CHAVES = 5;
+        private const string HORA_INVALIDA = "000:00";
         public async Task<IEnumerable<string>> Handle(ValidarDetalhamentoDaPropostaCommand request, CancellationToken cancellationToken)
         {
             var erros = new List<string>();
             var proposta = request.PropostaDto;
-            if (proposta.Modalidade is Modalidade.Presencial && string.IsNullOrEmpty(proposta.CargaHorariaPresencial))
+
+            if (proposta.Modalidade is Modalidade.Presencial && string.IsNullOrEmpty(proposta.CargaHorariaPresencial) || proposta.CargaHorariaPresencial == HORA_INVALIDA)
                 erros.Add(MensagemNegocio.CARGA_HORARIA_NAO_INFORMADA);
             if (string.IsNullOrEmpty(proposta.Justificativa))
                 erros.Add(MensagemNegocio.JUSTIFICATIVA_NAO_INFORMADA);
