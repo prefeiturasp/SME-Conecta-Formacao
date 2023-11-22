@@ -5,20 +5,21 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterGruposGestaoAcessosQueryHandler : IRequestHandler<ObterGruposGestaoAcessosQuery, IEnumerable<GrupoDTO>>
+    public class ObterGruposGestaoQueryHandler : IRequestHandler<ObterGruposGestaoQuery, IEnumerable<GrupoDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioGrupoGestao _repositorioGrupoGestao;
 
-        public ObterGruposGestaoAcessosQueryHandler(IMapper mapper, IRepositorioGrupoGestao repositorioGrupoGestao)
+        public ObterGruposGestaoQueryHandler(IMapper mapper, IRepositorioGrupoGestao repositorioGrupoGestao)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioGrupoGestao = repositorioGrupoGestao ?? throw new ArgumentNullException(nameof(repositorioGrupoGestao));
         }
 
-        public async Task<IEnumerable<GrupoDTO>> Handle(ObterGruposGestaoAcessosQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GrupoDTO>> Handle(ObterGruposGestaoQuery request, CancellationToken cancellationToken)
         {
-            return (await _repositorioGrupoGestao.ObterTodos()).Select(s => new GrupoDTO() { Id = s.GrupoId, Nome = s.Nome });
+            var gruposGestao = await _repositorioGrupoGestao.ObterTodos(); 
+            return _mapper.Map<IEnumerable<GrupoDTO>>(gruposGestao.AsEnumerable());
         }
     }
 }

@@ -31,7 +31,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo
         public async Task Deve_retornar_os_grupos_do_sistema()
         {
             // arrange
-            await InserirGrupoGestao();
+            var grupoGestao = AoObterGrupoMock.Grupos.Take(2);
+            
+            await InserirGrupoGestao(grupoGestao);
             
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterGrupoSistema>();
 
@@ -48,7 +50,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo
         public async Task Deve_retornar_os_grupos_gestao()
         {
             // arrange
-            await InserirGrupoGestao();
+            var grupoGestao = AoObterGrupoMock.Grupos.Take(2);
+            
+            await InserirGrupoGestao(grupoGestao);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterGrupoGestao>();
 
@@ -61,19 +65,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo
             grupos.Count().ShouldBe(2);
         }
 
-        private async Task InserirGrupoGestao()
+        private async Task InserirGrupoGestao(IEnumerable<GrupoDTO> grupoGestaos)
         {
-            await InserirNaBase(new GrupoGestao()
+            foreach (var grupoGestao in grupoGestaos)
             {
-                GrupoId = new Guid("20B89885-9688-EE11-97DC-00155DB4374A"),
-                Nome = "Gestão DIEE"
-            });
-
-            await InserirNaBase(new GrupoGestao()
-            {
-                GrupoId = new Guid("58E6A4FC-9588-EE11-97DC-00155DB4374A"),
-                Nome = "Gestão DIEFEM"
-            });
+                await InserirNaBase(new GrupoGestao()
+                {
+                    GrupoId = grupoGestao.Id,
+                    Nome = grupoGestao.Nome
+                });
+            }
         }
     }
 }

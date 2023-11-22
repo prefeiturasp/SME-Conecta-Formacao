@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterGruposGestaoAcessosQuery : IRequest<IEnumerable<GrupoDTO>>
+    public class ObterGruposGestaoQuery : IRequest<IEnumerable<GrupoDTO>>
     {
     }
 }

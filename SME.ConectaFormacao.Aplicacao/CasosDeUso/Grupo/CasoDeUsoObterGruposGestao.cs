@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo
         {
             var gruposCoreSSO = await mediator.Send(new ObterGruposServicoAcessosQuery());
 
-            var grupoGestao = await mediator.Send(new ObterGruposGestaoAcessosQuery());
+            var grupoGestao = await mediator.Send(new ObterGruposGestaoQuery());
             
             return grupoGestao.Intersect(gruposCoreSSO);
         }
