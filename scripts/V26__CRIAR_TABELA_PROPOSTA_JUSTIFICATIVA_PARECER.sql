@@ -1,7 +1,7 @@
 CREATE TABLE if not exists public.proposta_justificativa_parecer (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	proposta_id int8 not NULL,	
-	justificativa varchar(1000) NULL,
+	parecer varchar(1000) NULL,
 	situacao smallint null,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,

@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
@@ -16,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
 
-            if (proposta == null || proposta.Excluido)
+            if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
             if (proposta.Situacao != SituacaoProposta.Cadastrada)

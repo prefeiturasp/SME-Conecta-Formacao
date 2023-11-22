@@ -270,6 +270,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreSyncUseCase, ExecutarSincronizacaoInstitucionalDreSyncUseCase>();
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParaDf, CasoDeUsoEnviarPropostaParaDf>();
+        
+        _serviceCollection.TryAddScoped<ICasoDeUsoParecerProposta, CasoDeUsoParecerProposta>();
     }
 
     protected virtual void RegistrarHttpClients()
