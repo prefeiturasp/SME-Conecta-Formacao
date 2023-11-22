@@ -152,7 +152,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             excecao.Mensagens.Contains("É necessário informar a modalidade para alterar a proposta").ShouldBeTrue();
             excecao.Mensagens.Contains("É necessário informar o tipo de inscrição para alterar a proposta").ShouldBeTrue();
             excecao.Mensagens.Contains("É necessário informar o público alvo para alterar a proposta").ShouldBeTrue();
-            excecao.Mensagens.Contains("É necessário informar o tipo de inscrição para alterar a propostaproposta").ShouldBeTrue();
+            excecao.Mensagens.Contains("É necessário informar o tipo de inscrição para alterar a proposta").ShouldBeTrue();
             excecao.Mensagens.Contains("É necessário informar a justificativa para alterar a proposta").ShouldBeTrue();
             excecao.Mensagens.Contains("É necessário informar os objetivos para alterar a proposta").ShouldBeTrue();
             excecao.Mensagens.Contains("É necessário informar o conteúdo programático para alterar a proposta").ShouldBeTrue();
