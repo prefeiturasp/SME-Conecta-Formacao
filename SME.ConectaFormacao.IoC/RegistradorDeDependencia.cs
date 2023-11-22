@@ -162,6 +162,8 @@ public class RegistradorDeDependencia
 
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
+            
+            config.AddMap(new GrupoGestaoMap());
 
             config.ForDommel();
         });
@@ -203,6 +205,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaTutor, RepositorioPropostaTutor>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
         _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
+        _serviceCollection.TryAddScoped<IRepositorioGrupoGestao, RepositorioGrupoGestao>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -222,7 +225,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterCargoFuncao, CasoDeUsoObterCargoFuncao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterCriterioValidacaoInscricao, CasoDeUsoObterCriterioValidacaoInscricao>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterGrupos, CasoDeUsoObterGrupos>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterGrupoSistema, CasoDeUsoObterGrupoSistema>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPalavraChave, CasoDeUsoObterPalavraChave>();
         _serviceCollection.TryAddScoped<ICasoDeUsoCriterioCertificacao, CasoDeUsoCriterioCertificacao>();
 
@@ -270,6 +273,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreSyncUseCase, ExecutarSincronizacaoInstitucionalDreSyncUseCase>();
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParaDf, CasoDeUsoEnviarPropostaParaDf>();
+        
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterGrupoGestao, CasoDeUsoObterGrupoGestao>();
         
         _serviceCollection.TryAddScoped<ICasoDeUsoParecerProposta, CasoDeUsoParecerProposta>();
     }

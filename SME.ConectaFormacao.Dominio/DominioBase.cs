@@ -17,7 +17,7 @@ public abstract class DominioBase<TEntidade> : IDominioBase<TEntidade>
         return _repositorio.ObterPorId(id);
     }
 
-    public Task<IList<TEntidade>> ObterTodos()
+    public Task<IEnumerable<TEntidade>> ObterTodos()
     {
         return _repositorio.ObterTodos();
     }
