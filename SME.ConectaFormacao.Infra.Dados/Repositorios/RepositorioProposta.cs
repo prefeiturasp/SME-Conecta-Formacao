@@ -666,7 +666,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"select  count(distinct pet.turma)  
 	                         from proposta_encontro_turma pet
 	                         inner join proposta_encontro pe on pet.proposta_encontro_id = pe.id 
-	                         where pe.proposta_id = @propostaId ";
+	                         where not pet.excluido and not pe.excluido and pe.proposta_id = @propostaId ";
             return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
         }
 
