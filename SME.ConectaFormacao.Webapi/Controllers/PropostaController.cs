@@ -340,10 +340,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
         public async Task<IActionResult> EnviarParecer(
             [FromRoute] long propostaId, 
-            [FromBody] ParecerPropostaDTO parecerPropostaDto,
-            [FromServices] ICasoDeUsoParecerProposta useCase)
+            [FromBody] PropostaMovimentacaoDTO propostaMovimentacaoDto,
+            [FromServices] ICasoDeUsoSalvarParecerDaProposta useCase)
         {
-            return Ok(await useCase.Executar(propostaId,parecerPropostaDto));
+            return Ok(await useCase.Executar(propostaId,propostaMovimentacaoDto));
         }
     }
 }

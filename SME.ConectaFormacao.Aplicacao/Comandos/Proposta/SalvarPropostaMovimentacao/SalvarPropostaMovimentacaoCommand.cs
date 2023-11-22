@@ -4,32 +4,32 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ParecerPropostaCommand : IRequest<bool>
+    public class SalvarPropostaMovimentacaoCommand : IRequest<bool>
     {
-        public ParecerPropostaCommand(long propostaId,ParecerPropostaDTO parecerPropostaDto)
+        public SalvarPropostaMovimentacaoCommand(long propostaId,PropostaMovimentacaoDTO propostaMovimentacaoDtoDto)
         {
             PropostaId = propostaId;
-            ParecerProposta = parecerPropostaDto;
+            PropostaMovimentacaoDto = propostaMovimentacaoDtoDto;
         }
 
         public long PropostaId { get; set; }
-        public ParecerPropostaDTO ParecerProposta { get; set; }
+        public PropostaMovimentacaoDTO PropostaMovimentacaoDto { get; set; }
 
     }
 
-    public class ParecerPropostaCommandValidator : AbstractValidator<ParecerPropostaCommand>
+    public class SalvarPropostaMovimentacaoCommandValidator : AbstractValidator<SalvarPropostaMovimentacaoCommand>
     {
-        public ParecerPropostaCommandValidator()
+        public SalvarPropostaMovimentacaoCommandValidator()
         {
             RuleFor(x => x.PropostaId)
                 .GreaterThan(0)
                 .WithMessage("Informe o Id da Proposta para salvar o parecer da proposta");
             
-            RuleFor(x => x.ParecerProposta.Parecer)
+            RuleFor(x => x.PropostaMovimentacaoDto.Parecer)
                 .NotEmpty()
                 .WithMessage("Informe o parecer para salvar o parecer da proposta");
             
-            RuleFor(x => x.ParecerProposta.Situacao)
+            RuleFor(x => x.PropostaMovimentacaoDto.Situacao)
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("Informe a situação para salvar o parecer da proposta");

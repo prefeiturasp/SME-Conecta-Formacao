@@ -112,6 +112,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest=> dest.Id, opt=> opt.MapFrom(o=> o.GrupoId))
                 .ReverseMap()
                 .ForMember(dest=> dest.GrupoId, opt=> opt.MapFrom(o=> o.Id));
+            
+            CreateMap<PropostaMovimentacao, PropostaMovimentacaoDTO>().ReverseMap();
         }
     }
 }
