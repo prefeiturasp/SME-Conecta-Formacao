@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
