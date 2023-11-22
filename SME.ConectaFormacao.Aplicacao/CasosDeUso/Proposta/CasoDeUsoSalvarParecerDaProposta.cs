@@ -8,11 +8,11 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
-    public class CasoDeUsoSalvarParecerDaSalvarDaProposta : CasoDeUsoAbstrato, ICasoDeUsoSalvarParecerDaProposta
+    public class CasoDeUsoSalvarParecerDaProposta : CasoDeUsoAbstrato, ICasoDeUsoSalvarParecerDaProposta
     {
         private readonly IMapper _mapper;
         
-        public CasoDeUsoSalvarParecerDaSalvarDaProposta(IMediator mediator,IMapper mapper) : base(mediator)
+        public CasoDeUsoSalvarParecerDaProposta(IMediator mediator,IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
