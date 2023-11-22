@@ -65,6 +65,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var parecerDaPropostaInserida = ObterTodos<Dominio.Entidades.PropostaMovimentacao>().FirstOrDefault();
             parecerDaPropostaInserida.Situacao = parecerDaProposta.Situacao;
             parecerDaPropostaInserida.Parecer = parecerDaProposta.Parecer;
+            parecerDaPropostaInserida.PropostaId = proposta.Id;
         }
     }
 }
