@@ -351,12 +351,25 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> AtribuirGrupoGestao(
+        public async Task<IActionResult> AtribuirPropostaGrupoGestao(
             [FromRoute] long propostaId, 
             [FromBody] AtribuicaoPropostaGrupoGestaoDTO atribuicaoPropostaGrupoGestaoDto,
             [FromServices] ICasoDeUsoAtribuirPropostaAoGrupoGestao useCase)
         {
             return Ok(await useCase.Executar(propostaId,atribuicaoPropostaGrupoGestaoDto));
+        }
+        
+        [HttpPatch("{propostaId}/devolver")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
+        public async Task<IActionResult> DevolverProposta(
+            [FromRoute] long propostaId, 
+            [FromBody] string parecer,
+            [FromServices] ICasoDeUsoDevolverProposta useCase)
+        {
+            return Ok(await useCase.Executar(propostaId,parecer));
         }
     }
 }
