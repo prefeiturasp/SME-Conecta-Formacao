@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
@@ -61,12 +62,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var propostaAlterada = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
             propostaAlterada.Situacao.ShouldBe(parecerDaProposta.Situacao);
             propostaAlterada.Situacao.ShouldNotBe(SituacaoProposta.AguardandoAnaliseDf);
+            propostaAlterada.AlteradoEm.ShouldNotBeNull();
+            propostaAlterada.AlteradoEm.Value.Date.ShouldBe(DateTimeExtension.HorarioBrasilia().Date);
+            propostaAlterada.AlteradoPor.ShouldNotBeNull();
+            propostaAlterada.AlteradoLogin.ShouldNotBeNull();
             
             var parecerDaPropostaInserida = ObterTodos<Dominio.Entidades.PropostaMovimentacao>().FirstOrDefault();
             parecerDaPropostaInserida.Situacao.ShouldBe(parecerDaProposta.Situacao);
             parecerDaPropostaInserida.Situacao.ShouldNotBe(SituacaoProposta.AguardandoAnaliseDf);
             parecerDaPropostaInserida.Parecer.ShouldBe(parecerDaProposta.Parecer);
             parecerDaPropostaInserida.PropostaId.ShouldBe(proposta.Id);
+            parecerDaPropostaInserida.CriadoEm.Date.ShouldBe(DateTimeExtension.HorarioBrasilia().Date);
+            parecerDaPropostaInserida.CriadoPor.ShouldNotBeEmpty();
+            parecerDaPropostaInserida.CriadoLogin.ShouldNotBeEmpty();
+            parecerDaPropostaInserida.AlteradoEm.ShouldBeNull();
+            parecerDaPropostaInserida.AlteradoPor.ShouldBeNull();
+            parecerDaPropostaInserida.AlteradoLogin.ShouldBeNull();
         }
     }
 }
