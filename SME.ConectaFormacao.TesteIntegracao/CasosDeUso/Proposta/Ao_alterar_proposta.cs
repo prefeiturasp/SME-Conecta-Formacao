@@ -454,6 +454,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         [Fact(DisplayName = "Proposta - Deve salvar Proposta  com situação Cadastrada e com todos os campos Obrigatorios")]
         public async Task Deve_enviar_proposta_com_todos_campos_obrigatorios()
         {
+            var parametroSistemaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
+            await InserirNaBase(parametroSistemaDescricao);
+            var parametroSistemaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
+            await InserirNaBase(parametroSistemaUrl);
+            
             var criteriosCertificacao = PropostaMock.GerarCriteriosCertificacao();
             await InserirNaBase(criteriosCertificacao);
 
