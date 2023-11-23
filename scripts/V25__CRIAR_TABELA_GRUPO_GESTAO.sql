@@ -2,7 +2,8 @@ CREATE TABLE if not exists public.grupo_gestao  (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	grupo_id uuid,
 	nome varchar(200) NULL,
-	excluido boolean default ('false')
+	excluido boolean default ('false'),
+	CONSTRAINT acervo_documental_acesso_documento_pk PRIMARY KEY (id)
 );
 CREATE INDEX if not exists grupo_gestao_grupo_id_idx ON public.grupo_gestao (grupo_id);
 

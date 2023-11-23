@@ -1,13 +1,11 @@
-﻿using MediatR;
+﻿using Bogus;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
-using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
@@ -17,9 +15,9 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
-    public class Ao_salvar_parecer_da_proposta : TestePropostaBase
+    public class Ao_atribuir_proposta_ao_grupo_gestao : TestePropostaBase
     {
-        public Ao_salvar_parecer_da_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_atribuir_proposta_ao_grupo_gestao(CollectionFixture collectionFixture) : base(collectionFixture)
         {
             AoObterParecerPropostaMock.Montar();
         }
@@ -30,8 +28,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoUsuarioLogadoQuery, Guid>), typeof(ObterGrupoUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
         }
 
-        [Fact(DisplayName = "Parecer Proposta - Deve alterar parecer e mudar o status da proposta")]
-        public async Task Deve_alterar_parecer_e_mudar_status_proposta()
+        [Fact(DisplayName = "Atribuir Proposta ao Grupo Gestao - Deve alterar parecer e mudar o status da proposta para análise")]
+        public async Task Deve_alterar_parecer_e_mudar_status_proposta_para_analise()
         {
             // arrange
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
@@ -49,21 +47,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
 
             var parecerDaProposta = AoObterParecerPropostaMock.PropostaMovimentacaoDto;
-            parecerDaProposta.Situacao = SituacaoProposta.Favoravel;
+            parecerDaProposta.Situacao = SituacaoProposta.AguardandoAnaliseGestao;
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarParecerDaProposta>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAtribuirPropostaAoGrupoGestao>();
 
-            // act 
-            var retorno = await casoDeUso.Executar(proposta.Id,parecerDaProposta);
+            // act
+            var retorno = await casoDeUso.Executar(proposta.Id,parecerDaProposta.Parecer);
 
             // assert 
             retorno.ShouldBeTrue();
                 
             var propostaAlterada = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
             propostaAlterada.Situacao.ShouldBe(parecerDaProposta.Situacao);
+            propostaAlterada.Situacao.ShouldNotBe(SituacaoProposta.AguardandoAnaliseDf);
             
             var parecerDaPropostaInserida = ObterTodos<Dominio.Entidades.PropostaMovimentacao>().FirstOrDefault();
             parecerDaPropostaInserida.Situacao.ShouldBe(parecerDaProposta.Situacao);
+            parecerDaPropostaInserida.Situacao.ShouldNotBe(SituacaoProposta.AguardandoAnaliseDf);
             parecerDaPropostaInserida.Parecer.ShouldBe(parecerDaProposta.Parecer);
             parecerDaPropostaInserida.PropostaId.ShouldBe(proposta.Id);
         }
