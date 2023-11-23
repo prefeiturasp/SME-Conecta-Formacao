@@ -135,6 +135,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             return proposta;
         }
 
+        protected async Task InserirNaBaseGrupoGestao(IEnumerable<GrupoGestao> gruposGestao)
+        {
+            foreach (var grupoGestao in gruposGestao)
+                await InserirNaBase(grupoGestao);
+        }
+        
         protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade,
             Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes,
             IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao, IEnumerable<PalavraChave> palavrasChaves)

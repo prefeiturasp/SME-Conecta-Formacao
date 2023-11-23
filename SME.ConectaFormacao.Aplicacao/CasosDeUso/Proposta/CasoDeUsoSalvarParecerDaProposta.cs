@@ -24,7 +24,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
             
-            proposta.Situacao = propostaMovimentacaoDto.Situacao;
             await mediator.Send(new AlterarSituacaoDaPropostaCommand(propostaId, propostaMovimentacaoDto.Situacao));
 
             return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId,propostaMovimentacaoDto));
