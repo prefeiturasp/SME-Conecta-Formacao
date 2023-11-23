@@ -21,12 +21,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var criteriosExcluidos = CriterioCertificacaoMock.GerarCriterioCertificacao(4, true);
             await InserirNaBase(criteriosExcluidos);
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoCriterioCertificacao>();
-            
+
             var retorno = await casoDeUso.Executar();
-            
+
             // act 
             retorno.Any().ShouldBeTrue();
-            
+
             // assert
             retorno.Count().ShouldBeEquivalentTo(3);
 

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Comandos.Proposta.CriterioCertificacao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -41,21 +40,25 @@ namespace SME.ConectaFormacao.Aplicacao
             if (request.PropostaDTO.Situacao == SituacaoProposta.Cadastrada)
             {
                 var erros = new List<string>();
-                var errosTutorRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id), cancellationToken);
-                if (errosTutorRegente.Any())
-                    erros.AddRange(errosTutorRegente);
-                
+                var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
+                if (!string.IsNullOrEmpty(errosRegente))
+                    erros.Add(errosRegente);
+
                 var errosInformacoesGerais = await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
                 if (errosInformacoesGerais.Any())
                     erros.AddRange(errosInformacoesGerais);
-                
+
                 var errosDatas = await _mediator.Send(new ValidarDatasExistentesNaPropostaCommand(request.Id, request.PropostaDTO), cancellationToken);
                 if (errosDatas.Any())
                     erros.AddRange(errosDatas);
-                
+
                 var errosDetalhamento = await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
                 if (errosDetalhamento.Any())
                     erros.AddRange(errosDetalhamento);
+
+                var errosCritériosCertificacao = await _mediator.Send(new ValidarCertificacaoPropostaCommand(request.PropostaDTO), cancellationToken);
+                if (errosCritériosCertificacao.Any())
+                    erros.AddRange(errosCritériosCertificacao);
 
                 if (erros.Any())
                     throw new NegocioException(erros);

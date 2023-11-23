@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterNomeProfissionalPorRegistroFuncionalQueryHandler :IRequestHandler<ObterNomeProfissionalPorRegistroFuncionalQuery,string>
+    public class ObterNomeProfissionalPorRegistroFuncionalQueryHandler : IRequestHandler<ObterNomeProfissionalPorRegistroFuncionalQuery, string>
     {
         private readonly IServicoEol _servicoEol;
 
@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<string> Handle(ObterNomeProfissionalPorRegistroFuncionalQuery request, CancellationToken cancellationToken)
         {
-            return  await _servicoEol.ObterNomeProfissionalPorRegistroFuncional(request.RegistroFuncional);
+            return await _servicoEol.ObterNomeProfissionalPorRegistroFuncional(request.RegistroFuncional);
         }
     }
 }

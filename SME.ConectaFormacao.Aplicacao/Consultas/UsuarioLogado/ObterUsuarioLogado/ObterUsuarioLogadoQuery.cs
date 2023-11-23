@@ -1,5 +1,5 @@
 using MediatR;
-using SME.ConectaFormacao.Dominio;
+using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {

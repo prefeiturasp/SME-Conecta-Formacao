@@ -18,6 +18,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<bool> ExistePorGrupoId(Guid grupoId, long ignorarAreaPromotoraId);
         Task<IEnumerable<AreaPromotora>> ObterLista();
         Task<AreaPromotora> ObterAreaPromotoraPorIdComDre(long areaPromotoraId);
-        Task<bool> ExistePorGrupoIdEDreId(long dreId,Guid grupoId,  long ignorarAreaPromotoraId);
+        Task<bool> ExistePorGrupoIdEDreId(long dreId, Guid grupoId, long ignorarAreaPromotoraId);
     }
 }

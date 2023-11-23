@@ -112,7 +112,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             retorno.ShouldNotBeNull();
             retorno.UsuarioLogin.ShouldBe(UsuarioRecuperarSenhaMock.LoginValido);
 
-            var usuarios = ObterTodos<Dominio.Usuario>();
+            var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
             usuarios.Any().ShouldBeTrue();
 
             var usuario = usuarios.FirstOrDefault();

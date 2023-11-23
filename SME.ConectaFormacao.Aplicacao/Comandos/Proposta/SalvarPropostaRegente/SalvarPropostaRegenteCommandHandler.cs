@@ -8,22 +8,31 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarPropostaRegenteCommandHandler : IRequestHandler<SalvarPropostaRegenteCommand, long>
     {
-        public SalvarPropostaRegenteCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao)
-        {
-            _mapper = mapper;
-            _repositorioProposta = repositorioProposta;
-            _transacao = transacao;
-        }
-
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly ITransacao _transacao;
+        private readonly IMediator _mediator;
+
+        public SalvarPropostaRegenteCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao, IMediator mediator)
+        {
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
 
         public async Task<long> Handle(SalvarPropostaRegenteCommand request, CancellationToken cancellationToken)
         {
-            var regenteAntes = await _repositorioProposta.ObterPropostaRegentePorId(request.propostaRegenteDTO.Id);
+            var regenteAntes = await _repositorioProposta.ObterPropostaRegentePorId(request.PropostaRegenteDTO.Id);
+            var regenteDepois = _mapper.Map<PropostaRegente>(request.PropostaRegenteDTO);
+            regenteDepois.NomeRegente = regenteDepois.NomeRegente.Trim();
 
-            var regenteDepois = _mapper.Map<PropostaRegente>(request.propostaRegenteDTO);
+            var turmasAntes = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(regenteDepois.Id);
+
+            var arrayTurma = request.PropostaRegenteDTO.Turmas.Select(x => x.Turma);
+            var turmasConsultar = arrayTurma.Where(w => !turmasAntes.Any(a => a.Turma == w)).ToArray();
+            await _mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(request.PropostaId, request.PropostaRegenteDTO.RegistroFuncional, regenteDepois.NomeRegente, turmasConsultar));
+
             var transacao = _transacao.Iniciar();
             try
             {
@@ -31,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     if (regenteAntes.ProfissionalRedeMunicipal != regenteDepois.ProfissionalRedeMunicipal
                         || regenteAntes.RegistroFuncional != regenteDepois.RegistroFuncional
-                        || regenteAntes.NomeRegente != regenteDepois.NomeRegente
+                        || regenteAntes.NomeRegente.Trim() != regenteDepois.NomeRegente
                         || regenteAntes.MiniBiografia != regenteDepois.MiniBiografia)
                     {
                         regenteDepois.PropostaId = request.PropostaId;
@@ -41,11 +50,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
                 else
                     await _repositorioProposta.InserirPropostaRegente(request.PropostaId, regenteDepois);
-                
-                var turmasAntes = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(regenteDepois.Id);
+
                 var turmasInserir = regenteDepois.Turmas.Where(w => !turmasAntes.Any(a => a.Id == w.Id));
                 var turmasExcluir = turmasAntes.Where(w => !regenteDepois.Turmas.Any(a => a.Id == w.Id));
-
                 if (turmasInserir.Any())
                     await _repositorioProposta.InserirPropostaRegenteTurma(regenteDepois.Id, turmasInserir);
 
@@ -55,7 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 transacao.Commit();
                 return regenteDepois.Id;
             }
-            catch (Exception e)
+            catch
             {
                 transacao.Rollback();
                 throw;

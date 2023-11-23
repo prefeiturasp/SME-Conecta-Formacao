@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
             var sucesso = await mediator.Send(new AlterarSenhaServicoAcessosCommand(login, alterarSenhaUsuarioDto.SenhaAtual, alterarSenhaUsuarioDto.SenhaNova));
             if (!sucesso)
-                throw new NegocioException(MensagemNegocio.LOGIN_OU_SENHA_ATUAL_NAO_COMFEREM);
+                throw new NegocioException(MensagemNegocio.LOGIN_OU_SENHA_ATUAL_NAO_CONFEREM);
 
             return sucesso;
         }

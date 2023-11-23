@@ -1,6 +1,5 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLogViaRabbit;
-using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria;
 

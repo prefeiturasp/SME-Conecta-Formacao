@@ -1,4 +1,4 @@
-namespace SME.ConectaFormacao.Dominio
+namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class Usuario : EntidadeBaseAuditavel
     {

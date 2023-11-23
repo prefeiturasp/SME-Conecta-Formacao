@@ -28,11 +28,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
             await InserirNaBase(criteriosValidacaoInscricao);
-            
+
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
 
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,palavrasChaves);
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoRemoverProposta>();
 
@@ -72,7 +72,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var encontroDatas = ObterTodos<PropostaEncontroData>();
             foreach (var data in encontroDatas)
                 data.Excluido.ShouldBeTrue();
-            
+
             var propostaPalavraChaves = ObterTodos<PropostaPalavraChave>();
             foreach (var propostaPalavraChave in propostaPalavraChaves)
                 propostaPalavraChave.Excluido.ShouldBeTrue();

@@ -4,16 +4,19 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
+    [Authorize("Bearer")]
     public class AreaPromotoraController : BaseController
     {
         [HttpGet("tipos")]
         [ProducesResponseType(typeof(IEnumerable<AreaPromotoraTipoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Authorize("Bearer")]
+        [Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterTiposAreaPromotora(
             [FromServices] ICasoDeUsoObterTiposAreaPromotora casoDeUsoObterTiposAreaPromotora)
         {
@@ -24,7 +27,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<AreaPromotoraPaginadaDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Authorize("Bearer")]
+        [Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterAreaPromotoraPaginada(
             [FromServices] ICasoDeUsoObterAreaPromotoraPaginada casoDeUsoObterAreaPromotoraPaginada,
             [FromQuery] AreaPromotoraFiltrosDTO filtrosAreaPromotoraDTO)
@@ -36,7 +39,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(AreaPromotoraCompletoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Authorize("Bearer")]
+        [Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterAreaPromotoraPorId(
             [FromServices] ICasoDeUsoObterAreaPromotoraPorId casoDeUsoObterAreaPromotoraPorId,
             [FromRoute] long id)
@@ -49,7 +52,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Authorize("Bearer")]
+        [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
         public async Task<IActionResult> ObterAreaPromotoraLista(
             [FromServices] ICasoDeUsoObterAreaPromotoraLista casoDeUsoObterAreaPromotoraLista)
         {
@@ -60,7 +63,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(long), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Authorize("Bearer")]
+        [Permissao(Permissao.AreaPromotora_I, Policy = "Bearer")]
         public async Task<IActionResult> InserirAreaPromotora(
             [FromServices] ICasoDeUsoInserirAreaPromotora casoDeUsoInserirAreaPromotora,
             [FromBody] AreaPromotoraDTO areaPromotoraDTO)
@@ -72,7 +75,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Authorize("Bearer")]
+        [Permissao(Permissao.AreaPromotora_A, Policy = "Bearer")]
         public async Task<IActionResult> AlterarAreaPromotora(
             [FromServices] ICasoDeUsoAlterarAreaPromotora casoDeUsoAlterarAreaPromotora,
             [FromRoute] long id,
@@ -85,7 +88,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Authorize("Bearer")]
+        [Permissao(Permissao.AreaPromotora_E, Policy = "Bearer")]
         public async Task<IActionResult> RemoverAreaPromotora(
             [FromServices] ICasoDeUsoRemoverAreaPromotora casoDeUsoRemoverAreaPromotora,
             [FromRoute] long id)

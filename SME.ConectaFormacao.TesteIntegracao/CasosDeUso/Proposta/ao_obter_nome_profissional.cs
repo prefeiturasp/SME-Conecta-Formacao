@@ -35,9 +35,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_retornar_excessao_rf_invalido()
         {
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeRegenteTutor>();
-            
+
             var excessao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(""));
-            
+
             excessao.ShouldNotBeNull();
             excessao.Mensagens.Contains(MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO_RF_INVALIDO).ShouldBeTrue();
         }

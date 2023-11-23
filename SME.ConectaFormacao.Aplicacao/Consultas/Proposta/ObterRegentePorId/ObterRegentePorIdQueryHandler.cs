@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentePorId
 {
-    public class ObterRegentePorIdQueryHandler :IRequestHandler<ObterRegentePorIdQuery, PropostaRegente>
+    public class ObterRegentePorIdQueryHandler : IRequestHandler<ObterRegentePorIdQuery, PropostaRegente>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 

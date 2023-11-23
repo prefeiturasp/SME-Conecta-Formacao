@@ -17,7 +17,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         {
         }
 
-
         [Fact(DisplayName = "Área promotora - Deve inserir área promotora válida rede parceira com email sem dominio @sme e @edu.sme")]
         public async Task Deve_inserir_area_promotora_valida_rede_parceira_com_email_sem_dominio_sme()
         {
@@ -104,7 +103,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         public async Task Deve_retornar_excecoes_inserir_area_promotora_perfil_tipo_dre_para_um_perfil_dre_existente()
         {
             // arrange
-            var dre = AreaPromotoraSalvarMock.GerarDreValida();
+            var dre = DreMock.GerarDreValida();
             await InserirNaBase(dre!.FirstOrDefault()!);
             var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraComDreDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria, dre!.FirstOrDefault()!.Id);
 
@@ -122,13 +121,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
         [Fact(DisplayName = "Área promotora - Deve Cadastrar um Area Promotora com DRE")]
         public async Task Deve_cadastrar_area_promotora_com_Dre()
         {
-            var dre = AreaPromotoraSalvarMock.GerarDreValida();
+            var dre = DreMock.GerarDreValida();
             await InserirNaBase(dre!.FirstOrDefault()!);
             var areaPromotoraDTO = AreaPromotoraSalvarMock.GerarAreaPromotoraComDreDTOValido(Dominio.Enumerados.AreaPromotoraTipo.RedeParceria, dre!.FirstOrDefault()!.Id);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirAreaPromotora>();
 
-            var todosAreas =  ObterTodos<Dominio.Entidades.AreaPromotora>();
+            var todosAreas = ObterTodos<Dominio.Entidades.AreaPromotora>();
             todosAreas.Count.ShouldBeEquivalentTo(0);
 
             await casoDeUso.Executar(areaPromotoraDTO);

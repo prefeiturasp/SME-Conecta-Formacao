@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task Handle(ValidarPerfilDreAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
-            if (await _repositorioAreaPromotora.ExistePorGrupoIdEDreId(request.DreId,request.GrupoId,request.IgnorarAreaPromotoraId))
+            if (await _repositorioAreaPromotora.ExistePorGrupoIdEDreId(request.DreId, request.GrupoId, request.IgnorarAreaPromotoraId))
                 throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_EXISTE_GRUPO_DRE_CADASTRADO);
         }
     }

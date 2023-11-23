@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 {
-    public class ParametroSistemaMap : BaseMap<ParametroSistema>
+    public class ParametroSistemaMap : BaseMapAuditavel<ParametroSistema>
     {
         public ParametroSistemaMap()
         {

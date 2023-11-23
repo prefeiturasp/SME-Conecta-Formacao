@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<RetornoListagemDTO>> Handle(ObterPalavraChaveQuery request, CancellationToken cancellationToken)
         {
-            var palavrasChaves = (await _repositorioPalavraChave.ObterTodos()).Where(w=> !w.Excluido);
+            var palavrasChaves = (await _repositorioPalavraChave.ObterTodos()).Where(w => !w.Excluido);
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(palavrasChaves);
         }
     }

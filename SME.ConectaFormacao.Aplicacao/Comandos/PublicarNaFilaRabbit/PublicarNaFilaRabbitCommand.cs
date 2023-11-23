@@ -1,6 +1,6 @@
 using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Dominio;
+using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(a => a.Filtros)
                 .NotEmpty()
                 .WithMessage("O payload da mensagem deve ser informado para a execução da fila");
-            
+
             RuleFor(a => a.Rota)
                 .NotEmpty()
                 .WithMessage("A rota deve ser informado para a execução da fila");

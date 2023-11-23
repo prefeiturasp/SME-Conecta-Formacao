@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Dominio;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao

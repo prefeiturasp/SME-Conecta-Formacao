@@ -3,8 +3,8 @@ using SME.ConectaFormacao.Dominio.Repositorios;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
-    public interface IRepositorioCriterioCertificacao: IRepositorioBaseAuditavel<CriterioCertificacao>
+    public interface IRepositorioCriterioCertificacao : IRepositorioBaseAuditavel<CriterioCertificacao>
     {
-    
+
     }
 }

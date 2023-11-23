@@ -1,4 +1,3 @@
-using System.Net;
 using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentePorId;
@@ -7,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using System.Net;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
             var turmasDto = new List<PropostaRegenteTurmaDTO>();
             foreach (var turma in turmas)
-                turmasDto.Add(new PropostaRegenteTurmaDTO() {Turma = turma.Turma});
+                turmasDto.Add(new PropostaRegenteTurmaDTO() { Turma = turma.Turma });
             return turmasDto;
         }
     }

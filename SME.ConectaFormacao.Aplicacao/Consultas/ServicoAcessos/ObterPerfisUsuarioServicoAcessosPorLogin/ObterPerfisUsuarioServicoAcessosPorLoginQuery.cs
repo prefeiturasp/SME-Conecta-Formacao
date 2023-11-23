@@ -6,12 +6,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterPerfisUsuarioServicoAcessosPorLoginQuery : IRequest<UsuarioPerfisRetornoDTO>
     {
-        public ObterPerfisUsuarioServicoAcessosPorLoginQuery(string login)
+        public ObterPerfisUsuarioServicoAcessosPorLoginQuery(string login, Guid? perfilUsuarioId)
         {
             Login = login;
+            PerfilUsuarioId = perfilUsuarioId;
         }
 
         public string Login { get; }
+        public Guid? PerfilUsuarioId { get; set; }
     }
 
     public class ObterPerfisUsuarioServicoAcessosPorLoginQueryValidator : AbstractValidator<ObterPerfisUsuarioServicoAcessosPorLoginQuery>

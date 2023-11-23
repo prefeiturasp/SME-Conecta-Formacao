@@ -15,10 +15,10 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private readonly IMapper _mapper;
         private readonly IRepositorioDre _repositorioDre;
-        
+
         public async Task<IEnumerable<RetornoListagemDTO>> Handle(ObterListaDreQuery request, CancellationToken cancellationToken)
         {
-            var dres = (await _repositorioDre.ObterTodos()).Where(w=> !w.Excluido);
+            var dres = (await _repositorioDre.ObterTodos()).Where(w => !w.Excluido);
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(dres);
         }
     }

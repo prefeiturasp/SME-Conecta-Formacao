@@ -11,6 +11,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.ProfissionalRedeMunicipal).ToColumn("profissional_rede_municipal");
             Map(t => t.RegistroFuncional).ToColumn("registro_funcional");
             Map(t => t.NomeTutor).ToColumn("nome_tutor");
-        }   
+        }
     }
 }

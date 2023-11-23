@@ -11,26 +11,35 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly ITransacao _transacao;
+        private readonly IMediator _mediator;
 
-        public SalvarPropostaTutorCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao)
+        public SalvarPropostaTutorCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao, IMediator mediator)
         {
-            _mapper = mapper;
-            _repositorioProposta = repositorioProposta;
-            _transacao = transacao;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<long> Handle(SalvarPropostaTutorCommand request, CancellationToken cancellationToken)
         {
             var tutorAntes = await _repositorioProposta.ObterPropostaTutorPorId(request.PropostaTutorDto.Id);
-
             var tutorDepois = _mapper.Map<PropostaTutor>(request.PropostaTutorDto);
+            tutorDepois.NomeTutor = tutorDepois.NomeTutor.Trim();
+            var turmasAntes = await _repositorioProposta.ObterTutorTurmasPorTutorId(tutorDepois.Id);
+
+            var arrayTurma = request.PropostaTutorDto.Turmas.Select(x => x.Turma);
+            var turmaConsulta = arrayTurma.Where(w => !turmasAntes.Any(a => a.Turma == w)).ToArray();
+            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaId, request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, turmaConsulta));
+
+
             var transacao = _transacao.Iniciar();
             try
             {
                 if (tutorAntes != null)
                 {
                     if (tutorAntes.ProfissionalRedeMunicipal != tutorDepois.ProfissionalRedeMunicipal
-                        || tutorAntes.RegistroFuncional != tutorDepois.RegistroFuncional
+                        || tutorAntes.RegistroFuncional.Trim() != tutorDepois.RegistroFuncional
                         || tutorAntes.NomeTutor != tutorDepois.NomeTutor)
                     {
                         tutorDepois.PropostaId = request.PropostaId;
@@ -40,8 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
                 else
                     await _repositorioProposta.InserirPropostaTutor(request.PropostaId, tutorDepois);
-                
-                var turmasAntes = await _repositorioProposta.ObterTutorTurmasPorTutorId(tutorDepois.Id);
+
                 var turmasInserir = tutorDepois.Turmas.Where(w => !turmasAntes.Any(a => a.Id == w.Id));
                 var turmasExcluir = turmasAntes.Where(w => !tutorDepois.Turmas.Any(a => a.Id == w.Id));
 
@@ -54,7 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 transacao.Commit();
                 return tutorDepois.Id;
             }
-            catch (Exception e)
+            catch
             {
                 transacao.Rollback();
                 throw;

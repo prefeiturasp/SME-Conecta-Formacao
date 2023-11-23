@@ -1,5 +1,4 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta

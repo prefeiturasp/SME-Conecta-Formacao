@@ -1,6 +1,5 @@
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
-using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -17,6 +16,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
+        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta()
+        {
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
+        }
+
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora,
             IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,
             IEnumerable<PalavraChave> palavrasChaves)
@@ -29,7 +45,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 false, false);
 
             await InserirNaBase(proposta);
-
 
             var publicosAlvo = PropostaMock.GerarPublicoAlvo(proposta.Id, cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo));
             if (publicosAlvo != null)
@@ -85,6 +100,38 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.Encontros = encontros;
             }
 
+            var tutores = PropostaMock.GerarTutor(proposta.Id);
+            if (tutores != null)
+            {
+                foreach (var tutor in tutores)
+                {
+                    await InserirNaBase(tutor);
+
+                    var turmas = PropostaMock.GerarTutorTurmas(tutor.Id, proposta.QuantidadeTurmas.Value);
+                    await InserirNaBase(turmas);
+
+                    tutor.Turmas = turmas;
+                }
+
+                proposta.Tutores = tutores;
+            }
+
+            var regentes = PropostaMock.GerarRegente(proposta.Id);
+            if (regentes != null)
+            {
+                foreach (var regente in regentes)
+                {
+                    await InserirNaBase(regente);
+
+                    var turmas = PropostaMock.GerarRegenteTurmas(regente.Id, proposta.QuantidadeTurmas.Value);
+                    await InserirNaBase(turmas);
+
+                    regente.Turmas = turmas;
+                }
+
+                proposta.Regentes = regentes;
+            }
+
             return proposta;
         }
 
@@ -105,7 +152,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         protected void ValidarPropostaRegenteDTO(PropostaRegenteDTO regenteDto, long id)
         {
             var propostaRegente = ObterPorId<PropostaRegente, long>(id);
-            propostaRegente.NomeRegente.ShouldBe(regenteDto.NomeRegente);
+            propostaRegente.NomeRegente.ShouldBe(regenteDto.NomeRegente.ToUpper());
             propostaRegente.RegistroFuncional.ShouldBe(regenteDto.RegistroFuncional);
             propostaRegente.MiniBiografia.ShouldBe(regenteDto.MiniBiografia);
             propostaRegente.ProfissionalRedeMunicipal.ShouldBe(regenteDto.ProfissionalRedeMunicipal);
@@ -114,7 +161,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         protected void ValidarPropostaTutorDTO(PropostaTutorDTO tutorDto, long id)
         {
             var propostaTutor = ObterPorId<PropostaTutor, long>(id);
-            propostaTutor.NomeTutor.ShouldBe(tutorDto.NomeTutor);
+            propostaTutor.NomeTutor.ShouldBe(tutorDto.NomeTutor.ToUpper());
             propostaTutor.RegistroFuncional.ShouldBe(tutorDto.RegistroFuncional);
             propostaTutor.ProfissionalRedeMunicipal.ShouldBe(tutorDto.ProfissionalRedeMunicipal);
         }
@@ -138,11 +185,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaPresencial))
                 proposta.CargaHorariaPresencial.ShouldBe(propostaDTO.CargaHorariaPresencial);
 
-            proposta.DataRealizacaoInicio.ShouldBe(propostaDTO.DataRealizacaoInicio);
-            proposta.DataRealizacaoFim.ShouldBe(propostaDTO.DataRealizacaoFim);
+            proposta.DataRealizacaoInicio?.Date.ShouldBeEquivalentTo(propostaDTO.DataRealizacaoInicio?.Date);
+            proposta.DataRealizacaoFim?.Date.ShouldBeEquivalentTo(propostaDTO.DataRealizacaoFim?.Date);
 
-            proposta.DataInscricaoInicio.ShouldBe(propostaDTO.DataInscricaoInicio);
-            proposta.DataInscricaoFim.ShouldBe(propostaDTO.DataInscricaoFim);
+            proposta.DataInscricaoInicio?.Date.ShouldBeEquivalentTo(propostaDTO.DataInscricaoInicio?.Date);
+            proposta.DataInscricaoFim?.Date.ShouldBeEquivalentTo(propostaDTO.DataInscricaoFim?.Date);
 
             if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaSincrona))
                 proposta.CargaHorariaSincrona.ShouldBe(propostaDTO.CargaHorariaSincrona);
@@ -261,6 +308,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOVazio(SituacaoProposta.Rascunho);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
@@ -269,6 +325,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             {
                 var proposta = ObterPorId<Dominio.Entidades.Proposta, long>(id);
                 proposta.Situacao = situacaoProposta;
+                proposta.QuantidadeVagasTurma = 1;
+                proposta.QuantidadeTurmas = 1;
                 await AtualizarNaBase(proposta);
             }
 
