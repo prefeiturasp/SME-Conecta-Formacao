@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             ToTable("proposta_movimentacao");
 
             Map(c => c.PropostaId).ToColumn("proposta_id");
-            Map(c => c.Parecer).ToColumn("parecer");
+            Map(c => c.Justificativa).ToColumn("justificativa");
             Map(c => c.Situacao).ToColumn("situacao");
         }
     }

@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId,new PropostaMovimentacaoDTO()
             {
-                Parecer = parecer,
+                Justificativa = parecer,
                 Situacao = SituacaoProposta.Devolvida
             }));
         }

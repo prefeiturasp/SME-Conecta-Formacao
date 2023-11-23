@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoDevolverProposta>();
 
             // act 
-            var retorno = await casoDeUso.Executar(proposta.Id,parecerDaProposta.Parecer);
+            var retorno = await casoDeUso.Executar(proposta.Id,parecerDaProposta.Justificativa);
 
             // assert 
             retorno.ShouldBeTrue();
@@ -70,7 +70,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var parecerDaPropostaInserida = ObterTodos<Dominio.Entidades.PropostaMovimentacao>().FirstOrDefault();
             parecerDaPropostaInserida.Situacao.ShouldBe(parecerDaProposta.Situacao);
             parecerDaPropostaInserida.Situacao.ShouldNotBe(SituacaoProposta.AguardandoAnaliseDf);
-            parecerDaPropostaInserida.Parecer.ShouldBe(parecerDaProposta.Parecer);
+            parecerDaPropostaInserida.Justificativa.ShouldBe(parecerDaProposta.Justificativa);
             parecerDaPropostaInserida.PropostaId.ShouldBe(proposta.Id);
             parecerDaPropostaInserida.CriadoEm.Date.ShouldBe(DateTimeExtension.HorarioBrasilia().Date);
             parecerDaPropostaInserida.CriadoPor.ShouldNotBeEmpty();
