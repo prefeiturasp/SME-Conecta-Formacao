@@ -333,12 +333,12 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await useCase.Executar(propostaId));
         }
         
-        [HttpPatch("{propostaId}/movimentacao")]
+        [HttpPatch("{propostaId}/parecer")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> SalvarMovimentacaoDaProposta(
+        public async Task<IActionResult> SalvarParecerDaProposta(
             [FromRoute] long propostaId, 
             [FromBody] PropostaMovimentacaoDTO propostaMovimentacaoDto,
             [FromServices] ICasoDeUsoSalvarParecerDaProposta useCase)
