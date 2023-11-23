@@ -12,19 +12,19 @@
         Proposta_E = 291,
         Proposta_A = 292,
         
-        AtribuirPropostaParaGestao_C = 289,
-        AtribuirPropostaParaGestao_I = 290,
-        AtribuirPropostaParaGestao_E = 291,
-        AtribuirPropostaParaGestao_A = 292,
+        AtribuirPropostaParaGestao_C = 293,
+        AtribuirPropostaParaGestao_I = 294,
+        AtribuirPropostaParaGestao_E = 295,
+        AtribuirPropostaParaGestao_A = 296,
         
-        DarParecerDaProposta_C = 293,
-        DarParecerDaProposta_I = 294,
-        DarParecerDaProposta_E = 295,
-        DarParecerDaProposta_A = 296,
+        DarParecerDaProposta_C = 297,
+        DarParecerDaProposta_I = 298,
+        DarParecerDaProposta_E = 299,
+        DarParecerDaProposta_A = 300,
         
-        DevolverProposta_C = 297
-        DevolverProposta_I = 298
-        DevolverProposta_E = 299
-        DevolverProposta_A = 300
+        DevolverProposta_C = 301,
+        DevolverProposta_I = 302,
+        DevolverProposta_E = 303,
+        DevolverProposta_A = 304
     }
 }
