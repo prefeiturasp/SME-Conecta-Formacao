@@ -18,18 +18,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<bool> Executar(long propostaId, string justificativa)
+        public async Task<bool> Executar(long propostaId, AtribuicaoPropostaGrupoGestaoDTO atribuicaoPropostaGrupoGestaoDto)
         {
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
 
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
             
-            await mediator.Send(new AlterarSituacaoDaPropostaCommand(propostaId, SituacaoProposta.AguardandoAnaliseGestao));
+            await mediator.Send(new AlterarSituacaoGrupoGestaoDaPropostaCommand(propostaId, SituacaoProposta.AguardandoAnaliseGestao,atribuicaoPropostaGrupoGestaoDto.GrupoGestaoId));
 
             return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId,new PropostaMovimentacaoDTO()
             {
-                Parecer = justificativa,
+                Parecer = atribuicaoPropostaGrupoGestaoDto.Parecer,
                 Situacao = SituacaoProposta.AguardandoAnaliseGestao
             }));
         }

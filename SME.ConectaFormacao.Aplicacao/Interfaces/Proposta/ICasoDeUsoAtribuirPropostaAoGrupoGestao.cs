@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
     public interface ICasoDeUsoAtribuirPropostaAoGrupoGestao
     {
-        Task<bool> Executar(long propostaId, string justificativa);
+        Task<bool> Executar(long propostaId, AtribuicaoPropostaGrupoGestaoDTO atribuicaoPropostaGrupoGestaoDto);
     }
 }

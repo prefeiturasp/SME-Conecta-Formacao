@@ -333,7 +333,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await useCase.Executar(propostaId));
         }
         
-        [HttpPost("{propostaId}/movimentacao")]
+        [HttpPatch("{propostaId}/movimentacao")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
@@ -346,17 +346,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await useCase.Executar(propostaId,propostaMovimentacaoDto));
         }
         
-        [HttpPost("{propostaId}/atribuir-grupo-gestao")]
+        [HttpPatch("{propostaId}/atribuir-grupo-gestao")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
         public async Task<IActionResult> AtribuirGrupoGestao(
             [FromRoute] long propostaId, 
-            [FromBody] string justificativa,
+            [FromBody] AtribuicaoPropostaGrupoGestaoDTO atribuicaoPropostaGrupoGestaoDto,
             [FromServices] ICasoDeUsoAtribuirPropostaAoGrupoGestao useCase)
         {
-            return Ok(await useCase.Executar(propostaId,justificativa));
+            return Ok(await useCase.Executar(propostaId,atribuicaoPropostaGrupoGestaoDto));
         }
     }
 }

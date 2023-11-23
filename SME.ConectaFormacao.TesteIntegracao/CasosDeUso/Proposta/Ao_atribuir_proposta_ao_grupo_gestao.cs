@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks;
@@ -48,11 +49,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var parecerDaProposta = AoObterParecerPropostaMock.PropostaMovimentacaoDto;
             parecerDaProposta.Situacao = SituacaoProposta.AguardandoAnaliseGestao;
+            
+            await InserirNaBaseGrupoGestao(GrupoGestaoMock.GerarGrupoGestaoValida(5));
+            
+            var gruposGestaoInseridos = ObterTodos<Dominio.Entidades.GrupoGestao>();
+            gruposGestaoInseridos.Count.ShouldBeEquivalentTo(5);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoAtribuirPropostaAoGrupoGestao>();
 
             // act
-            var retorno = await casoDeUso.Executar(proposta.Id,parecerDaProposta.Parecer);
+            var retorno = await casoDeUso.Executar(proposta.Id,new AtribuicaoPropostaGrupoGestaoDTO()
+            {
+                Parecer = parecerDaProposta.Parecer,
+                GrupoGestaoId = gruposGestaoInseridos.FirstOrDefault().Id
+            });
 
             // assert 
             retorno.ShouldBeTrue();
@@ -60,6 +70,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var propostaAlterada = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
             propostaAlterada.Situacao.ShouldBe(parecerDaProposta.Situacao);
             propostaAlterada.Situacao.ShouldNotBe(SituacaoProposta.AguardandoAnaliseDf);
+            propostaAlterada.GrupoGestaoId.ShouldNotBeNull();
+            propostaAlterada.GrupoGestaoId.ShouldBe(gruposGestaoInseridos.FirstOrDefault().Id);
+            propostaAlterada.GrupoGestaoId.ShouldNotBe(gruposGestaoInseridos.LastOrDefault().Id);
             
             var parecerDaPropostaInserida = ObterTodos<Dominio.Entidades.PropostaMovimentacao>().FirstOrDefault();
             parecerDaPropostaInserida.Situacao.ShouldBe(parecerDaProposta.Situacao);
