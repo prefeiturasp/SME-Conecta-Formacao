@@ -154,6 +154,7 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaRegenteMap());
             config.AddMap(new PropostaTutorTurmaMap());
             config.AddMap(new PropostaTutorMap());
+            config.AddMap(new PropostaMovimentacaoMap());
 
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
@@ -206,6 +207,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
         _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
         _serviceCollection.TryAddScoped<IRepositorioGrupoGestao, RepositorioGrupoGestao>();
+        _serviceCollection.TryAddScoped<IRepositorioPropostaMovimentacao, RepositorioPropostaMovimentacao>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -275,6 +277,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParaDf, CasoDeUsoEnviarPropostaParaDf>();
         
         _serviceCollection.TryAddScoped<ICasoDeUsoObterGrupoGestao, CasoDeUsoObterGrupoGestao>();
+        
+        _serviceCollection.TryAddScoped<ICasoDeUsoSalvarParecerDaProposta, CasoDeUsoSalvarParecerDaProposta>();
     }
 
     protected virtual void RegistrarHttpClients()
