@@ -22,6 +22,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.Situacao != SituacaoProposta.Cadastrada)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA);
 
+            var errosEncontrosProfissionais = await mediator.Send(new ValidarEncontrosProfissionaisAoEnviarDfCommand(proposta));
+            
+            if (errosEncontrosProfissionais.Any())
+                throw new NegocioException(errosEncontrosProfissionais.ToList());
+
             return await mediator.Send(new EnviarPropostaParaDfCommand(propostaId));
         }
     }
