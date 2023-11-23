@@ -1,6 +1,4 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -16,12 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(AlterarSituacaoGrupoGestaoDaPropostaCommand request, CancellationToken cancellationToken)
         {
-            var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
-            
-            proposta.Situacao = request.SituacaoProposta;
-            proposta.GrupoGestaoId = request.GrupoGestaoId;
-            
-            await _repositorioProposta.Atualizar(proposta);
+            await _repositorioProposta.AtualizarSituacaoGrupoGestao(request.Id, request.SituacaoProposta,request.GrupoGestaoId);
 
             return true;
         }

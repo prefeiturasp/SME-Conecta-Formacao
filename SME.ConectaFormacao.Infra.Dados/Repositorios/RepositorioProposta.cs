@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -718,6 +719,49 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().QueryAsync<int>(query.ToString(), new { propostaId, nomeTutor, registroFuncional, turmas });
         }
+
+        public Task AtualizarSituacao(long id, SituacaoProposta situacaoProposta)
+        {
+            var query = @"update proposta 
+                          set 
+                            situacao = @situacaoProposta, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = @id";
+
+            return conexao.Obter().ExecuteAsync(query, new
+            {
+                id, 
+                situacaoProposta, 
+                AlteradoEm = DateTimeExtension.HorarioBrasilia(), 
+                AlteradoPor = contexto.NomeUsuario, 
+                AlteradoLogin = contexto.UsuarioLogado
+            });
+        }
+        
+        public Task AtualizarSituacaoGrupoGestao(long id, SituacaoProposta situacaoProposta, long grupoGestaoId)
+        {
+            var query = @"update proposta 
+                          set 
+                            situacao = @situacaoProposta, 
+                            grupo_gestao_id = @grupoGestaoId,
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = @id";
+
+            return conexao.Obter().ExecuteAsync(query, new
+            {
+                id, 
+                situacaoProposta, 
+                grupoGestaoId,
+                AlteradoEm = DateTimeExtension.HorarioBrasilia(), 
+                AlteradoPor = contexto.NomeUsuario, 
+                AlteradoLogin = contexto.UsuarioLogado
+            });
+        }
+
         public async Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves)
         {
             foreach (var palavraChave in palavrasChaves)
