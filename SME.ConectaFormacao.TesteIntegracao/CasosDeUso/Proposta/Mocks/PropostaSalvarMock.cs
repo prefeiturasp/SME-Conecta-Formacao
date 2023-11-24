@@ -119,6 +119,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(100));
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(100));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(100));
+            faker.RuleFor(x => x.FormacaoHomologada, f => true);
 
             if (gerarFuncaoEspecificaOutros)
                 faker.RuleFor(x => x.FuncaoEspecificaOutros, f => f.Lorem.Sentence(3));

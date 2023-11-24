@@ -135,6 +135,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             return proposta;
         }
 
+        protected async Task InserirNaBaseGrupoGestao(IEnumerable<GrupoGestao> gruposGestao)
+        {
+            foreach (var grupoGestao in gruposGestao)
+                await InserirNaBase(grupoGestao);
+        }
+        
         protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade,
             Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes,
             IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao, IEnumerable<PalavraChave> palavrasChaves)
@@ -181,6 +187,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.ConteudoProgramatico.ShouldBe(propostaDTO.ConteudoProgramatico);
             proposta.ProcedimentoMetadologico.ShouldBe(propostaDTO.ProcedimentoMetadologico);
             proposta.Referencia.ShouldBe(propostaDTO.Referencia);
+            proposta.FormacaoHomologada.ShouldBe(propostaDTO.FormacaoHomologada);
 
             if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaPresencial))
                 proposta.CargaHorariaPresencial.ShouldBe(propostaDTO.CargaHorariaPresencial);
@@ -221,6 +228,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.ConteudoProgramatico.ShouldBe(propostaDTO.ConteudoProgramatico);
             proposta.ProcedimentoMetadologico.ShouldBe(propostaDTO.ProcedimentoMetadologico);
             proposta.Referencia.ShouldBe(propostaDTO.Referencia);
+            proposta.FormacaoHomologada.ShouldBe(propostaDTO.FormacaoHomologada);
 
             if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaPresencial))
                 proposta.CargaHorariaPresencial.ShouldBe(propostaDTO.CargaHorariaPresencial);

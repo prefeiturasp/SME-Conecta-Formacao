@@ -15,5 +15,6 @@
         public DateTime? DataInscricaoInicio { get; set; }
         public DateTime? DataInscricaoFim { get; set; }
         public string Situacao { get; set; }
+        public bool FormacaoHomologada { get; set; }
     }
 }

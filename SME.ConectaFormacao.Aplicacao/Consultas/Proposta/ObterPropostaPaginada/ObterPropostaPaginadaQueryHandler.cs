@@ -29,7 +29,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 request.PropostaFiltrosDTO.NumeroHomologacao,
                 request.PropostaFiltrosDTO.PeriodoRealizacaoInicio,
                 request.PropostaFiltrosDTO.PeriodoRealizacaoFim,
-                request.PropostaFiltrosDTO.Situacao);
+                request.PropostaFiltrosDTO.Situacao,
+                request.PropostaFiltrosDTO.FormacaoHomologada);
 
             IEnumerable<Proposta> propostas = new List<Proposta>();
             if (totalRegistrosFiltro > 0)
@@ -45,7 +46,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 request.PropostaFiltrosDTO.NumeroHomologacao,
                 request.PropostaFiltrosDTO.PeriodoRealizacaoInicio,
                 request.PropostaFiltrosDTO.PeriodoRealizacaoFim,
-                request.PropostaFiltrosDTO.Situacao
+                request.PropostaFiltrosDTO.Situacao,
+                request.PropostaFiltrosDTO.FormacaoHomologada
                 );
             }
 
