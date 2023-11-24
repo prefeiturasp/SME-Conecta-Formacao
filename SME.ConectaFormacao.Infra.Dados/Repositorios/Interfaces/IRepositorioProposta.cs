@@ -60,7 +60,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaTutorTurma>> ObterTutorTurmasPorTutorId(params long[] tutorIds);
         Task ExcluirPropostaTutor(long tutorId);
         Task<IEnumerable<PropostaTutor>> ObterTutoresPaginado(int numeroPagina, int numeroRegistros, long propostaId);
-        Task EnviarPropostaParaDf(long propostaId);
         Task<int> ObterQuantidadeDeTurmasComEncontro(long propostaId);
         Task<IEnumerable<int>> ObterTurmasJaExistenteParaRegente(long propostaId, string? nomeRegente, string? registroFuncional, int[] turmas);
         Task<IEnumerable<int>> ObterTurmasJaExistenteParaTutor(long propostaId, string? nomeTutor, string? registroFuncional, int[] turmas);

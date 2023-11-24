@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {

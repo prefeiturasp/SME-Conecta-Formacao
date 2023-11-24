@@ -274,13 +274,14 @@ public class RegistradorDeDependencia
 
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreSyncUseCase, ExecutarSincronizacaoInstitucionalDreSyncUseCase>();
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParaDf, CasoDeUsoEnviarPropostaParaDf>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParaValidacao, CasoDeUsoEnviarPropostaParaValidacao>();
         
         _serviceCollection.TryAddScoped<ICasoDeUsoObterGrupoGestao, CasoDeUsoObterGrupoGestao>();
         
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarParecerDaProposta, CasoDeUsoSalvarParecerDaProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAtribuirPropostaAoGrupoGestao, CasoDeUsoAtribuirPropostaAoGrupoGestao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerProposta, CasoDeUsoObterParecerProposta>();
     }
 
     protected virtual void RegistrarHttpClients()

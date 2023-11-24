@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Grupo
 {
     public interface ICasoDeUsoObterGrupoGestao
     {
-        Task<IEnumerable<GrupoDTO>> Executar();
+        Task<IEnumerable<GrupoGestaoDTO>> Executar();
     }
 }

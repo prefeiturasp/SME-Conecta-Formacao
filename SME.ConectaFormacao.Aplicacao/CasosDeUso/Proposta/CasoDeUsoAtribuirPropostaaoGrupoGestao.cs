@@ -12,8 +12,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
     public class CasoDeUsoAtribuirPropostaAoGrupoGestao : CasoDeUsoAbstrato, ICasoDeUsoAtribuirPropostaAoGrupoGestao
     {
         private readonly IMapper _mapper;
-        
-        public CasoDeUsoAtribuirPropostaAoGrupoGestao(IMediator mediator,IMapper mapper) : base(mediator)
+
+        public CasoDeUsoAtribuirPropostaAoGrupoGestao(IMediator mediator, IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -24,14 +24,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-            
-            await mediator.Send(new AlterarSituacaoGrupoGestaoDaPropostaCommand(propostaId, SituacaoProposta.AguardandoAnaliseGestao,atribuicaoPropostaGrupoGestaoDto.GrupoGestaoId));
 
-            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId,new PropostaMovimentacaoDTO()
-            {
-                Justificativa = atribuicaoPropostaGrupoGestaoDto.Justificativa,
-                Situacao = SituacaoProposta.AguardandoAnaliseGestao
-            }));
+            await mediator.Send(new AlterarSituacaoGrupoGestaoDaPropostaCommand(propostaId, SituacaoProposta.AguardandoAnaliseGestao, atribuicaoPropostaGrupoGestaoDto.GrupoGestaoId));
+
+            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.AguardandoAnaliseGestao, atribuicaoPropostaGrupoGestaoDto.Justificativa));
         }
     }
 }

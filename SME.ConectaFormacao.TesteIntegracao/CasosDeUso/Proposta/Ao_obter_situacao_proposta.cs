@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var retorno = await casoDeUso.Executar();
 
             // assert 
-            retorno.Any(t => t.Id == (long)SituacaoProposta.Ativo).ShouldBeTrue();
+            retorno.Any(t => t.Id == (long)SituacaoProposta.Cadastrada).ShouldBeTrue();
             retorno.Any(t => t.Id == (long)SituacaoProposta.Rascunho).ShouldBeTrue();
         }
     }

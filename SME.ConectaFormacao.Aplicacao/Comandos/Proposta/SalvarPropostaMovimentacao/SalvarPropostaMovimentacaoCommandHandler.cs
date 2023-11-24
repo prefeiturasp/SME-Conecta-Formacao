@@ -18,10 +18,14 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(SalvarPropostaMovimentacaoCommand request, CancellationToken cancellationToken)
         {
-            var propostaParecer = _mapper.Map<PropostaMovimentacao>(request.PropostaMovimentacaoDto);
-            propostaParecer.PropostaId = request.PropostaId;
-            
-            await _repositorioPropostaMovimentacao.Inserir(propostaParecer);
+            var propostaMovimentacao = new PropostaMovimentacao
+            {
+                PropostaId = request.PropostaId,
+                Situacao = request.Situacao,
+                Justificativa = request.Justificativa
+            };
+
+            await _repositorioPropostaMovimentacao.Inserir(propostaMovimentacao);
             return true;
         }
     }
