@@ -173,7 +173,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return dresCodigo.Any() ? " and dre.dre_id = any(@dresCodigo) " : string.Empty;
         }
 
-        public Task<IEnumerable<AreaPromotora>> ObterLista(Guid grupoId, IEnumerable<string> dresCodigo)
+        public Task<IEnumerable<AreaPromotora>> ObterListaPorGrupoDresCodigo(Guid grupoId, IEnumerable<string> dresCodigo)
         {
             var query = $@"select ap.id, ap.nome 
                             from area_promotora ap

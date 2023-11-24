@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterAreaPromotoraListaQueryHandler : IRequestHandler<ObterAreaPromotoraListaQuery, IEnumerable<RetornoListagemDTO>>
+    public class ObterAreaPromotoraListaQueryHandler : IRequestHandler<ObterAreaPromotoraListaPorGrupoDresCodigoQuery, IEnumerable<RetornoListagemDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
@@ -16,9 +16,9 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
         }
 
-        public async Task<IEnumerable<RetornoListagemDTO>> Handle(ObterAreaPromotoraListaQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RetornoListagemDTO>> Handle(ObterAreaPromotoraListaPorGrupoDresCodigoQuery request, CancellationToken cancellationToken)
         {
-            var areasPromotoras = await _repositorioAreaPromotora.ObterLista(request.GrupoId, request.DresCodigo);
+            var areasPromotoras = await _repositorioAreaPromotora.ObterListaPorGrupoDresCodigo(request.GrupoId, request.DresCodigo);
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(areasPromotoras);
         }
     }

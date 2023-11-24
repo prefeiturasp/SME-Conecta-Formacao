@@ -3,9 +3,9 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterAreaPromotoraListaQuery : IRequest<IEnumerable<RetornoListagemDTO>>
+    public class ObterAreaPromotoraListaPorGrupoDresCodigoQuery : IRequest<IEnumerable<RetornoListagemDTO>>
     {
-        public ObterAreaPromotoraListaQuery(Guid grupoId, IEnumerable<string> dresCodigo)
+        public ObterAreaPromotoraListaPorGrupoDresCodigoQuery(Guid grupoId, IEnumerable<string> dresCodigo)
         {
             GrupoId = grupoId;
             DresCodigo = dresCodigo;
