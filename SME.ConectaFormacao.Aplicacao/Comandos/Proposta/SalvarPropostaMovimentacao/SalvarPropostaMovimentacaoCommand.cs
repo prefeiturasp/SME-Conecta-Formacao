@@ -25,9 +25,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 .GreaterThan(0)
                 .WithMessage("Informe o Id da Proposta para salvar o parecer da proposta");
             
-            RuleFor(x => x.PropostaMovimentacaoDto.Parecer)
+            RuleFor(x => x.PropostaMovimentacaoDto.Justificativa)
                 .NotEmpty()
-                .WithMessage("Informe o parecer para salvar o parecer da proposta");
+                .WithMessage("Informe a justificativa para salvar o parecer da proposta");
             
             RuleFor(x => x.PropostaMovimentacaoDto.Situacao)
                 .NotNull()

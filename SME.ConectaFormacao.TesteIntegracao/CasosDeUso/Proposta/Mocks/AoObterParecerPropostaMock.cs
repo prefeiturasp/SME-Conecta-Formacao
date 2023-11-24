@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks
         public static void Montar()
         {
             var faker = new Faker<PropostaMovimentacaoDTO>("pt_BR");
-            faker.RuleFor(x => x.Parecer, f => f.Lorem.Text());
+            faker.RuleFor(x => x.Justificativa, f => f.Lorem.Text());
             faker.RuleFor(x => x.Situacao, f => SituacaoProposta.AguardandoAnaliseDf);
             PropostaMovimentacaoDto = faker.Generate();
         }

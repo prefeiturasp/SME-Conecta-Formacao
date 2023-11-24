@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var parecerDaPropostaInserida = ObterTodos<Dominio.Entidades.PropostaMovimentacao>().FirstOrDefault();
             parecerDaPropostaInserida.Situacao.ShouldBe(parecerDaProposta.Situacao);
-            parecerDaPropostaInserida.Parecer.ShouldBe(parecerDaProposta.Parecer);
+            parecerDaPropostaInserida.Justificativa.ShouldBe(parecerDaProposta.Justificativa);
             parecerDaPropostaInserida.PropostaId.ShouldBe(proposta.Id);
             parecerDaPropostaInserida.CriadoEm.Date.ShouldBe(DateTimeExtension.HorarioBrasilia().Date);
             parecerDaPropostaInserida.CriadoPor.ShouldNotBeEmpty();

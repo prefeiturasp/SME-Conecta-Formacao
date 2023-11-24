@@ -2,6 +2,6 @@
 {
     public interface ICasoDeUsoDevolverProposta
     {
-        Task<bool> Executar(long propostaId, string parecer);
+        Task<bool> Executar(long propostaId, string justificativa);
     }
 }
