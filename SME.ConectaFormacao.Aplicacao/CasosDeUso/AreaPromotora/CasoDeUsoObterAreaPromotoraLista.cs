@@ -12,7 +12,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora
 
         public async Task<IEnumerable<RetornoListagemDTO>> Executar()
         {
-            return await mediator.Send(ObterAreaPromotoraListaQuery.Instancia);
+            var (grupoUsuarioLogadoId,dresCodigoDoUsuarioLogado) = await mediator.Send(ObterGrupoUsuarioEDresUsuarioLogadoQuery.Instancia());
+            return await mediator.Send(new ObterAreaPromotoraListaQuery(grupoUsuarioLogadoId,dresCodigoDoUsuarioLogado));
         }
     }
 }

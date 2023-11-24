@@ -13,5 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public DateTime? PeriodoRealizacaoInicio { get; set; }
         public DateTime? PeriodoRealizacaoFim { get; set; }
         public SituacaoProposta? Situacao { get; set; }
+        public Guid? GrupoId { get; set; }
+        public IEnumerable<string>? DresCodigo { get; set; }
     }
 }

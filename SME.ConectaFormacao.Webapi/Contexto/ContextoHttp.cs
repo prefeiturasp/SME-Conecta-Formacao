@@ -24,6 +24,8 @@ public class ContextoHttp : ContextoBase
         Variaveis.Add("NomeUsuario", httpContextAccessor.HttpContext?.User?.FindFirst("Nome")?.Value ?? "Sistema");
         Variaveis.Add("PerfilUsuario", ObterPerfilAtual());
         Variaveis.Add("EmailUsuario", httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == "email")?.Value ?? string.Empty);
+        Variaveis.Add("Perfis", ObterListaPorChaveClaim("perfis"));
+        Variaveis.Add("Dres", ObterListaPorChaveClaim("dres"));
 
         var authorizationHeader = httpContextAccessor.HttpContext?.Request?.Headers["authorization"];
 
@@ -55,6 +57,16 @@ public class ContextoHttp : ContextoBase
     private string ObterPerfilAtual()
     {
         return (httpContextAccessor.HttpContext?.User?.Claims ?? Enumerable.Empty<Claim>()).FirstOrDefault(x => x.Type.ToLower() == "perfil")?.Value;
+    }
+
+    private IEnumerable<string> ObterListaPorChaveClaim(string chaveClaim)
+    {
+        var lista = new List<string>();
+
+        foreach (var perfil in (httpContextAccessor.HttpContext?.User?.Claims ?? Enumerable.Empty<Claim>()).Where(x => x.Type.ToLower() == chaveClaim))
+            lista.Add(perfil.Value);
+
+        return lista;
     }
 
     public override IContextoAplicacao AtribuirContexto(IContextoAplicacao contexto)

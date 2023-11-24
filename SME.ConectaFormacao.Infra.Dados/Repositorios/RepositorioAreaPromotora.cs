@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Data;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -157,18 +158,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { grupoId, dreId, ignorarAreaPromotoraId });
         }
 
-        public Task<AreaPromotora> ObterPorGrupoId(Guid grupoId)
+        public Task<AreaPromotora> ObterPorGrupoIdDresCodigo(Guid grupoId, IEnumerable<string> dresCodigo)
         {
-            var query = @"select id, nome, tipo, email from area_promotora where grupo_id = @grupoId";
+            var query = $@"select ap.id, ap.nome, ap.tipo, ap.email 
+                            from area_promotora ap
+                            left join dre on dre.id = ap.dreid 
+                          where grupo_id = @grupoId {IncluirFiltroPorDre(dresCodigo)}";
 
-            return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { grupoId });
+            return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { grupoId, dresCodigo });
         }
 
-        public Task<IEnumerable<AreaPromotora>> ObterLista()
+        private string IncluirFiltroPorDre(IEnumerable<string> dresCodigo)
         {
-            var query = @"select id, nome from area_promotora where not excluido order by nome";
+            return dresCodigo.Any() ? " and dre.dre_id = any(@dresCodigo) " : string.Empty;
+        }
 
-            return conexao.Obter().QueryAsync<AreaPromotora>(query);
+        public Task<IEnumerable<AreaPromotora>> ObterLista(Guid grupoId, IEnumerable<string> dresCodigo)
+        {
+            var query = $@"select ap.id, ap.nome 
+                            from area_promotora ap
+                            left join dre on dre.id = ap.dreid 
+                          where grupo_id = @grupoId {IncluirFiltroPorDre(dresCodigo)}";
+
+            return conexao.Obter().QueryAsync<AreaPromotora>(query, new { grupoId, dresCodigo });
         }
     }
 }

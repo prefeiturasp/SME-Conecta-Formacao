@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<RetornoListagemDTO>> Handle(ObterAreaPromotoraListaQuery request, CancellationToken cancellationToken)
         {
-            var areasPromotoras = await _repositorioAreaPromotora.ObterLista();
+            var areasPromotoras = await _repositorioAreaPromotora.ObterLista(request.GrupoId, request.DresCodigo);
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(areasPromotoras);
         }
     }

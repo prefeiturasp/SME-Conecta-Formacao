@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<Dominio.Entidades.AreaPromotora> Handle(ObterAreaPromotoraPorGrupoIdQuery request, CancellationToken cancellationToken)
         {
-            var areaPromotora = await _repositorioAreaPromotora.ObterPorGrupoId(request.GrupoId);
+            var areaPromotora = await _repositorioAreaPromotora.ObterPorGrupoIdDresCodigo(request.GrupoId, request.DresCodigo);
             if (areaPromotora != null)
                 areaPromotora.Telefones = await _repositorioAreaPromotora.ObterTelefonesPorId(areaPromotora.Id);
 

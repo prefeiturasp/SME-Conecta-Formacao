@@ -7,6 +7,8 @@ public interface IContextoAplicacao
     string UsuarioLogado { get; }
     string NomeUsuario { get; }
     string PerfilUsuario { get; }
+    IEnumerable<string> Perfis { get; }
+    IEnumerable<string> Dres { get; }
     string Administrador { get; }
     T ObterVariavel<T>(string nome);
 

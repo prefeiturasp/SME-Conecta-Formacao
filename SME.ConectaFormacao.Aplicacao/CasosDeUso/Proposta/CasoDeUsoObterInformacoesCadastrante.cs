@@ -15,8 +15,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<PropostaInformacoesCadastranteDTO> Executar()
         {
-            var grupoUsuarioLogadoId = await mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
-            var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorGrupoIdQuery(grupoUsuarioLogadoId)) ??
+            var (grupoUsuarioLogadoId,dresCodigoDoUsuarioLogado) = await mediator.Send(ObterGrupoUsuarioEDresUsuarioLogadoQuery.Instancia());
+            var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorGrupoIdQuery(grupoUsuarioLogadoId,dresCodigoDoUsuarioLogado)) ??
                 throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO, System.Net.HttpStatusCode.NotFound);
 
             var informacoesCadastrante = new PropostaInformacoesCadastranteDTO

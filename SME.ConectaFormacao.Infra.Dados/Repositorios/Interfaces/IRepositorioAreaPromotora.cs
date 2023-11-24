@@ -14,9 +14,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> ObterTotalRegistrosPorFiltros(string nome, short? tipo);
         Task InserirTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones);
         Task RemoverTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones);
-        Task<AreaPromotora> ObterPorGrupoId(Guid grupoId);
+        Task<AreaPromotora> ObterPorGrupoIdDresCodigo(Guid grupoId, IEnumerable<string> dresCodigo);
         Task<bool> ExistePorGrupoId(Guid grupoId, long ignorarAreaPromotoraId);
-        Task<IEnumerable<AreaPromotora>> ObterLista();
+        Task<IEnumerable<AreaPromotora>> ObterLista(Guid grupoId, IEnumerable<string> dresCodigo);
         Task<AreaPromotora> ObterAreaPromotoraPorIdComDre(long areaPromotoraId);
         Task<bool> ExistePorGrupoIdEDreId(long dreId, Guid grupoId, long ignorarAreaPromotoraId);
     }

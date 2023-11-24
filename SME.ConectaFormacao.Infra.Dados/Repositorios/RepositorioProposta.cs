@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -225,13 +226,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
-        private static string MontarQueryPaginacao(long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao)
+        private static string MontarQueryPaginacao(long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, Guid? grupoId, IEnumerable<string>? dresCodigo)
         {
             var query = new StringBuilder();
             query.AppendLine("select p.*, ap.* ");
             query.AppendLine("from proposta p ");
-            query.AppendLine("left join area_promotora ap on ap.id = p.area_promotora_id and not ap.excluido");
+            query.AppendLine("join area_promotora ap on ap.id = p.area_promotora_id and not ap.excluido ");
+            query.AppendLine("left join dre on dre.id = ap.dreid ");
             query.AppendLine("where not p.excluido ");
+            
+            if (grupoId.NaoEhNulo())
+                query.AppendLine(" and ap.grupo_id = @grupoId ");
+            
+            if (dresCodigo.Any())
+                query.AppendLine(" and dre.dre_id = any(@dresCodigo) ");
 
             if (propostaId.GetValueOrDefault() > 0)
                 query.AppendLine(" and p.id = @propostaId");
@@ -263,10 +271,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return query.ToString();
         }
 
-        public Task<int> ObterTotalRegistrosPorFiltros(long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao)
+        public Task<int> ObterTotalRegistrosPorFiltros(long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, Guid? grupoId, IEnumerable<string>? dresCodigo)
         {
-            string query = string.Concat("select count(1) from (", MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao), ") tb");
-            return conexao.Obter().ExecuteScalarAsync<int>(query, new
+            string query = string.Concat("select count(1) from (", MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, grupoId, dresCodigo), ") tb");
+            var retorno = conexao.Obter().ExecuteScalarAsync<int>(query, new
             {
                 propostaId,
                 areaPromotoraId,
@@ -276,15 +284,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 numeroHomologacao,
                 periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
                 periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
-                situacao
+                situacao,
+                grupoId,
+                dresCodigo
             });
+            return retorno;
         }
 
-        public Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao)
+        public Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, Guid? grupoId, IEnumerable<string>? dresCodigo)
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
-            string query = MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao);
+            string query = MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, grupoId, dresCodigo);
 
             query += " order by p.criado_em desc";
             query += " limit @numeroRegistros offset @registrosIgnorados";
@@ -306,7 +317,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     numeroHomologacao,
                     periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
                     periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
-                    situacao
+                    situacao,
+                    grupoId,
+                    dresCodigo
                 },
                 splitOn: "id, id");
         }

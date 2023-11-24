@@ -5,7 +5,13 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterAreaPromotoraListaQuery : IRequest<IEnumerable<RetornoListagemDTO>>
     {
-        private static ObterAreaPromotoraListaQuery _instancia;
-        public static ObterAreaPromotoraListaQuery Instancia => _instancia ??= new();
+        public ObterAreaPromotoraListaQuery(Guid grupoId, IEnumerable<string> dresCodigo)
+        {
+            GrupoId = grupoId;
+            DresCodigo = dresCodigo;
+        }
+
+        public IEnumerable<string> DresCodigo { get; set; }
+        public Guid GrupoId { get; }
     }
 }
