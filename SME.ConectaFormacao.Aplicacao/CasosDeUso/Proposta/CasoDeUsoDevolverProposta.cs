@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<bool> Executar(long propostaId, string parecer)
+        public async Task<bool> Executar(long propostaId, string justificativa)
         {
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
 
@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId,new PropostaMovimentacaoDTO()
             {
-                Justificativa = parecer,
+                Justificativa = justificativa,
                 Situacao = SituacaoProposta.Devolvida
             }));
         }
