@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             await mediator.Send(new AlterarSituacaoGrupoGestaoDaPropostaCommand(propostaId, SituacaoProposta.AguardandoAnaliseGestao, atribuicaoPropostaGrupoGestaoDto.GrupoGestaoId));
 
-            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.AguardandoAnaliseGestao, atribuicaoPropostaGrupoGestaoDto.Justificativa));
+            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.AguardandoAnaliseGestao));
         }
     }
 }

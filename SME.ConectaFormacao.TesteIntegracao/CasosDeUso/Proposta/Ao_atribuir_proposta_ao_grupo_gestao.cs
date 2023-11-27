@@ -61,7 +61,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // act
             var retorno = await casoDeUso.Executar(proposta.Id,new AtribuicaoPropostaGrupoGestaoDTO()
             {
-                Justificativa = parecerDaProposta.Justificativa,
                 GrupoGestaoId = gruposGestaoInseridos.FirstOrDefault().Id
             });
 
