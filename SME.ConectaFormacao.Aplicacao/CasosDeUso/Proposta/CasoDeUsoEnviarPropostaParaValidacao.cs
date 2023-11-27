@@ -25,8 +25,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             var situacao = proposta.Situacao == SituacaoProposta.Cadastrada ? SituacaoProposta.AguardandoAnaliseDf : SituacaoProposta.AguardandoAnaliseGestao;
 
-            await mediator.Send(new EnviarPropostaParaAnaliseCommand(propostaId, situacao));
+            var errosEncontrosProfissionais = await mediator.Send(new ValidarEncontrosProfissionaisAoEnviarDfCommand(proposta));
+            if (errosEncontrosProfissionais.Any())
+                throw new NegocioException(errosEncontrosProfissionais.ToList());
 
+            await mediator.Send(new EnviarPropostaParaAnaliseCommand(propostaId, situacao));
             return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
         }
     }

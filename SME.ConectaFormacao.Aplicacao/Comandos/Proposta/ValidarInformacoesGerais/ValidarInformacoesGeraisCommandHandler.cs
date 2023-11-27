@@ -9,14 +9,14 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var erros = new List<string>();
             var proposta = request.PropostaDTO;
-
+            
             if (proposta.TipoFormacao == null)
                 erros.Add(MensagemNegocio.TIPO_FORMACAO_NAO_INFORMADO);
             if (proposta.Modalidade == null)
                 erros.Add(MensagemNegocio.MODALIDADE_NAO_INFORMADA);
             if (proposta.TipoInscricao == null)
                 erros.Add(MensagemNegocio.TIPO_INSCRICAO_NAO_INFORMADA);
-            if (string.IsNullOrWhiteSpace(proposta.NomeFormacao))
+            if (string.IsNullOrEmpty(proposta.NomeFormacao))
                 erros.Add(MensagemNegocio.NOME_FORMACAO_NAO_INFORMADO);
             if (!proposta.PublicosAlvo.Any())
                 erros.Add(MensagemNegocio.PUBLICO_ALVO_NAO_INFORMADO);

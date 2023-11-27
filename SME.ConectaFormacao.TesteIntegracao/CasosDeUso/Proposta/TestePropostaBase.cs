@@ -1,4 +1,4 @@
-﻿using Shouldly;
+using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
@@ -333,6 +333,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             {
                 var proposta = ObterPorId<Dominio.Entidades.Proposta, long>(id);
                 proposta.Situacao = situacaoProposta;
+                proposta.QuantidadeVagasTurma = 1;
+                proposta.QuantidadeTurmas = 1;
                 await AtualizarNaBase(proposta);
             }
 

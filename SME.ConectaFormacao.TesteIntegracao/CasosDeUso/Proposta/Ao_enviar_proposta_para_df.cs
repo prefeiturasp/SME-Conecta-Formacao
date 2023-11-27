@@ -36,6 +36,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(parametroSistemaUrl);
 
             var id = await CriarPropostaNaBase(SituacaoProposta.Cadastrada);
+            var proposta = ObterPorId<Dominio.Entidades.Proposta,long>(id);
+            var propostaRegente = PropostaMock.GerarRegente(id);
+            await InserirNaBase(propostaRegente);
+            
+            var propostaRegenteTurma = PropostaMock.GerarRegenteTurmas(propostaRegente.First().Id,(short)proposta.QuantidadeTurmas);
+            await InserirNaBase(propostaRegenteTurma);
+
+            var encontrosProposta = PropostaMock.GerarEncontros(id);
+            await InserirNaBase(encontrosProposta);
+
+            var encontrosPropostaTurma = PropostaMock.GerarPropostaEncontroTurmas(encontrosProposta.First().Id,(short)proposta.QuantidadeTurmas);
+            await InserirNaBase(encontrosPropostaTurma);
 
             var obterProposaAntes = ObterPorId<Dominio.Entidades.Proposta, long>(id);
             obterProposaAntes.Situacao.ShouldBeEquivalentTo(SituacaoProposta.Cadastrada);
@@ -46,6 +58,29 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(id);
             obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AguardandoAnaliseDf);
         }
+        
+        [Fact(DisplayName = "Proposta - Não Deve Enviar para o DF uma Proposta com Situação Cadastrada sem Encontros e sem Tutor")]
+        public async Task Nao_dev_enviar_para_df_proposta_cadastrada_sem_encontros_e_tutor()
+        {
+            var parametroSistemaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
+            await InserirNaBase(parametroSistemaDescricao);
+            var parametroSistemaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
+            await InserirNaBase(parametroSistemaUrl);
+
+            var id = await CriarPropostaNaBase(SituacaoProposta.Cadastrada);
+
+
+            var obterProposaAntes = ObterPorId<Dominio.Entidades.Proposta, long>(id);
+            obterProposaAntes.Situacao.ShouldBeEquivalentTo(SituacaoProposta.Cadastrada);
+
+            var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaDf>();
+            var excecao = await Should.ThrowAsync<NegocioException>(casoUsoEnviarDf.Executar(id));
+            excecao.ShouldNotBeNull();
+            excecao.Mensagens?.Count()!.ShouldBeEquivalentTo(2);
+            excecao.Mensagens!.Contains(MensagemNegocio.QUANTIDADE_TURMAS_COM_ENCONTRO_DIFERENTE_QUANTIDADE_DE_TURMAS).ShouldBeTrue();
+            excecao.Mensagens!.Contains(MensagemNegocio.QUANTIDADE_TURMAS_COM_REGENTE).ShouldBeTrue();
+        }
+        
         [Fact(DisplayName = "Proposta - Não Deve Enviar para o DF uma Proposta com Situação Diferente de Cadastrada")]
         public async Task Nao_deve_enviar_para_df_proposta_diferente_de_cadastrada()
         {

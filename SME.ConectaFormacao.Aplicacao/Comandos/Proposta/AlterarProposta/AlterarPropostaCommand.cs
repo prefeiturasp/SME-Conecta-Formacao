@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             RuleFor(f => f.PropostaDTO.CriteriosValidacaoInscricao)
                 .NotEmpty()
-                .WithMessage("É necessário informar o tipo de inscrição para alterar a propostaproposta");
+                .WithMessage("É necessário informar o tipo de inscrição para alterar a proposta");
 
             RuleFor(f => f.PropostaDTO.QuantidadeTurmas)
                 .NotEmpty()
