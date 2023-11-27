@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var obterProposaAntes = ObterPorId<Dominio.Entidades.Proposta, long>(id);
             obterProposaAntes.Situacao.ShouldBeEquivalentTo(SituacaoProposta.Cadastrada);
 
-            var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaDf>();
+            var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaValidacao>();
             var excecao = await Should.ThrowAsync<NegocioException>(casoUsoEnviarDf.Executar(id));
             excecao.ShouldNotBeNull();
             excecao.Mensagens?.Count()!.ShouldBeEquivalentTo(2);
