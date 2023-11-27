@@ -5,12 +5,12 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterAreaPromotoraListaQueryHandler : IRequestHandler<ObterAreaPromotoraListaPorGrupoDresCodigoQuery, IEnumerable<RetornoListagemDTO>>
+    public class ObterAreaPromotoraListaPorGrupoDresCodigoQueryHandler : IRequestHandler<ObterAreaPromotoraListaPorGrupoDresCodigoQuery, IEnumerable<RetornoListagemDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
 
-        public ObterAreaPromotoraListaQueryHandler(IMapper mapper, IRepositorioAreaPromotora repositorioAreaPromotora)
+        public ObterAreaPromotoraListaPorGrupoDresCodigoQueryHandler(IMapper mapper, IRepositorioAreaPromotora repositorioAreaPromotora)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));

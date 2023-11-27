@@ -163,7 +163,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = $@"select ap.id, ap.nome, ap.tipo, ap.email 
                             from area_promotora ap
                             left join dre on dre.id = ap.dreid 
-                          where grupo_id = @grupoId {IncluirFiltroPorDre(dresCodigo)}";
+                          where not ap.excluido and ap.grupo_id = @grupoId {IncluirFiltroPorDre(dresCodigo)}";
 
             return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { grupoId, dresCodigo });
         }
@@ -178,7 +178,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = $@"select ap.id, ap.nome 
                             from area_promotora ap
                             left join dre on dre.id = ap.dreid 
-                          where grupo_id = @grupoId {IncluirFiltroPorDre(dresCodigo)}";
+                          where not ap.excluido and ap.grupo_id = @grupoId {IncluirFiltroPorDre(dresCodigo)}";
 
             return conexao.Obter().QueryAsync<AreaPromotora>(query, new { grupoId, dresCodigo });
         }
