@@ -29,7 +29,6 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var proposta = _mapper.Map<Proposta>(request.PropostaDTO);
             proposta.AreaPromotoraId = request.AreaPromotoraId;
-            proposta.Situacao = SituacaoProposta.Ativo;
 
             var transacao = _transacao.Iniciar();
 

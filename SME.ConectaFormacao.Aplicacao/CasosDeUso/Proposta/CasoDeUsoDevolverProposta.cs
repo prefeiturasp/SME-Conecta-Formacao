@@ -27,11 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             
             await mediator.Send(new AlterarSituacaoDaPropostaCommand(propostaId, SituacaoProposta.Devolvida));
 
-            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId,new PropostaMovimentacaoDTO()
-            {
-                Justificativa = justificativa,
-                Situacao = SituacaoProposta.Devolvida
-            }));
+            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.Devolvida, justificativa));
         }
     }
 }

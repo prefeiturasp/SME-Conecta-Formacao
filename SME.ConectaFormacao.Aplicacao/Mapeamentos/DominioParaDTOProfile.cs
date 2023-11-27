@@ -108,11 +108,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
 
-            CreateMap<GrupoGestao, GrupoDTO>()
-                .ForMember(dest=> dest.Id, opt=> opt.MapFrom(o=> o.GrupoId))
-                .ReverseMap()
-                .ForMember(dest=> dest.GrupoId, opt=> opt.MapFrom(o=> o.Id));
-            
+            CreateMap<GrupoGestao, GrupoGestaoDTO>().ReverseMap();
+
             CreateMap<PropostaMovimentacao, PropostaMovimentacaoDTO>().ReverseMap();
         }
     }

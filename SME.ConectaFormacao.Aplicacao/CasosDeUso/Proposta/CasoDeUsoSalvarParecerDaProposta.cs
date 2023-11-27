@@ -11,8 +11,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
     public class CasoDeUsoSalvarParecerDaProposta : CasoDeUsoAbstrato, ICasoDeUsoSalvarParecerDaProposta
     {
         private readonly IMapper _mapper;
-        
-        public CasoDeUsoSalvarParecerDaProposta(IMediator mediator,IMapper mapper) : base(mediator)
+
+        public CasoDeUsoSalvarParecerDaProposta(IMediator mediator, IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -23,10 +23,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-            
+
             await mediator.Send(new AlterarSituacaoDaPropostaCommand(propostaId, propostaMovimentacaoDto.Situacao));
 
-            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId,propostaMovimentacaoDto));
+            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, propostaMovimentacaoDto.Situacao, propostaMovimentacaoDto.Justificativa));
         }
     }
 }

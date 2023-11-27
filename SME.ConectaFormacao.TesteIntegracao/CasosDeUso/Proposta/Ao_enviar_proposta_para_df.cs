@@ -52,7 +52,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var obterProposaAntes = ObterPorId<Dominio.Entidades.Proposta, long>(id);
             obterProposaAntes.Situacao.ShouldBeEquivalentTo(SituacaoProposta.Cadastrada);
 
-            var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaDf>();
+            var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaValidacao>();
             await casoUsoEnviarDf.Executar(id);
 
             var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(id);
@@ -91,9 +91,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var id = await CriarPropostaNaBase(SituacaoProposta.Rascunho);
 
-            var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaDf>();
+            var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaValidacao>();
             var excecao = await Should.ThrowAsync<NegocioException>(casoUsoEnviarDf.Executar(id));
-            excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA_OU_DEVOLVIDA).ShouldBeTrue();
         }
 
         [Fact(DisplayName = "Proposta - Não Deve Enviar para o DF uma Proposta Excluida")]
@@ -109,7 +109,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var useCaseDeleteProposta = ObterCasoDeUso<ICasoDeUsoRemoverProposta>();
             await useCaseDeleteProposta.Executar(id);
 
-            var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaDf>();
+            var casoUsoEnviarDf = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParaValidacao>();
             var excecao = await Should.ThrowAsync<NegocioException>(casoUsoEnviarDf.Executar(id));
             excecao.ShouldNotBeNull();
             excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA).ShouldBeTrue();

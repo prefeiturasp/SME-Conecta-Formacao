@@ -94,7 +94,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 criteriosDTO,
                 vagasRemanecentesDTO,
                 palavrasChavesDTO,
-                SituacaoProposta.Ativo);
+                SituacaoProposta.Cadastrada);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
@@ -125,7 +125,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
-            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOVazio(SituacaoProposta.Ativo);
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOVazio(SituacaoProposta.Cadastrada);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
@@ -184,7 +184,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                criteriosDTO,
                vagasRemanecentesDTO,
                palavrasChavesDTO,
-               SituacaoProposta.Ativo);
+               SituacaoProposta.Cadastrada);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
@@ -238,7 +238,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                criteriosDTO,
                vagasRemanecentesDTO,
                palavrasChavesDTO,
-               SituacaoProposta.Ativo);
+               SituacaoProposta.Cadastrada);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
@@ -288,7 +288,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                criteriosDTO,
                vagasRemanecentesDTO,
                palavrasChavesDTO,
-               SituacaoProposta.Ativo);
+               SituacaoProposta.Cadastrada);
 
             propostaDTO.FuncaoEspecificaOutros = string.Empty;
 
@@ -340,7 +340,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                criteriosDTO,
                vagasRemanecentesDTO,
                palavrasChavesDTO,
-               SituacaoProposta.Ativo, gerarFuncaoEspecificaOutros: true);
+               SituacaoProposta.Cadastrada, gerarFuncaoEspecificaOutros: true);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
@@ -393,7 +393,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                criteriosDTO,
                vagasRemanecentesDTO,
                palavrasChavesDTO,
-               SituacaoProposta.Ativo);
+               SituacaoProposta.Cadastrada);
 
             propostaDTO.FuncaoEspecificaOutros = string.Empty;
 
@@ -442,7 +442,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                criteriosDTO,
                vagasRemanecentesDTO,
                palavrasChavesDTO,
-               SituacaoProposta.Ativo, gerarCriterioValidacaoInscricaoOutros: true);
+               SituacaoProposta.Cadastrada, gerarCriterioValidacaoInscricaoOutros: true);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 

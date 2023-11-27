@@ -30,14 +30,14 @@ namespace SME.ConectaFormacao.Aplicacao
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
 
-
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
             propostaDepois.Id = proposta.Id;
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
             propostaDepois.ManterCriador(proposta);
             propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
             propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
-            if (request.PropostaDTO.Situacao == SituacaoProposta.Cadastrada)
+
+            if (request.PropostaDTO.Situacao != SituacaoProposta.Rascunho)
             {
                 var erros = new List<string>();
                 var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
@@ -62,10 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (erros.Any())
                     throw new NegocioException(erros);
-                propostaDepois.Situacao = SituacaoProposta.Cadastrada;
             }
-            else
-                propostaDepois.Situacao = SituacaoProposta.Ativo;
 
             var transacao = _transacao.Iniciar();
             try
