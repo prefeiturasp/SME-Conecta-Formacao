@@ -3,11 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
-using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
@@ -55,18 +52,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarParecerDaProposta>();
 
             // act 
-            var retorno = await casoDeUso.Executar(proposta.Id,parecerDaProposta);
+            var retorno = await casoDeUso.Executar(proposta.Id, parecerDaProposta);
 
             // assert 
             retorno.ShouldBeTrue();
-                
+
             var propostaAlterada = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
             propostaAlterada.Situacao.ShouldBe(parecerDaProposta.Situacao);
             propostaAlterada.AlteradoEm.ShouldNotBeNull();
             propostaAlterada.AlteradoEm.Value.Date.ShouldBe(DateTimeExtension.HorarioBrasilia().Date);
             propostaAlterada.AlteradoPor.ShouldNotBeNull();
             propostaAlterada.AlteradoLogin.ShouldNotBeNull();
-            
+
             var parecerDaPropostaInserida = ObterTodos<Dominio.Entidades.PropostaMovimentacao>().FirstOrDefault();
             parecerDaPropostaInserida.Situacao.ShouldBe(parecerDaProposta.Situacao);
             parecerDaPropostaInserida.Justificativa.ShouldBe(parecerDaProposta.Justificativa);

@@ -5,8 +5,8 @@
         public Guid Id { get; set; }
         public string Nome { get; set; }
         public int VisaoId { get; set; }
-        
-        
+
+
         public bool Equals(GrupoDTO? other)
         {
             if (ReferenceEquals(null, other)) return false;

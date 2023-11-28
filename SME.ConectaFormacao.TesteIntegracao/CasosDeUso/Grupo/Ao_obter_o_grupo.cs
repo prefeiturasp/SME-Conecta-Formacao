@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
@@ -32,9 +31,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo
         {
             // arrange
             var grupoGestao = AoObterGrupoMock.Grupos.Take(2);
-            
+
             await InserirGrupoGestao(grupoGestao);
-            
+
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterGrupoSistema>();
 
             // act
@@ -42,16 +41,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo
 
             // assert
             grupos.Any().ShouldBeTrue();
-            
+
             grupos.Count().ShouldBe(3);
         }
-        
+
         [Fact(DisplayName = "Grupo - Deve retornar os grupos de gestão")]
         public async Task Deve_retornar_os_grupos_gestao()
         {
             // arrange
             var grupoGestao = AoObterGrupoMock.Grupos.Take(2);
-            
+
             await InserirGrupoGestao(grupoGestao);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterGrupoGestao>();
@@ -61,7 +60,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo
 
             // assert
             grupos.Any().ShouldBeTrue();
-            
+
             grupos.Count().ShouldBe(2);
         }
 

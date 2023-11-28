@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterGrupoSistema.Executar());
         }
-        
+
         [HttpGet("gestao")]
         [ProducesResponseType(typeof(IEnumerable<GrupoGestaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

@@ -15,13 +15,13 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 
         [Display(Name = "Aguardando análise do DF")]
         AguardandoAnaliseDf = 4,
-        
+
         [Display(Name = "Aguardando análise da gestão")]
         AguardandoAnaliseGestao = 5,
-        
+
         [Display(Name = "Desfavorável")]
         Desfavoravel = 6,
-        
+
         [Display(Name = "Devolvida")]
         Devolvida = 7,
     }

@@ -9,8 +9,8 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IRepositorioPropostaMovimentacao _repositorioPropostaMovimentacao;
         private readonly IMapper _mapper;
-        
-        public SalvarPropostaMovimentacaoCommandHandler(IRepositorioPropostaMovimentacao repositorioPropostaMovimentacao,IMapper mapper)
+
+        public SalvarPropostaMovimentacaoCommandHandler(IRepositorioPropostaMovimentacao repositorioPropostaMovimentacao, IMapper mapper)
         {
             _repositorioPropostaMovimentacao = repositorioPropostaMovimentacao ?? throw new ArgumentNullException(nameof(repositorioPropostaMovimentacao));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

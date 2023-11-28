@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
         {
             var faker = new Faker<Dominio.Entidades.GrupoGestao>();
             faker.RuleFor(x => x.GrupoId, f => Guid.NewGuid());
-            faker.RuleFor(x => x.Nome, f=> f.Lorem.Sentence());
+            faker.RuleFor(x => x.Nome, f => f.Lorem.Sentence());
             return faker.Generate(quantidade);
         }
     }

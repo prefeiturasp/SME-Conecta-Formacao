@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -27,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(f => f.Id)
                 .GreaterThan(0)
                 .WithMessage("É necessário informar o Id para alteração da situação da proposta");
-            
+
             RuleFor(f => f.GrupoGestaoId)
                 .GreaterThan(0)
                 .WithMessage("É necessário informar o grupo gestão para alteração da situação da proposta");
