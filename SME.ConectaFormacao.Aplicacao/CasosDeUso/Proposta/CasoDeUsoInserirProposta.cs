@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorGrupoIdQuery(grupoUsuarioLogadoId)) ??
                 throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO, System.Net.HttpStatusCode.NotFound);
 
-            if (propostaDTO.Situacao == Dominio.Enumerados.SituacaoProposta.Ativo)
+            if (propostaDTO.Situacao != Dominio.Enumerados.SituacaoProposta.Rascunho)
                 return await mediator.Send(new InserirPropostaCommand(areaPromotora.Id, propostaDTO));
 
             return await mediator.Send(new InserirPropostaRascunhoCommand(areaPromotora.Id, propostaDTO));

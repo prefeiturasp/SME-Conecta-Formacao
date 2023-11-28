@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -29,7 +28,6 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var proposta = _mapper.Map<Proposta>(request.PropostaDTO);
             proposta.AreaPromotoraId = request.AreaPromotoraId;
-            proposta.Situacao = SituacaoProposta.Ativo;
 
             var transacao = _transacao.Iniciar();
 

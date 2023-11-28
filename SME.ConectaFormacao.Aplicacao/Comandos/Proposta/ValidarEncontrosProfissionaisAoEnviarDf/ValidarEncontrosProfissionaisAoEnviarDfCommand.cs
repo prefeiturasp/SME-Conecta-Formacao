@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarEncontrosProfissionaisAoEnviarDfCommand: IRequest<IEnumerable<string>>
+    public class ValidarEncontrosProfissionaisAoEnviarDfCommand : IRequest<IEnumerable<string>>
     {
         public ValidarEncontrosProfissionaisAoEnviarDfCommand(Proposta proposta)
         {

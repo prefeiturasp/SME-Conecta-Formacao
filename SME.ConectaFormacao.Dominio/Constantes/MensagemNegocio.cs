@@ -23,7 +23,7 @@ public class MensagemNegocio
     public const string REFERENCIA_NAO_INFORMADA = "É necessário informar as referências";
     public const string PALAVRA_CHAVE_NAO_INFORMADA = "É necessário informar no mínimo 3 e no máximo 5 palavras chaves";
 
-    public const string QUANTIDADE_TURMAS_COM_ENCONTRO_DIFERENTE_QUANTIDADE_DE_TURMAS = "A quantidade de turmas informada deve ser a mesma de turmas com encontros"; 
+    public const string QUANTIDADE_TURMAS_COM_ENCONTRO_DIFERENTE_QUANTIDADE_DE_TURMAS = "A quantidade de turmas informada deve ser a mesma de turmas com encontros";
     public const string PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN = "Os perfis do usuário não foram localizados! Verifique o usuário.";
     public const string USUARIO_OU_SENHA_INVALIDOS = "Usuário ou senha inválidos";
     public const string CONFIRMACAO_SENHA_INVALIDA = "Confirmação de senha não confere";
@@ -53,7 +53,7 @@ public class MensagemNegocio
     public const string PROFISSIONAL_NAO_LOCALIZADO_RF_INVALIDO = "É necessário informar um RF válido para obter o nome do profissional";
     public const string CODIGOS_DRE_NAO_LOCALIZADO = "Nenhum código de Dre foi encontrado";
     public const string NENHUMA_DRE_ENCONTRADA_NO_EOL = "Não foi possível localizar as Dres no EOL para a sincronização instituicional";
-    public const string PROPOSTA_NAO_ESTA_COMO_CADASTRADA = "Proposta deve estar com situação de cadastrada para ser enviada para o DF";
+    public const string PROPOSTA_NAO_ESTA_COMO_CADASTRADA_OU_DEVOLVIDA = "Proposta deve estar com situação de cadastrada ou devolvida para ser enviada para validação";
     public const string QUANTIDADE_TURMAS_COM_REGENTE = "A quantidade de turmas informada deve ser a mesma de turmas com regentes";
     public const string NAO_EXISTE_NENHUM_TUTOR = "Não existe nenhum tutor cadastrado na Proposta";
     public const string JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR = "O Tutor {0} já possui a turma {1}";
