@@ -332,56 +332,5 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar(propostaId));
         }
-
-        [HttpPatch("{propostaId}/parecer")]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> SalvarParecerDaProposta(
-            [FromRoute] long propostaId,
-            [FromBody] PropostaMovimentacaoDTO propostaMovimentacaoDto,
-            [FromServices] ICasoDeUsoSalvarParecerDaProposta useCase)
-        {
-            return Ok(await useCase.Executar(propostaId, propostaMovimentacaoDto));
-        }
-
-        [HttpGet("{propostaId}/parecer")]
-        [ProducesResponseType(typeof(PropostaMovimentacaoDTO), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> ObterParecerProposta(
-            [FromServices] ICasoDeUsoObterParecerProposta useCase,
-            [FromRoute] long propostaId)
-        {
-            return Ok(await useCase.Executar(propostaId));
-        }
-
-        [HttpPatch("{propostaId}/atribuir-grupo-gestao")]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> AtribuirPropostaGrupoGestao(
-            [FromRoute] long propostaId,
-            [FromBody] AtribuicaoPropostaGrupoGestaoDTO atribuicaoPropostaGrupoGestaoDto,
-            [FromServices] ICasoDeUsoAtribuirPropostaAoGrupoGestao useCase)
-        {
-            return Ok(await useCase.Executar(propostaId, atribuicaoPropostaGrupoGestaoDto));
-        }
-
-        [HttpPatch("{propostaId}/devolver")]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> DevolverProposta(
-            [FromRoute] long propostaId,
-            [FromBody] ParecerPropostaMovimentacaoDTO parecerPropostaMovimentacaoDTO,
-            [FromServices] ICasoDeUsoDevolverProposta useCase)
-        {
-            return Ok(await useCase.Executar(propostaId, parecerPropostaMovimentacaoDTO.Justificativa));
-        }
     }
 }

@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(AlterarSituacaoGrupoGestaoDaPropostaCommand request, CancellationToken cancellationToken)
         {
-            await _repositorioProposta.AtualizarSituacaoGrupoGestao(request.Id, request.SituacaoProposta,request.GrupoGestaoId);
+            await _repositorioProposta.AtualizarSituacaoGrupoGestao(request.Id, request.SituacaoProposta, request.GrupoGestaoId);
 
             return true;
         }

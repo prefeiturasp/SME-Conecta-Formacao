@@ -44,6 +44,5 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? AcaoFormativaTexto { get; set; }
         public string? AcaoFormativaLink { get; set; }
         public bool? FormacaoHomologada { get; set; }
-        public long? GrupoGestaoId { get; set; }
     }
 }

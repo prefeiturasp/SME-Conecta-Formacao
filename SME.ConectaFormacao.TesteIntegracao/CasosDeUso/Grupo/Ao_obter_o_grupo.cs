@@ -1,12 +1,10 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -32,9 +30,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo
         {
             // arrange
             var grupoGestao = AoObterGrupoMock.Grupos.Take(2);
-            
-            await InserirGrupoGestao(grupoGestao);
-            
+
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterGrupoSistema>();
 
             // act
@@ -42,39 +38,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo
 
             // assert
             grupos.Any().ShouldBeTrue();
-            
-            grupos.Count().ShouldBe(3);
-        }
-        
-        [Fact(DisplayName = "Grupo - Deve retornar os grupos de gestão")]
-        public async Task Deve_retornar_os_grupos_gestao()
-        {
-            // arrange
-            var grupoGestao = AoObterGrupoMock.Grupos.Take(2);
-            
-            await InserirGrupoGestao(grupoGestao);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterGrupoGestao>();
-
-            // act
-            var grupos = await casoDeUso.Executar();
-
-            // assert
-            grupos.Any().ShouldBeTrue();
-            
-            grupos.Count().ShouldBe(2);
-        }
-
-        private async Task InserirGrupoGestao(IEnumerable<GrupoDTO> grupoGestaos)
-        {
-            foreach (var grupoGestao in grupoGestaos)
-            {
-                await InserirNaBase(new GrupoGestao()
-                {
-                    GrupoId = grupoGestao.Id,
-                    Nome = grupoGestao.Nome
-                });
-            }
+            grupos.Count().ShouldBe(5);
         }
     }
 }

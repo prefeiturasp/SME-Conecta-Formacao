@@ -20,17 +20,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            if (proposta.Situacao != SituacaoProposta.Cadastrada && proposta.Situacao != SituacaoProposta.Devolvida)
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA_OU_DEVOLVIDA);
-
-            var situacao = proposta.Situacao == SituacaoProposta.Cadastrada ? SituacaoProposta.AguardandoAnaliseDf : SituacaoProposta.AguardandoAnaliseGestao;
+            if (proposta.Situacao != SituacaoProposta.Cadastrada)
+                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA);
 
             var errosEncontrosProfissionais = await mediator.Send(new ValidarEncontrosProfissionaisAoEnviarDfCommand(proposta));
             if (errosEncontrosProfissionais.Any())
                 throw new NegocioException(errosEncontrosProfissionais.ToList());
 
-            await mediator.Send(new EnviarPropostaParaAnaliseCommand(propostaId, situacao));
-            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
+            await mediator.Send(new EnviarPropostaParaAnaliseCommand(propostaId, SituacaoProposta.AguardandoAnaliseDf));
+            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.AguardandoAnaliseDf));
         }
     }
 }

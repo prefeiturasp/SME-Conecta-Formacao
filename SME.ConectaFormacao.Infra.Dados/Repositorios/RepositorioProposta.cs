@@ -3,9 +3,9 @@ using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
-using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -260,7 +260,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (situacao.GetValueOrDefault() > 0)
                 query.AppendLine(" and p.situacao = @situacao");
-            
+
             if (formacaoHomologada.HasValue)
                 query.AppendLine(" and p.formacao_homologada = @formacaoHomologada");
 
@@ -269,7 +269,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<int> ObterTotalRegistrosPorFiltros(long? propostaId, long? areaPromotoraId, Modalidade? modalidade, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
         {
-            string query = string.Concat("select count(1) from (", MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao,formacaoHomologada), ") tb");
+            string query = string.Concat("select count(1) from (", MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada), ") tb");
             return conexao.Obter().ExecuteScalarAsync<int>(query, new
             {
                 propostaId,
@@ -289,7 +289,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
-            string query = MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao,formacaoHomologada);
+            string query = MontarQueryPaginacao(propostaId, areaPromotoraId, modalidade, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada);
 
             query += " order by p.criado_em desc";
             query += " limit @numeroRegistros offset @registrosIgnorados";
@@ -721,14 +721,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, new
             {
-                id, 
-                situacaoProposta, 
-                AlteradoEm = DateTimeExtension.HorarioBrasilia(), 
-                AlteradoPor = contexto.NomeUsuario, 
+                id,
+                situacaoProposta,
+                AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                AlteradoPor = contexto.NomeUsuario,
                 AlteradoLogin = contexto.UsuarioLogado
             });
         }
-        
+
         public Task AtualizarSituacaoGrupoGestao(long id, SituacaoProposta situacaoProposta, long grupoGestaoId)
         {
             var query = @"update proposta 
@@ -742,11 +742,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, new
             {
-                id, 
-                situacaoProposta, 
+                id,
+                situacaoProposta,
                 grupoGestaoId,
-                AlteradoEm = DateTimeExtension.HorarioBrasilia(), 
-                AlteradoPor = contexto.NomeUsuario, 
+                AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                AlteradoPor = contexto.NomeUsuario,
                 AlteradoLogin = contexto.UsuarioLogado
             });
         }

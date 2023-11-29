@@ -1,7 +1,6 @@
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
@@ -33,15 +32,32 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
         }
 
+        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao)
+        {
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves, situacao);
+        }
+
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora,
             IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,
-            IEnumerable<PalavraChave> palavrasChaves)
+            IEnumerable<PalavraChave> palavrasChaves, SituacaoProposta situacao = SituacaoProposta.Cadastrada)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
                 TipoFormacao.Curso,
                 Modalidade.Presencial,
-                SituacaoProposta.Cadastrada,
+                situacao,
                 false, false);
 
             await InserirNaBase(proposta);
@@ -135,12 +151,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             return proposta;
         }
 
-        protected async Task InserirNaBaseGrupoGestao(IEnumerable<GrupoGestao> gruposGestao)
-        {
-            foreach (var grupoGestao in gruposGestao)
-                await InserirNaBase(grupoGestao);
-        }
-        
         protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade,
             Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes,
             IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao, IEnumerable<PalavraChave> palavrasChaves)
@@ -311,34 +321,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             }
         }
 
-        protected async Task<long> CriarPropostaNaBase(SituacaoProposta situacaoProposta = SituacaoProposta.Rascunho)
-        {
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
 
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-
-            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOVazio(SituacaoProposta.Rascunho);
-
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
-            var id = await casoDeUso.Executar(propostaDTO);
-            if (situacaoProposta != SituacaoProposta.Rascunho)
-            {
-                var proposta = ObterPorId<Dominio.Entidades.Proposta, long>(id);
-                proposta.Situacao = situacaoProposta;
-                proposta.QuantidadeVagasTurma = 1;
-                proposta.QuantidadeTurmas = 1;
-                await AtualizarNaBase(proposta);
-            }
-
-            return id;
-        }
     }
 }
