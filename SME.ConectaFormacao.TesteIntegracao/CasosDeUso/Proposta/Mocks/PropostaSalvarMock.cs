@@ -100,7 +100,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             SituacaoProposta situacao,
             bool gerarFuncaoEspecificaOutros,
             bool gerarCriterioValidacaoInscricaoOutros,
-            long? arquivoImagemDivulgacaoId)
+            long? arquivoImagemDivulgacaoId,
+            short? quantidadeTurmas)
         {
             var faker = new Faker<PropostaDTO>();
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
@@ -111,7 +112,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.FuncoesEspecificas, f => new PropostaFuncaoEspecificaDTO[] { f.PickRandom(propostaFuncaoEspecificas) });
             faker.RuleFor(x => x.CriteriosValidacaoInscricao, f => new PropostaCriterioValidacaoInscricaoDTO[] { f.PickRandom(propostaCriterioValidacaoInscricaos) });
             faker.RuleFor(x => x.VagasRemanecentes, f => new PropostaVagaRemanecenteDTO[] { f.PickRandom(propostaVagaRemanecentes) });
-            faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Short(1, 99));
+            faker.RuleFor(x => x.QuantidadeTurmas, f => quantidadeTurmas.HasValue ? quantidadeTurmas.Value : f.Random.Short(1, 99));
             faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 99));
             faker.RuleFor(x => x.PalavrasChaves, f => palavrasChaves.Take(5)); //Melhorar isso
             faker.RuleFor(x => x.Justificativa, f => f.Lorem.Sentence(100));
@@ -120,6 +121,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(100));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(100));
             faker.RuleFor(x => x.FormacaoHomologada, f => true);
+            faker.RuleFor(x => x.DataInscricaoInicio, f => DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataInscricaoFim, f => DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataRealizacaoInicio, f => DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataRealizacaoFim, f => DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.AcaoInformativa, true);
+            faker.RuleFor(x => x.CargaHorariaPresencial, DateTimeExtension.HorarioBrasilia().ToString("HH:mm"));
 
             if (gerarFuncaoEspecificaOutros)
                 faker.RuleFor(x => x.FuncaoEspecificaOutros, f => f.Lorem.Sentence(3));
@@ -208,12 +215,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             IEnumerable<PropostaVagaRemanecenteDTO> propostaVagaRemanecentes,
             IEnumerable<PropostaPalavraChaveDTO> propostaPalavrasChaves,
             SituacaoProposta situacao, bool gerarFuncaoEspecificaOutros = false, bool gerarCriterioValidacaoInscricaoOutros = false,
-            long? arquivoImagemDivulgacaoId = null)
+            long? arquivoImagemDivulgacaoId = null, short? quantidadeTurmas = null)
         {
             var propostaDTO = Gerador(tipoFormacao, modalidade, propostaPublicoAlvos, propostaFuncaoEspecificas,
                 propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, propostaPalavrasChaves,
                 situacao, gerarFuncaoEspecificaOutros,
-                gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId).Generate();
+                gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId, quantidadeTurmas).Generate();
 
             return propostaDTO;
         }

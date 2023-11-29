@@ -164,8 +164,6 @@ public class RegistradorDeDependencia
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
 
-            config.AddMap(new GrupoGestaoMap());
-
             config.ForDommel();
         });
     }
@@ -206,7 +204,6 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaTutor, RepositorioPropostaTutor>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
         _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
-        _serviceCollection.TryAddScoped<IRepositorioGrupoGestao, RepositorioGrupoGestao>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaMovimentacao, RepositorioPropostaMovimentacao>();
     }
 
@@ -276,10 +273,6 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParaValidacao, CasoDeUsoEnviarPropostaParaValidacao>();
 
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterGrupoGestao, CasoDeUsoObterGrupoGestao>();
-
-        _serviceCollection.TryAddScoped<ICasoDeUsoSalvarParecerDaProposta, CasoDeUsoSalvarParecerDaProposta>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoAtribuirPropostaAoGrupoGestao, CasoDeUsoAtribuirPropostaAoGrupoGestao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerProposta, CasoDeUsoObterParecerProposta>();
     }

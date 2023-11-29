@@ -21,8 +21,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.Modalidade, modalidade);
             faker.RuleFor(x => x.TipoInscricao, f => f.PickRandom<TipoInscricao>());
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
-            faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Short(1, 999));
-            faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 999));
+            faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Short(1, 50));
+            faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 30));
             faker.RuleFor(x => x.Excluido, false);
             faker.RuleFor(x => x.CargaHorariaPresencial, f => string.Format("{0}:{1}", f.Random.Short(100, 999).ToString(), f.Random.Short(10, 99).ToString()));
             faker.RuleFor(x => x.CargaHorariaSincrona, f => string.Format("{0}:{1}", f.Random.Short(100, 999).ToString(), f.Random.Short(10, 99).ToString()));
@@ -160,13 +160,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
         public static IEnumerable<PropostaEncontroTurma> GerarPropostaEncontroTurmas(long propostaEncontroId, short quantidadeTurmas)
         {
-            var faker = new Faker<PropostaEncontroTurma>();
-            faker.RuleFor(x => x.PropostaEncontroId, propostaEncontroId);
-            faker.RuleFor(x => x.Turma, f => quantidadeTurmas);
-            faker.RuleFor(x => x.Excluido, false);
-            AuditoriaFaker(faker);
+            for (short turma = 1; turma <= quantidadeTurmas; turma++)
+            {
+                var faker = new Faker<PropostaEncontroTurma>();
+                faker.RuleFor(x => x.PropostaEncontroId, propostaEncontroId);
+                faker.RuleFor(x => x.Turma, f => turma);
+                faker.RuleFor(x => x.Excluido, false);
+                AuditoriaFaker(faker);
 
-            return faker.Generate(quantidadeTurmas);
+                yield return faker.Generate();
+            }
         }
 
         public static IEnumerable<CriterioCertificacao> GerarCriteriosCertificacao()

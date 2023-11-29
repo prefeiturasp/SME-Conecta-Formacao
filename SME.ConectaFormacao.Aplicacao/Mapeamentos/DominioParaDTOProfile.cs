@@ -3,7 +3,6 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
@@ -107,8 +106,6 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
-
-            CreateMap<GrupoGestao, GrupoGestaoDTO>().ReverseMap();
 
             CreateMap<PropostaMovimentacao, PropostaMovimentacaoDTO>().ReverseMap();
         }

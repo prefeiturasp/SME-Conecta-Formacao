@@ -12,11 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo
 
         public async Task<IEnumerable<GrupoDTO>> Executar()
         {
-            var gruposCoreSSO = await mediator.Send(new ObterGruposServicoAcessosQuery());
-
-            var grupoGestao = await mediator.Send(new ObterGruposGestaoQuery());
-
-            return gruposCoreSSO.Where(w => !grupoGestao.Any(a => a.GrupoId == w.Id));
+            return await mediator.Send(new ObterGruposServicoAcessosQuery());
         }
     }
 }
