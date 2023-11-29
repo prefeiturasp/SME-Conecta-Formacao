@@ -20,15 +20,5 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterGrupoSistema.Executar());
         }
-
-        [HttpGet("gestao")]
-        [ProducesResponseType(typeof(IEnumerable<GrupoGestaoDTO>), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> ObterGrupoGestao([FromServices] ICasoDeUsoObterGrupoGestao casoDeUsoObterGrupoGestao)
-        {
-            return Ok(await casoDeUsoObterGrupoGestao.Executar());
-        }
     }
 }
