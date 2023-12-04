@@ -57,7 +57,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             FormacaoHomologada formacaoHomologada
             )
         {
-            return Gerador(areaPromotoraId, tipoFormacao, modalidade, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada);
+            return Gerador(areaPromotoraId, tipoFormacao, formato, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada);
         }
 
         public static Proposta GerarPropostaRascunho(long areaPromotoraId)
