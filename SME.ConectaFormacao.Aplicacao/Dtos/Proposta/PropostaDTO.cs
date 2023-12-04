@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
     public class PropostaDTO
     {
         public TipoFormacao? TipoFormacao { get; set; }
-        public Modalidade? Modalidade { get; set; }
+        public Formato? Formato { get; set; }
         public TipoInscricao? TipoInscricao { get; set; }
         [MaxLength(150, ErrorMessage = "O nome da formação não pode conter mais que 150 caracteres")]
         public string? NomeFormacao { get; set; }

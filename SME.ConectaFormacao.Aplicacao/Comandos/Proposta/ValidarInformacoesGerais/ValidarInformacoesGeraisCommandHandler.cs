@@ -12,8 +12,8 @@ namespace SME.ConectaFormacao.Aplicacao
             
             if (proposta.TipoFormacao == null)
                 erros.Add(MensagemNegocio.TIPO_FORMACAO_NAO_INFORMADO);
-            if (proposta.Modalidade == null)
-                erros.Add(MensagemNegocio.MODALIDADE_NAO_INFORMADA);
+            if (proposta.Formato == null)
+                erros.Add(MensagemNegocio.FORMATO_NAO_INFORMADO);
             if (proposta.TipoInscricao == null)
                 erros.Add(MensagemNegocio.TIPO_INSCRICAO_NAO_INFORMADA);
             if (string.IsNullOrEmpty(proposta.NomeFormacao))
