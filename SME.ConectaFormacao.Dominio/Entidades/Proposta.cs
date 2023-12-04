@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public long AreaPromotoraId { get; set; }
         public FormacaoHomologada? FormacaoHomologada { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
-        public Modalidade? Modalidade { get; set; }
+        public Formato? Formato { get; set; }
         public TipoInscricao? TipoInscricao { get; set; }
         public string NomeFormacao { get; set; }
         public short? QuantidadeTurmas { get; set; }

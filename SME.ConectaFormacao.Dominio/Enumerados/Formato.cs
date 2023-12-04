@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
-    public enum Modalidade
+    public enum Formato
     {
         [Display(Name = "Presencial")]
         Presencial = 1,

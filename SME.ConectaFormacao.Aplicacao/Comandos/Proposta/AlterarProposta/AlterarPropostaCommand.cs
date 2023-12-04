@@ -30,13 +30,13 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotNull()
                 .WithMessage("É necessário informar o tipo de formação para alterar a proposta");
 
-            RuleFor(f => f.PropostaDTO.Modalidade)
+            RuleFor(f => f.PropostaDTO.Formato)
                 .NotNull()
-                .WithMessage("É necessário informar a modalidade para alterar a proposta");
+                .WithMessage("É necessário informar o formato para alterar a proposta");
 
             When(f => f.PropostaDTO.TipoFormacao == TipoFormacao.Curso, () =>
             {
-                RuleFor(x => x.PropostaDTO.Modalidade).NotEqual(Modalidade.Hibrido).WithMessage("É permitido a modalidade Híbrido somente para o tipo de formação evento");
+                RuleFor(x => x.PropostaDTO.Formato).NotEqual(Formato.Hibrido).WithMessage("É permitido o formato Híbrido somente para o tipo de formação evento");
             });
 
             RuleFor(f => f.PropostaDTO.TipoInscricao)

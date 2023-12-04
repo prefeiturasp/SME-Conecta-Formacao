@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var erros = new List<string>();
             var proposta = request.PropostaDto;
 
-            if (proposta.Modalidade is Modalidade.Presencial && string.IsNullOrEmpty(proposta.CargaHorariaPresencial) || proposta.CargaHorariaPresencial == HORA_INVALIDA)
+            if (proposta.Formato is Formato.Presencial && string.IsNullOrEmpty(proposta.CargaHorariaPresencial) || proposta.CargaHorariaPresencial == HORA_INVALIDA)
                 erros.Add(MensagemNegocio.CARGA_HORARIA_NAO_INFORMADA);
             if (string.IsNullOrEmpty(proposta.Justificativa))
                 erros.Add(MensagemNegocio.JUSTIFICATIVA_NAO_INFORMADA);

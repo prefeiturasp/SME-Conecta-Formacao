@@ -5,9 +5,9 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterModalidadesQuery : IRequest<IEnumerable<RetornoListagemDTO>>
+    public class ObterFormatosQuery : IRequest<IEnumerable<RetornoListagemDTO>>
     {
-        public ObterModalidadesQuery(TipoFormacao tipoFormacao)
+        public ObterFormatosQuery(TipoFormacao tipoFormacao)
         {
             TipoFormacao = tipoFormacao;
         }
@@ -15,13 +15,13 @@ namespace SME.ConectaFormacao.Aplicacao
         public TipoFormacao TipoFormacao { get; }
     }
 
-    public class ObterModalidadesQueryValidator : AbstractValidator<ObterModalidadesQuery>
+    public class ObterFormatosQueryValidator : AbstractValidator<ObterFormatosQuery>
     {
-        public ObterModalidadesQueryValidator()
+        public ObterFormatosQueryValidator()
         {
             RuleFor(x => x.TipoFormacao)
                 .NotEmpty()
-                .WithMessage("É necessário informar o tipo de formação para obter as modalidades");
+                .WithMessage("É necessário informar o tipo de formação para obter os formatos");
         }
     }
 }

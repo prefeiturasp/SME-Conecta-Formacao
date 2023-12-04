@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return new PropostaFiltrosDTO
             {
                 AreaPromotoraId = areaPromotora.Id,
-                Modalidade = propostaFiltro.Modalidade,
+                Formato = propostaFiltro.Formato,
                 NomeFormacao = propostaFiltro.NomeFormacao,
                 PublicoAlvoIds = propostaFiltro.PublicosAlvo.Select(t => t.CargoFuncaoId).ToArray(),
                 Situacao = propostaFiltro.Situacao
