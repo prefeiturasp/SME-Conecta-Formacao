@@ -3,7 +3,7 @@ CREATE TABLE if not exists public.ano (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	codigo_eol varchar(1) not NULL,	
 	descricao varchar(70) not null,
-	cd_serie_ensino int8 not null,
+	codigo_serie_ensino int8 not null,
 	modalidade int8 not null,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE if not exists public.ano (
 	excluido bool NOT NULL,
 	CONSTRAINT ano_pk PRIMARY KEY (id)	
 );
-CREATE INDEX if not exists ano_cd_serie_ensino_idx ON public.ano (cd_serie_ensino);
+CREATE INDEX if not exists ano_codigo_serie_ensino_idx ON public.ano (codigo_serie_ensino);
 CREATE INDEX if not exists ano_modalidade_idx ON public.ano (modalidade);
 CREATE INDEX if not exists ano_codigo_eol_idx ON public.ano (codigo_eol);
 

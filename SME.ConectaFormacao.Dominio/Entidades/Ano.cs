@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
     {
         public string CodigoEOL { get; set; }
         public string Descricao { get; set; }
-        public long CdSerieEnsino { get; set; }
+        public long CodigoSerieEnsino { get; set; }
         public Modalidade Modalidade { get; set; }
     }
 }
