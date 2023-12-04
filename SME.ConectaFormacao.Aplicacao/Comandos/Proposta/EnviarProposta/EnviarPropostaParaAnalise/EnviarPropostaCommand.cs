@@ -4,9 +4,9 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class EnviarPropostaParaAnaliseCommand : IRequest<bool>
+    public class EnviarPropostaCommand : IRequest<bool>
     {
-        public EnviarPropostaParaAnaliseCommand(long propostaId, SituacaoProposta situacao)
+        public EnviarPropostaCommand(long propostaId, SituacaoProposta situacao)
         {
             PropostaId = propostaId;
             Situacao = situacao;
@@ -17,9 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public SituacaoProposta Situacao { get; }
     }
 
-    public class EnviarPropostaParaAnaliseCommandValidator : AbstractValidator<EnviarPropostaParaAnaliseCommand>
+    public class EnviarPropostaCommandValidator : AbstractValidator<EnviarPropostaCommand>
     {
-        public EnviarPropostaParaAnaliseCommandValidator()
+        public EnviarPropostaCommandValidator()
         {
             RuleFor(x => x.PropostaId)
                 .GreaterThan(0)

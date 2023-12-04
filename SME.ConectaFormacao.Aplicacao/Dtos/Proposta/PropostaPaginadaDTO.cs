@@ -1,4 +1,6 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
+﻿using SME.ConectaFormacao.Dominio.Enumerados;
+
+namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
     public class PropostaPaginadaDTO
     {
@@ -15,6 +17,6 @@
         public DateTime? DataInscricaoInicio { get; set; }
         public DateTime? DataInscricaoFim { get; set; }
         public string Situacao { get; set; }
-        public bool FormacaoHomologada { get; set; }
+        public FormacaoHomologada FormacaoHomologada { get; set; }
     }
 }
