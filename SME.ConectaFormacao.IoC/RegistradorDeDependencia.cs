@@ -163,6 +163,7 @@ public class RegistradorDeDependencia
 
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
+            config.AddMap(new PropostaDreMap());
 
             config.ForDommel();
         });
