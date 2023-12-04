@@ -5,6 +5,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
     public class Proposta : EntidadeBaseAuditavel
     {
         public long AreaPromotoraId { get; set; }
+        public FormacaoHomologada? FormacaoHomologada { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
         public Modalidade? Modalidade { get; set; }
         public TipoInscricao? TipoInscricao { get; set; }
@@ -19,8 +20,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public DateTime? DataRealizacaoFim { get; set; }
         public DateTime? DataInscricaoInicio { get; set; }
         public DateTime? DataInscricaoFim { get; set; }
-
-        public AreaPromotora AreaPromotora { get; set; }
         public string CargaHorariaPresencial { get; set; }
         public string CargaHorariaSincrona { get; set; }
         public string CargaHorariaDistancia { get; set; }
@@ -29,6 +28,13 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string ConteudoProgramatico { get; set; }
         public string ProcedimentoMetadologico { get; set; }
         public string Referencia { get; set; }
+        public bool CursoComCertificado { get; set; }
+        public bool AcaoInformativa { get; set; }
+        public string? DescricaoDaAtividade { get; set; }
+        public string? AcaoFormativaTexto { get; set; }
+        public string? AcaoFormativaLink { get; set; }
+
+        public AreaPromotora AreaPromotora { get; set; }
         public IEnumerable<PropostaPublicoAlvo> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecifica> FuncoesEspecificas { get; set; }
         public IEnumerable<PropostaCriterioValidacaoInscricao> CriteriosValidacaoInscricao { get; set; }
@@ -36,13 +42,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaEncontro> Encontros { get; set; }
         public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; }
         public IEnumerable<PropostaCriterioCertificacao> CriterioCertificacao { get; set; }
-        public IEnumerable<PropostaRegente> Regentes { get; set; } = new List<PropostaRegente>();
-        public IEnumerable<PropostaTutor> Tutores { get; set; } = new List<PropostaTutor>();
-        public bool CursoComCertificado { get; set; }
-        public bool AcaoInformativa { get; set; }
-        public string? DescricaoDaAtividade { get; set; }
-        public string? AcaoFormativaTexto { get; set; }
-        public string? AcaoFormativaLink { get; set; }
-        public bool? FormacaoHomologada { get; set; }
+        public IEnumerable<PropostaRegente> Regentes { get; set; } = Enumerable.Empty<PropostaRegente>();
+        public IEnumerable<PropostaTutor> Tutores { get; set; } = Enumerable.Empty<PropostaTutor>();
     }
 }

@@ -275,6 +275,8 @@ public class RegistradorDeDependencia
 
         _serviceCollection.TryAddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerProposta, CasoDeUsoObterParecerProposta>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoHomologada, CasoDeUsoObterFormacaoHomologada>();
     }
 
     protected virtual void RegistrarHttpClients()
