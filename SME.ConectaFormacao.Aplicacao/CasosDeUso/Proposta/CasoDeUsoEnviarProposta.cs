@@ -7,9 +7,9 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
-    public class CasoDeUsoEnviarPropostaParaValidacao : CasoDeUsoAbstrato, ICasoDeUsoEnviarPropostaParaValidacao
+    public class CasoDeUsoEnviarProposta : CasoDeUsoAbstrato, ICasoDeUsoEnviarProposta
     {
-        public CasoDeUsoEnviarPropostaParaValidacao(IMediator mediator) : base(mediator)
+        public CasoDeUsoEnviarProposta(IMediator mediator) : base(mediator)
         {
         }
 
@@ -23,12 +23,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.Situacao != SituacaoProposta.Cadastrada)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA);
 
-            var errosEncontrosProfissionais = await mediator.Send(new ValidarEncontrosProfissionaisAoEnviarDfCommand(proposta));
-            if (errosEncontrosProfissionais.Any())
-                throw new NegocioException(errosEncontrosProfissionais.ToList());
+            var situacao = proposta.FormacaoHomologada == FormacaoHomologada.Sim ?
+                SituacaoProposta.AguardandoAnaliseDf :
+                SituacaoProposta.Publicada;
 
-            await mediator.Send(new EnviarPropostaParaAnaliseCommand(propostaId, SituacaoProposta.AguardandoAnaliseDf));
-            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.AguardandoAnaliseDf));
+            await mediator.Send(new EnviarPropostaCommand(propostaId, situacao));
+            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
         }
     }
 }
