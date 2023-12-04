@@ -274,7 +274,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             {
                 propostaId,
                 areaPromotoraId,
-                formato = formato,
+                formato,
                 publicoAlvoIds,
                 nomeFormacao,
                 numeroHomologacao,
@@ -305,7 +305,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     numeroRegistros,
                     registrosIgnorados,
                     areaPromotoraId,
-                    formato = formato,
+                    formato,
                     publicoAlvoIds,
                     nomeFormacao,
                     numeroHomologacao,
