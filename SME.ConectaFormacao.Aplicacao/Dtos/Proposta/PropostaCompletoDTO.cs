@@ -5,8 +5,9 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
     public class PropostaCompletoDTO
     {
+        public FormacaoHomologada? FormacaoHomologada { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
-        public Modalidade? Modalidade { get; set; }
+        public Formato? Formato { get; set; }
         public TipoInscricao? TipoInscricao { get; set; }
         public string? NomeFormacao { get; set; }
         public short? QuantidadeTurmas { get; set; }
@@ -42,6 +43,5 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? DescricaoDaAtividade { get; set; }
         public string? AcaoFormativaTexto { get; set; }
         public string? AcaoFormativaLink { get; set; }
-        public bool? FormacaoHomologada { get; set; }
     }
 }

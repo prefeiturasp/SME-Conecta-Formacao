@@ -5,8 +5,9 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
     public class PropostaDTO
     {
+        public FormacaoHomologada? FormacaoHomologada { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
-        public Modalidade? Modalidade { get; set; }
+        public Formato? Formato { get; set; }
         public TipoInscricao? TipoInscricao { get; set; }
         [MaxLength(150, ErrorMessage = "O nome da formação não pode conter mais que 150 caracteres")]
         public string? NomeFormacao { get; set; }
@@ -28,6 +29,12 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? ConteudoProgramatico { get; set; }
         public string? ProcedimentoMetadologico { get; set; }
         public string? Referencia { get; set; }
+        public bool CursoComCertificado { get; set; }
+        public bool AcaoInformativa { get; set; }
+        public string? DescricaoDaAtividade { get; set; }
+        public string? AcaoFormativaTexto { get; set; }
+        public string? AcaoFormativaLink { get; set; }
+
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecificaDTO> FuncoesEspecificas { get; set; }
         public IEnumerable<PropostaVagaRemanecenteDTO> VagasRemanecentes { get; set; }
@@ -35,11 +42,5 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaEncontroDTO>? Encontros { get; set; }
         public IEnumerable<PropostaPalavraChaveDTO> PalavrasChaves { get; set; }
         public IEnumerable<CriterioCertificacaoDTO> CriterioCertificacao { get; set; }
-        public bool CursoComCertificado { get; set; }
-        public bool AcaoInformativa { get; set; }
-        public string? DescricaoDaAtividade { get; set; }
-        public string? AcaoFormativaTexto { get; set; }
-        public string? AcaoFormativaLink { get; set; }
-        public bool? FormacaoHomologada { get; set; }
     }
 }

@@ -91,7 +91,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
 
         private static Faker<PropostaDTO> Gerador(
             TipoFormacao tipoFormacao,
-            Modalidade modalidade,
+            Formato formato,
             IEnumerable<PropostaPublicoAlvoDTO> propostaPublicoAlvos,
             IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncaoEspecificas,
             IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos,
@@ -104,8 +104,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             short? quantidadeTurmas)
         {
             var faker = new Faker<PropostaDTO>();
+            faker.RuleFor(x => x.FormacaoHomologada, f => f.PickRandom<FormacaoHomologada>());
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
-            faker.RuleFor(x => x.Modalidade, modalidade);
+            faker.RuleFor(x => x.Formato, formato);
             faker.RuleFor(x => x.TipoInscricao, f => f.PickRandom<TipoInscricao>());
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
             faker.RuleFor(x => x.PublicosAlvo, f => new PropostaPublicoAlvoDTO[] { f.PickRandom(propostaPublicoAlvos) });
@@ -120,7 +121,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(100));
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(100));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(100));
-            faker.RuleFor(x => x.FormacaoHomologada, f => true);
             faker.RuleFor(x => x.DataInscricaoInicio, f => DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.DataInscricaoFim, f => DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.DataRealizacaoInicio, f => DateTimeExtension.HorarioBrasilia());
@@ -208,7 +208,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         }
         internal static PropostaDTO GerarPropostaDTOValida(
             TipoFormacao tipoFormacao,
-            Modalidade modalidade,
+            Formato formato,
             IEnumerable<PropostaPublicoAlvoDTO> propostaPublicoAlvos,
             IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncaoEspecificas,
             IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos,
@@ -217,7 +217,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             SituacaoProposta situacao, bool gerarFuncaoEspecificaOutros = false, bool gerarCriterioValidacaoInscricaoOutros = false,
             long? arquivoImagemDivulgacaoId = null, short? quantidadeTurmas = null)
         {
-            var propostaDTO = Gerador(tipoFormacao, modalidade, propostaPublicoAlvos, propostaFuncaoEspecificas,
+            var propostaDTO = Gerador(tipoFormacao, formato, propostaPublicoAlvos, propostaFuncaoEspecificas,
                 propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, propostaPalavrasChaves,
                 situacao, gerarFuncaoEspecificaOutros,
                 gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId, quantidadeTurmas).Generate();

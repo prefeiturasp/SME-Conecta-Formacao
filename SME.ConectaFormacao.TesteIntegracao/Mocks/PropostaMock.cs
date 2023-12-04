@@ -10,15 +10,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
         private static Faker<Proposta> Gerador(
             long areaPromotoraId,
            TipoFormacao tipoFormacao,
-           Modalidade modalidade,
+           Formato formato,
            SituacaoProposta situacao,
            bool gerarFuncaoEspecificaOutros,
-           bool gerarCriterioValidacaoInscricaoOutros)
+           bool gerarCriterioValidacaoInscricaoOutros,
+           FormacaoHomologada formacaoHomologada)
         {
             var faker = new Faker<Proposta>();
             faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
+            faker.RuleFor(x => x.FormacaoHomologada, formacaoHomologada);
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
-            faker.RuleFor(x => x.Modalidade, modalidade);
+            faker.RuleFor(x => x.Formato, formato);
             faker.RuleFor(x => x.TipoInscricao, f => f.PickRandom<TipoInscricao>());
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
             faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Short(1, 50));
@@ -32,6 +34,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(200));
+            
             AuditoriaFaker(faker);
 
             if (gerarFuncaoEspecificaOutros)
@@ -47,12 +50,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
         public static Proposta GerarPropostaValida(long areaPromotoraId,
             TipoFormacao tipoFormacao,
-            Modalidade modalidade,
+            Formato formato,
             SituacaoProposta situacao,
             bool gerarFuncaoEspecificaOutros,
-            bool gerarCriterioValidacaoInscricaoOutros)
+            bool gerarCriterioValidacaoInscricaoOutros,
+            FormacaoHomologada formacaoHomologada
+            )
         {
-            return Gerador(areaPromotoraId, tipoFormacao, modalidade, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros);
+            return Gerador(areaPromotoraId, tipoFormacao, modalidade, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada);
         }
 
         public static Proposta GerarPropostaRascunho(long areaPromotoraId)

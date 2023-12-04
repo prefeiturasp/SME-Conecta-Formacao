@@ -5,7 +5,7 @@ public class MensagemNegocio
     public const string PERIODO_REALIZACAO_NAO_INFORMADO = "É necessário informar as datas do período de realização";
     public const string PERIODO_INCRICAO_NAO_INFORMADO = "É necessário informar as datas do período de inscrição";
     public const string TIPO_FORMACAO_NAO_INFORMADO = "É necessário informar o tipo da formação";
-    public const string MODALIDADE_NAO_INFORMADA = "É necessário informar a modalidade";
+    public const string FORMATO_NAO_INFORMADO = "É necessário informar o formato";
     public const string TIPO_INSCRICAO_NAO_INFORMADA = "É necessário informar o tipo da inscrição";
     public const string NOME_FORMACAO_NAO_INFORMADO = "É necessário informar o nome da formação";
     public const string PUBLICO_ALVO_NAO_INFORMADO = "É necessário informar o público alvo";

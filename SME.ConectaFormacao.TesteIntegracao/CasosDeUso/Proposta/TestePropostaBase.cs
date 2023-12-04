@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta()
+        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada, FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim)
         {
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -29,36 +29,19 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
 
-            return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
-        }
-
-        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao)
-        {
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
-
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-
-            return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves, situacao);
+            return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves, situacao, formacaoHomologada);
         }
 
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora,
             IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,
-            IEnumerable<PalavraChave> palavrasChaves, SituacaoProposta situacao = SituacaoProposta.Cadastrada)
+            IEnumerable<PalavraChave> palavrasChaves, SituacaoProposta situacao = SituacaoProposta.Cadastrada, FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
                 TipoFormacao.Curso,
-                Modalidade.Presencial,
+                Formato.Presencial,
                 situacao,
-                false, false);
+                false, false, formacaoHomologada);
 
             await InserirNaBase(proposta);
 
@@ -187,7 +170,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var proposta = ObterPorId<Dominio.Entidades.Proposta, long>(id);
 
             proposta.TipoFormacao.ShouldBe(propostaDTO.TipoFormacao);
-            proposta.Modalidade.ShouldBe(propostaDTO.Modalidade);
+            proposta.Formato.ShouldBe(propostaDTO.Formato);
             proposta.TipoInscricao.ShouldBe(propostaDTO.TipoInscricao);
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
@@ -228,7 +211,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var proposta = ObterPorId<Dominio.Entidades.Proposta, long>(id);
 
             proposta.TipoFormacao.ShouldBe(propostaDTO.TipoFormacao);
-            proposta.Modalidade.ShouldBe(propostaDTO.Modalidade);
+            proposta.Formato.ShouldBe(propostaDTO.Formato);
             proposta.TipoInscricao.ShouldBe(propostaDTO.TipoInscricao);
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);

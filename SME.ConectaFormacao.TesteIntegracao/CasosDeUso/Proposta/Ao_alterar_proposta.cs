@@ -55,7 +55,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
-                Modalidade.Presencial,
+                Formato.Presencial,
                 publicosAlvoDTO,
                 funcoesEspecificaDTO,
                 criteriosDTO,
@@ -99,7 +99,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
-                Modalidade.Presencial,
+                Formato.Presencial,
                 cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
                 cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
                 criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
@@ -149,7 +149,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             excecao.Mensagens.Contains("É necessário informar o tipo de formação para alterar a proposta").ShouldBeTrue();
-            excecao.Mensagens.Contains("É necessário informar a modalidade para alterar a proposta").ShouldBeTrue();
+            excecao.Mensagens.Contains("É necessário informar o formato para alterar a proposta").ShouldBeTrue();
             excecao.Mensagens.Contains("É necessário informar o tipo de inscrição para alterar a proposta").ShouldBeTrue();
             excecao.Mensagens.Contains("É necessário informar o público alvo para alterar a proposta").ShouldBeTrue();
             excecao.Mensagens.Contains("É necessário informar o tipo de inscrição para alterar a proposta").ShouldBeTrue();
@@ -161,8 +161,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             excecao.Mensagens.Contains("É necessário informar as palavras-chaves para alterar a proposta").ShouldBeTrue();
         }
 
-        [Fact(DisplayName = "Proposta - Deve alterar quando o tipo de formação for evento e modalidade hibrida")]
-        public async Task Deve_alterar_proposta_tipo_formacao_evento_e_modalidade_hibrido_valido()
+        [Fact(DisplayName = "Proposta - Deve alterar quando o tipo de formação for evento e formato hibrida")]
+        public async Task Deve_alterar_proposta_tipo_formacao_evento_e_formato_hibrido_valido()
         {
             // arrange
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
@@ -187,7 +187,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Evento,
-                Modalidade.Hibrido,
+                Formato.Hibrido,
                 publicosAlvoDTO,
                 funcoesEspecificaDTO,
                 criteriosDTO,
@@ -211,8 +211,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
         }
 
-        [Fact(DisplayName = "Proposta - Deve retornar exceção quando o tipo de formação for curso e modalidade hibrida")]
-        public async Task Deve_retornar_excecao_tipo_formacao_curso_e_modalidade_hibrido()
+        [Fact(DisplayName = "Proposta - Deve retornar exceção quando o tipo de formação for curso e formato hibrido")]
+        public async Task Deve_retornar_excecao_tipo_formacao_curso_e_formato_hibrido()
         {
             // arrange
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
@@ -237,7 +237,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
-                Modalidade.Hibrido,
+                Formato.Hibrido,
                 publicosAlvoDTO,
                 funcoesEspecificaDTO,
                 criteriosDTO,
@@ -251,7 +251,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, propostaDTO));
 
             // assert
-            excecao.Mensagens.Contains("É permitido a modalidade Híbrido somente para o tipo de formação evento").ShouldBeTrue();
+            excecao.Mensagens.Contains("É permitido o formato Híbrido somente para o tipo de formação evento").ShouldBeTrue();
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção quando função especificas outros estiver habilitado e vazio")]
@@ -283,7 +283,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
-                Modalidade.Distancia,
+                Formato.Distancia,
                 publicosAlvoDTO,
                 funcoesEspecificaDTO,
                 criteriosDTO,
@@ -331,7 +331,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
-                Modalidade.Distancia,
+                Formato.Distancia,
                 publicosAlvoDTO,
                 funcoesEspecificaDTO,
                 criteriosDTO,
@@ -380,7 +380,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
-                Modalidade.Presencial,
+                Formato.Presencial,
                 publicosAlvoDTO,
                 funcoesEspecificaDTO,
                 criteriosDTO,
@@ -425,7 +425,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
-                Modalidade.Presencial,
+                Formato.Presencial,
                 publicosAlvoDTO,
                 funcoesEspecificaDTO,
                 criteriosDTO,
