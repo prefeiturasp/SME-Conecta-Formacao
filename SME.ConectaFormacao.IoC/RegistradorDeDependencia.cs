@@ -163,6 +163,7 @@ public class RegistradorDeDependencia
 
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
+            config.AddMap(new PropostaDreMap());
             config.AddMap(new AnoMap());
             config.AddMap(new ComponenteCurricularMap());
 
@@ -275,10 +276,12 @@ public class RegistradorDeDependencia
 
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreSyncUseCase, ExecutarSincronizacaoInstitucionalDreSyncUseCase>();
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParaValidacao, CasoDeUsoEnviarPropostaParaValidacao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarProposta, CasoDeUsoEnviarProposta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerProposta, CasoDeUsoObterParecerProposta>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoHomologada, CasoDeUsoObterFormacaoHomologada>();
     }
 
     protected virtual void RegistrarHttpClients()
