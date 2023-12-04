@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
     public class PropostaCompletoDTO
     {
         public TipoFormacao? TipoFormacao { get; set; }
-        public Modalidade? Modalidade { get; set; }
+        public Formato? Formato { get; set; }
         public TipoInscricao? TipoInscricao { get; set; }
         public string? NomeFormacao { get; set; }
         public short? QuantidadeTurmas { get; set; }

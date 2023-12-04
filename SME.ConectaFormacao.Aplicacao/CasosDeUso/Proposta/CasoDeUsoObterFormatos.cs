@@ -5,15 +5,15 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
-    public class CasoDeUsoObterModalidades : CasoDeUsoAbstrato, ICasoDeUsoObterModalidades
+    public class CasoDeUsoObterFormatos : CasoDeUsoAbstrato, ICasoDeUsoObterFormatos
     {
-        public CasoDeUsoObterModalidades(IMediator mediator) : base(mediator)
+        public CasoDeUsoObterFormatos(IMediator mediator) : base(mediator)
         {
         }
 
         public async Task<IEnumerable<RetornoListagemDTO>> Executar(TipoFormacao tipoFormacaoId)
         {
-            return await mediator.Send(new ObterModalidadesQuery(tipoFormacaoId));
+            return await mediator.Send(new ObterFormatosQuery(tipoFormacaoId));
         }
     }
 }

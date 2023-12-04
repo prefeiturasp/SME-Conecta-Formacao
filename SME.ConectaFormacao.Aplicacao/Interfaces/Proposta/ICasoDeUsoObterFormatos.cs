@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
-    public interface ICasoDeUsoObterModalidades
+    public interface ICasoDeUsoObterFormatos
     {
         Task<IEnumerable<RetornoListagemDTO>> Executar(TipoFormacao tipoFormacao);
     }

@@ -5,12 +5,12 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterModalidadesQueryHandler : IRequestHandler<ObterModalidadesQuery, IEnumerable<RetornoListagemDTO>>
+    public class ObterFormatosQueryHandler : IRequestHandler<ObterFormatosQuery, IEnumerable<RetornoListagemDTO>>
     {
-        public Task<IEnumerable<RetornoListagemDTO>> Handle(ObterModalidadesQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<RetornoListagemDTO>> Handle(ObterFormatosQuery request, CancellationToken cancellationToken)
         {
-            var lista = Enum.GetValues(typeof(Modalidade))
-                .Cast<Modalidade>()
+            var lista = Enum.GetValues(typeof(Formato))
+                .Cast<Formato>()
                 .Select(v => new RetornoListagemDTO
                 {
                     Id = (short)v,
@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 });
 
             if (request.TipoFormacao == TipoFormacao.Curso)
-                lista = lista.Where(t => (Modalidade)t.Id != Modalidade.Hibrido);
+                lista = lista.Where(t => (Formato)t.Id != Formato.Hibrido);
 
             return Task.FromResult(lista);
         }

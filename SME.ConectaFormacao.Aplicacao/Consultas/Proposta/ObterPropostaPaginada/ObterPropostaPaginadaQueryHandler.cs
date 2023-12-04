@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var totalRegistrosFiltro = await _repositorioProposta.ObterTotalRegistrosPorFiltros(
                 request.PropostaFiltrosDTO.Id,
                 request.PropostaFiltrosDTO.AreaPromotoraId,
-                request.PropostaFiltrosDTO.Modalidade,
+                request.PropostaFiltrosDTO.Formato,
                 request.PropostaFiltrosDTO.PublicoAlvoIds,
                 request.PropostaFiltrosDTO.NomeFormacao,
                 request.PropostaFiltrosDTO.NumeroHomologacao,
@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 request.NumeroRegistros,
                 request.PropostaFiltrosDTO.Id,
                 request.PropostaFiltrosDTO.AreaPromotoraId,
-                request.PropostaFiltrosDTO.Modalidade,
+                request.PropostaFiltrosDTO.Formato,
                 request.PropostaFiltrosDTO.PublicoAlvoIds,
                 request.PropostaFiltrosDTO.NomeFormacao,
                 request.PropostaFiltrosDTO.NumeroHomologacao,

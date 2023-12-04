@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
                 TipoFormacao.Curso,
-                Modalidade.Presencial,
+                Formato.Presencial,
                 situacao,
                 false, false);
 
@@ -187,7 +187,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var proposta = ObterPorId<Dominio.Entidades.Proposta, long>(id);
 
             proposta.TipoFormacao.ShouldBe(propostaDTO.TipoFormacao);
-            proposta.Modalidade.ShouldBe(propostaDTO.Modalidade);
+            proposta.Formato.ShouldBe(propostaDTO.Formato);
             proposta.TipoInscricao.ShouldBe(propostaDTO.TipoInscricao);
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
@@ -228,7 +228,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var proposta = ObterPorId<Dominio.Entidades.Proposta, long>(id);
 
             proposta.TipoFormacao.ShouldBe(propostaDTO.TipoFormacao);
-            proposta.Modalidade.ShouldBe(propostaDTO.Modalidade);
+            proposta.Formato.ShouldBe(propostaDTO.Formato);
             proposta.TipoInscricao.ShouldBe(propostaDTO.TipoInscricao);
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
