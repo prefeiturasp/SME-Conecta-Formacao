@@ -104,6 +104,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             short? quantidadeTurmas)
         {
             var faker = new Faker<PropostaDTO>();
+            faker.RuleFor(x => x.FormacaoHomologada, f => f.PickRandom<FormacaoHomologada>());
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
             faker.RuleFor(x => x.Formato, formato);
             faker.RuleFor(x => x.TipoInscricao, f => f.PickRandom<TipoInscricao>());
@@ -120,7 +121,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(100));
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(100));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(100));
-            faker.RuleFor(x => x.FormacaoHomologada, f => true);
             faker.RuleFor(x => x.DataInscricaoInicio, f => DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.DataInscricaoFim, f => DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.DataRealizacaoInicio, f => DateTimeExtension.HorarioBrasilia());

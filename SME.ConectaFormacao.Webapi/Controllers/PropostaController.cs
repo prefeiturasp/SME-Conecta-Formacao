@@ -102,6 +102,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterTipoEncontro.Executar());
         }
 
+        [HttpGet("formacao-homologada")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
+        public async Task<IActionResult> ObterFormacaoHomologada(
+            [FromServices] ICasoDeUsoObterFormacaoHomologada casoDeUsoObterFormacaoHomologada)
+        {
+            return Ok(await casoDeUsoObterFormacaoHomologada.Executar());
+        }
+
         [HttpGet("{id}/turma")]
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
