@@ -1,14 +1,12 @@
 ﻿using Shouldly;
-using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Ano
 {
     public class Ao_obter_ano_por_modalidade_ano_letivo : TesteBase
     {
@@ -23,7 +21,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao
             var anos = AnoMock.GerarAno(9);
             await InserirNaBase(anos);
 
-            var anosPErsistidos = ObterTodos<Ano>();
+            var anosPErsistidos = ObterTodos<Dominio.Entidades.Ano>();
             AoObterAnosPorModalidadeAnoLetivoMock.Montar(Modalidade.Fundamental);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterAnosPorModalidadeAnoLetivo>();

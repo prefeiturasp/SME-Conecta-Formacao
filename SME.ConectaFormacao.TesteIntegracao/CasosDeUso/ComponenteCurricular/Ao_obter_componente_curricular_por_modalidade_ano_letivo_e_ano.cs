@@ -1,13 +1,12 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ComponenteCurricular
 {
     public class Ao_obter_componente_curricular_por_modalidade_ano_letivo_e_ano : TesteBase
     {
@@ -42,7 +41,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao
             var retorno = await casoDeUso.Executar(filtro);
 
             // assert
-            var componentesCurricularesInseridos = ObterTodos<ComponenteCurricular>();
+            var componentesCurricularesInseridos = ObterTodos<Dominio.Entidades.ComponenteCurricular>();
             retorno.Count().ShouldBe(componentesCurricularesInseridos.Count(c => c.AnoId == filtro.AnoId));
         }
         
@@ -75,7 +74,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.CargoFuncao
             var retorno = await casoDeUso.Executar(filtro);
 
             // assert
-            var componentesCurricularesInseridos = ObterTodos<ComponenteCurricular>();
+            var componentesCurricularesInseridos = ObterTodos<Dominio.Entidades.ComponenteCurricular>();
             retorno.Count().ShouldBe(componentesCurricularesInseridos.Count());
         }
     }

@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorModalidadeAnoLetivoAno(Modalidade modalidade, int anoLetivo, int ano)
+        public Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorModalidadeAnoLetivoAno(Modalidade modalidade, int anoLetivo, long anoId)
         {
             var query = $@"select cc.id, 
                                  cc.ano_id AnoId,
@@ -24,17 +24,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             join ano a on a.id = cc.ano_id
                           where not cc.excluido
                               {IncluirFiltroPorModalidade(modalidade)}                              
-                              {IncluirFiltroPorAno(ano)}                              
+                              {IncluirFiltroPorAno(anoId)}                              
                               and a.ano_letivo = @anoLetivo 
                               order by cc.ordem ";
 
-            var retorno = conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { modalidade, anoLetivo, ano });
+            var retorno = conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { modalidade, anoLetivo, anoId });
             return retorno;
         }
 
-        private string IncluirFiltroPorAno(int ano)
+        private string IncluirFiltroPorAno(long anoId)
         {
-            return ano == 999 ? string.Empty : " and cc.ano_id = @ano ";
+            return anoId == 999 ? string.Empty : " and cc.ano_id = @anoId ";
         }
 
         private string IncluirFiltroPorModalidade(Modalidade modalidade)

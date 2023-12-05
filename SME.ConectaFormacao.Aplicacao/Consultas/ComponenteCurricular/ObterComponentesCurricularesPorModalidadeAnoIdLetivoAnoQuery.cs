@@ -5,21 +5,21 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQuery : IRequest<IEnumerable<IdNomeTodosDTO>>
+    public class ObterComponentesCurricularesPorModalidadeAnoIdLetivoAnoQuery : IRequest<IEnumerable<IdNomeTodosDTO>>
     {
-        public ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQuery(Modalidade modalidade, int anoLetivo, int ano)
+        public ObterComponentesCurricularesPorModalidadeAnoIdLetivoAnoQuery(Modalidade modalidade, int anoLetivo, long anoId)
         {
             Modalidade = modalidade;
             AnoLetivo = anoLetivo;
-            Ano = ano;
+            AnoId = anoId;
         }
 
         public Modalidade Modalidade { get; }
         public int AnoLetivo { get; }
-        public int Ano { get; }
+        public long AnoId { get; }
     }
 
-    public class ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQueryValidator : AbstractValidator<ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQuery>
+    public class ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQueryValidator : AbstractValidator<ObterComponentesCurricularesPorModalidadeAnoIdLetivoAnoQuery>
     {
         public ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQueryValidator()
         {
@@ -31,9 +31,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotEmpty()
                 .WithMessage("É necessário informar o ano letivo para obter os componentes curriculares");
             
-            RuleFor(x => x.Ano)
+            RuleFor(x => x.AnoId)
                 .NotEmpty()
-                .WithMessage("É necessário informar o ano para obter os componentes curriculares");
+                .WithMessage("É necessário informar o identificador de ano para obter os componentes curriculares");
         }
     }
 }
