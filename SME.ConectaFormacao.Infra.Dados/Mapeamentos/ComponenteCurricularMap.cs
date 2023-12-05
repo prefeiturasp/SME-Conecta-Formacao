@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 
             Map(c => c.AnoId).ToColumn("ano_id");
             Map(c => c.CodigoEOL).ToColumn("codigo_eol");
-            Map(c => c.nome).ToColumn("nome");
+            Map(c => c.Nome).ToColumn("nome");
         }
     }
 }
