@@ -48,6 +48,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(proposta.ArquivoImagemDivulgacaoId), cancellationToken);
 
+                await _mediator.Send(new SalvarPropostaDreCommand(id, proposta.Dres), cancellationToken);
+
                 transacao.Commit();
 
                 return id;

@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
@@ -45,7 +46,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PalavraChave, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
 
-            CreateMap<Dre, RetornoListagemDTO>()
+            CreateMap<Dre, DreDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
 
             CreateMap<Dre, DreNomeAbreviacaoDTO>().ReverseMap();
@@ -103,6 +104,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaEncontroData, PropostaEncontroDataDTO>().ReverseMap();
             CreateMap<PropostaRegenteTurma, PropostaRegenteTurmaDTO>().ReverseMap();
             CreateMap<PropostaTutorTurma, PropostaTutorTurmaDTO>().ReverseMap();
+            CreateMap<PropostaDre, PropostaDreDTO>().ReverseMap();
 
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
