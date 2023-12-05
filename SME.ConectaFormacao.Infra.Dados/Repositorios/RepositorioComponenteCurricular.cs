@@ -28,8 +28,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                               and a.ano_letivo = @anoLetivo 
                               order by cc.ordem ";
 
-            var retorno = conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { modalidade, anoLetivo, anoId });
-            return retorno;
+            return conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { modalidade, anoLetivo, anoId });
         }
 
         private string IncluirFiltroPorAno(long anoId)
