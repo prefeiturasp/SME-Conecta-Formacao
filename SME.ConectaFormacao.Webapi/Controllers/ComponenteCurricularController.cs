@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     public class ComponenteCurricularController : BaseController
     {
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<IdNomeOutrosDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<IdNomeTodosDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]

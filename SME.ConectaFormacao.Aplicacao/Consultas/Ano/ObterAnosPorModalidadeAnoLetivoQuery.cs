@@ -5,9 +5,9 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterAnosPorModalidadeAnoLetivoAnoQuery : IRequest<IEnumerable<IdNomeOutrosDTO>>
+    public class ObterAnosPorModalidadeAnoLetivoQuery : IRequest<IEnumerable<IdNomeTodosDTO>>
     {
-        public ObterAnosPorModalidadeAnoLetivoAnoQuery(Modalidade modalidade, int anoLetivo)
+        public ObterAnosPorModalidadeAnoLetivoQuery(Modalidade modalidade, int anoLetivo)
         {
             Modalidade = modalidade;
             AnoLetivo = anoLetivo;
@@ -17,9 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public int AnoLetivo { get; }
     }
 
-    public class ObterAnoPorModalidadeAnoLetivoAnoQueryValidator : AbstractValidator<ObterAnosPorModalidadeAnoLetivoAnoQuery>
+    public class ObterAnoPorModalidadeAnoLetivoQueryValidator : AbstractValidator<ObterAnosPorModalidadeAnoLetivoQuery>
     {
-        public ObterAnoPorModalidadeAnoLetivoAnoQueryValidator()
+        public ObterAnoPorModalidadeAnoLetivoQueryValidator()
         {
             RuleFor(x => x.Modalidade)
                 .NotEmpty()

@@ -4,6 +4,7 @@ CREATE TABLE if not exists public.ano (
 	codigo_eol varchar(1) NULL,	
 	descricao varchar(70) not null,
 	codigo_serie_ensino int8 null,
+	ano_letivo int2 null,
 	modalidade int8 null,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
@@ -21,8 +22,8 @@ CREATE INDEX if not exists ano_modalidade_idx ON public.ano (modalidade);
 CREATE INDEX if not exists ano_codigo_eol_idx ON public.ano (codigo_eol);
 
 insert into public.ano
-(descricao,criado_em,criado_por,criado_login, ordem)
-select 'Todos',now(), 'Sistema', 'Sistema',0 where not exists (select 1 from public.ano where descricao = 'Todos');
+(descricao,criado_em,criado_por,criado_login, ordem, ano_letivo)
+select 'Todos',now(), 'Sistema', 'Sistema',0,date_part('year', CURRENT_DATE) where not exists (select 1 from public.ano where descricao = 'Todos');
  
 --> Criação da tabela de Componentes curriculares
 CREATE TABLE if not exists public.componente_curricular (

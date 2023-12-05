@@ -10,12 +10,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao
         public CasoDeUsoObterComponentesCurricularesPorModalidadeAnoLetivoAno(IMediator mediator) : base(mediator)
         {}
 
-        public async Task<IEnumerable<IdNomeOutrosDTO>> Executar(ComponenteCurricularFiltrosDto componenteCurricularFiltrosDto)
+        public async Task<IEnumerable<IdNomeTodosDTO>> Executar(ComponenteCurricularFiltrosDto componenteCurricularFiltrosDto)
         {
             return await mediator.Send(new ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQuery(
                 componenteCurricularFiltrosDto.Modalidade, 
                 componenteCurricularFiltrosDto.AnoLetivo, 
-                componenteCurricularFiltrosDto.Ano));
+                componenteCurricularFiltrosDto.AnoId));
         }
     }
 }

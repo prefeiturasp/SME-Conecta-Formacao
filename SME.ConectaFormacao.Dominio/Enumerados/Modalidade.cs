@@ -29,6 +29,9 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         ETEC = 9,
 
         [Display(Name = "CELP", ShortName = "CELP")]
-        CELP = 10
+        CELP = 10,
+            
+        [Display(Name = "Todas", ShortName = "Todas")]
+        TODAS = 999
     }
 }

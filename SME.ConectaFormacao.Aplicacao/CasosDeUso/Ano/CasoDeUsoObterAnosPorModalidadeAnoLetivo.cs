@@ -9,9 +9,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao
         public CasoDeUsoObterAnosPorModalidadeAnoLetivo(IMediator mediator) : base(mediator)
         {}
 
-        public async Task<IEnumerable<IdNomeOutrosDTO>> Executar(ModalidadeAnoLetivoFiltrosDTO modalidadeAnoLetivoFiltrosDto)
+        public async Task<IEnumerable<IdNomeTodosDTO>> Executar(ModalidadeAnoLetivoFiltrosDTO modalidadeAnoLetivoFiltrosDto)
         {
-            return await mediator.Send(new ObterAnosPorModalidadeAnoLetivoAnoQuery(
+            return await mediator.Send(new ObterAnosPorModalidadeAnoLetivoQuery(
                 modalidadeAnoLetivoFiltrosDto.Modalidade, 
                 modalidadeAnoLetivoFiltrosDto.AnoLetivo));
         }

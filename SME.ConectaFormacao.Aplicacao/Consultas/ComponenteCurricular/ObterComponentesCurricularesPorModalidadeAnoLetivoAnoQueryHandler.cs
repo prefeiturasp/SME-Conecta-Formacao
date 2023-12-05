@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQueryHandler : IRequestHandler<ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQuery, IEnumerable<IdNomeOutrosDTO>>
+    public class ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQueryHandler : IRequestHandler<ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQuery, IEnumerable<IdNomeTodosDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioComponenteCurricular _repositorioComponenteCurricular;
@@ -16,10 +16,10 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioComponenteCurricular = repositorioComponenteCurricular ?? throw new ArgumentNullException(nameof(repositorioComponenteCurricular));
         }
 
-        public async Task<IEnumerable<IdNomeOutrosDTO>> Handle(ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<IdNomeTodosDTO>> Handle(ObterComponentesCurricularesPorModalidadeAnoLetivoAnoQuery request, CancellationToken cancellationToken)
         {
-            var componenteCurriculares = (await _repositorioComponenteCurricular.ObterTodos()).Where(w => !w.Excluido);
-            return _mapper.Map<IEnumerable<IdNomeOutrosDTO>>(componenteCurriculares);
+            var anos = await _repositorioComponenteCurricular.ObterComponentesCurricularesPorModalidadeAnoLetivoAno(request.Modalidade, request.AnoLetivo, request.Ano);
+            return _mapper.Map<IEnumerable<IdNomeTodosDTO>>(anos);
         }
     }
 }

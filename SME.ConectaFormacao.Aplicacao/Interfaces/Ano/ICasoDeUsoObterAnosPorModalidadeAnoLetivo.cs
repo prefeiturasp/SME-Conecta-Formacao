@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular
 {
     public interface ICasoDeUsoObterAnosPorModalidadeAnoLetivo
     {
-        Task<IEnumerable<IdNomeOutrosDTO>> Executar(ModalidadeAnoLetivoFiltrosDTO modalidadeAnoLetivoFiltrosDto);
+        Task<IEnumerable<IdNomeTodosDTO>> Executar(ModalidadeAnoLetivoFiltrosDTO modalidadeAnoLetivoFiltrosDto);
     }
 }
