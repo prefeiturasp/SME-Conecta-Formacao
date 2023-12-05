@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterComponentesCurricularesPorModalidadeAnoIdLetivoAnoQuery : IRequest<IEnumerable<IdNomeTodosDTO>>
+    public class ObterComponentesCurricularesPorModalidadeAnoIdLetivoAnoQuery : IRequest<IEnumerable<RetornoListagemTodosDTO>>
     {
         public ObterComponentesCurricularesPorModalidadeAnoIdLetivoAnoQuery(Modalidade modalidade, int anoLetivo, long anoId)
         {

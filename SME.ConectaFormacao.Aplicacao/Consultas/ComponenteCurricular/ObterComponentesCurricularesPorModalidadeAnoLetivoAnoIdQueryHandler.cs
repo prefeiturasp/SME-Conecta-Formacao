@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterComponentesCurricularesPorModalidadeAnoLetivoAnoIdQueryHandler : IRequestHandler<ObterComponentesCurricularesPorModalidadeAnoIdLetivoAnoQuery, IEnumerable<IdNomeTodosDTO>>
+    public class ObterComponentesCurricularesPorModalidadeAnoLetivoAnoIdQueryHandler : IRequestHandler<ObterComponentesCurricularesPorModalidadeAnoIdLetivoAnoQuery, IEnumerable<RetornoListagemTodosDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioComponenteCurricular _repositorioComponenteCurricular;
@@ -16,10 +16,10 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioComponenteCurricular = repositorioComponenteCurricular ?? throw new ArgumentNullException(nameof(repositorioComponenteCurricular));
         }
 
-        public async Task<IEnumerable<IdNomeTodosDTO>> Handle(ObterComponentesCurricularesPorModalidadeAnoIdLetivoAnoQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RetornoListagemTodosDTO>> Handle(ObterComponentesCurricularesPorModalidadeAnoIdLetivoAnoQuery request, CancellationToken cancellationToken)
         {
             var anos = await _repositorioComponenteCurricular.ObterComponentesCurricularesPorModalidadeAnoLetivoAno(request.Modalidade, request.AnoLetivo, request.AnoId);
-            return _mapper.Map<IEnumerable<IdNomeTodosDTO>>(anos);
+            return _mapper.Map<IEnumerable<RetornoListagemTodosDTO>>(anos);
         }
     }
 }

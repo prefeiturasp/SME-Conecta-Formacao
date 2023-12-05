@@ -1,7 +1,7 @@
 ﻿
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Base
 {
-    public class IdNomeTodosDTO
+    public class RetornoListagemTodosDTO
     {
         public long Id { get; set; }
         public string Nome { get; set; }

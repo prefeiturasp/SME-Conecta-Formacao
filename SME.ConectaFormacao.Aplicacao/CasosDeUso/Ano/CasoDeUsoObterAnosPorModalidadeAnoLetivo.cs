@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular
         public CasoDeUsoObterAnosPorModalidadeAnoLetivo(IMediator mediator) : base(mediator)
         {}
 
-        public async Task<IEnumerable<IdNomeTodosDTO>> Executar(ModalidadeAnoLetivoFiltrosDTO modalidadeAnoLetivoFiltrosDto)
+        public async Task<IEnumerable<RetornoListagemTodosDTO>> Executar(ModalidadeAnoLetivoFiltrosDTO modalidadeAnoLetivoFiltrosDto)
         {
             return await mediator.Send(new ObterAnosPorModalidadeAnoLetivoQuery(
                 modalidadeAnoLetivoFiltrosDto.Modalidade, 

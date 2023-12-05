@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterAnosPorModalidadeAnoLetivoQueryHandler : IRequestHandler<ObterAnosPorModalidadeAnoLetivoQuery, IEnumerable<IdNomeTodosDTO>>
+    public class ObterAnosPorModalidadeAnoLetivoQueryHandler : IRequestHandler<ObterAnosPorModalidadeAnoLetivoQuery, IEnumerable<RetornoListagemTodosDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioAno _repositorioAno;
@@ -16,10 +16,10 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioAno = repositorioAno ?? throw new ArgumentNullException(nameof(repositorioAno));
         }
 
-        public async Task<IEnumerable<IdNomeTodosDTO>> Handle(ObterAnosPorModalidadeAnoLetivoQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RetornoListagemTodosDTO>> Handle(ObterAnosPorModalidadeAnoLetivoQuery request, CancellationToken cancellationToken)
         {
             var anos = await _repositorioAno.ObterAnosPorModalidadeAnoLetivo(request.Modalidade, request.AnoLetivo);
-            return _mapper.Map<IEnumerable<IdNomeTodosDTO>>(anos);
+            return _mapper.Map<IEnumerable<RetornoListagemTodosDTO>>(anos);
         }
     }
 }
