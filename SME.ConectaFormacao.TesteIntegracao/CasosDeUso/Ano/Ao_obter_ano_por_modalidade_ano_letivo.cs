@@ -21,7 +21,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Ano
             var anos = AnoMock.GerarAno(9);
             await InserirNaBase(anos);
 
-            var anosPErsistidos = ObterTodos<Dominio.Entidades.Ano>();
             AoObterAnosPorModalidadeAnoLetivoMock.Montar(Modalidade.Fundamental);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterAnosPorModalidadeAnoLetivo>();
@@ -40,6 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Ano
             // arrange 
             var anos = AnoMock.GerarAno(9);
             await InserirNaBase(anos);
+            
             AoObterAnosPorModalidadeAnoLetivoMock.Montar(Modalidade.TODAS);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterAnosPorModalidadeAnoLetivo>();
