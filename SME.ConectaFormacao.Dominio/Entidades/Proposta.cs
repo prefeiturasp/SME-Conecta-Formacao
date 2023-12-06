@@ -45,5 +45,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaCriterioCertificacao> CriterioCertificacao { get; set; }
         public IEnumerable<PropostaRegente> Regentes { get; set; }
         public IEnumerable<PropostaTutor> Tutores { get; set; }
+        public IEnumerable<PropostaTurma> Turmas { get; set; }
     }
 }
