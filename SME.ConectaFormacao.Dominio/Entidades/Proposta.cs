@@ -35,6 +35,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? AcaoFormativaLink { get; set; }
 
         public AreaPromotora AreaPromotora { get; set; }
+        public IEnumerable<PropostaDre> Dres { get; set; }
         public IEnumerable<PropostaPublicoAlvo> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecifica> FuncoesEspecificas { get; set; }
         public IEnumerable<PropostaCriterioValidacaoInscricao> CriteriosValidacaoInscricao { get; set; }
@@ -42,7 +43,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaEncontro> Encontros { get; set; }
         public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; }
         public IEnumerable<PropostaCriterioCertificacao> CriterioCertificacao { get; set; }
-        public IEnumerable<PropostaRegente> Regentes { get; set; } = Enumerable.Empty<PropostaRegente>();
-        public IEnumerable<PropostaTutor> Tutores { get; set; } = Enumerable.Empty<PropostaTutor>();
+        public IEnumerable<PropostaRegente> Regentes { get; set; }
+        public IEnumerable<PropostaTutor> Tutores { get; set; }
     }
 }

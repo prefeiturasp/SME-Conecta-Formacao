@@ -27,6 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (proposta == null || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
+            proposta.Dres = await _repositorioProposta.ObterDrePorId(request.Id);
             proposta.PublicosAlvo = await _repositorioProposta.ObterPublicoAlvoPorId(request.Id);
             proposta.FuncoesEspecificas = await _repositorioProposta.ObterFuncoesEspecificasPorId(request.Id);
             proposta.CriteriosValidacaoInscricao = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);

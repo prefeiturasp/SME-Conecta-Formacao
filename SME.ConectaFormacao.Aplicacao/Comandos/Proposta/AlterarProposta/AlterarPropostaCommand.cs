@@ -43,6 +43,10 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotNull()
                 .WithMessage("É necessário informar o tipo de inscrição para alterar a proposta");
 
+            RuleFor(f => f.PropostaDTO.Dres)
+                .NotEmpty()
+                .WithMessage("É necessário informar a dre para alterar a proposta");
+
             RuleFor(f => f.PropostaDTO.PublicosAlvo)
                 .NotEmpty()
                 .WithMessage("É necessário informar o público alvo para alterar a proposta");

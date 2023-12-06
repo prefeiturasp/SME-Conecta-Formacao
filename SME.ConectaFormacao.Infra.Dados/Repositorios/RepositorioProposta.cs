@@ -1093,5 +1093,58 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        and not excluido ";
             return conexao.Obter().QueryAsync<PropostaTutorTurma>(query, new { tutorIds });
         }
+
+        public async Task InserirDres(long propostaId, IEnumerable<PropostaDre> propostaDres)
+        {
+            foreach (var propostaDre in propostaDres)
+            {
+                PreencherAuditoriaCriacao(propostaDre);
+
+                propostaDre.PropostaId = propostaId;
+                propostaDre.Id = (long)await conexao.Obter().InsertAsync(propostaDre);
+            }
+        }
+
+        public Task RemoverDres(IEnumerable<PropostaDre> propostaDres)
+        {
+            var propostaDre = propostaDres.First();
+            PreencherAuditoriaAlteracao(propostaDre);
+
+            var parametros = new
+            {
+                ids = propostaDres.Select(t => t.Id).ToArray(),
+                propostaDre.AlteradoEm,
+                propostaDre.AlteradoPor,
+                propostaDre.AlteradoLogin
+            };
+
+            var query = @"update proposta_dre
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+
+        public Task<IEnumerable<PropostaDre>> ObterDrePorId(long propostaId)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            dre_id,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_dre
+                        where proposta_id = @propostaId and not excluido";
+            return conexao.Obter().QueryAsync<PropostaDre>(query, new { propostaId });
+        }
     }
 }

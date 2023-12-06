@@ -65,5 +65,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<int>> ObterTurmasJaExistenteParaTutor(long propostaId, string? nomeTutor, string? registroFuncional, int[] turmas);
         Task AtualizarSituacao(long id, SituacaoProposta situacaoProposta);
         Task AtualizarSituacaoGrupoGestao(long id, SituacaoProposta situacaoProposta, long grupoGestaoId);
+        Task InserirDres(long propostaId, IEnumerable<PropostaDre> propostaDres);
+        Task RemoverDres(IEnumerable<PropostaDre> propostaDres);
+        Task<IEnumerable<PropostaDre>> ObterDrePorId(long propostaId);
     }
 }

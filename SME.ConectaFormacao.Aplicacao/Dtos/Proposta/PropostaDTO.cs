@@ -35,6 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? AcaoFormativaTexto { get; set; }
         public string? AcaoFormativaLink { get; set; }
 
+        public IEnumerable<PropostaDreDTO> Dres { get; set; }
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecificaDTO> FuncoesEspecificas { get; set; }
         public IEnumerable<PropostaVagaRemanecenteDTO> VagasRemanecentes { get; set; }
