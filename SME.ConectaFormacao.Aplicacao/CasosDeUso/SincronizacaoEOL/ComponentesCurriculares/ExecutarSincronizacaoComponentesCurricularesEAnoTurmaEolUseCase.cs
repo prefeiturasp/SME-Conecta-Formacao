@@ -9,10 +9,10 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
-public class ExecutarSincronizacaoComponentesCurricularesEOLUseCase : CasoDeUsoAbstrato, IExecutarSincronizacaoComponentesCurricularesEOLUseCase
+public class ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase : CasoDeUsoAbstrato, IExecutarSincronizacaoComponentesCurricularesEAnoTurmaEOLUseCase
 {
     private readonly IMapper _mapper;
-    public ExecutarSincronizacaoComponentesCurricularesEOLUseCase(IMediator mediator,IMapper mapper) : base(mediator)
+    public ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase(IMediator mediator,IMapper mapper) : base(mediator)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
@@ -21,13 +21,13 @@ public class ExecutarSincronizacaoComponentesCurricularesEOLUseCase : CasoDeUsoA
     {
         var anoLetivo = param.Mensagem.EhNulo() ?  DateTimeExtension.HorarioBrasilia().Year : param.ObterObjetoMensagem<AnoLetivoDTO>().AnoLetivo;
         
-        var componentesCurricularesEAnoEOL = await mediator.Send(new ObterComponentesCurricularesEAnoTurmaEOLQuery(anoLetivo));
+        var componentesCurricularesEAnoTurmaEOL = await mediator.Send(new ObterComponentesCurricularesEAnoTurmaEOLQuery(anoLetivo));
 
         var anosConecta = await mediator.Send(new ObterTodosOsAnosQuery()); 
             
         var componentesConecta = await mediator.Send(new ObterTodosOsComponentesCurricularesQuery());
 
-        foreach (var componenteEAno in componentesCurricularesEAnoEOL)
+        foreach (var componenteEAno in componentesCurricularesEAnoTurmaEOL)
         {
             var anoExistente = ObterAno(anosConecta, componenteEAno, anoLetivo);
             if (anoExistente.EhNulo())

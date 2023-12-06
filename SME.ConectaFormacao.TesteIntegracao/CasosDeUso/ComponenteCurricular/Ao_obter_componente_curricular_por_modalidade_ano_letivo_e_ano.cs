@@ -34,10 +34,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ComponenteCurricular
             
             AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock.Montar(Modalidade.Fundamental);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComponentesCurricularesPorModalidadeAnoLetivoAno>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComponentesCurricularesEAnoTurmaPorModalidadeAnoLetivoAnoTurma>();
 
             // act 
-            var filtro = AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock.ComponenteCurricularFiltrosDto;
+            var filtro = AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock.ComponenteCurricularEAnoTurmaFiltrosDto;
             var retorno = await casoDeUso.Executar(filtro);
 
             // assert
@@ -65,10 +65,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ComponenteCurricular
             
             AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock.Montar(Modalidade.Fundamental);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComponentesCurricularesPorModalidadeAnoLetivoAno>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComponentesCurricularesEAnoTurmaPorModalidadeAnoLetivoAnoTurma>();
 
             // act 
-            var filtro = AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock.ComponenteCurricularFiltrosDto;
+            var filtro = AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock.ComponenteCurricularEAnoTurmaFiltrosDto;
             filtro.AnoId = 999;
             filtro.Modalidade = Modalidade.TODAS;
             var retorno = await casoDeUso.Executar(filtro);
