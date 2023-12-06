@@ -29,14 +29,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             var opcoesModalidades = new [] 
             { 
                 Modalidade.Fundamental, 
-                Modalidade.EducacaoInfantil,
-                Modalidade.EJA,
-                Modalidade.CIEJA,
-                Modalidade.Medio,
-                Modalidade.CMCT,
-                Modalidade.MOVA,
-                Modalidade.ETEC,
-                Modalidade.CELP
+                // Modalidade.EducacaoInfantil,
+                // Modalidade.EJA,
+                // Modalidade.CIEJA,
+                // Modalidade.Medio,
+                // Modalidade.CMCT,
+                // Modalidade.MOVA,
+                // Modalidade.ETEC,
+                // Modalidade.CELP
             };
 
             var anos = new List<Ano>();

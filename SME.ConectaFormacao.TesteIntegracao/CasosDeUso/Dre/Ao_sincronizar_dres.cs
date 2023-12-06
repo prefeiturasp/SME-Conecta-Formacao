@@ -8,6 +8,7 @@ using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.ServicoFake;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using System.Text.Json;
+using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
@@ -20,7 +21,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
         protected override void RegistrarQueryFakes(IServiceCollection services)
         {
             base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterCodigosDresQuery, IEnumerable<DreNomeAbreviacaoDTO>>), typeof(ObterCodigosDresQueryFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterCodigosDresEOLQuery, IEnumerable<DreNomeAbreviacaoDTO>>), typeof(ObterCodigosDresQueryFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<PublicarNaFilaRabbitCommand, bool>), typeof(PublicarNaFilaRabbitCommandFake), ServiceLifetime.Scoped));
         }
 

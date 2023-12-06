@@ -58,4 +58,5 @@ public class MensagemNegocio
     public const string NAO_EXISTE_NENHUM_TUTOR = "Não existe nenhum tutor cadastrado na Proposta";
     public const string JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR = "O Tutor {0} já possui a turma {1}";
     public const string JA_EXISTE_ESSA_TURMA_PARA_ESSE_REGENTE = "O Regente {0} já possui a turma {1}";
+    public const string NENHUM_COMPONENTE_CURRICULAR_DO_EOL_FOI_LOCALIZADOS = "Nenhum componente curricular do EOL foi encontrado";
 }

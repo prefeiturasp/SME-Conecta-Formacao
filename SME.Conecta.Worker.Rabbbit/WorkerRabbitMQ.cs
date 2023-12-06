@@ -26,6 +26,8 @@ namespace SME.Conecta.Worker
         {
             Comandos.Add(RotasRabbit.SincronizaEstruturaInstitucionalDre, new ComandoRabbit("Estrutura Institucional - Obter Dre", typeof(IExecutarSincronizacaoInstitucionalDreSyncUseCase), true));
             Comandos.Add(RotasRabbit.SincronizaEstruturaInstitucionalDreTratar, new ComandoRabbit("Estrutura Institucional - Tratar uma Dre", typeof(IExecutarSincronizacaoInstitucionalDreTratarUseCase), true));
+            
+            Comandos.Add(RotasRabbit.SincronizaComponentesCurricularesEOL, new ComandoRabbit("Sincronização de Componentes Curriculares do EOL", typeof(IExecutarSincronizacaoComponentesCurricularesEOLUseCase), true));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
@@ -11,6 +12,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public Modalidade Modalidade { get; set; }
         public bool Todos { get; set; }
         public int Ordem { get; set; }
-        public int AnoLetivo { get; set; }
+        public int AnoLetivo { get; set; } = DateTimeExtension.HorarioBrasilia().Year;
     }
 }

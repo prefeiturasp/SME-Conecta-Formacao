@@ -12,6 +12,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
@@ -286,6 +287,8 @@ public class RegistradorDeDependencia
         
         _serviceCollection.TryAddScoped<ICasoDeUsoObterComponentesCurricularesPorModalidadeAnoLetivoAno, CasoDeUsoObterComponentesCurricularesPorModalidadeAnoLetivoAno>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAnosPorModalidadeAnoLetivo, CasoDeUsoObterAnosPorModalidadeAnoLetivo>();
+        
+        _serviceCollection.TryAddScoped<IExecutarSincronizacaoComponentesCurricularesEOLUseCase, ExecutarSincronizacaoComponentesCurricularesEOLUseCase>();
     }
 
     protected virtual void RegistrarHttpClients()
