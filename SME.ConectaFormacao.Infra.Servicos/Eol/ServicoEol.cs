@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO, anoLetivo));
             
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
-                throw new NegocioException(MensagemNegocio.NENHUM_COMPONENTE_CURRICULAR_DO_EOL_FOI_LOCALIZADOS, resposta.StatusCode);
+                throw new NegocioException(MensagemNegocio.NENHUM_COMPONENTE_CURRICULAR_DOS_ANOS_DA_TURMA_DO_EOL_FORAM_LOCALIZADOS, resposta.StatusCode);
             
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<ComponenteCurricularAnoTurmaEOLDTO[]>().ToList();
