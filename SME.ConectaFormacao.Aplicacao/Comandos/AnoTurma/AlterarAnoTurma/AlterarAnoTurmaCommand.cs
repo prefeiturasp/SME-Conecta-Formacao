@@ -19,7 +19,7 @@ public class AlterarAnoTurmaCommand : IRequest<bool>
         {
             RuleFor(f => f.AnoTurma)
                 .NotNull()
-                .WithMessage("É necessário informar o ano para atualizar o ano da turma");
+                .WithMessage("É necessário informar o ano turma para atualizar o ano da turma");
             
             RuleFor(f => f.AnoTurma.AnoLetivo)
                 .GreaterThan(0)
@@ -27,7 +27,7 @@ public class AlterarAnoTurmaCommand : IRequest<bool>
             
             RuleFor(f => f.AnoTurma.Modalidade)
                 .Must(i => Enum.IsDefined(typeof(Modalidade), i))
-                .WithMessage("É necessário informar o ano letivo para atualizar o ano da turma");
+                .WithMessage("É necessário informar a modalidade para atualizar o ano da turma");
             
             RuleFor(f => f.AnoTurma.Descricao)
                 .NotNull()
