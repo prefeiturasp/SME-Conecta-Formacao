@@ -108,7 +108,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             foreach (var ano in anosTurma)
             {
                 componenteCurricularAnoTurmaMock.Any(a => a.CodigoAnoTurma.Equals(ano.CodigoEOL)).ShouldBeTrue();
-                componenteCurricularAnoTurmaMock.Any(a => a.DescricaoSerieEnsino.Equals(ano.Descricao)).ShouldBeTrue($"Id: {ano.Id}");
+                componenteCurricularAnoTurmaMock.Any(a => a.DescricaoSerieEnsino.Equals(ano.Descricao)).ShouldBeTrue();
                 componenteCurricularAnoTurmaMock.Any(a => a.CodigoSerieEnsino.Equals(ano.CodigoSerieEnsino)).ShouldBeTrue();
                 componenteCurricularAnoTurmaMock.Any(a => a.Modalidade.Equals(ano.Modalidade)).ShouldBeTrue();
                 ano.AnoLetivo.ShouldBe(anoAtual);
