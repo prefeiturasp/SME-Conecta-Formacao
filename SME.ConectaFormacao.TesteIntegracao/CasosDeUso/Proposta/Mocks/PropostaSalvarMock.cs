@@ -104,6 +104,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             long? arquivoImagemDivulgacaoId,
             short? quantidadeTurmas)
         {
+
+            quantidadeTurmas = (short?)(quantidadeTurmas ?? new Random().Next(1, 99));
+
             var faker = new Faker<PropostaDTO>();
             faker.RuleFor(x => x.FormacaoHomologada, f => f.PickRandom<FormacaoHomologada>());
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
@@ -115,7 +118,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.FuncoesEspecificas, f => new PropostaFuncaoEspecificaDTO[] { f.PickRandom(propostaFuncaoEspecificas) });
             faker.RuleFor(x => x.CriteriosValidacaoInscricao, f => new PropostaCriterioValidacaoInscricaoDTO[] { f.PickRandom(propostaCriterioValidacaoInscricaos) });
             faker.RuleFor(x => x.VagasRemanecentes, f => new PropostaVagaRemanecenteDTO[] { f.PickRandom(propostaVagaRemanecentes) });
-            faker.RuleFor(x => x.QuantidadeTurmas, f => quantidadeTurmas.HasValue ? quantidadeTurmas.Value : f.Random.Short(1, 99));
+            faker.RuleFor(x => x.QuantidadeTurmas, quantidadeTurmas);
             faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 99));
             faker.RuleFor(x => x.PalavrasChaves, f => palavrasChaves.Take(5)); //Melhorar isso
             faker.RuleFor(x => x.Justificativa, f => f.Lorem.Sentence(100));
@@ -139,9 +142,19 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             if (arquivoImagemDivulgacaoId.HasValue)
                 faker.RuleFor(x => x.ArquivoImagemDivulgacaoId, arquivoImagemDivulgacaoId);
 
+            faker.RuleFor(x => x.Turmas, GerarPropostaTurmaDTO(quantidadeTurmas.GetValueOrDefault()));
+
             faker.RuleFor(x => x.Situacao, situacao);
 
             return faker;
+        }
+
+        private static IEnumerable<PropostaTurmaDTO> GerarPropostaTurmaDTO(short quantidadeTurmas)
+        {
+            var faker = new Faker<PropostaTurmaDTO>();
+            faker.RuleFor(x => x.Nome, f => f.Company.CompanySuffix());
+
+            return faker.Generate(quantidadeTurmas);
         }
 
 

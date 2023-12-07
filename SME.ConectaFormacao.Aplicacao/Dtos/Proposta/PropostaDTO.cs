@@ -43,5 +43,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaEncontroDTO>? Encontros { get; set; }
         public IEnumerable<PropostaPalavraChaveDTO> PalavrasChaves { get; set; }
         public IEnumerable<CriterioCertificacaoDTO> CriterioCertificacao { get; set; }
+        public IEnumerable<PropostaTurmaDTO> Turmas { get; set; }
     }
 }
