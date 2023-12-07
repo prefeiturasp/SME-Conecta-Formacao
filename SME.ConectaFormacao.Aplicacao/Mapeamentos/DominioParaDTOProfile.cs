@@ -93,12 +93,12 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<PropostaRegente, PropostaRegenteDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
-                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => "Turma " + x.Turma))))
+                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
                 .ReverseMap();
 
             CreateMap<PropostaTutor, PropostaTutorDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
-                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => "Turma " + x.Turma))))
+                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
                 .ReverseMap();
 
             CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>().ReverseMap();
@@ -116,6 +116,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<ComponenteCurricular, RetornoListagemTodosDTO>().ReverseMap();
 
             CreateMap<PropostaTurma,  PropostaTurmaDTO>().ReverseMap();
+
+            CreateMap<PropostaTurma, RetornoListagemDTO>()
+                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome));
         }
     }
 }

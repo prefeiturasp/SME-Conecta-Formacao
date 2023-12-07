@@ -1,5 +1,5 @@
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentesPaginado;
+using SME.ConectaFormacao.Aplicacao.Consultas;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
