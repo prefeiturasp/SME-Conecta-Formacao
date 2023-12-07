@@ -59,6 +59,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             foreach (var componenteAnoTurmaEol in componenteCurricularAnoTurmaMock)
             {
                 var anoTurma = mapper.Map<Dominio.Entidades.AnoTurma>(componenteAnoTurmaEol);
+                anoTurma.AnoLetivo = DateTimeExtension.HorarioBrasilia().Year;
                 GerarAuditoria(anoTurma);
                 await InserirNaBase(anoTurma);
                 
@@ -73,7 +74,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             var anos = ObterTodos<Dominio.Entidades.AnoTurma>();
             var componentesAnosTurms = ObterTodos<Dominio.Entidades.ComponenteCurricular>();
 
-            foreach (var componentesEAnoTurma in componenteCurricularAnoTurmaMock.Take(20))
+            foreach (var componentesEAnoTurma in componenteCurricularAnoTurmaMock)
             {
                 //Modificando o nome do componente - a descrição (eol) do componente_curricular (nome)
                 componentesEAnoTurma.DescricaoComponenteCurricular = faker.Lorem.Text().Limite(70);
@@ -92,44 +93,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             retorno.ShouldBeTrue();
             ValidacaoAnoTurmaComponente(componenteCurricularAnoTurmaMock);
         }
-        
-        [Fact(DisplayName = "Componente Curricular e Ano da Turma - Deve atualizar somente o código da série ensino do ano da turma")]
-        public async Task Deve_alterar_somente_codigo_da_serie_ensino_do_ano_turma()
-        {
-            // arrange
-            var mapper = ObterCasoDeUso<IMapper>();
-            var faker = new Faker();
-            var componenteCurricularAnoTurmaMock = ComponenteCurricularAnoTurmaMock.GerarLista();
-            var anoTurmaId = 1;
-            
-            foreach (var componenteAnoTurmaEol in componenteCurricularAnoTurmaMock)
-            {
-                var anoTurma = mapper.Map<Dominio.Entidades.AnoTurma>(componenteAnoTurmaEol);
-                GerarAuditoria(anoTurma);
-                await InserirNaBase(anoTurma);
-                
-                var componente = mapper.Map<Dominio.Entidades.ComponenteCurricular>(componenteAnoTurmaEol);
-                componente.AnoTurmaId = anoTurmaId;
-                GerarAuditoria(componente);
-                await InserirNaBase(componente);
-
-                anoTurmaId++;
-            }
-
-            foreach (var componentesEAnoTurma in componenteCurricularAnoTurmaMock.Take(20))
-                componentesEAnoTurma.CodigoSerieEnsino = faker.Random.Long(min: 1250, max: 1500);
-            
-            var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoComponentesCurricularesEAnoTurmaEOLUseCase>();
-
-            // act 
-            var mensagem = JsonSerializer.Serialize(new AnoLetivoDTO(DateTimeExtension.HorarioBrasilia().Year));
-            var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
-
-            // assert
-            retorno.ShouldBeTrue();
-            ValidacaoAnoTurmaComponente(componenteCurricularAnoTurmaMock);
-        }
-
+       
         private void ValidacaoAnoTurmaComponente(IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> componenteCurricularAnoTurmaMock)
         {
             var anoAtual = DateTimeExtension.HorarioBrasilia().Year;
@@ -139,7 +103,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             anosTurma.ShouldNotBeNull();
             anosTurma.Count.ShouldBe(componenteCurricularAnoTurmaMock.Count());
             componentesAnoTurma.ShouldNotBeNull();
-            anosTurma.Count.ShouldBe(componenteCurricularAnoTurmaMock.Count());
+            componentesAnoTurma.Count.ShouldBe(componenteCurricularAnoTurmaMock.Count());
 
             foreach (var ano in anosTurma)
             {

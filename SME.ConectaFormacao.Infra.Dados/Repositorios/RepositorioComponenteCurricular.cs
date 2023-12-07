@@ -38,7 +38,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                  cc.codigo_eol CodigoEOL,
                                  cc.nome,
                                  cc.todos,
-                                 cc.ordem 
+                                 cc.ordem,
+                                 cc.criado_em,
+                                 cc.criado_por,
+                                 cc.alterado_em,
+                                 cc.alterado_por,
+                                 cc.criado_login,
+                                 cc.alterado_login 
                           from componente_curricular cc
                             join ano_turma a on a.id = cc.ano_turma_id
                           where not cc.excluido

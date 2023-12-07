@@ -40,7 +40,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                  ano_letivo AnoLetivo,
                                  modalidade Modalidade,
                                  todos,
-                                 ordem 
+                                 ordem,
+                                 criado_em,
+                                 criado_por,
+                                 alterado_em,
+                                 alterado_por,
+                                 criado_login,
+                                 alterado_login 
                           from ano_turma 
                           where not excluido
                               and ano_letivo = @anoLetivo 

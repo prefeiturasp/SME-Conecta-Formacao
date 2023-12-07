@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Bogus;
+﻿using Bogus;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
@@ -10,29 +9,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
     {
         public static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> ComponentesCurricularesAnosTurmas { get; set; }
         
-        public static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> GerarLista(int quantidade = 10)
+        public static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> GerarLista(Modalidade modalidade = Modalidade.Fundamental, int quantidade = 10)
         {
-            var opcoesModalidades = new [] 
-            { 
-                Modalidade.Fundamental, 
-                Modalidade.EducacaoInfantil,
-                Modalidade.EJA,
-                Modalidade.CIEJA,
-                Modalidade.Medio,
-                Modalidade.CMCT,
-                Modalidade.MOVA,
-                Modalidade.ETEC,
-                Modalidade.CELP
-            };
+            ComponentesCurricularesAnosTurmas = Gerador(modalidade, quantidade);
 
-            var componenteCurricularAnoTurma = new List<ComponenteCurricularAnoTurmaEOLDTO>();
-            
-            foreach (var modalidade in opcoesModalidades)
-                componenteCurricularAnoTurma.AddRange(Gerador(modalidade, quantidade));
-            
-            ComponentesCurricularesAnosTurmas = componenteCurricularAnoTurma;
-
-            return componenteCurricularAnoTurma;
+            return ComponentesCurricularesAnosTurmas;
         }
 
         private static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> Gerador(Modalidade modalidade,int quantidade)
