@@ -185,6 +185,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             AuditoriaFaker(faker);
             return faker.Generate(quantidade);
         }
+
         public static IEnumerable<PropostaEncontroData> GerarPropostaEncontroDatas(long propostaEncontroId)
         {
             var quantidade = new Randomizer().Number(1, 9);
@@ -275,6 +276,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
                 yield return turma;
             }
+        }
+
+        public static IEnumerable<PropostaTurma> GerarTurmas(long propostaId, short quantidadeTurmas)
+        {
+            var faker = new Faker<PropostaTurma>();
+            faker.RuleFor(x => x.PropostaId, propostaId);
+            faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
+            AuditoriaFaker(faker);
+            return faker.Generate(quantidadeTurmas);
         }
     }
 }

@@ -118,6 +118,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
                 SituacaoProposta.Cadastrada, quantidadeTurmas: proposta.QuantidadeTurmas);
 
+            propostaDTO.Turmas.FirstOrDefault().Id = proposta.Turmas.FirstOrDefault().Id;
+
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
 
             // act 

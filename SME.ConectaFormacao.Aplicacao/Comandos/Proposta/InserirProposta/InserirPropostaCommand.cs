@@ -63,6 +63,10 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotEmpty()
                 .WithMessage("É necessário informar a quantidade de vagas por turma para inserir a proposta");
 
+            RuleFor(f => f.PropostaDTO.Turmas)
+                .NotEmpty()
+                .WithMessage("É necessário informar a turma para alterar a proposta");
+
             RuleFor(f => f.PropostaDTO.Justificativa)
                 .NotEmpty()
                 .WithMessage("É necessário informar a justificativa para inserir a proposta");

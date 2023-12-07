@@ -114,6 +114,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             
             CreateMap<Ano, RetornoListagemTodosDTO>().ReverseMap();
             CreateMap<ComponenteCurricular, RetornoListagemTodosDTO>().ReverseMap();
+
+            CreateMap<PropostaTurma,  PropostaTurmaDTO>().ReverseMap();
         }
     }
 }
