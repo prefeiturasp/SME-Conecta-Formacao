@@ -75,9 +75,9 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase : C
 
     private AnoTurma ObterAno(IEnumerable<AnoTurma> anosConecta, ComponenteCurricularAnoTurmaEOLDTO componenteEAno, int anoLetivo)
     {
-        var anoRetornado = anosConecta.Where(a=> a.CodigoEOL.Equals(componenteEAno.CodigoAnoTurma)  
-                                   && a.AnoLetivo == anoLetivo
-                                   && a.Modalidade == componenteEAno.Modalidade);
+        var anoRetornado = anosConecta.Where(a=> (a.CodigoEOL.EstaPreenchido() && a.CodigoEOL.Equals(componenteEAno.CodigoAnoTurma))  
+                                                 && a.AnoLetivo == anoLetivo
+                                                 && a.Modalidade == componenteEAno.Modalidade);
         return anoRetornado.Any() ? anoRetornado.FirstOrDefault() : default;
     }
 }

@@ -35,5 +35,15 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             var tamanhoString = str.Length;
             return tamanhoString > limite ? str.Substring(0,limite) : str;
         }
+        
+        public static bool EstaPreenchido(this string str)
+        {
+            return !string.IsNullOrEmpty(str);
+        }
+        
+        public static bool NaoEstaPreenchido(this string str)
+        {
+            return string.IsNullOrEmpty(str);
+        }
     }
 }
