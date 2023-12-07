@@ -87,7 +87,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
                 foreach (var encontro in encontros)
                 {
-                    var encontroTurmas = PropostaMock.GerarPropostaEncontroTurmas(encontro.Id, proposta.QuantidadeTurmas.GetValueOrDefault());
+                    var encontroTurmas = PropostaMock.GerarPropostaEncontroTurmas(encontro.Id, turmas);
                     await InserirNaBase(encontroTurmas);
                     encontro.Turmas = encontroTurmas;
 
@@ -113,7 +113,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 {
                     await InserirNaBase(tutor);
 
-                    var tutorTurmas = PropostaMock.GerarTutorTurmas(tutor.Id, proposta.QuantidadeTurmas.GetValueOrDefault());
+                    var tutorTurmas = PropostaMock.GerarTutorTurmas(tutor.Id, turmas);
                     await InserirNaBase(tutorTurmas);
 
                     tutor.Turmas = tutorTurmas;
@@ -129,7 +129,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 {
                     await InserirNaBase(regente);
 
-                    var regenteTurmas = PropostaMock.GerarRegenteTurmas(regente.Id, proposta.QuantidadeTurmas.GetValueOrDefault());
+                    var regenteTurmas = PropostaMock.GerarRegenteTurmas(regente.Id, turmas);
                     await InserirNaBase(regenteTurmas);
 
                     regente.Turmas = regenteTurmas;
