@@ -18,23 +18,23 @@ public class AlterarComponenteCurricularCommand : IRequest<bool>
             {
                 RuleFor(f => f.ComponenteCurricular)
                     .NotNull()
-                    .WithMessage("É necessário informar o componente curricular para a inserir o componente curricular");
+                    .WithMessage("É necessário informar o componente curricular para atualizar o componente curricular");
                     
                 RuleFor(f => f.ComponenteCurricular.AnoTurmaId)
                     .NotNull()
-                    .WithMessage("É necessário informar o identificador do ano da turma para a inserir o componente curricular");
+                    .WithMessage("É necessário informar o identificador do ano da turma para atualizar o componente curricular");
                 
                 RuleFor(f => f.ComponenteCurricular.CodigoEOL)
                     .NotNull()
-                    .WithMessage("É necessário informar o código eol para a inserir o componente curricular");
+                    .WithMessage("É necessário informar o código eol para atualizar o componente curricular");
                 
                 RuleFor(f => f.ComponenteCurricular.Nome)
                     .NotNull()
-                    .WithMessage("É necessário informar o nome para a inserir o componente curricular");
+                    .WithMessage("É necessário informar o nome para atualizar o componente curricular");
                 
                 RuleFor(f => f.ComponenteCurricular.Id)
                     .GreaterThan(0)
-                    .WithMessage("É necessário informar o identificador do componente curricular no processo de atualização de componente curricular");
+                    .WithMessage("É necessário informar o identificador do componente curricular para atualizar o componente curricular");
             }
     }
 }
