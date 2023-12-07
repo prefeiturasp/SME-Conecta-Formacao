@@ -54,6 +54,10 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 await _mediator.Send(new SalvarCriterioCertificacaoCommand(request.Id, propostaDepois.CriterioCertificacao), cancellationToken);
 
+                await _mediator.Send(new SalvarPropostaDreCommand(request.Id, propostaDepois.Dres), cancellationToken);
+
+                await _mediator.Send(new SalvarPropostaTurmaCommand(request.Id, propostaDepois.Turmas), cancellationToken);
+
                 if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())
                 {
                     await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(propostaDepois.ArquivoImagemDivulgacaoId), cancellationToken);

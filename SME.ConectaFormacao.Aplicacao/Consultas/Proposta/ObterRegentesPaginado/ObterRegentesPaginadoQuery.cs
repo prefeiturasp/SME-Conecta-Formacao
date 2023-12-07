@@ -3,7 +3,7 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentesPaginado
+namespace SME.ConectaFormacao.Aplicacao.Consultas
 {
     public class ObterRegentesPaginadoQuery : IRequest<PaginacaoResultadoDTO<PropostaRegenteDTO>>
     {

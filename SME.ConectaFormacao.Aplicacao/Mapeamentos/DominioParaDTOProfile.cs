@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Base;
 using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
 using SME.ConectaFormacao.Aplicacao.Dtos.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
@@ -48,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PalavraChave, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
 
-            CreateMap<Dre, RetornoListagemDTO>()
+            CreateMap<Dre, DreDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
 
             CreateMap<Dre, DreNomeAbreviacaoDTO>().ReverseMap();
@@ -94,18 +95,19 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<PropostaRegente, PropostaRegenteDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
-                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => "Turma " + x.Turma))))
+                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
                 .ReverseMap();
 
             CreateMap<PropostaTutor, PropostaTutorDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
-                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => "Turma " + x.Turma))))
+                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
                 .ReverseMap();
 
             CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>().ReverseMap();
             CreateMap<PropostaEncontroData, PropostaEncontroDataDTO>().ReverseMap();
             CreateMap<PropostaRegenteTurma, PropostaRegenteTurmaDTO>().ReverseMap();
             CreateMap<PropostaTutorTurma, PropostaTutorTurmaDTO>().ReverseMap();
+            CreateMap<PropostaDre, PropostaDreDTO>().ReverseMap();
 
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
@@ -115,6 +117,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<AnoTurma, RetornoListagemTodosDTO>().ReverseMap();
             CreateMap<AnoTurma, AnoTurmaDTO>().ReverseMap();
             CreateMap<ComponenteCurricular, RetornoListagemTodosDTO>().ReverseMap();
+
+            CreateMap<PropostaTurma,  PropostaTurmaDTO>().ReverseMap();
+
+            CreateMap<PropostaTurma, RetornoListagemDTO>()
+                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome));
             CreateMap<ComponenteCurricular, ComponenteCurricularDTO>().ReverseMap();
             CreateMap<AnoTurma, ComponenteCurricularAnoTurmaEOLDTO>()
                 .ForMember(dest => dest.CodigoAnoTurma, opt => opt.MapFrom(o => o.CodigoEOL))

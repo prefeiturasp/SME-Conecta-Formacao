@@ -13,21 +13,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             var quantidade = new Randomizer().Number(1, quantidadeTurmas);
 
             for (short i = 1; i <= quantidade; i++)
-                yield return new PropostaEncontroTurmaDTO { Turma = i };
+                yield return new PropostaEncontroTurmaDTO { TurmaId = i };
         }
         private static IEnumerable<PropostaRegenteTurmaDTO> GerarPropostaRegenteTurmas(int quantidadeTurmas)
         {
             var quantidade = new Randomizer().Number(1, quantidadeTurmas);
 
             for (short i = 1; i <= quantidade; i++)
-                yield return new PropostaRegenteTurmaDTO { Turma = i };
+                yield return new PropostaRegenteTurmaDTO { TurmaId = i };
         }
         private static IEnumerable<PropostaTutorTurmaDTO> GerarPropostaTutorTurmas(int quantidadeTurmas)
         {
             var quantidade = new Randomizer().Number(1, quantidadeTurmas);
 
             for (short i = 1; i <= quantidade; i++)
-                yield return new PropostaTutorTurmaDTO { Turma = i };
+                yield return new PropostaTutorTurmaDTO { TurmaId = i };
         }
 
         private static IEnumerable<PropostaEncontroDataDTO> GerarPropostaEncontroDatas()
@@ -92,6 +92,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         private static Faker<PropostaDTO> Gerador(
             TipoFormacao tipoFormacao,
             Formato formato,
+            IEnumerable<PropostaDreDTO> dres,
             IEnumerable<PropostaPublicoAlvoDTO> propostaPublicoAlvos,
             IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncaoEspecificas,
             IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos,
@@ -103,17 +104,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             long? arquivoImagemDivulgacaoId,
             short? quantidadeTurmas)
         {
+
+            quantidadeTurmas = (short?)(quantidadeTurmas ?? new Random().Next(1, 99));
+
             var faker = new Faker<PropostaDTO>();
             faker.RuleFor(x => x.FormacaoHomologada, f => f.PickRandom<FormacaoHomologada>());
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
             faker.RuleFor(x => x.Formato, formato);
             faker.RuleFor(x => x.TipoInscricao, f => f.PickRandom<TipoInscricao>());
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
+            faker.RuleFor(x => x.Dres, f => new PropostaDreDTO[] { f.PickRandom(dres) });
             faker.RuleFor(x => x.PublicosAlvo, f => new PropostaPublicoAlvoDTO[] { f.PickRandom(propostaPublicoAlvos) });
             faker.RuleFor(x => x.FuncoesEspecificas, f => new PropostaFuncaoEspecificaDTO[] { f.PickRandom(propostaFuncaoEspecificas) });
             faker.RuleFor(x => x.CriteriosValidacaoInscricao, f => new PropostaCriterioValidacaoInscricaoDTO[] { f.PickRandom(propostaCriterioValidacaoInscricaos) });
             faker.RuleFor(x => x.VagasRemanecentes, f => new PropostaVagaRemanecenteDTO[] { f.PickRandom(propostaVagaRemanecentes) });
-            faker.RuleFor(x => x.QuantidadeTurmas, f => quantidadeTurmas.HasValue ? quantidadeTurmas.Value : f.Random.Short(1, 99));
+            faker.RuleFor(x => x.QuantidadeTurmas, quantidadeTurmas);
             faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 99));
             faker.RuleFor(x => x.PalavrasChaves, f => palavrasChaves.Take(5)); //Melhorar isso
             faker.RuleFor(x => x.Justificativa, f => f.Lorem.Sentence(100));
@@ -137,9 +142,19 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             if (arquivoImagemDivulgacaoId.HasValue)
                 faker.RuleFor(x => x.ArquivoImagemDivulgacaoId, arquivoImagemDivulgacaoId);
 
+            faker.RuleFor(x => x.Turmas, GerarPropostaTurmaDTO(quantidadeTurmas.GetValueOrDefault()));
+
             faker.RuleFor(x => x.Situacao, situacao);
 
             return faker;
+        }
+
+        private static IEnumerable<PropostaTurmaDTO> GerarPropostaTurmaDTO(short quantidadeTurmas)
+        {
+            var faker = new Faker<PropostaTurmaDTO>();
+            faker.RuleFor(x => x.Nome, f => f.Company.CompanySuffix());
+
+            return faker.Generate(quantidadeTurmas);
         }
 
 
@@ -175,28 +190,28 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         {
             var retorno = new List<PropostaRegenteTurma>();
             foreach (var regenteTurma in regenteTurmas)
-                retorno.Add(new PropostaRegenteTurma() { Turma = regenteTurma.Turma, PropostaRegenteId = propostaRegenteId });
+                retorno.Add(new PropostaRegenteTurma() { TurmaId = regenteTurma.TurmaId, PropostaRegenteId = propostaRegenteId });
             return retorno;
         }
         internal static IEnumerable<PropostaTutorTurma> GeraPropostaTutorTurmaValida(long propostaTutorId, IEnumerable<PropostaTutorTurmaDTO> tutorTurmas)
         {
             var retorno = new List<PropostaTutorTurma>();
             foreach (var tutorTurma in tutorTurmas)
-                retorno.Add(new PropostaTutorTurma() { Turma = tutorTurma.Turma, PropostaTutorId = propostaTutorId });
+                retorno.Add(new PropostaTutorTurma() { TurmaId = tutorTurma.TurmaId, PropostaTutorId = propostaTutorId });
             return retorno;
         }
         internal static IEnumerable<PropostaRegenteTurmaDTO> GeraPropostaRegenteTurmaDTOValida(IEnumerable<PropostaRegenteTurma> regenteTurmas)
         {
             var retorno = new List<PropostaRegenteTurmaDTO>();
             foreach (var regenteTurma in regenteTurmas)
-                retorno.Add(new PropostaRegenteTurmaDTO() { Turma = regenteTurma.Turma });
+                retorno.Add(new PropostaRegenteTurmaDTO() { TurmaId = regenteTurma.TurmaId });
             return retorno;
         }
         internal static IEnumerable<PropostaTutorTurmaDTO> GeraPropostaTutorTurmaDTOValida(IEnumerable<PropostaTutorTurma> tutorTurmas)
         {
             var retorno = new List<PropostaTutorTurmaDTO>();
             foreach (var tutorTurma in tutorTurmas)
-                retorno.Add(new PropostaTutorTurmaDTO() { Turma = tutorTurma.Turma });
+                retorno.Add(new PropostaTutorTurmaDTO() { TurmaId = tutorTurma.TurmaId });
             return retorno;
         }
 
@@ -209,6 +224,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         internal static PropostaDTO GerarPropostaDTOValida(
             TipoFormacao tipoFormacao,
             Formato formato,
+            IEnumerable<PropostaDreDTO> dres,
             IEnumerable<PropostaPublicoAlvoDTO> propostaPublicoAlvos,
             IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncaoEspecificas,
             IEnumerable<PropostaCriterioValidacaoInscricaoDTO> propostaCriterioValidacaoInscricaos,
@@ -217,7 +233,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             SituacaoProposta situacao, bool gerarFuncaoEspecificaOutros = false, bool gerarCriterioValidacaoInscricaoOutros = false,
             long? arquivoImagemDivulgacaoId = null, short? quantidadeTurmas = null)
         {
-            var propostaDTO = Gerador(tipoFormacao, formato, propostaPublicoAlvos, propostaFuncaoEspecificas,
+            var propostaDTO = Gerador(tipoFormacao, formato, dres, propostaPublicoAlvos, propostaFuncaoEspecificas,
                 propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, propostaPalavrasChaves,
                 situacao, gerarFuncaoEspecificaOutros,
                 gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId, quantidadeTurmas).Generate();

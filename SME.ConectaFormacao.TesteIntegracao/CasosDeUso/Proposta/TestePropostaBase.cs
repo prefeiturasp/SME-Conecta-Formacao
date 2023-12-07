@@ -73,6 +73,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.CriteriosValidacaoInscricao = criterios;
             }
 
+            var turmas = PropostaMock.GerarTurmas(proposta.Id, proposta.QuantidadeTurmas.GetValueOrDefault());
+            if (turmas != null)
+            {
+                await InserirNaBase(turmas);
+                proposta.Turmas = turmas;
+            }
+
             var encontros = PropostaMock.GerarEncontros(proposta.Id);
             if (encontros != null)
             {
@@ -80,9 +87,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
                 foreach (var encontro in encontros)
                 {
-                    var turmas = PropostaMock.GerarPropostaEncontroTurmas(encontro.Id, proposta.QuantidadeTurmas.GetValueOrDefault());
-                    await InserirNaBase(turmas);
-                    encontro.Turmas = turmas;
+                    var encontroTurmas = PropostaMock.GerarPropostaEncontroTurmas(encontro.Id, turmas);
+                    await InserirNaBase(encontroTurmas);
+                    encontro.Turmas = encontroTurmas;
 
                     var datas = PropostaMock.GerarPropostaEncontroDatas(encontro.Id);
                     await InserirNaBase(datas);
@@ -106,10 +113,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 {
                     await InserirNaBase(tutor);
 
-                    var turmas = PropostaMock.GerarTutorTurmas(tutor.Id, proposta.QuantidadeTurmas.Value);
-                    await InserirNaBase(turmas);
+                    var tutorTurmas = PropostaMock.GerarTutorTurmas(tutor.Id, turmas);
+                    await InserirNaBase(tutorTurmas);
 
-                    tutor.Turmas = turmas;
+                    tutor.Turmas = tutorTurmas;
                 }
 
                 proposta.Tutores = tutores;
@@ -122,10 +129,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 {
                     await InserirNaBase(regente);
 
-                    var turmas = PropostaMock.GerarRegenteTurmas(regente.Id, proposta.QuantidadeTurmas.Value);
-                    await InserirNaBase(turmas);
+                    var regenteTurmas = PropostaMock.GerarRegenteTurmas(regente.Id, turmas);
+                    await InserirNaBase(regenteTurmas);
 
-                    regente.Turmas = turmas;
+                    regente.Turmas = regenteTurmas;
                 }
 
                 proposta.Regentes = regentes;
