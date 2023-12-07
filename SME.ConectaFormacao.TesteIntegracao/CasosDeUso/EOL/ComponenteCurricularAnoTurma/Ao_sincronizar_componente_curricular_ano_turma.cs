@@ -121,11 +121,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             }
         }
 
-        private void GerarAuditoria<T>(T ano) where T: EntidadeBaseAuditavel
+        private void GerarAuditoria<T>(T entidade) where T: EntidadeBaseAuditavel
         {
-            ano.CriadoEm = DateTimeExtension.HorarioBrasilia();
-            ano.CriadoPor = "Sistema";
-            ano.CriadoLogin = "Sistema";
+            entidade.CriadoEm = DateTimeExtension.HorarioBrasilia();
+            entidade.CriadoPor = "Sistema";
+            entidade.CriadoLogin = "Sistema";
         }
     }
 }
