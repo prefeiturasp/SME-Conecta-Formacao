@@ -19,6 +19,6 @@ public class ObterComponentesCurricularesEAnoTurmaEOLQueryValidator : AbstractVa
     {
         RuleFor(x => x.AnoLetivo)
             .NotEmpty()
-            .WithMessage("É necessário informar o ano letivo para obter os componentes curriculares do EOL");
+            .WithMessage("É necessário informar o ano letivo para obter os componentes curriculares dos anos das turmas do EOL");
     }
 }
