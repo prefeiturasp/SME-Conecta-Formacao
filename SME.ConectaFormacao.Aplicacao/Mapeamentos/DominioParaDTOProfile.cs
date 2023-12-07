@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Ano;
+using SME.ConectaFormacao.Aplicacao.Dtos.AnoTurma;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Base;
@@ -112,17 +112,17 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<PropostaMovimentacao, PropostaMovimentacaoDTO>().ReverseMap();
             
-            CreateMap<Ano, RetornoListagemTodosDTO>().ReverseMap();
-            CreateMap<Ano, AnoDTO>().ReverseMap();
+            CreateMap<AnoTurma, RetornoListagemTodosDTO>().ReverseMap();
+            CreateMap<AnoTurma, AnoTurmaDTO>().ReverseMap();
             CreateMap<ComponenteCurricular, RetornoListagemTodosDTO>().ReverseMap();
             CreateMap<ComponenteCurricular, ComponenteCurricularDTO>().ReverseMap();
-            CreateMap<Ano, ComponenteCurricularEOLDTO>()
-                .ForMember(dest => dest.AnoTurma, opt => opt.MapFrom(o => o.CodigoEOL))
-                .ForMember(dest => dest.SerieEnsino, opt => opt.MapFrom(o => o.Descricao))
+            CreateMap<AnoTurma, ComponenteCurricularAnoTurmaEOLDTO>()
+                .ForMember(dest => dest.CodigoAnoTurma, opt => opt.MapFrom(o => o.CodigoEOL))
+                .ForMember(dest => dest.DescricaoSerieEnsino, opt => opt.MapFrom(o => o.Descricao))
                 .ReverseMap();
-            CreateMap<ComponenteCurricular, ComponenteCurricularEOLDTO>()
-                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(o => o.CodigoEOL))
-                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome))
+            CreateMap<ComponenteCurricular, ComponenteCurricularAnoTurmaEOLDTO>()
+                .ForMember(dest => dest.CodigoComponenteCurricular, opt => opt.MapFrom(o => o.CodigoEOL))
+                .ForMember(dest => dest.DescricaoComponenteCurricular, opt => opt.MapFrom(o => o.Nome))
                 .ReverseMap();
         }
     }

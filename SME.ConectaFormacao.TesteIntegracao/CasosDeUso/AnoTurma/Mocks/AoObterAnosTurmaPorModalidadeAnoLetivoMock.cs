@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks
 {
-    public static class AoObterAnosPorModalidadeAnoLetivoMock
+    public static class AoObterAnosTurmaPorModalidadeAnoLetivoMock
     {
         public static ModalidadeAnoLetivoFiltrosDTO ModalidadeAnoLetivoFiltrosDTO { get; set; }
 

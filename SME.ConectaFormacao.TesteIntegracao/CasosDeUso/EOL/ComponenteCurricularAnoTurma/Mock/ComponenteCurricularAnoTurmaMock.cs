@@ -8,9 +8,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
 {
     public static class ComponenteCurricularAnoTurmaMock
     {
-        public static IEnumerable<ComponenteCurricularEOLDTO> ComponentesCurricularesAnosTurmas { get; set; }
+        public static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> ComponentesCurricularesAnosTurmas { get; set; }
         
-        public static IEnumerable<ComponenteCurricularEOLDTO> GerarLista(int quantidade = 10)
+        public static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> GerarLista(int quantidade = 10)
         {
             var opcoesModalidades = new [] 
             { 
@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
                 Modalidade.CELP
             };
 
-            var componenteCurricularAnoTurma = new List<ComponenteCurricularEOLDTO>();
+            var componenteCurricularAnoTurma = new List<ComponenteCurricularAnoTurmaEOLDTO>();
             
             foreach (var modalidade in opcoesModalidades)
                 componenteCurricularAnoTurma.AddRange(Gerador(modalidade, quantidade));
@@ -35,18 +35,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             return componenteCurricularAnoTurma;
         }
 
-        private static IEnumerable<ComponenteCurricularEOLDTO> Gerador(Modalidade modalidade,int quantidade)
+        private static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> Gerador(Modalidade modalidade,int quantidade)
         {
             var codigoComponente = 1;
             var serieEnsino = 1000;
             var anoTurma = 0;
 
-            var faker = new Faker<ComponenteCurricularEOLDTO>();
+            var faker = new Faker<ComponenteCurricularAnoTurmaEOLDTO>();
 
-            faker.RuleFor(x => x.Codigo, f => codigoComponente++);
-            faker.RuleFor(x => x.Descricao, f => f.Lorem.Text().Limite(70));
-            faker.RuleFor(x => x.AnoTurma, f => anoTurma++.GerarAte(9));
-            faker.RuleFor(x => x.SerieEnsino, f => $"{f.Random.Int(min: 1, max: 9)}º {f.Lorem.Slug()}");
+            faker.RuleFor(x => x.CodigoComponenteCurricular, f => codigoComponente++);
+            faker.RuleFor(x => x.DescricaoComponenteCurricular, f => f.Lorem.Text().Limite(70));
+            faker.RuleFor(x => x.CodigoAnoTurma, f => anoTurma++.GerarAte(9));
+            faker.RuleFor(x => x.DescricaoSerieEnsino, f => $"{f.Random.Int(min: 1, max: 9)}º {f.Lorem.Slug()}");
             faker.RuleFor(x => x.CodigoSerieEnsino, f => serieEnsino++);
             faker.RuleFor(x => x.Modalidade, modalidade);
 

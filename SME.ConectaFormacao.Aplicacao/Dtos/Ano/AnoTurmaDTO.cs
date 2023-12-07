@@ -1,8 +1,8 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
 
-namespace SME.ConectaFormacao.Aplicacao.Dtos.Ano;
+namespace SME.ConectaFormacao.Aplicacao.Dtos.AnoTurma;
 
-public class AnoDTO
+public class AnoTurmaDTO
 {
     public long Id { get; set; }
     public string CodigoEOL { get; set; }

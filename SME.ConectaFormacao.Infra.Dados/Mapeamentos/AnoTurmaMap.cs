@@ -2,11 +2,11 @@
 
 namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 {
-    public class AnoMap : BaseMapAuditavel<Ano>
+    public class AnoTurmaMap : BaseMapAuditavel<AnoTurma>
     {
-        public AnoMap()
+        public AnoTurmaMap()
         {
-            ToTable("ano");
+            ToTable("ano_turma");
 
             Map(c => c.CodigoEOL).ToColumn("codigo_eol");
             Map(c => c.Descricao).ToColumn("descricao");

@@ -4,8 +4,8 @@ using SME.ConectaFormacao.Dominio.Repositorios;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
-    public interface IRepositorioAno : IRepositorioBaseAuditavel<Ano>
+    public interface IRepositorioAnoTurma : IRepositorioBaseAuditavel<AnoTurma>
     {
-        Task<IEnumerable<Ano>> ObterAnosPorModalidadeAnoLetivo(Modalidade modalidade, int anoLetivo);
+        Task<IEnumerable<AnoTurma>> ObterAnosPorModalidadeAnoLetivo(Modalidade modalidade, int anoLetivo);
     }
 }

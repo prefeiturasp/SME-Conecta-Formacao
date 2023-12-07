@@ -8,17 +8,17 @@ namespace SME.ConectaFormacao.Aplicacao
     public class ObterAnosPorModalidadeAnoLetivoQueryHandler : IRequestHandler<ObterAnosPorModalidadeAnoLetivoQuery, IEnumerable<RetornoListagemTodosDTO>>
     {
         private readonly IMapper _mapper;
-        private readonly IRepositorioAno _repositorioAno;
+        private readonly IRepositorioAnoTurma _repositorioAnoTurma;
         
-        public ObterAnosPorModalidadeAnoLetivoQueryHandler(IMapper mapper, IRepositorioAno repositorioAno)
+        public ObterAnosPorModalidadeAnoLetivoQueryHandler(IMapper mapper, IRepositorioAnoTurma repositorioAnoTurma)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _repositorioAno = repositorioAno ?? throw new ArgumentNullException(nameof(repositorioAno));
+            _repositorioAnoTurma = repositorioAnoTurma ?? throw new ArgumentNullException(nameof(repositorioAnoTurma));
         }
 
         public async Task<IEnumerable<RetornoListagemTodosDTO>> Handle(ObterAnosPorModalidadeAnoLetivoQuery request, CancellationToken cancellationToken)
         {
-            var anos = await _repositorioAno.ObterAnosPorModalidadeAnoLetivo(request.Modalidade, request.AnoLetivo);
+            var anos = await _repositorioAnoTurma.ObterAnosPorModalidadeAnoLetivo(request.Modalidade, request.AnoLetivo);
             return _mapper.Map<IEnumerable<RetornoListagemTodosDTO>>(anos);
         }
     }

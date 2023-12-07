@@ -7,24 +7,24 @@ namespace SME.ConectaFormacao.Aplicacao;
 
 public class TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommand : IRequest<bool>
 {
-    public TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommand(Ano ano, ComponenteCurricular componenteCurricular, bool mudouAnoTurma = true, bool mudouComponente = true)
+    public TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommand(AnoTurma anoTurma, ComponenteCurricular componenteCurricular, bool mudouAnoTurma = true, bool mudouComponente = true)
     {
         ComponenteCurricular = componenteCurricular;
-        Ano = ano;
+        AnoTurma = anoTurma;
         MudouAnoTurma  = mudouAnoTurma;
         MudouComponente = mudouComponente;
     }
 
     public bool MudouAnoTurma { get; set; }
     public bool MudouComponente { get; set; }
-    public Ano Ano { get; set; }
+    public AnoTurma AnoTurma { get; set; }
     public ComponenteCurricular ComponenteCurricular { get; set; }
 
     public class TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommandValidator : AbstractValidator<TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommand>
     {
         public TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommandValidator()
         {
-            RuleFor(f => f.Ano)
+            RuleFor(f => f.AnoTurma)
                 .NotNull()
                 .WithMessage("É necessário informar o ano para a realizar a sincronização de Anos e Componentes Curriculares");
             

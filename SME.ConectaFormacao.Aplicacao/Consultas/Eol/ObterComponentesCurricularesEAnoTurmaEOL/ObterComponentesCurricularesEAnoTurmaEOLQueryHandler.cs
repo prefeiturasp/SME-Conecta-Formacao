@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
-public class ObterComponentesCurricularesEAnoTurmaEOLQueryHandler : IRequestHandler<ObterComponentesCurricularesEAnoTurmaEOLQuery, IEnumerable<ComponenteCurricularEOLDTO>>
+public class ObterComponentesCurricularesEAnoTurmaEOLQueryHandler : IRequestHandler<ObterComponentesCurricularesEAnoTurmaEOLQuery, IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>>
 {
     private readonly IServicoEol _servicoEol;
 
@@ -13,7 +13,7 @@ public class ObterComponentesCurricularesEAnoTurmaEOLQueryHandler : IRequestHand
         _servicoEol = servicoEol ?? throw new ArgumentNullException(nameof(servicoEol));
     }
 
-    public async Task<IEnumerable<ComponenteCurricularEOLDTO>> Handle(ObterComponentesCurricularesEAnoTurmaEOLQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> Handle(ObterComponentesCurricularesEAnoTurmaEOLQuery request, CancellationToken cancellationToken)
     {
         return await _servicoEol.ObterComponentesCurricularesEAnoPorAnoLetivo(request.AnoLetivo);
     }

@@ -41,15 +41,15 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         }
 
-        public async Task<IEnumerable<ComponenteCurricularEOLDTO>> ObterComponentesCurricularesEAnoPorAnoLetivo(int anoLetivo)
+        public async Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> ObterComponentesCurricularesEAnoPorAnoLetivo(int anoLetivo)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_POR_ANO_LETIVO, anoLetivo));
+            var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO, anoLetivo));
             
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.NENHUM_COMPONENTE_CURRICULAR_DO_EOL_FOI_LOCALIZADOS, resposta.StatusCode);
             
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<ComponenteCurricularEOLDTO[]>().ToList();
+            return json.JsonParaObjeto<ComponenteCurricularAnoTurmaEOLDTO[]>().ToList();
 
         }
     }

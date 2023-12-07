@@ -18,8 +18,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<RetornoListagemTodosDTO>> Handle(ObterComponentesCurricularesEAnoTurmaPorModalidadeAnoIdLetivoAnoTurmaQuery request, CancellationToken cancellationToken)
         {
-            var anos = await _repositorioComponenteCurricular.ObterComponentesCurricularesPorModalidadeAnoLetivoAno(request.Modalidade, request.AnoLetivo, request.AnoId);
-            return _mapper.Map<IEnumerable<RetornoListagemTodosDTO>>(anos);
+            var anosTurma = await _repositorioComponenteCurricular.ObterComponentesCurricularesPorModalidadeAnoLetivoAno(request.Modalidade, request.AnoLetivo, request.AnoTurmaId);
+            return _mapper.Map<IEnumerable<RetornoListagemTodosDTO>>(anosTurma);
         }
     }
 }

@@ -5,14 +5,14 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
-    public class AnoMock : BaseMock
+    public class AnoTurmaMock : BaseMock
     {
-        private static Faker<Ano> Gerador(Modalidade modalidade = Modalidade.Fundamental, bool todos = false)
+        private static Faker<AnoTurma> Gerador(Modalidade modalidade = Modalidade.Fundamental, bool todos = false)
         {
             var codigoEol = 1;
             var codigoSerieEnsino = 1000;
                 
-            var faker = new Faker<Ano>();
+            var faker = new Faker<AnoTurma>();
             faker.RuleFor(dest => dest.CodigoEOL, f => codigoEol++.ToString());
             faker.RuleFor(dest => dest.Descricao, f => f.Lorem.Text().Limite(70));
             faker.RuleFor(dest => dest.CodigoSerieEnsino, f=> codigoSerieEnsino++);
@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker;
         }
 
-        public static IEnumerable<Ano> GerarAno(int quantidade, bool todos = false)
+        public static IEnumerable<AnoTurma> GerarAnoTurma(int quantidade, bool todos = false)
         {
             var opcoesModalidades = new [] 
             { 
@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
                 Modalidade.CELP
             };
 
-            var anos = new List<Ano>();
+            var anos = new List<AnoTurma>();
             
             foreach (var modalidade in opcoesModalidades)
                 anos.AddRange(Gerador(modalidade,todos:todos).Generate(quantidade));
@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return anos;
         }
 
-        public static Ano GerarAno(bool todos, Modalidade modalidade = Modalidade.Fundamental)
+        public static AnoTurma GerarAno(bool todos, Modalidade modalidade = Modalidade.Fundamental)
         {
             return Gerador(modalidade,todos).Generate();
         }

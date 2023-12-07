@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks
 {
-    public static class AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock
+    public static class AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoTurmaMock
     {
         public static ComponenteCurricularEAnoTurmaFiltrosDTO ComponenteCurricularEAnoTurmaFiltrosDto { get; set; }
 
@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Grupo.Mocks
             var faker = new Faker<ComponenteCurricularEAnoTurmaFiltrosDTO>("pt_BR");
             faker.RuleFor(x => x.Modalidade, f=> modalidade);
             faker.RuleFor(x => x.AnoLetivo, f => DateTimeExtension.HorarioBrasilia().Year);
-            faker.RuleFor(x => x.AnoId, f=> f.PickRandom(1,9));
+            faker.RuleFor(x => x.AnoTurmaId, f=> f.PickRandom(1,9));
             ComponenteCurricularEAnoTurmaFiltrosDto = faker.Generate();
         }
     }

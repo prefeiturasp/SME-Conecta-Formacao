@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso;
-using SME.ConectaFormacao.Aplicacao.Dtos.Ano;
+using SME.ConectaFormacao.Aplicacao.Dtos.AnoTurma;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
@@ -32,37 +32,37 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase : C
             var anoExistente = ObterAno(anosConecta, componenteEAno, anoLetivo);
             if (anoExistente.EhNulo())
             {
-                var ano = _mapper.Map<Ano>(componenteEAno);
+                var ano = _mapper.Map<AnoTurma>(componenteEAno);
                 var componenteCurricular = _mapper.Map<ComponenteCurricular>(componenteEAno);
-                componenteCurricular.AnoId = ano.Id;
+                componenteCurricular.AnoTurmaId = ano.Id;
                 await mediator.Send(new TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommand(ano, componenteCurricular));
             }
             else
             {
                 var mudouAnoTurma = false;
                 var mudouComponente = false;
-                if (!anoExistente.Descricao.Equals(componenteEAno.SerieEnsino) ||
+                if (!anoExistente.Descricao.Equals(componenteEAno.DescricaoSerieEnsino) ||
                     !anoExistente.CodigoSerieEnsino.Equals(componenteEAno.CodigoSerieEnsino))
                 {
-                    anoExistente.Descricao = componenteEAno.SerieEnsino;
+                    anoExistente.Descricao = componenteEAno.DescricaoSerieEnsino;
                     anoExistente.CodigoSerieEnsino = componenteEAno.CodigoSerieEnsino;
                     mudouAnoTurma = true;
                 }
 
-                var componenteCurricular = componentesConecta.FirstOrDefault(w => w.AnoId == anoExistente.Id);
+                var componenteCurricular = componentesConecta.FirstOrDefault(w => w.AnoTurmaId == anoExistente.Id);
 
                 if (componenteCurricular.NaoEhNulo())
                 {
-                    if (!componenteCurricular.Nome.Equals(componenteEAno.Descricao))
+                    if (!componenteCurricular.Nome.Equals(componenteEAno.DescricaoComponenteCurricular))
                     {
-                        componenteCurricular.Nome = componenteEAno.Descricao;
+                        componenteCurricular.Nome = componenteEAno.DescricaoComponenteCurricular;
                         mudouComponente = true;
                     }
                 }
                 else
                 {
                     componenteCurricular = _mapper.Map<ComponenteCurricular>(componenteEAno);
-                    componenteCurricular.AnoId = anoExistente.Id;
+                    componenteCurricular.AnoTurmaId = anoExistente.Id;
                     mudouComponente = true;
                 }
 
@@ -73,9 +73,9 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase : C
         return true;
     }
 
-    private Ano ObterAno(IEnumerable<Ano> anosConecta, ComponenteCurricularEOLDTO componenteEAno, int anoLetivo)
+    private AnoTurma ObterAno(IEnumerable<AnoTurma> anosConecta, ComponenteCurricularAnoTurmaEOLDTO componenteEAno, int anoLetivo)
     {
-        var anoRetornado = anosConecta.Where(a=> a.CodigoEOL.Equals(componenteEAno.AnoTurma)  
+        var anoRetornado = anosConecta.Where(a=> a.CodigoEOL.Equals(componenteEAno.CodigoAnoTurma)  
                                    && a.AnoLetivo == anoLetivo
                                    && a.Modalidade == componenteEAno.Modalidade);
         return anoRetornado.Any() ? anoRetornado.FirstOrDefault() : default;

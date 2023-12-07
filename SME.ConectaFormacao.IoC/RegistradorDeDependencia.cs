@@ -166,7 +166,7 @@ public class RegistradorDeDependencia
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
             config.AddMap(new PropostaDreMap());
-            config.AddMap(new AnoMap());
+            config.AddMap(new AnoTurmaMap());
             config.AddMap(new ComponenteCurricularMap());
 
             config.ForDommel();
@@ -210,7 +210,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
         _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaMovimentacao, RepositorioPropostaMovimentacao>();
-        _serviceCollection.TryAddScoped<IRepositorioAno, RepositorioAno>();
+        _serviceCollection.TryAddScoped<IRepositorioAnoTurma, RepositorioAnoTurmaTurma>();
         _serviceCollection.TryAddScoped<IRepositorioComponenteCurricular, RepositorioComponenteCurricular>();
     }
 

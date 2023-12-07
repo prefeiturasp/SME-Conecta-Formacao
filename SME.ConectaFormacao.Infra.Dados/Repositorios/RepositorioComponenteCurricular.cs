@@ -12,28 +12,28 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorModalidadeAnoLetivoAno(Modalidade modalidade, int anoLetivo, long anoId)
+        public Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorModalidadeAnoLetivoAno(Modalidade modalidade, int anoLetivo, long anoTurmaId)
         {
             var query = $@"select cc.id, 
-                                 cc.ano_id AnoId,
+                                 cc.ano_turma_id AnoTurmaId,
                                  cc.codigo_eol CodigoEOL,
                                  cc.nome,
                                  cc.todos,
                                  cc.ordem 
                           from componente_curricular cc
-                            join ano a on a.id = cc.ano_id
+                            join ano_turma a on a.id = cc.ano_turma_id
                           where not cc.excluido
                               {IncluirFiltroPorModalidade(modalidade)}                              
-                              {IncluirFiltroPorAno(anoId)}                              
+                              {IncluirFiltroPorAno(anoTurmaId)}                              
                               and a.ano_letivo = @anoLetivo 
                               order by cc.ordem ";
 
-            return conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { modalidade, anoLetivo, anoId });
+            return conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { modalidade, anoLetivo, anoTurmaId });
         }
 
-        private string IncluirFiltroPorAno(long anoId)
+        private string IncluirFiltroPorAno(long anoTurmaId)
         {
-            return anoId == 999 ? string.Empty : " and cc.ano_id = @anoId ";
+            return anoTurmaId == 999 ? string.Empty : " and cc.ano_turma_id = @anoTurmaId ";
         }
 
         private string IncluirFiltroPorModalidade(Modalidade modalidade)

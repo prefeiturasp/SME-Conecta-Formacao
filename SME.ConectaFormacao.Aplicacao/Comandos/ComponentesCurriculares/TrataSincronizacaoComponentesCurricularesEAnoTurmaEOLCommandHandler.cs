@@ -10,15 +10,15 @@ namespace SME.ConectaFormacao.Aplicacao;
 public class TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommandHandler : IRequestHandler<TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommand, bool>
 {
     private readonly IRepositorioComponenteCurricular _repositorioComponenteCurricular;
-    private readonly IRepositorioAno _repositorioAno;
+    private readonly IRepositorioAnoTurma _repositorioAnoTurma;
     private readonly IMapper _mapper;
     private readonly ITransacao _transacao;
 
     public TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommandHandler(IRepositorioComponenteCurricular repositorioComponenteCurricular, 
-        IMapper mapper,IRepositorioAno repositorioAno, ITransacao transacao)
+        IMapper mapper,IRepositorioAnoTurma repositorioAnoTurma, ITransacao transacao)
     {
         _repositorioComponenteCurricular = repositorioComponenteCurricular ?? throw new ArgumentNullException(nameof(repositorioComponenteCurricular));
-        _repositorioAno = repositorioAno ?? throw new ArgumentNullException(nameof(repositorioAno));
+        _repositorioAnoTurma = repositorioAnoTurma ?? throw new ArgumentNullException(nameof(repositorioAnoTurma));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
     }
@@ -30,10 +30,10 @@ public class TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommandHandler
         {
             if (request.MudouAnoTurma)
             {
-                if (request.Ano.Id == 0)
-                    request.ComponenteCurricular.Id = await _repositorioAno.Inserir(request.Ano);
+                if (request.AnoTurma.Id == 0)
+                    request.ComponenteCurricular.Id = await _repositorioAnoTurma.Inserir(request.AnoTurma);
                 else
-                    await _repositorioAno.Atualizar(request.Ano);
+                    await _repositorioAnoTurma.Atualizar(request.AnoTurma);
             }
 
             if (request.MudouComponente)

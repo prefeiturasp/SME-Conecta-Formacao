@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular
             return await mediator.Send(new ObterComponentesCurricularesEAnoTurmaPorModalidadeAnoIdLetivoAnoTurmaQuery(
                 componenteCurricularEAnoTurmaFiltrosDto.Modalidade, 
                 componenteCurricularEAnoTurmaFiltrosDto.AnoLetivo, 
-                componenteCurricularEAnoTurmaFiltrosDto.AnoId));
+                componenteCurricularEAnoTurmaFiltrosDto.AnoTurmaId));
         }
     }
 }

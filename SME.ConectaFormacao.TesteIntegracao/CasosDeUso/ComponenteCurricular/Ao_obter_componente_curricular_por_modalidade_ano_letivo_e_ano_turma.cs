@@ -8,68 +8,68 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ComponenteCurricular
 {
-    public class Ao_obter_componente_curricular_por_modalidade_ano_letivo_e_ano : TesteBase
+    public class Ao_obter_componente_curricular_por_modalidade_ano_letivo_e_ano_turma : TesteBase
     {
-        public Ao_obter_componente_curricular_por_modalidade_ano_letivo_e_ano(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_obter_componente_curricular_por_modalidade_ano_letivo_e_ano_turma(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
 
-        [Fact(DisplayName = "Componente Curricular - Deve obter os componentes curriculares por modalidade, ano letivo atual e ano")]
-        public async Task Deve_obter_os_componentes_curriculares_por_modalidade_ano_letivo_e_ano()
+        [Fact(DisplayName = "Componente Curricular - Deve obter os componentes curriculares por modalidade, ano letivo atual e ano turma")]
+        public async Task Deve_obter_os_componentes_curriculares_por_modalidade_ano_letivo_e_ano_turma()
         {
             // arrange 
-            var anos = AnoMock.GerarAno(9);
-            await InserirNaBase(anos);
+            var anosTurma = AnoTurmaMock.GerarAnoTurma(9);
+            await InserirNaBase(anosTurma);
             
-            foreach (var ano in anos)
+            foreach (var anoTurma in anosTurma)
             {
                var componenteCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(9);
                
                foreach (var componenteCurricular in componenteCurriculares)
                {
-                   componenteCurricular.AnoId = ano.Id;
+                   componenteCurricular.AnoTurmaId = anoTurma.Id;
                    await InserirNaBase(componenteCurricular);    
                }
             }
             
-            AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock.Montar(Modalidade.Fundamental);
+            AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoTurmaMock.Montar(Modalidade.Fundamental);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComponentesCurricularesEAnoTurmaPorModalidadeAnoLetivoAnoTurma>();
 
             // act 
-            var filtro = AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock.ComponenteCurricularEAnoTurmaFiltrosDto;
+            var filtro = AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoTurmaMock.ComponenteCurricularEAnoTurmaFiltrosDto;
             var retorno = await casoDeUso.Executar(filtro);
 
             // assert
             var componentesCurricularesInseridos = ObterTodos<Dominio.Entidades.ComponenteCurricular>();
-            retorno.Count().ShouldBe(componentesCurricularesInseridos.Count(c => c.AnoId == filtro.AnoId));
+            retorno.Count().ShouldBe(componentesCurricularesInseridos.Count(c => c.AnoTurmaId == filtro.AnoTurmaId));
         }
         
-        [Fact(DisplayName = "Componente Curricular - Deve obter os componentes curriculares de todas as modalidades, ano letivo atual e todos os anos")]
-        public async Task Deve_obter_os_componentes_curriculares_por_todas_as_modalidades_ano_letivo_e_todos_os_anos()
+        [Fact(DisplayName = "Componente Curricular - Deve obter os componentes curriculares de todas as modalidades, ano letivo atual e todos os anos turma")]
+        public async Task Deve_obter_os_componentes_curriculares_por_todas_as_modalidades_ano_letivo_e_todos_os_anos_turma()
         {
             // arrange 
-            var anos = AnoMock.GerarAno(9);
-            await InserirNaBase(anos);
+            var anosTurma = AnoTurmaMock.GerarAnoTurma(9);
+            await InserirNaBase(anosTurma);
             
-            foreach (var ano in anos)
+            foreach (var anoTurma in anosTurma)
             {
                 var componenteCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(9);
                
                 foreach (var componenteCurricular in componenteCurriculares)
                 {
-                    componenteCurricular.AnoId = ano.Id;
+                    componenteCurricular.AnoTurmaId = anoTurma.Id;
                     await InserirNaBase(componenteCurricular);    
                 }
             }
             
-            AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock.Montar(Modalidade.Fundamental);
+            AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoTurmaMock.Montar(Modalidade.Fundamental);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComponentesCurricularesEAnoTurmaPorModalidadeAnoLetivoAnoTurma>();
 
             // act 
-            var filtro = AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoMock.ComponenteCurricularEAnoTurmaFiltrosDto;
-            filtro.AnoId = 999;
+            var filtro = AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoTurmaMock.ComponenteCurricularEAnoTurmaFiltrosDto;
+            filtro.AnoTurmaId = 999;
             filtro.Modalidade = Modalidade.TODAS;
             var retorno = await casoDeUso.Executar(filtro);
 

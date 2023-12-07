@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
-    public class Ano : EntidadeBaseAuditavel
+    public class AnoTurma : EntidadeBaseAuditavel
     {
         public string CodigoEOL { get; set; }
         public string Descricao { get; set; }

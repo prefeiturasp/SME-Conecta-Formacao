@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
-public class ObterComponentesCurricularesEAnoTurmaEOLQuery : IRequest<IEnumerable<ComponenteCurricularEOLDTO>>
+public class ObterComponentesCurricularesEAnoTurmaEOLQuery : IRequest<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>>
 {
     public ObterComponentesCurricularesEAnoTurmaEOLQuery(int anoLetivo)
     {
