@@ -31,6 +31,23 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { modalidade, anoLetivo, anoTurmaId });
         }
 
+        public Task<IEnumerable<ComponenteCurricular>> ObterPorAnoLetivo(int anoLetivo)
+        {
+            var query = $@"select cc.id, 
+                                 cc.ano_turma_id AnoTurmaId,
+                                 cc.codigo_eol CodigoEOL,
+                                 cc.nome,
+                                 cc.todos,
+                                 cc.ordem 
+                          from componente_curricular cc
+                            join ano_turma a on a.id = cc.ano_turma_id
+                          where not cc.excluido
+                              and a.ano_letivo = @anoLetivo 
+                              order by cc.ordem ";
+
+            return conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { anoLetivo});
+        }
+
         private string IncluirFiltroPorAno(long anoTurmaId)
         {
             return anoTurmaId == 999 ? string.Empty : " and cc.ano_turma_id = @anoTurmaId ";

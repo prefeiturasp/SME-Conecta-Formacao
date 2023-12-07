@@ -7,5 +7,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
     public interface IRepositorioAnoTurma : IRepositorioBaseAuditavel<AnoTurma>
     {
         Task<IEnumerable<AnoTurma>> ObterAnosPorModalidadeAnoLetivo(Modalidade modalidade, int anoLetivo);
+        Task<IEnumerable<AnoTurma>> ObterPorAnoLetivo(int anoLetivo);
     }
 }

@@ -12,6 +12,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public Modalidade Modalidade { get; set; }
         public bool Todos { get; set; }
         public int Ordem { get; set; }
-        public int AnoLetivo { get; set; } = DateTimeExtension.HorarioBrasilia().Year;
+        public int AnoLetivo { get; set; }
     }
 }

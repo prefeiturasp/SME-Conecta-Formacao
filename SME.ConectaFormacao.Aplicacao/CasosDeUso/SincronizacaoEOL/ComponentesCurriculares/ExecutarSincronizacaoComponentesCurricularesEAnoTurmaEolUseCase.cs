@@ -1,7 +1,6 @@
 using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso;
-using SME.ConectaFormacao.Aplicacao.Dtos.AnoTurma;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
@@ -23,61 +22,60 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase : C
         
         var componentesCurricularesEAnoTurmaEOL = await mediator.Send(new ObterComponentesCurricularesEAnoTurmaEOLQuery(anoLetivo));
 
-        var anosConecta = await mediator.Send(new ObterTodosOsAnosQuery()); 
+        var anosTurmaConecta = (await mediator.Send(new ObterTodosOsAnosTurmaQuery(anoLetivo))).ToList(); 
             
-        var componentesConecta = await mediator.Send(new ObterTodosOsComponentesCurricularesQuery());
-
-        foreach (var componenteEAno in componentesCurricularesEAnoTurmaEOL)
+        var componentesConecta = (await mediator.Send(new ObterTodosOsComponentesCurricularesQuery(anoLetivo))).ToList();
+        
+        foreach (var componenteEAnoTurma in componentesCurricularesEAnoTurmaEOL)
         {
-            var anoExistente = ObterAno(anosConecta, componenteEAno, anoLetivo);
-            if (anoExistente.EhNulo())
+            var anoTurmaExistente = ObterAnoTurma(anosTurmaConecta, componenteEAnoTurma, anoLetivo);
+            if (anoTurmaExistente.EhNulo())
             {
-                var ano = _mapper.Map<AnoTurma>(componenteEAno);
-                var componenteCurricular = _mapper.Map<ComponenteCurricular>(componenteEAno);
-                componenteCurricular.AnoTurmaId = ano.Id;
-                await mediator.Send(new TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommand(ano, componenteCurricular));
+                var anoTurma = _mapper.Map<AnoTurma>(componenteEAnoTurma);
+                var componenteCurricular = _mapper.Map<ComponenteCurricular>(componenteEAnoTurma);
+                anoTurma.AnoLetivo = anoLetivo;
+                componenteCurricular.AnoTurmaId = await mediator.Send(new InserirAnoTurmaCommand(anoTurma));
+                anosTurmaConecta.Add(anoTurma);
+                await mediator.Send(new InserirComponenteCurricularCommand(componenteCurricular));
             }
             else
             {
-                var mudouAnoTurma = false;
-                var mudouComponente = false;
-                if (!anoExistente.Descricao.Equals(componenteEAno.DescricaoSerieEnsino) ||
-                    !anoExistente.CodigoSerieEnsino.Equals(componenteEAno.CodigoSerieEnsino))
+                if (!anoTurmaExistente.Descricao.Equals(componenteEAnoTurma.DescricaoSerieEnsino) ||
+                    !anoTurmaExistente.Modalidade.Equals(componenteEAnoTurma.Modalidade) ||
+                    !anoTurmaExistente.CodigoEOL.Equals(componenteEAnoTurma.CodigoAnoTurma))
                 {
-                    anoExistente.Descricao = componenteEAno.DescricaoSerieEnsino;
-                    anoExistente.CodigoSerieEnsino = componenteEAno.CodigoSerieEnsino;
-                    mudouAnoTurma = true;
+                    anoTurmaExistente.Descricao = componenteEAnoTurma.DescricaoSerieEnsino;
+                    anoTurmaExistente.Modalidade = componenteEAnoTurma.Modalidade;
+                    anoTurmaExistente.CodigoEOL = componenteEAnoTurma.CodigoAnoTurma;
+                    await mediator.Send(new AlterarAnoTurmaCommand(anoTurmaExistente));
+                    anosTurmaConecta.Add(anoTurmaExistente);
                 }
 
-                var componenteCurricular = componentesConecta.FirstOrDefault(w => w.AnoTurmaId == anoExistente.Id);
+                var componenteCurricular = componentesConecta.LastOrDefault(w => w.AnoTurmaId == anoTurmaExistente.Id && w.CodigoEOL == componenteEAnoTurma.CodigoComponenteCurricular);
 
                 if (componenteCurricular.NaoEhNulo())
                 {
-                    if (!componenteCurricular.Nome.Equals(componenteEAno.DescricaoComponenteCurricular))
+                    if (!componenteCurricular.Nome.Equals(componenteEAnoTurma.DescricaoComponenteCurricular))
                     {
-                        componenteCurricular.Nome = componenteEAno.DescricaoComponenteCurricular;
-                        mudouComponente = true;
+                        componenteCurricular.Nome = componenteEAnoTurma.DescricaoComponenteCurricular;
+                        await mediator.Send(new AlterarComponenteCurricularCommand(componenteCurricular));
                     }
                 }
                 else
                 {
-                    componenteCurricular = _mapper.Map<ComponenteCurricular>(componenteEAno);
-                    componenteCurricular.AnoTurmaId = anoExistente.Id;
-                    mudouComponente = true;
+                    componenteCurricular = _mapper.Map<ComponenteCurricular>(componenteEAnoTurma);
+                    componenteCurricular.AnoTurmaId = anoTurmaExistente.Id;
+                    await mediator.Send(new InserirComponenteCurricularCommand(componenteCurricular));
                 }
-
-                if (mudouAnoTurma || mudouComponente)
-                    await mediator.Send(new TrataSincronizacaoComponentesCurricularesEAnoTurmaEOLCommand(anoExistente, componenteCurricular,mudouAnoTurma, mudouComponente));
             }
         }
         return true;
     }
 
-    private AnoTurma ObterAno(IEnumerable<AnoTurma> anosConecta, ComponenteCurricularAnoTurmaEOLDTO componenteEAno, int anoLetivo)
+    private AnoTurma ObterAnoTurma(IEnumerable<AnoTurma> anosTurmaConecta, ComponenteCurricularAnoTurmaEOLDTO componenteEAno, int anoLetivo)
     {
-        var anoRetornado = anosConecta.Where(a=> (a.CodigoEOL.EstaPreenchido() && a.CodigoEOL.Equals(componenteEAno.CodigoAnoTurma))  
-                                                 && a.AnoLetivo == anoLetivo
-                                                 && a.Modalidade == componenteEAno.Modalidade);
-        return anoRetornado.Any() ? anoRetornado.FirstOrDefault() : default;
+        var anoTurmaRetornado = anosTurmaConecta.Where(a=> a.AnoLetivo == anoLetivo
+                                                           && a.CodigoSerieEnsino == componenteEAno.CodigoSerieEnsino);
+        return anoTurmaRetornado.Any() ? anoTurmaRetornado.LastOrDefault() : default;
     }
 }
