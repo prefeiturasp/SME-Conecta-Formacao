@@ -158,6 +158,9 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaTutorMap());
             config.AddMap(new PropostaMovimentacaoMap());
             config.AddMap(new PropostaTurmaMap());
+            config.AddMap(new PropostaModalidadeMap());
+            config.AddMap(new PropostaAnoTurmaMap());
+            config.AddMap(new PropostaComponenteCurricularMap());
 
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
