@@ -19,10 +19,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterComponentesCurricularesPorModalidadeAnoLetivoAno(
-            [FromQuery] ComponenteCurricularFiltrosDto componenteCurricularFiltrosDto,
-            [FromServices] ICasoDeUsoObterComponentesCurricularesPorModalidadeAnoLetivoAno casoDeUsoObterComponentesCurricularesPorModalidadeAnoLetivoAno)
+            [FromQuery] ComponenteCurricularEAnoTurmaFiltrosDTO componenteCurricularEAnoTurmaFiltrosDto,
+            [FromServices] ICasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnoLetivoAnoTurma casoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnoLetivoAnoTurma)
         {
-            return Ok(await casoDeUsoObterComponentesCurricularesPorModalidadeAnoLetivoAno.Executar(componenteCurricularFiltrosDto));
+            return Ok(await casoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnoLetivoAnoTurma.Executar(componenteCurricularEAnoTurmaFiltrosDto));
         }
     }
 }

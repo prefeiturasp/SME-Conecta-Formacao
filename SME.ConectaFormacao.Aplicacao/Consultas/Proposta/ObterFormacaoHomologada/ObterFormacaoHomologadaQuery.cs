@@ -7,6 +7,6 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private static ObterFormacaoHomologadaQuery _instancia;
 
-        public static ObterFormacaoHomologadaQuery Instancia => _instancia ?? new();
+        public static ObterFormacaoHomologadaQuery Instancia => _instancia ??= new();
     }
 }
