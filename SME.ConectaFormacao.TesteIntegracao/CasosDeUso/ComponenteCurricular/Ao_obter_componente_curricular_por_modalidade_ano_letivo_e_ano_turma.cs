@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ComponenteCurricular
             
             AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoTurmaMock.Montar(Modalidade.Fundamental);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComponentesCurricularesEAnoTurmaPorModalidadeAnoLetivoAnoTurma>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnoLetivoAnoTurma>();
 
             // act 
             var filtro = AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoTurmaMock.ComponenteCurricularEAnoTurmaFiltrosDto;
@@ -65,7 +65,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ComponenteCurricular
             
             AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoTurmaMock.Montar(Modalidade.Fundamental);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComponentesCurricularesEAnoTurmaPorModalidadeAnoLetivoAnoTurma>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnoLetivoAnoTurma>();
 
             // act 
             var filtro = AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoTurmaMock.ComponenteCurricularEAnoTurmaFiltrosDto;

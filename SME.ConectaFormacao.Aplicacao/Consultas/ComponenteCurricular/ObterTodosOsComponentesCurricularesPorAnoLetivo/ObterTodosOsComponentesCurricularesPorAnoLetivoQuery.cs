@@ -4,9 +4,9 @@ using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterTodosOsComponentesCurricularesQuery : IRequest<IEnumerable<ComponenteCurricular>>
+    public class ObterTodosOsComponentesCurricularesPorAnoLetivoQuery : IRequest<IEnumerable<ComponenteCurricular>>
     {
-        public ObterTodosOsComponentesCurricularesQuery(int anoLetivo)
+        public ObterTodosOsComponentesCurricularesPorAnoLetivoQuery(int anoLetivo)
         {
             AnoLetivo = anoLetivo;
         }
@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public int AnoLetivo { get; set; }
     }
 
-    public class ObterTodosOsComponentesCurricularesQueryValidator : AbstractValidator<ObterTodosOsComponentesCurricularesQuery>
+    public class ObterTodosOsComponentesCurricularesQueryValidator : AbstractValidator<ObterTodosOsComponentesCurricularesPorAnoLetivoQuery>
     {
         public ObterTodosOsComponentesCurricularesQueryValidator()
         {

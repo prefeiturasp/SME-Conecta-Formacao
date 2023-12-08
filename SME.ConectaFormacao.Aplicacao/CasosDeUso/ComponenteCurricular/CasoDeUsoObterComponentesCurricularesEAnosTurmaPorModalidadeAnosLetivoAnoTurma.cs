@@ -5,9 +5,9 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular
 {
-    public class CasoDeUsoObterComponentesCurricularesEAnoTurmaEAnoTurmaPorModalidadeAnoLetivoAnoTurmaTurma : CasoDeUsoAbstrato, ICasoDeUsoObterComponentesCurricularesEAnoTurmaPorModalidadeAnoLetivoAnoTurma
+    public class CasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnosLetivoAnoTurma : CasoDeUsoAbstrato, ICasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnoLetivoAnoTurma
     {
-        public CasoDeUsoObterComponentesCurricularesEAnoTurmaEAnoTurmaPorModalidadeAnoLetivoAnoTurmaTurma(IMediator mediator) : base(mediator)
+        public CasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnosLetivoAnoTurma(IMediator mediator) : base(mediator)
         {}
 
         public async Task<IEnumerable<RetornoListagemTodosDTO>> Executar(ComponenteCurricularEAnoTurmaFiltrosDTO componenteCurricularEAnoTurmaFiltrosDto)

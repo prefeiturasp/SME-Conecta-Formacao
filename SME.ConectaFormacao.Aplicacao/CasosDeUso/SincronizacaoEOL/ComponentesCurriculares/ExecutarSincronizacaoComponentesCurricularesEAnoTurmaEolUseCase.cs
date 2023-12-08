@@ -22,9 +22,9 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase : C
         
         var componentesCurricularesEAnoTurmaEOL = await mediator.Send(new ObterComponentesCurricularesEAnoTurmaEOLQuery(anoLetivo));
 
-        var anosTurmaConecta = (await mediator.Send(new ObterTodosOsAnosTurmaQuery(anoLetivo))).ToList(); 
+        var anosTurmaConecta = (await mediator.Send(new ObterTodosOsAnosTurmaPorAnoLetivoQuery(anoLetivo))).ToList(); 
             
-        var componentesConecta = (await mediator.Send(new ObterTodosOsComponentesCurricularesQuery(anoLetivo))).ToList();
+        var componentesConecta = await mediator.Send(new ObterTodosOsComponentesCurricularesPorAnoLetivoQuery(anoLetivo));
         
         foreach (var componenteEAnoTurma in componentesCurricularesEAnoTurmaEOL)
         {

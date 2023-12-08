@@ -286,7 +286,7 @@ public class RegistradorDeDependencia
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoHomologada, CasoDeUsoObterFormacaoHomologada>();
         
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterComponentesCurricularesEAnoTurmaPorModalidadeAnoLetivoAnoTurma, CasoDeUsoObterComponentesCurricularesEAnoTurmaEAnoTurmaPorModalidadeAnoLetivoAnoTurmaTurma>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnoLetivoAnoTurma, CasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnosLetivoAnoTurma>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAnosPorModalidadeAnoLetivo, CasoDeUsoObterAnosPorModalidadeAnoLetivo>();
         
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoComponentesCurricularesEAnoTurmaEOLUseCase, ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase>();
