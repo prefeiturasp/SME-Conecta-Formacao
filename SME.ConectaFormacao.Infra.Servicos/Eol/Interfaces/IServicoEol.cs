@@ -6,6 +6,6 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces
     {
         Task<string> ObterNomeProfissionalPorRegistroFuncional(string registroFuncional);
         Task<IEnumerable<DreNomeAbreviacaoDTO>> ObterCodigosDres();
-        Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> ObterComponentesCurricularesEAnoPorAnoLetivo(int anoLetivo);
+        Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo);
     }
 }

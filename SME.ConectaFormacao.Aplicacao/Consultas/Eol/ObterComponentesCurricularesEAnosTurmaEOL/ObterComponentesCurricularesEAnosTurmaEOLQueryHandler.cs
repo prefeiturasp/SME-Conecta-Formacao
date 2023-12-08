@@ -15,6 +15,6 @@ public class ObterComponentesCurricularesEAnosTurmaEOLQueryHandler : IRequestHan
 
     public async Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> Handle(ObterComponentesCurricularesEAnosTurmaEOLQuery request, CancellationToken cancellationToken)
     {
-        return await _servicoEol.ObterComponentesCurricularesEAnoPorAnoLetivo(request.AnoLetivo);
+        return await _servicoEol.ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(request.AnoLetivo);
     }
 }

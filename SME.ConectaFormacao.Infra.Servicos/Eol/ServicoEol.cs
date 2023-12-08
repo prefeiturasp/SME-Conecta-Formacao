@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         }
 
-        public async Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> ObterComponentesCurricularesEAnoPorAnoLetivo(int anoLetivo)
+        public async Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo)
         {
             var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO, anoLetivo));
             
