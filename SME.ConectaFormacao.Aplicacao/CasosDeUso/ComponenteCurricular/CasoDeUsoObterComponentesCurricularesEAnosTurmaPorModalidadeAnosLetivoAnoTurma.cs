@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular
 
         public async Task<IEnumerable<RetornoListagemTodosDTO>> Executar(ComponenteCurricularEAnoTurmaFiltrosDTO componenteCurricularEAnoTurmaFiltrosDto)
         {
-            return await mediator.Send(new ObterComponentesCurricularesEAnoTurmaPorModalidadeAnoIdLetivoAnoTurmaQuery(
+            return await mediator.Send(new ObterComponentesCurricularesEAnosTurmaPorModalidadeAnoIdLetivoAnoTurmaQuery(
                 componenteCurricularEAnoTurmaFiltrosDto.Modalidade, 
                 componenteCurricularEAnoTurmaFiltrosDto.AnoLetivo, 
                 componenteCurricularEAnoTurmaFiltrosDto.AnoTurmaId));

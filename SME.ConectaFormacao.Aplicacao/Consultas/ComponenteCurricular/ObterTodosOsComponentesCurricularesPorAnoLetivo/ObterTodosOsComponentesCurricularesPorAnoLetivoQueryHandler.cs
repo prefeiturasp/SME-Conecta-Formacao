@@ -5,11 +5,11 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterTodosOsComponentesCurricularesQueryHandler : IRequestHandler<ObterTodosOsComponentesCurricularesPorAnoLetivoQuery, IEnumerable<ComponenteCurricular>>
+    public class ObterTodosOsComponentesCurricularesPorAnoLetivoQueryHandler : IRequestHandler<ObterTodosOsComponentesCurricularesPorAnoLetivoQuery, IEnumerable<ComponenteCurricular>>
     {
         private readonly IRepositorioComponenteCurricular _repositorioComponenteCurricular;
         
-        public ObterTodosOsComponentesCurricularesQueryHandler(IRepositorioComponenteCurricular repositorioComponenteCurricular)
+        public ObterTodosOsComponentesCurricularesPorAnoLetivoQueryHandler(IRepositorioComponenteCurricular repositorioComponenteCurricular)
         {
             _repositorioComponenteCurricular = repositorioComponenteCurricular ?? throw new ArgumentNullException(nameof(repositorioComponenteCurricular));
         }

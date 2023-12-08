@@ -14,9 +14,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public int AnoLetivo { get; set; }
     }
 
-    public class ObterTodosOsComponentesCurricularesQueryValidator : AbstractValidator<ObterTodosOsComponentesCurricularesPorAnoLetivoQuery>
+    public class ObterTodosOsComponentesCurricularesPorAnoLetivoQueryValidator : AbstractValidator<ObterTodosOsComponentesCurricularesPorAnoLetivoQuery>
     {
-        public ObterTodosOsComponentesCurricularesQueryValidator()
+        public ObterTodosOsComponentesCurricularesPorAnoLetivoQueryValidator()
         {
             RuleFor(x => x.AnoLetivo)
                 .NotEmpty()
