@@ -4,16 +4,16 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
-public class ObterComponentesCurricularesEAnoTurmaEOLQuery : IRequest<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>>
+public class ObterComponentesCurricularesEAnosTurmaEOLQuery : IRequest<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>>
 {
-    public ObterComponentesCurricularesEAnoTurmaEOLQuery(int anoLetivo)
+    public ObterComponentesCurricularesEAnosTurmaEOLQuery(int anoLetivo)
     {
         AnoLetivo = anoLetivo;
     }
     public int AnoLetivo { get; }
 }
 
-public class ObterComponentesCurricularesEAnoTurmaEOLQueryValidator : AbstractValidator<ObterComponentesCurricularesEAnoTurmaEOLQuery>
+public class ObterComponentesCurricularesEAnoTurmaEOLQueryValidator : AbstractValidator<ObterComponentesCurricularesEAnosTurmaEOLQuery>
 {
     public ObterComponentesCurricularesEAnoTurmaEOLQueryValidator()
     {

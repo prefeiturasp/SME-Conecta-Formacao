@@ -5,9 +5,9 @@ using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricularAno
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricularAnoTurma
 {
-    public class ObterComponentesCurricularesEAnoTurmaEOLQueryFake : IRequestHandler<ObterComponentesCurricularesEAnoTurmaEOLQuery, IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>>
+    public class ObterComponentesCurricularesEAnoTurmaEOLQueryFake : IRequestHandler<ObterComponentesCurricularesEAnosTurmaEOLQuery, IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>>
     {
-        public Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> Handle(ObterComponentesCurricularesEAnoTurmaEOLQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> Handle(ObterComponentesCurricularesEAnosTurmaEOLQuery request, CancellationToken cancellationToken)
         {
             return Task.FromResult(ComponenteCurricularAnoTurmaMock.ComponentesCurricularesAnosTurmas);
         }
