@@ -6,6 +6,6 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.CriterioCertificacao.ObterCrit
     public class ObterCriterioCertificacaoQuery : IRequest<IEnumerable<RetornoListagemDTO>>
     {
         private static ObterCriterioCertificacaoQuery _instancia;
-        public static ObterCriterioCertificacaoQuery Instancia => _instancia ??= new ObterCriterioCertificacaoQuery();
+        public static ObterCriterioCertificacaoQuery Instancia => _instancia ??= new ();
     }
 }
