@@ -12,6 +12,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
@@ -21,6 +22,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
@@ -155,6 +157,10 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaTutorTurmaMap());
             config.AddMap(new PropostaTutorMap());
             config.AddMap(new PropostaMovimentacaoMap());
+            config.AddMap(new PropostaTurmaMap());
+            config.AddMap(new PropostaModalidadeMap());
+            config.AddMap(new PropostaAnoTurmaMap());
+            config.AddMap(new PropostaComponenteCurricularMap());
 
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
@@ -164,6 +170,8 @@ public class RegistradorDeDependencia
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
             config.AddMap(new PropostaDreMap());
+            config.AddMap(new AnoTurmaMap());
+            config.AddMap(new ComponenteCurricularMap());
 
             config.ForDommel();
         });
@@ -206,6 +214,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
         _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaMovimentacao, RepositorioPropostaMovimentacao>();
+        _serviceCollection.TryAddScoped<IRepositorioAnoTurma, RepositorioAnoTurma>();
+        _serviceCollection.TryAddScoped<IRepositorioComponenteCurricular, RepositorioComponenteCurricular>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -278,6 +288,11 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerProposta, CasoDeUsoObterParecerProposta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoHomologada, CasoDeUsoObterFormacaoHomologada>();
+        
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnoLetivoAnoTurma, CasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnosLetivoAnoTurma>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterAnosPorModalidadeAnoLetivo, CasoDeUsoObterAnosPorModalidadeAnoLetivo>();
+        
+        _serviceCollection.TryAddScoped<IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase, ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase>();
     }
 
     protected virtual void RegistrarHttpClients()

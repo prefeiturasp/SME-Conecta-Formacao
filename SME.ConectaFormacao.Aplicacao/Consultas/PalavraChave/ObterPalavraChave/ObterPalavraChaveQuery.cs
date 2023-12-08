@@ -5,7 +5,7 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterPalavraChaveQuery : IRequest<IEnumerable<RetornoListagemDTO>>
     {
-        private static ObterPalavraChaveQuery _instance;
-        public static ObterPalavraChaveQuery Instance => _instance ??= new();
+        private static ObterPalavraChaveQuery _instancia;
+        public static ObterPalavraChaveQuery Instancia => _instancia ??= new();
     }
 }

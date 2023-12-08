@@ -7,6 +7,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? RegistroFuncional { get; set; }
         public string? NomeRegente { get; set; }
         public string? MiniBiografia { get; set; }
-        public IEnumerable<PropostaRegenteTurma> Turmas { get; set; } = new List<PropostaRegenteTurma>();
+        public IEnumerable<PropostaRegenteTurma> Turmas { get; set; }
     }
 }

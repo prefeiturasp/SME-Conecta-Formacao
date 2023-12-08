@@ -2,6 +2,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
     public class PropostaRegenteTurmaDTO
     {
-        public int Turma { get; set; }
+        public long TurmaId { get; set; }
+        public string? Nome { get; set; }
     }
 }

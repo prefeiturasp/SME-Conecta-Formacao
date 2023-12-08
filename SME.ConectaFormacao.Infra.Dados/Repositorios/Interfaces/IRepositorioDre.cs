@@ -8,5 +8,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<bool> VerificarSeDreExistePorCodigo(string codigoDre);
         Task<Dre> ObterDrePorCodigo(string codigoDre);
         Task AtualizarDreComEol(Dre dre);
+        Task<IEnumerable<Dre>> ObterIgnorandoExcluidos(bool exibirTodos);
     }
 }

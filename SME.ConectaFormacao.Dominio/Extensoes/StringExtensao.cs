@@ -29,5 +29,21 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             var regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
             return Regex.IsMatch(email, regex);
         }
+        
+        public static string Limite(this string str, int limite)
+        {
+            var tamanhoString = str.Length;
+            return tamanhoString > limite ? str.Substring(0,limite) : str;
+        }
+        
+        public static bool EstaPreenchido(this string str)
+        {
+            return !string.IsNullOrEmpty(str);
+        }
+        
+        public static bool NaoEstaPreenchido(this string str)
+        {
+            return string.IsNullOrEmpty(str);
+        }
     }
 }

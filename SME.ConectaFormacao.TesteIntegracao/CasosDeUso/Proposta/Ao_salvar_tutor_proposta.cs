@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             excecao.ShouldNotBeNull();
-            excecao.Mensagens.Contains(string.Format(MensagemNegocio.JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR, tutor.NomeTutor, tutor.Turmas.FirstOrDefault().Turma)).ShouldBeTrue();
+            excecao.Mensagens.Contains(string.Format(MensagemNegocio.JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR, tutor.NomeTutor, tutor.Turmas.FirstOrDefault().TurmaId)).ShouldBeTrue();
         }
         [Fact(DisplayName = "Proposta - Deve Cadastrar um novo Tutor")]
         public async Task Deve_inserir_tutor()

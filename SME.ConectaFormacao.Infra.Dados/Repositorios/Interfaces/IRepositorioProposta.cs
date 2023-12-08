@@ -22,13 +22,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada);
         Task<PropostaEncontro> ObterEncontroPorId(long encontroId);
         Task InserirEncontro(long propostaId, PropostaEncontro encontro);
-        Task InserirEncontroTurmas(long propostaId, IEnumerable<PropostaEncontroTurma> turmas);
+        Task InserirEncontroTurmas(long propostaId, IEnumerable<PropostaEncontroTurma> turmaIds);
         Task InserirEncontroDatas(long propostaId, IEnumerable<PropostaEncontroData> datas);
         Task RemoverEncontros(IEnumerable<PropostaEncontro> encontros);
         Task AtualizarEncontro(PropostaEncontro encontro);
         Task<IEnumerable<PropostaEncontroData>> ObterEncontroDatasPorEncontroId(params long[] encontroId);
         Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(params long[] encontroId);
-        Task RemoverEncontroTurmas(IEnumerable<PropostaEncontroTurma> turmas);
+        Task RemoverEncontroTurmas(IEnumerable<PropostaEncontroTurma> turmaIds);
         Task RemoverEncontroDatas(IEnumerable<PropostaEncontroData> datas);
         Task AtualizarEncontroData(PropostaEncontroData data);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorId(long propostaId);
@@ -61,9 +61,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task ExcluirPropostaTutor(long tutorId);
         Task<IEnumerable<PropostaTutor>> ObterTutoresPaginado(int numeroPagina, int numeroRegistros, long propostaId);
         Task<int> ObterQuantidadeDeTurmasComEncontro(long propostaId);
-        Task<IEnumerable<int>> ObterTurmasJaExistenteParaRegente(long propostaId, string? nomeRegente, string? registroFuncional, int[] turmas);
-        Task<IEnumerable<int>> ObterTurmasJaExistenteParaTutor(long propostaId, string? nomeTutor, string? registroFuncional, int[] turmas);
+        Task<IEnumerable<long>> ObterTurmasJaExistenteParaRegente(long propostaId, string? nomeRegente, string? registroFuncional, long[] turmaIds);
+        Task<IEnumerable<long>> ObterTurmasJaExistenteParaTutor(long propostaId, string? nomeTutor, string? registroFuncional, long[] turmaIds);
         Task AtualizarSituacao(long id, SituacaoProposta situacaoProposta);
         Task AtualizarSituacaoGrupoGestao(long id, SituacaoProposta situacaoProposta, long grupoGestaoId);
+        Task InserirDres(long propostaId, IEnumerable<PropostaDre> propostaDres);
+        Task RemoverDres(IEnumerable<PropostaDre> propostaDres);
+        Task<IEnumerable<PropostaDre>> ObterDrePorId(long propostaId);
+        Task<IEnumerable<PropostaTurma>> ObterTurmasPorId(long propostaId);
+        Task InserirTurmas(long propostaId, IEnumerable<PropostaTurma> turmasInserir);
+        Task RemoverTurmas(IEnumerable<PropostaTurma> turmasExcluir);
+        Task AtualizarTurmas(long propostaId, IEnumerable<PropostaTurma> turmasInserir);
     }
 }

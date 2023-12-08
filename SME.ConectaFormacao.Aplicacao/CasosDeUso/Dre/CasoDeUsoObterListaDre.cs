@@ -10,9 +10,9 @@ namespace SME.ConectaFormacao.Aplicacao
         {
         }
 
-        public async Task<IEnumerable<RetornoListagemDTO>> Executar()
+        public async Task<IEnumerable<RetornoListagemDTO>> Executar(bool exibirTodos)
         {
-            return await mediator.Send(ObterListaDreQuery.Instancia);
+            return await mediator.Send(new ObterListaDreQuery(exibirTodos));
         }
     }
 }

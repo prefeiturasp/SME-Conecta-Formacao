@@ -28,8 +28,8 @@ namespace SME.ConectaFormacao.Aplicacao
             tutorDepois.NomeTutor = tutorDepois.NomeTutor.Trim();
             var turmasAntes = await _repositorioProposta.ObterTutorTurmasPorTutorId(tutorDepois.Id);
 
-            var arrayTurma = request.PropostaTutorDto.Turmas.Select(x => x.Turma);
-            var turmaConsulta = arrayTurma.Where(w => !turmasAntes.Any(a => a.Turma == w)).ToArray();
+            var arrayTurma = request.PropostaTutorDto.Turmas.Select(x => x.TurmaId);
+            var turmaConsulta = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
             await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaId, request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, turmaConsulta));
 
 
