@@ -95,15 +95,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                     await InserirNaBase(datas);
                     encontro.Datas = datas;
                 }
-
-                var palavrasChavesDaProposta = PropostaMock.GerarPalavrasChaves(proposta.Id, palavrasChaves);
-                if (palavrasChavesDaProposta != null)
-                {
-                    await InserirNaBase(palavrasChavesDaProposta);
-                    proposta.PalavrasChaves = palavrasChavesDaProposta;
-                }
-
                 proposta.Encontros = encontros;
+            }
+
+            var palavrasChavesDaProposta = PropostaMock.GerarPalavrasChaves(proposta.Id, palavrasChaves);
+            if (palavrasChavesDaProposta != null)
+            {
+                await InserirNaBase(palavrasChavesDaProposta);
+                proposta.PalavrasChaves = palavrasChavesDaProposta;
             }
 
             var tutores = PropostaMock.GerarTutor(proposta.Id);

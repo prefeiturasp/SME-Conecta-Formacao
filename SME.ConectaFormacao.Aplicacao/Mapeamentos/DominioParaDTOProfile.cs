@@ -101,10 +101,19 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
                 .ReverseMap();
 
-            CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>().ReverseMap();
+            CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
+                .ReverseMap();
             CreateMap<PropostaEncontroData, PropostaEncontroDataDTO>().ReverseMap();
-            CreateMap<PropostaRegenteTurma, PropostaRegenteTurmaDTO>().ReverseMap();
-            CreateMap<PropostaTutorTurma, PropostaTutorTurmaDTO>().ReverseMap();
+
+            CreateMap<PropostaRegenteTurma, PropostaRegenteTurmaDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
+                .ReverseMap();
+
+            CreateMap<PropostaTutorTurma, PropostaTutorTurmaDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
+                .ReverseMap();
+
             CreateMap<PropostaDre, PropostaDreDTO>().ReverseMap();
 
             // -> Arquivo
