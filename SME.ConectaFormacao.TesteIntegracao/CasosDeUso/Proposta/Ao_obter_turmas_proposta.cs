@@ -1,6 +1,7 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -29,8 +30,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
+            
+            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosEFuncoes, criterioValidacaoInscricao, palavrasChaves);
+            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            await InserirNaBase(componentesCurriculares);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosEFuncoes, criterioValidacaoInscricao, palavrasChaves,
+                modalidades, anosTurmas, componentesCurriculares);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterTurmasProposta>();
 

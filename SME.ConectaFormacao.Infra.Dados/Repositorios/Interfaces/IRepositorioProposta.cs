@@ -36,9 +36,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> ObterTotalTutores(long propostaId);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId);
         Task<IEnumerable<PropostaRegente>> ObterRegentesPaginado(int numeroPagina, int numeroRegistros, long propostaId);
-        Task<IEnumerable<PropostaPalavraChave>> ObterPalavraChavePorId(long id);
+        Task<IEnumerable<PropostaPalavraChave>> ObterPalavrasChavesPorId(long id);
         Task RemoverPalavrasChaves(IEnumerable<PropostaPalavraChave> palavrasChaves);
         Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves);
+        Task InserirModalidades(long id, IEnumerable<PropostaModalidade> modalidades);
+        Task RemoverModalidades(IEnumerable<PropostaModalidade> modalidades);
+        Task InserirAnosTurmas(long id, IEnumerable<PropostaAnoTurma> anosTurmas);
+        Task RemoverAnosTurmas(IEnumerable<PropostaAnoTurma> anosTurmas);
+        Task InserirComponentesCurriculares(long id, IEnumerable<PropostaComponenteCurricular> componentesCurriculares);
+        Task RemoverComponentesCurriculares(IEnumerable<PropostaComponenteCurricular> componenteCurriculares);
         Task<IEnumerable<PropostaCriterioCertificacao>> ObterCriterioCertificacaoPorPropostaId(long propostaId);
         Task InserirCriterioCertificacao(long id, IEnumerable<PropostaCriterioCertificacao> criterios);
         Task RemoverCriterioCertificacao(IEnumerable<PropostaCriterioCertificacao> criterios);
@@ -72,5 +78,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task InserirTurmas(long propostaId, IEnumerable<PropostaTurma> turmasInserir);
         Task RemoverTurmas(IEnumerable<PropostaTurma> turmasExcluir);
         Task AtualizarTurmas(long propostaId, IEnumerable<PropostaTurma> turmasInserir);
+        Task<IEnumerable<PropostaModalidade>> ObterModalidadesPorId(long id);
+        Task<IEnumerable<PropostaAnoTurma>> ObterAnosTurmasPorId(long id);
+        Task<IEnumerable<PropostaComponenteCurricular>> ObterComponentesCurricularesPorId(long id);
     }
 }

@@ -16,9 +16,26 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker;
         }
 
-        public static IEnumerable<ComponenteCurricular> GerarComponenteCurricular(int quantidade, bool todos = false)
+        public static IEnumerable<ComponenteCurricular> GerarComponentesCurriculares(int quantidade, bool todos = false)
         {
             return Gerador(todos).Generate(quantidade);
+        }
+        
+        public static IEnumerable<ComponenteCurricular> GerarComponentesCurricularesComAnoTurma(int quantidade, IEnumerable<AnoTurma> anosTurma,bool todos = false)
+        {
+            var componentesCurricularesComAnoTurma = new List<ComponenteCurricular>();
+            
+            foreach (var anoTurma in anosTurma)
+            {
+                var componentesCurriculares = Gerador(todos).Generate(quantidade);
+               
+                foreach (var componenteCurricular in componentesCurriculares)
+                {
+                    componenteCurricular.AnoTurmaId = anoTurma.Id;
+                    componentesCurricularesComAnoTurma.Add(componenteCurricular);
+                }
+            }
+            return componentesCurricularesComAnoTurma;
         }
 
         public static ComponenteCurricular GerarComponenteCurricular(bool todos)

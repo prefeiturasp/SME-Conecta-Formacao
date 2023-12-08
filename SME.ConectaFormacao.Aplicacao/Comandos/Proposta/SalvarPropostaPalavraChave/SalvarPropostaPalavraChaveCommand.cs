@@ -4,9 +4,9 @@ using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarPalavraChaveCommand : IRequest<bool>
+    public class SalvarPropostaPalavraChaveCommand : IRequest<bool>
     {
-        public SalvarPalavraChaveCommand(long propostaId, IEnumerable<PropostaPalavraChave> palavrasChaves)
+        public SalvarPropostaPalavraChaveCommand(long propostaId, IEnumerable<PropostaPalavraChave> palavrasChaves)
         {
             PropostaId = propostaId;
             PalavrasChaves = palavrasChaves;
@@ -16,9 +16,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; }
     }
 
-    public class SalvarPalavraChaveCommandValidator : AbstractValidator<SalvarPalavraChaveCommand>
+    public class SalvarPropostaPalavraChaveCommandValidator : AbstractValidator<SalvarPropostaPalavraChaveCommand>
     {
-        public SalvarPalavraChaveCommandValidator()
+        public SalvarPropostaPalavraChaveCommandValidator()
         {
             RuleFor(x => x.PropostaId)
                 .NotEmpty()

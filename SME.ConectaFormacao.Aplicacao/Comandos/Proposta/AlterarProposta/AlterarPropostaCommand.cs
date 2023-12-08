@@ -2,6 +2,7 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -46,10 +47,6 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(f => f.PropostaDTO.Dres)
                 .NotEmpty()
                 .WithMessage("É necessário informar a dre para alterar a proposta");
-
-            RuleFor(f => f.PropostaDTO.PublicosAlvo)
-                .NotEmpty()
-                .WithMessage("É necessário informar o público alvo para alterar a proposta");
 
             RuleFor(f => f.PropostaDTO.CriteriosValidacaoInscricao)
                 .NotEmpty()

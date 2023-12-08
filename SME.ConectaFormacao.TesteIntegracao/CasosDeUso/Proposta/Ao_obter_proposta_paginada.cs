@@ -1,6 +1,7 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -29,8 +30,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
+            
+            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            var propostas = await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
+            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            await InserirNaBase(componentesCurriculares);
+
+            var propostas = await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, 
+                criteriosValidacaoInscricao, palavrasChaves,modalidades, anosTurmas, componentesCurriculares);
 
             var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOValido(areaPromotora, propostas);
 
@@ -59,8 +69,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
+            
+            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
+            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            await InserirNaBase(componentesCurriculares);
+
+            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves
+                ,modalidades, anosTurmas, componentesCurriculares);
 
             var filtro = new PropostaFiltrosDTO();
 
@@ -89,8 +108,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
+            
+            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
+            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            await InserirNaBase(componentesCurriculares);
+
+            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves
+                ,modalidades, anosTurmas, componentesCurriculares);
 
             var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOInvalido();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPaginacao>();

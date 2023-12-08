@@ -47,10 +47,6 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotEmpty()
                 .WithMessage("É necessário informar a dre para alterar a proposta");
 
-            RuleFor(f => f.PropostaDTO.PublicosAlvo)
-                .NotEmpty()
-                .WithMessage("É necessário informar o público alvo para inserir a proposta");
-
             RuleFor(f => f.PropostaDTO.CriteriosValidacaoInscricao)
                 .NotEmpty()
                 .WithMessage("É necessário informar os critérios de validação das inscrições para inserir a proposta");
@@ -90,20 +86,6 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(f => f.PropostaDTO.PalavrasChaves)
                 .NotNull()
                 .WithMessage("É necessário informar as palavras-chaves para inserir a proposta");
-
-            RuleFor(f => f.PropostaDTO.PalavrasChaves)
-                .NotNull()
-                .WithMessage("É necessário informar as palavras-chaves para inserir a proposta");
-
-            // RuleFor(f => f.PropostaDTO.PalavrasChaves)
-            //     .NotNull()
-            //     .When(y=> y.PropostaDTO.PalavrasChaves.Count() > 2)
-            //     .WithMessage("É necessário informar no mínimo 3 palavras-chaves para alterar a proposta");
-            //
-            // RuleFor(f => f.PropostaDTO.PalavrasChaves)
-            //     .NotNull()
-            //     .When(y=> y.PropostaDTO.PalavrasChaves.Count() < 6)
-            //     .WithMessage("É necessário informar no máximo 5 palavras-chaves para alterar a proposta");
         }
     }
 }

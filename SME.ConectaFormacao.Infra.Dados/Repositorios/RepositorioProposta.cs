@@ -761,6 +761,39 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 palavraChave.Id = (long)await conexao.Obter().InsertAsync(palavraChave);
             }
         }
+        
+        public async Task InserirModalidades(long id, IEnumerable<PropostaModalidade> modalidades)
+        {
+            foreach (var modalidade in modalidades)
+            {
+                PreencherAuditoriaCriacao(modalidade);
+
+                modalidade.PropostaId = id;
+                modalidade.Id = (long)await conexao.Obter().InsertAsync(modalidade);
+            }
+        }
+        
+        public async Task InserirAnosTurmas(long id, IEnumerable<PropostaAnoTurma> anosTurmas)
+        {
+            foreach (var anoTurma in anosTurmas)
+            {
+                PreencherAuditoriaCriacao(anoTurma);
+
+                anoTurma.PropostaId = id;
+                anoTurma.Id = (long)await conexao.Obter().InsertAsync(anoTurma);
+            }
+        }
+        
+        public async Task InserirComponentesCurriculares(long id, IEnumerable<PropostaComponenteCurricular> componentesCurriculares)
+        {
+            foreach (var componenteCurricular in componentesCurriculares)
+            {
+                PreencherAuditoriaCriacao(componenteCurricular);
+
+                componenteCurricular.PropostaId = id;
+                componenteCurricular.Id = (long)await conexao.Obter().InsertAsync(componenteCurricular);
+            }
+        }
 
         public async Task InserirCriterioCertificacao(long id, IEnumerable<PropostaCriterioCertificacao> criterios)
         {
@@ -773,7 +806,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
-        public Task<IEnumerable<PropostaPalavraChave>> ObterPalavraChavePorId(long id)
+        public Task<IEnumerable<PropostaPalavraChave>> ObterPalavrasChavesPorId(long id)
         {
             var query = @"select 
                             id, 
@@ -789,6 +822,60 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         from proposta_palavra_chave 
                         where proposta_id = @id and not excluido ";
             return conexao.Obter().QueryAsync<PropostaPalavraChave>(query, new { id });
+        }
+        
+        public Task<IEnumerable<PropostaModalidade>> ObterModalidadesPorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            modalidade,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_modalidade 
+                        where proposta_id = @id and not excluido ";
+            return conexao.Obter().QueryAsync<PropostaModalidade>(query, new { id });
+        }
+
+        public Task<IEnumerable<PropostaAnoTurma>> ObterAnosTurmasPorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            ano_turma_id AnoTurmaId,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_ano_turma 
+                        where proposta_id = @id and not excluido ";
+            return conexao.Obter().QueryAsync<PropostaAnoTurma>(query, new { id });
+        }
+        
+        public Task<IEnumerable<PropostaComponenteCurricular>> ObterComponentesCurricularesPorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            componente_curricular_id ComponenteCurricularId,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_componente_curricular 
+                        where proposta_id = @id and not excluido ";
+            return conexao.Obter().QueryAsync<PropostaComponenteCurricular>(query, new { id });
         }
 
         public Task<IEnumerable<PropostaCriterioCertificacao>> ObterCriterioCertificacaoPorPropostaId(long propostaId)
@@ -823,6 +910,78 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             };
 
             var query = @"update proposta_palavra_chave
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+        
+        public Task RemoverModalidades(IEnumerable<PropostaModalidade> modalidades)
+        {
+            var modalidade = modalidades.First();
+            PreencherAuditoriaAlteracao(modalidade);
+
+            var parametros = new
+            {
+                ids = modalidades.Select(t => t.Id).ToArray(),
+                modalidade.AlteradoEm,
+                modalidade.AlteradoPor,
+                modalidade.AlteradoLogin
+            };
+
+            var query = @"update proposta_modalidade
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+        
+        public Task RemoverAnosTurmas(IEnumerable<PropostaAnoTurma> anosTurmas)
+        {
+            var anoTurma = anosTurmas.First();
+            PreencherAuditoriaAlteracao(anoTurma);
+
+            var parametros = new
+            {
+                ids = anosTurmas.Select(t => t.Id).ToArray(),
+                anoTurma.AlteradoEm,
+                anoTurma.AlteradoPor,
+                anoTurma.AlteradoLogin
+            };
+
+            var query = @"update proposta_ano_turma
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+        
+        public Task RemoverComponentesCurriculares(IEnumerable<PropostaComponenteCurricular> componenteCurriculares)
+        {
+            var componenteCurricular = componenteCurriculares.First();
+            PreencherAuditoriaAlteracao(componenteCurricular);
+
+            var parametros = new
+            {
+                ids = componenteCurriculares.Select(t => t.Id).ToArray(),
+                componenteCurricular.AlteradoEm,
+                componenteCurricular.AlteradoPor,
+                componenteCurricular.AlteradoLogin
+            };
+
+            var query = @"update proposta_componente_curricular
                           set 
                             excluido = true, 
                             alterado_em = @AlteradoEm, 
