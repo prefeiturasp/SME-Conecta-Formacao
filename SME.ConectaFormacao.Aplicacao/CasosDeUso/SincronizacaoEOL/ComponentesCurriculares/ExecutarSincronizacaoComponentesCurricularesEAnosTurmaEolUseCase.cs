@@ -29,47 +29,57 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase : 
         foreach (var componenteEAnoTurma in componentesCurricularesEAnoTurmaEOL)
         {
             var anoTurmaExistente = ObterAnoTurma(anosTurmaConecta, componenteEAnoTurma, anoLetivo);
-            if (anoTurmaExistente.EhNulo())
-            {
-                var anoTurma = _mapper.Map<AnoTurma>(componenteEAnoTurma);
-                var componenteCurricular = _mapper.Map<ComponenteCurricular>(componenteEAnoTurma);
-                anoTurma.AnoLetivo = anoLetivo;
-                componenteCurricular.AnoTurmaId = await mediator.Send(new InserirAnoTurmaCommand(anoTurma));
-                anosTurmaConecta.Add(anoTurma);
-                await mediator.Send(new InserirComponenteCurricularCommand(componenteCurricular));
-            }
-            else
-            {
-                if (!anoTurmaExistente.Descricao.Equals(componenteEAnoTurma.DescricaoSerieEnsino) ||
-                    !anoTurmaExistente.Modalidade.Equals(componenteEAnoTurma.Modalidade) ||
-                    !anoTurmaExistente.CodigoEOL.Equals(componenteEAnoTurma.CodigoAnoTurma))
-                {
-                    anoTurmaExistente.Descricao = componenteEAnoTurma.DescricaoSerieEnsino;
-                    anoTurmaExistente.Modalidade = componenteEAnoTurma.Modalidade;
-                    anoTurmaExistente.CodigoEOL = componenteEAnoTurma.CodigoAnoTurma;
-                    await mediator.Send(new AlterarAnoTurmaCommand(anoTurmaExistente));
-                    anosTurmaConecta.Add(anoTurmaExistente);
-                }
+            
+            var anoTurmaId = await InserirOuAtualizarAnoTurma(anoTurmaExistente, componenteEAnoTurma, anoLetivo, anosTurmaConecta);
 
-                var componenteCurricular = componentesConecta.LastOrDefault(w => w.AnoTurmaId == anoTurmaExistente.Id && w.CodigoEOL == componenteEAnoTurma.CodigoComponenteCurricular);
-
-                if (componenteCurricular.NaoEhNulo())
-                {
-                    if (!componenteCurricular.Nome.Equals(componenteEAnoTurma.DescricaoComponenteCurricular))
-                    {
-                        componenteCurricular.Nome = componenteEAnoTurma.DescricaoComponenteCurricular;
-                        await mediator.Send(new AlterarComponenteCurricularCommand(componenteCurricular));
-                    }
-                }
-                else
-                {
-                    componenteCurricular = _mapper.Map<ComponenteCurricular>(componenteEAnoTurma);
-                    componenteCurricular.AnoTurmaId = anoTurmaExistente.Id;
-                    await mediator.Send(new InserirComponenteCurricularCommand(componenteCurricular));
-                }
-            }
+            await InserirOuAtualizarComponenteCurricular(componentesConecta, anoTurmaExistente, componenteEAnoTurma, anoTurmaId);
         }
         return true;
+    }
+
+    private async Task InserirOuAtualizarComponenteCurricular(IEnumerable<ComponenteCurricular> componentesConecta, AnoTurma anoTurmaExistente,
+        ComponenteCurricularAnoTurmaEOLDTO componenteEAnoTurma, long anoTurmaId)
+    {
+        var componenteCurricular = componentesConecta.LastOrDefault(w => w.AnoTurmaId == anoTurmaExistente?.Id && w.CodigoEOL == componenteEAnoTurma.CodigoComponenteCurricular);
+
+        if (componenteCurricular.NaoEhNulo())
+        {
+            if (!componenteCurricular.Nome.Equals(componenteEAnoTurma.DescricaoComponenteCurricular))
+            {
+                componenteCurricular.Nome = componenteEAnoTurma.DescricaoComponenteCurricular;
+                await mediator.Send(new AlterarComponenteCurricularCommand(componenteCurricular));
+                return;
+            }
+        }
+
+        componenteCurricular = _mapper.Map<ComponenteCurricular>(componenteEAnoTurma);
+        componenteCurricular.AnoTurmaId = anoTurmaId;
+        await mediator.Send(new InserirComponenteCurricularCommand(componenteCurricular));
+    }
+
+    private async Task<long> InserirOuAtualizarAnoTurma(AnoTurma anoTurmaExistente, ComponenteCurricularAnoTurmaEOLDTO componenteEAnoTurma, int anoLetivo, List<AnoTurma> anosTurmaConecta)
+    {
+        if (anoTurmaExistente.EhNulo())
+        {
+            var anoTurma = _mapper.Map<AnoTurma>(componenteEAnoTurma);
+            anoTurma.AnoLetivo = anoLetivo;
+            var anoTurmaId = await mediator.Send(new InserirAnoTurmaCommand(anoTurma));
+            anosTurmaConecta.Add(anoTurma);
+            return anoTurmaId;
+        }
+        
+        if (!anoTurmaExistente.Descricao.Equals(componenteEAnoTurma.DescricaoSerieEnsino) ||
+            !anoTurmaExistente.Modalidade.Equals(componenteEAnoTurma.Modalidade) ||
+            !anoTurmaExistente.CodigoEOL.Equals(componenteEAnoTurma.CodigoAnoTurma))
+        {
+            anosTurmaConecta.Remove(anoTurmaExistente);
+            anoTurmaExistente.Descricao = componenteEAnoTurma.DescricaoSerieEnsino;
+            anoTurmaExistente.Modalidade = componenteEAnoTurma.Modalidade;
+            anoTurmaExistente.CodigoEOL = componenteEAnoTurma.CodigoAnoTurma;
+            await mediator.Send(new AlterarAnoTurmaCommand(anoTurmaExistente));
+            anosTurmaConecta.Add(anoTurmaExistente);
+        }
+        return anoTurmaExistente.Id;
     }
 
     private AnoTurma ObterAnoTurma(IEnumerable<AnoTurma> anosTurmaConecta, ComponenteCurricularAnoTurmaEOLDTO componenteEAno, int anoLetivo)

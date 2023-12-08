@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao;
 
 public class ObterCodigosDresEOLQuery : IRequest<IEnumerable<DreNomeAbreviacaoDTO>>
 {
-    private static ObterCodigosDresEOLQuery _instance;
-    public static ObterCodigosDresEOLQuery Instance => _instance ??= new();
+    private static ObterCodigosDresEOLQuery _instancia;
+    public static ObterCodigosDresEOLQuery Instancia => _instancia ??= new();
 }
