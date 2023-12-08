@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             // arrange
             var componenteCurricularAnoTurmaMock = ComponenteCurricularAnoTurmaMock.GerarLista();
 
-            var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoComponentesCurricularesEAnoTurmaEOLUseCase>();
+            var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase>();
 
             // act 
             var mensagem = JsonSerializer.Serialize(new AnoLetivoDTO(DateTimeExtension.HorarioBrasilia().Year));
@@ -83,7 +83,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
                 componentesEAnoTurma.DescricaoSerieEnsino = $"{faker.Random.Int(min: 1, max: 9)}º {faker.Lorem.Text().Limite(15)}";
             }
             
-            var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoComponentesCurricularesEAnoTurmaEOLUseCase>();
+            var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase>();
 
             // act 
             var mensagem = JsonSerializer.Serialize(new AnoLetivoDTO(DateTimeExtension.HorarioBrasilia().Year));

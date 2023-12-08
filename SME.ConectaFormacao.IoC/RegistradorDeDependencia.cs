@@ -289,7 +289,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnoLetivoAnoTurma, CasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnosLetivoAnoTurma>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAnosPorModalidadeAnoLetivo, CasoDeUsoObterAnosPorModalidadeAnoLetivo>();
         
-        _serviceCollection.TryAddScoped<IExecutarSincronizacaoComponentesCurricularesEAnoTurmaEOLUseCase, ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase>();
+        _serviceCollection.TryAddScoped<IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase, ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase>();
     }
 
     protected virtual void RegistrarHttpClients()

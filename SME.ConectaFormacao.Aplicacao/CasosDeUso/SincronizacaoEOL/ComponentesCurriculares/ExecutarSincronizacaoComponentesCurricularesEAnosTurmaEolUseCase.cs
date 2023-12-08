@@ -8,10 +8,10 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
-public class ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase : CasoDeUsoAbstrato, IExecutarSincronizacaoComponentesCurricularesEAnoTurmaEOLUseCase
+public class ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase : CasoDeUsoAbstrato, IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase
 {
     private readonly IMapper _mapper;
-    public ExecutarSincronizacaoComponentesCurricularesEAnoTurmaEolUseCase(IMediator mediator,IMapper mapper) : base(mediator)
+    public ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase(IMediator mediator,IMapper mapper) : base(mediator)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
