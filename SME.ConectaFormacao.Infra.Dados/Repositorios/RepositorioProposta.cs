@@ -456,7 +456,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<PropostaEncontroData>(query, new { encontroIds });
         }
 
-        public Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(params long[] encontroIds)
+        public async Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(params long[] encontroIds)
         {
             var query = @"select 
                             id, 
@@ -470,8 +470,33 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_encontro_turma 
-                        where proposta_encontro_id = any(@encontroIds) and not excluido";
-            return conexao.Obter().QueryAsync<PropostaEncontroTurma>(query, new { encontroIds });
+                        where proposta_encontro_id = any(@encontroIds) and not excluido;
+
+                        SELECT 
+                               pt.id,
+                               pt.proposta_id,
+                               pt.nome,
+                               pt.excluido,   
+                               pt.criado_em,
+	                           pt.criado_por,
+                               pt.criado_login,
+                        	   pt.alterado_em,    
+	                           pt.alterado_por,
+	                           pt.alterado_login
+                        FROM proposta_encontro_turma pet
+                        INNER JOIN proposta_turma pt on pt.id = pet.turma_id and not pt.excluido
+                        WHERE pet.proposta_encontro_id = any(@encontroIds) 
+                          and not pet.excluido;";
+
+            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { encontroIds });
+
+            var encontroTurmas = queryMultiple.Read<PropostaEncontroTurma>();
+            var turmas = queryMultiple.Read<PropostaTurma>();
+
+            foreach (var encontroTurma in encontroTurmas)
+                encontroTurma.Turma = turmas.FirstOrDefault(t => t.Id == encontroTurma.TurmaId);
+
+            return encontroTurmas;
         }
 
         public Task RemoverEncontroTurmas(IEnumerable<PropostaEncontroTurma> turmas)
@@ -1055,7 +1080,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
                         SELECT pt.id,
                                pt.proposta_id,
-                               pt.nome
+                               pt.nome,
+                               pt.excluido,   
+                               pt.criado_em,
+	                           pt.criado_por,
+                               pt.criado_login,
+                        	   pt.alterado_em,    
+	                           pt.alterado_por,
+	                           pt.alterado_login
                         FROM proposta_regente_turma prt
                         INNER JOIN proposta_turma pt on pt.id = prt.turma_id and not pt.excluido
                         WHERE prt.proposta_regente_id = any(@regenteIds) 
@@ -1266,9 +1298,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        WHERE proposta_tutor_id = any(@tutorIds) 
 	                          and not excluido;
 
-                        SELECT pt.id,
+                         SELECT 
+                               pt.id,
                                pt.proposta_id,
-                               pt.nome
+                               pt.nome,
+                               pt.excluido,   
+                               pt.criado_em,
+	                           pt.criado_por,
+                               pt.criado_login,
+                        	   pt.alterado_em,    
+	                           pt.alterado_por,
+	                           pt.alterado_login
                         FROM proposta_tutor_turma ptt
                         INNER JOIN proposta_turma pt on pt.id = ptt.turma_id and not pt.excluido
                         WHERE ptt.proposta_tutor_id = any(@tutorIds) 
