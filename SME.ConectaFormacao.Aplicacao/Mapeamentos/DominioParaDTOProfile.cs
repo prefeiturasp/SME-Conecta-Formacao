@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.AnoTurma;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Base;
 using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
+using SME.ConectaFormacao.Aplicacao.Dtos.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
@@ -112,13 +114,23 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<PropostaMovimentacao, PropostaMovimentacaoDTO>().ReverseMap();
             
-            CreateMap<Ano, RetornoListagemTodosDTO>().ReverseMap();
+            CreateMap<AnoTurma, RetornoListagemTodosDTO>().ReverseMap();
+            CreateMap<AnoTurma, AnoTurmaDTO>().ReverseMap();
             CreateMap<ComponenteCurricular, RetornoListagemTodosDTO>().ReverseMap();
 
             CreateMap<PropostaTurma,  PropostaTurmaDTO>().ReverseMap();
 
             CreateMap<PropostaTurma, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome));
+            CreateMap<ComponenteCurricular, ComponenteCurricularDTO>().ReverseMap();
+            CreateMap<AnoTurma, ComponenteCurricularAnoTurmaEOLDTO>()
+                .ForMember(dest => dest.CodigoAnoTurma, opt => opt.MapFrom(o => o.CodigoEOL))
+                .ForMember(dest => dest.DescricaoSerieEnsino, opt => opt.MapFrom(o => o.Descricao))
+                .ReverseMap();
+            CreateMap<ComponenteCurricular, ComponenteCurricularAnoTurmaEOLDTO>()
+                .ForMember(dest => dest.CodigoComponenteCurricular, opt => opt.MapFrom(o => o.CodigoEOL))
+                .ForMember(dest => dest.DescricaoComponenteCurricular, opt => opt.MapFrom(o => o.Nome))
+                .ReverseMap();
         }
     }
 }

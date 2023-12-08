@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
         {
             ToTable("componente_curricular");
 
-            Map(c => c.AnoId).ToColumn("ano_id");
+            Map(c => c.AnoTurmaId).ToColumn("ano_turma_id");
             Map(c => c.CodigoEOL).ToColumn("codigo_eol");
             Map(c => c.Nome).ToColumn("nome");
         }

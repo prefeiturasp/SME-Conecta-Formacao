@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave
         { }
         public async Task<IEnumerable<RetornoListagemDTO>> Executar()
         {
-            return await mediator.Send(ObterPalavraChaveQuery.Instance);
+            return await mediator.Send(ObterPalavraChaveQuery.Instancia);
         }
     }
 }

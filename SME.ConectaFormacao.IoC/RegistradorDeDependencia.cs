@@ -170,7 +170,7 @@ public class RegistradorDeDependencia
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
             config.AddMap(new PropostaDreMap());
-            config.AddMap(new AnoMap());
+            config.AddMap(new AnoTurmaMap());
             config.AddMap(new ComponenteCurricularMap());
 
             config.ForDommel();
@@ -214,7 +214,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>();
         _serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaMovimentacao, RepositorioPropostaMovimentacao>();
-        _serviceCollection.TryAddScoped<IRepositorioAno, RepositorioAno>();
+        _serviceCollection.TryAddScoped<IRepositorioAnoTurma, RepositorioAnoTurma>();
         _serviceCollection.TryAddScoped<IRepositorioComponenteCurricular, RepositorioComponenteCurricular>();
     }
 
@@ -289,8 +289,10 @@ public class RegistradorDeDependencia
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoHomologada, CasoDeUsoObterFormacaoHomologada>();
         
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterComponentesCurricularesPorModalidadeAnoLetivoAno, CasoDeUsoObterComponentesCurricularesPorModalidadeAnoLetivoAno>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnoLetivoAnoTurma, CasoDeUsoObterComponentesCurricularesEAnosTurmaPorModalidadeAnosLetivoAnoTurma>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAnosPorModalidadeAnoLetivo, CasoDeUsoObterAnosPorModalidadeAnoLetivo>();
+        
+        _serviceCollection.TryAddScoped<IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase, ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase>();
     }
 
     protected virtual void RegistrarHttpClients()
