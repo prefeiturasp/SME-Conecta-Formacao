@@ -6,9 +6,9 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioAnoTurmaTurma : RepositorioBaseAuditavel<AnoTurma>, IRepositorioAnoTurma
+    public class RepositorioAnoTurma : RepositorioBaseAuditavel<AnoTurma>, IRepositorioAnoTurma
     {
-        public RepositorioAnoTurmaTurma(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
+        public RepositorioAnoTurma(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
 
