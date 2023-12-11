@@ -217,6 +217,63 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
             return default;
         }
+        
+        public static IEnumerable<PropostaModalidade> GerarModalidades(long propostaId, IEnumerable<Modalidade> modalidades)
+        {
+            if (modalidades != null && modalidades.Any())
+            {
+                var quantidade = new Randomizer().Number(1, modalidades.Count());
+                return modalidades
+                    .Select(t => new PropostaModalidade
+                    {
+                        PropostaId = propostaId,
+                        Modalidade = t,
+                        CriadoEm = DateTimeExtension.HorarioBrasilia(),
+                        CriadoPor = "Sistema",
+                        CriadoLogin = "Sistema",
+                    }).Take(quantidade);
+            }
+
+            return default;
+        }
+        
+        public static IEnumerable<PropostaAnoTurma> GerarAnosTurmas(long propostaId, IEnumerable<AnoTurma> anosTurmas)
+        {
+            if (anosTurmas != null && anosTurmas.Any())
+            {
+                var quantidade = new Randomizer().Number(1, anosTurmas.Count());
+                return anosTurmas
+                    .Select(t => new PropostaAnoTurma
+                    {
+                        PropostaId = propostaId,
+                        AnoTurmaId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    }).Take(quantidade);
+            }
+
+            return default;
+        }
+        
+        public static IEnumerable<PropostaComponenteCurricular> GerarComponentesCurriculares(long propostaId, IEnumerable<ComponenteCurricular> componentesCurriculares)
+        {
+            if (componentesCurriculares != null && componentesCurriculares.Any())
+            {
+                var quantidade = new Randomizer().Number(1, componentesCurriculares.Count());
+                return componentesCurriculares
+                    .Select(t => new PropostaComponenteCurricular
+                    {
+                        PropostaId = propostaId,
+                        ComponenteCurricularId = t.Id,
+                        CriadoEm = t.CriadoEm,
+                        CriadoPor = t.CriadoPor,
+                        CriadoLogin = t.CriadoLogin,
+                    }).Take(quantidade);
+            }
+
+            return default;
+        }
 
         public static IEnumerable<PropostaTutor> GerarTutor(long propostaId)
         {

@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             var codigoSerieEnsino = 1000;
                 
             var faker = new Faker<AnoTurma>();
-            faker.RuleFor(dest => dest.CodigoEOL, f => codigoEol++.ToString());
+            faker.RuleFor(x => x.CodigoEOL, f => codigoEol++.GerarAte(9));
             faker.RuleFor(dest => dest.Descricao, f => f.Lorem.Text().Limite(70));
             faker.RuleFor(dest => dest.CodigoSerieEnsino, f=> codigoSerieEnsino++);
             faker.RuleFor(dest => dest.Modalidade, f=> modalidade);
@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker;
         }
 
-        public static IEnumerable<AnoTurma> GerarAnoTurma(int quantidade, bool todos = false)
+        public static IEnumerable<AnoTurma> GerarAnosTurmas(int quantidade, bool todos = false)
         {
             var opcoesModalidades = new [] 
             { 

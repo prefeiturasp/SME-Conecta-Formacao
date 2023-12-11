@@ -32,7 +32,10 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.FuncoesEspecificas = await _repositorioProposta.ObterFuncoesEspecificasPorId(request.Id);
             proposta.CriteriosValidacaoInscricao = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
             proposta.VagasRemanecentes = await _repositorioProposta.ObterVagasRemacenentesPorId(request.Id);
-            proposta.PalavrasChaves = await _repositorioProposta.ObterPalavraChavePorId(request.Id);
+            proposta.PalavrasChaves = await _repositorioProposta.ObterPalavrasChavesPorId(request.Id);
+            proposta.Modalidades = await _repositorioProposta.ObterModalidadesPorId(request.Id);
+            proposta.AnosTurmas = await _repositorioProposta.ObterAnosTurmasPorId(request.Id);
+            proposta.ComponentesCurriculares = await _repositorioProposta.ObterComponentesCurricularesPorId(request.Id);
             proposta.CriterioCertificacao = await _repositorioProposta.ObterCriterioCertificacaoPorPropostaId(request.Id);
             proposta.Turmas = await _repositorioProposta.ObterTurmasPorId(request.Id);
 

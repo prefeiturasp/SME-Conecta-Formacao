@@ -18,19 +18,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ComponenteCurricular
         public async Task Deve_obter_os_componentes_curriculares_por_modalidade_ano_letivo_e_ano_turma()
         {
             // arrange 
-            var anosTurma = AnoTurmaMock.GerarAnoTurma(9);
-            await InserirNaBase(anosTurma);
-            
-            foreach (var anoTurma in anosTurma)
-            {
-               var componenteCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(9);
-               
-               foreach (var componenteCurricular in componenteCurriculares)
-               {
-                   componenteCurricular.AnoTurmaId = anoTurma.Id;
-                   await InserirNaBase(componenteCurricular);    
-               }
-            }
+            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            await InserirNaBase(componentesCurriculares);
             
             AoObterComponentesCurricularesPorModalidadeAnoLetivoAnoTurmaMock.Montar(Modalidade.Fundamental);
 
@@ -49,12 +41,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ComponenteCurricular
         public async Task Deve_obter_os_componentes_curriculares_por_todas_as_modalidades_ano_letivo_e_todos_os_anos_turma()
         {
             // arrange 
-            var anosTurma = AnoTurmaMock.GerarAnoTurma(9);
+            var anosTurma = AnoTurmaMock.GerarAnosTurmas(9);
             await InserirNaBase(anosTurma);
             
             foreach (var anoTurma in anosTurma)
             {
-                var componenteCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(9);
+                var componenteCurriculares = ComponenteCurricularMock.GerarComponentesCurriculares(9);
                
                 foreach (var componenteCurricular in componenteCurriculares)
                 {

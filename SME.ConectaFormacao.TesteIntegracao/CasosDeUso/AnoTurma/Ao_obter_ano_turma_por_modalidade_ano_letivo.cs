@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AnoTurma
         public async Task Deve_obter_os_anos_das_turmas_por_modalidade_e_ano_letivo()
         {
             // arrange 
-            var anosTurma = AnoTurmaMock.GerarAnoTurma(9);
+            var anosTurma = AnoTurmaMock.GerarAnosTurmas(9);
             await InserirNaBase(anosTurma);
 
             AoObterAnosTurmaPorModalidadeAnoLetivoMock.Montar(Modalidade.Fundamental);
@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AnoTurma
         public async Task Deve_obter_todos_quando_selecionado_todas_as_modalidades_e_ano_letivo_atual()
         {
             // arrange 
-            var anos = AnoTurmaMock.GerarAnoTurma(9);
+            var anos = AnoTurmaMock.GerarAnosTurmas(9);
             await InserirNaBase(anos);
             
             AoObterAnosTurmaPorModalidadeAnoLetivoMock.Montar(Modalidade.TODAS);
