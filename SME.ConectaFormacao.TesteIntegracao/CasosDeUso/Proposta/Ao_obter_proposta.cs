@@ -34,6 +34,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaCompletoDTO.CriteriosValidacaoInscricao, proposta.Id);
             ValidarPropostaPalavrasChavesDTO(propostaCompletoDTO.PalavrasChaves, proposta.Id);
             ValidarAuditoriaDTO(proposta, propostaCompletoDTO.Auditoria);
+            ValidarPropostaTurmasDTO(propostaCompletoDTO.Turmas, proposta.Id);
             ValidarPropostaModalidadesDTO(propostaCompletoDTO.Modalidades, proposta.Id);
             ValidarPropostaAnosTurmasDTO(propostaCompletoDTO.AnosTurmas, proposta.Id);
             ValidarPropostaComponentesCurricularesDTO(propostaCompletoDTO.ComponentesCurriculares, proposta.Id);

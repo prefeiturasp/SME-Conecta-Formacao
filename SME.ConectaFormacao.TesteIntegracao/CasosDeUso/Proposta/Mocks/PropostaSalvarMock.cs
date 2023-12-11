@@ -158,7 +158,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         private static IEnumerable<PropostaTurmaDTO> GerarPropostaTurmaDTO(short quantidadeTurmas)
         {
             var faker = new Faker<PropostaTurmaDTO>();
-            faker.RuleFor(x => x.Nome, f => f.Company.CompanySuffix());
+            faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
 
             return faker.Generate(quantidadeTurmas);
         }

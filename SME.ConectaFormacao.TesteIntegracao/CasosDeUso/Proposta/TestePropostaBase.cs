@@ -374,6 +374,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             }
         }
 
+        protected void ValidarPropostaTurmasDTO(IEnumerable<PropostaTurmaDTO> propostaTurmaDTO, long id)
+        {
+            var propostaTurmas = ObterTodos<PropostaTurma>().Where(t => !t.Excluido);
+            foreach (var propostaTurma in propostaTurmas)
+            {
+                propostaTurma.PropostaId.ShouldBe(id);
+                propostaTurmaDTO.Any(t => t.Nome.ToUpper() == propostaTurma.Nome.ToUpper()).ShouldBeTrue();
+            }
+        }
+
         protected void ValidarPropostaModalidadesDTO(IEnumerable<PropostaModalidadeDTO> propostaModalidadeDTO, long id)
         {
             var propostaModalidades = ObterTodos<PropostaModalidade>().Where(t => !t.Excluido);

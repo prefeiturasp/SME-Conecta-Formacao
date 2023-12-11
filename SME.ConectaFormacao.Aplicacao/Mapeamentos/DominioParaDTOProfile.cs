@@ -71,6 +71,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.CriteriosValidacaoInscricao, opt => opt.MapFrom(o => o.CriteriosValidacaoInscricao))
                 .ForMember(dest => dest.PalavrasChaves, opt => opt.MapFrom(o => o.PalavrasChaves))
                 .ForMember(dest => dest.CriterioCertificacao, opt => opt.MapFrom(o => o.CriterioCertificacao))
+                .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ForMember(dest => dest.Modalidades, opt => opt.MapFrom(o => o.Modalidades))
+                .ForMember(dest => dest.AnosTurmas, opt => opt.MapFrom(o => o.AnosTurmas))
+                .ForMember(dest => dest.ComponentesCurriculares, opt => opt.MapFrom(o => o.ComponentesCurriculares))
                 .ReverseMap();
             CreateMap<PropostaCriterioValidacaoInscricao, PropostaCriterioValidacaoInscricaoDTO>().ReverseMap();
             CreateMap<PropostaFuncaoEspecifica, PropostaFuncaoEspecificaDTO>().ReverseMap();
