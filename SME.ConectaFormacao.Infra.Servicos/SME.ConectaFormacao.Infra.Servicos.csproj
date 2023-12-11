@@ -8,11 +8,13 @@
 
     <ItemGroup>
       <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.22.0" />
+      <PackageReference Include="Elastic.Apm.StackExchange.Redis" Version="1.22.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
       <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.16" />
       <PackageReference Include="Minio" Version="5.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
+      <PackageReference Include="StackExchange.Redis" Version="2.7.4" />
     </ItemGroup>
 
     <ItemGroup>
