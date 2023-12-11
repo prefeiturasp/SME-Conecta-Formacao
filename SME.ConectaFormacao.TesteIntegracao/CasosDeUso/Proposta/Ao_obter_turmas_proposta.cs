@@ -1,7 +1,6 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -19,28 +18,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_turmas_proposta_valida()
         {
             // arrange
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
-            await InserirNaBase(areaPromotora);
-
-            var cargosEFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosEFuncoes);
-
-            var criterioValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criterioValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
-
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
-            await InserirNaBase(anosTurmas);
-
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
-            await InserirNaBase(componentesCurriculares);
-
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosEFuncoes, criterioValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares);
+            var proposta = await InserirNaBaseProposta();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterTurmasProposta>();
 

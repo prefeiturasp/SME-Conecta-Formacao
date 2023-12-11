@@ -79,14 +79,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
 
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
 
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
 
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
-            
+
             var criterios = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5, false);
             await InserirNaBase(criterios);
 
@@ -191,13 +191,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
 
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
             var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
@@ -267,13 +267,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
 
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
             var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
@@ -336,13 +336,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
 
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
             var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
@@ -407,13 +407,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
 
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
             var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
@@ -482,13 +482,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
 
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
             var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
@@ -550,13 +550,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
 
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
             var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
@@ -675,15 +675,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
-        
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
-        
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
-        
+
             var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
             var publicosAlvoDTO = Enumerable.Empty<PropostaPublicoAlvoDTO>();
             var funcoesEspecificaDTO = Enumerable.Empty<PropostaFuncaoEspecificaDTO>();
@@ -740,15 +740,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
-        
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
-        
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
-        
+
             var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
             var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
             var funcoesEspecificaDTO = Enumerable.Empty<PropostaFuncaoEspecificaDTO>();
@@ -815,13 +815,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
 
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
             var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
@@ -890,13 +890,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
 
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
             await InserirNaBase(anosTurmas);
 
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
             var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
