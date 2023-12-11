@@ -12,23 +12,38 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorModalidadeAnoLetivoAno(Modalidade modalidade, int anoLetivo, long anoTurmaId)
+        public Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorAnoTurma(long[] anoTurmaId, bool exibirOpcaoTodos)
         {
-            var query = $@"select cc.id, 
-                                 cc.ano_turma_id AnoTurmaId,
-                                 cc.codigo_eol CodigoEOL,
-                                 cc.nome,
-                                 cc.todos,
-                                 cc.ordem 
-                          from componente_curricular cc
-                            join ano_turma a on a.id = cc.ano_turma_id
-                          where not cc.excluido
-                              {IncluirFiltroPorModalidade(modalidade)}                              
-                              {IncluirFiltroPorAno(anoTurmaId)}                              
-                              and a.ano_letivo = @anoLetivo 
-                              order by cc.ordem ";
+            var query = $@"select 
+                               cc.id, 
+                               cc.ano_turma_id,
+                               cc.codigo_eol,
+                               cc.nome,
+                               cc.todos,
+                               cc.ordem 
+                           from componente_curricular cc
+                           where not cc.excluido 
+                           and (exists (
+	                            select 1 
+	                            from ano_turma a 
+	                            where not a.excluido 
+  	                              and a.id = cc.ano_turma_id 
+	                              and a.id = any(@anoTurmaId)
+	                              and not a.todos
+                           ) or exists (
+	                            select 1 
+	                            from ano_turma a 
+	                            where not a.excluido
+	                              and a.id = any(@anoTurmaId)
+	                              and a.todos  
+                           ) or cc.ano_turma_id is null)";
 
-            return conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { modalidade, anoLetivo, anoTurmaId });
+            if (!exibirOpcaoTodos)
+                query += " and not todos";
+
+            query += " order by ordem";
+
+            return conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { anoTurmaId });
         }
 
         public Task<IEnumerable<ComponenteCurricular>> ObterPorAnoLetivo(int anoLetivo)
@@ -52,16 +67,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                               order by cc.ordem ";
 
             return conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { anoLetivo});
-        }
-
-        private string IncluirFiltroPorAno(long anoTurmaId)
-        {
-            return anoTurmaId == 999 ? string.Empty : " and cc.ano_turma_id = @anoTurmaId ";
-        }
-
-        private string IncluirFiltroPorModalidade(Modalidade modalidade)
-        {
-            return modalidade == Modalidade.TODAS ? string.Empty : " and a.modalidade = @modalidade ";
         }
     }
 }

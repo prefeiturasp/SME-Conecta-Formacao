@@ -12,23 +12,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public Task<IEnumerable<AnoTurma>> ObterAnosPorModalidadeAnoLetivo(Modalidade modalidade, int anoLetivo)
+        public Task<IEnumerable<AnoTurma>> ObterAnosPorModalidadeAnoLetivo(Modalidade[] modalidade, int anoLetivo, bool exibirTodos)
         {
+            var modalidades = modalidade.Select(t => (long)t).ToArray();
+
             var query = $@"select id, 
-                                 codigo_eol CodigoEOL,
+                                 codigo_eol,
                                  descricao,
-                                 codigo_serie_ensino CodigoSerieEnsino,
-                                 ano_letivo AnoLetivo,
-                                 modalidade Modalidade,
+                                 codigo_serie_ensino,
+                                 ano_letivo,
+                                 modalidade,
                                  todos,
                                  ordem 
                           from ano_turma 
                           where not excluido
-                              {IncluirFiltroPorModalidade(modalidade)}                              
-                              and ano_letivo = @anoLetivo 
-                              order by ordem ";
+                              and (modalidade = any(@modalidades) or modalidade is null)
+                              and ano_letivo = @anoLetivo ";
 
-            return conexao.Obter().QueryAsync<AnoTurma>(query, new { modalidade, anoLetivo });
+            if (!exibirTodos)
+                query += " and not todos ";
+
+            query += " order by ordem ";
+
+            return conexao.Obter().QueryAsync<AnoTurma>(query, new { modalidades, anoLetivo });
         }
 
         public Task<IEnumerable<AnoTurma>> ObterPorAnoLetivo(int anoLetivo)
@@ -53,11 +59,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                               order by ordem ";
 
             return conexao.Obter().QueryAsync<AnoTurma>(query, new { anoLetivo });
-        }
-
-        private string IncluirFiltroPorModalidade(Modalidade modalidade)
-        {
-            return modalidade == Modalidade.TODAS ? string.Empty : " and modalidade = @modalidade ";
         }
     }
 }

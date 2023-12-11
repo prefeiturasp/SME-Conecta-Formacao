@@ -30,8 +30,5 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 
         [Display(Name = "CELP", ShortName = "CELP")]
         CELP = 10,
-            
-        [Display(Name = "Todas", ShortName = "Todas")]
-        TODAS = 999
     }
 }
