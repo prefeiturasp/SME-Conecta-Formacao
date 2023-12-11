@@ -1,9 +1,7 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -19,30 +17,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_retornar_registros_com_filtro()
         {
             // arrange
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
+            var propostas = await InserirNaBaseProposta(15);
 
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
-
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
-            await InserirNaBase(anosTurmas);
-
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
-            await InserirNaBase(componentesCurriculares);
-
-            var propostas = await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, 
-                criteriosValidacaoInscricao, palavrasChaves,modalidades, anosTurmas, componentesCurriculares);
-
-            var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOValido(areaPromotora, propostas);
+            var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOValido(propostas.FirstOrDefault().AreaPromotora, propostas);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPaginacao>();
 
@@ -58,28 +35,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_retornar_registros_sem_filtros()
         {
             // arrange
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
-
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
-
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
-            await InserirNaBase(anosTurmas);
-
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
-            await InserirNaBase(componentesCurriculares);
-
-            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves
-                ,modalidades, anosTurmas, componentesCurriculares);
+            var propostas = await InserirNaBaseProposta(15);
 
             var filtro = new PropostaFiltrosDTO();
 
@@ -97,28 +53,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Nao_deve_retornar_registros_filtros_invalidos()
         {
             // arrange
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
-
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-            
-            var modalidades = Enum.GetValues(typeof(Modalidade)).Cast<Modalidade>();
-
-            var anosTurmas = AnoTurmaMock.GerarAnosTurmas(10);
-            await InserirNaBase(anosTurmas);
-
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponentesCurricularesComAnoTurma(10,anosTurmas);
-            await InserirNaBase(componentesCurriculares);
-
-            await InserirNaBaseProposta(15, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves
-                ,modalidades, anosTurmas, componentesCurriculares);
+            var propostas = await InserirNaBaseProposta(15);
 
             var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOInvalido();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPaginacao>();

@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
@@ -9,14 +8,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
     {
         public static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> ComponentesCurricularesAnosTurmas { get; set; }
         
-        public static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> GerarLista(Modalidade modalidade = Modalidade.Fundamental, int quantidade = 10)
+        public static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> GerarLista(Dominio.Enumerados.Modalidade modalidade = Dominio.Enumerados.Modalidade.Fundamental, int quantidade = 10)
         {
             ComponentesCurricularesAnosTurmas = Gerador(modalidade, quantidade);
 
             return ComponentesCurricularesAnosTurmas;
         }
 
-        private static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> Gerador(Modalidade modalidade,int quantidade)
+        private static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> Gerador(Dominio.Enumerados.Modalidade modalidade,int quantidade)
         {
             var codigoComponente = 1;
             var serieEnsino = 1000;

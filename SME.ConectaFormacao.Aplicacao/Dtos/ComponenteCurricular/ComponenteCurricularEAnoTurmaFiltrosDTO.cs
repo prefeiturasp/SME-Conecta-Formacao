@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SME.ConectaFormacao.Aplicacao.Dtos.Base;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.ComponenteCurricular
 {
-    public class ComponenteCurricularEAnoTurmaFiltrosDTO : ModalidadeAnoLetivoFiltrosDTO
+    public class FiltroListaComponenteCurricularDTO
     {
         [Required(ErrorMessage = "O ano deve ser informada.")]
-        public int AnoTurmaId { get; set; }
+        public long[] AnoTurmaId { get; set; }
+
+        public bool ExibirOpcaoTodos { get; set; }
     }
 }

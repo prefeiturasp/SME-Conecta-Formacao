@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos.Base;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<RetornoListagemTodosDTO>> Handle(ObterAnosPorModalidadeAnoLetivoQuery request, CancellationToken cancellationToken)
         {
-            var anos = await _repositorioAnoTurma.ObterAnosPorModalidadeAnoLetivo(request.Modalidade, request.AnoLetivo);
+            var anos = await _repositorioAnoTurma.ObterAnosPorModalidadeAnoLetivo(request.Modalidade, request.AnoLetivo, request.ExibirTodos);
             return _mapper.Map<IEnumerable<RetornoListagemTodosDTO>>(anos);
         }
     }
