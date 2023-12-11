@@ -18,8 +18,6 @@ namespace SME.ConectaFormacao.Aplicacao
                 erros.Add(MensagemNegocio.TIPO_INSCRICAO_NAO_INFORMADA);
             if (string.IsNullOrEmpty(proposta.NomeFormacao))
                 erros.Add(MensagemNegocio.NOME_FORMACAO_NAO_INFORMADO);
-            if (!proposta.PublicosAlvo.Any())
-                erros.Add(MensagemNegocio.PUBLICO_ALVO_NAO_INFORMADO);
             if (proposta.QuantidadeTurmas == 0 || proposta.QuantidadeTurmas == null)
                 erros.Add(MensagemNegocio.QUANTIDADE_DE_TURMAS_NAO_INFORMADA);
             if (proposta.QuantidadeVagasTurma == 0 || proposta.QuantidadeVagasTurma == null)

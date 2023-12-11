@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var turmasAntes = await _repositorioProposta.ObterTurmasPorId(request.PropostaId);
 
             var turmasInserir = request.Turmas.Where(w => !turmasAntes.Any(a => a.Id == w.Id));
-            var turmasAlterar = turmasAntes.Where(w => request.Turmas.Any(a => a.Id == w.Id && (a.Nome != w.Nome || a.DreId.GetValueOrDefault() != w.DreId.GetValueOrDefault())));
+            var turmasAlterar = turmasAntes.Where(w => request.Turmas.Any(a => a.Id == w.Id && (a.Nome != w.Nome || a.DreId.GetValueOrDefault() != w.DreId.GetValueOrDefault()))).ToList();
             var turmasExcluir = turmasAntes.Where(w => !request.Turmas.Any(a => a.Id == w.Id));
 
             if (turmasInserir.Any())

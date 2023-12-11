@@ -18,19 +18,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_turmas_proposta_valida()
         {
             // arrange
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
-            await InserirNaBase(areaPromotora);
-
-            var cargosEFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosEFuncoes);
-
-            var criterioValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criterioValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosEFuncoes, criterioValidacaoInscricao, palavrasChaves);
+            var proposta = await InserirNaBaseProposta();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterTurmasProposta>();
 

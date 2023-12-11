@@ -22,8 +22,9 @@ CREATE INDEX if not exists ano_turma_modalidade_idx ON public.ano_turma (modalid
 CREATE INDEX if not exists ano_turma_codigo_eol_idx ON public.ano_turma (codigo_eol);
 
 insert into public.ano_turma
-(descricao,criado_em,criado_por,criado_login, ordem, ano_letivo)
-select 'Todos',now(), 'Sistema', 'Sistema',0,date_part('year', CURRENT_DATE) where not exists (select 1 from public.ano_turma where descricao = 'Todos');
+(descricao,criado_em,criado_por,criado_login, ordem, ano_letivo, todos)
+select 'Todos', now(), 'Sistema', 'Sistema', 0, date_part('year', CURRENT_DATE), true 
+where not exists (select 1 from public.ano_turma where descricao = 'Todos');
  
 --> Criação da tabela de Componentes curriculares
 CREATE TABLE if not exists public.componente_curricular (
@@ -46,5 +47,6 @@ CREATE TABLE if not exists public.componente_curricular (
 CREATE INDEX if not exists componente_curricular_codigo_eol_idx ON public.componente_curricular(codigo_eol);
 
 insert into public.componente_curricular
-(nome,criado_em,criado_por,criado_login, ordem)
-select 'Todos',now(), 'Sistema', 'Sistema',0 where not exists (select 1 from public.componente_curricular where nome = 'Todos');
+(nome,criado_em,criado_por,criado_login, ordem, todos)
+select 'Todos',now(), 'Sistema', 'Sistema', 0, true 
+where not exists (select 1 from public.componente_curricular where nome = 'Todos');

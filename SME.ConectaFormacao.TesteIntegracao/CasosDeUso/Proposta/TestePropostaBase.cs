@@ -15,6 +15,34 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
+        protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade)
+        {
+            var retorno = new List<Dominio.Entidades.Proposta>();
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
+
+            return await InserirNaBaseProposta(quantidade, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
+            modalidades, anosTurmas, componentesCurriculares);
+        }
+
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada, FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim)
         {
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
@@ -29,12 +57,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
             await InserirNaBase(palavrasChaves);
 
-            return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves, situacao, formacaoHomologada);
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
+
+            return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
+                modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada);
         }
 
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora,
             IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,
-            IEnumerable<PalavraChave> palavrasChaves, SituacaoProposta situacao = SituacaoProposta.Cadastrada, FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim)
+            IEnumerable<PalavraChave> palavrasChaves, IEnumerable<Dominio.Enumerados.Modalidade> modalidades, IEnumerable<Dominio.Entidades.AnoTurma> anosTurmas,
+            IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares, SituacaoProposta situacao = SituacaoProposta.Cadastrada,
+            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
@@ -42,6 +81,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 Formato.Presencial,
                 situacao,
                 false, false, formacaoHomologada);
+
+            proposta.AreaPromotora = areaPromotora;
 
             await InserirNaBase(proposta);
 
@@ -95,6 +136,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                     await InserirNaBase(datas);
                     encontro.Datas = datas;
                 }
+
                 proposta.Encontros = encontros;
             }
 
@@ -103,6 +145,27 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             {
                 await InserirNaBase(palavrasChavesDaProposta);
                 proposta.PalavrasChaves = palavrasChavesDaProposta;
+            }
+
+            var modalidadesDaProposta = PropostaMock.GerarModalidades(proposta.Id, modalidades);
+            if (modalidadesDaProposta != null)
+            {
+                await InserirNaBase(modalidadesDaProposta);
+                proposta.Modalidades = modalidadesDaProposta;
+            }
+
+            var anosTurmasDaProposta = PropostaMock.GerarAnosTurmas(proposta.Id, anosTurmas);
+            if (anosTurmasDaProposta != null)
+            {
+                await InserirNaBase(anosTurmasDaProposta);
+                proposta.AnosTurmas = anosTurmasDaProposta;
+            }
+
+            var componentesCurricularesDaProposta = PropostaMock.GerarComponentesCurriculares(proposta.Id, componentesCurriculares);
+            if (componentesCurricularesDaProposta != null)
+            {
+                await InserirNaBase(componentesCurricularesDaProposta);
+                proposta.ComponentesCurriculares = componentesCurricularesDaProposta;
             }
 
             var tutores = PropostaMock.GerarTutor(proposta.Id);
@@ -142,14 +205,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
         protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade,
             Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes,
-            IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao, IEnumerable<PalavraChave> palavrasChaves)
+            IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao, IEnumerable<PalavraChave> palavrasChaves,
+            IEnumerable<Dominio.Enumerados.Modalidade> modalidades, IEnumerable<Dominio.Entidades.AnoTurma> anosTurmas,
+            IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares)
         {
             var lista = new List<Dominio.Entidades.Proposta>();
 
             for (int i = 0; i < quantidade; i++)
-            {
-                lista.Add(await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves));
-            }
+                lista.Add(await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,
+                    palavrasChaves, modalidades, anosTurmas, componentesCurriculares));
 
             return lista;
         }
@@ -302,14 +366,52 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
         protected void ValidarPropostaPalavrasChavesDTO(IEnumerable<PropostaPalavraChaveDTO> propostaPalavrasChavesDTO, long id)
         {
-            var palavrasChaves = ObterTodos<PropostaPalavraChave>().Where(t => !t.Excluido);
-            foreach (var palavraChave in palavrasChaves)
+            var propostaPalavraChaves = ObterTodos<PropostaPalavraChave>().Where(t => !t.Excluido);
+            foreach (var palavraChave in propostaPalavraChaves)
             {
                 palavraChave.PropostaId.ShouldBe(id);
-                propostaPalavrasChavesDTO.Any(t => t.PalavraChaveId == palavraChave.Id).ShouldBeTrue();
+                propostaPalavrasChavesDTO.Any(t => t.PalavraChaveId == palavraChave.PalavraChaveId).ShouldBeTrue();
             }
         }
 
+        protected void ValidarPropostaTurmasDTO(IEnumerable<PropostaTurmaDTO> propostaTurmaDTO, long id)
+        {
+            var propostaTurmas = ObterTodos<PropostaTurma>().Where(t => !t.Excluido);
+            foreach (var propostaTurma in propostaTurmas)
+            {
+                propostaTurma.PropostaId.ShouldBe(id);
+                propostaTurmaDTO.Any(t => t.Nome.ToUpper() == propostaTurma.Nome.ToUpper()).ShouldBeTrue();
+            }
+        }
 
+        protected void ValidarPropostaModalidadesDTO(IEnumerable<PropostaModalidadeDTO> propostaModalidadeDTO, long id)
+        {
+            var propostaModalidades = ObterTodos<PropostaModalidade>().Where(t => !t.Excluido);
+            foreach (var propostaModalidade in propostaModalidades)
+            {
+                propostaModalidade.PropostaId.ShouldBe(id);
+                propostaModalidadeDTO.Any(t => t.Modalidade == propostaModalidade.Modalidade).ShouldBeTrue();
+            }
+        }
+
+        protected void ValidarPropostaAnosTurmasDTO(IEnumerable<PropostaAnoTurmaDTO> propostaAnosTurmasDTO, long id)
+        {
+            var propostaAnoTurmas = ObterTodos<PropostaAnoTurma>().Where(t => !t.Excluido);
+            foreach (var propostaAnoTurma in propostaAnoTurmas)
+            {
+                propostaAnoTurma.PropostaId.ShouldBe(id);
+                propostaAnosTurmasDTO.Any(t => t.AnoTurmaId == propostaAnoTurma.AnoTurmaId).ShouldBeTrue();
+            }
+        }
+
+        protected void ValidarPropostaComponentesCurricularesDTO(IEnumerable<PropostaComponenteCurricularDTO> propostaComponenteCurricularDTO, long id)
+        {
+            var propostaComponentesCurriculares = ObterTodos<PropostaComponenteCurricular>().Where(t => !t.Excluido);
+            foreach (var propostaComponenteCurricular in propostaComponentesCurriculares)
+            {
+                propostaComponenteCurricular.PropostaId.ShouldBe(id);
+                propostaComponenteCurricularDTO.Any(t => t.ComponenteCurricularId == propostaComponenteCurricular.ComponenteCurricularId).ShouldBeTrue();
+            }
+        }
     }
 }

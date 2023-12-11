@@ -11,6 +11,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.AnoTurmaId).ToColumn("ano_turma_id");
             Map(c => c.CodigoEOL).ToColumn("codigo_eol");
             Map(c => c.Nome).ToColumn("nome");
+            Map(c => c.Todos).ToColumn("todos");
+            Map(c => c.Ordem).ToColumn("ordem");
         }
     }
 }

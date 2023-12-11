@@ -1,20 +1,22 @@
 ﻿using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos.Base;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterAnosPorModalidadeAnoLetivoQuery : IRequest<IEnumerable<RetornoListagemTodosDTO>>
     {
-        public ObterAnosPorModalidadeAnoLetivoQuery(Modalidade modalidade, int anoLetivo)
+        public ObterAnosPorModalidadeAnoLetivoQuery(Modalidade[] modalidade, int anoLetivo, bool exibirTodos)
         {
             Modalidade = modalidade;
             AnoLetivo = anoLetivo;
+            ExibirTodos = exibirTodos;
         }
 
-        public Modalidade Modalidade { get; }
+        public Modalidade[] Modalidade { get; }
         public int AnoLetivo { get; }
+        public bool ExibirTodos { get; set; }
     }
 
     public class ObterAnoPorModalidadeAnoLetivoQueryValidator : AbstractValidator<ObterAnosPorModalidadeAnoLetivoQuery>
