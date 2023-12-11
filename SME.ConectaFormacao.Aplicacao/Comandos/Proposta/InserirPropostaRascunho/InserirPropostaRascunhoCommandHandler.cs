@@ -42,13 +42,19 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(id, proposta.VagasRemanecentes), cancellationToken);
 
-                await _mediator.Send(new SalvarPalavraChaveCommand(id, proposta.PalavrasChaves), cancellationToken);
+                await _mediator.Send(new SalvarPropostaPalavraChaveCommand(id, proposta.PalavrasChaves), cancellationToken);
 
                 await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(proposta.ArquivoImagemDivulgacaoId), cancellationToken);
 
                 await _mediator.Send(new SalvarPropostaDreCommand(id, proposta.Dres), cancellationToken);
 
                 await _mediator.Send(new SalvarPropostaTurmaCommand(id, proposta.Turmas), cancellationToken);
+                
+                await _mediator.Send(new SalvarPropostaModalidadeCommand(id, proposta.Modalidades), cancellationToken);
+
+                await _mediator.Send(new SalvarPropostaAnoTurmaCommand(id, proposta.AnosTurmas), cancellationToken);
+
+                await _mediator.Send(new SalvarPropostaComponenteCurricularCommand(id, proposta.ComponentesCurriculares), cancellationToken);
 
                 transacao.Commit();
 

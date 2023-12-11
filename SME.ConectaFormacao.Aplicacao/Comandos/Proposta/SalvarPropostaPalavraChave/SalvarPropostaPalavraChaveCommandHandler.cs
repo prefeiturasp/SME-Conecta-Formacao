@@ -3,18 +3,18 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarPalavraChaveCommandHandler : IRequestHandler<SalvarPalavraChaveCommand, bool>
+    public class SalvarPropostaPalavraChaveCommandHandler : IRequestHandler<SalvarPropostaPalavraChaveCommand, bool>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 
-        public SalvarPalavraChaveCommandHandler(IRepositorioProposta repositorioProposta)
+        public SalvarPropostaPalavraChaveCommandHandler(IRepositorioProposta repositorioProposta)
         {
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public async Task<bool> Handle(SalvarPalavraChaveCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(SalvarPropostaPalavraChaveCommand request, CancellationToken cancellationToken)
         {
-            var palavrasChavesAntes = await _repositorioProposta.ObterPalavraChavePorId(request.PropostaId);
+            var palavrasChavesAntes = await _repositorioProposta.ObterPalavrasChavesPorId(request.PropostaId);
 
             var palavrasChavesInserir = request.PalavrasChaves.Where(w => !palavrasChavesAntes.Any(a => a.PalavraChaveId == w.PalavraChaveId));
             var palavrasChavesExcluir = palavrasChavesAntes.Where(w => !request.PalavrasChaves.Any(a => a.PalavraChaveId == w.PalavraChaveId));

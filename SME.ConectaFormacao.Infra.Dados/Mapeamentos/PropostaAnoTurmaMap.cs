@@ -8,6 +8,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
         {
             ToTable("proposta_ano_turma");
 
+            Map(t => t.PropostaId).ToColumn("proposta_id");
             Map(t => t.AnoTurmaId).ToColumn("ano_turma_id");
         }
     }
