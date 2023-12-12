@@ -18,9 +18,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterListaDre(
             [FromServices] ICasoDeUsoObterListaDre useCase,
-            [FromQuery] bool exibirOpcaoOutros = false)
+            [FromQuery] bool exibirOpcaoTodos = false)
         {
-            return Ok(await useCase.Executar(exibirOpcaoOutros));
+            return Ok(await useCase.Executar(exibirOpcaoTodos));
         }
     }
 }
