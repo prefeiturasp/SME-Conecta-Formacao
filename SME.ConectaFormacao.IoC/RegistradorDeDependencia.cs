@@ -33,6 +33,7 @@ using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
+using SME.ConectaFormacao.Infra.Servicos.CacheDistribuido.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Options;
@@ -69,6 +70,12 @@ public class RegistradorDeDependencia
         RegistrarProfiles();
         RegistrarHttpClients();
         RegistrarServicoArmazenamento();
+        RegistrarCacheDistribuido();
+    }
+
+    private void RegistrarCacheDistribuido()
+    {
+        _serviceCollection.ConfigurarCacheDistribuidoRedis(_configuration);
     }
 
     private void RegistrarServicoArmazenamento()
