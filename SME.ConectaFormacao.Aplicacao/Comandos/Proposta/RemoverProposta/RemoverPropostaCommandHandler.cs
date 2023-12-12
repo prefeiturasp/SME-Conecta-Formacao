@@ -26,7 +26,10 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.CriteriosValidacaoInscricao = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
             proposta.VagasRemanecentes = await _repositorioProposta.ObterVagasRemacenentesPorId(request.Id);
             proposta.Encontros = await _repositorioProposta.ObterEncontrosPorId(request.Id);
-            proposta.PalavrasChaves = await _repositorioProposta.ObterPalavraChavePorId(request.Id);
+            proposta.PalavrasChaves = await _repositorioProposta.ObterPalavrasChavesPorId(request.Id);
+            proposta.Modalidades = await _repositorioProposta.ObterModalidadesPorId(request.Id);
+            proposta.AnosTurmas = await _repositorioProposta.ObterAnosTurmasPorId(request.Id);
+            proposta.ComponentesCurriculares = await _repositorioProposta.ObterComponentesCurricularesPorId(request.Id);
 
             var transacao = _transacao.Iniciar();
             try
@@ -48,7 +51,16 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (proposta.PalavrasChaves.Any())
                     await _repositorioProposta.RemoverPalavrasChaves(proposta.PalavrasChaves);
+                
+                if (proposta.Modalidades.Any())
+                    await _repositorioProposta.RemoverModalidades(proposta.Modalidades);
 
+                if (proposta.AnosTurmas.Any())
+                    await _repositorioProposta.RemoverAnosTurmas(proposta.AnosTurmas);
+                
+                if (proposta.ComponentesCurriculares.Any())
+                    await _repositorioProposta.RemoverComponentesCurriculares(proposta.ComponentesCurriculares);
+                
                 await _repositorioProposta.Remover(proposta);
 
                 transacao.Commit();

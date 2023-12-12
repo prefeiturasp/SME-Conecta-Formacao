@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public interface ICasoDeUsoObterListaDre
     {
-        Task<IEnumerable<RetornoListagemDTO>> Executar();
+        Task<IEnumerable<RetornoListagemDTO>> Executar(bool exibirTodos);
     }
 }

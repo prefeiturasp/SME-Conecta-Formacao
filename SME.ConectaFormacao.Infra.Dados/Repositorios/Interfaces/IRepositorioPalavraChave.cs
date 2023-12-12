@@ -5,5 +5,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
     public interface IRepositorioPalavraChave : IRepositorioBaseAuditavel<PalavraChave>
     {
+        Task<IEnumerable<PalavraChave>> ObterLista();
     }
 }

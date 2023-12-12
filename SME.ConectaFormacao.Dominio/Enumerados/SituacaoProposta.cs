@@ -4,8 +4,8 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 {
     public enum SituacaoProposta
     {
-        [Display(Name = "Favorável")]
-        Favoravel = 1,
+        [Display(Name = "Publicada")]
+        Publicada = 1,
 
         [Display(Name = "Rascunho")]
         Rascunho = 2,

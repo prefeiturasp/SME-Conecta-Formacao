@@ -5,7 +5,7 @@ public class MensagemNegocio
     public const string PERIODO_REALIZACAO_NAO_INFORMADO = "É necessário informar as datas do período de realização";
     public const string PERIODO_INCRICAO_NAO_INFORMADO = "É necessário informar as datas do período de inscrição";
     public const string TIPO_FORMACAO_NAO_INFORMADO = "É necessário informar o tipo da formação";
-    public const string MODALIDADE_NAO_INFORMADA = "É necessário informar a modalidade";
+    public const string FORMATO_NAO_INFORMADO = "É necessário informar o formato";
     public const string TIPO_INSCRICAO_NAO_INFORMADA = "É necessário informar o tipo da inscrição";
     public const string NOME_FORMACAO_NAO_INFORMADO = "É necessário informar o nome da formação";
     public const string PUBLICO_ALVO_NAO_INFORMADO = "É necessário informar o público alvo";
@@ -42,6 +42,7 @@ public class MensagemNegocio
 
     public const string PROPOSTA_FUNCAO_ESPECIFICA_OUTROS = "É necessário informar função específicas outros da proposta";
     public const string PROPOSTA_CRITERIO_VALIDACAO_INSCRICAO_OUTROS = "É necessário informar critérios de validação das inscrições outros da proposta";
+    public const string PROPOSTA_CRITERIO_VALIDACAO_PUBLICO_ALVO_ANO_TURMA_COMPONENTE_CURRICULAR = "É necessário informar Público Alvo ou Função Específica ou Modalidade, Ano da Turma e Componente Curricular da proposta";
     public const string PROPOSTA_PALAVRA_CHAVE = "É necessário informar palavras chaves da proposta";
 
     public const string ARQUIVO_VAZIO = "É necessário informar o arquivo a ser carregado";
@@ -58,4 +59,5 @@ public class MensagemNegocio
     public const string NAO_EXISTE_NENHUM_TUTOR = "Não existe nenhum tutor cadastrado na Proposta";
     public const string JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR = "O Tutor {0} já possui a turma {1}";
     public const string JA_EXISTE_ESSA_TURMA_PARA_ESSE_REGENTE = "O Regente {0} já possui a turma {1}";
+    public const string NENHUM_COMPONENTE_CURRICULAR_DOS_ANOS_DA_TURMA_DO_EOL_FORAM_LOCALIZADOS = "Não foi possível localizar nenhum componente curricular para os anos das turmas do EOL";
 }

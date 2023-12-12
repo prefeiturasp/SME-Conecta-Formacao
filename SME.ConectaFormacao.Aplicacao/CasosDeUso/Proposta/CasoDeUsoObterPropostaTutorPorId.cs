@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
             var turmasDto = new List<PropostaTutorTurmaDTO>();
             foreach (var turma in turmas)
-                turmasDto.Add(new PropostaTutorTurmaDTO() { Turma = turma.Turma });
+                turmasDto.Add(new PropostaTutorTurmaDTO() { TurmaId = turma.TurmaId });
             return turmasDto;
         }
     }

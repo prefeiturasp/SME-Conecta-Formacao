@@ -68,16 +68,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterTipoInscricao.Executar());
         }
 
-        [HttpGet("modalidades/tipo-formacao/{tipoFormacao}")]
+        [HttpGet("formatos/tipo-formacao/{tipoFormacao}")]
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> ObterModalidades(
-            [FromServices] ICasoDeUsoObterModalidades casoDeUsoObterModalidades,
+        public async Task<IActionResult> Obterformatos(
+            [FromServices] ICasoDeUsoObterFormatos casoDeUsoObterFormatos,
             [FromRoute] TipoFormacao tipoFormacao)
         {
-            return Ok(await casoDeUsoObterModalidades.Executar(tipoFormacao));
+            return Ok(await casoDeUsoObterFormatos.Executar(tipoFormacao));
         }
 
         [HttpGet("situacao")]
@@ -100,6 +100,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoObterTipoEncontro casoDeUsoObterTipoEncontro)
         {
             return Ok(await casoDeUsoObterTipoEncontro.Executar());
+        }
+
+        [HttpGet("formacao-homologada")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
+        public async Task<IActionResult> ObterFormacaoHomologada(
+            [FromServices] ICasoDeUsoObterFormacaoHomologada casoDeUsoObterFormacaoHomologada)
+        {
+            return Ok(await casoDeUsoObterFormacaoHomologada.Executar());
         }
 
         [HttpGet("{id}/turma")]
@@ -321,14 +332,14 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await useCase.Executar(tutorId));
         }
 
-        [HttpPatch("{propostaId}/enviar-analise")]
+        [HttpPatch("{propostaId}/enviar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> EnviarPropostaParaAnalise
-        ([FromRoute] long propostaId,
-            [FromServices] ICasoDeUsoEnviarPropostaParaValidacao useCase)
+        public async Task<IActionResult> EnviarProposta(
+            [FromServices] ICasoDeUsoEnviarProposta useCase,
+            [FromRoute] long propostaId)
         {
             return Ok(await useCase.Executar(propostaId));
         }
