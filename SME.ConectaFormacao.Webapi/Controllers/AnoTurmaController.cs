@@ -10,9 +10,9 @@ using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
-    public class AnoController : BaseController
+    public class AnoTurmaController : BaseController
     {
-        [HttpGet("ano-letivo/{anoLetivo}")]
+        [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemTodosDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
