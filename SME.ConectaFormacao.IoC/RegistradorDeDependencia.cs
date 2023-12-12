@@ -262,6 +262,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoFormacao, CasoDeUsoObterTipoFormacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoInscricao, CasoDeUsoObterTipoInscricao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormatos, CasoDeUsoObterFormatos>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTodosFormatos, CasoDeUsoObterTodosFormatos>();
         _serviceCollection.TryAddScoped<ICasoDeUsoInserirProposta, CasoDeUsoInserirProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAlterarProposta, CasoDeUsoAlterarProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaPorId, CasoDeUsoObterPropostaPorId>();

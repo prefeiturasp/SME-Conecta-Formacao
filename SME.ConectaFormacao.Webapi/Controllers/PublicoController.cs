@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
@@ -41,6 +42,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoObterPalavraChave casoDeUsoObterPalavraChave)
         {
             return Ok(await casoDeUsoObterPalavraChave.Executar());
+        }
+
+        [HttpGet("formato")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterListaFormato(
+            [FromServices] ICasoDeUsoObterTodosFormatos casoDeUsoObterTodosFormatos)
+        {
+            return Ok(await casoDeUsoObterTodosFormatos.Executar());
         }
     }
 }
