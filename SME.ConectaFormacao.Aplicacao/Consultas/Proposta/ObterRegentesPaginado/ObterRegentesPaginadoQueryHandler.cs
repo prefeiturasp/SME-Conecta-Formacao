@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentesPaginado
+namespace SME.ConectaFormacao.Aplicacao.Consultas
 {
     public class ObterRegentesPaginadoQueryHandler : IRequestHandler<ObterRegentesPaginadoQuery, PaginacaoResultadoDTO<PropostaRegenteDTO>>
     {
@@ -26,7 +26,9 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentesPaginado
             {
                 regentes = await _repositorioProposta.ObterRegentesPaginado(request.NumeroPagina, request.NumeroRegistros, request.PropostaId);
                 var ids = regentes.Select(t => t.Id).ToArray();
+                
                 var turmas = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(ids);
+
                 foreach (var regente in regentes)
                     regente.Turmas = turmas.Where(x => x.PropostaRegenteId == regente.Id);
             }

@@ -2,6 +2,7 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -30,22 +31,22 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotNull()
                 .WithMessage("É necessário informar o tipo de formação para alterar a proposta");
 
-            RuleFor(f => f.PropostaDTO.Modalidade)
+            RuleFor(f => f.PropostaDTO.Formato)
                 .NotNull()
-                .WithMessage("É necessário informar a modalidade para alterar a proposta");
+                .WithMessage("É necessário informar o formato para alterar a proposta");
 
             When(f => f.PropostaDTO.TipoFormacao == TipoFormacao.Curso, () =>
             {
-                RuleFor(x => x.PropostaDTO.Modalidade).NotEqual(Modalidade.Hibrido).WithMessage("É permitido a modalidade Híbrido somente para o tipo de formação evento");
+                RuleFor(x => x.PropostaDTO.Formato).NotEqual(Formato.Hibrido).WithMessage("É permitido o formato Híbrido somente para o tipo de formação evento");
             });
 
             RuleFor(f => f.PropostaDTO.TipoInscricao)
                 .NotNull()
                 .WithMessage("É necessário informar o tipo de inscrição para alterar a proposta");
 
-            RuleFor(f => f.PropostaDTO.PublicosAlvo)
+            RuleFor(f => f.PropostaDTO.Dres)
                 .NotEmpty()
-                .WithMessage("É necessário informar o público alvo para alterar a proposta");
+                .WithMessage("É necessário informar a dre para alterar a proposta");
 
             RuleFor(f => f.PropostaDTO.CriteriosValidacaoInscricao)
                 .NotEmpty()
@@ -58,6 +59,10 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(f => f.PropostaDTO.QuantidadeVagasTurma)
                 .NotEmpty()
                 .WithMessage("É necessário informar a quantidade de vagas por turma para alterar a proposta");
+
+            RuleFor(f => f.PropostaDTO.Turmas)
+                .NotEmpty()
+                .WithMessage("É necessário informar a turma para alterar a proposta");
 
             RuleFor(f => f.PropostaDTO.Justificativa)
                 .NotEmpty()

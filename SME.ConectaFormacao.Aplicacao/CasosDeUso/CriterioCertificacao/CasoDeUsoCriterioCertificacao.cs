@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao
 
         public async Task<IEnumerable<RetornoListagemDTO>> Executar()
         {
-            return await mediator.Send(ObterCriterioCertificacaoQuery.Instance);
+            return await mediator.Send(ObterCriterioCertificacaoQuery.Instancia);
         }
     }
 }

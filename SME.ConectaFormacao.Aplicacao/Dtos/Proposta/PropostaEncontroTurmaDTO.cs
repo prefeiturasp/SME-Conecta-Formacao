@@ -2,6 +2,7 @@
 {
     public class PropostaEncontroTurmaDTO
     {
-        public short Turma { get; set; }
+        public long TurmaId { get; set; }
+        public string? Nome { get; set; }
     }
 }

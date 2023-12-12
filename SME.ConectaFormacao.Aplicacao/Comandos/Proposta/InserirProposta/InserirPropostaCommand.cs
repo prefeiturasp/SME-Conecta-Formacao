@@ -30,22 +30,22 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotNull()
                 .WithMessage("É necessário informar o tipo de formação para inserir a proposta");
 
-            RuleFor(f => f.PropostaDTO.Modalidade)
+            RuleFor(f => f.PropostaDTO.Formato)
                 .NotNull()
-                .WithMessage("É necessário informar a modalidade para inserir a proposta");
+                .WithMessage("É necessário informar o formato para inserir a proposta");
 
             When(f => f.PropostaDTO.TipoFormacao == TipoFormacao.Curso, () =>
             {
-                RuleFor(x => x.PropostaDTO.Modalidade).NotEqual(Modalidade.Hibrido).WithMessage("É permitido a modalidade Híbrido somente para o tipo de formação evento");
+                RuleFor(x => x.PropostaDTO.Formato).NotEqual(Formato.Hibrido).WithMessage("É permitido o formato Híbrido somente para o tipo de formação evento");
             });
 
             RuleFor(f => f.PropostaDTO.TipoInscricao)
                 .NotNull()
                 .WithMessage("É necessário informar o tipo de inscrição para inserir a proposta");
 
-            RuleFor(f => f.PropostaDTO.PublicosAlvo)
+            RuleFor(f => f.PropostaDTO.Dres)
                 .NotEmpty()
-                .WithMessage("É necessário informar o público alvo para inserir a proposta");
+                .WithMessage("É necessário informar a dre para alterar a proposta");
 
             RuleFor(f => f.PropostaDTO.CriteriosValidacaoInscricao)
                 .NotEmpty()
@@ -58,6 +58,10 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(f => f.PropostaDTO.QuantidadeVagasTurma)
                 .NotEmpty()
                 .WithMessage("É necessário informar a quantidade de vagas por turma para inserir a proposta");
+
+            RuleFor(f => f.PropostaDTO.Turmas)
+                .NotEmpty()
+                .WithMessage("É necessário informar a turma para alterar a proposta");
 
             RuleFor(f => f.PropostaDTO.Justificativa)
                 .NotEmpty()
@@ -82,20 +86,6 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(f => f.PropostaDTO.PalavrasChaves)
                 .NotNull()
                 .WithMessage("É necessário informar as palavras-chaves para inserir a proposta");
-
-            RuleFor(f => f.PropostaDTO.PalavrasChaves)
-                .NotNull()
-                .WithMessage("É necessário informar as palavras-chaves para inserir a proposta");
-
-            // RuleFor(f => f.PropostaDTO.PalavrasChaves)
-            //     .NotNull()
-            //     .When(y=> y.PropostaDTO.PalavrasChaves.Count() > 2)
-            //     .WithMessage("É necessário informar no mínimo 3 palavras-chaves para alterar a proposta");
-            //
-            // RuleFor(f => f.PropostaDTO.PalavrasChaves)
-            //     .NotNull()
-            //     .When(y=> y.PropostaDTO.PalavrasChaves.Count() < 6)
-            //     .WithMessage("É necessário informar no máximo 5 palavras-chaves para alterar a proposta");
         }
     }
 }

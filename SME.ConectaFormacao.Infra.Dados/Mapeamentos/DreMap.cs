@@ -11,6 +11,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.Abreviacao).ToColumn("abreviacao");
             Map(c => c.Nome).ToColumn("nome");
             Map(c => c.DataAtualizacao).ToColumn("data_atualizacao");
+            Map(c => c.Todos).ToColumn("todos");
+            Map(c => c.Ordem).ToColumn("ordem");
         }
     }
 }
