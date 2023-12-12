@@ -29,5 +29,10 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             var regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
             return Regex.IsMatch(email, regex);
         }
+
+        public static string Parametros(this string valor, params object[] parametros)
+        {
+            return string.Format(valor, parametros);
+        }
     }
 }

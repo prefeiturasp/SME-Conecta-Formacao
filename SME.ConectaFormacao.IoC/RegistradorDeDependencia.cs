@@ -73,12 +73,12 @@ public class RegistradorDeDependencia
         RegistrarCacheDistribuido();
     }
 
-    private void RegistrarCacheDistribuido()
+    protected virtual void RegistrarCacheDistribuido()
     {
         _serviceCollection.ConfigurarCacheDistribuidoRedis(_configuration);
     }
 
-    private void RegistrarServicoArmazenamento()
+    protected virtual void RegistrarServicoArmazenamento()
     {
         _serviceCollection.ConfigurarArmazenamento(_configuration);
     }
@@ -94,7 +94,7 @@ public class RegistradorDeDependencia
         _serviceCollection.AddMediatR(x => x.RegisterServicesFromAssemblies(assembly));
     }
 
-    public virtual void RegistrarValidadoresFluentValidation()
+    protected virtual void RegistrarValidadoresFluentValidation()
     {
         var assembly = AppDomain.CurrentDomain.Load("SME.ConectaFormacao.Aplicacao");
 
@@ -120,6 +120,7 @@ public class RegistradorDeDependencia
 
         _serviceCollection.AddSingleton<IServicoLogs, ServicoLogs>();
     }
+
     protected virtual void RegistrarRabbit()
     {
         _serviceCollection.AddOptions<ConfiguracaoRabbitOptions>()
