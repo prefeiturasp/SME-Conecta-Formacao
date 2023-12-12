@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Cache;
 using System.Net;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -11,11 +12,13 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
         private readonly ITransacao _transacao;
+        private readonly ICacheDistribuido _cacheDistribuido;
 
-        public RemoverAreaPromotoraCommandHandler(IRepositorioAreaPromotora repositorioAreaPromotora, ITransacao transacao)
+        public RemoverAreaPromotoraCommandHandler(IRepositorioAreaPromotora repositorioAreaPromotora, ITransacao transacao, ICacheDistribuido cacheDistribuido)
         {
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
+            _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
         }
 
         public async Task<bool> Handle(RemoverAreaPromotoraCommand request, CancellationToken cancellationToken)
@@ -34,6 +37,8 @@ namespace SME.ConectaFormacao.Aplicacao
                     await _repositorioAreaPromotora.RemoverTelefones(transacao, request.Id, telefones);
 
                 transacao.Commit();
+
+                await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.AreaPromotora);
 
                 return true;
             }

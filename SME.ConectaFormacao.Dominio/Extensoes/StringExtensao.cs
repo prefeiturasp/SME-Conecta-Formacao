@@ -45,5 +45,10 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         {
             return string.IsNullOrEmpty(str);
         }
+
+        public static string Parametros(this string valor, params object[] parametros)
+        {
+            return string.Format(valor, parametros);
+        }
     }
 }
