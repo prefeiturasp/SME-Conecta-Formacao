@@ -8,8 +8,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public long Id { get; set; }
         public string Titulo { get; set; }
         public string AreaPromotora { get; set; }
-        public int TipoFormacaoId { get; set; }
-        public int FormatoId { get; set; } 
+        public int TipoFormacao { get; set; }
+        public int Formato { get; set; } 
         public string ImagemUrl { get; set; }
         public string NomeArquivo { get; set; }
         public Guid CodigoArquivo { get; set; }
@@ -34,18 +34,18 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             }
         }
         
-        public string TipoFormacao
+        public string TipoFormacaoDescricao
         {
             get
             {
-                return ((TipoFormacao)TipoFormacaoId).Nome();
+                return ((TipoFormacao)TipoFormacao).Nome();
             }
         }
-        public string Formato
+        public string FormatoDescricao
         {
             get
             {
-                return ((Formato)FormatoId).Nome();
+                return ((Formato)Formato).Nome();
             }
         }
     }

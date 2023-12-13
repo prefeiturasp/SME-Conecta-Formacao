@@ -34,8 +34,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 formacao.Titulo.ShouldNotBeEmpty();
                 formacao.Periodo.ShouldNotBeEmpty();
                 formacao.AreaPromotora.ShouldNotBeEmpty();
-                formacao.TipoFormacao.ShouldNotBeEmpty();
-                formacao.Formato.ShouldNotBeEmpty();
+                formacao.TipoFormacaoDescricao.ShouldNotBeEmpty();
+                formacao.TipoFormacao.ShouldBeGreaterThan(0);
+                formacao.FormatoDescricao.ShouldNotBeEmpty();
+                formacao.Formato.ShouldBeGreaterThan(0);
                 formacao.InscricaoEncerrada.ShouldBeTrue();
                 formacao.ImagemUrl.ShouldBeNull();
             }
@@ -67,8 +69,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 formacao.Titulo.ShouldNotBeEmpty();
                 formacao.Periodo.ShouldNotBeEmpty();
                 formacao.AreaPromotora.ShouldNotBeEmpty();
-                formacao.TipoFormacao.ShouldNotBeEmpty();
-                formacao.Formato.ShouldNotBeEmpty();
+                formacao.TipoFormacaoDescricao.ShouldNotBeEmpty();
+                formacao.TipoFormacao.ShouldBeGreaterThan(0);
+                formacao.FormatoDescricao.ShouldNotBeEmpty();
+                formacao.Formato.ShouldBeGreaterThan(0);
                 formacao.InscricaoEncerrada.ShouldBeTrue();
                 formacao.ImagemUrl.ShouldBeNull();
             }
@@ -100,8 +104,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 formacao.Titulo.ShouldNotBeEmpty();
                 formacao.Periodo.ShouldNotBeEmpty();
                 formacao.AreaPromotora.ShouldNotBeEmpty();
-                formacao.TipoFormacao.ShouldNotBeEmpty();
-                formacao.Formato.ShouldNotBeEmpty();
+                formacao.TipoFormacaoDescricao.ShouldNotBeEmpty();
+                formacao.TipoFormacao.ShouldBeGreaterThan(0);
+                formacao.FormatoDescricao.ShouldNotBeEmpty();
+                formacao.Formato.ShouldBeGreaterThan(0);
                 formacao.InscricaoEncerrada.ShouldBeTrue();
                 formacao.ImagemUrl.ShouldBeNull();
             }
@@ -133,8 +139,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 formacao.Titulo.ShouldNotBeEmpty();
                 formacao.Periodo.ShouldNotBeEmpty();
                 formacao.AreaPromotora.ShouldNotBeEmpty();
-                formacao.TipoFormacao.ShouldNotBeEmpty();
-                formacao.Formato.ShouldNotBeEmpty();
+                formacao.TipoFormacaoDescricao.ShouldNotBeEmpty();
+                formacao.TipoFormacao.ShouldBeGreaterThan(0);
+                formacao.FormatoDescricao.ShouldNotBeEmpty();
+                formacao.Formato.ShouldBeGreaterThan(0);
                 formacao.InscricaoEncerrada.ShouldBeTrue();
                 formacao.ImagemUrl.ShouldBeNull();
             }
@@ -166,8 +174,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 formacao.Titulo.ShouldNotBeEmpty();
                 formacao.Periodo.ShouldNotBeEmpty();
                 formacao.AreaPromotora.ShouldNotBeEmpty();
-                formacao.TipoFormacao.ShouldNotBeEmpty();
-                formacao.Formato.ShouldNotBeEmpty();
+                formacao.TipoFormacaoDescricao.ShouldNotBeEmpty();
+                formacao.TipoFormacao.ShouldBeGreaterThan(0);
+                formacao.FormatoDescricao.ShouldNotBeEmpty();
+                formacao.Formato.ShouldBeGreaterThan(0);
                 formacao.InscricaoEncerrada.ShouldBeTrue();
                 formacao.ImagemUrl.ShouldBeNull();
             }
@@ -199,8 +209,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 formacao.Titulo.ShouldNotBeEmpty();
                 formacao.Periodo.ShouldNotBeEmpty();
                 formacao.AreaPromotora.ShouldNotBeEmpty();
-                formacao.TipoFormacao.ShouldNotBeEmpty();
-                formacao.Formato.ShouldNotBeEmpty();
+                formacao.TipoFormacaoDescricao.ShouldNotBeEmpty();
+                formacao.TipoFormacao.ShouldBeGreaterThan(0);
+                formacao.FormatoDescricao.ShouldNotBeEmpty();
+                formacao.Formato.ShouldBeGreaterThan(0);
                 formacao.InscricaoEncerrada.ShouldBeTrue();
                 formacao.ImagemUrl.ShouldBeNull();
             }
@@ -232,8 +244,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 formacao.Titulo.ShouldNotBeEmpty();
                 formacao.Periodo.ShouldNotBeEmpty();
                 formacao.AreaPromotora.ShouldNotBeEmpty();
-                formacao.TipoFormacao.ShouldNotBeEmpty();
-                formacao.Formato.ShouldNotBeEmpty();
+                formacao.TipoFormacaoDescricao.ShouldNotBeEmpty();
+                formacao.TipoFormacao.ShouldBeGreaterThan(0);
+                formacao.FormatoDescricao.ShouldNotBeEmpty();
+                formacao.Formato.ShouldBeGreaterThan(0);
                 formacao.InscricaoEncerrada.ShouldBeTrue();
                 formacao.ImagemUrl.ShouldBeNull();
             }
@@ -265,8 +279,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 formacao.Titulo.ShouldNotBeEmpty();
                 formacao.Periodo.ShouldNotBeEmpty();
                 formacao.AreaPromotora.ShouldNotBeEmpty();
-                formacao.TipoFormacao.ShouldNotBeEmpty();
-                formacao.Formato.ShouldNotBeEmpty();
+                formacao.TipoFormacaoDescricao.ShouldNotBeEmpty();
+                formacao.TipoFormacao.ShouldBeGreaterThan(0);
+                formacao.FormatoDescricao.ShouldNotBeEmpty();
+                formacao.Formato.ShouldBeGreaterThan(0);
                 formacao.InscricaoEncerrada.ShouldBeTrue();
                 formacao.ImagemUrl.ShouldBeNull();
             }
