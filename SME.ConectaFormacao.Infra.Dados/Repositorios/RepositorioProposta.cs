@@ -786,7 +786,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 palavraChave.Id = (long)await conexao.Obter().InsertAsync(palavraChave);
             }
         }
-        
+
         public async Task InserirModalidades(long id, IEnumerable<PropostaModalidade> modalidades)
         {
             foreach (var modalidade in modalidades)
@@ -797,7 +797,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 modalidade.Id = (long)await conexao.Obter().InsertAsync(modalidade);
             }
         }
-        
+
         public async Task InserirAnosTurmas(long id, IEnumerable<PropostaAnoTurma> anosTurmas)
         {
             foreach (var anoTurma in anosTurmas)
@@ -808,7 +808,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 anoTurma.Id = (long)await conexao.Obter().InsertAsync(anoTurma);
             }
         }
-        
+
         public async Task InserirComponentesCurriculares(long id, IEnumerable<PropostaComponenteCurricular> componentesCurriculares)
         {
             foreach (var componenteCurricular in componentesCurriculares)
@@ -848,7 +848,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where proposta_id = @id and not excluido ";
             return conexao.Obter().QueryAsync<PropostaPalavraChave>(query, new { id });
         }
-        
+
         public Task<IEnumerable<PropostaModalidade>> ObterModalidadesPorId(long id)
         {
             var query = @"select 
@@ -884,7 +884,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where proposta_id = @id and not excluido ";
             return conexao.Obter().QueryAsync<PropostaAnoTurma>(query, new { id });
         }
-        
+
         public Task<IEnumerable<PropostaComponenteCurricular>> ObterComponentesCurricularesPorId(long id)
         {
             var query = @"select 
@@ -944,7 +944,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
-        
+
         public Task RemoverModalidades(IEnumerable<PropostaModalidade> modalidades)
         {
             var modalidade = modalidades.First();
@@ -968,7 +968,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
-        
+
         public Task RemoverAnosTurmas(IEnumerable<PropostaAnoTurma> anosTurmas)
         {
             var anoTurma = anosTurmas.First();
@@ -992,7 +992,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
-        
+
         public Task RemoverComponentesCurriculares(IEnumerable<PropostaComponenteCurricular> componenteCurriculares)
         {
             var componenteCurricular = componenteCurriculares.First();
@@ -1379,7 +1379,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<PropostaDre>(query, new { propostaId });
         }
 
-        public Task<IEnumerable<PropostaTurma>> ObterTurmasPorId(long propostaId)
+        public async Task<IEnumerable<PropostaTurma>> ObterTurmasPorId(long propostaId)
         {
             var query = @"select 
                             id, 
@@ -1394,8 +1394,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_turma
-                        where proposta_id = @propostaId and not excluido";
-            return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
+                        where proposta_id = @propostaId and not excluido;
+
+                        select d.id, d.nome
+                        from dre d
+                        where exists(select 1 from proposta_turma pt where pt.dre_id = d.id and pt.proposta_id = @propostaId and not pt.excluido) and not d.excluido;";
+
+
+            var multiquery = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
+
+
+            var turmas = multiquery.Read<PropostaTurma>();
+
+            var dres = multiquery.Read<Dre>();
+
+            foreach (var turma in turmas)
+                if (turma.DreId.HasValue)
+                    turma.Dre = dres.FirstOrDefault(t => t.Id == turma.DreId);
+
+            return turmas;
         }
 
         public async Task InserirTurmas(long propostaId, IEnumerable<PropostaTurma> propostaTurmas)
@@ -1435,7 +1452,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task AtualizarTurmas(long propostaId, IEnumerable<PropostaTurma> propostaTurmas)
         {
-            foreach(var propostaTurma in propostaTurmas)
+            foreach (var propostaTurma in propostaTurmas)
             {
                 PreencherAuditoriaAlteracao(propostaTurma);
                 propostaTurma.Nome = propostaTurma.Nome.ToUpper();
