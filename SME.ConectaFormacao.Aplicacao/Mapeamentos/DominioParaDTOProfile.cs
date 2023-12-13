@@ -148,6 +148,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.CodigoComponenteCurricular, opt => opt.MapFrom(o => o.CodigoEOL))
                 .ForMember(dest => dest.DescricaoComponenteCurricular, opt => opt.MapFrom(o => o.Nome))
                 .ReverseMap();
+
+            CreateMap<RetornoListagemFormacaoDTO, PropostaResumida>().ReverseMap();
         }
     }
 }

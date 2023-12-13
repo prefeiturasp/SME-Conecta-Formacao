@@ -1442,5 +1442,89 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 await conexao.Obter().UpdateAsync(propostaTurma);
             }
         }
+
+        public Task<IEnumerable<long>> ObterListagemFormacoesPorFiltro(long[] publicosAlvosIds, string titulo, long[] areasPromotorasIds,
+            DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds, int numeroPagina, int numeroRegistros)
+        {
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            var queryPrincipal = new StringBuilder();
+            var queryJuncoes = new StringBuilder();
+            var queryCondicionais = new StringBuilder();
+            
+            queryPrincipal.Append(@"select distinct p.id,
+                                                   p.data_realizacao_inicio,
+                                                   p.data_realizacao_fim 
+                                     from public.proposta p ");
+
+            queryCondicionais.Append(@"where not p.excluido 
+                                           and p.tipo_inscricao = @tipoInscricao 
+                                           and p.situacao = @situacao ");
+
+            if (publicosAlvosIds.PossuiElementos())
+            {
+                queryJuncoes.Append("join proposta_publico_alvo ppa on ppa.proposta_id = p.id ");
+                queryCondicionais.Append("and ppa.cargo_funcao_id = any(@publicosAlvosIds) ");
+            }
+            
+            if (titulo.EstaPreenchido())
+                queryCondicionais.Append(" and f_unaccent(lower(p.nome_formacao)) LIKE ('%' || f_unaccent(@titulo) || '%') ");
+               
+            if (areasPromotorasIds.PossuiElementos())
+                queryCondicionais.Append("and p.area_promotora_id = any(@areasPromotorasIds) ");
+
+            if (dataInicial.HasValue)
+                queryCondicionais.Append("and p.data_realizacao_inicio >= @dataInicial ");
+            
+            if (dataFinal.HasValue)
+                queryCondicionais.Append("and p.data_realizacao_fim <= @dataFinal ");
+            
+            if (formatosIds.PossuiElementos())
+                queryCondicionais.Append("and p.formato = any(@formatosIds) "); //foi trocado por formato
+
+            if (palavrasChavesIds.PossuiElementos())
+            {
+                queryJuncoes.Append("join proposta_palavra_chave ppc on ppc.proposta_id = p.id ");
+                queryCondicionais.Append("and ppc.palavra_chave_id = any(@palavrasChavesIds) ");
+            }
+                
+            queryCondicionais.Append(" order by p.data_realizacao_inicio desc, p.data_realizacao_fim desc ");
+            queryCondicionais.Append(" limit @numeroRegistros offset @registrosIgnorados");
+
+            var query = $"{queryPrincipal}{queryJuncoes}{queryCondicionais}";
+
+            var retorno = conexao.Obter().QueryAsync<long>(query, new { numeroRegistros, registrosIgnorados, 
+                palavrasChavesIds,formatosIds,dataInicial,dataFinal,areasPromotorasIds,titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty,
+                publicosAlvosIds, tipoInscricao = TipoInscricao.Optativa,
+                situacao = SituacaoProposta.Cadastrada
+            });
+
+            return retorno;
+        }
+
+        public Task<PropostaResumida> ObterPropostaPorId(long propostaId)
+        {
+            var query = @"select distinct p.id, 
+					               p.nome_formacao titulo,
+					               p.data_realizacao_inicio realizacaoInicio, 
+					               p.data_realizacao_fim realizacaoFim,
+					               ap.nome areaPromotora,
+					               p.tipo_formacao tipoFormacaoId,
+					               p.formato formatoId,
+					               a.codigo codigoArquivo,
+					               a.nome nomeArquivo,
+					               p.data_inscricao_inicio Inscricaoinicio,
+					               p.data_inscricao_fim Inscricaofim
+                        from public.proposta p 
+                        join proposta_publico_alvo ppa on ppa.proposta_id = p.id
+                        join proposta_palavra_chave ppc on ppc.proposta_id = p.id
+                        join area_promotora ap on ap.id = p.area_promotora_id 
+                        left join arquivo a on p.arquivo_imagem_divulgacao_id = a.id 
+                        where not p.excluido
+                              and p.id = @propostaId ";
+            
+            var retorno = conexao.Obter().QueryFirstOrDefaultAsync<PropostaResumida>(query, new { propostaId });
+            return retorno;
+        }
     }
 }

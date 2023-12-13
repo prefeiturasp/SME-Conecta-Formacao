@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Aplicacao.Dtos.Ano;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
@@ -52,6 +53,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoObterTodosFormatos casoDeUsoObterTodosFormatos)
         {
             return Ok(await casoDeUsoObterTodosFormatos.Executar());
+        }
+        
+        [HttpGet("listagem-formacao")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<IEnumerable<RetornoListagemFormacaoDTO>>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterListagemFormacao([FromQuery] FiltroListagemFormacaoDTO filtroListagemFormacaoDTO,[FromServices] ICasoDeUsoObterListagemFormacaoPaginada casoDeUsoObterListagemFormacaoPaginada)
+        {
+            return Ok(await casoDeUsoObterListagemFormacaoPaginada.Executar(filtroListagemFormacaoDTO));
         }
     }
 }
