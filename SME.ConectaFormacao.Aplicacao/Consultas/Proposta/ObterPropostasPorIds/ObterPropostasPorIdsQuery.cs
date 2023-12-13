@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.PropostasIds)
                 .NotEmpty()
-                .WithMessage("É necessário informar os ids das propostas para obter as informações da formação");
+                .WithMessage("Nenhuma proposta foi localizada com o filtro informado");
         }
     }
 }
