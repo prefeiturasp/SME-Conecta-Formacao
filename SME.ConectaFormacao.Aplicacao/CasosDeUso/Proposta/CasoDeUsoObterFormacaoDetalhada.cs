@@ -4,9 +4,9 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
-    public class CasoDeUsoObterFormacaoDetalhadaDetalhada : CasoDeUsoAbstrato, ICasoDeUsoObterFormacaoDetalhada
+    public class CasoDeUsoObterFormacaoDetalhada : CasoDeUsoAbstrato, ICasoDeUsoObterFormacaoDetalhada
     {
-        public CasoDeUsoObterFormacaoDetalhadaDetalhada(IMediator mediator) : base(mediator)
+        public CasoDeUsoObterFormacaoDetalhada(IMediator mediator) : base(mediator)
         {}
 
         public Task<RetornoFormacaoDetalhadaDTO> Executar(long propostaId)
