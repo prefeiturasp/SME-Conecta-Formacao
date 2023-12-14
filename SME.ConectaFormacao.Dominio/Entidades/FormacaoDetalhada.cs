@@ -16,6 +16,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<string> PublicosAlvo { get; set; }
         public IEnumerable<string> PalavrasChaves { get; set; }
         public IEnumerable<FormacaoTurma> Turmas { get; set; }
-        public string ImagemUrl { get; set; }
+        public Arquivo? ArquivoImagemDivulgacao { get; set; }
     }
 }

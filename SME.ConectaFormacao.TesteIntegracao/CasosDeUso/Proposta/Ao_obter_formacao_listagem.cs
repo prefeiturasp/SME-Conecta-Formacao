@@ -11,9 +11,9 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
-    public class Ao_obter_listagem_proposta : TestePropostaBase
+    public class Ao_obter_formacao_listagem : TestePropostaBase
     {
-        public Ao_obter_listagem_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_obter_formacao_listagem(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
 
@@ -23,8 +23,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterEnderecoArquivoServicoArmazenamentoQuery, string>), typeof(ObterEnderecoArquivoServicoArmazenamentoQueryHandlerFake), ServiceLifetime.Scoped));
         }
 
-        [Fact(DisplayName = "Proposta - Deve obter a listagem de proposta sem filtro")]
-        public async Task Deve_obter_listagem_proposta_sem_filtro()
+        [Fact(DisplayName = "Formação Listagem - Deve obter a listagem de proposta sem filtro")]
+        public async Task Deve_obter_formacao_listagem_sem_filtro()
         {
             // arrange
             for (int i = 0; i < 10; i++)
@@ -40,8 +40,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPaginacaoFormacao(paginacao);
         }
 
-        [Fact(DisplayName = "Proposta - Deve obter a listagem de proposta com filtro por titulo")]
-        public async Task Deve_obter_listagem_proposta_com_filtro_por_titulo()
+        [Fact(DisplayName = "Formação Listagem - Deve obter a listagem de proposta com filtro por titulo")]
+        public async Task Deve_obter_formacao_listagem_com_filtro_por_titulo()
         {
             // arrange
             for (int i = 0; i < 10; i++)
@@ -61,8 +61,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPaginacaoFormacao(paginacao);
         }
 
-        [Fact(DisplayName = "Proposta - Deve obter a listagem de proposta com filtro de público alvo")]
-        public async Task Deve_obter_listagem_proposta_com_filtro_de_publico_alvo()
+        [Fact(DisplayName = "Formação Listagem - Deve obter a listagem de proposta com filtro de público alvo")]
+        public async Task Deve_obter_formacao_listagem_com_filtro_de_publico_alvo()
         {
             // arrange
             for (int i = 0; i < 10; i++)
@@ -82,8 +82,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPaginacaoFormacao(paginacao);
         }
 
-        [Fact(DisplayName = "Proposta - Deve obter a listagem de proposta com filtro de áreas promotoras")]
-        public async Task Deve_obter_listagem_proposta_com_filtro_de_areas_promotoras()
+        [Fact(DisplayName = "Formação Listagem - Deve obter a listagem de proposta com filtro de áreas promotoras")]
+        public async Task Deve_obter_formacao_listagem_com_filtro_de_areas_promotoras()
         {
             // arrange
             for (int i = 0; i < 10; i++)
@@ -103,8 +103,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPaginacaoFormacao(paginacao);
         }
 
-        [Fact(DisplayName = "Proposta - Deve obter a listagem de proposta com filtro de data inicial")]
-        public async Task Deve_obter_listagem_proposta_com_filtro_de_data_inicial()
+        [Fact(DisplayName = "Formação Listagem - Deve obter a listagem de proposta com filtro de data inicial")]
+        public async Task Deve_obter_formacao_listagem_com_filtro_de_data_inicial()
         {
             // arrange
             for (int i = 0; i < 10; i++)
@@ -124,8 +124,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPaginacaoFormacao(paginacao);
         }
 
-        [Fact(DisplayName = "Proposta - Deve obter a listagem de proposta com filtro de data final")]
-        public async Task Deve_obter_listagem_proposta_com_filtro_de_data_final()
+        [Fact(DisplayName = "Formação Listagem - Deve obter a listagem de proposta com filtro de data final")]
+        public async Task Deve_obter_formacao_listagem_com_filtro_de_data_final()
         {
             // arrange
             for (int i = 0; i < 10; i++)
@@ -145,8 +145,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPaginacaoFormacao(paginacao);
         }
 
-        [Fact(DisplayName = "Proposta - Deve obter a listagem de proposta com filtro de formatos")]
-        public async Task Deve_obter_listagem_proposta_com_filtro_de_formatos()
+        [Fact(DisplayName = "Formação Listagem - Deve obter a listagem de proposta com filtro de formatos")]
+        public async Task Deve_obter_formacao_listagem_com_filtro_de_formatos()
         {
             // arrange
             for (int i = 0; i < 10; i++)
@@ -166,8 +166,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPaginacaoFormacao(paginacao);
         }
 
-        [Fact(DisplayName = "Proposta - Deve obter a listagem de proposta com filtro de palavras chaves")]
-        public async Task Deve_obter_listagem_proposta_com_filtro_de_palavras_chaves()
+        [Fact(DisplayName = "Formação Listagem - Deve obter a listagem de proposta com filtro de palavras chaves")]
+        public async Task Deve_obter_formacao_listagem_com_filtro_de_palavras_chaves()
         {
             // arrange
             for (int i = 0; i < 10; i++)

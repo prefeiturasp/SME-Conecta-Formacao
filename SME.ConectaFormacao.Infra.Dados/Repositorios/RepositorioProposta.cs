@@ -1606,8 +1606,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           and not pe.excluido
                           and not ped.excluido;  
 
-                        select a.id,
-                               a.nome,
+                        select a.nome,
                                a.codigo
                         from arquivo a 
                         where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId);";
@@ -1621,7 +1620,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             formacaoDetalhe.Turmas = queryMultiple.Read<FormacaoTurma>();
             var formacaoDatasTurmas = queryMultiple.Read<FormacaoTurmaData>();
             var arquivos = queryMultiple.Read<Arquivo>();
-            formacaoDetalhe.ImagemUrl = arquivos.Any() ? arquivos.FirstOrDefault().NomeArquivoFisico : string.Empty;
+            formacaoDetalhe.ArquivoImagemDivulgacao = arquivos.Any() ? arquivos.FirstOrDefault() : null;
 
             foreach (var turma in formacaoDetalhe.Turmas)
                 turma.Periodos = formacaoDatasTurmas.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId);
