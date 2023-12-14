@@ -13,13 +13,13 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public long Id { get; }
     }
-    public class ObterDetalheFormacaoPorIdQueryValidator : AbstractValidator<ObterFormacaoDetalhadaPorIdQuery>
+    public class ObterFormacaoDetalhadaPorIdQueryValidator : AbstractValidator<ObterFormacaoDetalhadaPorIdQuery>
     {
-        public ObterDetalheFormacaoPorIdQueryValidator()
+        public ObterFormacaoDetalhadaPorIdQueryValidator()
         {
             RuleFor(x => x.Id)
                 .NotEmpty()
-                .WithMessage("É necessário informar o id para obter o detalhe da formação");
+                .WithMessage("É necessário informar o id para obter o detalhamento da formação");
         }
     }
 }
