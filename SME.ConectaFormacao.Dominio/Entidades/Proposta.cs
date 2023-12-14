@@ -46,8 +46,21 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaRegente> Regentes { get; set; }
         public IEnumerable<PropostaTutor> Tutores { get; set; }
         public IEnumerable<PropostaTurma> Turmas { get; set; }
+        public IEnumerable<PropostaTurmaDre> TurmasDres { get; set; }
         public IEnumerable<PropostaModalidade> Modalidades { get; set; }
         public IEnumerable<PropostaAnoTurma> AnosTurmas { get; set; }
         public IEnumerable<PropostaComponenteCurricular> ComponentesCurriculares { get; set; }
+        public IEnumerable<PropostaTurmaDre> ObterPropostaTurmasDres {
+            get
+            {
+                return from propostaTurma in Turmas 
+                    from dreId in propostaTurma.DresIds 
+                    select new PropostaTurmaDre()
+                    {
+                        PropostaTurmaId = propostaTurma.Id, 
+                        DreId = dreId
+                    };
+            }
+        }
     }
 }
