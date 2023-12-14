@@ -43,7 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? DescricaoDaAtividade { get; set; }
         public string? AcaoFormativaTexto { get; set; }
         public string? AcaoFormativaLink { get; set; }
-        public IEnumerable<PropostaTurmaDTO> Turmas { get; set; }
+        public IEnumerable<PropostaTurmaCompletoDTO> Turmas { get; set; }
         public IEnumerable<PropostaModalidadeDTO> Modalidades { get; set; }
         public IEnumerable<PropostaAnoTurmaDTO> AnosTurmas { get; set; }
         public IEnumerable<PropostaComponenteCurricularDTO> ComponentesCurriculares { get; set; }

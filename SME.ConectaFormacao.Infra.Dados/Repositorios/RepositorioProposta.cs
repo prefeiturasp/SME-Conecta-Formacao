@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -1398,7 +1399,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
         }
         
-        public Task<IEnumerable<PropostaTurmaDre>> ObterPropostaTurmasDresPorPropostaTurmaId(long propostaTurmaId)
+        public async Task<IEnumerable<PropostaTurmaDre>> ObterPropostaTurmasDresPorPropostaTurmaId(long propostaTurmaId)
         {
             var query = @"select 
                             id, 
@@ -1412,9 +1413,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_turma_dre
-                        where proposta_turma_id = @propostaTurmaId and not excluido; ";
+                        where proposta_turma_id = @propostaTurmaId and not excluido; 
+                        
+                        select 
+                            d.id,
+                            d.nome
+                        from proposta_turma_dre ptd
+                        join dre d on d.id = ptd.dre_id and not d.excluido
+                        where ptd.proposta_turma_id = @propostaTurmaId and not ptd.excluido;";
 
-            return conexao.Obter().QueryAsync<PropostaTurmaDre>(query, new { propostaTurmaId });
+            var multiQuery = await conexao.Obter().QueryMultipleAsync(query, new { propostaTurmaId });
+            var turmaDres = multiQuery.Read<PropostaTurmaDre>();
+
+            var dres = multiQuery.Read<Dre>();
+
+            foreach(var turmaDre in turmaDres)
+            {
+                turmaDre.Dre = dres.FirstOrDefault(t => t.Id == turmaDre.DreId);
+            }
+
+            return turmaDres;
         }
 
         public async Task InserirTurmas(long propostaId, IEnumerable<PropostaTurma> propostaTurmas)

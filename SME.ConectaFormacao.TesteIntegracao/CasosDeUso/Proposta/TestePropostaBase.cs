@@ -421,7 +421,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 propostaTurmaDTO.Any(t => t.Nome.ToUpper() == propostaTurma.Nome.ToUpper()).ShouldBeTrue();
             }
         }
-        
+
+        protected void ValidarPropostaTurmasDTO(IEnumerable<PropostaTurmaCompletoDTO> propostaTurmaCompletoDTO, long id)
+        {
+            var propostaTurmas = ObterTodos<PropostaTurma>().Where(t => !t.Excluido);
+
+            if (propostaTurmas.PossuiElementos() && propostaTurmaCompletoDTO.PossuiElementos())
+                propostaTurmas.Count().ShouldBe(propostaTurmaCompletoDTO.Count());
+
+            foreach (var propostaTurma in propostaTurmas)
+            {
+                propostaTurma.PropostaId.ShouldBe(id);
+                propostaTurmaCompletoDTO.Any(t => t.Nome.ToUpper() == propostaTurma.Nome.ToUpper()).ShouldBeTrue();
+            }
+        }
+
         protected void ValidarPropostaTurmasDresDTO(IEnumerable<PropostaTurmaDTO> propostaTurmaDTO)
         {
             var propostaTurmas = ObterTodos<PropostaTurma>().Where(t => !t.Excluido).ToList();
