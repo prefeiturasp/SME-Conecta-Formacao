@@ -8,6 +8,7 @@
         public const string CargoFuncao = "cargo-funcao:{0}";
         public const string AreaPromotora = "area-promotora";
         public const string PalavraChave = "palavra-chave";
-        public const string PropostaResumida = "proposta-resumida:{0}";
+        public const string FormacaoResumida = "formacao-resumida:{0}";
+        public const string FormacaoDetalhada = "formacao-detalhada:{0}";
     }
 }

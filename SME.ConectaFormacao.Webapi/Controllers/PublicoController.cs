@@ -62,5 +62,14 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterListagemFormacaoPaginada.Executar(filtroListagemFormacaoDTO));
         }
+        
+        [HttpGet("detalhes-formacao/{propostaId}")]
+        [ProducesResponseType(typeof(RetornoDetalheFormacaoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterDetalhesFormacao([FromRoute] long propostaId,[FromServices] ICasoDeUsoObterDetalheFormacao casoDeUsoObterDetalheFormacao)
+        {
+            return Ok(await casoDeUsoObterDetalheFormacao.Executar(propostaId));
+        }
     }
 }
