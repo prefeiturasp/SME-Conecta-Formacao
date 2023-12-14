@@ -142,6 +142,13 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.DreNome, opt => opt.MapFrom(o => o.Dre.Nome))
                 .ReverseMap();
 
+            CreateMap<PropostaTurma, PropostaTurmaCompletoDTO>()
+                .ReverseMap();
+
+            CreateMap<PropostaTurmaDre, PropostaTurmaDreCompletoDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Dre.Nome))
+                .ReverseMap();
+
             CreateMap<PropostaTurma, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome));
             CreateMap<ComponenteCurricular, ComponenteCurricularDTO>().ReverseMap();

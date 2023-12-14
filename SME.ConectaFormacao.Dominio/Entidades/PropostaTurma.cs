@@ -5,5 +5,7 @@
         public long PropostaId { get; set; }
         public string Nome { get; set; }
         public long[] DresIds { get; set; }
+
+        public IEnumerable<PropostaTurmaDre> Dres { get; set; }
     }
 }
