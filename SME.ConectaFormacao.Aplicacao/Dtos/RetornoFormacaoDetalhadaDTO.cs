@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos
 {
-    public class RetornoDetalheFormacaoDTO
+    public class RetornoFormacaoDetalhadaDTO
     {
         public string Titulo { get; set; }
         public string AreaPromotora { get; set; }
