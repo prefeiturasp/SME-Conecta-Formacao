@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterTodosFormatos.Executar());
         }
         
-        [HttpGet("listagem-formacao")]
+        [HttpGet("formacao-listagem")]
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<IEnumerable<RetornoListagemFormacaoDTO>>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
@@ -63,7 +63,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterListagemFormacaoPaginada.Executar(filtroListagemFormacaoDTO));
         }
         
-        [HttpGet("detalhes-formacao/{propostaId}")]
+        [HttpGet("formacao-detalhada/{propostaId}")]
         [ProducesResponseType(typeof(RetornoFormacaoDetalhadaDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
