@@ -49,6 +49,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _mediator.Send(new SalvarPropostaDreCommand(id, proposta.Dres), cancellationToken);
 
                 await _mediator.Send(new SalvarPropostaTurmaCommand(id, proposta.Turmas), cancellationToken);
+
+                await _mediator.Send(new SalvarPropostaTurmaDreCommand(proposta.ObterPropostaTurmasDres), cancellationToken);
                 
                 await _mediator.Send(new SalvarPropostaModalidadeCommand(id, proposta.Modalidades), cancellationToken);
 

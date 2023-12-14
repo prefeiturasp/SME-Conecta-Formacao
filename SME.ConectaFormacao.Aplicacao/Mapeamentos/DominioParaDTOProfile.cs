@@ -136,6 +136,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ReverseMap();
 
             CreateMap<PropostaTurma,  PropostaTurmaDTO>()
+                .ReverseMap();
+            
+            CreateMap<PropostaTurmaDre,  PropostaTurmaDreDTO>()
                 .ForMember(dest => dest.DreNome, opt => opt.MapFrom(o => o.Dre.Nome))
                 .ReverseMap();
 

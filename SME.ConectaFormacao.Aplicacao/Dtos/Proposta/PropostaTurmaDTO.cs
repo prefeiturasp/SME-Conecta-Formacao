@@ -4,8 +4,6 @@
     {
         public long Id { get; set; }
         public string Nome { get; set; }
-        public long? DreId { get; set; }
-
-        public string? DreNome { get; set; }
+        public long[] DresIds { get; set; }
     }
 }
