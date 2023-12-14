@@ -70,7 +70,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.CacheDistribuido
                 }
 
                 var dados = await buscarDados();
-                await SalvarAsync(nomeChave, dados.ObjetoParaJson(), minutosParaExpirar, utilizarGZip);
+                await SalvarAsync(nomeChave, dados, minutosParaExpirar, utilizarGZip);
 
                 return dados;
             }
@@ -156,6 +156,11 @@ namespace SME.ConectaFormacao.Infra.Servicos.CacheDistribuido
                     $"Nome chave: {nomeChave}",
                     e.StackTrace);
             }
+        }
+
+        public Task SalvarAsync<T>(string nomeChave, T valor, int minutosParaExpirar = 720, bool utilizarGZip = false)
+        {
+           return SalvarAsync(nomeChave, valor.ObjetoParaJson(), minutosParaExpirar, utilizarGZip);
         }
     }
 }

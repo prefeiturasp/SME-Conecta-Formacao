@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.ServicosFakes
             return buscarDados();
         }
 
-        public Task<T> ObterObjetoAsync<T>(string nomeChave, bool utilizarGZip = false) where T : new()
+        public async Task<T> ObterObjetoAsync<T>(string nomeChave, bool utilizarGZip = false) where T : new()
         {
             return default;
         }
@@ -25,6 +25,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.ServicosFakes
         }
 
         public Task SalvarAsync(string nomeChave, string valor, int minutosParaExpirar = 720, bool utilizarGZip = false)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task SalvarAsync<T>(string nomeChave, T valor, int minutosParaExpirar = 720, bool utilizarGZip = false)
         {
             return Task.CompletedTask;
         }

@@ -1459,5 +1459,106 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 await conexao.Obter().UpdateAsync(propostaTurma);
             }
         }
+
+        public Task<IEnumerable<long>> ObterListagemFormacoesPorFiltro(long[] publicosAlvosIds, string titulo, long[] areasPromotorasIds,
+            DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds)
+        {
+            var tipoInscricao = TipoInscricao.Optativa;
+            var situacao = SituacaoProposta.Cadastrada;
+            titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty;
+
+            var query = @"select id 
+                          from proposta p 
+                          where not p.excluido 
+                             and p.tipo_inscricao = @tipoInscricao 
+                             and p.situacao = @situacao";
+
+            if (titulo.EstaPreenchido())
+                query += " and f_unaccent(lower(p.nome_formacao)) LIKE ('%' || f_unaccent(@titulo) || '%') ";
+
+            if (dataInicial.HasValue)
+                query += " and p.data_realizacao_inicio >= @dataInicial ";
+
+            if (dataFinal.HasValue)
+                query += " and p.data_realizacao_fim <= @dataFinal ";
+
+            if (formatosIds.PossuiElementos())
+                query += " and p.formato = any(@formatosIds) ";
+
+            if (publicosAlvosIds.PossuiElementos())
+            {
+                query += @" and exists(select 1 
+                                       from proposta_publico_alvo ppa 
+                                       where not ppa.excluido 
+                                         and ppa.proposta_id = p.id 
+                                         and ppa.cargo_funcao_id = any(@publicosAlvosIds)) ";
+            }
+
+            if (publicosAlvosIds.PossuiElementos())
+            {
+                query += @" and exists(select 1 
+                                       from proposta_palavra_chave ppc 
+                                       where not ppc.excluido 
+                                         and ppc.proposta_id = p.id 
+                                         and ppc.palavra_chave_id = any(@palavrasChavesIds)) ";
+            }
+
+            query += @" order by p.data_realizacao_inicio desc ";
+
+            return conexao.Obter().QueryAsync<long>(query, new
+            {
+                palavrasChavesIds,
+                formatosIds,
+                dataInicial,
+                dataFinal,
+                areasPromotorasIds,
+                titulo,
+                publicosAlvosIds,
+                tipoInscricao,
+                situacao
+            });
+        }
+
+        public async Task<IEnumerable<Proposta>> ObterPropostaResumidaPorId(long[] propostaIds)
+        {
+            var query = @"
+                    select p.id, 
+                        p.nome_formacao,
+                        p.data_realizacao_inicio, 
+                        p.data_realizacao_fim,
+                        p.tipo_formacao,
+                        p.formato formato,
+                        p.data_inscricao_inicio,
+                        p.data_inscricao_fim,
+                        p.area_promotora_id,
+                        p.arquivo_imagem_divulgacao_id
+                    from public.proposta p  
+                    where p.id = any(@propostaIds);
+
+                    select ap.id,
+	                       ap.nome 
+                    from area_promotora ap 
+                    where exists(select 1 from proposta p where ap.id = p.area_promotora_id and p.id = any(@propostaIds));
+
+                    select a.id,
+	                       a.nome 
+                    from arquivo a 
+                    where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = any(@propostaIds));";
+
+            var multiQuery = await conexao.Obter().QueryMultipleAsync(query, new { propostaIds });
+
+            var propostas = multiQuery.Read<Proposta>();
+            var areasPromotora = multiQuery.Read<AreaPromotora>();
+            var arquivos = multiQuery.Read<Arquivo>();
+
+
+            foreach (var proposta in propostas)
+            {
+                proposta.AreaPromotora = areasPromotora.FirstOrDefault(t => t.Id == proposta.AreaPromotoraId);
+                proposta.ArquivoImagemDivulgacao = arquivos.FirstOrDefault(t => t.Id == proposta.ArquivoImagemDivulgacaoId);
+            }
+
+            return propostas;
+        }
     }
 }
