@@ -1379,7 +1379,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<PropostaDre>(query, new { propostaId });
         }
 
-        public async Task<IEnumerable<PropostaTurma>> ObterTurmasPorId(long propostaId)
+        public Task<IEnumerable<PropostaTurma>> ObterTurmasPorId(long propostaId)
         {
             var query = @"select 
                             id, 
@@ -1393,24 +1393,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_turma
-                        where proposta_id = @propostaId and not excluido;
+                        where proposta_id = @propostaId and not excluido; ";
 
-                        /* isso aqui da DRE possivelmente não precisa, mas.... */
-                        select ptd.proposta_turma_id, ptd.dre_id, dre.nome
-                        from proposta_turma_dre ptd
-                        join dre on dre.id = ptd.dre_id
-                        where exists(select 1 from proposta_turma pt where pt.id = ptd.proposta_turma_id and pt.proposta_id = @propostaId and not pt.excluido) and not ptd.excluido; ";
-
-            var multiquery = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
-
-            var propostaTurmas = multiquery.Read<PropostaTurma>();
-
-            var propostaTurmaDres = multiquery.Read<PropostaTurmaDre>();
-
-            foreach (var propostaTurma in propostaTurmas)
-                propostaTurma.Dres = propostaTurmaDres.Where(t => t.PropostaTurmaId == propostaTurma.Id);
-
-            return propostaTurmas;
+            return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
         }
         
         public Task<IEnumerable<PropostaTurmaDre>> ObterPropostaTurmasDresPorPropostaTurmaId(long propostaTurmaId)
