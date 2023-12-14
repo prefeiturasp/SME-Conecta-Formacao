@@ -1544,7 +1544,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return propostas;
         }
 
-        public async Task<FormacaoDetalhe> ObterFormacaoDetalhadaPorId(long propostaId)
+        public async Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId)
         {
             var query = @"select
                             nome_formacao NomeFormacao,
@@ -1614,7 +1614,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
 
-            var formacaoDetalhe = queryMultiple.ReadFirst<FormacaoDetalhe>();
+            var formacaoDetalhe = queryMultiple.ReadFirst<FormacaoDetalhada>();
             formacaoDetalhe.AreaPromotora = queryMultiple.ReadFirst<string>();
             formacaoDetalhe.PublicosAlvo = queryMultiple.Read<string>();
             formacaoDetalhe.PalavrasChaves = queryMultiple.Read<string>();

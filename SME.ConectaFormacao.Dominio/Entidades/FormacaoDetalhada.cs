@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
-    public class FormacaoDetalhe
+    public class FormacaoDetalhada
     {
         public TipoFormacao? TipoFormacao { get; set; }
         public Formato? Formato { get; set; }
