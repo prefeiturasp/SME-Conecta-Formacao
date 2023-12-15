@@ -1622,16 +1622,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return propostas;
         }
-        
-        public async Task AtualizarPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres)
-        {
-            foreach (var propostaTurmaDre in propostaTurmasDres)
-            {
-                PreencherAuditoriaAlteracao(propostaTurmaDre);
-                propostaTurmaDre.DreId = propostaTurmaDre.DreId;
-                await conexao.Obter().UpdateAsync(propostaTurmaDre);
-            }
-        }
 
         public async Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId)
         {
