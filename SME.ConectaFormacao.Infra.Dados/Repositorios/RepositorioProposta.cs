@@ -1526,7 +1526,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds)
         {
             var tipoInscricao = TipoInscricao.Optativa;
-            var situacao = SituacaoProposta.Cadastrada;
+            var situacao = SituacaoProposta.Publicada;
             titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty;
 
             var query = @"select id 
@@ -1626,6 +1626,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId)
         {
+            var tipoInscricao = TipoInscricao.Optativa;
+            var situacao = SituacaoProposta.Publicada;
+            
             var query = @"select
                             nome_formacao NomeFormacao,
                             tipo_formacao tipoFormacao,
@@ -1636,7 +1639,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             justificativa
                         from proposta
                         where id = @propostaId 
-                            and not excluido;
+                            and not excluido
+                            and tipo_inscricao = @tipoInscricao 
+                            and situacao = @situacao;
 
                           select
                               ap.nome
@@ -1691,8 +1696,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         from arquivo a 
                         where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId);";
 
-            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
-
+            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao });
+            
             var formacaoDetalhe = queryMultiple.ReadFirst<FormacaoDetalhada>();
             formacaoDetalhe.AreaPromotora = queryMultiple.ReadFirst<string>();
             formacaoDetalhe.PublicosAlvo = queryMultiple.Read<string>();

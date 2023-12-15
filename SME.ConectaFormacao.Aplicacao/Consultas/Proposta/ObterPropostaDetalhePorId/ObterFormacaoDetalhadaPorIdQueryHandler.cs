@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
@@ -28,21 +30,19 @@ namespace SME.ConectaFormacao.Aplicacao
             var chaveRedis = CacheDistribuidoNomes.FormacaoDetalhada.Parametros(request.Id);
             var retornoCache = await _cacheDistribuido.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(chaveRedis);
 
-            if (retornoCache.EhNulo())
-            {
-                var formacaoDetalhada = await _repositorioProposta.ObterFormacaoDetalhadaPorId(request.Id);
+            if (retornoCache.NaoEhNulo())
+                return retornoCache;
+             
+            var formacaoDetalhada = await _repositorioProposta.ObterFormacaoDetalhadaPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.FORMACAO_NAO_ENCONTRADA, HttpStatusCode.NotFound);
                 
-                var retornoFormacaoDetalhadaDto = _mapper.Map<RetornoFormacaoDetalhadaDTO>(formacaoDetalhada);
+            var retornoFormacaoDetalhadaDto = _mapper.Map<RetornoFormacaoDetalhadaDTO>(formacaoDetalhada);
 
-                if (formacaoDetalhada.ArquivoImagemDivulgacao.NaoEhNulo())
-                    retornoFormacaoDetalhadaDto.ImagemUrl = await _mediator.Send(new ObterEnderecoArquivoServicoArmazenamentoQuery(formacaoDetalhada.ArquivoImagemDivulgacao.NomeArquivoFisico, false));
-                
-                await _cacheDistribuido.SalvarAsync(chaveRedis, retornoFormacaoDetalhadaDto);
-                
-                return retornoFormacaoDetalhadaDto;
-            }
-
-            return retornoCache;
+            if (formacaoDetalhada.ArquivoImagemDivulgacao.NaoEhNulo())
+                retornoFormacaoDetalhadaDto.ImagemUrl = await _mediator.Send(new ObterEnderecoArquivoServicoArmazenamentoQuery(formacaoDetalhada.ArquivoImagemDivulgacao.NomeArquivoFisico, false));
+            
+            await _cacheDistribuido.SalvarAsync(chaveRedis, retornoFormacaoDetalhadaDto);
+            
+            return retornoFormacaoDetalhadaDto;
         }
     }
 }
