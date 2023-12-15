@@ -1539,10 +1539,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query += " and f_unaccent(lower(p.nome_formacao)) LIKE ('%' || f_unaccent(@titulo) || '%') ";
 
             if (dataInicial.HasValue)
-                query += " and p.data_realizacao_inicio >= @dataInicial ";
+                query += " and @dataInicial >= DATE(p.data_realizacao_inicio) ";
 
             if (dataFinal.HasValue)
-                query += " and p.data_realizacao_fim <= @dataFinal ";
+                query += " and @dataFinal <= DATE(p.data_realizacao_fim) ";
 
             if (formatosIds.PossuiElementos())
                 query += " and p.formato = any(@formatosIds) ";
@@ -1556,7 +1556,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                          and ppa.cargo_funcao_id = any(@publicosAlvosIds)) ";
             }
 
-            if (publicosAlvosIds.PossuiElementos())
+            if (palavrasChavesIds.PossuiElementos())
             {
                 query += @" and exists(select 1 
                                        from proposta_palavra_chave ppc 
