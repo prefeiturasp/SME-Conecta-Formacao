@@ -129,6 +129,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
@@ -240,6 +241,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
@@ -456,6 +458,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
@@ -600,6 +603,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
@@ -791,6 +795,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
@@ -867,6 +872,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
@@ -943,6 +949,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);

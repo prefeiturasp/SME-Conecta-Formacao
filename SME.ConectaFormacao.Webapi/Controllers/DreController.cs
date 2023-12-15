@@ -15,12 +15,14 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(IEnumerable<DreDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]
+        [Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, 
+            Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, 
+            Policy = "Bearer")]
         public async Task<IActionResult> ObterListaDre(
             [FromServices] ICasoDeUsoObterListaDre useCase,
-            [FromQuery] bool exibirOpcaoOutros = false)
+            [FromQuery] bool exibirOpcaoTodos = false)
         {
-            return Ok(await useCase.Executar(exibirOpcaoOutros));
+            return Ok(await useCase.Executar(exibirOpcaoTodos));
         }
     }
 }
