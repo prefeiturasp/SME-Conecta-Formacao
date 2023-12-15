@@ -1680,7 +1680,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where pt.proposta_id = @propostaId
                           and not pt.excluido
                           and not pet.excluido
-                          and not pe.excluido;
+                          and not pe.excluido
+                        order by pt.nome,pe.hora_inicio;
 
                         select 
                               ped.data_inicio dataInicio,
@@ -1690,7 +1691,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         join  proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
                         where pe.proposta_id = @propostaId
                           and not pe.excluido
-                          and not ped.excluido;  
+                          and not ped.excluido
+                        order by ped.data_inicio;  
 
                         select a.nome,
                                a.codigo
