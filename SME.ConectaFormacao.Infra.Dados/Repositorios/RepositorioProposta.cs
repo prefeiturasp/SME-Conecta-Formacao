@@ -1545,7 +1545,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query += @" and (
                                 (p.data_realizacao_inicio::date between @dataInicial and @dataFinal) or 
                                 (p.data_realizacao_fim::date between @dataInicial and @dataFinal) or 
-                                (p.data_realizacao_inicio::date <= dataInicial and p.data_realizacao_fim::date >= @dataFinal)
+                                (p.data_realizacao_inicio::date <= @dataInicial and p.data_realizacao_fim::date >= @dataFinal)
                                 )";
 
             if (formatosIds.PossuiElementos())
