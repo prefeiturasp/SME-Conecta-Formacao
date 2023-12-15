@@ -1569,7 +1569,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                          and ppc.palavra_chave_id = any(@palavrasChavesIds)) ";
             }
 
-            query += @" order by p.data_realizacao_inicio desc ";
+            query += @" order by p.data_realizacao_inicio desc, p.data_realizacao_fim desc ";
 
             return conexao.Obter().QueryAsync<long>(query, new
             {
