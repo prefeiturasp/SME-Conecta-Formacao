@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var buscarNoBanco = new List<long>();
             foreach (var propostaId in request.PropostasIds)
             {
-                var chaveRedis = CacheDistribuidoNomes.PropostaResumida.Parametros(propostaId);
+                var chaveRedis = CacheDistribuidoNomes.FormacaoResumida.Parametros(propostaId);
                 var proposta = await _cacheDistribuido.ObterObjetoAsync<Proposta>(chaveRedis);
 
                 if (proposta == null)
@@ -52,7 +52,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 propostasBanco = await _repositorioProposta.ObterPropostaResumidaPorId(buscarNoBanco.ToArray());
                 foreach (var propostaBanco in propostasBanco)
                 {
-                    var chaveRedis = CacheDistribuidoNomes.PropostaResumida.Parametros(propostaBanco.Id);
+                    var chaveRedis = CacheDistribuidoNomes.FormacaoResumida.Parametros(propostaBanco.Id);
 
                     await _cacheDistribuido.SalvarAsync(chaveRedis, propostaBanco);
                 }
