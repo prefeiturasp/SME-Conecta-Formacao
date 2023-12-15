@@ -1386,6 +1386,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             id, 
                             proposta_id, 
                             nome,
+                            dre_id,
                             excluido,
                             criado_em,
 	                        criado_por,
@@ -1394,8 +1395,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_turma
-                        where proposta_id = @propostaId and not excluido; ";
-
+                        where proposta_id = @propostaId and not excluido";
             return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
         }
         
@@ -1622,6 +1622,90 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 propostaTurmaDre.DreId = propostaTurmaDre.DreId;
                 await conexao.Obter().UpdateAsync(propostaTurmaDre);
             }
+        }
+
+        public async Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId)
+        {
+            var query = @"select
+                            nome_formacao NomeFormacao,
+                            tipo_formacao tipoFormacao,
+                            formato,
+                            data_realizacao_inicio dataRealizacaoInicio,
+                            data_realizacao_fim dataRealizacaoFim,                            
+                            data_inscricao_fim dataInscricaoFim,
+                            justificativa
+                        from proposta
+                        where id = @propostaId 
+                            and not excluido;
+
+                          select
+                              ap.nome
+                        from proposta p 
+                            join area_promotora ap on ap.id = p.area_promotora_id
+                        where p.id = @propostaId 
+                            and not p.excluido 
+                            and not ap.excluido;
+
+                        select 
+                               cf.nome
+                        from proposta_publico_alvo ppa
+                        join cargo_funcao cf on cf.id = ppa.cargo_funcao_id
+                        where ppa.proposta_id = @propostaId
+                          and not ppa.excluido 
+                          and not cf.excluido;
+
+                        select 
+                               pc.nome
+                        from proposta_palavra_chave ppc
+                        join palavra_chave pc on pc.id = ppc.palavra_chave_id
+                        where ppc.proposta_id = @propostaId
+                          and not ppc.excluido 
+                          and not pc.excluido;
+
+                        select 
+                               pt.nome nome,
+                               pe.local,
+                               pe.hora_inicio horaInicio,
+                               pe.hora_fim horaFim,
+                               pet.proposta_encontro_id propostaEncontroId 
+                        from proposta_turma pt
+                        join proposta_encontro_turma pet on pet.turma_id = pt.id
+                        join proposta_encontro pe on pe.id = pet.proposta_encontro_id 
+                        where pt.proposta_id = @propostaId
+                          and not pt.excluido
+                          and not pet.excluido
+                          and not pe.excluido;
+
+                        select 
+                              ped.data_inicio dataInicio,
+                              ped.data_fim dataFim,
+                              ped.proposta_encontro_id propostaEncontroId
+                        from proposta_encontro pe 
+                        join  proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
+                        where pe.proposta_id = @propostaId
+                          and not pe.excluido
+                          and not ped.excluido;  
+
+                        select a.nome,
+                               a.codigo
+                        from arquivo a 
+                        where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId);";
+
+            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
+
+            var formacaoDetalhe = queryMultiple.ReadFirst<FormacaoDetalhada>();
+            formacaoDetalhe.AreaPromotora = queryMultiple.ReadFirst<string>();
+            formacaoDetalhe.PublicosAlvo = queryMultiple.Read<string>();
+            formacaoDetalhe.PalavrasChaves = queryMultiple.Read<string>();
+            formacaoDetalhe.Turmas = queryMultiple.Read<FormacaoTurma>();
+            var formacaoDatasTurmas = queryMultiple.Read<FormacaoTurmaData>();
+            var arquivos = queryMultiple.Read<Arquivo>();
+            formacaoDetalhe.ArquivoImagemDivulgacao = arquivos.Any() ? arquivos.FirstOrDefault() : null;
+
+            foreach (var turma in formacaoDetalhe.Turmas)
+                turma.Periodos = formacaoDatasTurmas.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId);
+            
+            return formacaoDetalhe;
         }
     }
 }
