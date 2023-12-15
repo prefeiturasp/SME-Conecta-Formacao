@@ -231,7 +231,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = new StringBuilder();
             query.AppendLine("select p.*, ap.* ");
             query.AppendLine("from proposta p ");
-            query.AppendLine("left join area_promotora ap on ap.id = p.area_promotora_id and not ap.excluido");
+            query.AppendLine("inner join area_promotora ap on ap.id = p.area_promotora_id and not ap.excluido");
             query.AppendLine("where not p.excluido ");
 
             if (propostaId.GetValueOrDefault() > 0)
