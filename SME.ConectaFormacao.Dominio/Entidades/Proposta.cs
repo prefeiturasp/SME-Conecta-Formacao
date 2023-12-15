@@ -1,4 +1,5 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
@@ -53,6 +54,9 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaTurmaDre> ObterPropostaTurmasDres {
             get
             {
+                if (Turmas.EhNulo())
+                    return default;
+                
                 return from propostaTurma in Turmas 
                     from dreId in propostaTurma.DresIds 
                     select new PropostaTurmaDre()
