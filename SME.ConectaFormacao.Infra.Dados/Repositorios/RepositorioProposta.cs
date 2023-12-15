@@ -1541,11 +1541,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (titulo.EstaPreenchido())
                 query += " and f_unaccent(lower(p.nome_formacao)) LIKE ('%' || f_unaccent(@titulo) || '%') ";
 
-            if (dataInicial.HasValue)
-                query += " and @dataInicial >= DATE(p.data_realizacao_inicio) ";
-
-            if (dataFinal.HasValue)
-                query += " and @dataFinal <= DATE(p.data_realizacao_fim) ";
+            if (dataInicial.HasValue && dataFinal.HasValue)
+                query += @" and ((p.data_realizacao_inicio::date between ${data_inicio} and ${data_fim}) 
+                                or (p.data_realizacao_fim::date between ${data_inicio} and ${data_fim})) ";
 
             if (formatosIds.PossuiElementos())
                 query += " and p.formato = any(@formatosIds) ";
