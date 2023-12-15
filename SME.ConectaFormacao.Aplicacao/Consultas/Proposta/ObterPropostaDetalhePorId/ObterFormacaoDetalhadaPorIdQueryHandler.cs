@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var retornoFormacaoDetalhadaDto = _mapper.Map<RetornoFormacaoDetalhadaDTO>(formacaoDetalhada);
 
             if (formacaoDetalhada.ArquivoImagemDivulgacao.NaoEhNulo())
-                retornoFormacaoDetalhadaDto.ImagemUrl = await _mediator.Send(new ObterEnderecoArquivoServicoArmazenamentoQuery(formacaoDetalhada.ArquivoImagemDivulgacao.NomeArquivoFisico, false));
+                retornoFormacaoDetalhadaDto.ImagemUrl = await _mediator.Send(new ObterEnderecoArquivoServicoArmazenamentoQuery(formacaoDetalhada.ArquivoImagemDivulgacao.NomeArquivoFisico, false),cancellationToken);
             
             await _cacheDistribuido.SalvarAsync(chaveRedis, retornoFormacaoDetalhadaDto);
             
