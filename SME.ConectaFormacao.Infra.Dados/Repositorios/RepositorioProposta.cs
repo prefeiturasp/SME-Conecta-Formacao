@@ -1535,6 +1535,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                              and p.tipo_inscricao = @tipoInscricao 
                              and p.situacao = @situacao";
 
+            if (areasPromotorasIds.PossuiElementos())
+                query += " and p.area_promotora_id = any(@areasPromotorasIds) ";
+            
             if (titulo.EstaPreenchido())
                 query += " and f_unaccent(lower(p.nome_formacao)) LIKE ('%' || f_unaccent(@titulo) || '%') ";
 
