@@ -3,6 +3,7 @@
     public enum LogContexto
     {
         Geral,
-        SincronizacaoInstitucional
+        SincronizacaoInstitucional,
+        Cache
     }
 }

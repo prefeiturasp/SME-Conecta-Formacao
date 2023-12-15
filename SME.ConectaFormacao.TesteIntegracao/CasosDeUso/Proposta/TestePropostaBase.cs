@@ -44,7 +44,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             modalidades, anosTurmas, componentesCurriculares);
         }
 
-        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada, FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim)
+        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada, FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, bool ehTipoInscricaoOptativa = false)
         {
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -67,21 +67,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(componentesCurriculares);
 
             return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada);
+                modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada,ehTipoInscricaoOptativa);
         }
 
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora,
             IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,
             IEnumerable<PalavraChave> palavrasChaves, IEnumerable<Dominio.Enumerados.Modalidade> modalidades, IEnumerable<Dominio.Entidades.AnoTurma> anosTurmas,
             IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares, SituacaoProposta situacao = SituacaoProposta.Cadastrada,
-            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim)
+            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, bool ehTipoInscricaoOptativa = false)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
                 TipoFormacao.Curso,
                 Formato.Presencial,
                 situacao,
-                false, false, formacaoHomologada);
+                false, false, formacaoHomologada,ehTipoInscricaoOptativa);
 
             proposta.AreaPromotora = areaPromotora;
 

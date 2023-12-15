@@ -4,6 +4,13 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 {
     public static class StringExtensao
     {
+        public static readonly Regex RegexTagsBR = new("<br[^>]*>", RegexOptions.Compiled);
+        public static readonly Regex RegexTagsP = new("<p[^>]*>", RegexOptions.Compiled);
+        public static readonly Regex RegexTagsLI = new("<li[^>]*>", RegexOptions.Compiled);
+        public static readonly Regex RegexTagsDIV = new("<div[^>]*>", RegexOptions.Compiled);
+        public static readonly Regex RegexTagsHTMLQualquer = new("<[^>]*>", RegexOptions.Compiled);
+        public static readonly Regex RegexEspacosEmBranco = new("&nbsp;", RegexOptions.Compiled);
+        
         public static string SomenteNumeros(this string valor)
         {
             return Regex.Replace(valor, "[^0-9]", "");
@@ -44,6 +51,25 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         public static bool NaoEstaPreenchido(this string str)
         {
             return string.IsNullOrEmpty(str);
+        }
+
+        public static string Parametros(this string valor, params object[] parametros)
+        {
+            return string.Format(valor, parametros);
+        }
+        
+        public static string RemoverTagsHtml(this string texto)
+        {
+            if (texto.NaoEstaPreenchido())
+                return string.Empty;
+            
+            texto = RegexTagsBR.Replace(texto, " ");
+            texto = RegexTagsP.Replace(texto, " ");
+            texto = RegexTagsLI.Replace(texto, " ");
+            texto = RegexTagsDIV.Replace(texto, " ");
+            texto = RegexTagsHTMLQualquer.Replace(texto, string.Empty);
+            texto = RegexEspacosEmBranco.Replace(texto, " ").Trim();
+            return texto.Trim();
         }
     }
 }

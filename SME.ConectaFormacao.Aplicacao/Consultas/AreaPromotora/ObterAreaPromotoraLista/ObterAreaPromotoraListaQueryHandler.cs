@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -9,16 +11,19 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
+        private readonly ICacheDistribuido _cacheDistribuido;
 
-        public ObterAreaPromotoraListaQueryHandler(IMapper mapper, IRepositorioAreaPromotora repositorioAreaPromotora)
+        public ObterAreaPromotoraListaQueryHandler(IMapper mapper, IRepositorioAreaPromotora repositorioAreaPromotora, ICacheDistribuido cacheDistribuido)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
+            _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
         }
 
         public async Task<IEnumerable<RetornoListagemDTO>> Handle(ObterAreaPromotoraListaQuery request, CancellationToken cancellationToken)
         {
-            var areasPromotoras = await _repositorioAreaPromotora.ObterLista();
+            var areasPromotoras = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.AreaPromotora, () => _repositorioAreaPromotora.ObterLista());
+
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(areasPromotoras);
         }
     }

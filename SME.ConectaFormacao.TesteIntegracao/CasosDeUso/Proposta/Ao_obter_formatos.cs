@@ -41,5 +41,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             retorno.Any(t => t.Id == (long)Formato.Presencial).ShouldBeTrue();
             retorno.Any(t => t.Id == (long)Formato.Hibrido).ShouldBeTrue();
         }
+
+        [Fact(DisplayName = "Proposta - obter todos os formatos")]
+        public async Task Deve_obter_todos_formatos()
+        {
+            // arrange 
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterTodosFormatos>();
+
+            // act 
+            var retorno = await casoDeUso.Executar();
+
+            // assert 
+            retorno.Any(t => t.Id == (long)Formato.Distancia).ShouldBeTrue();
+            retorno.Any(t => t.Id == (long)Formato.Presencial).ShouldBeTrue();
+            retorno.Any(t => t.Id == (long)Formato.Hibrido).ShouldBeTrue();
+        }
     }
 }

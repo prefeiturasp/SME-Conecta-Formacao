@@ -787,7 +787,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 palavraChave.Id = (long)await conexao.Obter().InsertAsync(palavraChave);
             }
         }
-
+        
         public async Task InserirModalidades(long id, IEnumerable<PropostaModalidade> modalidades)
         {
             foreach (var modalidade in modalidades)
@@ -798,7 +798,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 modalidade.Id = (long)await conexao.Obter().InsertAsync(modalidade);
             }
         }
-
+        
         public async Task InserirAnosTurmas(long id, IEnumerable<PropostaAnoTurma> anosTurmas)
         {
             foreach (var anoTurma in anosTurmas)
@@ -809,7 +809,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 anoTurma.Id = (long)await conexao.Obter().InsertAsync(anoTurma);
             }
         }
-
+        
         public async Task InserirComponentesCurriculares(long id, IEnumerable<PropostaComponenteCurricular> componentesCurriculares)
         {
             foreach (var componenteCurricular in componentesCurriculares)
@@ -849,7 +849,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where proposta_id = @id and not excluido ";
             return conexao.Obter().QueryAsync<PropostaPalavraChave>(query, new { id });
         }
-
+        
         public Task<IEnumerable<PropostaModalidade>> ObterModalidadesPorId(long id)
         {
             var query = @"select 
@@ -885,7 +885,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where proposta_id = @id and not excluido ";
             return conexao.Obter().QueryAsync<PropostaAnoTurma>(query, new { id });
         }
-
+        
         public Task<IEnumerable<PropostaComponenteCurricular>> ObterComponentesCurricularesPorId(long id)
         {
             var query = @"select 
@@ -945,7 +945,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
-
+        
         public Task RemoverModalidades(IEnumerable<PropostaModalidade> modalidades)
         {
             var modalidade = modalidades.First();
@@ -969,7 +969,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
-
+        
         public Task RemoverAnosTurmas(IEnumerable<PropostaAnoTurma> anosTurmas)
         {
             var anoTurma = anosTurmas.First();
@@ -993,7 +993,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
-
+        
         public Task RemoverComponentesCurriculares(IEnumerable<PropostaComponenteCurricular> componenteCurriculares)
         {
             var componenteCurricular = componenteCurriculares.First();
@@ -1394,8 +1394,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_turma
-                        where proposta_id = @propostaId and not excluido; ";
-
+                        where proposta_id = @propostaId and not excluido";
             return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
         }
         
@@ -1521,6 +1520,191 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 propostaTurmaDre.DreId = propostaTurmaDre.DreId;
                 await conexao.Obter().UpdateAsync(propostaTurmaDre);
             }
+        }
+
+        public Task<IEnumerable<long>> ObterListagemFormacoesPorFiltro(long[] publicosAlvosIds, string titulo, long[] areasPromotorasIds,
+            DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds)
+        {
+            var tipoInscricao = TipoInscricao.Optativa;
+            var situacao = SituacaoProposta.Cadastrada;
+            titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty;
+
+            var query = @"select id 
+                          from proposta p 
+                          where not p.excluido 
+                             and p.tipo_inscricao = @tipoInscricao 
+                             and p.situacao = @situacao";
+
+            if (titulo.EstaPreenchido())
+                query += " and f_unaccent(lower(p.nome_formacao)) LIKE ('%' || f_unaccent(@titulo) || '%') ";
+
+            if (dataInicial.HasValue)
+                query += " and p.data_realizacao_inicio >= @dataInicial ";
+
+            if (dataFinal.HasValue)
+                query += " and p.data_realizacao_fim <= @dataFinal ";
+
+            if (formatosIds.PossuiElementos())
+                query += " and p.formato = any(@formatosIds) ";
+
+            if (publicosAlvosIds.PossuiElementos())
+            {
+                query += @" and exists(select 1 
+                                       from proposta_publico_alvo ppa 
+                                       where not ppa.excluido 
+                                         and ppa.proposta_id = p.id 
+                                         and ppa.cargo_funcao_id = any(@publicosAlvosIds)) ";
+            }
+
+            if (publicosAlvosIds.PossuiElementos())
+            {
+                query += @" and exists(select 1 
+                                       from proposta_palavra_chave ppc 
+                                       where not ppc.excluido 
+                                         and ppc.proposta_id = p.id 
+                                         and ppc.palavra_chave_id = any(@palavrasChavesIds)) ";
+            }
+
+            query += @" order by p.data_realizacao_inicio desc ";
+
+            return conexao.Obter().QueryAsync<long>(query, new
+            {
+                palavrasChavesIds,
+                formatosIds,
+                dataInicial,
+                dataFinal,
+                areasPromotorasIds,
+                titulo,
+                publicosAlvosIds,
+                tipoInscricao,
+                situacao
+            });
+        }
+
+        public async Task<IEnumerable<Proposta>> ObterPropostaResumidaPorId(long[] propostaIds)
+        {
+            var query = @"
+                    select p.id, 
+                        p.nome_formacao,
+                        p.data_realizacao_inicio, 
+                        p.data_realizacao_fim,
+                        p.tipo_formacao,
+                        p.formato formato,
+                        p.data_inscricao_inicio,
+                        p.data_inscricao_fim,
+                        p.area_promotora_id,
+                        p.arquivo_imagem_divulgacao_id
+                    from public.proposta p  
+                    where p.id = any(@propostaIds);
+
+                    select ap.id,
+	                       ap.nome 
+                    from area_promotora ap 
+                    where exists(select 1 from proposta p where ap.id = p.area_promotora_id and p.id = any(@propostaIds));
+
+                    select a.id,
+	                       a.nome 
+                    from arquivo a 
+                    where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = any(@propostaIds));";
+
+            var multiQuery = await conexao.Obter().QueryMultipleAsync(query, new { propostaIds });
+
+            var propostas = multiQuery.Read<Proposta>();
+            var areasPromotora = multiQuery.Read<AreaPromotora>();
+            var arquivos = multiQuery.Read<Arquivo>();
+
+
+            foreach (var proposta in propostas)
+            {
+                proposta.AreaPromotora = areasPromotora.FirstOrDefault(t => t.Id == proposta.AreaPromotoraId);
+                proposta.ArquivoImagemDivulgacao = arquivos.FirstOrDefault(t => t.Id == proposta.ArquivoImagemDivulgacaoId);
+            }
+
+            return propostas;
+        }
+
+        public async Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId)
+        {
+            var query = @"select
+                            nome_formacao NomeFormacao,
+                            tipo_formacao tipoFormacao,
+                            formato,
+                            data_realizacao_inicio dataRealizacaoInicio,
+                            data_realizacao_fim dataRealizacaoFim,                            
+                            data_inscricao_fim dataInscricaoFim,
+                            justificativa
+                        from proposta
+                        where id = @propostaId 
+                            and not excluido;
+
+                          select
+                              ap.nome
+                        from proposta p 
+                            join area_promotora ap on ap.id = p.area_promotora_id
+                        where p.id = @propostaId 
+                            and not p.excluido 
+                            and not ap.excluido;
+
+                        select 
+                               cf.nome
+                        from proposta_publico_alvo ppa
+                        join cargo_funcao cf on cf.id = ppa.cargo_funcao_id
+                        where ppa.proposta_id = @propostaId
+                          and not ppa.excluido 
+                          and not cf.excluido;
+
+                        select 
+                               pc.nome
+                        from proposta_palavra_chave ppc
+                        join palavra_chave pc on pc.id = ppc.palavra_chave_id
+                        where ppc.proposta_id = @propostaId
+                          and not ppc.excluido 
+                          and not pc.excluido;
+
+                        select 
+                               pt.nome nome,
+                               pe.local,
+                               pe.hora_inicio horaInicio,
+                               pe.hora_fim horaFim,
+                               pet.proposta_encontro_id propostaEncontroId 
+                        from proposta_turma pt
+                        join proposta_encontro_turma pet on pet.turma_id = pt.id
+                        join proposta_encontro pe on pe.id = pet.proposta_encontro_id 
+                        where pt.proposta_id = @propostaId
+                          and not pt.excluido
+                          and not pet.excluido
+                          and not pe.excluido;
+
+                        select 
+                              ped.data_inicio dataInicio,
+                              ped.data_fim dataFim,
+                              ped.proposta_encontro_id propostaEncontroId
+                        from proposta_encontro pe 
+                        join  proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
+                        where pe.proposta_id = @propostaId
+                          and not pe.excluido
+                          and not ped.excluido;  
+
+                        select a.nome,
+                               a.codigo
+                        from arquivo a 
+                        where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId);";
+
+            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
+
+            var formacaoDetalhe = queryMultiple.ReadFirst<FormacaoDetalhada>();
+            formacaoDetalhe.AreaPromotora = queryMultiple.ReadFirst<string>();
+            formacaoDetalhe.PublicosAlvo = queryMultiple.Read<string>();
+            formacaoDetalhe.PalavrasChaves = queryMultiple.Read<string>();
+            formacaoDetalhe.Turmas = queryMultiple.Read<FormacaoTurma>();
+            var formacaoDatasTurmas = queryMultiple.Read<FormacaoTurmaData>();
+            var arquivos = queryMultiple.Read<Arquivo>();
+            formacaoDetalhe.ArquivoImagemDivulgacao = arquivos.Any() ? arquivos.FirstOrDefault() : null;
+
+            foreach (var turma in formacaoDetalhe.Turmas)
+                turma.Periodos = formacaoDatasTurmas.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId);
+            
+            return formacaoDetalhe;
         }
     }
 }

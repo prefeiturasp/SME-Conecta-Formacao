@@ -39,6 +39,7 @@ using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
+using SME.ConectaFormacao.Infra.Servicos.CacheDistribuido.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Options;
@@ -75,9 +76,15 @@ public class RegistradorDeDependencia
         RegistrarProfiles();
         RegistrarHttpClients();
         RegistrarServicoArmazenamento();
+        RegistrarCacheDistribuido();
     }
 
-    private void RegistrarServicoArmazenamento()
+    protected virtual void RegistrarCacheDistribuido()
+    {
+        _serviceCollection.ConfigurarCacheDistribuidoRedis(_configuration);
+    }
+
+    protected virtual void RegistrarServicoArmazenamento()
     {
         _serviceCollection.ConfigurarArmazenamento(_configuration);
     }
@@ -93,7 +100,7 @@ public class RegistradorDeDependencia
         _serviceCollection.AddMediatR(x => x.RegisterServicesFromAssemblies(assembly));
     }
 
-    public virtual void RegistrarValidadoresFluentValidation()
+    protected virtual void RegistrarValidadoresFluentValidation()
     {
         var assembly = AppDomain.CurrentDomain.Load("SME.ConectaFormacao.Aplicacao");
 
@@ -119,6 +126,7 @@ public class RegistradorDeDependencia
 
         _serviceCollection.AddSingleton<IServicoLogs, ServicoLogs>();
     }
+
     protected virtual void RegistrarRabbit()
     {
         _serviceCollection.AddOptions<ConfiguracaoRabbitOptions>()
@@ -255,6 +263,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoFormacao, CasoDeUsoObterTipoFormacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoInscricao, CasoDeUsoObterTipoInscricao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormatos, CasoDeUsoObterFormatos>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTodosFormatos, CasoDeUsoObterTodosFormatos>();
         _serviceCollection.TryAddScoped<ICasoDeUsoInserirProposta, CasoDeUsoInserirProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAlterarProposta, CasoDeUsoAlterarProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaPorId, CasoDeUsoObterPropostaPorId>();
@@ -276,7 +285,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaTutorPaginacao, CasoDeUsoObterPropostaTutorPaginacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaTutorPorId, CasoDeUsoObterPropostaTutorPorId>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
-
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterListagemFormacaoPaginada, CasoDeUsoObterListagemFormacaoPaginada>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoDetalhada, CasoDeUsoObterFormacaoDetalhada>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverPropostaEncontro, CasoDeUsoRemoverPropostaEncontro>();
