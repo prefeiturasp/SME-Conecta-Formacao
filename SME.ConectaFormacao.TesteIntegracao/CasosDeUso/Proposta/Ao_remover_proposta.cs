@@ -4,7 +4,6 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -20,19 +19,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_remover_por_id_valido()
         {
             // arrange
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
-
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
+            var proposta = await InserirNaBaseProposta();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoRemoverProposta>();
 
@@ -76,6 +63,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var propostaPalavraChaves = ObterTodos<PropostaPalavraChave>();
             foreach (var propostaPalavraChave in propostaPalavraChaves)
                 propostaPalavraChave.Excluido.ShouldBeTrue();
+            
+            var propostaModalidades = ObterTodos<PropostaModalidade>();
+            foreach (var propostaModalidade in propostaModalidades)
+                propostaModalidade.Excluido.ShouldBeTrue();
+            
+            var propostaAnosTurmas = ObterTodos<PropostaAnoTurma>();
+            foreach (var propostaAnoTurma in propostaAnosTurmas)
+                propostaAnoTurma.Excluido.ShouldBeTrue();
+            
+            var propostaComponentesCurriculares = ObterTodos<PropostaComponenteCurricular>();
+            foreach (var propostaComponenteCurricular in propostaComponentesCurriculares)
+                propostaComponenteCurricular.Excluido.ShouldBeTrue();
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção ao remover por id inválido")]

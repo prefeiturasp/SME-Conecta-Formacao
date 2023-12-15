@@ -29,8 +29,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var turmasAntes = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(regenteDepois.Id);
 
-            var arrayTurma = request.PropostaRegenteDTO.Turmas.Select(x => x.Turma);
-            var turmasConsultar = arrayTurma.Where(w => !turmasAntes.Any(a => a.Turma == w)).ToArray();
+            var arrayTurma = request.PropostaRegenteDTO.Turmas.Select(x => x.TurmaId);
+            var turmasConsultar = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
             await _mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(request.PropostaId, request.PropostaRegenteDTO.RegistroFuncional, regenteDepois.NomeRegente, turmasConsultar));
 
             var transacao = _transacao.Iniciar();

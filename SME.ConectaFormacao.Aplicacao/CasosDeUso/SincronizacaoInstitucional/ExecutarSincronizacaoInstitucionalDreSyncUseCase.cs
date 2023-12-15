@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var dres = await mediator.Send(ObterCodigosDresQuery.Instance);
+            var dres = await mediator.Send(ObterCodigosDresEOLQuery.Instancia);
             if (dres.EhNulo() || !dres.Any())
             {
                 throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL);

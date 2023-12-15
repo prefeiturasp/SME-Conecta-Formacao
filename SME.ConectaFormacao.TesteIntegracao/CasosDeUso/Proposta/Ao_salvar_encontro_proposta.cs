@@ -3,7 +3,6 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -19,19 +18,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_encontro_proposta_valido()
         {
             // arrange
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
-
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
+            var proposta = await InserirNaBaseProposta();
 
             var encontroDTO = PropostaSalvarMock.GerarEncontro(proposta.QuantidadeTurmas.GetValueOrDefault());
 
@@ -47,20 +34,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         [Fact(DisplayName = "Proposta Encontro - Deve alterar encontros da proposta válido")]
         public async Task Deve_alterar_encontros_proposta_valido()
         {
-            // arrange
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
-
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-            
-            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves);
+            // arrange            
+            var proposta = await InserirNaBaseProposta();
 
             var encontroDTO = PropostaSalvarMock.GerarEncontro(proposta.QuantidadeTurmas.GetValueOrDefault());
             encontroDTO.Id = proposta.Encontros.FirstOrDefault().Id;

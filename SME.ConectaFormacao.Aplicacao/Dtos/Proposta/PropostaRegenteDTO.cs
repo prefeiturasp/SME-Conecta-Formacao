@@ -8,6 +8,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? NomeRegente { get; set; }
         public string? MiniBiografia { get; set; }
         public string? NomesTurmas { get; set; }
-        public IEnumerable<PropostaRegenteTurmaDTO> Turmas { get; set; } = new List<PropostaRegenteTurmaDTO>();
+        public IEnumerable<PropostaRegenteTurmaDTO> Turmas { get; set; }
     }
 }

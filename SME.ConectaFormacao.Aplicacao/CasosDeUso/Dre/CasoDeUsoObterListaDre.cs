@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -10,9 +11,9 @@ namespace SME.ConectaFormacao.Aplicacao
         {
         }
 
-        public async Task<IEnumerable<RetornoListagemDTO>> Executar()
+        public Task<IEnumerable<DreDTO>> Executar(bool exibirTodos)
         {
-            return await mediator.Send(ObterListaDreQuery.Instancia);
+            return mediator.Send(new ObterListaDreQuery(exibirTodos));
         }
     }
 }

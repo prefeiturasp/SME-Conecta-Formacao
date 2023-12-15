@@ -50,9 +50,21 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(request.Id, propostaDepois.VagasRemanecentes), cancellationToken);
 
-                await _mediator.Send(new SalvarPalavraChaveCommand(request.Id, propostaDepois.PalavrasChaves), cancellationToken);
+                await _mediator.Send(new SalvarPropostaPalavraChaveCommand(request.Id, propostaDepois.PalavrasChaves), cancellationToken);
 
                 await _mediator.Send(new SalvarCriterioCertificacaoCommand(request.Id, propostaDepois.CriterioCertificacao), cancellationToken);
+
+                await _mediator.Send(new SalvarPropostaDreCommand(request.Id, propostaDepois.Dres), cancellationToken);
+
+                await _mediator.Send(new SalvarPropostaTurmaCommand(request.Id, propostaDepois.Turmas), cancellationToken);
+                
+                await _mediator.Send(new SalvarPropostaTurmaDreCommand(propostaDepois.ObterPropostaTurmasDres), cancellationToken);
+                
+                await _mediator.Send(new SalvarPropostaModalidadeCommand(request.Id, propostaDepois.Modalidades), cancellationToken);
+                
+                await _mediator.Send(new SalvarPropostaAnoTurmaCommand(request.Id, propostaDepois.AnosTurmas), cancellationToken);
+                
+                await _mediator.Send(new SalvarPropostaComponenteCurricularCommand(request.Id, propostaDepois.ComponentesCurriculares), cancellationToken);
 
                 if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())
                 {

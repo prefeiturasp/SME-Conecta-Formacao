@@ -1,10 +1,15 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
+
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterListaDreQuery : IRequest<IEnumerable<RetornoListagemDTO>>
+    public class ObterListaDreQuery : IRequest<IEnumerable<DreDTO>>
     {
-        private static ObterListaDreQuery _instancia;
-        public static ObterListaDreQuery Instancia => _instancia ??= new();
+        public ObterListaDreQuery(bool exibirTodos)
+        {
+            ExibirTodos = exibirTodos;
+        }
+
+        public bool ExibirTodos { get; }
     }
 }

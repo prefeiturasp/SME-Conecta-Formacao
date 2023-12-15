@@ -12,11 +12,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public async Task<bool> VerificarSeDreExistePorCodigo(string codigoDre)
+        public Task<bool> VerificarSeDreExistePorCodigo(string codigoDre)
         {
-            var query = @"select count(1) from dre d  where d.dre_id  = @codigoDre and not excluido";
-            return await conexao.Obter().ExecuteScalarAsync<bool>(query, new { codigoDre });
+            var query = @"select count(1) from dre d  where d.dre_id  = @codigoDre and not excluido limit 1";
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { codigoDre });
         }
+
         public Task AtualizarDreComEol(Dre dre)
         {
             PreencherAuditoriaAlteracao(dre);
@@ -45,7 +46,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
-        public async Task<Dre> ObterDrePorCodigo(string codigoDre)
+
+        public Task<Dre> ObterDrePorCodigo(string codigoDre)
         {
 
             var query = @"select
@@ -64,7 +66,36 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             from
 	                            public.dre d  
                             where d.dre_id  = @codigoDre ";
-            return await conexao.Obter().QueryFirstOrDefaultAsync<Dre>(query, new { codigoDre });
+            return conexao.Obter().QueryFirstOrDefaultAsync<Dre>(query, new { codigoDre });
+        }
+
+        public Task<IEnumerable<Dre>> ObterIgnorandoExcluidos(bool exibirTodos)
+        {
+            var query = @"select
+	                            d.id,
+	                            d.dre_id,
+	                            d.abreviacao,
+	                            d.nome,
+	                            d.data_atualizacao,
+                                d.todos,
+                                d.ordem,
+	                            d.criado_em,
+	                            d.criado_por,
+	                            d.alterado_em,
+	                            d.alterado_por,
+	                            d.criado_login,
+	                            d.alterado_login,
+	                            d.excluido
+                            from
+	                            public.dre d  
+                            where not d.excluido ";
+
+            if (!exibirTodos)
+                query += " and not d.todos ";
+
+            query += "order by d.ordem, d.nome";
+
+            return conexao.Obter().QueryAsync<Dre>(query);
         }
     }
 }
