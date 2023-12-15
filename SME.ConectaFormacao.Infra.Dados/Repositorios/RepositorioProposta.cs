@@ -1603,7 +1603,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     where exists(select 1 from proposta p where ap.id = p.area_promotora_id and p.id = any(@propostaIds));
 
                     select a.id,
-	                       a.nome 
+                           a.nome,
+                           a.codigo
                     from arquivo a 
                     where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = any(@propostaIds));";
 
