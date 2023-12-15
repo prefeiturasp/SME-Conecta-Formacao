@@ -87,5 +87,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task InserirPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres);
         Task AtualizarPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres);
         Task RemoverPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres);
+        Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId);
     }
 }
