@@ -2,6 +2,7 @@ namespace SME.ConectaFormacao.Dominio.Constantes;
 
 public class MensagemNegocio
 {
+    public const string FORMACAO_NAO_ENCONTRADA = "Formação não encontrada";
     public const string PERIODO_REALIZACAO_NAO_INFORMADO = "É necessário informar as datas do período de realização";
     public const string PERIODO_INCRICAO_NAO_INFORMADO = "É necessário informar as datas do período de inscrição";
     public const string TIPO_FORMACAO_NAO_INFORMADO = "É necessário informar o tipo da formação";
