@@ -1569,7 +1569,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                          and ppc.palavra_chave_id = any(@palavrasChavesIds)) ";
             }
 
-            query += @" order by p.data_realizacao_inicio desc, p.data_realizacao_fim desc ";
+            query += @" order by p.data_realizacao_inicio, p.data_realizacao_fim ";
 
             return conexao.Obter().QueryAsync<long>(query, new
             {
@@ -1684,7 +1684,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           and not pt.excluido
                           and not pet.excluido
                           and not pe.excluido
-                        order by pt.nome,pe.hora_inicio;
+                        order by pt.nome, pe.hora_inicio;
 
                         select 
                               ped.data_inicio dataInicio,
