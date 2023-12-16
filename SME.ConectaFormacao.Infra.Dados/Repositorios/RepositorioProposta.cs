@@ -1541,11 +1541,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (titulo.EstaPreenchido())
                 query += " and f_unaccent(lower(p.nome_formacao)) LIKE ('%' || f_unaccent(@titulo) || '%') ";
 
-            if (dataInicial.HasValue)
-                query += " and @dataInicial >= DATE(p.data_realizacao_inicio) ";
-
-            if (dataFinal.HasValue)
-                query += " and @dataFinal <= DATE(p.data_realizacao_fim) ";
+            if (dataInicial.HasValue && dataFinal.HasValue)
+                query += @" and (
+                                (p.data_realizacao_inicio::date between @dataInicial and @dataFinal) or 
+                                (p.data_realizacao_fim::date between @dataInicial and @dataFinal) or 
+                                (p.data_realizacao_inicio::date <= @dataInicial and p.data_realizacao_fim::date >= @dataFinal)
+                                )";
 
             if (formatosIds.PossuiElementos())
                 query += " and p.formato = any(@formatosIds) ";
@@ -1568,7 +1569,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                          and ppc.palavra_chave_id = any(@palavrasChavesIds)) ";
             }
 
-            query += @" order by p.data_realizacao_inicio desc ";
+            query += @" order by p.data_realizacao_inicio desc, p.data_realizacao_fim desc ";
 
             return conexao.Obter().QueryAsync<long>(query, new
             {
@@ -1682,7 +1683,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where pt.proposta_id = @propostaId
                           and not pt.excluido
                           and not pet.excluido
-                          and not pe.excluido;
+                          and not pe.excluido
+                        order by pt.nome,pe.hora_inicio;
 
                         select 
                               ped.data_inicio dataInicio,
@@ -1692,7 +1694,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         join  proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
                         where pe.proposta_id = @propostaId
                           and not pe.excluido
-                          and not ped.excluido;  
+                          and not ped.excluido
+                        order by ped.data_inicio;  
 
                         select a.nome,
                                a.codigo
