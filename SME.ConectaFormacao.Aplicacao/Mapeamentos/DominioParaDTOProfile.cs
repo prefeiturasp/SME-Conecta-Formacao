@@ -128,17 +128,17 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
 
             CreateMap<PropostaMovimentacao, PropostaMovimentacaoDTO>().ReverseMap();
-            
+
             CreateMap<AnoTurma, RetornoListagemTodosDTO>().ReverseMap();
             CreateMap<AnoTurma, AnoTurmaDTO>().ReverseMap();
             CreateMap<ComponenteCurricular, RetornoListagemTodosDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome))
                 .ReverseMap();
 
-            CreateMap<PropostaTurma,  PropostaTurmaDTO>()
+            CreateMap<PropostaTurma, PropostaTurmaDTO>()
                 .ReverseMap();
-            
-            CreateMap<PropostaTurmaDre,  PropostaTurmaDreDTO>()
+
+            CreateMap<PropostaTurmaDre, PropostaTurmaDreDTO>()
                 .ForMember(dest => dest.DreNome, opt => opt.MapFrom(o => o.Dre.Nome))
                 .ReverseMap();
 
@@ -180,14 +180,14 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                     opt => opt.MapFrom(o => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim))
                 .ForMember(dest => dest.Periodo,
                     opt => opt.MapFrom(o =>
-                        $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"));
+                        $"De {o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"));
 
             CreateMap<FormacaoTurma, RetornoTurmaDetalheDTO>()
                 .ForMember(dest => dest.Horario,
                     opt => opt.MapFrom(o => $"{o.HoraInicio} até {o.HoraFim}"))
                 .ForMember(dest => dest.Periodos,
-                    opt => 
-                        opt.MapFrom(x => x.Periodos.Select(s => $"{s.DataInicio.ToString("dd/MM")} até {s.DataFim.ToString("dd/MM")}")));
+                    opt =>
+                        opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"De {s.DataInicio:dd/MM} até {s.DataFim.Value:dd/MM}" : $"{s.DataInicio:dd/MM}")));
         }
     }
 }
