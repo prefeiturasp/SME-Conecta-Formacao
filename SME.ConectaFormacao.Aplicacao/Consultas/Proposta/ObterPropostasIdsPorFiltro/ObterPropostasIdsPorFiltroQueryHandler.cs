@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 request.FiltroListagemFormacaoDTO.PublicosAlvosIds,
                 request.FiltroListagemFormacaoDTO.Titulo,
                 request.FiltroListagemFormacaoDTO.AreasPromotorasIds,
-                request.FiltroListagemFormacaoDTO.DataFinal,
+                request.FiltroListagemFormacaoDTO.DataInicial,
                 request.FiltroListagemFormacaoDTO.DataFinal,
                 request.FiltroListagemFormacaoDTO.FormatosIds,
                 request.FiltroListagemFormacaoDTO.PalavrasChavesIds);

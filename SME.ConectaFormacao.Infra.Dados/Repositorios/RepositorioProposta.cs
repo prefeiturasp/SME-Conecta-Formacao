@@ -1398,7 +1398,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
         }
         
-        public async Task<IEnumerable<PropostaTurmaDre>> ObterPropostaTurmasDresPorPropostaTurmaId(long propostaTurmaId)
+        public async Task<IEnumerable<PropostaTurmaDre>> ObterPropostaTurmasDresPorPropostaTurmaId(params long[] propostaTurmaIds)
         {
             var query = @"select 
                             id, 
@@ -1412,16 +1412,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_turma_dre
-                        where proposta_turma_id = @propostaTurmaId and not excluido; 
+                        where proposta_turma_id = any(@propostaTurmaIds) and not excluido; 
                         
                         select 
                             d.id,
                             d.nome
                         from proposta_turma_dre ptd
                         join dre d on d.id = ptd.dre_id and not d.excluido
-                        where ptd.proposta_turma_id = @propostaTurmaId and not ptd.excluido;";
+                        where ptd.proposta_turma_id = any(@propostaTurmaIds) and not ptd.excluido;";
 
-            var multiQuery = await conexao.Obter().QueryMultipleAsync(query, new { propostaTurmaId });
+            var multiQuery = await conexao.Obter().QueryMultipleAsync(query, new { propostaTurmaIds });
             var turmaDres = multiQuery.Read<PropostaTurmaDre>();
 
             var dres = multiQuery.Read<Dre>();
@@ -1526,7 +1526,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds)
         {
             var tipoInscricao = TipoInscricao.Optativa;
-            var situacao = SituacaoProposta.Cadastrada;
+            var situacao = SituacaoProposta.Publicada;
             titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty;
 
             var query = @"select id 
@@ -1535,14 +1535,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                              and p.tipo_inscricao = @tipoInscricao 
                              and p.situacao = @situacao";
 
+            if (areasPromotorasIds.PossuiElementos())
+                query += " and p.area_promotora_id = any(@areasPromotorasIds) ";
+            
             if (titulo.EstaPreenchido())
                 query += " and f_unaccent(lower(p.nome_formacao)) LIKE ('%' || f_unaccent(@titulo) || '%') ";
 
-            if (dataInicial.HasValue)
-                query += " and p.data_realizacao_inicio >= @dataInicial ";
-
-            if (dataFinal.HasValue)
-                query += " and p.data_realizacao_fim <= @dataFinal ";
+            if (dataInicial.HasValue && dataFinal.HasValue)
+                query += @" and (
+                                (p.data_realizacao_inicio::date between @dataInicial and @dataFinal) or 
+                                (p.data_realizacao_fim::date between @dataInicial and @dataFinal) or 
+                                (p.data_realizacao_inicio::date <= @dataInicial and p.data_realizacao_fim::date >= @dataFinal)
+                                )";
 
             if (formatosIds.PossuiElementos())
                 query += " and p.formato = any(@formatosIds) ";
@@ -1556,7 +1560,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                          and ppa.cargo_funcao_id = any(@publicosAlvosIds)) ";
             }
 
-            if (publicosAlvosIds.PossuiElementos())
+            if (palavrasChavesIds.PossuiElementos())
             {
                 query += @" and exists(select 1 
                                        from proposta_palavra_chave ppc 
@@ -1565,7 +1569,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                          and ppc.palavra_chave_id = any(@palavrasChavesIds)) ";
             }
 
-            query += @" order by p.data_realizacao_inicio desc ";
+            query += @" order by p.data_realizacao_inicio, p.data_realizacao_fim ";
 
             return conexao.Obter().QueryAsync<long>(query, new
             {
@@ -1603,7 +1607,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     where exists(select 1 from proposta p where ap.id = p.area_promotora_id and p.id = any(@propostaIds));
 
                     select a.id,
-	                       a.nome 
+                           a.nome,
+                           a.codigo
                     from arquivo a 
                     where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = any(@propostaIds));";
 
@@ -1625,6 +1630,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId)
         {
+            var tipoInscricao = TipoInscricao.Optativa;
+            var situacao = SituacaoProposta.Publicada;
+            
             var query = @"select
                             nome_formacao NomeFormacao,
                             tipo_formacao tipoFormacao,
@@ -1635,7 +1643,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             justificativa
                         from proposta
                         where id = @propostaId 
-                            and not excluido;
+                            and not excluido
+                            and tipo_inscricao = @tipoInscricao 
+                            and situacao = @situacao;
 
                           select
                               ap.nome
@@ -1673,7 +1683,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where pt.proposta_id = @propostaId
                           and not pt.excluido
                           and not pet.excluido
-                          and not pe.excluido;
+                          and not pe.excluido
+                        order by pt.nome, pe.hora_inicio;
 
                         select 
                               ped.data_inicio dataInicio,
@@ -1683,15 +1694,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         join  proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
                         where pe.proposta_id = @propostaId
                           and not pe.excluido
-                          and not ped.excluido;  
+                          and not ped.excluido
+                        order by ped.data_inicio;  
 
                         select a.nome,
                                a.codigo
                         from arquivo a 
                         where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId);";
 
-            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
-
+            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao });
+            
             var formacaoDetalhe = queryMultiple.ReadFirst<FormacaoDetalhada>();
             formacaoDetalhe.AreaPromotora = queryMultiple.ReadFirst<string>();
             formacaoDetalhe.PublicosAlvo = queryMultiple.Read<string>();
