@@ -39,6 +39,7 @@ using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
+using SME.ConectaFormacao.Infra.Servicos.CacheDistribuido.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Options;
@@ -75,9 +76,15 @@ public class RegistradorDeDependencia
         RegistrarProfiles();
         RegistrarHttpClients();
         RegistrarServicoArmazenamento();
+        RegistrarCacheDistribuido();
     }
 
-    private void RegistrarServicoArmazenamento()
+    protected virtual void RegistrarCacheDistribuido()
+    {
+        _serviceCollection.ConfigurarCacheDistribuidoRedis(_configuration);
+    }
+
+    protected virtual void RegistrarServicoArmazenamento()
     {
         _serviceCollection.ConfigurarArmazenamento(_configuration);
     }
@@ -300,6 +307,11 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase, ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterModalidade, CasoDeUsoObterModalidade>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTodosFormatos, CasoDeUsoObterTodosFormatos>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterListagemFormacaoPaginada, CasoDeUsoObterListagemFormacaoPaginada>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoDetalhada, CasoDeUsoObterFormacaoDetalhada>();
     }
 
     protected virtual void RegistrarHttpClients()

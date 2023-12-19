@@ -14,14 +14,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
            SituacaoProposta situacao,
            bool gerarFuncaoEspecificaOutros,
            bool gerarCriterioValidacaoInscricaoOutros,
-           FormacaoHomologada formacaoHomologada)
+           FormacaoHomologada formacaoHomologada,
+           bool ehTipoInscricaoOptativa = false)
         {
             var faker = new Faker<Proposta>();
             faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
             faker.RuleFor(x => x.FormacaoHomologada, formacaoHomologada);
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
             faker.RuleFor(x => x.Formato, formato);
-            faker.RuleFor(x => x.TipoInscricao, f => f.PickRandom<TipoInscricao>());
+            faker.RuleFor(x => x.TipoInscricao, f => ehTipoInscricaoOptativa ? TipoInscricao.Optativa : f.PickRandom<TipoInscricao>());
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
             faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Short(1, 50));
             faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 30));
@@ -54,10 +55,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             SituacaoProposta situacao,
             bool gerarFuncaoEspecificaOutros,
             bool gerarCriterioValidacaoInscricaoOutros,
-            FormacaoHomologada formacaoHomologada
+            FormacaoHomologada formacaoHomologada,
+            bool ehTipoInscricaoOptativa = false
             )
         {
-            return Gerador(areaPromotoraId, tipoFormacao, formato, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada);
+            return Gerador(areaPromotoraId, tipoFormacao, formato, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada, ehTipoInscricaoOptativa);
         }
 
         public static Proposta GerarPropostaRascunho(long areaPromotoraId)
