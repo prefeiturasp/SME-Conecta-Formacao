@@ -17,9 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly ICacheDistribuido _cacheDistribuido;
 
         public InserirAreaPromotoraCommandHandler(
-            IMediator mediator, 
-            IMapper mapper, 
-            ITransacao transacao, 
+            IMediator mediator,
+            IMapper mapper,
+            ITransacao transacao,
             IRepositorioAreaPromotora repositorioAreaPromotora,
             ICacheDistribuido cacheDistribuido)
         {
