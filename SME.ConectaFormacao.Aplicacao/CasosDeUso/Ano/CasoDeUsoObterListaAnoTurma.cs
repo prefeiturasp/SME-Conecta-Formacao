@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Ano
     public class CasoDeUsoObterListaAnoTurma : CasoDeUsoAbstrato, ICasoDeUsoObterListaAnoTurma
     {
         public CasoDeUsoObterListaAnoTurma(IMediator mediator) : base(mediator)
-        {}
+        { }
 
         public async Task<IEnumerable<RetornoListagemTodosDTO>> Executar(FiltroAnoTurmaDTO filtroAnoTurmaDTO)
         {

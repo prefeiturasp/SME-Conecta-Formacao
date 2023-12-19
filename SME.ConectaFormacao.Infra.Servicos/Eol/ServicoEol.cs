@@ -20,10 +20,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
         public async Task<string> ObterNomeProfissionalPorRegistroFuncional(string registroFuncional)
         {
             var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.OBTER_NOME_PROFISSIONAL, registroFuncional));
-            
+
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO, resposta.StatusCode);
-            
+
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<string>().ToUpper();
 
@@ -32,10 +32,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
         public async Task<IEnumerable<DreNomeAbreviacaoDTO>> ObterCodigosDres()
         {
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_NOME_ABREVIACAO_DRE);
-            
+
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.CODIGOS_DRE_NAO_LOCALIZADO, resposta.StatusCode);
-            
+
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<DreNomeAbreviacaoDTO[]>().ToList();
 
@@ -44,10 +44,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
         public async Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo)
         {
             var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO, anoLetivo));
-            
+
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.NENHUM_COMPONENTE_CURRICULAR_DOS_ANOS_DA_TURMA_DO_EOL_FORAM_LOCALIZADOS, resposta.StatusCode);
-            
+
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<ComponenteCurricularAnoTurmaEOLDTO[]>().ToList();
 

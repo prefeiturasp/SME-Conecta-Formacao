@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
@@ -66,7 +65,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                               and a.ano_letivo = @anoLetivo 
                               order by cc.ordem ";
 
-            return conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { anoLetivo});
+            return conexao.Obter().QueryAsync<ComponenteCurricular>(query, new { anoLetivo });
         }
     }
 }

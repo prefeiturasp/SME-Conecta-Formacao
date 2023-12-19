@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioComponenteCurricular _repositorioComponenteCurricular;
-        
+
         public ObterComponentesCurricularesPorAnoTurmaQueryHandler(IMapper mapper, IRepositorioComponenteCurricular repositorioComponenteCurricular)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso;
-using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
 
 namespace SME.ConectaFormacao.Aplicacao

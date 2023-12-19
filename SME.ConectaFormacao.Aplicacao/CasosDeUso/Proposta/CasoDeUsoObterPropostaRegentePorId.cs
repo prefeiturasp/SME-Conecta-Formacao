@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<PropostaRegenteDTO> Executar(long regenteId)
         {
-            var regente = await mediator.Send(new ObterRegentePorIdQuery(regenteId)) ?? 
+            var regente = await mediator.Send(new ObterRegentePorIdQuery(regenteId)) ??
                 throw new NegocioException("Registro não encontrado", HttpStatusCode.NoContent);
 
             var turmas = await mediator.Send(new ObterRegenteTurmaPorRegenteIdQuery(regenteId));

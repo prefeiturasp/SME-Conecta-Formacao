@@ -44,7 +44,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaPalavraChaveDTO> PalavrasChaves { get; set; }
         public IEnumerable<CriterioCertificacaoDTO> CriterioCertificacao { get; set; }
         public IEnumerable<PropostaTurmaDTO> Turmas { get; set; }
-        
+
         public IEnumerable<PropostaModalidadeDTO> Modalidades { get; set; }
         public IEnumerable<PropostaAnoTurmaDTO> AnosTurmas { get; set; }
         public IEnumerable<PropostaComponenteCurricularDTO> ComponentesCurriculares { get; set; }

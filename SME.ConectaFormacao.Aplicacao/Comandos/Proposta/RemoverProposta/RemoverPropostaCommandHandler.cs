@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -11,13 +10,11 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly ITransacao _transacao;
         private readonly IRepositorioProposta _repositorioProposta;
-        private readonly IMediator _mediator;
 
-        public RemoverPropostaCommandHandler(ITransacao transacao, IRepositorioProposta repositorioProposta,IMediator mediator)
+        public RemoverPropostaCommandHandler(ITransacao transacao, IRepositorioProposta repositorioProposta)
         {
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<bool> Handle(RemoverPropostaCommand request, CancellationToken cancellationToken)
@@ -35,7 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.Modalidades = await _repositorioProposta.ObterModalidadesPorId(request.Id);
             proposta.AnosTurmas = await _repositorioProposta.ObterAnosTurmasPorId(request.Id);
             proposta.ComponentesCurriculares = await _repositorioProposta.ObterComponentesCurricularesPorId(request.Id);
-            
+
             var transacao = _transacao.Iniciar();
             try
             {
@@ -68,15 +65,13 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (proposta.AnosTurmas.Any())
                     await _repositorioProposta.RemoverAnosTurmas(proposta.AnosTurmas);
-                
+
                 if (proposta.ComponentesCurriculares.Any())
                     await _repositorioProposta.RemoverComponentesCurriculares(proposta.ComponentesCurriculares);
-                
+
                 await _repositorioProposta.Remover(proposta);
 
                 transacao.Commit();
-                
-                await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.FormacaoResumida.Parametros(proposta.Id)), cancellationToken);
 
                 return true;
             }

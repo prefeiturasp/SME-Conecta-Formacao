@@ -160,7 +160,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.CacheDistribuido
 
         public Task SalvarAsync<T>(string nomeChave, T valor, int minutosParaExpirar = 720, bool utilizarGZip = false)
         {
-           return SalvarAsync(nomeChave, valor.ObjetoParaJson(), minutosParaExpirar, utilizarGZip);
+            return SalvarAsync(nomeChave, valor.ObjetoParaJson(), minutosParaExpirar, utilizarGZip);
         }
     }
 }

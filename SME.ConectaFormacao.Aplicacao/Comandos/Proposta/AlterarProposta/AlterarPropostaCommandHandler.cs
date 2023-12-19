@@ -4,7 +4,6 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -28,12 +27,12 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
-            
+
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
-            
+
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
-            
-            await _mediator.Send(new ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand(request.PropostaDTO.PublicosAlvo, request.PropostaDTO.FuncoesEspecificas, 
+
+            await _mediator.Send(new ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand(request.PropostaDTO.PublicosAlvo, request.PropostaDTO.FuncoesEspecificas,
                 request.PropostaDTO.Modalidades, request.PropostaDTO.AnosTurmas, request.PropostaDTO.ComponentesCurriculares), cancellationToken);
 
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
@@ -90,9 +89,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _mediator.Send(new SalvarPropostaDreCommand(request.Id, propostaDepois.Dres), cancellationToken);
 
                 await _mediator.Send(new SalvarPropostaTurmaCommand(request.Id, propostaDepois.Turmas), cancellationToken);
-                
+
                 await _mediator.Send(new SalvarPropostaTurmaDreCommand(propostaDepois.ObterPropostaTurmasDres), cancellationToken);
-                
+
                 await _mediator.Send(new SalvarPropostaModalidadeCommand(request.Id, propostaDepois.Modalidades), cancellationToken);
 
                 await _mediator.Send(new SalvarPropostaAnoTurmaCommand(request.Id, propostaDepois.AnosTurmas), cancellationToken);
@@ -109,8 +108,6 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 transacao.Commit();
 
-                await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.FormacaoResumida.Parametros(proposta.Id)), cancellationToken);
-                
                 return request.Id;
             }
             catch

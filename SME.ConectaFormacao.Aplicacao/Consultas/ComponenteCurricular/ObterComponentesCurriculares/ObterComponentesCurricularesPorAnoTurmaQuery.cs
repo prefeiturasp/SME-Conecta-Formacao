@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
     public class ObterComponentesCurricularesPorAnoTurmaQueryValidator : AbstractValidator<ObterComponentesCurricularesPorAnoTurmaQuery>
     {
         public ObterComponentesCurricularesPorAnoTurmaQueryValidator()
-        {            
+        {
             RuleFor(x => x.AnoTurmaId)
                 .NotEmpty()
                 .WithMessage("É necessário informar o identificador de ano da turma para obter os componentes curriculares e os Anos das Turmas");

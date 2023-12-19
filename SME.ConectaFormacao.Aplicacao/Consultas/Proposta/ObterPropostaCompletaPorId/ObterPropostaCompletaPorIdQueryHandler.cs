@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.CriterioCertificacao = await _repositorioProposta.ObterCriterioCertificacaoPorPropostaId(request.Id);
             proposta.Turmas = await _repositorioProposta.ObterTurmasPorId(request.Id);
 
-            foreach(var turma in proposta.Turmas)
+            foreach (var turma in proposta.Turmas)
                 turma.Dres = await _repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(turma.Id);
 
             var propostaCompletaDTO = _mapper.Map<PropostaCompletoDTO>(proposta);

@@ -116,7 +116,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.Formato, formato);
             faker.RuleFor(x => x.TipoInscricao, f => f.PickRandom<TipoInscricao>());
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
-            faker.RuleFor(x => x.Dres, f => new [] { f.PickRandom(dres) });
+            faker.RuleFor(x => x.Dres, f => new[] { f.PickRandom(dres) });
             faker.RuleFor(x => x.PublicosAlvo, f => propostaPublicoAlvos.Any() ? new PropostaPublicoAlvoDTO[] { f.PickRandom(propostaPublicoAlvos) } : default);
             faker.RuleFor(x => x.FuncoesEspecificas, f => propostaFuncaoEspecificas.Any() ? new PropostaFuncaoEspecificaDTO[] { f.PickRandom(propostaFuncaoEspecificas) } : default);
             faker.RuleFor(x => x.CriteriosValidacaoInscricao, f => new PropostaCriterioValidacaoInscricaoDTO[] { f.PickRandom(propostaCriterioValidacaoInscricaos) });
@@ -155,11 +155,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return faker;
         }
 
-        private static IEnumerable<PropostaTurmaDTO> GerarPropostaTurmaDTO(short quantidadeTurmas,IEnumerable<PropostaDreDTO> dres)
+        private static IEnumerable<PropostaTurmaDTO> GerarPropostaTurmaDTO(short quantidadeTurmas, IEnumerable<PropostaDreDTO> dres)
         {
             var faker = new Faker<PropostaTurmaDTO>();
             faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
-            faker.RuleFor(x => x.DresIds, f => dres.Take(2).Select(s=> s.DreId).ToArray());
+            faker.RuleFor(x => x.DresIds, f => dres.Take(2).Select(s => s.DreId).ToArray());
 
             return faker.Generate(quantidadeTurmas);
         }
@@ -245,7 +245,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         {
             var propostaDTO = Gerador(tipoFormacao, formato, dres, propostaPublicoAlvos, propostaFuncaoEspecificas,
                 propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, propostaPalavrasChaves,
-                propostaModalidades,propostaAnosTurmas,propostaComponentesCurriculares,
+                propostaModalidades, propostaAnosTurmas, propostaComponentesCurriculares,
                 situacao, gerarFuncaoEspecificaOutros,
                 gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId, quantidadeTurmas).Generate();
 

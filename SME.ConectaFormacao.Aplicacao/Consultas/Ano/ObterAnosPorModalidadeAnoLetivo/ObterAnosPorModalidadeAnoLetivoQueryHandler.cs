@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioAnoTurma _repositorioAnoTurma;
-        
+
         public ObterAnosPorModalidadeAnoLetivoQueryHandler(IMapper mapper, IRepositorioAnoTurma repositorioAnoTurma)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

@@ -53,21 +53,21 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterTodosFormatos.Executar());
         }
-        
+
         [HttpGet("formacao-listagem")]
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<IEnumerable<RetornoListagemFormacaoDTO>>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterListagemFormacao([FromQuery] FiltroListagemFormacaoDTO filtroListagemFormacaoDTO,[FromServices] ICasoDeUsoObterListagemFormacaoPaginada casoDeUsoObterListagemFormacaoPaginada)
+        public async Task<IActionResult> ObterListagemFormacao([FromQuery] FiltroListagemFormacaoDTO filtroListagemFormacaoDTO, [FromServices] ICasoDeUsoObterListagemFormacaoPaginada casoDeUsoObterListagemFormacaoPaginada)
         {
             return Ok(await casoDeUsoObterListagemFormacaoPaginada.Executar(filtroListagemFormacaoDTO));
         }
-        
+
         [HttpGet("formacao-detalhada/{propostaId}")]
         [ProducesResponseType(typeof(RetornoFormacaoDetalhadaDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterFormacaoDetalhada([FromRoute] long propostaId,[FromServices] ICasoDeUsoObterFormacaoDetalhada casoDeUsoObterFormacaoDetalhada)
+        public async Task<IActionResult> ObterFormacaoDetalhada([FromRoute] long propostaId, [FromServices] ICasoDeUsoObterFormacaoDetalhada casoDeUsoObterFormacaoDetalhada)
         {
             return Ok(await casoDeUsoObterFormacaoDetalhada.Executar(propostaId));
         }
