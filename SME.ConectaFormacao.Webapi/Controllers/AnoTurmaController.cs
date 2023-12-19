@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [Permissao(Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterAnoPorModalidadeAnoLetivo(
             [FromServices] ICasoDeUsoObterListaAnoTurma casoDeUsoObterAnoTurma,
-            [FromQuery] FiltroAnoTurmaDTO filtroAnoTurmaDTO 
+            [FromQuery] FiltroAnoTurmaDTO filtroAnoTurmaDTO
             )
         {
             return Ok(await casoDeUsoObterAnoTurma.Executar(filtroAnoTurmaDTO));

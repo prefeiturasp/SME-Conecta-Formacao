@@ -19,10 +19,10 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var preenchidoPublicoAlvo = request.PublicosAlvoDaProposta.PossuiElementos();
             var preenchidoFuncoesEspecificas = request.FuncoesEspecificasDaProposta.PossuiElementos();
-            var preenchidoModalidadesAnosTurmaComponentesCurriculares = request.ModalidadesDaProposta.PossuiElementos() 
-                                                                        && request.AnosTurmaDaProposta.PossuiElementos() 
+            var preenchidoModalidadesAnosTurmaComponentesCurriculares = request.ModalidadesDaProposta.PossuiElementos()
+                                                                        && request.AnosTurmaDaProposta.PossuiElementos()
                                                                         && request.ComponentesCurricularesDaProposta.PossuiElementos();
-            
+
             if (!preenchidoPublicoAlvo && !preenchidoFuncoesEspecificas && !preenchidoModalidadesAnosTurmaComponentesCurriculares)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_CRITERIO_VALIDACAO_PUBLICO_ALVO_ANO_TURMA_COMPONENTE_CURRICULAR);
         }

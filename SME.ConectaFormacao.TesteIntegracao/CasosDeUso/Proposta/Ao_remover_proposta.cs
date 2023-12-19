@@ -63,15 +63,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var propostaPalavraChaves = ObterTodos<PropostaPalavraChave>();
             foreach (var propostaPalavraChave in propostaPalavraChaves)
                 propostaPalavraChave.Excluido.ShouldBeTrue();
-            
+
             var propostaModalidades = ObterTodos<PropostaModalidade>();
             foreach (var propostaModalidade in propostaModalidades)
                 propostaModalidade.Excluido.ShouldBeTrue();
-            
+
             var propostaAnosTurmas = ObterTodos<PropostaAnoTurma>();
             foreach (var propostaAnoTurma in propostaAnosTurmas)
                 propostaAnoTurma.Excluido.ShouldBeTrue();
-            
+
             var propostaComponentesCurriculares = ObterTodos<PropostaComponenteCurricular>();
             foreach (var propostaComponenteCurricular in propostaComponentesCurriculares)
                 propostaComponenteCurricular.Excluido.ShouldBeTrue();

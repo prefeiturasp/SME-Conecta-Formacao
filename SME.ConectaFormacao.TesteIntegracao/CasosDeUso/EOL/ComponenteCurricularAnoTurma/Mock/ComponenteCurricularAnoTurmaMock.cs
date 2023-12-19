@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
     public static class ComponenteCurricularAnoTurmaMock
     {
         public static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> ComponentesCurricularesAnosTurmas { get; set; }
-        
+
         public static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> GerarLista(Dominio.Enumerados.Modalidade modalidade = Dominio.Enumerados.Modalidade.Fundamental, int quantidade = 10)
         {
             ComponentesCurricularesAnosTurmas = Gerador(modalidade, quantidade);
@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             return ComponentesCurricularesAnosTurmas;
         }
 
-        private static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> Gerador(Dominio.Enumerados.Modalidade modalidade,int quantidade)
+        private static IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> Gerador(Dominio.Enumerados.Modalidade modalidade, int quantidade)
         {
             var codigoComponente = 1;
             var serieEnsino = 1000;

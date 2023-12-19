@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ComponenteCurricular
                 AnoTurmaId = new long[] { anoTurma.Id },
                 ExibirOpcaoTodos = true
             };
-            
+
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListaComponentesCurriculares>();
 
             // act 

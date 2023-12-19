@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public string[] PalavrasChaves { get; set; }
         public bool InscricaoEncerrada { get; set; }
         public string ImagemUrl { get; set; }
-        
-        public IEnumerable<RetornoTurmaDetalheDTO>Turmas { get; set; }
+
+        public IEnumerable<RetornoTurmaDetalheDTO> Turmas { get; set; }
     }
 }
