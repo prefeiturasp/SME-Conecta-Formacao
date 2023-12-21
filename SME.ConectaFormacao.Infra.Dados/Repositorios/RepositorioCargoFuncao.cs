@@ -39,5 +39,24 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryAsync<CargoFuncao>(query, new { tipos });
         }
+
+        public Task<IEnumerable<CargoFuncao>> ObterPorCodigoEol(long[] codigosCargosEol, long[] codigosFuncoesEol)
+        {
+            var query = @"select distinct cf.id, cf.nome, cf.tipo, cf.ordem 
+                          from cargo_funcao cf 
+                          inner join cargo_funcao_depara_eol cfd on cfd.cargo_funcao_id = cf.id and not cfd.excluido
+                          where not cf.excluido";
+
+            if (codigosCargosEol.Length > 0 && codigosFuncoesEol.Length > 0)
+                query += " and (cfd.codigo_cargo_eol = any(@codigosCargosEol) or cfd.codigo_funcao_eol = any(@codigosFuncoesEol))";
+            else if(codigosCargosEol.Length > 0 && codigosFuncoesEol.Length == 0)
+                query += " and cfd.codigo_cargo_eol = any(@codigosCargosEol)";
+            else if (codigosCargosEol.Length == 0 && codigosFuncoesEol.Length > 0)
+                query += " and cfd.codigo_funcao_eol = any(@codigosFuncoesEol)";
+
+            query += " order by cf.ordem";
+
+            return conexao.Obter().QueryAsync<CargoFuncao>(query, new { codigosCargosEol, codigosFuncoesEol });
+        }
     }
 }

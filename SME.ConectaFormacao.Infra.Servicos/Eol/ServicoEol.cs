@@ -19,14 +19,13 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<string> ObterNomeProfissionalPorRegistroFuncional(string registroFuncional)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.OBTER_NOME_PROFISSIONAL, registroFuncional));
+            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_NOME_PROFISSIONAL.Parametros(registroFuncional));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<string>().ToUpper();
-
         }
 
         public async Task<IEnumerable<DreNomeAbreviacaoDTO>> ObterCodigosDres()
@@ -37,20 +36,29 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
                 throw new NegocioException(MensagemNegocio.CODIGOS_DRE_NAO_LOCALIZADO, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<DreNomeAbreviacaoDTO[]>().ToList();
-
+            return json.JsonParaObjeto<DreNomeAbreviacaoDTO[]>();
         }
 
         public async Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO, anoLetivo));
+            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO.Parametros(anoLetivo));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.NENHUM_COMPONENTE_CURRICULAR_DOS_ANOS_DA_TURMA_DO_EOL_FORAM_LOCALIZADOS, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<ComponenteCurricularAnoTurmaEOLDTO[]>().ToList();
+            return json.JsonParaObjeto<ComponenteCurricularAnoTurmaEOLDTO[]>();
+        }
 
+        public async Task<IEnumerable<CargoFuncionarioConectaDTO>> ObterCargosFuncionadoPorRegistroFuncional(string registroFuncional)
+        {
+            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_CARGOS_FUNCIONARIO_POR_RF.Parametros(registroFuncional));
+
+            if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
+                throw new NegocioException(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<CargoFuncionarioConectaDTO[]>();
         }
     }
 }
