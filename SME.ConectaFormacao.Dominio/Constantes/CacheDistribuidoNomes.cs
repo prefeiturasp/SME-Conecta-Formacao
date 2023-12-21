@@ -10,5 +10,7 @@
         public const string PalavraChave = "palavra-chave";
         public const string FormacaoResumida = "formacao-resumida:{0}";
         public const string FormacaoDetalhada = "formacao-detalhada:{0}";
+
+        public const string CargosFuncoesDresEolFuncionario = "cargos-funcao-dre-eol-funcionario:{0}";
     }
 }

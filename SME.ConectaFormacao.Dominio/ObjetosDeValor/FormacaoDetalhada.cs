@@ -1,6 +1,7 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
-namespace SME.ConectaFormacao.Dominio.Entidades
+namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
 {
     public class FormacaoDetalhada
     {
