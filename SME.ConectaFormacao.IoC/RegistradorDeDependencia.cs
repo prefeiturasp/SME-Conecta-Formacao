@@ -188,6 +188,7 @@ public class RegistradorDeDependencia
             
             config.AddMap(new AnoTurmaMap());
             config.AddMap(new ComponenteCurricularMap());
+            config.AddMap(new InscricaoMap());
 
             config.ForDommel();
         });
@@ -233,6 +234,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioAnoTurma, RepositorioAnoTurma>();
         _serviceCollection.TryAddScoped<IRepositorioComponenteCurricular, RepositorioComponenteCurricular>();
         _serviceCollection.TryAddScoped<IRepositorioCargoFuncaoDeparaEol, RepositorioCargoFuncaoDeparaEol>();
+        _serviceCollection.TryAddScoped<IRepositorioInscricao, RepositorioInscricao>();
     }
 
     protected virtual void RegistrarCasosDeUso()

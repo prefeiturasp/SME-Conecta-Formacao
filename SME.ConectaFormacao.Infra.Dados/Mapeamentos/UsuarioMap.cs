@@ -13,6 +13,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.UltimoLogin).ToColumn("ultimo_login");
             Map(c => c.TokenRecuperacaoSenha).ToColumn("token_recuperacao_senha");
             Map(c => c.ExpiracaoRecuperacaoSenha).ToColumn("expiracao_recuperacao_senha");
+            Map(c => c.Cpf).ToColumn("cpf");
         }
     }
 }
