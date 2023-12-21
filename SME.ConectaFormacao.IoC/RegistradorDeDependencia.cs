@@ -150,6 +150,7 @@ public class RegistradorDeDependencia
             config.AddMap(new CriterioValidacaoInscricaoMap());
             config.AddMap(new RoteiroPropostaFormativaMap());
             config.AddMap(new CargoFuncaoMap());
+            config.AddMap(new CargoFuncaoDeparaEolMap());
             config.AddMap(new PalavraChaveMap());
             config.AddMap(new CriterioCertificacaoMap());
 
@@ -173,6 +174,7 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaModalidadeMap());
             config.AddMap(new PropostaAnoTurmaMap());
             config.AddMap(new PropostaComponenteCurricularMap());
+            config.AddMap(new PropostaDreMap());
 
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
@@ -181,7 +183,7 @@ public class RegistradorDeDependencia
 
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
-            config.AddMap(new PropostaDreMap());
+            
             config.AddMap(new AnoTurmaMap());
             config.AddMap(new ComponenteCurricularMap());
 
@@ -228,6 +230,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaMovimentacao, RepositorioPropostaMovimentacao>();
         _serviceCollection.TryAddScoped<IRepositorioAnoTurma, RepositorioAnoTurma>();
         _serviceCollection.TryAddScoped<IRepositorioComponenteCurricular, RepositorioComponenteCurricular>();
+        _serviceCollection.TryAddScoped<IRepositorioCargoFuncaoDeparaEol, RepositorioCargoFuncaoDeparaEol>();
     }
 
     protected virtual void RegistrarCasosDeUso()
