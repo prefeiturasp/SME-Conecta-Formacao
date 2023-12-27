@@ -9,10 +9,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             ToTable("inscricao");
             Map(c => c.PropostaTurmaId).ToColumn("proposta_turma_id");
             Map(c => c.UsuarioId).ToColumn("usuario_id");
-            Map(c => c.CodigoCargoEol).ToColumn("codigo_cargo_eol");
-            Map(c => c.CargoEol).ToColumn("cargo_eol");
-            Map(c => c.CodigoTipoFuncaoEol).ToColumn("codigo_tipo_funcao_eol");
-            Map(c => c.TipoFuncaoEol).ToColumn("tipo_funcao_eol");
+            Map(c => c.CargoId).ToColumn("cargo_id");
+            Map(c => c.FuncaoId).ToColumn("funcao_id");
             Map(c => c.ArquivoId).ToColumn("arquivo_id");
             Map(c => c.Situacao).ToColumn("situacao");
         }

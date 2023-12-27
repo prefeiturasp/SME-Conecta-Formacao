@@ -1,12 +1,7 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Shouldly;
-using SME.ConectaFormacao.Aplicacao;
+﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -17,12 +12,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         public Ao_alterar_email_do_usuario(CollectionFixture collectionFixture) : base(collectionFixture, false)
         {
             UsuarioAlterarEmailMock.Montar();
-        }
-
-        protected override void RegistrarCommandFakes(IServiceCollection services)
-        {
-            base.RegistrarCommandFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<AlterarEmailServicoAcessosCommand, bool>), typeof(AlterarEmailServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Usuário - Deve retornar exceção ao alterar com email inválido")]

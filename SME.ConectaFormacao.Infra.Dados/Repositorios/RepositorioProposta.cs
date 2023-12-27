@@ -1718,5 +1718,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return formacaoDetalhe;
         }
+
+        public Task InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga)
+        {
+            PreencherAuditoriaCriacao(propostaTurmaVaga);
+            return conexao.Obter().InsertAsync(propostaTurmaVaga);
+        }
+
+        public Task<PropostaTurma> ObterTurmaPorId(long propostaTurmaId)
+        {
+            return conexao.Obter().GetAsync<PropostaTurma>(propostaTurmaId);
+        }
     }
 }

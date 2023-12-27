@@ -7,21 +7,21 @@ using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostaPorIdQueryHandler : IRequestHandler<ObterPropostaPorIdQuery, Proposta>
+    public class ObterPropostaTurmaPorIdQueryHandler : IRequestHandler<ObterPropostaTurmaPorIdQuery, PropostaTurma>
     {
         private readonly ICacheDistribuido _cacheDistribuido;
         private readonly IRepositorioProposta _repositorioProposta;
 
-        public ObterPropostaPorIdQueryHandler(ICacheDistribuido cacheDistribuido, IRepositorioProposta repositorioProposta)
+        public ObterPropostaTurmaPorIdQueryHandler(ICacheDistribuido cacheDistribuido, IRepositorioProposta repositorioProposta)
         {
             _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public async Task<Proposta> Handle(ObterPropostaPorIdQuery request, CancellationToken cancellationToken)
+        public async Task<PropostaTurma> Handle(ObterPropostaTurmaPorIdQuery request, CancellationToken cancellationToken)
         {
-            var nomeChave = CacheDistribuidoNomes.Proposta.Parametros(request.Id);
-            return await _cacheDistribuido.ObterAsync(nomeChave, () => _repositorioProposta.ObterPorId(request.Id));
+            var nomeChave = CacheDistribuidoNomes.PropostaTurma.Parametros(request.PropostaTurmaId);
+            return await _cacheDistribuido.ObterAsync(nomeChave, () => _repositorioProposta.ObterTurmaPorId(request.PropostaTurmaId));
         }
     }
 }

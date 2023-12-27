@@ -343,5 +343,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             AuditoriaFaker(faker);
             return faker.Generate(quantidadeTurmas);
         }
+
+        public static IEnumerable<PropostaTurmaVaga> GerarTurmaVagas(IEnumerable<PropostaTurma> turmas, short quantidadeVagasTurmas)
+        {
+            var retorno = new List<PropostaTurmaVaga>();
+            foreach (var turma in turmas)
+            {
+                for (int i = 0; i < quantidadeVagasTurmas; i++)
+                {
+                    var vaga = new PropostaTurmaVaga() { PropostaTurmaId = turma.Id };
+                    Auditoria(vaga);
+                    retorno.Add(vaga);
+                }
+            }
+
+            return retorno;
+        }
     }
 }

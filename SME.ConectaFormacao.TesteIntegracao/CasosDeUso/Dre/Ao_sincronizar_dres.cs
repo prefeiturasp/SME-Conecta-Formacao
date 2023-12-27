@@ -22,7 +22,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
         {
             base.RegistrarQueryFakes(services);
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterCodigosDresEOLQuery, IEnumerable<DreNomeAbreviacaoDTO>>), typeof(ObterCodigosDresQueryFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<PublicarNaFilaRabbitCommand, bool>), typeof(PublicarNaFilaRabbitCommandFake), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Area Promotora - Deve Inserir uma que não existe")]

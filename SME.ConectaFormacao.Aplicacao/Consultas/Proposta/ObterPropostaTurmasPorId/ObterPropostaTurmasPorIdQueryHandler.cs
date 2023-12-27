@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
-            var turmas = await _repositorioProposta.ObterTurmasPorId(request.Id);
+            var turmas = await _repositorioProposta.ObterTurmasPorId(proposta.Id);
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
         }
     }
