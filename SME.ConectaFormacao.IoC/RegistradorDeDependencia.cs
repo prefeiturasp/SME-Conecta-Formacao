@@ -174,7 +174,8 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaTurmaMap());
             config.AddMap(new PropostaTurmaDreMap());
             config.AddMap(new PropostaModalidadeMap());
-            config.AddMap(new PropostaAnoTurmaMap());
+            config.AddMap(new PropostaAnoTurmaMap()); 
+            config.AddMap(new PropostaTurmaVagaMap());
             config.AddMap(new PropostaComponenteCurricularMap());
             config.AddMap(new PropostaDreMap());
 
@@ -320,7 +321,10 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterListagemFormacaoPaginada, CasoDeUsoObterListagemFormacaoPaginada>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoDetalhada, CasoDeUsoObterFormacaoDetalhada>();
 
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosUsuarioInscricao, CasoDeUsoObterDadosUsuarioInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosInscricao, CasoDeUsoObterDadosInscricao>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoGerarPropostaTurmaVaga, CasoDeUsoGerarPropostaTurmaVaga>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoSalvarInscricao, CasoDeUsoSalvarInscricao>();
     }
 
     protected virtual void RegistrarHttpClients()

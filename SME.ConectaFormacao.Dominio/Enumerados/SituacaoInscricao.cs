@@ -2,8 +2,9 @@
 {
     public enum SituacaoInscricao
     {
-        Aprovada = 1,
+        Confirmada = 1,
         Enviada = 2,
-        Cancelada = 3
+        EmAnalise = 3,
+        Cancelada = 4
     }
 }

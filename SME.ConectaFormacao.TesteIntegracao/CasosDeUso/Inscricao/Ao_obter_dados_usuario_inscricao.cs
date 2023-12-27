@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -15,7 +16,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 {
     public class Ao_obter_dados_usuario_inscricao : TesteBase
     {
-        public Ao_obter_dados_usuario_inscricao(CollectionFixture collectionFixture, bool limparBanco = true) : base(collectionFixture, limparBanco)
+        public Ao_obter_dados_usuario_inscricao(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
 
@@ -43,7 +44,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             AoObterDadosUsuarioInscricaoMock.CodigoCargos = depara.Where(t => t.CodigoCargoEol.HasValue).Select(s => s.CodigoCargoEol.GetValueOrDefault()).ToArray();
             AoObterDadosUsuarioInscricaoMock.CodigoFuncoes = depara.Where(t => t.CodigoFuncaoEol.HasValue).Select(s => s.CodigoFuncaoEol.GetValueOrDefault()).ToArray();
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterDadosUsuarioInscricao>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterDadosInscricao>();
 
             // act
             var dadosUsuarioInscricaoDTO = await casoDeUso.Executar();

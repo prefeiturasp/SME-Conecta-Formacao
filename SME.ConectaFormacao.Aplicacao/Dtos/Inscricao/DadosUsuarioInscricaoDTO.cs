@@ -1,12 +1,12 @@
 ﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
 {
-    public class DadosUsuarioInscricaoDTO
+    public class DadosInscricaoDTO
     {
-        public string Nome { get; set; }
-        public string Rf { get; set; }
-        public string Cpf { get; set; }
-        public string Email { get; set; }
-        public IEnumerable<RetornoListagemDTO> Cargos { get; set; }
-        public IEnumerable<RetornoListagemDTO> Funcoes { get; set; }
+        public string UsuarioNome { get; set; }
+        public string UsuarioRf { get; set; }
+        public string UsuarioCpf { get; set; }
+        public string UsuarioEmail { get; set; }
+        public IEnumerable<RetornoListagemDTO> UsuarioCargos { get; set; }
+        public IEnumerable<RetornoListagemDTO> UsuarioFuncoes { get; set; }
     }
 }

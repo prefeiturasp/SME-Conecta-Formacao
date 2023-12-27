@@ -2,8 +2,8 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
 {
-    public interface ICasoDeUsoObterDadosUsuarioInscricao
+    public interface ICasoDeUsoObterDadosInscricao
     {
-        Task<DadosUsuarioInscricaoDTO> Executar();
+        Task<DadosInscricaoDTO> Executar();
     }
 }
