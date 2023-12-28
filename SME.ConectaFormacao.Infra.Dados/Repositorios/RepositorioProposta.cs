@@ -1729,5 +1729,24 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             return conexao.Obter().GetAsync<PropostaTurma>(propostaTurmaId);
         }
+
+        public Task<IEnumerable<PropostaTurma>> ObterTurmasComVagaPorId(long propostaId)
+        {
+            var query = @"select 
+                            pt.id, 
+                            pt.proposta_id, 
+                            pt.nome
+                        from proposta_turma pt
+                        where pt.proposta_id = @propostaId 
+                          and not pt.excluido
+                          and exists(select 1 
+                                     from proposta_turma_vaga ptv 
+                                     where ptv.proposta_turma_id = pt.id 
+                                       and not ptv.excluido 
+                                       and ptv.inscricao_id is null 
+                                     limit 1)";
+
+            return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
+        }
     }
 }
