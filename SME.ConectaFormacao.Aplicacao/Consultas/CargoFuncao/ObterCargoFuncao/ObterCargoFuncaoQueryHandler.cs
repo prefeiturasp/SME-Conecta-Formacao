@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var nomeCache = CacheDistribuidoNomes.CargoFuncao.Parametros(request.Tipo);
             var obterDados = _repositorioCargoFuncao.ObterIgnorandoExcluidosPorTipo(request.Tipo, request.ExibirOutros);
-            
+
             var cargosFuncoes = await _cacheDistribuido.ObterAsync(nomeCache, () => obterDados);
 
             return _mapper.Map<IEnumerable<CargoFuncaoDTO>>(cargosFuncoes);

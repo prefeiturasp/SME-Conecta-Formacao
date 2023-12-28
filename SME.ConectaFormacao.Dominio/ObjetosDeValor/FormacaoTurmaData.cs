@@ -1,5 +1,4 @@
-﻿
-namespace SME.ConectaFormacao.Dominio.Entidades
+﻿namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
 {
     public class FormacaoTurmaData
     {

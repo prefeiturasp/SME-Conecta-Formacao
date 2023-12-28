@@ -14,7 +14,7 @@ public class AlterarComponenteCurricularCommandHandler : IRequestHandler<Alterar
 
     public async Task<bool> Handle(AlterarComponenteCurricularCommand request, CancellationToken cancellationToken)
     {
-       await _repositorioComponenteCurricular.Atualizar(request.ComponenteCurricular);
-       return true;
+        await _repositorioComponenteCurricular.Atualizar(request.ComponenteCurricular);
+        return true;
     }
 }

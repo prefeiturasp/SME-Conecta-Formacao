@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.FormacaoHomologada, formacaoHomologada);
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
             faker.RuleFor(x => x.Formato, formato);
-            faker.RuleFor(x => x.TipoInscricao, f => ehTipoInscricaoOptativa ? TipoInscricao.Optativa: f.PickRandom<TipoInscricao>());
+            faker.RuleFor(x => x.TipoInscricao, f => ehTipoInscricaoOptativa ? TipoInscricao.Optativa : f.PickRandom<TipoInscricao>());
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
             faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Short(1, 50));
             faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 30));
@@ -35,11 +35,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(200));
-            faker.RuleFor(x => x.DataInscricaoInicio, f => f.Date.Past());
-            faker.RuleFor(x => x.DataInscricaoFim, f => f.Date.Past());
-            faker.RuleFor(x => x.DataRealizacaoInicio, f => f.Date.Future());
-            faker.RuleFor(x => x.DataRealizacaoFim, f => f.Date.Future());
-            
+
             AuditoriaFaker(faker);
 
             if (gerarFuncaoEspecificaOutros)
@@ -60,10 +56,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             bool gerarFuncaoEspecificaOutros,
             bool gerarCriterioValidacaoInscricaoOutros,
             FormacaoHomologada formacaoHomologada,
-            bool ehTipoInscricaoOptativa
+            bool ehTipoInscricaoOptativa = false
             )
         {
-            return Gerador(areaPromotoraId, tipoFormacao, formato, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada,ehTipoInscricaoOptativa);
+            return Gerador(areaPromotoraId, tipoFormacao, formato, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada, ehTipoInscricaoOptativa);
         }
 
         public static Proposta GerarPropostaRascunho(long areaPromotoraId)
@@ -171,7 +167,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
         public static IEnumerable<PropostaEncontroTurma> GerarPropostaEncontroTurmas(long propostaEncontroId, IEnumerable<PropostaTurma> turmas)
         {
-            foreach(var turma in turmas)
+            foreach (var turma in turmas)
             {
                 var faker = new Faker<PropostaEncontroTurma>();
                 faker.RuleFor(x => x.PropostaEncontroId, propostaEncontroId);
@@ -223,7 +219,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
             return default;
         }
-        
+
         public static IEnumerable<PropostaModalidade> GerarModalidades(long propostaId, IEnumerable<Modalidade> modalidades)
         {
             if (modalidades != null && modalidades.Any())
@@ -242,7 +238,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
             return default;
         }
-        
+
         public static IEnumerable<PropostaAnoTurma> GerarAnosTurmas(long propostaId, IEnumerable<AnoTurma> anosTurmas)
         {
             if (anosTurmas != null && anosTurmas.Any())
@@ -261,7 +257,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
             return default;
         }
-        
+
         public static IEnumerable<PropostaComponenteCurricular> GerarComponentesCurriculares(long propostaId, IEnumerable<ComponenteCurricular> componentesCurriculares)
         {
             if (componentesCurriculares != null && componentesCurriculares.Any())
@@ -296,7 +292,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
         public static IEnumerable<PropostaTutorTurma> GerarTutorTurmas(long propostaTutorId, IEnumerable<PropostaTurma> turmas)
         {
-            foreach(var propostaTurma in turmas)
+            foreach (var propostaTurma in turmas)
             {
                 var turma = new PropostaTutorTurma
                 {
@@ -325,7 +321,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
         public static IEnumerable<PropostaRegenteTurma> GerarRegenteTurmas(long propostaRegenteId, IEnumerable<PropostaTurma> turmas)
         {
-            foreach(var propostaTurma in turmas)
+            foreach (var propostaTurma in turmas)
             {
                 var turma = new PropostaRegenteTurma
                 {
@@ -346,6 +342,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
             AuditoriaFaker(faker);
             return faker.Generate(quantidadeTurmas);
+        }
+
+        public static IEnumerable<PropostaTurmaVaga> GerarTurmaVagas(IEnumerable<PropostaTurma> turmas, short quantidadeVagasTurmas)
+        {
+            var retorno = new List<PropostaTurmaVaga>();
+            foreach (var turma in turmas)
+            {
+                for (int i = 0; i < quantidadeVagasTurmas; i++)
+                {
+                    var vaga = new PropostaTurmaVaga() { PropostaTurmaId = turma.Id };
+                    Auditoria(vaga);
+                    retorno.Add(vaga);
+                }
+            }
+
+            return retorno;
         }
     }
 }

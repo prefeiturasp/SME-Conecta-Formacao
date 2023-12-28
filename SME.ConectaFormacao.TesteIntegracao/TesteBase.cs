@@ -1,5 +1,9 @@
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Dominio;
+using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -33,6 +37,8 @@ namespace SME.ConectaFormacao.TesteIntegracao
 
         protected virtual void RegistrarCommandFakes(IServiceCollection services)
         {
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<PublicarNaFilaRabbitCommand, bool>), typeof(PublicarNaFilaRabbitCommandFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<AlterarEmailServicoAcessosCommand, bool>), typeof(AlterarEmailServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
         }
 
         protected virtual void RegistrarQueryFakes(IServiceCollection services)

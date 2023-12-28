@@ -6,9 +6,9 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.ServicoFake;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using System.Text.Json;
-using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
@@ -22,7 +22,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
         {
             base.RegistrarQueryFakes(services);
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterCodigosDresEOLQuery, IEnumerable<DreNomeAbreviacaoDTO>>), typeof(ObterCodigosDresQueryFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<PublicarNaFilaRabbitCommand, bool>), typeof(PublicarNaFilaRabbitCommandFake), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Area Promotora - Deve Inserir uma que não existe")]

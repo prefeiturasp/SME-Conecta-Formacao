@@ -159,7 +159,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<AreaPromotora> ObterPorGrupoId(Guid grupoId)
         {
-            var query = @"select id, nome, tipo, email from area_promotora where grupo_id = @grupoId";
+            var query = @"select id, nome, tipo, email from area_promotora where grupo_id = @grupoId and not excluido limit 1";
 
             return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { grupoId });
         }

@@ -4,7 +4,6 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -43,42 +42,10 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 await _repositorioProposta.Atualizar(propostaDepois);
 
-                await _mediator.Send(new SalvarPropostaPublicoAlvoCommand(request.Id, propostaDepois.PublicosAlvo), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaFuncaoEspecificaCommand(request.Id, propostaDepois.FuncoesEspecificas), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaCriteriosValidacaoInscricaoCommand(request.Id, propostaDepois.CriteriosValidacaoInscricao), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(request.Id, propostaDepois.VagasRemanecentes), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaPalavraChaveCommand(request.Id, propostaDepois.PalavrasChaves), cancellationToken);
-
-                await _mediator.Send(new SalvarCriterioCertificacaoCommand(request.Id, propostaDepois.CriterioCertificacao), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaDreCommand(request.Id, propostaDepois.Dres), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaTurmaCommand(request.Id, propostaDepois.Turmas), cancellationToken);
-                
-                await _mediator.Send(new SalvarPropostaTurmaDreCommand(propostaDepois.ObterPropostaTurmasDres), cancellationToken);
-                
-                await _mediator.Send(new SalvarPropostaModalidadeCommand(request.Id, propostaDepois.Modalidades), cancellationToken);
-                
-                await _mediator.Send(new SalvarPropostaAnoTurmaCommand(request.Id, propostaDepois.AnosTurmas), cancellationToken);
-                
-                await _mediator.Send(new SalvarPropostaComponenteCurricularCommand(request.Id, propostaDepois.ComponentesCurriculares), cancellationToken);
-
-                if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())
-                {
-                    await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(propostaDepois.ArquivoImagemDivulgacaoId), cancellationToken);
-
-                    if (proposta.ArquivoImagemDivulgacaoId.HasValue)
-                        await _mediator.Send(new RemoverArquivoPorIdCommand(proposta.ArquivoImagemDivulgacaoId.Value), cancellationToken);
-                }
+                await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
 
                 transacao.Commit();
-                
-                await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.FormacaoResumida.Parametros(proposta.Id)), cancellationToken);
-                
+
                 return request.Id;
             }
             catch

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes
+namespace SME.ConectaFormacao.TesteIntegracao.ServicosFakes
 {
     public class AlterarEmailServicoAcessosCommandHandlerFake : IRequestHandler<AlterarEmailServicoAcessosCommand, bool>
     {

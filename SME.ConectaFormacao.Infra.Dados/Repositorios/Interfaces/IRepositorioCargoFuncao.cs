@@ -8,5 +8,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
     {
         Task<bool> ExisteCargoFuncaoOutros(long[] ids);
         Task<IEnumerable<CargoFuncao>> ObterIgnorandoExcluidosPorTipo(CargoFuncaoTipo? tipo, bool exibirOutros);
+        Task<IEnumerable<CargoFuncao>> ObterPorCodigoEol(long[] codigosCargosEol, long[] codigosFuncoesEol);
     }
 }

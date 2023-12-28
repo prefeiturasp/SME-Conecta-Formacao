@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var erros = new List<string>();
             var proposta = request.PropostaDTO;
-            
+
             if (proposta.TipoFormacao == null)
                 erros.Add(MensagemNegocio.TIPO_FORMACAO_NAO_INFORMADO);
             if (proposta.Formato == null)

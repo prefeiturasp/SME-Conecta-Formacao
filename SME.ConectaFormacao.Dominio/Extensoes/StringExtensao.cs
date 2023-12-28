@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         public static readonly Regex RegexTagsDIV = new("<div[^>]*>", RegexOptions.Compiled);
         public static readonly Regex RegexTagsHTMLQualquer = new("<[^>]*>", RegexOptions.Compiled);
         public static readonly Regex RegexEspacosEmBranco = new("&nbsp;", RegexOptions.Compiled);
-        
+
         public static string SomenteNumeros(this string valor)
         {
             return Regex.Replace(valor, "[^0-9]", "");
@@ -36,18 +36,18 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             var regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
             return Regex.IsMatch(email, regex);
         }
-        
+
         public static string Limite(this string str, int limite)
         {
             var tamanhoString = str.Length;
-            return tamanhoString > limite ? str.Substring(0,limite) : str;
+            return tamanhoString > limite ? str.Substring(0, limite) : str;
         }
-        
+
         public static bool EstaPreenchido(this string str)
         {
             return !string.IsNullOrEmpty(str);
         }
-        
+
         public static bool NaoEstaPreenchido(this string str)
         {
             return string.IsNullOrEmpty(str);
@@ -57,12 +57,12 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         {
             return string.Format(valor, parametros);
         }
-        
+
         public static string RemoverTagsHtml(this string texto)
         {
             if (texto.NaoEstaPreenchido())
                 return string.Empty;
-            
+
             texto = RegexTagsBR.Replace(texto, " ");
             texto = RegexTagsP.Replace(texto, " ");
             texto = RegexTagsLI.Replace(texto, " ");

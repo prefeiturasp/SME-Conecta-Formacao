@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
     public class CasoDeUsoObterFormacaoDetalhada : CasoDeUsoAbstrato, ICasoDeUsoObterFormacaoDetalhada
     {
         public CasoDeUsoObterFormacaoDetalhada(IMediator mediator) : base(mediator)
-        {}
+        { }
 
         public Task<RetornoFormacaoDetalhadaDTO> Executar(long propostaId)
         {

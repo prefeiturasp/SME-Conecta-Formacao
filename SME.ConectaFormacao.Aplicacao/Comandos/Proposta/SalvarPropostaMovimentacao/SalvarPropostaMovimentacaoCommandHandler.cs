@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao
             };
 
             await _repositorioPropostaMovimentacao.Inserir(propostaMovimentacao);
-            
+
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.FormacaoResumida.Parametros(request.PropostaId)), cancellationToken);
             return true;
         }
