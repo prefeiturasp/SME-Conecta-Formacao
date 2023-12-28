@@ -22,16 +22,22 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             // TODO: Buscar cargos EOL somente para usuários rede parceira
             var cargosFuncoesEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuarioLogado.Login));
 
-            //var codigosCargosEol = new List<long>();
-            //codigosCargosEol.AddRange(cargosFuncoesEol.Where(w => w.CdCargoBase.HasValue).Select(t => t.CdCargoBase.GetValueOrDefault()));
-            //codigosCargosEol.AddRange(cargosFuncoesEol.Where(w => w.CdCargoSobreposto.HasValue).Select(t => t.CdCargoSobreposto.GetValueOrDefault()));
-
-            //var codigosFuncoesEol = cargosFuncoesEol.Where(w => w.CdFuncaoAtividade.HasValue).Select(t => t.CdFuncaoAtividade.GetValueOrDefault());
-
-            //var cargosFuncoes = await mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol));
-
             await AtualizaCpfUsuario(usuarioLogado, cargosFuncoesEol);
 
+            var retorno = new DadosInscricaoDTO()
+            {
+                UsuarioNome = usuarioLogado.Nome,
+                UsuarioCpf = cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"\(00\) 00000\-0000"),
+                UsuarioEmail = usuarioLogado.Email,
+                UsuarioRf = usuarioLogado.Login,
+                UsuarioCargos = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoesEol)
+            };
+
+            return retorno;
+        }
+
+        private  List<DadosInscricaoCargoEol> ObterCargosBaseSobrepostoFuncaoAtividade(IEnumerable<CargoFuncionarioConectaDTO> cargosFuncoesEol)
+        {
             var usuarioCargos = new List<DadosInscricaoCargoEol>();
             foreach (var cargoFuncaoEol in cargosFuncoesEol)
             {
@@ -67,16 +73,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 }
             }
 
-            var retorno = new DadosInscricaoDTO()
-            {
-                UsuarioNome = usuarioLogado.Nome,
-                UsuarioCpf = cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"\(00\) 00000\-0000"),
-                UsuarioEmail = usuarioLogado.Email,
-                UsuarioRf = usuarioLogado.Login,
-                UsuarioCargos = usuarioCargos
-            };
-
-            return retorno;
+            return usuarioCargos;
         }
 
         private async Task AtualizaCpfUsuario(Dominio.Entidades.Usuario usuarioLogado, IEnumerable<CargoFuncionarioConectaDTO> cargosFuncoesEol)
