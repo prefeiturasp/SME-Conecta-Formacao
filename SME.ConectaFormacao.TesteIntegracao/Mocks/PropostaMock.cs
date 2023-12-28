@@ -373,5 +373,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
             return retorno;
         }
+        public static PropostaTurmaVaga GerarTurmaVaga(long propostaTurmaId, long inscricaoId)
+        {
+            var vaga = new PropostaTurmaVaga() { PropostaTurmaId = propostaTurmaId, InscricaoId = inscricaoId };
+            Auditoria(vaga);
+
+            return vaga;
+        }
     }
 }
