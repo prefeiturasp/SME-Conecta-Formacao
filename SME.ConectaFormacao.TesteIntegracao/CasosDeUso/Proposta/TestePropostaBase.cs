@@ -15,7 +15,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         protected TestePropostaBase(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
-
         protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade)
         {
             var retorno = new List<Dominio.Entidades.Proposta>();
@@ -115,10 +114,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.CriteriosValidacaoInscricao = criterios;
             }
 
+            var dres = DreMock.GerarDreValida(10);
+            await InserirNaBase(dres);
+            
             var turmas = PropostaMock.GerarTurmas(proposta.Id, proposta.QuantidadeTurmas.GetValueOrDefault());
             if (turmas != null)
             {
                 await InserirNaBase(turmas);
+                
+                foreach (var turma in turmas)
+                {
+                    var turmaDre = PropostaMock.GerarPropostaTurmasDres(turma.Id, dres);
+                    await InserirNaBase(turmaDre);
+                    turma.Dres = turmaDre;
+                }
+
                 proposta.Turmas = turmas;
             }
 
