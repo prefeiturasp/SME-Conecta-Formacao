@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -21,15 +22,50 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             // TODO: Buscar cargos EOL somente para usuários rede parceira
             var cargosFuncoesEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuarioLogado.Login));
 
-            var codigosCargosEol = new List<long>();
-            codigosCargosEol.AddRange(cargosFuncoesEol.Where(w => w.CdCargoBase.HasValue).Select(t => t.CdCargoBase.GetValueOrDefault()));
-            codigosCargosEol.AddRange(cargosFuncoesEol.Where(w => w.CdCargoSobreposto.HasValue).Select(t => t.CdCargoSobreposto.GetValueOrDefault()));
+            //var codigosCargosEol = new List<long>();
+            //codigosCargosEol.AddRange(cargosFuncoesEol.Where(w => w.CdCargoBase.HasValue).Select(t => t.CdCargoBase.GetValueOrDefault()));
+            //codigosCargosEol.AddRange(cargosFuncoesEol.Where(w => w.CdCargoSobreposto.HasValue).Select(t => t.CdCargoSobreposto.GetValueOrDefault()));
 
-            var codigosFuncoesEol = cargosFuncoesEol.Where(w => w.CdFuncaoAtividade.HasValue).Select(t => t.CdFuncaoAtividade.GetValueOrDefault());
+            //var codigosFuncoesEol = cargosFuncoesEol.Where(w => w.CdFuncaoAtividade.HasValue).Select(t => t.CdFuncaoAtividade.GetValueOrDefault());
 
-            var cargosFuncoes = await mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol));
+            //var cargosFuncoes = await mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol));
 
             await AtualizaCpfUsuario(usuarioLogado, cargosFuncoesEol);
+
+            var usuarioCargos = new List<DadosInscricaoCargoEol>();
+            foreach (var cargoFuncaoEol in cargosFuncoesEol)
+            {
+                var item = new DadosInscricaoCargoEol
+                {
+                    Codigo = cargoFuncaoEol.CdCargoBase.GetValueOrDefault(),
+                    Descricao = cargoFuncaoEol.CargoBase,
+                    DreCodigo = cargoFuncaoEol.CdDreCargoBase.GetValueOrDefault(),
+                    UeCodigo = cargoFuncaoEol.CdUeCargoBase.GetValueOrDefault()
+                };
+
+                if (cargoFuncaoEol.CdFuncaoAtividade.HasValue)
+                {
+                    item.Funcoes.Add(new DadosInscricaoCargoEol
+                    {
+                        Codigo = cargoFuncaoEol.CdFuncaoAtividade.GetValueOrDefault(),
+                        Descricao = cargoFuncaoEol.FuncaoAtividade,
+                        DreCodigo = cargoFuncaoEol.CdDreFuncaoAtividade.GetValueOrDefault(),
+                        UeCodigo = cargoFuncaoEol.CdUeFuncaoAtividade.GetValueOrDefault()
+                    });
+                }
+                usuarioCargos.Add(item);
+
+                if (cargoFuncaoEol.CdCargoSobreposto.HasValue)
+                {
+                    usuarioCargos.Add(new DadosInscricaoCargoEol
+                    {
+                        Codigo = cargoFuncaoEol.CdCargoSobreposto.GetValueOrDefault(),
+                        Descricao = cargoFuncaoEol.CargoSobreposto,
+                        DreCodigo = cargoFuncaoEol.CdDreCargoSobreposto.GetValueOrDefault(),
+                        UeCodigo = cargoFuncaoEol.CdUeCargoSobreposto.GetValueOrDefault()
+                    });
+                }
+            }
 
             var retorno = new DadosInscricaoDTO()
             {
@@ -37,8 +73,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 UsuarioCpf = cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"\(00\) 00000\-0000"),
                 UsuarioEmail = usuarioLogado.Email,
                 UsuarioRf = usuarioLogado.Login,
-                UsuarioCargos = cargosFuncoes.Where(w => w.Tipo == Dominio.Enumerados.CargoFuncaoTipo.Cargo).Select(t => new Dtos.RetornoListagemDTO { Id = t.Id, Descricao = t.Nome }),
-                UsuarioFuncoes = cargosFuncoes.Where(w => w.Tipo == Dominio.Enumerados.CargoFuncaoTipo.Funcao).Select(t => new Dtos.RetornoListagemDTO { Id = t.Id, Descricao = t.Nome }),
+                UsuarioCargos = usuarioCargos
             };
 
             return retorno;
