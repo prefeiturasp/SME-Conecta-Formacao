@@ -72,4 +72,5 @@ public class MensagemNegocio
     public const string USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
     public const string EMAIL_FORA_DOMINIO_REDE_DIRETA = "É permitido somente e-mails com o domínio @SME ou @EDU.SME";
     public const string INSCRICAO_NAO_ENCONTRADA = "Inscrição não encontrada";
+    public const string NENHUMA_TURMA_COM_VAGA_DISPONIVEL = "Nenhuma turma com vaga disponível encontrada";
 }

@@ -33,15 +33,17 @@ namespace SME.ConectaFormacao.Aplicacao
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoDTO);
             inscricao.UsuarioId = usuarioLogado.Id;
             inscricao.Situacao = SituacaoInscricao.EmAnalise;
+            
+            await MapearCargoFuncao(cancellationToken, inscricao);
 
             var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
-                throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
+                                throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
 
             await ValidarExisteInscricaoNaProposta(propostaTurma.PropostaId, inscricao.UsuarioId);
 
             await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
 
-            await ValidarDre(inscricao.PropostaTurmaId, usuarioLogado.Login, cancellationToken);
+            await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo,inscricao.FuncaoDreCodigo, cancellationToken);
 
             await ValidarEmail(usuarioLogado.Login, usuarioLogado.Email, request.InscricaoDTO.Email, cancellationToken);
 
@@ -49,6 +51,18 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
             return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao);
+        }
+
+        private async Task MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
+        {
+            var codigosFuncoesEol = inscricao.FuncaoCodigo.HasValue ? new List<long> { inscricao.FuncaoCodigo.Value } : Enumerable.Empty<long>();
+            var codigosCargosEol = inscricao.CargoCodigo.HasValue ? new List<long> { inscricao.CargoCodigo.Value } : Enumerable.Empty<long>();
+            
+            var cargosFuncoes = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol), cancellationToken);
+
+            inscricao.CargoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Cargo)?.Id;
+            
+            inscricao.FuncaoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
         }
 
         private async Task ValidarEmail(string login, string emailUsuario, string novoEmail, CancellationToken cancellationToken)
@@ -79,26 +93,16 @@ namespace SME.ConectaFormacao.Aplicacao
             var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
             var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
 
-            if (!cargosProposta.Any(a => a.CargoFuncaoId == cargoId) && funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
+            if ((cargoId.HasValue && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId)) || (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId)))
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
         }
 
-        private async Task ValidarDre(long propostaTurmaId, string loginUsuario, CancellationToken cancellationToken)
+        private async Task ValidarDre(long propostaTurmaId, long? cargoDreCodigo, long? funcaoDreCodigo, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId), cancellationToken);
-            if (dres.PossuiElementos())
-            {
-                var codigosDresTurma = dres.Select(s => s.Dre.Codigo);
-
-                //var cargosFuncoesEol = await _mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(loginUsuario), cancellationToken);
-
-                //var codigosDresUsuario = cargosFuncoesEol.Select(t => t.CdDreCargoBase).ToList();
-                //codigosDresUsuario.AddRange(cargosFuncoesEol.Select(t => t.CdDreCargoSobreposto).ToList());
-                //codigosDresUsuario.AddRange(cargosFuncoesEol.Select(t => t.CdDreFuncaoAtividade).ToList());
-
-                // if (!codigosDresUsuario.Any(codigoUsuario => codigosDresTurma.Contains(codigoUsuario.ToString())))
-                //     throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
-            }
+            
+            if ((cargoDreCodigo.HasValue && !dres.Any(a=> a.DreId == cargoDreCodigo)) || (funcaoDreCodigo.HasValue && !dres.Any(a=> a.DreId == funcaoDreCodigo)))
+                throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
         }
 
         private async Task<long> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao)
