@@ -97,11 +97,11 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
         }
 
-        private async Task ValidarDre(long propostaTurmaId, long? cargoDreCodigo, long? codigoDrefuncao, CancellationToken cancellationToken)
+        private async Task ValidarDre(long propostaTurmaId, long? cargoDreCodigo, long? funcaoDreCodigo, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId), cancellationToken);
             
-            if ((cargoDreCodigo.HasValue && !dres.Any(a=> a.DreId == cargoDreCodigo)) || (codigoDrefuncao.HasValue && !dres.Any(a=> a.DreId == codigoDrefuncao)))
+            if ((cargoDreCodigo.HasValue && !dres.Any(a=> a.DreId == cargoDreCodigo)) || (funcaoDreCodigo.HasValue && !dres.Any(a=> a.DreId == funcaoDreCodigo)))
                 throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
         }
 
