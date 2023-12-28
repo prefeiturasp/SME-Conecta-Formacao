@@ -14,7 +14,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<bool> ConfirmarInscricaoVaga(Inscricao inscricao)
         {
-            var query = @"update proposta_turma_vaga set inscricao_id = @Id
+            PreencherAuditoriaAlteracao(inscricao);
+
+            var query = @"update proposta_turma_vaga set inscricao_id = 
+                            inscricao_id = @Id,
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin
                           where id = (
                                 select id 
                                 from proposta_turma_vaga 
@@ -42,7 +48,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<int> LiberarInscricaoVaga(Inscricao inscricao)
         {
-            var query = @"update proposta_turma_vaga set inscricao_id = null
+            PreencherAuditoriaAlteracao(inscricao);
+
+            var query = @"update proposta_turma_vaga set 
+                            inscricao_id = null,
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin
                           where id = @id";
 
             return conexao.Obter().ExecuteAsync(query, inscricao);
