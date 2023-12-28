@@ -16,9 +16,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.CargoUeCodigo).ToColumn("cargo_ue_codigo");
             
             Map(c => c.FuncaoId).ToColumn("funcao_id");
-            Map(c => c.CargoCodigo).ToColumn("funcao_codigo");
-            Map(c => c.CargoDreCodigo).ToColumn("funcao_dre_codigo");
-            Map(c => c.CargoUeCodigo).ToColumn("funcao_ue_codigo");
+            Map(c => c.FuncaoCodigo).ToColumn("funcao_codigo");
+            Map(c => c.FuncaoDreCodigo).ToColumn("funcao_dre_codigo");
+            Map(c => c.FuncaoUeCodigo).ToColumn("funcao_ue_codigo");
             
             Map(c => c.ArquivoId).ToColumn("arquivo_id");
             Map(c => c.Situacao).ToColumn("situacao");
