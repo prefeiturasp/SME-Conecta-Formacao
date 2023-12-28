@@ -90,14 +90,14 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 var codigosDresTurma = dres.Select(s => s.Dre.Codigo);
 
-                var cargosFuncoesEol = await _mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(loginUsuario), cancellationToken);
+                //var cargosFuncoesEol = await _mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(loginUsuario), cancellationToken);
 
-                var codigosDresUsuario = cargosFuncoesEol.Select(t => t.CdDreCargoBase).ToList();
-                codigosDresUsuario.AddRange(cargosFuncoesEol.Select(t => t.CdDreCargoSobreposto).ToList());
-                codigosDresUsuario.AddRange(cargosFuncoesEol.Select(t => t.CdDreFuncaoAtividade).ToList());
+                //var codigosDresUsuario = cargosFuncoesEol.Select(t => t.CdDreCargoBase).ToList();
+                //codigosDresUsuario.AddRange(cargosFuncoesEol.Select(t => t.CdDreCargoSobreposto).ToList());
+                //codigosDresUsuario.AddRange(cargosFuncoesEol.Select(t => t.CdDreFuncaoAtividade).ToList());
 
-                if (!codigosDresUsuario.Any(codigoUsuario => codigosDresTurma.Contains(codigoUsuario.ToString())))
-                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
+                // if (!codigosDresUsuario.Any(codigoUsuario => codigosDresTurma.Contains(codigoUsuario.ToString())))
+                //     throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
             }
         }
 
