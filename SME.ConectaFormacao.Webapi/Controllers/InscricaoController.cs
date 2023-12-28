@@ -29,5 +29,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoSalvarInscricao.Executar(inscricaoDTO));
         }
+
+        [HttpPut("{id}/cancelar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> CancelarInscricao(
+            [FromServices] ICasoDeUsoCancelarInscricao casoDeUsoSalvarInscricao,
+            [FromRoute] long id)
+        {
+            return Ok(await casoDeUsoSalvarInscricao.Executar(id));
+        }
     }
 }

@@ -39,5 +39,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, usuarioId, situacaoCancelada });
         }
+
+        public Task<int> LiberarInscricaoVaga(Inscricao inscricao)
+        {
+            var query = @"update proposta_turma_vaga set inscricao_id = null
+                          where id = @id";
+
+            return conexao.Obter().ExecuteAsync(query, inscricao);
+        }
     }
 }
