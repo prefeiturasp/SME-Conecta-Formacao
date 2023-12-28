@@ -83,7 +83,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
         }
 
-        private async Task ValidarDre(long propostaTurmaId, string loginUsuario, long? cargoDreCodigo, long CancellationToken cancellationToken)
+        private async Task ValidarDre(long propostaTurmaId, string loginUsuario, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId), cancellationToken);
             if (dres.PossuiElementos())
@@ -96,8 +96,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 //codigosDresUsuario.AddRange(cargosFuncoesEol.Select(t => t.CdDreCargoSobreposto).ToList());
                 //codigosDresUsuario.AddRange(cargosFuncoesEol.Select(t => t.CdDreFuncaoAtividade).ToList());
 
-                if (!codigosDresUsuario.Any(codigoUsuario => codigosDresTurma.Contains(codigoUsuario.ToString())))
-                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
+                // if (!codigosDresUsuario.Any(codigoUsuario => codigosDresTurma.Contains(codigoUsuario.ToString())))
+                //     throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
             }
         }
 
