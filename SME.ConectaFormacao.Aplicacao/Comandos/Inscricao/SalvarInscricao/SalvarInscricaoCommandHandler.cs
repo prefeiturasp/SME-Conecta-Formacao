@@ -55,8 +55,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
         {
-            var codigosFuncoesEol = inscricao.FuncaoCodigo.HasValue ? new List<long> { inscricao.FuncaoCodigo.Value } : Enumerable.Empty<long>();
-            var codigosCargosEol = inscricao.CargoCodigo.HasValue ? new List<long> { inscricao.CargoCodigo.Value } : Enumerable.Empty<long>();
+            var codigosFuncoesEol = inscricao.FuncaoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.FuncaoCodigo) } : Enumerable.Empty<long>();
+            var codigosCargosEol = inscricao.CargoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.CargoCodigo) } : Enumerable.Empty<long>();
             
             var cargosFuncoes = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol), cancellationToken);
 
@@ -97,11 +97,12 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
         }
 
-        private async Task ValidarDre(long propostaTurmaId, long? cargoDreCodigo, long? funcaoDreCodigo, CancellationToken cancellationToken)
+        private async Task ValidarDre(long propostaTurmaId, string cargoDreCodigo, string funcaoDreCodigo, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId), cancellationToken);
             
-            if ((cargoDreCodigo.HasValue && !dres.Any(a=> a.DreId == cargoDreCodigo)) || (funcaoDreCodigo.HasValue && !dres.Any(a=> a.DreId == funcaoDreCodigo)))
+            if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a=> a.DreId.ToString().Equals(cargoDreCodigo))) 
+                || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a=> a.DreId.ToString().Equals(funcaoDreCodigo))))
                 throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
         }
 
