@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             var retorno = new DadosInscricaoDTO()
             {
                 UsuarioNome = usuarioLogado.Nome,
-                UsuarioCpf = cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"\(00\) 00000\-0000"),
+                UsuarioCpf = cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"000\.000\.000\-00"),
                 UsuarioEmail = usuarioLogado.Email,
                 UsuarioRf = usuarioLogado.Login,
                 UsuarioCargos = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoesEol)
