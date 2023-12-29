@@ -1,3 +1,6 @@
+using Elastic.Apm.AspNetCore;
+using Elastic.Apm.DiagnosticSource;
+using Elastic.Apm.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -43,6 +46,10 @@ builder.Services.AddSingleton(registradorDeDependencia);
 
 var app = builder.Build();
 RegistrarConfigsThreads.Registrar(builder.Configuration);
+
+app.UseElasticApm(builder.Configuration,
+    new SqlClientDiagnosticSubscriber(),
+    new HttpDiagnosticsSubscriber());
 
 app.Run(async (context) => { await context.Response.WriteAsync("WorkerRabbit Conecta"); });
 app.Run();
