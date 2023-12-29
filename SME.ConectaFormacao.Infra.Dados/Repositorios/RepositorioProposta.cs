@@ -1748,5 +1748,50 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
         }
+
+        public async Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorPropostaTurmaId(long turmaId)
+        {
+            var query = @"select 
+                            pe.id, 
+                            pe.proposta_id, 
+                            pe.hora_inicio,
+                            pe.hora_fim,
+                            pe.excluido,
+                            pe.criado_em,
+	                        pe.criado_por,
+                            pe.criado_login,
+                        	pe.alterado_em,    
+	                        pe.alterado_por,
+	                        pe.alterado_login
+                        from proposta_encontro_turma pet
+                        left join proposta_encontro pe on pe.id = pet.proposta_encontro_id and not pe.excluido
+                        where pet.turma_id = @turmaId and not pet.excluido;
+                        
+                        select 
+                            ped.id, 
+                            ped.proposta_encontro_id, 
+                            ped.data_inicio,
+                            ped.data_fim,
+                            ped.excluido,
+                            ped.criado_em,
+	                        ped.criado_por,
+                            ped.criado_login,
+                        	ped.alterado_em,    
+	                        ped.alterado_por,
+	                        ped.alterado_login
+                        from proposta_encontro_turma pet
+                        left join proposta_encontro_data ped on ped.proposta_encontro_id = pet.proposta_encontro_id and not ped.excluido
+                        where pet.turma_id = @turmaId and not pet.excluido;";
+
+            var multiquery = await conexao.Obter().QueryMultipleAsync(query, new { turmaId });
+
+            var encontros = multiquery.Read<PropostaEncontro>();
+            var datas = multiquery.Read<PropostaEncontroData>();
+
+            foreach (var encontro in encontros)
+                encontro.Datas = datas.Where(t => t.PropostaEncontroId == encontro.Id);
+
+            return encontros;
+        }
     }
 }
