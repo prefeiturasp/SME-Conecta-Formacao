@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes
         {
             var retorno = new List<CargoFuncionarioConectaDTO>();
 
-            foreach(var codigoCargo in AoObterDadosUsuarioInscricaoMock.CodigoCargos)
+            foreach (var codigoCargo in AoObterDadosUsuarioInscricaoMock.CodigoCargos)
             {
                 retorno.Add(new CargoFuncionarioConectaDTO
                 {

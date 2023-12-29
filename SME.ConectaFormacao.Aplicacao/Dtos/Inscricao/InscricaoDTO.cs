@@ -5,16 +5,17 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
     public class InscricaoDTO
     {
         public long PropostaTurmaId { get; set; }
-        [Required(ErrorMessage ="E-mail é obrigatório")]
+        [Required(ErrorMessage = "E-mail é obrigatório")]
         public string Email { get; set; }
         public long? ArquivoId { get; set; }
-        
-        public string CargoCodigo { get; set; }
-        public string CargoDreCodigo { get; set; }
-        public string CargoUeCodigo { get; set; }
 
-        public string FuncaoCodigo { get; set; }
-        public string FuncaoDreCodigo { get; set; }
-        public string FuncaoUeCodigo { get; set; }
+        public long? CargoId { get; set; }//Remover
+        public long? CargoCodigo { get; set; }
+        public long? CargoDreCodigo { get; set; }
+        public long? CargoUeCodigo { get; set; }
+
+        public long? FuncaoCodigo { get; set; }
+        public long? FuncaoDreCodigo { get; set; }
+        public long? FuncaoUeCodigo { get; set; }
     }
 }

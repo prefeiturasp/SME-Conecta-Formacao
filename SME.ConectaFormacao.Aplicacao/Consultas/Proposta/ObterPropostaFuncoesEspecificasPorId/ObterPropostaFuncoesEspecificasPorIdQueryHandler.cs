@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<IEnumerable<PropostaFuncaoEspecifica>> Handle(ObterPropostaFuncoesEspecificasPorIdQuery request, CancellationToken cancellationToken)
         {
             var nomeChave = CacheDistribuidoNomes.PropostaFuncaoEspecifica.Parametros(request.PropostaId);
-            return await _cacheDistribuido.ObterAsync(nomeChave, () => _repositorioProposta.ObterFuncoesEspecificasPorId(request.PropostaId));  
+            return await _cacheDistribuido.ObterAsync(nomeChave, () => _repositorioProposta.ObterFuncoesEspecificasPorId(request.PropostaId));
         }
     }
 }
