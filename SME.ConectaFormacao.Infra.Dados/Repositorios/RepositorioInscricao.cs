@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             PreencherAuditoriaAlteracao(inscricao);
 
-            var query = @"update proposta_turma_vaga set inscricao_id = 
+            var query = @"update proposta_turma_vaga set  
                             inscricao_id = @Id,
                             alterado_em = @AlteradoEm, 
                             alterado_por = @AlteradoPor, 
