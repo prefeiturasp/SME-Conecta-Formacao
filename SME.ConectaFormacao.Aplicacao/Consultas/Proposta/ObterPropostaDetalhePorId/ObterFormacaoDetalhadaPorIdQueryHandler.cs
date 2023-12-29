@@ -44,7 +44,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (retornoFormacaoDetalhadaDto.FormacaoHomologada != Dominio.Enumerados.FormacaoHomologada.Sim)
             {
-                var turmasComVaga = await _mediator.Send(new ObterPropostaTurmasComVagasPorIdQuery(request.Id), cancellationToken);
+                var turmasComVaga = await _repositorioProposta.ObterTurmasComVagaPorId(request.Id);
                 foreach (var turma in retornoFormacaoDetalhadaDto.Turmas)
                 {
                     turma.InscricaoEncerrada = !turmasComVaga.Any(t => t.Id == turma.Id);
