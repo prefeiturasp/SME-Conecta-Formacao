@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
 {
     public class CasoDeUsoObterListagemFormacaoPaginada : CasoDeUsoAbstratoPaginado, ICasoDeUsoObterListagemFormacaoPaginada
     {

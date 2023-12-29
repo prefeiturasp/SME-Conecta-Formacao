@@ -42,6 +42,15 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await _cacheDistribuido.SalvarAsync(chaveRedis, retornoFormacaoDetalhadaDto);
 
+            if (formacaoDetalhada.FormacaoHomologada != Dominio.Enumerados.FormacaoHomologada.Sim)
+            {
+                var turmasComVaga = await _mediator.Send(new ObterPropostaTurmasComVagasPorIdQuery(request.Id), cancellationToken);
+                foreach (var turma in retornoFormacaoDetalhadaDto.Turmas)
+                {
+                    turma.InscricaoEncerrada = !turmasComVaga.Any(t => t.Id == turma.Id);
+                }
+            }
+
             return retornoFormacaoDetalhadaDto;
         }
     }

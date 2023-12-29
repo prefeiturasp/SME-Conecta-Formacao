@@ -180,14 +180,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
                 yield return faker.Generate();
             }
         }
-        
+
         public static IEnumerable<PropostaTurmaDre> GerarPropostaTurmasDres(long propostaTurmaId, IEnumerable<Dre> dres)
         {
             foreach (var dre in dres)
             {
                 var faker = new Faker<PropostaTurmaDre>();
                 faker.RuleFor(x => x.PropostaTurmaId, propostaTurmaId);
-                faker.RuleFor(x => x.DreId, dre.Id); 
+                faker.RuleFor(x => x.DreId, dre.Id);
                 faker.RuleFor(x => x.Excluido, false);
                 AuditoriaFaker(faker);
 
