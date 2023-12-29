@@ -101,9 +101,12 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId), cancellationToken);
 
-            if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreId.ToString().Equals(cargoDreCodigo)))
-                || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreId.ToString().Equals(funcaoDreCodigo))))
-                throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
+            if (dres.PossuiElementos())
+            {
+                if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreId.ToString().Equals(cargoDreCodigo)))
+                    || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreId.ToString().Equals(funcaoDreCodigo))))
+                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
+            }
         }
 
         private async Task<long> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao)
