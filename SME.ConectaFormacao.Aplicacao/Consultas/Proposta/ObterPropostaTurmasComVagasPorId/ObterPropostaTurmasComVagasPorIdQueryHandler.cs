@@ -35,6 +35,22 @@ namespace SME.ConectaFormacao.Aplicacao
                     throw new NegocioException(MensagemNegocio.NENHUMA_TURMA_COM_VAGA_DISPONIVEL, System.Net.HttpStatusCode.NotFound);
             }
 
+            foreach (var turma in turmas)
+            {
+                var encontros = await _repositorioProposta.ObterEncontrosPorPropostaTurmaId(turma.Id);
+
+                var datas = new List<string>();
+                foreach (var encontro in encontros)
+                {
+                    foreach (var data in encontro.Datas)
+                    {
+                        datas.Add(data.DataFim.HasValue ? $" {data.DataInicio.Value:dd/MM/yyyy} até {data.DataFim.Value:dd/MM/yyyy}" : $" {data.DataInicio.Value:dd/MM/yyyy}");
+                    }
+                }
+
+                turma.Nome += string.Join(",", datas);
+            }
+
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
         }
     }

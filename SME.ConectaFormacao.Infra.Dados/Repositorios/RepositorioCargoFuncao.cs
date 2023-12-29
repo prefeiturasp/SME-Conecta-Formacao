@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (codigosCargosEol.Length > 0 && codigosFuncoesEol.Length > 0)
                 query += " and (cfd.codigo_cargo_eol = any(@codigosCargosEol) or cfd.codigo_funcao_eol = any(@codigosFuncoesEol))";
-            else if(codigosCargosEol.Length > 0 && codigosFuncoesEol.Length == 0)
+            else if (codigosCargosEol.Length > 0 && codigosFuncoesEol.Length == 0)
                 query += " and cfd.codigo_cargo_eol = any(@codigosCargosEol)";
             else if (codigosCargosEol.Length == 0 && codigosFuncoesEol.Length > 0)
                 query += " and cfd.codigo_funcao_eol = any(@codigosFuncoesEol)";

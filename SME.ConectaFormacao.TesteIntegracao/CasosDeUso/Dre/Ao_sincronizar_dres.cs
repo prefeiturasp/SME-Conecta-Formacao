@@ -6,7 +6,6 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.ServicoFake;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using System.Text.Json;
 using Xunit;

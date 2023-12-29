@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
         {
             var faker = new Faker<Usuario>();
             faker.RuleFor(dest => dest.Login, f => f.Random.Long(10000, 99999).ToString());
-            faker.RuleFor(dest => dest.Nome, f => f. Person.FullName);
+            faker.RuleFor(dest => dest.Nome, f => f.Person.FullName);
             faker.RuleFor(dest => dest.Email, f => f.Person.Email);
 
             AuditoriaFaker(faker);

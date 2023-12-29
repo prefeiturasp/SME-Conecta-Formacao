@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long PropostaId { get; }
     }
 
-    public class ObterPropostaFuncoesEspecificasPorIdQueryValidator: AbstractValidator<ObterPropostaFuncoesEspecificasPorIdQuery>
+    public class ObterPropostaFuncoesEspecificasPorIdQueryValidator : AbstractValidator<ObterPropostaFuncoesEspecificasPorIdQuery>
     {
         public ObterPropostaFuncoesEspecificasPorIdQueryValidator()
         {

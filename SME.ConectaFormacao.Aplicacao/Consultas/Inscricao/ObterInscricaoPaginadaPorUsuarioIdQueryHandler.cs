@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var totalRegistrosFiltro = await _repositorioInscricao.ObterTotalRegistrosPorUsuarioId(request.UsuarioId);
 
             var registros = Enumerable.Empty<Dominio.Entidades.Inscricao>();
-            if (totalRegistrosFiltro > 0) 
+            if (totalRegistrosFiltro > 0)
             {
                 registros = await _repositorioInscricao.ObterDadosPaginadosPorUsuarioId(request.UsuarioId, request.NumeroPagina, request.NumeroRegistros);
             }

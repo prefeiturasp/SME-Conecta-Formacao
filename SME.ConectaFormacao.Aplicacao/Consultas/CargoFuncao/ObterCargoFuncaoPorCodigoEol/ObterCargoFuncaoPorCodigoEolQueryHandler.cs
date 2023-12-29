@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<IEnumerable<Dominio.Entidades.CargoFuncao>> Handle(ObterCargoFuncaoPorCodigoEolQuery request, CancellationToken cancellationToken)
         {
             return await _repositorioCargoFuncao.ObterPorCodigoEol(
-                request.CodigosCargosEol.ToArray(), 
+                request.CodigosCargosEol.ToArray(),
                 request.CodigosFuncoesEol.ToArray());
         }
     }
