@@ -1672,8 +1672,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           and not ppc.excluido 
                           and not pc.excluido;
 
-                        select 
-                               pt.nome nome,
+                        select pt.id,
+                               pt.nome,
                                pe.local,
                                pe.hora_inicio horaInicio,
                                pe.hora_fim horaFim,
