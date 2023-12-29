@@ -1,6 +1,7 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
-namespace SME.ConectaFormacao.Dominio.Entidades
+namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
 {
     public class FormacaoDetalhada
     {
@@ -11,6 +12,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public DateTime? DataRealizacaoFim { get; set; }
         public DateTime? DataInscricaoFim { get; set; }
         public string Justificativa { get; set; }
+        public FormacaoHomologada FormacaoHomologada { get; set; }
 
         public string AreaPromotora { get; set; }
         public IEnumerable<string> PublicosAlvo { get; set; }

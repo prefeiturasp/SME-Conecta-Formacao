@@ -15,7 +15,9 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
@@ -27,7 +29,9 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Modalidade;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
@@ -150,6 +154,7 @@ public class RegistradorDeDependencia
             config.AddMap(new CriterioValidacaoInscricaoMap());
             config.AddMap(new RoteiroPropostaFormativaMap());
             config.AddMap(new CargoFuncaoMap());
+            config.AddMap(new CargoFuncaoDeparaEolMap());
             config.AddMap(new PalavraChaveMap());
             config.AddMap(new CriterioCertificacaoMap());
 
@@ -172,7 +177,9 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaTurmaDreMap());
             config.AddMap(new PropostaModalidadeMap());
             config.AddMap(new PropostaAnoTurmaMap());
+            config.AddMap(new PropostaTurmaVagaMap());
             config.AddMap(new PropostaComponenteCurricularMap());
+            config.AddMap(new PropostaDreMap());
 
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
@@ -181,9 +188,10 @@ public class RegistradorDeDependencia
 
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
-            config.AddMap(new PropostaDreMap());
+
             config.AddMap(new AnoTurmaMap());
             config.AddMap(new ComponenteCurricularMap());
+            config.AddMap(new InscricaoMap());
 
             config.ForDommel();
         });
@@ -228,6 +236,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaMovimentacao, RepositorioPropostaMovimentacao>();
         _serviceCollection.TryAddScoped<IRepositorioAnoTurma, RepositorioAnoTurma>();
         _serviceCollection.TryAddScoped<IRepositorioComponenteCurricular, RepositorioComponenteCurricular>();
+        _serviceCollection.TryAddScoped<IRepositorioCargoFuncaoDeparaEol, RepositorioCargoFuncaoDeparaEol>();
+        _serviceCollection.TryAddScoped<IRepositorioInscricao, RepositorioInscricao>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -312,6 +322,14 @@ public class RegistradorDeDependencia
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterListagemFormacaoPaginada, CasoDeUsoObterListagemFormacaoPaginada>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoDetalhada, CasoDeUsoObterFormacaoDetalhada>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosInscricao, CasoDeUsoObterDadosInscricao>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoGerarPropostaTurmaVaga, CasoDeUsoGerarPropostaTurmaVaga>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoSalvarInscricao, CasoDeUsoSalvarInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoCancelarInscricao, CasoDeUsoCancelarInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTurmasInscricao, CasoDeUsoObterTurmasInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPaginada, CasoDeUsoObterInscricaoPaginada>();
     }
 
     protected virtual void RegistrarHttpClients()

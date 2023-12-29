@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
 
@@ -1639,7 +1640,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             data_realizacao_inicio dataRealizacaoInicio,
                             data_realizacao_fim dataRealizacaoFim,                            
                             data_inscricao_fim dataInscricaoFim,
-                            justificativa
+                            justificativa,
+                            formacao_homologada as FormacaoHomologada    
                         from proposta
                         where id = @propostaId 
                             and not excluido
@@ -1670,8 +1672,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           and not ppc.excluido 
                           and not pc.excluido;
 
-                        select 
-                               pt.nome nome,
+                        select pt.id,
+                               pt.nome,
                                pe.local,
                                pe.hora_inicio horaInicio,
                                pe.hora_fim horaFim,
@@ -1716,6 +1718,81 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 turma.Periodos = formacaoDatasTurmas.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId);
 
             return formacaoDetalhe;
+        }
+
+        public Task InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga)
+        {
+            PreencherAuditoriaCriacao(propostaTurmaVaga);
+            return conexao.Obter().InsertAsync(propostaTurmaVaga);
+        }
+
+        public Task<PropostaTurma> ObterTurmaPorId(long propostaTurmaId)
+        {
+            return conexao.Obter().GetAsync<PropostaTurma>(propostaTurmaId);
+        }
+
+        public Task<IEnumerable<PropostaTurma>> ObterTurmasComVagaPorId(long propostaId)
+        {
+            var query = @"select 
+                            pt.id, 
+                            pt.proposta_id, 
+                            pt.nome
+                        from proposta_turma pt
+                        where pt.proposta_id = @propostaId 
+                          and not pt.excluido
+                          and exists(select 1 
+                                     from proposta_turma_vaga ptv 
+                                     where ptv.proposta_turma_id = pt.id 
+                                       and not ptv.excluido 
+                                       and ptv.inscricao_id is null 
+                                     limit 1)";
+
+            return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
+        }
+
+        public async Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorPropostaTurmaId(long turmaId)
+        {
+            var query = @"select 
+                            pe.id, 
+                            pe.proposta_id, 
+                            pe.hora_inicio,
+                            pe.hora_fim,
+                            pe.excluido,
+                            pe.criado_em,
+	                        pe.criado_por,
+                            pe.criado_login,
+                        	pe.alterado_em,    
+	                        pe.alterado_por,
+	                        pe.alterado_login
+                        from proposta_encontro_turma pet
+                        left join proposta_encontro pe on pe.id = pet.proposta_encontro_id and not pe.excluido
+                        where pet.turma_id = @turmaId and not pet.excluido;
+                        
+                        select 
+                            ped.id, 
+                            ped.proposta_encontro_id, 
+                            ped.data_inicio,
+                            ped.data_fim,
+                            ped.excluido,
+                            ped.criado_em,
+	                        ped.criado_por,
+                            ped.criado_login,
+                        	ped.alterado_em,    
+	                        ped.alterado_por,
+	                        ped.alterado_login
+                        from proposta_encontro_turma pet
+                        left join proposta_encontro_data ped on ped.proposta_encontro_id = pet.proposta_encontro_id and not ped.excluido
+                        where pet.turma_id = @turmaId and not pet.excluido;";
+
+            var multiquery = await conexao.Obter().QueryMultipleAsync(query, new { turmaId });
+
+            var encontros = multiquery.Read<PropostaEncontro>();
+            var datas = multiquery.Read<PropostaEncontroData>();
+
+            foreach (var encontro in encontros)
+                encontro.Datas = datas.Where(t => t.PropostaEncontroId == encontro.Id);
+
+            return encontros;
         }
     }
 }

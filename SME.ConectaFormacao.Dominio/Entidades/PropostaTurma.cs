@@ -7,5 +7,6 @@
         public long[] DresIds { get; set; }
 
         public IEnumerable<PropostaTurmaDre> Dres { get; set; }
+        public Proposta Proposta { get; set; }
     }
 }

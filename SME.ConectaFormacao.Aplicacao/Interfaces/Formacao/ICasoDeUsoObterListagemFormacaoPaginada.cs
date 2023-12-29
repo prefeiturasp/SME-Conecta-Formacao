@@ -1,6 +1,6 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Dtos;
 
-namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
+namespace SME.ConectaFormacao.Aplicacao.Interfaces.Formacao
 {
     public interface ICasoDeUsoObterListagemFormacaoPaginada
     {
