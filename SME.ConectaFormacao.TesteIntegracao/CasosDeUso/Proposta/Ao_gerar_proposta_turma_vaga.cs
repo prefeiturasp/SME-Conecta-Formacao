@@ -1,0 +1,56 @@
+﻿using Shouldly;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.TesteIntegracao.Setup;
+using Xunit;
+
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
+{
+    public class Ao_gerar_proposta_turma_vaga : TestePropostaBase
+    {
+        public Ao_gerar_proposta_turma_vaga(CollectionFixture collectionFixture) : base(collectionFixture)
+        {
+        }
+
+        [Fact(DisplayName = "Proposta - Deve gerar proposta turma vagas para proposta na situação Publicada e não homologada")]
+        public async Task Deve_gerar_proposta_turma_vaga_proposta_publicada_e_nao_homologada()
+        {
+            // arrange
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, formacaoHomologada: FormacaoHomologada.NaoCursosPorIN);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoGerarPropostaTurmaVaga>();
+
+            var mensagem = new MensagemRabbit(proposta.Id.ToString());
+
+            // act
+            await casoDeUso.Executar(mensagem);
+
+            // assert
+            var vagas = ObterTodos<Dominio.Entidades.PropostaTurmaVaga>();
+
+            vagas.ShouldNotBeEmpty();
+
+            var totalVagas = proposta.QuantidadeTurmas.GetValueOrDefault() * proposta.QuantidadeVagasTurma.GetValueOrDefault();
+            vagas.Count.ShouldBe(totalVagas);
+        }
+
+        [Fact(DisplayName = "Proposta - Nao deve gerar proposta turma vagas para proposta diferente de Publicada e não homologada")]
+        public async Task Nao_deve_gerar_proposta_turma_vaga_proposta_diferente_de_publicada_e_nao_homologada()
+        {
+            // arrange
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.Cadastrada, formacaoHomologada: FormacaoHomologada.NaoCursosPorIN);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoGerarPropostaTurmaVaga>();
+
+            var mensagem = new MensagemRabbit(proposta.Id.ToString());
+
+            // act
+            await casoDeUso.Executar(mensagem);
+
+            // assert
+            var vagas = ObterTodos<Dominio.Entidades.PropostaTurmaVaga>();
+            vagas.ShouldBeEmpty();
+        }
+    }
+}

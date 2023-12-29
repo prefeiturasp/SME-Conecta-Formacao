@@ -35,6 +35,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(200));
+            faker.RuleFor(x => x.DataRealizacaoInicio, DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataRealizacaoFim, DateTimeExtension.HorarioBrasilia());
 
             AuditoriaFaker(faker);
 
@@ -172,6 +174,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
                 var faker = new Faker<PropostaEncontroTurma>();
                 faker.RuleFor(x => x.PropostaEncontroId, propostaEncontroId);
                 faker.RuleFor(x => x.TurmaId, turma.Id);
+                faker.RuleFor(x => x.Excluido, false);
+                AuditoriaFaker(faker);
+
+                yield return faker.Generate();
+            }
+        }
+
+        public static IEnumerable<PropostaTurmaDre> GerarPropostaTurmasDres(long propostaTurmaId, IEnumerable<Dre> dres)
+        {
+            foreach (var dre in dres)
+            {
+                var faker = new Faker<PropostaTurmaDre>();
+                faker.RuleFor(x => x.PropostaTurmaId, propostaTurmaId);
+                faker.RuleFor(x => x.DreId, dre.Id);
                 faker.RuleFor(x => x.Excluido, false);
                 AuditoriaFaker(faker);
 
@@ -342,6 +358,29 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.Nome, f => f.Name.FirstName());
             AuditoriaFaker(faker);
             return faker.Generate(quantidadeTurmas);
+        }
+
+        public static IEnumerable<PropostaTurmaVaga> GerarTurmaVagas(IEnumerable<PropostaTurma> turmas, short quantidadeVagasTurmas)
+        {
+            var retorno = new List<PropostaTurmaVaga>();
+            foreach (var turma in turmas)
+            {
+                for (int i = 0; i < quantidadeVagasTurmas; i++)
+                {
+                    var vaga = new PropostaTurmaVaga() { PropostaTurmaId = turma.Id };
+                    Auditoria(vaga);
+                    retorno.Add(vaga);
+                }
+            }
+
+            return retorno;
+        }
+        public static PropostaTurmaVaga GerarTurmaVaga(long propostaTurmaId, long inscricaoId)
+        {
+            var vaga = new PropostaTurmaVaga() { PropostaTurmaId = propostaTurmaId, InscricaoId = inscricaoId };
+            Auditoria(vaga);
+
+            return vaga;
         }
     }
 }

@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
@@ -28,7 +29,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 SituacaoProposta.Publicada;
 
             await mediator.Send(new EnviarPropostaCommand(propostaId, situacao));
-            return await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
+            await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
+
+            if (situacao == SituacaoProposta.Publicada && proposta.FormacaoHomologada != FormacaoHomologada.Sim)
+                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, propostaId));
+
+            return true;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public DateTime? UltimoLogin { get; set; }
         public Guid? TokenRecuperacaoSenha { get; set; }
         public DateTime? ExpiracaoRecuperacaoSenha { get; set; }
+        public string Cpf { get; set; }
 
         public void Atualizar(string email, DateTime? dataHora)
         {
