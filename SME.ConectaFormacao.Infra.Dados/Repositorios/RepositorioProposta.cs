@@ -1640,7 +1640,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             data_realizacao_inicio dataRealizacaoInicio,
                             data_realizacao_fim dataRealizacaoFim,                            
                             data_inscricao_fim dataInscricaoFim,
-                            justificativa
+                            justificativa,
+                            formacao_homologada as FormacaoHomologada    
                         from proposta
                         where id = @propostaId 
                             and not excluido

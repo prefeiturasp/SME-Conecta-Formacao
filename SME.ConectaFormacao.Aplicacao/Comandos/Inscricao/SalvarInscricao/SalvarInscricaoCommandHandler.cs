@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoDTO);
             inscricao.UsuarioId = usuarioLogado.Id;
             inscricao.Situacao = SituacaoInscricao.EmAnalise;
-            
+
             await MapearCargoFuncao(cancellationToken, inscricao);
 
             var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
@@ -43,7 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
 
-            await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo,inscricao.FuncaoDreCodigo, cancellationToken);
+            await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
 
             await ValidarEmail(usuarioLogado.Login, usuarioLogado.Email, request.InscricaoDTO.Email, cancellationToken);
 
@@ -57,11 +57,11 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var codigosFuncoesEol = inscricao.FuncaoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.FuncaoCodigo) } : Enumerable.Empty<long>();
             var codigosCargosEol = inscricao.CargoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.CargoCodigo) } : Enumerable.Empty<long>();
-            
+
             var cargosFuncoes = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol), cancellationToken);
 
             inscricao.CargoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Cargo)?.Id;
-            
+
             inscricao.FuncaoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
         }
 
@@ -100,9 +100,9 @@ namespace SME.ConectaFormacao.Aplicacao
         private async Task ValidarDre(long propostaTurmaId, string cargoDreCodigo, string funcaoDreCodigo, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId), cancellationToken);
-            
-            if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a=> a.DreId.ToString().Equals(cargoDreCodigo))) 
-                || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a=> a.DreId.ToString().Equals(funcaoDreCodigo))))
+
+            if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreId.ToString().Equals(cargoDreCodigo)))
+                || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreId.ToString().Equals(funcaoDreCodigo))))
                 throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
         }
 

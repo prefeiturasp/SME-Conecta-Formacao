@@ -4,7 +4,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 {
     public enum SituacaoInscricao
     {
-        [Display(Name ="Confirmada")]
+        [Display(Name = "Confirmada")]
         Confirmada = 1,
         [Display(Name = "Enviada")]
         Enviada = 2,

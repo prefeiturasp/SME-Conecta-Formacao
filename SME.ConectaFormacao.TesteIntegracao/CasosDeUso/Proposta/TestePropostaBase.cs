@@ -116,12 +116,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var dres = DreMock.GerarDreValida(10);
             await InserirNaBase(dres);
-            
+
             var turmas = PropostaMock.GerarTurmas(proposta.Id, proposta.QuantidadeTurmas.GetValueOrDefault());
             if (turmas != null)
             {
                 await InserirNaBase(turmas);
-                
+
                 foreach (var turma in turmas)
                 {
                     var turmaDre = PropostaMock.GerarPropostaTurmasDres(turma.Id, dres);
