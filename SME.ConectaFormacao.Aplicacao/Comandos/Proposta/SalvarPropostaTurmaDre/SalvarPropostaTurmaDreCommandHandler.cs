@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 foreach (var propostaTurmaDreAlterar in propostaTurmasDresAlterar)
                 {
-                    var propostaTurmaDre = request.PropostaTurmasDres.FirstOrDefault(t => t.Id == propostaTurmaDreAlterar.Id);
+                    var propostaTurmaDre = request.PropostaTurmasDres.FirstOrDefault(t => t.DreId == propostaTurmaDreAlterar.DreId && t.PropostaTurmaId == propostaTurmaDreAlterar.PropostaTurmaId);
                     propostaTurmaDreAlterar.DreId = propostaTurmaDre.DreId;
                 }
 
