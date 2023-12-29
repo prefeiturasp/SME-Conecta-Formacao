@@ -59,5 +59,40 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, inscricao);
         }
+
+        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorUsuarioId(long usuarioId, int numeroPagina, int numeroRegistros)
+        {
+            var query = @"
+                select i.id,
+                       i.situacao,
+                       i.proposta_turma_id,
+                       pt.nome,
+                       pt.proposta_id,
+                       p.nome_formacao,
+                       p.data_realizacao_inicio,
+                       p.data_realizacao_fim 
+                from inscricao i 
+                inner join proposta_turma pt on pt.id = i.proposta_turma_id 
+                inner join proposta p on p.id = pt.proposta_id 
+                where not i.excluido 
+	                and i.usuario_id = @usuarioId
+                order by i.id
+                limit @numeroRegistros offset @registrosIgnorados";
+
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Proposta, Inscricao>(query, (inscricao, propostaTurma, proposta) =>
+            {
+                propostaTurma.Proposta = proposta;
+                inscricao.PropostaTurma = propostaTurma;
+                return inscricao;
+            }, new { usuarioId, numeroRegistros, registrosIgnorados }, splitOn: "id, proposta_turma_id, proposta_id");
+        }
+
+        public Task<int> ObterTotalRegistrosPorUsuarioId(long usuarioId)
+        {
+            var query = $"select count(1) from inscricao where usuario_id = @usuarioId and not excluido";
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new { usuarioId });
+        }
     }
 }

@@ -2,23 +2,21 @@
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Contexto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
-    public class CasoDeUsoObterPropostaEncontroPaginacao : CasoDeUsoAbstrato, ICasoDeUsoObterPropostaEncontroPaginacao
+    public class CasoDeUsoObterPropostaEncontroPaginacao : CasoDeUsoAbstratoPaginado, ICasoDeUsoObterPropostaEncontroPaginacao
     {
-        public CasoDeUsoObterPropostaEncontroPaginacao(IMediator mediator) : base(mediator)
+        public CasoDeUsoObterPropostaEncontroPaginacao(IMediator mediator, IContextoAplicacao contextoAplicacao) : base(mediator, contextoAplicacao)
         {
         }
 
         public async Task<PaginacaoResultadoDTO<PropostaEncontroDTO>> Executar(long id)
         {
-            int numeroPagina = int.TryParse(await mediator.Send(new ObterVariavelContextoAplicacaoQuery("NumeroPagina")), out numeroPagina) ? numeroPagina : 1;
-            int numeroRegistros = int.TryParse(await mediator.Send(new ObterVariavelContextoAplicacaoQuery("NumeroRegistros")), out numeroRegistros) ? numeroRegistros : 10;
-
             if (id == 0) return new PaginacaoResultadoDTO<PropostaEncontroDTO>(new List<PropostaEncontroDTO>(), 0, 0);
 
-            return await mediator.Send(new ObterEncontrosPaginadoQuery(id, numeroPagina, numeroRegistros));
+            return await mediator.Send(new ObterEncontrosPaginadoQuery(id, NumeroPagina, NumeroRegistros));
         }
     }
 }

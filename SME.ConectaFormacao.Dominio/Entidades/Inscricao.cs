@@ -18,5 +18,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public long? ArquivoId { get; set; }
         public SituacaoInscricao Situacao { get; set; }
+
+        public PropostaTurma PropostaTurma { get; set; }
     }
 }

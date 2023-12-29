@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
@@ -11,6 +12,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
             faker.RuleFor(t => t.UsuarioId, usuarioId);
             faker.RuleFor(t => t.PropostaTurmaId, propostaTurmaId);
+            faker.RuleFor(t => t.Situacao, f => f.PickRandom<SituacaoInscricao>());
 
             AuditoriaFaker(faker);
 
@@ -23,3 +25,4 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
         }
     }
 }
+

@@ -31,6 +31,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterTurmasInscricao.Executar(propostaId));
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<InscricaoPaginadaDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterInscricoesPaginada(
+            [FromServices] ICasoDeUsoObterInscricaoPaginada casoDeUsoObterInscricaoPaginada)
+        {
+            return Ok(await casoDeUsoObterInscricaoPaginada.Executar());
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(DadosInscricaoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
