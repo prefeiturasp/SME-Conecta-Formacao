@@ -55,9 +55,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var inscricaoDto = new InscricaoDTO
             {
                 PropostaTurmaId = proposta.Turmas.FirstOrDefault().Id,
-                CargoDreCodigo = 1,
-                CargoUeCodigo = 2,
-                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault(),
+                CargoDreCodigo = "1",
+                CargoUeCodigo = "2",
+                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
                 Email = usuario.Email,
             };
 
@@ -68,9 +68,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var inscricaoInserida = ObterTodos<Dominio.Entidades.Inscricao>().Where(t => !t.Excluido).FirstOrDefault();
             
             inscricaoInserida.PropostaTurmaId.ShouldBe(inscricaoDto.PropostaTurmaId);
-            inscricaoInserida.CargoDreCodigo.ShouldBe(inscricaoDto.CargoDreCodigo.Value);
-            inscricaoInserida.CargoUeCodigo.ShouldBe(inscricaoDto.CargoUeCodigo.Value);
-            inscricaoInserida.CargoCodigo.ShouldBe(inscricaoDto.CargoCodigo.Value);
+            inscricaoInserida.CargoDreCodigo.ShouldBe(inscricaoDto.CargoDreCodigo);
+            inscricaoInserida.CargoUeCodigo.ShouldBe(inscricaoDto.CargoUeCodigo);
+            inscricaoInserida.CargoCodigo.ShouldBe(inscricaoDto.CargoCodigo);
             inscricaoInserida.CargoId.ShouldNotBeNull();
             inscricaoInserida.CargoId.Value.ShouldBeGreaterThan(0);
             
@@ -104,9 +104,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var inscricaoDto = new InscricaoDTO
             {
                 PropostaTurmaId = proposta.Turmas.FirstOrDefault().Id,
-                FuncaoDreCodigo = 1,
-                FuncaoUeCodigo = 2,
-                FuncaoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoFuncoes.FirstOrDefault(),
+                FuncaoDreCodigo = "1",
+                FuncaoUeCodigo = "2",
+                FuncaoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoFuncoes.FirstOrDefault().ToString(),
                 Email = usuario.Email,
             };
 
@@ -117,9 +117,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var inscricaoInserida = ObterTodos<Dominio.Entidades.Inscricao>().Where(t => !t.Excluido).FirstOrDefault();
             
             inscricaoInserida.PropostaTurmaId.ShouldBe(inscricaoDto.PropostaTurmaId);
-            inscricaoInserida.FuncaoDreCodigo.ShouldBe(inscricaoDto.FuncaoDreCodigo.Value);
-            inscricaoInserida.FuncaoUeCodigo.ShouldBe(inscricaoDto.FuncaoUeCodigo.Value);
-            inscricaoInserida.FuncaoCodigo.ShouldBe(inscricaoDto.FuncaoCodigo.Value);
+            inscricaoInserida.FuncaoDreCodigo.ShouldBe(inscricaoDto.FuncaoDreCodigo);
+            inscricaoInserida.FuncaoUeCodigo.ShouldBe(inscricaoDto.FuncaoUeCodigo);
+            inscricaoInserida.FuncaoCodigo.ShouldBe(inscricaoDto.FuncaoCodigo);
             inscricaoInserida.FuncaoId.ShouldNotBeNull();
             inscricaoInserida.FuncaoId.Value.ShouldBeGreaterThan(0);
             
@@ -150,9 +150,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var inscricaoDto = new InscricaoDTO
             {
                 PropostaTurmaId = proposta.Turmas.FirstOrDefault().Id,
-                CargoDreCodigo = 1,
-                CargoUeCodigo = 2,
-                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault(),
+                CargoDreCodigo = "1",
+                CargoUeCodigo = "2",
+                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
                 Email = usuario.Email,
             };
 
