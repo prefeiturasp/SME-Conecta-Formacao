@@ -20,5 +20,9 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public SituacaoInscricao Situacao { get; set; }
 
         public PropostaTurma PropostaTurma { get; set; }
+
+        public CargoFuncao Cargo { get; set; }
+
+        public CargoFuncao Funcao { get; set; }
     }
 }

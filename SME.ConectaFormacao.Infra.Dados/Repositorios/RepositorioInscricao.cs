@@ -60,6 +60,31 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteAsync(query, inscricao);
         }
 
+        public Task<string> ObterCargoFuncaoPorId(long id)
+        {
+            var query = @"
+                select
+	                case
+		                when i.cargo_id is not null
+		                and i.funcao_id is not null then concat(cfc.nome,
+		                '/',
+		                cff.nome)
+		                when i.cargo_id is not null then cfc.nome
+		                else ''
+	                end as cargo_funcao
+                from
+	                inscricao i
+                left join cargo_funcao cfc on
+	                cfc.id = i.cargo_id
+                left join cargo_funcao cff on
+	                cff.id = i.funcao_id
+                where
+	                i.id = @id
+                ";
+
+            return conexao.Obter().ExecuteScalarAsync<string>(query, new { id });
+        }
+
         public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorUsuarioId(long usuarioId, int numeroPagina, int numeroRegistros)
         {
             var query = @"
@@ -70,7 +95,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        pt.proposta_id,
                        p.nome_formacao,
                        p.data_realizacao_inicio,
-                       p.data_realizacao_fim 
+                       p.data_realizacao_fim,
+                       p.id as Id 
                 from inscricao i 
                 inner join proposta_turma pt on pt.id = i.proposta_turma_id 
                 inner join proposta p on p.id = pt.proposta_id 
