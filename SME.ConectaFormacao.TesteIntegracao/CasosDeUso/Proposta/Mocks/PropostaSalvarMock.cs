@@ -138,6 +138,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.DataRealizacaoFim, f => DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.AcaoInformativa, true);
             faker.RuleFor(x => x.CargaHorariaPresencial, DateTimeExtension.HorarioBrasilia().ToString("HH:mm"));
+            faker.RuleFor(x => x.IntegrarNoSGA, true);
 
             if (gerarFuncaoEspecificaOutros)
                 faker.RuleFor(x => x.FuncaoEspecificaOutros, f => f.Lorem.Sentence(3));

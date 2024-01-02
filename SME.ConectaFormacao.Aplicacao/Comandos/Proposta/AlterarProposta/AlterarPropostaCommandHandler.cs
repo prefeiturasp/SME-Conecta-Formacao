@@ -41,6 +41,8 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaDepois.ManterCriador(proposta);
             propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
             propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
+            
+            await _mediator.Send(new ValidarAreaPromotoraCommand(propostaDepois.AreaPromotoraId,propostaDepois.IntegrarNoSGA),cancellationToken);
 
             if (request.PropostaDTO.Situacao != SituacaoProposta.Rascunho)
             {

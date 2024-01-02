@@ -28,8 +28,19 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await _repositorioPropostaMovimentacao.Inserir(propostaMovimentacao);
 
-            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.FormacaoResumida.Parametros(request.PropostaId)), cancellationToken);
+            await RemoverCaches(request.PropostaId, cancellationToken);
+
             return true;
+        }
+
+        private async Task RemoverCaches(long propostaId, CancellationToken cancellationToken)
+        {
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.FormacaoResumida.Parametros(propostaId)), cancellationToken);
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.FormacaoDetalhada.Parametros(propostaId)), cancellationToken);
+
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Proposta.Parametros(propostaId)), cancellationToken);
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.PropostaPublicoAlvo.Parametros(propostaId)), cancellationToken);
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.PropostaFuncaoEspecifica.Parametros(propostaId)), cancellationToken);
         }
     }
 }

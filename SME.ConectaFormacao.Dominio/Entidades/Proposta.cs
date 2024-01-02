@@ -34,6 +34,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? DescricaoDaAtividade { get; set; }
         public string? AcaoFormativaTexto { get; set; }
         public string? AcaoFormativaLink { get; set; }
+        public bool? IntegrarNoSGA { get; set; }
 
         public AreaPromotora AreaPromotora { get; set; }
         public Arquivo ArquivoImagemDivulgacao { get; set; }

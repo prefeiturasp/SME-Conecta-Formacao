@@ -50,14 +50,23 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             PreencherAuditoriaAlteracao(inscricao);
 
-            var query = @"update proposta_turma_vaga set 
+            var query = @"update proposta_turma_vaga set
                             inscricao_id = null,
                             alterado_em = @AlteradoEm, 
                             alterado_por = @AlteradoPor, 
                             alterado_login = @AlteradoLogin
-                          where id = @id";
+                          where proposta_turma_id = @PropostaTurmaId
+                          and inscricao_id = @InscricaoId ";
 
-            return conexao.Obter().ExecuteAsync(query, inscricao);
+            return conexao.Obter().ExecuteAsync(query, 
+                new
+                {
+                    inscricao.AlteradoEm,
+                    inscricao.AlteradoPor,
+                    inscricao.AlteradoLogin,
+                    inscricao.PropostaTurmaId,
+                    InscricaoId = inscricao.Id,
+                });
         }
 
         public Task<string> ObterCargoFuncaoPorId(long id)
