@@ -103,8 +103,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (dres.PossuiElementos())
             {
-                if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreId.ToString().Equals(cargoDreCodigo)))
-                    || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreId.ToString().Equals(funcaoDreCodigo))))
+                if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(cargoDreCodigo)))
+                    || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(funcaoDreCodigo))))
                     throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
             }
         }
