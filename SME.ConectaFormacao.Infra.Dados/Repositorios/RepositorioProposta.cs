@@ -1415,7 +1415,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where proposta_turma_id = any(@propostaTurmaIds) and not excluido; 
                         
                         select 
-                            d.id,
+                            d.dre_id,
                             d.nome
                         from proposta_turma_dre ptd
                         join dre d on d.id = ptd.dre_id and not d.excluido
