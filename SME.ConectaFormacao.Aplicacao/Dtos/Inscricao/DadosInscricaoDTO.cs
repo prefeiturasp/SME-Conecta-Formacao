@@ -13,8 +13,8 @@
     {
         public long Codigo { get; set; }
         public string Descricao { get; set; }
-        public long DreCodigo { get; set; }
-        public long UeCodigo { get; set; }
+        public string DreCodigo { get; set; }
+        public string UeCodigo { get; set; }
         public List<DadosInscricaoCargoEol> Funcoes { get; set; } = new();
     }
 }

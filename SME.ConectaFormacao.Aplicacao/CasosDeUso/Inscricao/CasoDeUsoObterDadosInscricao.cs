@@ -42,8 +42,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 {
                     Codigo = cargoFuncaoEol.CdCargoBase.GetValueOrDefault(),
                     Descricao = cargoFuncaoEol.CargoBase,
-                    DreCodigo = cargoFuncaoEol.CdDreCargoBase.GetValueOrDefault(),
-                    UeCodigo = cargoFuncaoEol.CdUeCargoBase.GetValueOrDefault()
+                    DreCodigo = cargoFuncaoEol.CdDreCargoBase,
+                    UeCodigo = cargoFuncaoEol.CdUeCargoBase
                 };
 
                 if (cargoFuncaoEol.CdFuncaoAtividade.HasValue)
@@ -52,8 +52,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     {
                         Codigo = cargoFuncaoEol.CdFuncaoAtividade.GetValueOrDefault(),
                         Descricao = cargoFuncaoEol.FuncaoAtividade,
-                        DreCodigo = cargoFuncaoEol.CdDreFuncaoAtividade.GetValueOrDefault(),
-                        UeCodigo = cargoFuncaoEol.CdUeFuncaoAtividade.GetValueOrDefault()
+                        DreCodigo = cargoFuncaoEol.CdDreFuncaoAtividade,
+                        UeCodigo = cargoFuncaoEol.CdUeFuncaoAtividade
                     });
                 }
                 usuarioCargos.Add(item);
@@ -64,8 +64,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     {
                         Codigo = cargoFuncaoEol.CdCargoSobreposto.GetValueOrDefault(),
                         Descricao = cargoFuncaoEol.CargoSobreposto,
-                        DreCodigo = cargoFuncaoEol.CdDreCargoSobreposto.GetValueOrDefault(),
-                        UeCodigo = cargoFuncaoEol.CdUeCargoSobreposto.GetValueOrDefault()
+                        DreCodigo = cargoFuncaoEol.CdDreCargoSobreposto,
+                        UeCodigo = cargoFuncaoEol.CdUeCargoSobreposto
                     });
                 }
             }

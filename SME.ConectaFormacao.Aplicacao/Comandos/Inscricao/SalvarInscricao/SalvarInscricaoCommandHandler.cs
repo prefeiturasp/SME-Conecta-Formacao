@@ -93,8 +93,17 @@ namespace SME.ConectaFormacao.Aplicacao
             var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
             var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
 
-            if ((cargoId.HasValue && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId)) || (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId)))
-                throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+            if (cargosProposta.PossuiElementos())
+            {
+                if (cargoId.HasValue && cargosProposta.Any() && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO); 
+            }
+
+            if (funcaoAtividadeProposta.PossuiElementos())
+            { 
+                if (funcaoId.HasValue && funcaoAtividadeProposta.Any() && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+            }
         }
 
         private async Task ValidarDre(long propostaTurmaId, string cargoDreCodigo, string funcaoDreCodigo, CancellationToken cancellationToken)
