@@ -110,6 +110,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 inner join proposta_turma pt on pt.id = i.proposta_turma_id 
                 inner join proposta p on p.id = pt.proposta_id 
                 where not i.excluido 
+                    and not p.excluido 
 	                and i.usuario_id = @usuarioId
                 order by i.id
                 limit @numeroRegistros offset @registrosIgnorados";
@@ -126,7 +127,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<int> ObterTotalRegistrosPorUsuarioId(long usuarioId)
         {
-            var query = $"select count(1) from inscricao where usuario_id = @usuarioId and not excluido";
+            var query = @$"select count(1) 
+                           from inscricao i 
+                             join proposta_turma pt on pt.id = i.proposta_turma_id 
+                             join proposta p on p.id = pt.proposta_id 
+                           where not i.excluido 
+                                and not p.excluido 
+                                and usuario_id = @usuarioId ";
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { usuarioId });
         }
     }
