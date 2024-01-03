@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -27,7 +28,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true);
+                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true, situacao:SituacaoProposta.Publicada);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterFormacaoDetalhada>();
 

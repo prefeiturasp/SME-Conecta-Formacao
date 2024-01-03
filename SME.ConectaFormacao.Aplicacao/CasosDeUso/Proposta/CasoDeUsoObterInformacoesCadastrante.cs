@@ -25,6 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 AreaPromotoraEmails = areaPromotora.Email.Replace(";", ", "),
                 AreaPromotoraTelefones = string.Join(", ", areaPromotora.Telefones.Select(t => t.Telefone.Length > 10 ? t.Telefone.AplicarMascara(@"\(00\) 00000\-0000") : t.Telefone.AplicarMascara(@"\(00\) 0000\-0000"))),
                 AreaPromotoraTipo = areaPromotora.Tipo.Nome(),
+                AreaPromotoraTipoId = areaPromotora.Tipo
             };
 
             informacoesCadastrante.UsuarioLogadoNome = await mediator.Send(ObterNomeUsuarioLogadoQuery.Instancia());
