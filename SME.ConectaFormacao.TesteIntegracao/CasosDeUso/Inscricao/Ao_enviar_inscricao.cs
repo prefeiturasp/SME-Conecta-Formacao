@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var inscricao = new InscricaoDTO
             {
                 PropostaTurmaId = proposta.Turmas.FirstOrDefault().Id,
-                CargoId = proposta.PublicosAlvo.FirstOrDefault().CargoFuncaoId,
+                // CargoId = proposta.PublicosAlvo.FirstOrDefault().CargoFuncaoId,
                 Email = usuario.Email,
             };
 
@@ -85,7 +85,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var inscricao = new InscricaoDTO
             {
                 PropostaTurmaId = proposta.Turmas.FirstOrDefault().Id,
-                CargoId = proposta.PublicosAlvo.FirstOrDefault().CargoFuncaoId,
+                // CargoId = proposta.PublicosAlvo.FirstOrDefault().CargoFuncaoId,
                 Email = usuario.Email,
             };
 
