@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public string Email { get; set; }
         public long? ArquivoId { get; set; }
 
-        public long? CargoCodigo { get; set; }
+        public string CargoCodigo { get; set; }
         public string? CargoDreCodigo { get; set; }
         public string? CargoUeCodigo { get; set; }
 
