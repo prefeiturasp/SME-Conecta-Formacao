@@ -34,14 +34,14 @@ namespace SME.ConectaFormacao.Aplicacao
             inscricao.UsuarioId = usuarioLogado.Id;
             inscricao.Situacao = SituacaoInscricao.EmAnalise;
 
-            await MapearCargoFuncao(cancellationToken, inscricao);
+            var cargosFuncoesMapeados = await MapearCargoFuncao(cancellationToken, inscricao);
 
             var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
                                 throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
 
             await ValidarExisteInscricaoNaProposta(propostaTurma.PropostaId, inscricao.UsuarioId);
 
-            await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
+            await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao,cargosFuncoesMapeados, cancellationToken);
 
             await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
 
@@ -53,16 +53,14 @@ namespace SME.ConectaFormacao.Aplicacao
             return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao);
         }
 
-        private async Task MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
+        private async Task<IEnumerable<CargoFuncao>>  MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
         {
             var codigosFuncoesEol = inscricao.FuncaoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.FuncaoCodigo) } : Enumerable.Empty<long>();
             var codigosCargosEol = inscricao.CargoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.CargoCodigo) } : Enumerable.Empty<long>();
 
             var cargosFuncoes = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol), cancellationToken);
 
-            inscricao.CargoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Cargo)?.Id;
-
-            inscricao.FuncaoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
+            return cargosFuncoes;
         }
 
         private async Task ValidarEmail(string login, string emailUsuario, string novoEmail, CancellationToken cancellationToken)
@@ -88,21 +86,32 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.USUARIO_JA_INSCRITO_NA_PROPOSTA);
         }
 
-        private async Task ValidarCargoFuncao(long propostaId, long? cargoId, long? funcaoId, CancellationToken cancellationToken)
+        private async Task ValidarCargoFuncao(long propostaId, Inscricao inscricao, IEnumerable<CargoFuncao> cargosFuncoesMapeados, CancellationToken cancellationToken)
         {
             var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
             var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
 
             if (cargosProposta.PossuiElementos())
             {
-                if (cargoId.HasValue && cargosProposta.Any() && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO); 
+                var cargo = cargosFuncoesMapeados
+                    .Where(f => f.Tipo == CargoFuncaoTipo.Cargo)
+                    .FirstOrDefault(f => cargosProposta.Any(a => a.CargoFuncaoId == f.Id));
+
+                inscricao.CargoId = cargo.NaoEhNulo() 
+                    ? cargo.Id 
+                    : throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO); 
+                
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
             { 
-                if (funcaoId.HasValue && funcaoAtividadeProposta.Any() && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                var funcao = cargosFuncoesMapeados
+                    .Where(f => f.Tipo == CargoFuncaoTipo.Funcao)
+                    .FirstOrDefault(f => cargosProposta.Any(a => a.CargoFuncaoId == f.Id));
+
+                inscricao.FuncaoId = funcao.NaoEhNulo() 
+                    ? funcao.Id 
+                    : throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO); 
             }
         }
 
