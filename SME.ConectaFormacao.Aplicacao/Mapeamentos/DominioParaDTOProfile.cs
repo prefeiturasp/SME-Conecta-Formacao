@@ -202,6 +202,15 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => $"{o.PropostaTurma.Proposta.DataRealizacaoInicio.Value:dd/MM/yyyy} até {o.PropostaTurma.Proposta.DataRealizacaoFim.Value:dd/MM/yyyy}"))
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()))
                 .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao == Dominio.Enumerados.SituacaoInscricao.Confirmada && o.PropostaTurma.Proposta.DataRealizacaoInicio.Value > DateTimeExtension.HorarioBrasilia()));
+
+            CreateMap<Inscricao, DadosListagemInscricaoDTO>()
+                .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
+                .ForMember(dest => dest.NomeCursista, opt => opt.MapFrom(o => o.Usuario.Nome))
+                .ForMember(dest => dest.RegistroFuncional, opt => opt.MapFrom(o => o.Usuario.Login))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Usuario.Cpf))
+                .ForMember(dest => dest.CargoFuncao, opt => opt.MapFrom(o => o.Funcao.Nome))
+                .ForMember(dest => dest.SituacaoCodigo, opt => opt.MapFrom(o => o.Situacao))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()));
         }
     }
 }

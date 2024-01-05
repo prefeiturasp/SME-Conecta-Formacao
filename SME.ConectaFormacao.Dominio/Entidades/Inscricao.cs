@@ -24,5 +24,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public CargoFuncao Cargo { get; set; }
 
         public CargoFuncao Funcao { get; set; }
+        public Usuario Usuario { get; set; }
     }
 }
