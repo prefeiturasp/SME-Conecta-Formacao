@@ -5,6 +5,8 @@ using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
@@ -107,6 +109,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             // assert 
 
             retorno.ShouldNotBeEmpty();
+        }
+        [Fact(DisplayName = "Inscrição - Não Deve obter inscrição Informando Id que não existe")]
+        public async Task Nao_Deve_ober_dados_informando_id_que_nao_existe()
+        {
+            // arrange
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDTO();
+
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(InscricaoId, dtoFiltro));
+
+            // assert 
+            excecao.ShouldNotBeNull();
+            excecao.Mensagens.Contains(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA).ShouldBeTrue();
         }
         private async Task DadosBasico()
         {
