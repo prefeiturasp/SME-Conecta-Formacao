@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             {
                 var item = new DadosInscricaoCargoEol
                 {
-                    Codigo = cargoFuncaoEol.CdCargoBase.GetValueOrDefault(),
+                    Codigo = cargoFuncaoEol.CdCargoBase.ToString(),
                     Descricao = cargoFuncaoEol.CargoBase,
                     DreCodigo = cargoFuncaoEol.CdDreCargoBase,
                     UeCodigo = cargoFuncaoEol.CdUeCargoBase
@@ -50,7 +50,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 {
                     item.Funcoes.Add(new DadosInscricaoCargoEol
                     {
-                        Codigo = cargoFuncaoEol.CdFuncaoAtividade.GetValueOrDefault(),
+                        Codigo = cargoFuncaoEol.CdFuncaoAtividade.ToString(),
                         Descricao = cargoFuncaoEol.FuncaoAtividade,
                         DreCodigo = cargoFuncaoEol.CdDreFuncaoAtividade,
                         UeCodigo = cargoFuncaoEol.CdUeFuncaoAtividade
@@ -62,7 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 {
                     usuarioCargos.Add(new DadosInscricaoCargoEol
                     {
-                        Codigo = cargoFuncaoEol.CdCargoSobreposto.GetValueOrDefault(),
+                        Codigo = cargoFuncaoEol.CdCargoSobreposto.ToString(),
                         Descricao = cargoFuncaoEol.CargoSobreposto,
                         DreCodigo = cargoFuncaoEol.CdDreCargoSobreposto,
                         UeCodigo = cargoFuncaoEol.CdUeCargoSobreposto

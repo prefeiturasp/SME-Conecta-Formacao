@@ -54,7 +54,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var inscricao = new InscricaoDTO
             {
                 PropostaTurmaId = proposta.Turmas.FirstOrDefault().Id,
-                // CargoId = proposta.PublicosAlvo.FirstOrDefault().CargoFuncaoId,
+                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
+                CargoDreCodigo = proposta.Turmas.FirstOrDefault().Dres.FirstOrDefault().Dre.Codigo,
+                CargoUeCodigo = "094765",
                 Email = usuario.Email,
             };
 
@@ -62,6 +64,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 
             // act
             await casoDeUso.Executar(inscricao);
+            var inscricaoInserida = (ObterTodos<Dominio.Entidades.Inscricao>()).FirstOrDefault();
+            inscricaoInserida.CargoCodigo.ShouldBe(inscricao.CargoCodigo);
+            inscricaoInserida.CargoDreCodigo.ShouldBe(inscricao.CargoDreCodigo);
+            inscricaoInserida.CargoUeCodigo.ShouldBe(inscricao.CargoUeCodigo);
         }
 
         [Fact(DisplayName = "Inscrição - Deve retornar exceção vagas indisponivel")]
@@ -85,7 +91,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var inscricao = new InscricaoDTO
             {
                 PropostaTurmaId = proposta.Turmas.FirstOrDefault().Id,
-                // CargoId = proposta.PublicosAlvo.FirstOrDefault().CargoFuncaoId,
+                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
+                CargoDreCodigo = string.Empty,
+                CargoUeCodigo = string.Empty,
                 Email = usuario.Email,
             };
 

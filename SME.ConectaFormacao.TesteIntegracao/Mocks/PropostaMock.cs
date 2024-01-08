@@ -188,6 +188,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
                 var faker = new Faker<PropostaTurmaDre>();
                 faker.RuleFor(x => x.PropostaTurmaId, propostaTurmaId);
                 faker.RuleFor(x => x.DreId, dre.Id);
+                faker.RuleFor(x => x.Dre, dre);
                 faker.RuleFor(x => x.Excluido, false);
                 AuditoriaFaker(faker);
 

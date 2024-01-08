@@ -11,7 +11,7 @@
 
     public class DadosInscricaoCargoEol
     {
-        public long Codigo { get; set; }
+        public string Codigo { get; set; }
         public string Descricao { get; set; }
         public string DreCodigo { get; set; }
         public string UeCodigo { get; set; }
