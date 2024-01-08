@@ -93,25 +93,37 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (cargosProposta.PossuiElementos())
             {
-                var cargo = cargosFuncoesMapeados
-                    .Where(f => f.Tipo == CargoFuncaoTipo.Cargo)
-                    .FirstOrDefault(f => cargosProposta.Any(a => a.CargoFuncaoId == f.Id));
+                var temCargoNaProposta = false;
+                foreach (var cargo in cargosFuncoesMapeados.Where(f => f.Tipo == CargoFuncaoTipo.Cargo))
+                {
+                    if (cargosProposta.Any(a => a.CargoFuncaoId == cargo.Id))
+                    {
+                        inscricao.CargoId = cargo.Id;
+                        temCargoNaProposta = true;
+                        break;
+                    }
+                }
 
-                inscricao.CargoId = cargo.NaoEhNulo() 
-                    ? cargo.Id 
-                    : throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO); 
-                
+                if (!temCargoNaProposta)
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
             { 
-                var funcao = cargosFuncoesMapeados
-                    .Where(f => f.Tipo == CargoFuncaoTipo.Funcao)
-                    .FirstOrDefault(f => cargosProposta.Any(a => a.CargoFuncaoId == f.Id));
+                var temFuncaoAtividadeNaProposta = false;
+                
+                foreach (var funcaoAtividade in cargosFuncoesMapeados.Where(f => f.Tipo == CargoFuncaoTipo.Funcao))
+                {
+                    if (funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoAtividade.Id))
+                    {
+                        inscricao.FuncaoId = funcaoAtividade.Id;
+                        temFuncaoAtividadeNaProposta = true;
+                        break;
+                    }
+                }
 
-                inscricao.FuncaoId = funcao.NaoEhNulo() 
-                    ? funcao.Id 
-                    : throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO); 
+                if (!temFuncaoAtividadeNaProposta)
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }
         }
 
