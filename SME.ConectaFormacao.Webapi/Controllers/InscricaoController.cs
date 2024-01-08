@@ -62,5 +62,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoSalvarInscricao.Executar(id));
         }
+
+        [HttpGet("{inscricaoId}")]
+        [ProducesResponseType(typeof(IEnumerable<DadosListagemInscricaoDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterInscricaoPorId([FromRoute] long inscricaoId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
+        [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
+        {
+            return Ok(await casoDeUsoObterInscricaoPorId.Executar(inscricaoId,filtroListagemInscricaoDTO));
+        }
+
     }
 }

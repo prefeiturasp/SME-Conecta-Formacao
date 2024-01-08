@@ -1,7 +1,9 @@
-﻿using Dapper;
+﻿using System.Text;
+using Dapper;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
@@ -135,6 +137,48 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                 and not p.excluido 
                                 and usuario_id = @usuarioId ";
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { usuarioId });
+        }
+
+        public  Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(long inscricaoId, string? login, string? cpf, string? nomeCursista)
+        {
+            var query = new StringBuilder(@"select 
+                                                i.id,
+												i.situacao,
+                                                i.proposta_turma_id,
+												pt.nome,
+                                                i.usuario_id ,
+												u.login,
+												u.cpf ,
+												u.nome,
+                                                i.cargo_id,
+												cf.nome
+											from
+												inscricao i
+											inner join proposta_turma pt on
+												i.proposta_turma_id = pt.id
+											inner join usuario u on
+												i.usuario_id = u.id
+											inner join cargo_funcao cf on
+												i.cargo_id = cf.id
+											where
+												not i.excluido
+												and not pt.excluido
+												and not u.excluido
+												and not cf.excluido
+												and i.id = @inscricaoId ");
+            if (!string.IsNullOrEmpty(login))
+	            query.AppendLine(" and u.login = @login ");
+            if (!string.IsNullOrEmpty(cpf))
+	            query.AppendLine("and u.cpf = @cpf ");
+            if (!string.IsNullOrEmpty(nomeCursista))
+	            query.AppendLine(" and u.nome = @nomeCursista ");
+            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Usuario, CargoFuncao, Inscricao>(query.ToString(), (inscricao, propostaTurma, usuario, cargoFuncao) =>
+            {
+	            inscricao.PropostaTurma = propostaTurma;
+	            inscricao.Funcao = cargoFuncao;
+	            inscricao.Usuario = usuario;
+	            return inscricao;
+            }, new {inscricaoId, login, cpf, nomeCursista}, splitOn: "id, proposta_turma_id, usuario_id,cargo_id");
         }
     }
 }

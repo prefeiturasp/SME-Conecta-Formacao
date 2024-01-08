@@ -11,6 +11,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(dest => dest.Login, f => f.Random.Long(10000, 99999).ToString());
             faker.RuleFor(dest => dest.Nome, f => f.Person.FullName);
             faker.RuleFor(dest => dest.Email, f => f.Person.Email);
+            faker.RuleFor(dest => dest.Cpf, f => f.Random.Long(10000, 99999).ToString());
 
             AuditoriaFaker(faker);
 
