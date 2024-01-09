@@ -180,5 +180,35 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	            return inscricao;
             }, new {inscricaoId, login, cpf, nomeCursista}, splitOn: "id, proposta_turma_id, usuario_id,cargo_id");
         }
+
+        public Task<IEnumerable<PropostaTurma>> ObterDadosPaginadosComFiltros(long usuarioId, long? codigoDaFormacao,
+	        string? nomeFormacao,int numeroPagina, int numeroRegistros)
+        {
+	        var query = new StringBuilder(@"select 
+               		p.id,
+               		p.nome_formacao,
+               		pt.proposta_id
+               from proposta p
+               inner join proposta_turma pt on p.id = pt.proposta_id
+               inner join inscricao i on i.proposta_turma_id = pt.id
+               where not p.excluido and not pt.excluido  
+               and i.usuario_id = @usuarioId ");
+
+	        if (codigoDaFormacao != null)
+		        query.AppendLine(" and pt.proposta_id = @codigoDaFormacao ");
+	        if (!string.IsNullOrEmpty(nomeFormacao))
+		        query.AppendLine(" and p.nome_formacao = @nomeFormacao ");
+
+	        query.AppendLine(@" group by p.id,pt.proposta_id, p.nome_formacao  
+									limit @numeroRegistros offset @registrosIgnorados
+								");
+	        
+	        var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+	        return conexao.Obter().QueryAsync<PropostaTurma, Proposta,PropostaTurma>(query.ToString(), (propostaTurma, proposta) =>
+	        {
+		        propostaTurma.Proposta = proposta;
+		        return propostaTurma;
+	        }, new { usuarioId, numeroRegistros, registrosIgnorados }, splitOn: "id,proposta_id");
+        }
     }
 }
