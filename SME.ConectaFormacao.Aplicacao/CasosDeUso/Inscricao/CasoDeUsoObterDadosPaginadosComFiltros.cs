@@ -11,10 +11,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
         }
 
-        public async Task<IEnumerable<DadosListagemFormacaoComTurma>> Executar(long? codigoDaFormacao, string? nomeFormacao)
+        public async Task<IEnumerable<DadosListagemFormacaoComTurma>> Executar(FiltroListagemInscricaoComTurmaDTO filtro)
         {
             var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
-            return await mediator.Send(new ObterDadosPaginadosComFiltrosQuery(usuarioLogado.Id,NumeroPagina, NumeroRegistros,codigoDaFormacao,nomeFormacao));
+            return await mediator.Send(new ObterDadosPaginadosComFiltrosQuery(usuarioLogado.Id,NumeroPagina, NumeroRegistros,filtro.CodigoFormacao,filtro.NomeFormacao));
         }
     }
 }
