@@ -203,7 +203,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 								");
 
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
-            var parametros = new {usuarioId, numeroRegistros, registrosIgnorados};
+            var parametros = new {usuarioId,nomeFormacao,codigoDaFormacao, numeroRegistros, registrosIgnorados};
             return conexao.Obter().QueryAsync<Proposta>(query.ToString(),parametros);
         }
         
