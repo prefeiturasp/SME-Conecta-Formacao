@@ -165,7 +165,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												and not pt.excluido
 												and not u.excluido
 												and not cf.excluido
-												and i.id = @inscricaoId ");
+												and pt.proposta_id = @inscricaoId ");
             if (!string.IsNullOrEmpty(login))
                 query.AppendLine(" and u.login = @login ");
             if (!string.IsNullOrEmpty(cpf))
