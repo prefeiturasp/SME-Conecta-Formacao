@@ -1,10 +1,11 @@
 using FluentValidation;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterDadosPaginadosComFiltrosQuery :IRequest<IEnumerable<DadosListagemFormacaoComTurma>>
+    public class ObterDadosPaginadosComFiltrosQuery :IRequest<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>>
     {
         public ObterDadosPaginadosComFiltrosQuery(long usuarioId, int numeroPagina, int numeroRegistros, long? codigoFormacao, string? nomeFormacao)
         {

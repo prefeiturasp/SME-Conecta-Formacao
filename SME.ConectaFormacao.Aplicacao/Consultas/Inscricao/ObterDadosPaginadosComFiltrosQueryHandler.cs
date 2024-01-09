@@ -1,11 +1,13 @@
 using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterDadosPaginadosComFiltrosQueryHandler: IRequestHandler<ObterDadosPaginadosComFiltrosQuery,IEnumerable<DadosListagemFormacaoComTurma>>
+    public class ObterDadosPaginadosComFiltrosQueryHandler : IRequestHandler<ObterDadosPaginadosComFiltrosQuery, PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>>
     {
         private readonly IRepositorioInscricao _repositorioInscricao;
 
@@ -17,14 +19,38 @@ namespace SME.ConectaFormacao.Aplicacao
         }
 
         private readonly IMapper _mapper;
-        public async Task<IEnumerable<DadosListagemFormacaoComTurma>> Handle(ObterDadosPaginadosComFiltrosQuery request, CancellationToken cancellationToken)
+
+        public async Task<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>> Handle(ObterDadosPaginadosComFiltrosQuery request, CancellationToken cancellationToken)
         {
             var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.UsuarioId,
                 request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros);
-
-            var codigosFormacao = propostasTurmas.Select(x => x.PropostaId).ToArray();
+            var totalRegistrosFiltro = propostasTurmas.Count();
+            var mapeamentoDto = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
+            var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
+            var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
+            var retornoComTurmas = ObterTurmas(turmas,mapeamentoDto);
             
-            return new List<DadosListagemFormacaoComTurma>();
+            return new PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas, totalRegistrosFiltro, request.NumeroRegistros);
+        }
+
+        private IEnumerable<DadosListagemFormacaoComTurmaDTO> ObterTurmas(IEnumerable<Inscricao> inscricoes,IEnumerable<DadosListagemFormacaoComTurmaDTO> propostas)
+        {
+
+            var retorno = propostas;
+            foreach (var proposta in propostas)
+            {
+                var inscricao = inscricoes.Where(x => x.PropostaTurma.PropostaId == proposta.Id);
+                var turmas = inscricao.Select(i => new DadosListagemFormacaoTurma
+                {
+                    NomeTurma = i.PropostaTurma.Nome,
+                    QuantidadeVagas = i.PropostaTurma.Proposta.QuantidadeVagasTurma,
+                    QuantidadeInscricoes = inscricao.Where(x => x.PropostaTurma.Nome == i.PropostaTurma.Nome).Select(insc => insc.Id).Count(),
+                    Data = $"{i.PropostaTurma.Proposta.DataRealizacaoInicio.Value:dd/MM/yyyy} até {i.PropostaTurma.Proposta.DataRealizacaoFim.Value:dd/MM/yyyy}"
+                }).DistinctBy(x => x.NomeTurma);
+                retorno.FirstOrDefault(x => x.Id == proposta.Id).Turmas = turmas;
+            }
+
+            return retorno;
         }
     }
 }

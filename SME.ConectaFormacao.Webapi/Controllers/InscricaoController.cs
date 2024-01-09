@@ -74,7 +74,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("formacao-turmas")]
-        [ProducesResponseType(typeof(IEnumerable<DadosListagemInscricaoDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterFormacaoComTurmaPorFiltros([FromQuery] FiltroListagemInscricaoComTurmaDTO filtro,[FromServices]ICasoDeUsoObterDadosPaginadosComFiltros useCase)

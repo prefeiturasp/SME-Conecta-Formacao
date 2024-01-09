@@ -211,6 +211,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.CargoFuncao, opt => opt.MapFrom(o => o.Funcao.Nome))
                 .ForMember(dest => dest.SituacaoCodigo, opt => opt.MapFrom(o => o.Situacao))
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()));
+            CreateMap<Proposta, DadosListagemFormacaoComTurmaDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(o => o.Id))
+                .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.NomeFormacao))
+                .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
         }
     }
 }
