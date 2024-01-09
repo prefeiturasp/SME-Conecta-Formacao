@@ -12,5 +12,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorUsuarioId(long usuarioId, int numeroPagina, int numeroRegistros);
         Task<int> ObterTotalRegistrosPorUsuarioId(long usuarioId);
         Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(long inscricaoId,string? login,string? cpf,string? nomeCursista);
+
+        Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long usuarioId, long? codigoDaFormacao,
+            string? nomeFormacao, int numeroPagina, int numeroRegistros);
+        Task<IEnumerable<Inscricao>> DadosListagemFormacaoComTurma(long[] propostaIds);
     }
 }

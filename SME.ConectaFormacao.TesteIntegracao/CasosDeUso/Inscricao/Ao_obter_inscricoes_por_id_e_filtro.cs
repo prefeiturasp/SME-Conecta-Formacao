@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
@@ -124,6 +125,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             excecao.ShouldNotBeNull();
             excecao.Mensagens.Contains(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA).ShouldBeTrue();
         }
+      
         private async Task DadosBasico()
         {
             var usuario = UsuarioMock.GerarUsuario();
