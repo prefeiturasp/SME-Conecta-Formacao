@@ -152,6 +152,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												u.cpf ,
 												u.nome,
                                                 i.cargo_id,
+                                                i.funcao_id,
 												cf.nome
 											from
 												inscricao i
@@ -160,7 +161,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 											inner join usuario u on
 												i.usuario_id = u.id
 											inner join cargo_funcao cf on
-												i.cargo_id = cf.id
+												coalesce(i.cargo_id,i.funcao_id) = cf.id
 											where
 												not i.excluido
 												and not pt.excluido
