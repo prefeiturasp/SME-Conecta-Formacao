@@ -44,7 +44,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 
             // assert 
 
-            retorno.ShouldNotBeEmpty();
+            retorno.Items.ShouldNotBeEmpty();
         }
         [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id e CPF")]
         public async Task Deve_ober_dados_somente_com_id_cpf()
@@ -60,7 +60,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 
             // assert 
 
-            retorno.ShouldNotBeEmpty();
+            retorno.Items.ShouldNotBeEmpty();
         }
 
         [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id e RF")]
@@ -77,7 +77,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 
             // assert 
 
-            retorno.ShouldNotBeEmpty();
+            retorno.Items.ShouldNotBeEmpty();
         }
         [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id e Nome")]
         public async Task Deve_ober_dados_somente_com_id_nome()
@@ -93,7 +93,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 
             // assert 
 
-            retorno.ShouldNotBeEmpty();
+            retorno.Items.ShouldNotBeEmpty();
         }
         [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id e Todos Parametros")]
         public async Task Deve_ober_dados_somente_com_id_todos_parametros()
@@ -109,7 +109,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 
             // assert 
 
-            retorno.ShouldNotBeEmpty();
+            retorno.Items.ShouldNotBeEmpty();
         }
         [Fact(DisplayName = "Inscrição - Não Deve obter inscrição Informando Id que não existe")]
         public async Task Nao_Deve_ober_dados_informando_id_que_nao_existe()

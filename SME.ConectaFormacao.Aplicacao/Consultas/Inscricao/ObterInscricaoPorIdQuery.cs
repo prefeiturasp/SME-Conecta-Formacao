@@ -5,16 +5,20 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterInscricaoPorIdQuery : IRequest<IEnumerable<DadosListagemInscricaoDTO>>
+    public class ObterInscricaoPorIdQuery : IRequest<PaginacaoResultadoDTO<DadosListagemInscricaoDTO>>
     {
-        public ObterInscricaoPorIdQuery(long inscricaoId, FiltroListagemInscricaoDTO filtroListagemInscricaoDto)
+        public ObterInscricaoPorIdQuery(long inscricaoId, FiltroListagemInscricaoDTO filtroListagemInscricaoDto, int numeroPagina, int numeroRegistros)
         {
             InscricaoId = inscricaoId;
             filtros = filtroListagemInscricaoDto;
+            NumeroPagina = numeroPagina;
+            NumeroRegistros = numeroRegistros;
         }
 
         public long InscricaoId { get; set; }
         public FiltroListagemInscricaoDTO filtros { get; set; }
+        public int NumeroPagina { get; set; }
+        public int NumeroRegistros { get; set; }
     }
 
     class ObterInscricaoPorIdQueryValidator : AbstractValidator<ObterInscricaoPorIdQuery>
