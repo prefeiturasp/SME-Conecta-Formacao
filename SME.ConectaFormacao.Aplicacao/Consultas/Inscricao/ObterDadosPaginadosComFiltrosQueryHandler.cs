@@ -45,9 +45,9 @@ namespace SME.ConectaFormacao.Aplicacao
                     NomeTurma = i.PropostaTurma.Nome,
                     QuantidadeVagas = i.PropostaTurma.Proposta.QuantidadeVagasTurma,
                     QuantidadeInscricoes = inscricao.Where(x => x.PropostaTurma.Nome == i.PropostaTurma.Nome).Select(insc => insc.Id).Count(),
-                    Data = $"{i.PropostaTurma.Proposta.DataRealizacaoInicio.Value:dd/MM/yyyy} até {i.PropostaTurma.Proposta.DataRealizacaoFim.Value:dd/MM/yyyy}"
+                    Data = $"{i.PropostaTurma.Proposta?.DataRealizacaoInicio!.Value:dd/MM/yyyy} até {i.PropostaTurma.Proposta?.DataRealizacaoFim!.Value:dd/MM/yyyy}"
                 }).DistinctBy(x => x.NomeTurma);
-                retorno.FirstOrDefault(x => x.Id == proposta.Id).Turmas = turmas;
+                retorno.FirstOrDefault(x => x.Id == proposta.Id)!.Turmas = turmas;
             }
 
             return retorno;
