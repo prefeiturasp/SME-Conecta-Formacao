@@ -198,7 +198,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (codigoDaFormacao != null)
                 query.AppendLine(" and pt.proposta_id = @codigoDaFormacao ");
             if (!string.IsNullOrEmpty(nomeFormacao))
-                query.AppendLine(@$" and p.nome_formacao like '%{nomeFormacao}%' ");
+                query.AppendLine(@$" and lower(p.nome_formacao) like '%{nomeFormacao.ToLower()}%' ");
 
             query.AppendLine(@" group by p.id,pt.proposta_id,p.nome_formacao  
 									limit @numeroRegistros offset @registrosIgnorados
