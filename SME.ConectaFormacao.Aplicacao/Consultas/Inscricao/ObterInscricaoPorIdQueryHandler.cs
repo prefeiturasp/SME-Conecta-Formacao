@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<PaginacaoResultadoDTO<DadosListagemInscricaoDTO>> Handle(ObterInscricaoPorIdQuery request, CancellationToken cancellationToken)
         {
-            var inscricao = await _repositorioInscricao.ObterInscricaoPorIdComFiltros(request.InscricaoId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista,request.NumeroPagina,request.NumeroRegistros);
+            var inscricao = await _repositorioInscricao.ObterInscricaoPorIdComFiltros(request.InscricaoId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista,request.filtros.NomeTurma,request.NumeroPagina,request.NumeroRegistros);
             var mapeamento = _mapper.Map<IEnumerable<DadosListagemInscricaoDTO>>(inscricao);
 
             return new PaginacaoResultadoDTO<DadosListagemInscricaoDTO>(mapeamento, mapeamento.Count(), request.NumeroRegistros);

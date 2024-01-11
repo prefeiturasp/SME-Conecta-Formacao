@@ -139,7 +139,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query, new {usuarioId});
         }
 
-        public Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(long inscricaoId, string? login, string? cpf, string? nomeCursista, 
+        public Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(long inscricaoId, string? login, string? cpf, string? nomeCursista, string? nomeTurma,
             int numeroPagina, int numeroRegistros)
         {
             var query = new StringBuilder(@"select 
@@ -169,14 +169,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												and not cf.excluido
 												and pt.proposta_id = @inscricaoId ");
             if (!string.IsNullOrEmpty(login))
-                query.AppendLine(" and u.login = @login ");
+                query.AppendLine($" and u.login like '%{@login}%' ");
             if (!string.IsNullOrEmpty(cpf))
-                query.AppendLine("and u.cpf = @cpf ");
+                query.AppendLine($"and u.cpf like '%{@cpf}%' ");
             if (!string.IsNullOrEmpty(nomeCursista))
-                query.AppendLine(" and u.nome = @nomeCursista ");
+                query.AppendLine($" and lower(u.nome) like '%{@nomeCursista.ToLower()}%' ");
+            if (!string.IsNullOrEmpty(nomeTurma))
+                query.AppendLine($" and lower(pt.nome) like '%{nomeTurma.ToLower()}%' ");
             query.AppendLine(" limit @numeroRegistros offset @registrosIgnorados ");
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
-            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Usuario, CargoFuncao, Inscricao>(query.ToString(), (inscricao, propostaTurma, usuario, cargoFuncao) =>
+         return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Usuario, CargoFuncao, Inscricao>(query.ToString(), (inscricao, propostaTurma, usuario, cargoFuncao) =>
             {
                 inscricao.PropostaTurma = propostaTurma;
                 inscricao.Funcao = cargoFuncao;
