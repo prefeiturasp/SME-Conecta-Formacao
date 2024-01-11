@@ -22,12 +22,17 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>> Handle(ObterDadosPaginadosComFiltrosQuery request, CancellationToken cancellationToken)
         {
-            var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros);
-            var totalRegistrosFiltro = propostasTurmas.Count();
-            var mapeamentoDto = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
-            var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
-            var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
-            var retornoComTurmas = ObterTurmas(turmas,mapeamentoDto);
+            var retornoComTurmas = new List<DadosListagemFormacaoComTurmaDTO>();
+            var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.CodigoFormacao, request.NomeFormacao);
+            if (totalRegistrosFiltro > 0)
+            {
+                var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros);
+
+                var mapeamentoDto = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
+                var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
+                var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
+                retornoComTurmas.AddRange(ObterTurmas(turmas, mapeamentoDto)); 
+            }
             
             return new PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas.OrderByDescending(x => x.Id), totalRegistrosFiltro, request.NumeroRegistros);
         }

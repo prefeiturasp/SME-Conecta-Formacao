@@ -14,7 +14,6 @@ namespace SME.ConectaFormacao.Aplicacao
             NomeFormacao = nomeFormacao;
         }
 
-        public long UsuarioId { get; set;}
         public int NumeroPagina { get; set;}
         public int NumeroRegistros { get; set;}
         public long? CodigoFormacao { get; set; }
