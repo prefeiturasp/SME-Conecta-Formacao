@@ -221,12 +221,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												p.data_realizacao_inicio ,
 												p.data_realizacao_fim  
 											from
-												inscricao i
-											inner join proposta_turma pt on i.proposta_turma_id = pt.id
+												proposta_turma pt
+											left join inscricao i  on i.proposta_turma_id = pt.id
 											join proposta p on p.id = pt.proposta_id 
-											where
-												not i.excluido
-												and not pt.excluido
+											where not pt.excluido
 												and not p.excluido
 												and pt.proposta_id = any(@propostaIds);");
 
