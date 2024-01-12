@@ -42,10 +42,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var retorno = propostas;
             foreach (var proposta in propostas)
             {
-                if (proposta.Id == 347)
-                {
 
-                }
                 var inscricao = inscricoes.Where(x => x.PropostaId == proposta.Id);
                 var turmas = inscricao.Select(i => new DadosListagemFormacaoTurma
                 {
