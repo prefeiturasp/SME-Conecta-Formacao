@@ -106,7 +106,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             // assert
             excecao.Mensagens.Contains(MensagemNegocio.INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA).ShouldBeTrue();
         }
-        
+
         [Fact(DisplayName = "Inscrição - Deve permitir inscrição para código cargo eol com mais de um mapeamento DePara")]
         public async Task Deve_permitir_inscricao_para_codigo_cargo_eol_com_mais_de_um_mapeamento_de_para()
         {
@@ -123,7 +123,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var codigoCargoEolDuplicado = depara.LastOrDefault(s => s.CodigoCargoEol.NaoEhNulo());
             codigoCargoEolDuplicado.CodigoCargoEol = codigoCargoEolPrimeiro;
             await InserirNaBase(depara);
-            
+
             var vagas = PropostaMock.GerarTurmaVagas(proposta.Turmas, proposta.QuantidadeVagasTurma.GetValueOrDefault());
             await InserirNaBase(vagas);
 
@@ -149,13 +149,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             inscricaoInserida.CargoDreCodigo.ShouldBe(inscricao.CargoDreCodigo);
             inscricaoInserida.CargoUeCodigo.ShouldBe(inscricao.CargoUeCodigo);
             inscricaoInserida.CargoId.ShouldBe(codigoCargoEolDuplicado.CargoFuncaoId);
-            
+
             inscricaoInserida.FuncaoCodigo.ShouldBeNull();
             inscricaoInserida.FuncaoDreCodigo.ShouldBeNull();
             inscricaoInserida.FuncaoUeCodigo.ShouldBeNull();
             inscricaoInserida.FuncaoId.ShouldBeNull();
         }
-        
+
         [Fact(DisplayName = "Inscrição - Deve permitir inscrição para código função eol com mais de um mapeamento DePara")]
         public async Task Deve_permitir_inscricao_para_codigo_funcao_eol_com_mais_de_um_mapeamento_de_para()
         {
@@ -172,7 +172,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var codigoFuncaoEolDuplicado = depara.LastOrDefault(s => s.CodigoFuncaoEol.NaoEhNulo());
             codigoFuncaoEolDuplicado.CodigoFuncaoEol = codigoFuncaoEolPrimeiro;
             await InserirNaBase(depara);
-            
+
             var vagas = PropostaMock.GerarTurmaVagas(proposta.Turmas, proposta.QuantidadeVagasTurma.GetValueOrDefault());
             await InserirNaBase(vagas);
 
@@ -194,12 +194,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             // act
             await casoDeUso.Executar(inscricao);
             var inscricaoInserida = (ObterTodos<Dominio.Entidades.Inscricao>()).FirstOrDefault();
-            
+
             inscricaoInserida.FuncaoCodigo.ShouldBe(inscricao.FuncaoCodigo);
             inscricaoInserida.FuncaoDreCodigo.ShouldBe(inscricao.FuncaoDreCodigo);
             inscricaoInserida.FuncaoUeCodigo.ShouldBe(inscricao.FuncaoUeCodigo);
             inscricaoInserida.FuncaoId.ShouldBe(codigoFuncaoEolDuplicado.CargoFuncaoId);
-            
+
             inscricaoInserida.CargoCodigo.ShouldBeNull();
             inscricaoInserida.CargoDreCodigo.ShouldBeNull();
             inscricaoInserida.CargoUeCodigo.ShouldBeNull();

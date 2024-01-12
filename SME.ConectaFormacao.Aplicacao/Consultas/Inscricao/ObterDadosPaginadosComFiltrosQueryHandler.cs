@@ -2,7 +2,7 @@ using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
-using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -31,24 +31,26 @@ namespace SME.ConectaFormacao.Aplicacao
                 var mapeamentoDto = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
                 var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
                 var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
-                retornoComTurmas.AddRange(ObterTurmas(turmas, mapeamentoDto)); 
+                retornoComTurmas.AddRange(ObterTurmas(turmas, mapeamentoDto));
             }
             return new PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas, totalRegistrosFiltro, request.NumeroRegistros);
         }
 
-        private IEnumerable<DadosListagemFormacaoComTurmaDTO> ObterTurmas(IEnumerable<Inscricao> inscricoes,IEnumerable<DadosListagemFormacaoComTurmaDTO> propostas)
+        private IEnumerable<DadosListagemFormacaoComTurmaDTO> ObterTurmas(IEnumerable<ListagemFormacaoComTurmaDTO>? inscricoes, IEnumerable<DadosListagemFormacaoComTurmaDTO> propostas)
         {
 
             var retorno = propostas;
             foreach (var proposta in propostas)
             {
-                var inscricao = inscricoes.Where(x => x.PropostaTurma.PropostaId == proposta.Id);
+
+                var inscricao = inscricoes.Where(x => x.PropostaId == proposta.Id);
                 var turmas = inscricao.Select(i => new DadosListagemFormacaoTurma
                 {
-                    NomeTurma = i.PropostaTurma.Nome,
-                    QuantidadeVagas = i.PropostaTurma.Proposta.QuantidadeVagasTurma,
-                    QuantidadeInscricoes = inscricao.Where(x => x.PropostaTurma.Nome == i.PropostaTurma.Nome && i.Id > 0).Count(),
-                    Data = $"{i.PropostaTurma.Proposta?.DataRealizacaoInicio!.Value:dd/MM/yyyy} até {i.PropostaTurma.Proposta?.DataRealizacaoFim!.Value:dd/MM/yyyy}"
+                    NomeTurma = i.NomeTurma,
+                    QuantidadeVagas = i.QuantidadeVagas,
+                    QuantidadeInscricoes = inscricao.Where(x => x.NomeTurma == i.NomeTurma && i.InscricaoId > 0).Count(),
+                    Data = inscricao.Where(x => x.NomeTurma == i.NomeTurma).Where(x => x.Datas != null).Any() ?
+                           string.Join(", ", inscricao.Where(x => x.NomeTurma == i.NomeTurma).Select(x => x.Datas)) : string.Empty
                 }).DistinctBy(x => x.NomeTurma);
                 retorno.FirstOrDefault(x => x.Id == proposta.Id)!.Turmas = turmas;
             }

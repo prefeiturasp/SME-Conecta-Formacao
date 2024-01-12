@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Dominio.Contexto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
-    public class CasoDeUsoObterDadosPaginadosComFiltros : CasoDeUsoAbstratoPaginado,ICasoDeUsoObterDadosPaginadosComFiltros
+    public class CasoDeUsoObterDadosPaginadosComFiltros : CasoDeUsoAbstratoPaginado, ICasoDeUsoObterDadosPaginadosComFiltros
     {
         public CasoDeUsoObterDadosPaginadosComFiltros(IMediator mediator, IContextoAplicacao contextoAplicacao) : base(mediator, contextoAplicacao)
         {
@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
         public async Task<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>> Executar(FiltroListagemInscricaoComTurmaDTO filtro)
         {
-            return await mediator.Send(new ObterDadosPaginadosComFiltrosQuery(NumeroPagina, NumeroRegistros,filtro.CodigoFormacao,filtro.NomeFormacao));
+            return await mediator.Send(new ObterDadosPaginadosComFiltrosQuery(NumeroPagina, NumeroRegistros, filtro.CodigoFormacao, filtro.NomeFormacao));
         }
     }
 }
