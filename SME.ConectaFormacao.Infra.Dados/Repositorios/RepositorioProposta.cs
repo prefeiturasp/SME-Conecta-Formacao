@@ -1796,5 +1796,69 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return encontros;
         }
+        
+        public Task<IEnumerable<Proposta>> ObterPropostaPorTipoInscricaoESituacao(TipoInscricao[] tiposInscricoes, SituacaoProposta situacao)
+        {
+            var query = @"select 
+                            id,
+                            formacao_homologada,
+                            tipo_inscricao
+                          from proposta
+                          where situacao = @situacao 
+                            and tipo_inscricao = any(@tiposInscricoes)";
+
+            return conexao.Obter().QueryAsync<Proposta>(query, new { situacao, tiposInscricoes });
+        }
+
+        public async Task<FormacaoResumida> ObterFormacaoResumidaPorPropostaId(long propostaId)
+        {
+            var query = @"
+            select pt.id,
+                   dre.dre_id as codigoDre
+            from proposta_turma pt
+              join proposta_turma_dre ptd on ptd.proposta_turma_id = pt.id 
+              join dre on dre.id = ptd.dre_id 
+            where not pt.excluido 
+              and not ptd.excluido 
+              and pt.proposta_id = @propostaId;
+              
+            select cargo_funcao_id
+            from proposta_publico_alvo    
+            where not excluido   
+                  and proposta_id = @propostaId;
+            
+            select cargo_funcao_id
+            from proposta_funcao_especifica 
+            where not excluido
+                  and proposta_id = @propostaId;
+            
+            select at.codigo_eol
+            from proposta_ano_turma pat
+              join ano_turma at on at.id = pat.ano_turma_id 
+            where not pat.excluido
+              and not at.excluido
+              and not at.todos
+              and proposta_id = @propostaId;
+            
+            select componente_curricular_id
+            from proposta_componente_curricular pcc
+              join componente_curricular cc on cc.id = pcc.componente_curricular_id
+            where  not cc.excluido 
+               and not cc.todos
+               and proposta_id = @propostaId; ";
+
+            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
+
+            var formacaoResumida = new FormacaoResumida
+            {
+                PropostasTurmas = queryMultiple.Read<PropostaTurmaResumida>(),
+                PublicosAlvos = queryMultiple.Read<long>(),
+                FuncoesEspecificas = queryMultiple.Read<long>(),
+                AnosTurmas = queryMultiple.Read<string>(),
+                ComponentesCurriculares = queryMultiple.Read<long>()
+            };
+
+            return formacaoResumida;
+        }
     }
 }
