@@ -16,12 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
         public async Task<PaginacaoResultadoDTO<DadosListagemInscricaoDTO>> Executar(long inscricaoId, FiltroListagemInscricaoDTO filtroListagemInscricaoDTO)
         {
-            var dadosInscricao = await mediator.Send(new ObterInscricaoPorIdQuery(inscricaoId, filtroListagemInscricaoDTO, NumeroPagina, NumeroRegistros));
-
-            if(!dadosInscricao.Items.Any())
-                throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA, System.Net.HttpStatusCode.NoContent);
-
-            return dadosInscricao;
+            return await mediator.Send(new ObterInscricaoPorIdQuery(inscricaoId, filtroListagemInscricaoDTO, NumeroPagina, NumeroRegistros));
         }
     }
 }
