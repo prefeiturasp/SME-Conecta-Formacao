@@ -4,6 +4,8 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
@@ -67,6 +69,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(IEnumerable<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long inscricaoId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
         [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
         {
@@ -77,6 +80,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterFormacaoComTurmaPorFiltros([FromQuery] FiltroListagemInscricaoComTurmaDTO filtro,[FromServices]ICasoDeUsoObterDadosPaginadosComFiltros useCase)
         {
             return Ok(await useCase.Executar(filtro));

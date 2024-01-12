@@ -33,8 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
                 retornoComTurmas.AddRange(ObterTurmas(turmas, mapeamentoDto)); 
             }
-            
-            return new PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas.OrderByDescending(x => x.Id), totalRegistrosFiltro, request.NumeroRegistros);
+            return new PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas, totalRegistrosFiltro, request.NumeroRegistros);
         }
 
         private IEnumerable<DadosListagemFormacaoComTurmaDTO> ObterTurmas(IEnumerable<Inscricao> inscricoes,IEnumerable<DadosListagemFormacaoComTurmaDTO> propostas)
