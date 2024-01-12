@@ -244,14 +244,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? codigoDaFormacao,
                 string? nomeFormacao)
         {
-            var query = new StringBuilder(@"select count(1) from (select pt.proposta_id as id,p.nome_formacao
+            var query = new StringBuilder(@" select count(1) from (select pt.proposta_id as id,p.nome_formacao
                                                from proposta_turma pt
                                                inner join proposta p on p.id = pt.proposta_id
-                                               inner join inscricao i on i.proposta_turma_id = pt.id");
+                                               inner join inscricao i on i.proposta_turma_id = pt.id  ");
             if (codigoDaFormacao != null)
                 query.AppendLine("  and pt.proposta_id = @codigoDaFormacao ");
             if (!string.IsNullOrEmpty(nomeFormacao))
-                query.AppendLine($"and lower(p.nome_formacao) like '%{nomeFormacao.ToLower()}%'");
+                query.AppendLine($" and lower(p.nome_formacao) like '%{nomeFormacao.ToLower()}%'  ");
             query.AppendLine("  where not p.excluido and not pt.excluido group by p.id,pt.proposta_id,p.nome_formacao )tb; ");
             return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { nomeFormacao, codigoDaFormacao });
         }
