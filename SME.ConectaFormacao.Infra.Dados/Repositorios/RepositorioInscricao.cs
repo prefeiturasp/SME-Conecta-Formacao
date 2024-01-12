@@ -220,26 +220,28 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? codigoDaFormacao,
             string? nomeFormacao, int numeroPagina, int numeroRegistros)
         {
-            var query = new StringBuilder(@"select 
+
+            var sql = new StringBuilder(@"  select * from(select 
                		pt.proposta_id as id,
                		p.nome_formacao
                from proposta_turma pt
                inner join proposta p on p.id = pt.proposta_id
                inner join inscricao i on i.proposta_turma_id = pt.id
-               where not p.excluido and not pt.excluido  ");
-
+               where not p.excluido and not pt.excluido ");
+            
             if (codigoDaFormacao != null)
-                query.AppendLine(" and pt.proposta_id = @codigoDaFormacao ");
+                sql.AppendLine(@" and pt.proposta_id = @codigoDaFormacao ");
             if (!string.IsNullOrEmpty(nomeFormacao))
-                query.AppendLine(@$" and lower(p.nome_formacao) like '%{nomeFormacao.ToLower()}%' ");
+                sql.AppendLine($" and lower(p.nome_formacao) like '%{nomeFormacao.ToLower()}%' ");
 
-            query.AppendLine(@" group by p.id,pt.proposta_id,p.nome_formacao  
-									limit @numeroRegistros offset @registrosIgnorados
-								");
+            sql.AppendLine(@"  group by pt.proposta_id,p.nome_formacao)insc 
+                                      order by id desc
+                                      limit @numeroRegistros offset @registrosIgnorados  ");
+
 
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
             var parametros = new { nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados };
-            return conexao.Obter().QueryAsync<Proposta>(query.ToString(), parametros);
+            return conexao.Obter().QueryAsync<Proposta>(sql.ToString(), parametros);
         }
         public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? codigoDaFormacao,
                 string? nomeFormacao)
