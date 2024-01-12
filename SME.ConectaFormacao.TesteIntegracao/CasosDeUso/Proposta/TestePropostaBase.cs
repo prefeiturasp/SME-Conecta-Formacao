@@ -43,7 +43,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             modalidades, anosTurmas, componentesCurriculares);
         }
 
-        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada, 
+        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada,
             FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, bool ehTipoInscricaoOptativa = false, bool vincularUltimoCargoAoPublicoAlvo = false,
             bool vincularUltimoFuncaoAoPublicoAlvo = false)
         {
@@ -68,10 +68,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(componentesCurriculares);
 
             if (vincularUltimoCargoAoPublicoAlvo)
-                cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() {cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Cargo)};
-            
+                cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() { cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Cargo) };
+
             if (vincularUltimoFuncaoAoPublicoAlvo)
-                cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() {cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Funcao)};
+                cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() { cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Funcao) };
 
             return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
                 modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada, ehTipoInscricaoOptativa);

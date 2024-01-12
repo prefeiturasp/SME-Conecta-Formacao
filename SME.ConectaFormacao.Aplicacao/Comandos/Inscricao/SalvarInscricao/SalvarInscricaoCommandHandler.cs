@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await ValidarExisteInscricaoNaProposta(propostaTurma.PropostaId, inscricao.UsuarioId);
 
-            await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao,cargosFuncoesMapeados, cancellationToken);
+            await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao, cargosFuncoesMapeados, cancellationToken);
 
             await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
 
@@ -53,7 +53,7 @@ namespace SME.ConectaFormacao.Aplicacao
             return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao);
         }
 
-        private async Task<IEnumerable<CargoFuncao>>  MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
+        private async Task<IEnumerable<CargoFuncao>> MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
         {
             var codigosFuncoesEol = inscricao.FuncaoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.FuncaoCodigo) } : Enumerable.Empty<long>();
             var codigosCargosEol = inscricao.CargoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.CargoCodigo) } : Enumerable.Empty<long>();
@@ -109,9 +109,9 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
-            { 
+            {
                 var temFuncaoAtividadeNaProposta = false;
-                
+
                 foreach (var funcaoAtividade in cargosFuncoesMapeados.Where(f => f.Tipo == CargoFuncaoTipo.Funcao))
                 {
                     if (funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoAtividade.Id))
