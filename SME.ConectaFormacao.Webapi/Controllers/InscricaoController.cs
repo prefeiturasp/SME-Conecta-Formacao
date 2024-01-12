@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long inscricaoId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
         [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
         {
-            return Ok(await casoDeUsoObterInscricaoPorId.Executar(inscricaoId,filtroListagemInscricaoDTO));
+            return Ok(await casoDeUsoObterInscricaoPorId.Executar(inscricaoId, filtroListagemInscricaoDTO));
         }
 
         [HttpGet("formacao-turmas")]
