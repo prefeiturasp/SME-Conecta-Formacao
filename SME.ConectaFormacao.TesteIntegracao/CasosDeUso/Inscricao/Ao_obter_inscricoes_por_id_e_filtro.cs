@@ -118,11 +118,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var dtoFiltro = new FiltroListagemInscricaoDTO();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(InscricaoId, dtoFiltro));
+            var excecao = await casoDeUso.Executar(InscricaoId, dtoFiltro);
 
             // assert 
-            excecao.ShouldNotBeNull();
-            excecao.Mensagens.Contains(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA).ShouldBeTrue();
+            excecao.Items.Count().ShouldBeEquivalentTo(0);
         }
 
         private async Task DadosBasico()
