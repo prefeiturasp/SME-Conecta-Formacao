@@ -6,6 +6,7 @@ public class UsuarioPerfisRetornoDTO
     public DateTime DataHoraExpiracao { get; set; }
     public string Token { get; set; }
     public string Email { get; set; }
+    public string Cpf { get; set; }
     public bool Autenticado { get; set; }
     public IList<PerfilUsuarioDTO> PerfilUsuario { get; set; }
 }
