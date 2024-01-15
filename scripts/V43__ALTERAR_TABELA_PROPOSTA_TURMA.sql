@@ -1,0 +1,1 @@
+ALTER TABLE public.proposta_turma ALTER COLUMN nome TYPE varchar(250) USING nome::varchar(250);
