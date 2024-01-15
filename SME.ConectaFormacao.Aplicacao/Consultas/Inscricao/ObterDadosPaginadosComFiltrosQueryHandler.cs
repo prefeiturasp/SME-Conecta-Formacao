@@ -48,7 +48,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     NomeTurma = i.NomeTurma,
                     QuantidadeVagas = i.QuantidadeVagas,
-                    QuantidadeInscricoes = inscricao.Where(x => x.NomeTurma == i.NomeTurma && i.InscricaoId > 0).Count(),
+                    QuantidadeInscricoes = i.TotalInscricoes,
                     Data = inscricao.Where(x => x.NomeTurma == i.NomeTurma).Where(x => x.Datas != null).Any() ?
                            string.Join(", ", inscricao.Where(x => x.NomeTurma == i.NomeTurma).Select(x => x.Datas)) : string.Empty
                 }).DistinctBy(x => x.NomeTurma);
