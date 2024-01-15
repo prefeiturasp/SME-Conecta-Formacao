@@ -274,7 +274,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												    	then TO_CHAR(ped.data_inicio,'dd/mm/yyyy')
 												    	else  TO_CHAR(ped.data_inicio,'dd/mm/yyyy')||' até '||TO_CHAR(ped.data_fim,'dd/mm/yyyy')
 												    end as Datas,
-													p.quantidade_vagas_turma QuantidadeVagas 
+													p.quantidade_vagas_turma QuantidadeVagas ,
+                                                    ped.data_inicio
 												from proposta p 
 												inner join proposta_encontro pe on p.id = pe.proposta_id 
 												inner join proposta_encontro_turma pet on pe.id = pet.proposta_encontro_id 
@@ -284,7 +285,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												where p.id = any(@propostaIds) 
 												group by pt.nome,pt.proposta_id,ped.data_fim,ped.data_inicio,p.quantidade_vagas_turma
 											     ) as consulta
-										        order by NomeTurma,Datas ");
+										        order by data_inicio ");
 
             return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>
                 (query.ToString(), new { propostaIds });
