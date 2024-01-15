@@ -265,24 +265,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds)
         {
-            var query = new StringBuilder(@"  select
-												i.id InscricaoId,
-											    pt.nome NomeTurma,
-											    pt.proposta_id PropostaId,
-											    case 
-											    	when ped.data_fim is null
-											    	then TO_CHAR(ped.data_inicio,'dd/mm/yyyy')
-											    	else  TO_CHAR(ped.data_inicio,'dd/mm/yyyy')||' até '||TO_CHAR(ped.data_fim,'dd/mm/yyyy')
-											    end as Datas,
-												p.quantidade_vagas_turma QuantidadeVagas 
-											from proposta p 
-											inner join proposta_encontro pe on p.id = pe.proposta_id 
-											inner join proposta_encontro_turma pet on pe.id = pet.proposta_encontro_id 
-											inner join proposta_turma pt on p.id = pt.proposta_id  and pt.id = pet.turma_id 
-											inner join proposta_encontro_data ped on pe.id = ped.proposta_encontro_id 
-											left join inscricao i  on i.proposta_turma_id = pt.id
-											where p.id = any(@propostaIds) 
-										    order by pt.id,pt.nome ");
+            var query = new StringBuilder(@" select * from(select  distinct 
+                                                	count(i.id) totalInscricoes,
+												    pt.nome NomeTurma,
+												    pt.proposta_id PropostaId,
+												    case 
+												    	when ped.data_fim is null
+												    	then TO_CHAR(ped.data_inicio,'dd/mm/yyyy')
+												    	else  TO_CHAR(ped.data_inicio,'dd/mm/yyyy')||' até '||TO_CHAR(ped.data_fim,'dd/mm/yyyy')
+												    end as Datas,
+													p.quantidade_vagas_turma QuantidadeVagas 
+												from proposta p 
+												inner join proposta_encontro pe on p.id = pe.proposta_id 
+												inner join proposta_encontro_turma pet on pe.id = pet.proposta_encontro_id 
+												inner join proposta_turma pt on p.id = pt.proposta_id  and pt.id = pet.turma_id 
+												inner join proposta_encontro_data ped on pe.id = ped.proposta_encontro_id 
+												left join inscricao i  on i.proposta_turma_id = pt.id
+												where p.id = any(@propostaIds) 
+												group by pt.nome,pt.proposta_id,ped.data_fim,ped.data_inicio,p.quantidade_vagas_turma
+											     ) as consulta
+										        order by NomeTurma,Datas ");
 
             return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>
                 (query.ToString(), new { propostaIds });
