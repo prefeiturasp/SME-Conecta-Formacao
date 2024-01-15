@@ -12,8 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
         public ServicoParaDTOProfile()
         {
             CreateMap<AcessosUsuarioAutenticacaoRetorno, UsuarioAutenticacaoRetornoDTO>();
-            CreateMap<AcessosPerfisUsuarioRetorno, UsuarioPerfisRetornoDTO>()
-                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(x => x.Cpf.AplicarMascara(@"000\.000\.000\-00")));
+            CreateMap<AcessosPerfisUsuarioRetorno, UsuarioPerfisRetornoDTO>();
             CreateMap<AcessosPerfilUsuario, PerfilUsuarioDTO>();
 
             CreateMap<AcessosDadosUsuario, DadosUsuarioDTO>()
