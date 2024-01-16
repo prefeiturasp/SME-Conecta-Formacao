@@ -10,14 +10,14 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarInscricaoCommandHandler : IRequestHandler<SalvarInscricaoCommand, long>
+    public class SalvarInscricaoAutomaticaCommandHandler : IRequestHandler<SalvarInscricaoAutomaticaCommand, long>
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly ITransacao _transacao;
 
-        public SalvarInscricaoCommandHandler(IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao, IRepositorioProposta repositorioProposta, ITransacao transacao)
+        public SalvarInscricaoAutomaticaCommandHandler(IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao, IRepositorioProposta repositorioProposta, ITransacao transacao)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -25,34 +25,26 @@ namespace SME.ConectaFormacao.Aplicacao
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
         }
 
-        public async Task<long> Handle(SalvarInscricaoCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(SalvarInscricaoAutomaticaCommand request, CancellationToken cancellationToken)
         {
-            var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia, cancellationToken) ??
-                throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+            var propostaId = request.InscricaoAutomaticaDTO.PropostaId;
+            var ehFormacaoHomologada = request.InscricaoAutomaticaDTO.EhFormacaoHomologada;
+            
+            var inscricao = _mapper.Map<Inscricao>(request.InscricaoAutomaticaDTO);
+            inscricao.Situacao = SituacaoInscricao.Confirmada;
 
-            var inscricao = _mapper.Map<Inscricao>(request.InscricaoDTO);
-            inscricao.UsuarioId = usuarioLogado.Id;
-            inscricao.Situacao = SituacaoInscricao.EmAnalise;
+            if (await ValidarExisteInscricaoNaProposta(propostaId, inscricao.UsuarioId))
+                return default;
 
             await MapearCargoFuncao(cancellationToken, inscricao);
-
-            var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
-                                throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
-
-            await ValidarExisteInscricaoNaProposta(propostaTurma.PropostaId, inscricao.UsuarioId);
-
-            await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
-
+            
+            await ValidarCargoFuncao(propostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
+            
             await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
-
-            await ValidarEmail(usuarioLogado.Login, usuarioLogado.Email, request.InscricaoDTO.Email, cancellationToken);
-
-            var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-
-            return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao);
+           
+            return await PersistirInscricao(ehFormacaoHomologada, inscricao);
         }
-
+        
         private async Task MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
         {
             var codigosFuncoesEol = inscricao.FuncaoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.FuncaoCodigo) } : Enumerable.Empty<long>();
@@ -64,30 +56,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             inscricao.FuncaoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
         }
-
-        private async Task ValidarEmail(string login, string emailUsuario, string novoEmail, CancellationToken cancellationToken)
-        {
-            if (emailUsuario != novoEmail)
-            {
-                var emailValidar = novoEmail.ToLower();
-
-                if (!emailValidar.EmailEhValido())
-                    throw new NegocioException(string.Format(MensagemNegocio.EMAIL_INVALIDO, emailValidar));
-
-                if (!emailValidar.ToLower().Contains("@sme") && !emailValidar.ToLower().Contains("@edu.sme"))
-                    throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_EMAIL_FORA_DOMINIO_REDE_DIRETA);
-
-                await _mediator.Send(new AlterarEmailServicoAcessosCommand(login, emailValidar), cancellationToken);
-            }
-        }
-
-        private async Task ValidarExisteInscricaoNaProposta(long propostaId, long usuarioId)
-        {
-            var possuiInscricaoNaProposta = await _repositorioInscricao.ExisteInscricaoNaProposta(propostaId, usuarioId);
-            if (possuiInscricaoNaProposta)
-                throw new NegocioException(MensagemNegocio.USUARIO_JA_INSCRITO_NA_PROPOSTA);
-        }
-
+        
         private async Task ValidarCargoFuncao(long propostaId, long? cargoId, long? funcaoId, CancellationToken cancellationToken)
         {
             var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
@@ -96,14 +65,19 @@ namespace SME.ConectaFormacao.Aplicacao
             if (cargosProposta.PossuiElementos())
             {
                 if (cargoId.HasValue && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO); 
+                    throw new NegocioException(string.Format(MensagemNegocio.USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_PUBLICO_ALVO_NA_FORMACAO,$"Proposta: {propostaId} - Cargo: {cargoId}")); 
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
             { 
                 if (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                    throw new NegocioException(string.Format(MensagemNegocio.USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_FUNCAO_ESPECIFICA_NA_FORMACAO, $"Proposta: {propostaId} - Função: {funcaoId}"));
             }
+        }
+
+        private async Task<bool> ValidarExisteInscricaoNaProposta(long propostaId, long usuarioId)
+        {
+            return await _repositorioInscricao.ExisteInscricaoNaProposta(propostaId, usuarioId);
         }
 
         private async Task ValidarDre(long propostaTurmaId, string cargoDreCodigo, string funcaoDreCodigo, CancellationToken cancellationToken)
@@ -114,7 +88,7 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(cargoDreCodigo)))
                     || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(funcaoDreCodigo))))
-                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
+                    throw new NegocioException(string.Format(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_AUTOMATICO,$"PropostaTurma: {0} - Cargo: {cargoDreCodigo} - Função: {funcaoDreCodigo}"));
             }
         }
 
@@ -129,7 +103,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     bool confirmada = await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
                     if (!confirmada)
-                        throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA);
+                        throw new NegocioException(string.Format(MensagemNegocio.INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA,$"PropostaTurma: {inscricao.PropostaTurmaId} - Usuário: {inscricao.UsuarioId}"));
 
                     inscricao.Situacao = SituacaoInscricao.Confirmada;
                     await _repositorioInscricao.Atualizar(inscricao);

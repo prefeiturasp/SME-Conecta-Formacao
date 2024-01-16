@@ -7,6 +7,8 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Optativa")]
         Optativa = 1,
         [Display(Name = "Automática")]
-        Automatica = 2
+        Automatica = 2,
+        [Display(Name = "Automática (JEIF)")]
+        AutomaticaJEIF = 3
     }
 }

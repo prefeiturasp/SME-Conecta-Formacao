@@ -2,6 +2,7 @@ namespace SME.ConectaFormacao.Dominio.Constantes;
 
 public class MensagemNegocio
 {
+    public const string PARAMETRO_QTDE_CURSISTAS_SUPORTADOS_POR_TURMA_NAO_ENCONTRADO = "Parâmetro de QtdeCursistasSuportadosPorTurma ausente para o ano {0}.";
     public const string FORMACAO_NAO_ENCONTRADA = "Formação não encontrada";
     public const string PERIODO_REALIZACAO_NAO_INFORMADO = "É necessário informar as datas do período de realização";
     public const string PERIODO_INCRICAO_NAO_INFORMADO = "É necessário informar as datas do período de inscrição";
@@ -62,16 +63,22 @@ public class MensagemNegocio
     public const string JA_EXISTE_ESSA_TURMA_PARA_ESSE_REGENTE = "O Regente {0} já possui a turma {1}";
     public const string NENHUM_COMPONENTE_CURRICULAR_DOS_ANOS_DA_TURMA_DO_EOL_FORAM_LOCALIZADOS = "Não foi possível localizar nenhum componente curricular para os anos das turmas do EOL";
     public const string ERRO_OBTER_CARGOS_FUNCIONARIO_EOL = "Não foi possível localizar os cargos do funcionário no EOL";
+    public const string ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL = "Não foi possível localizar os funcionário no EOL com base nos critérios de cargo, função, ano, modalidade e componente curricular";
 
     public const string TURMA_NAO_ENCONTRADA = "Turma não encontrada";
     public const string NENHUMA_TURMA_ENCONTRADA = "Nenhuma turma encontrada para a proposta";
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível inserir sua inscrição.";
+    public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_AUTOMATICO = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível inserir sua inscrição. {0}";
     public const string USUARIO_JA_INSCRITO_NA_PROPOSTA = "Você já está matriculado nesta formação. Confira mais detalhes em \"Minhas inscrições\".";
     public const string USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO = "Cargo/Função selecionado não definido no público alvo da formação, sendo assim, não será possível inserir a sua inscrição.";
     public const string INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição, a turma selecionada não possui mais vagas disponível.";
+    public const string INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição automática, a turma selecionada não possui mais vagas disponível. {0}";
     public const string USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
+    public const string CARGO_SOBREPOSTO_FUNCAO_ATIVIDADE_NAO_ENCONTRADO = "Informações de Cargo, CargoSobreposto e Função Atividade no EOL não foram encontradas";
     public const string EMAIL_FORA_DOMINIO_REDE_DIRETA = "É permitido somente e-mails com o domínio @SME ou @EDU.SME";
     public const string INSCRICAO_NAO_ENCONTRADA = "Inscrição não encontrada";
     public const string NENHUMA_TURMA_COM_VAGA_DISPONIVEL = "Nenhuma turma com vaga disponível encontrada";
     public const string INTEGRAR_NO_SGA_EH_OBRIGATORIO_QUANDO_AREA_PROMOTORA_DIRETA = "O campo 'Integrar no SGA' deve ser preenchido quando a área promotora for direta.";
+    public const string USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_PUBLICO_ALVO_NA_FORMACAO = "Cargo não definido no público alvo da formação, sendo assim, não será possível inserir a sua inscrição automática. {0}";
+    public const string USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_FUNCAO_ESPECIFICA_NA_FORMACAO = "Função não definido na Função específica da formação, sendo assim, não será possível inserir a sua inscrição automática. {0}";
 }
