@@ -1446,6 +1446,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 propostaTurma.Id = (long)await conexao.Obter().InsertAsync(propostaTurma);
             }
         }
+        
+        public async Task InserirTurma(PropostaTurma propostaTurma)
+        {
+            PreencherAuditoriaCriacao(propostaTurma);
+            propostaTurma.Id = (long)await conexao.Obter().InsertAsync(propostaTurma);
+        }
 
         public async Task InserirPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres)
         {
@@ -1807,7 +1813,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           where situacao = @situacao 
                             and tipo_inscricao = any(@tiposInscricoes)";
 
-            return conexao.Obter().QueryAsync<Proposta>(query, new { situacao, tiposInscricoes });
+            return conexao.Obter().QueryAsync<Proposta>(query, new { situacao, tiposInscricoes = tiposInscricoes.Select(s=> (int)s).ToArray() });
         }
 
         public async Task<FormacaoResumida> ObterFormacaoResumidaPorPropostaId(long propostaId)
@@ -1822,15 +1828,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
               and not ptd.excluido 
               and pt.proposta_id = @propostaId;
               
-            select cargo_funcao_id
-            from proposta_publico_alvo    
-            where not excluido   
-                  and proposta_id = @propostaId;
+            select distinct cfde.codigo_cargo_eol
+            from proposta_publico_alvo ppa
+              join cargo_funcao_depara_eol cfde on cfde.cargo_funcao_id = ppa.cargo_funcao_id 
+            where not ppa.excluido   
+            and not ppa.excluido
+                  and ppa.proposta_id = @propostaId;
             
-            select cargo_funcao_id
-            from proposta_funcao_especifica 
-            where not excluido
-                  and proposta_id = @propostaId;
+            select distinct cfde.codigo_funcao_eol
+            from proposta_funcao_especifica pfe
+              join cargo_funcao_depara_eol cfde on cfde.cargo_funcao_id = pfe.cargo_funcao_id 
+            where not pfe.excluido
+                  and not cfde.excluido
+                  and pfe.proposta_id = @propostaId;
             
             select at.codigo_eol
             from proposta_ano_turma pat
@@ -1845,6 +1855,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
               join componente_curricular cc on cc.id = pcc.componente_curricular_id
             where  not cc.excluido 
                and not cc.todos
+               and proposta_id = @propostaId; 
+
+            select modalidade
+            from proposta_modalidade pm  
+            where  not pm.excluido
                and proposta_id = @propostaId; ";
 
             var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
@@ -1855,7 +1870,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PublicosAlvos = queryMultiple.Read<long>(),
                 FuncoesEspecificas = queryMultiple.Read<long>(),
                 AnosTurmas = queryMultiple.Read<string>(),
-                ComponentesCurriculares = queryMultiple.Read<long>()
+                ComponentesCurriculares = queryMultiple.Read<long>(),
+                Modalidades = queryMultiple.Read<long>()
             };
 
             return formacaoResumida;

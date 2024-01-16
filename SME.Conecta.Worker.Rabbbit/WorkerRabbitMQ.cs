@@ -33,7 +33,8 @@ namespace SME.Conecta.Worker
 
             Comandos.Add(RotasRabbit.GerarPropostaTurmaVaga, new ComandoRabbit("Gerar Tabela Proposta Turma Vaga", typeof(ICasoDeUsoGerarPropostaTurmaVaga), true));
             
-            Comandos.Add(RotasRabbit.RealizarInscricaoAutomatica, new ComandoRabbit("Realizar Inscrições Automáticas", typeof(ICasoDeUsoRealizarInscricaoAutomatica), true));
+            Comandos.Add(RotasRabbit.RealizarInscricaoAutomatica, new ComandoRabbit("Realizar Inscrições Automáticas - Obter Formações e Cursistas", typeof(ICasoDeUsoRealizarInscricaoAutomatica), true));
+            Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaTratar, new ComandoRabbit("Realizar Inscrições Automáticas - Inserir inscrições dos cursistas", typeof(ICasoDeUsoRealizarInscricaoAutomaticaTratar), true));
         }
     }
 }

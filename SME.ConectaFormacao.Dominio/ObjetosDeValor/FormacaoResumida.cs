@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
 {
@@ -11,13 +12,17 @@ namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
         public IEnumerable<long> FuncoesEspecificas { get; set; }
         public IEnumerable<string> AnosTurmas { get; set; }
         public IEnumerable<long> ComponentesCurriculares { get; set; }
+        public TipoInscricao TipoInscricao { get; set; }
+        public IEnumerable<long> Modalidades { get; set; }
         
         public bool EhFormacaoHomologada
         {
             get { return FormacaoHomologada == Enumerados.FormacaoHomologada.Sim; }
         }
-        
-        public TipoInscricao TipoInscricao { get; set; }
+        public bool EhTipoJornadaJEIF
+        {
+            get { return TipoInscricao == Enumerados.TipoInscricao.AutomaticaJEIF; }
+        }
     }
 
     public class PropostaTurmaResumida

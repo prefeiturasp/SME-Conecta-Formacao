@@ -27,15 +27,52 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(SalvarInscricaoAutomaticaCommand request, CancellationToken cancellationToken)
         {
+            var propostaId = request.InscricaoAutomaticaDTO.PropostaId;
+            var ehFormacaoHomologada = request.InscricaoAutomaticaDTO.EhFormacaoHomologada;
+            
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoAutomaticaDTO);
             inscricao.Situacao = SituacaoInscricao.Confirmada;
 
-            if (await ValidarExisteInscricaoNaProposta(request.InscricaoAutomaticaDTO.PropostaId, inscricao.UsuarioId))
+            if (await ValidarExisteInscricaoNaProposta(propostaId, inscricao.UsuarioId))
                 return default;
 
+            await MapearCargoFuncao(cancellationToken, inscricao);
+            
+            await ValidarCargoFuncao(propostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
+            
             await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
            
-            return await PersistirInscricao(request.InscricaoAutomaticaDTO.EhFormacaoHomologada, inscricao);
+            return await PersistirInscricao(ehFormacaoHomologada, inscricao);
+        }
+        
+        private async Task MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
+        {
+            var codigosFuncoesEol = inscricao.FuncaoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.FuncaoCodigo) } : Enumerable.Empty<long>();
+            var codigosCargosEol = inscricao.CargoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.CargoCodigo) } : Enumerable.Empty<long>();
+
+            var cargosFuncoes = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol), cancellationToken);
+
+            inscricao.CargoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Cargo)?.Id;
+
+            inscricao.FuncaoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
+        }
+        
+        private async Task ValidarCargoFuncao(long propostaId, long? cargoId, long? funcaoId, CancellationToken cancellationToken)
+        {
+            var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
+            var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
+
+            if (cargosProposta.PossuiElementos())
+            {
+                if (cargoId.HasValue && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
+                    throw new NegocioException(string.Format(MensagemNegocio.USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_PUBLICO_ALVO_NA_FORMACAO,$"Proposta: {propostaId} - Cargo: {cargoId}")); 
+            }
+
+            if (funcaoAtividadeProposta.PossuiElementos())
+            { 
+                if (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
+                    throw new NegocioException(string.Format(MensagemNegocio.USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_FUNCAO_ESPECIFICA_NA_FORMACAO, $"Proposta: {propostaId} - Função: {funcaoId}"));
+            }
         }
 
         private async Task<bool> ValidarExisteInscricaoNaProposta(long propostaId, long usuarioId)
@@ -51,7 +88,7 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(cargoDreCodigo)))
                     || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(funcaoDreCodigo))))
-                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
+                    throw new NegocioException(string.Format(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_AUTOMATICO,$"PropostaTurma: {0} - Cargo: {cargoDreCodigo} - Função: {funcaoDreCodigo}"));
             }
         }
 
@@ -66,7 +103,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     bool confirmada = await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
                     if (!confirmada)
-                        throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA);
+                        throw new NegocioException(string.Format(MensagemNegocio.INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA,$"PropostaTurma: {inscricao.PropostaTurmaId} - Usuário: {inscricao.UsuarioId}"));
 
                     inscricao.Situacao = SituacaoInscricao.Confirmada;
                     await _repositorioInscricao.Atualizar(inscricao);

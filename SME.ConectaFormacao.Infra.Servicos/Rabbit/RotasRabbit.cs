@@ -9,5 +9,6 @@ namespace SME.ConectaFormacao.Infra
 
         public const string GerarPropostaTurmaVaga = "conecta.proposta.turma.vaga";
         public const string RealizarInscricaoAutomatica = "conecta.inscricao.automatica";
+        public const string RealizarInscricaoAutomaticaTratar = "conecta.inscricao.automatica.tratar";
     }
 }
