@@ -44,5 +44,10 @@
         /// 0 - Código da proposta
         /// </summary>
         public const string PropostaFuncaoEspecifica = "proposta:{0}:funcao-especifica";
+        
+        /// <summary>
+        /// 0 - Login (rf)
+        /// </summary>
+        public const string Usuario = "usuario:{0}";
     }
 }

@@ -194,6 +194,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                         opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"De {s.DataInicio:dd/MM} até {s.DataFim.Value:dd/MM}" : $"{s.DataInicio:dd/MM}")));
 
             CreateMap<Inscricao, InscricaoDTO>().ReverseMap();
+            
+            CreateMap<Inscricao, InscricaoAutomaticaDTO>().ReverseMap();
+            
+            CreateMap<FormacaoResumida, FormacaoResumidaDTO>().ReverseMap();
+            CreateMap<PropostaTurmaResumida, PropostaTurmaResumidaDTO>().ReverseMap();
 
             CreateMap<Inscricao, InscricaoPaginadaDTO>()
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.Id))

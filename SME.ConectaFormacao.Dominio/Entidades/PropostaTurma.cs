@@ -8,5 +8,15 @@
 
         public IEnumerable<PropostaTurmaDre> Dres { get; set; }
         public Proposta Proposta { get; set; }
+
+        public PropostaTurma Clone()
+        {
+            return new PropostaTurma()
+            {
+                PropostaId = PropostaId,
+                Nome = Nome,
+                DresIds = Array.Empty<long>()
+            };
+        }
     }
 }
