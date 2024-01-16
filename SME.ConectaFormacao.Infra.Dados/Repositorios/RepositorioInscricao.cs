@@ -237,7 +237,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             sql.AppendLine(@"  group by pt.proposta_id,p.nome_formacao)insc 
                                       order by id desc
-                                --      limit @numeroRegistros offset @registrosIgnorados  ");
+                                     limit @numeroRegistros offset @registrosIgnorados  ");
 
 
             var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >=10 ? (numeroPagina - 1) * numeroRegistros : 0;
