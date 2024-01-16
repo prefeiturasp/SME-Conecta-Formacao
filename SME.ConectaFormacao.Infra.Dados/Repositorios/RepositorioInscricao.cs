@@ -217,7 +217,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         }
 
         public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? codigoDaFormacao,
-            string? nomeFormacao, int numeroPagina, int numeroRegistros)
+            string? nomeFormacao, int numeroPagina, int numeroRegistros, int totalRegistrosFiltro)
         {
             var tipoInscricao = (int)TipoInscricao.Optativa;
             var situacaoProposta = (int)SituacaoProposta.Publicada;
@@ -237,10 +237,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             sql.AppendLine(@"  group by pt.proposta_id,p.nome_formacao)insc 
                                       order by id desc
-                                      limit @numeroRegistros offset @registrosIgnorados  ");
+                                --      limit @numeroRegistros offset @registrosIgnorados  ");
 
 
-            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+            var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >=10 ? (numeroPagina - 1) * numeroRegistros : 0;
             var parametros = new { nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta, tipoInscricao };
             return conexao.Obter().QueryAsync<Proposta>(sql.ToString(), parametros);
         }
@@ -249,17 +249,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             var tipoInscricao = (int)TipoInscricao.Optativa;
             var situacaoProposta = (int)SituacaoProposta.Publicada;
-            var query = new StringBuilder(@" select count(1) from (select pt.proposta_id as id,p.nome_formacao
-                                               from proposta_turma pt
-                                               inner join proposta p on p.id = pt.proposta_id
-                                               left join inscricao i on i.proposta_turma_id = pt.id  ");
-            if (codigoDaFormacao != null)
-                query.AppendLine("  and pt.proposta_id = @codigoDaFormacao ");
+            var query = new StringBuilder(@"	select count(1) from(select 
+               		pt.proposta_id as id,
+               		p.nome_formacao
+               from proposta_turma pt
+               inner join proposta p on p.id = pt.proposta_id
+               left join inscricao i on i.proposta_turma_id = pt.id
+               where not p.excluido and not pt.excluido  
+                and p.situacao = @situacaoProposta and p.tipo_inscricao = @tipoInscricao");
             if (!string.IsNullOrEmpty(nomeFormacao))
                 query.AppendLine($" and lower(p.nome_formacao) like '%{nomeFormacao.ToLower()}%'  ");
-            query.AppendLine(@"  where not p.excluido and not pt.excluido 
-                                    and p.situacao = @situacaoProposta and p.tipo_inscricao = @tipoInscricao
-                                          group by p.id,pt.proposta_id,p.nome_formacao )tb; ");
+            if (codigoDaFormacao != null)
+                query.AppendLine("  and pt.proposta_id = @codigoDaFormacao ");
+
+            query.AppendLine(@" group by pt.proposta_id,p.nome_formacao)insc  ");
             return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { nomeFormacao, codigoDaFormacao, tipoInscricao, situacaoProposta });
         }
 

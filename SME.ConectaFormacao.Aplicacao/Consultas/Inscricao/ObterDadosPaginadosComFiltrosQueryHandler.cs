@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao
     public class ObterDadosPaginadosComFiltrosQueryHandler : IRequestHandler<ObterDadosPaginadosComFiltrosQuery, PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>>
     {
         private readonly IRepositorioInscricao _repositorioInscricao;
-
+        private readonly int QUANTIDADE_MINIMA_PARA_PAGINAR = 10;
         public ObterDadosPaginadosComFiltrosQueryHandler(IRepositorioInscricao repositorioInscricao, IMapper mapper)
         {
             _repositorioInscricao =
@@ -26,12 +26,12 @@ namespace SME.ConectaFormacao.Aplicacao
             var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.CodigoFormacao, request.NomeFormacao);
             if (totalRegistrosFiltro > 0)
             {
-                var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros);
-
+                var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros, totalRegistrosFiltro);
                 var mapeamentoDto = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
                 var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
                 var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
                 retornoComTurmas.AddRange(ObterTurmas(turmas, mapeamentoDto));
+                totalRegistrosFiltro = (totalRegistrosFiltro - ((request.NumeroPagina - 1) * request.NumeroRegistros)) >= QUANTIDADE_MINIMA_PARA_PAGINAR ? totalRegistrosFiltro : propostasTurmas.Count();
             }
             return new PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas, totalRegistrosFiltro, request.NumeroRegistros);
         }
