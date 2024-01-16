@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public DateTime? ExpiracaoRecuperacaoSenha { get; set; }
         public string Cpf { get; set; }
 
-        public void Atualizar(string email, DateTime? dataHora,string? cpf)
+        public void Atualizar(string email, DateTime? dataHora, string? cpf)
         {
             Email = email;
             UltimoLogin = dataHora;
