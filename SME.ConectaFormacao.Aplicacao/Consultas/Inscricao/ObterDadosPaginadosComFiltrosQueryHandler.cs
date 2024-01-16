@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -31,9 +32,14 @@ namespace SME.ConectaFormacao.Aplicacao
                 var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
                 var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
                 retornoComTurmas.AddRange(ObterTurmas(turmas, mapeamentoDto));
-                totalRegistrosFiltro = (totalRegistrosFiltro - ((request.NumeroPagina - 1) * request.NumeroRegistros)) >= QUANTIDADE_MINIMA_PARA_PAGINAR ? totalRegistrosFiltro : propostasTurmas.Count();
+                totalRegistrosFiltro = ObterTotalDeRegistroAposRealizarConsulta(request, totalRegistrosFiltro, propostasTurmas);
             }
             return new PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas, totalRegistrosFiltro, request.NumeroRegistros);
+        }
+
+        private int ObterTotalDeRegistroAposRealizarConsulta(ObterDadosPaginadosComFiltrosQuery request, int totalRegistrosFiltro, IEnumerable<Proposta> propostasTurmas)
+        {
+            return (totalRegistrosFiltro - ((request.NumeroPagina - 1) * request.NumeroRegistros)) >= QUANTIDADE_MINIMA_PARA_PAGINAR ? totalRegistrosFiltro : propostasTurmas.Count();
         }
 
         private IEnumerable<DadosListagemFormacaoComTurmaDTO> ObterTurmas(IEnumerable<ListagemFormacaoComTurmaDTO>? inscricoes, IEnumerable<DadosListagemFormacaoComTurmaDTO> propostas)

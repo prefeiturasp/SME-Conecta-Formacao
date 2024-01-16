@@ -9,6 +9,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
     public class RepositorioInscricao : RepositorioBaseAuditavel<Inscricao>, IRepositorioInscricao
     {
+        private readonly int QUANTIDADE_MINIMA_PARA_PAGINAR = 10;
         public RepositorioInscricao(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
@@ -240,7 +241,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                      limit @numeroRegistros offset @registrosIgnorados  ");
 
 
-            var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >=10 ? (numeroPagina - 1) * numeroRegistros : 0;
+            var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
             var parametros = new { nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta, tipoInscricao };
             return conexao.Obter().QueryAsync<Proposta>(sql.ToString(), parametros);
         }
