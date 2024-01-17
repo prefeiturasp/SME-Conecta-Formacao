@@ -54,9 +54,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                         PropostaId = inscricaoCursistaDto.FormacaoResumida.PropostaId,
                         PropostaTurmaId = propostaTurmaCursista.Id,
                         
-                        CargoCodigo = cargoBaseSobreposto?.Codigo,
-                        CargoDreCodigo = cargoBaseSobreposto?.DreCodigo,
-                        CargoUeCodigo = cargoBaseSobreposto?.UeCodigo,
+                        CargoCodigo = funcaoAtividade.EhNulo() ? cargoBaseSobreposto?.Codigo : string.Empty,
+                        CargoDreCodigo = funcaoAtividade.EhNulo() ? cargoBaseSobreposto?.DreCodigo : string.Empty,
+                        CargoUeCodigo = funcaoAtividade.EhNulo() ? cargoBaseSobreposto?.UeCodigo : string.Empty,
                         
                         FuncaoCodigo =  funcaoAtividade?.Codigo,
                         FuncaoDreCodigo = funcaoAtividade?.DreCodigo,
