@@ -21,9 +21,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
+            var propostaId = long.Parse(param.Mensagem.ToString());
+            
             var formacoesResumidas = await mediator.Send(
-                new ObterPropostaPorTipoInscricaoESituacaoQuery(new []
-                { TipoInscricao.Automatica, TipoInscricao.AutomaticaJEIF }, SituacaoProposta.Publicada));
+                new ObterPropostaResumidaPorIdQuery(propostaId));
 
             var anoAtual = DateTimeExtension.HorarioBrasilia().Year;
             var qtdeCursistasSuportadosPorTurma = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, anoAtual));

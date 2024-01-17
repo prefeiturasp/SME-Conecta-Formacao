@@ -1593,7 +1593,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             });
         }
 
-        public async Task<IEnumerable<Proposta>> ObterPropostaResumidaPorId(long[] propostaIds)
+        public async Task<IEnumerable<Proposta>> ObterPropostasResumidasPorId(long[] propostaIds)
         {
             var query = @"
                     select p.id, 
@@ -1803,17 +1803,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return encontros;
         }
         
-        public Task<IEnumerable<Proposta>> ObterPropostaPorTipoInscricaoESituacao(TipoInscricao[] tiposInscricoes, SituacaoProposta situacao)
+        public Task<IEnumerable<Proposta>> ObterPropostaResumidaPorId(long propostaId)
         {
             var query = @"select 
                             id,
-                            formacao_homologada,
                             tipo_inscricao
                           from proposta
-                          where situacao = @situacao 
-                            and tipo_inscricao = any(@tiposInscricoes)";
+                          where id = @propostaId
+                            and not excluido ";
 
-            return conexao.Obter().QueryAsync<Proposta>(query, new { situacao, tiposInscricoes = tiposInscricoes.Select(s=> (int)s).ToArray() });
+            return conexao.Obter().QueryAsync<Proposta>(query, new { propostaId });
         }
 
         public async Task<FormacaoResumida> ObterFormacaoResumidaPorPropostaId(long propostaId)

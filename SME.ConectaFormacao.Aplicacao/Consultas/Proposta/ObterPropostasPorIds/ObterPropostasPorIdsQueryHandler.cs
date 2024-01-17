@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var propostasBanco = Enumerable.Empty<Proposta>();
             if (buscarNoBanco.PossuiElementos())
             {
-                propostasBanco = await _repositorioProposta.ObterPropostaResumidaPorId(buscarNoBanco.ToArray());
+                propostasBanco = await _repositorioProposta.ObterPropostasResumidasPorId(buscarNoBanco.ToArray());
                 foreach (var propostaBanco in propostasBanco)
                 {
                     var chaveRedis = CacheDistribuidoNomes.FormacaoResumida.Parametros(propostaBanco.Id);
