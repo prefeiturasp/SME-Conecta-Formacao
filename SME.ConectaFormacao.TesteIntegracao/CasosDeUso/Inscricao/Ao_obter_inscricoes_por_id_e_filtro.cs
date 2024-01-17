@@ -4,10 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
-using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
@@ -102,7 +99,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             await DadosBasico();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO() { NomeCursista = Filtro.NomeCursista,Cpf = Filtro.Cpf, RegistroFuncional = Filtro.RegistroFuncional };
+            var dtoFiltro = new FiltroListagemInscricaoDTO() { NomeCursista = Filtro.NomeCursista, Cpf = Filtro.Cpf, RegistroFuncional = Filtro.RegistroFuncional };
 
             // act
             var retorno = await casoDeUso.Executar(InscricaoId, dtoFiltro);
@@ -119,13 +116,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var dtoFiltro = new FiltroListagemInscricaoDTO();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(InscricaoId, dtoFiltro));
+            var excecao = await casoDeUso.Executar(InscricaoId, dtoFiltro);
 
             // assert 
-            excecao.ShouldNotBeNull();
-            excecao.Mensagens.Contains(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA).ShouldBeTrue();
+            excecao.Items.Count().ShouldBeEquivalentTo(0);
         }
-      
+
         private async Task DadosBasico()
         {
             var usuario = UsuarioMock.GerarUsuario();

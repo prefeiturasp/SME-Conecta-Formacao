@@ -1430,7 +1430,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             foreach (var turmaDre in turmaDres)
             {
                 turmaDre.Dre = dres.FirstOrDefault(t => t.Id == turmaDre.DreId);
-                turmaDre.DreCodigo = turmaDre.Dre.Codigo; 
+                turmaDre.DreCodigo = turmaDre.Dre.Codigo;
             }
 
             return turmaDres;

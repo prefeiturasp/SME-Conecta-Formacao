@@ -4,6 +4,7 @@
     {
         public string UsuarioNome { get; set; }
         public string UsuarioLogin { get; set; }
+        public string Cpf { get; set; }
         public DateTime DataHoraExpiracao { get; set; }
         public string Token { get; set; }
         public string Email { get; set; }
