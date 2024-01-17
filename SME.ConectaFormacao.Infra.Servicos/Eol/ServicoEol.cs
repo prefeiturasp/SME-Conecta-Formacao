@@ -60,5 +60,39 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<CargoFuncionarioConectaDTO[]>();
         }
+
+        public async Task<IEnumerable<FuncionarioRfNomeDreCodigoDTO>> ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(IEnumerable<long> codigosCargos, IEnumerable<long> codigosFuncoes,
+            IEnumerable<long> codigosModalidades, IEnumerable<string> anosTurma,IEnumerable<string> codigosDres, IEnumerable<long> codigosComponentesCurriculares, bool EhTipoJornadaJEIF)
+        {
+            var filtrosUrl = "?";
+
+            if (codigosCargos.PossuiElementos())
+                filtrosUrl += string.Join("",codigosCargos.Select(s=> $"&CodigosCargos={s}"));
+            
+            if (codigosFuncoes.PossuiElementos())
+                filtrosUrl += string.Join("",codigosFuncoes.Select(s=> $"&CodigosFuncoes={s}"));
+            
+            if (anosTurma.PossuiElementos())
+                filtrosUrl += string.Join("",anosTurma.Select(s=> $"&AnosTurma={s}"));
+            
+            if (codigosComponentesCurriculares.PossuiElementos())
+                filtrosUrl += string.Join("",codigosComponentesCurriculares.Select(s=> $"&CodigosComponentesCurriculares={s}"));
+            
+            if (codigosModalidades.PossuiElementos())
+                filtrosUrl += string.Join("",codigosModalidades.Select(s=> $"&CodigoModalidade={s}"));
+            
+            if (codigosDres.PossuiElementos())
+                filtrosUrl += string.Join("",codigosDres.Select(s=> $"&CodigosDres={s}"));
+            
+            filtrosUrl += $"&EhTipoJornadaJEIF={EhTipoJornadaJEIF}";
+            
+            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.URL_FUNCIONARIOS_REGISTROS_FUNCIONAIS_CONECTA_FORMACAO + filtrosUrl);
+
+            if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
+                throw new NegocioException(MensagemNegocio.ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<FuncionarioRfNomeDreCodigoDTO[]>();
+        }
     }
 }

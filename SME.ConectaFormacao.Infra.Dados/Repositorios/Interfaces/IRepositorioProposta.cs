@@ -87,11 +87,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task AtualizarPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres);
         Task RemoverPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres);
         Task<IEnumerable<long>> ObterListagemFormacoesPorFiltro(long[] publicosAlvosIds, string titulo, long[] areasPromotorasIds, DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds);
-        Task<IEnumerable<Proposta>> ObterPropostaResumidaPorId(long[] propostaIds);
+        Task<IEnumerable<Proposta>> ObterPropostasResumidasPorId(long[] propostaIds);
         Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId);
         Task<IEnumerable<PropostaTurma>> ObterTurmasComVagaPorId(long propostaId);
         Task InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga);
         Task<PropostaTurma> ObterTurmaPorId(long propostaTurmaId);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorPropostaTurmaId(long turmaId);
+        Task<IEnumerable<Proposta>> ObterPropostaResumidaPorId(long propostaId);
+        Task<FormacaoResumida> ObterFormacaoResumidaPorPropostaId(long propostaId);
+        Task InserirTurma(PropostaTurma propostaTurma);
     }
 }

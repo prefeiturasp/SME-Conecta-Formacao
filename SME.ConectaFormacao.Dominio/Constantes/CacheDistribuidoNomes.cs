@@ -10,6 +10,7 @@
         /// 0 - Tipo
         /// </summary>
         public const string CargoFuncao = "cargo-funcao:{0}";
+        public const string ParametroSistemaTipo = "parametro-sistema-tipo:{0}";
         public const string AreaPromotora = "area-promotora";
         public const string PalavraChave = "palavra-chave";
         /// <summary>
@@ -44,5 +45,10 @@
         /// 0 - Código da proposta
         /// </summary>
         public const string PropostaFuncaoEspecifica = "proposta:{0}:funcao-especifica";
+        
+        /// <summary>
+        /// 0 - Login (rf)
+        /// </summary>
+        public const string Usuario = "usuario:{0}";
     }
 }
