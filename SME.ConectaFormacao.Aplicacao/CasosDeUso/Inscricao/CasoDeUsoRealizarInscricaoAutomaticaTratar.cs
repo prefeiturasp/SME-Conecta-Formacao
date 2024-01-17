@@ -75,14 +75,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 PropostasTurmas.GroupBy(g => new { g.Id }, (key, group) => 
                     new { key.Id, Result = group.Select(s=> s.CodigoDre).ToList()});
             
+            var cursistasAssociados = 0;
+            
             foreach (var propostaTurmaComDres in agrupamentoPropostaTurmaComDres)
             {
                 var cursistasDaDre = inscricaoCursistaDto.CursistasEOL.Where(w => propostaTurmaComDres.Result.Contains(w.DreCodigo));
 
                 if (cursistasDaDre.NaoPossuiElementos())
                     continue;
-
-                var cursistasAssociados = 0;
                 
                 cursistasAssociados = AssociarCursistasNasTurmasExistentes(inscricaoCursistaDto.QtdeCursistasSuportadosPorTurma, propostasTurmasCursistas, propostaTurmaComDres.Id, cursistasDaDre, cursistasAssociados);
 

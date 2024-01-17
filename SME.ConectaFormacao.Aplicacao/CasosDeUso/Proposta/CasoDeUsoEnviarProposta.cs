@@ -33,6 +33,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             if (situacao == SituacaoProposta.Publicada && proposta.FormacaoHomologada != FormacaoHomologada.Sim)
                 await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, propostaId));
+            
+            if (situacao == SituacaoProposta.Publicada && proposta.TipoInscricao.EhAutomaticaOuJEIF())
+                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomatica, propostaId));
 
             return true;
         }
