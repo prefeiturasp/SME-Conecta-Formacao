@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
             var registrosIgnorados = (NumeroPagina - 1) * NumeroRegistros;
 
             var propostasIds = await mediator.Send(new ObterPropostasIdsPorFiltroQuery(filtroListagemFormacaoDTO));
-            var propostasPaginadas = propostasIds.Take(NumeroRegistros).Skip(registrosIgnorados);
+            var propostasPaginadas = propostasIds.Skip(registrosIgnorados).Take(NumeroRegistros);
 
             var formacoes = Enumerable.Empty<RetornoListagemFormacaoDTO>();
             if (propostasPaginadas.PossuiElementos())
