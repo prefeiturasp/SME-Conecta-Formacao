@@ -22,5 +22,5 @@ public class PropostaTurmaResumidaDTO
 public class PropostaTurmaCursistasDTO 
 {
     public long Id { get; set; }
-    public IEnumerable<string> Cursistas { get; set; }
+    public IEnumerable<FuncionarioRfNomeDTO> Cursistas { get; set; }
 }	

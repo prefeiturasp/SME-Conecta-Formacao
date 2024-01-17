@@ -38,11 +38,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
             foreach (var propostaTurmaCursista in propostasTurmasCursistas)
             {
-                foreach (var cursistaRf in propostaTurmaCursista.Cursistas)
+                foreach (var cursista in propostaTurmaCursista.Cursistas)
                 {
-                    var usuario = await ObterUsuarioPorLogin(cursistaRf);
+                    var usuario = await ObterUsuarioPorLogin(cursista);
                     
-                    var cargosFuncoesEol = await ObterCargosFuncoesDresPorRf(cursistaRf);
+                    var cargosFuncoesEol = await ObterCargosFuncoesDresPorRf(cursista.Rf);
 
                     var cargoBaseSobreposto = ObterCargoESobreposto(cargosFuncoesEol);
 
@@ -71,27 +71,27 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
             var dres = await mediator.Send(new ObterListaDreQuery(false));
 
-            var agrupamentoDresComTurmas = inscricaoCursistaDto.FormacaoResumida.
-                PropostasTurmas.GroupBy(g => new { g.CodigoDre }, (key, group) => 
-                    new { key.CodigoDre, Result = group.Select(s=> s.Id).ToList()});
+            var agrupamentoPropostaTurmaComDres = inscricaoCursistaDto.FormacaoResumida.
+                PropostasTurmas.GroupBy(g => new { g.Id }, (key, group) => 
+                    new { key.Id, Result = group.Select(s=> s.CodigoDre).ToList()});
             
-            foreach (var dreComTurmas in agrupamentoDresComTurmas)
+            foreach (var propostaTurmaComDres in agrupamentoPropostaTurmaComDres)
             {
-                var cursistasDaDre = inscricaoCursistaDto.CursistasEOL.Where(w => w.DreCodigo.Equals(dreComTurmas.CodigoDre));
+                var cursistasDaDre = inscricaoCursistaDto.CursistasEOL.Where(w => propostaTurmaComDres.Result.Contains(w.DreCodigo));
 
                 if (cursistasDaDre.NaoPossuiElementos())
                     continue;
 
                 var cursistasAssociados = 0;
                 
-                cursistasAssociados = AssociarCursistasNasTurmasExistentes(inscricaoCursistaDto.QtdeCursistasSuportadosPorTurma, propostasTurmasCursistas, dreComTurmas.Result, cursistasDaDre, cursistasAssociados);
+                cursistasAssociados = AssociarCursistasNasTurmasExistentes(inscricaoCursistaDto.QtdeCursistasSuportadosPorTurma, propostasTurmasCursistas, propostaTurmaComDres.Id, cursistasDaDre, cursistasAssociados);
 
-                await AssociarCursistasNasTurmasNovas(inscricaoCursistaDto.QtdeCursistasSuportadosPorTurma, propostasTurmasCursistas, cursistasDaDre, cursistasAssociados, dreComTurmas.CodigoDre, dreComTurmas.Result, dres);
+                await AssociarCursistasNasTurmasNovas(inscricaoCursistaDto.QtdeCursistasSuportadosPorTurma, propostasTurmasCursistas, cursistasDaDre, cursistasAssociados, propostaTurmaComDres.Result, propostaTurmaComDres.Id, dres);
             }
         }
 
         private async Task AssociarCursistasNasTurmasNovas(int qtdeCursistasSuportadosPorTurma, List<PropostaTurmaCursistasDTO> propostasTurmasCursistas, 
-            IEnumerable<FuncionarioRfDreCodigoDTO> cursistasDaDre, int cursistasAssociados, string codigoDre, List<long> dreComTurmas, IEnumerable<DreDTO> dres)
+            IEnumerable<FuncionarioRfNomeDreCodigoDTO> cursistasDaDre, int cursistasAssociados, List<string> codigosDres, long propostaTurmaId, IEnumerable<DreDTO> dres)
         {
             if (cursistasDaDre.Count() > cursistasAssociados)
             {
@@ -99,7 +99,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     
                 var qtdeTurmasAdicionais = Math.Ceiling((double)qtdeCursistasSemTurma / qtdeCursistasSuportadosPorTurma);
 
-                var ultimaPropostaTurmaComCursistasAssociados = await mediator.Send(new ObterPropostaTurmaPorIdQuery(Enumerable.LastOrDefault<long>(dreComTurmas)));
+                var ultimaPropostaTurmaComCursistasAssociados = await mediator.Send(new ObterPropostaTurmaPorIdQuery(propostaTurmaId));
                     
                 var contadorDaTurma = 2; //Parte 2...Parte 3...Parte 4
 
@@ -107,10 +107,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 {
                     var propostaTurmaAdicional = ultimaPropostaTurmaComCursistasAssociados.Clone();
                     propostaTurmaAdicional.Nome += $" - Parte {contadorDaTurma}";
-                    propostaTurmaAdicional.Dres = ObterPropostaTurmaDres(propostaTurmaAdicional.Id, dres, codigoDre);
+                    propostaTurmaAdicional.Dres = ObterPropostaTurmaDres(propostaTurmaAdicional.Id, dres, codigosDres);
                     var propostaTurmaIdInserida = await mediator.Send(new InserirPropostaTurmaEDreCommand(propostaTurmaAdicional));
 
-                    var cursistasSelecionados = cursistasDaDre.Skip(cursistasAssociados).Take(qtdeCursistasSuportadosPorTurma).Select(s => s.Rf);
+                    var cursistasSelecionados =_mapper.Map<IEnumerable<FuncionarioRfNomeDTO>>(cursistasDaDre.Skip(cursistasAssociados).Take(qtdeCursistasSuportadosPorTurma));
 
                     propostasTurmasCursistas.Add(new PropostaTurmaCursistasDTO()
                     {
@@ -124,36 +124,35 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         }
 
         private int AssociarCursistasNasTurmasExistentes(int qtdeCursistasSuportadosPorTurma, List<PropostaTurmaCursistasDTO> propostasTurmasCursistas, 
-            List<long> turmasDaDre, IEnumerable<FuncionarioRfDreCodigoDTO> cursistasDaDre, int cursistasAssociados)
+            long propostaTurmaId, IEnumerable<FuncionarioRfNomeDreCodigoDTO> cursistasDaDre, int cursistasAssociados)
         {
-            foreach (var turmaDaDre in turmasDaDre)
-            {
-                var cursistasSelecionados = cursistasDaDre.Skip(cursistasAssociados).Take(qtdeCursistasSuportadosPorTurma).Select(s => s.Rf);
+            var cursistasSelecionados = _mapper.Map<IEnumerable<FuncionarioRfNomeDTO>>(cursistasDaDre.Skip(cursistasAssociados).Take(qtdeCursistasSuportadosPorTurma));
 
-                if (cursistasSelecionados.NaoPossuiElementos())
-                    continue; //Tem mais turmas que cursistas
-                    
-                propostasTurmasCursistas.Add(new PropostaTurmaCursistasDTO()
-                {
-                    Id = turmaDaDre,
-                    Cursistas = cursistasSelecionados
-                });
-                cursistasAssociados += cursistasSelecionados.Count();
-            }
+            if (cursistasSelecionados.NaoPossuiElementos())
+                return cursistasAssociados; //Tem mais turmas que cursistas
+                
+            propostasTurmasCursistas.Add(new PropostaTurmaCursistasDTO()
+            {
+                Id = propostaTurmaId,
+                Cursistas = cursistasSelecionados
+            });
+            cursistasAssociados += cursistasSelecionados.Count();
 
             return cursistasAssociados;
         }
 
-        private PropostaTurmaDre[] ObterPropostaTurmaDres(long propostaTurmaId, IEnumerable<DreDTO> dres, string codigoDre)
+        private PropostaTurmaDre[] ObterPropostaTurmaDres(long propostaTurmaId, IEnumerable<DreDTO> dres, List<string> codigosDres)
         {
-            return new [] 
-            {
-                new PropostaTurmaDre()
+            var propostasTurmasDres = new List<PropostaTurmaDre>();
+
+            foreach (var codigoDre in codigosDres)
+                propostasTurmasDres.Add(new PropostaTurmaDre()
                 {
                     PropostaTurmaId = propostaTurmaId,
                     DreId = dres.FirstOrDefault(f => f.Codigo.Equals(codigoDre)).Id
-                }
-            };
+                });
+
+            return propostasTurmasDres.ToArray();
         }
 
         private CargoSobrepostoFuncaoEol ObterCargoESobreposto(IEnumerable<CargoFuncionarioConectaDTO> cargosFuncoesEol)
@@ -203,14 +202,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             return cargosFuncoesEol;
         }
 
-        private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(string codigoRf)
+        private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(FuncionarioRfNomeDTO funcionarioRfNomeDto)
         {
-            var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(codigoRf));
+            var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(funcionarioRfNomeDto.Rf));
 
             if (usuario.NaoEhNulo()) 
                 return usuario;
+
+            usuario = _mapper.Map<Dominio.Entidades.Usuario>(funcionarioRfNomeDto);
             
-            usuario = new Dominio.Entidades.Usuario() { Login = codigoRf, Nome = "Cadastrado automaticamente - Inscrições automáticas" };
             await mediator.Send(new SalvarUsuarioCommand(usuario));
             return usuario;
         }

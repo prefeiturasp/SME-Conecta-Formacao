@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterFuncionarioPorFiltroPropostaServicoEolQueryHandler : IRequestHandler<ObterFuncionarioPorFiltroPropostaServicoEolQuery, IEnumerable<FuncionarioRfDreCodigoDTO>>
+    public class ObterFuncionarioPorFiltroPropostaServicoEolQueryHandler : IRequestHandler<ObterFuncionarioPorFiltroPropostaServicoEolQuery, IEnumerable<FuncionarioRfNomeDreCodigoDTO>>
     {
         private readonly IServicoEol _servicoEol;
 
@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _servicoEol = servicoEol ?? throw new ArgumentNullException(nameof(servicoEol));
         }
 
-        public async Task<IEnumerable<FuncionarioRfDreCodigoDTO>> Handle(ObterFuncionarioPorFiltroPropostaServicoEolQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<FuncionarioRfNomeDreCodigoDTO>> Handle(ObterFuncionarioPorFiltroPropostaServicoEolQuery request, CancellationToken cancellationToken)
         {
             return await _servicoEol.ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(request.CodigosCargos, 
                 request.CodigosFuncoes, request.CodigoModalidade, request.AnosTurma, request.CodigosDres,

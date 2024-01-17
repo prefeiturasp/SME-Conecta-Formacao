@@ -61,7 +61,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             return json.JsonParaObjeto<CargoFuncionarioConectaDTO[]>();
         }
 
-        public async Task<IEnumerable<FuncionarioRfDreCodigoDTO>> ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(IEnumerable<long> codigosCargos, IEnumerable<long> codigosFuncoes,
+        public async Task<IEnumerable<FuncionarioRfNomeDreCodigoDTO>> ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(IEnumerable<long> codigosCargos, IEnumerable<long> codigosFuncoes,
             IEnumerable<long> codigosModalidades, IEnumerable<string> anosTurma,IEnumerable<string> codigosDres, IEnumerable<long> codigosComponentesCurriculares, bool EhTipoJornadaJEIF)
         {
             var filtrosUrl = "?";
@@ -92,7 +92,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<FuncionarioRfDreCodigoDTO[]>();
+            return json.JsonParaObjeto<FuncionarioRfNomeDreCodigoDTO[]>();
         }
     }
 }
