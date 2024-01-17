@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.Aplicacao
             
             await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
            
-            return await PersistirInscricao(ehFormacaoHomologada, inscricao);
+            return await _repositorioInscricao.Inserir(inscricao);
         }
         
         private async Task MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
@@ -89,38 +89,6 @@ namespace SME.ConectaFormacao.Aplicacao
                 if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(cargoDreCodigo)))
                     || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(funcaoDreCodigo))))
                     throw new NegocioException(string.Format(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_AUTOMATICO,$"PropostaTurma: {0} - Cargo: {cargoDreCodigo} - Função: {funcaoDreCodigo}"));
-            }
-        }
-
-        private async Task<long> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao)
-        {
-            var transacao = _transacao.Iniciar();
-            try
-            {
-                await _repositorioInscricao.Inserir(inscricao);
-
-                if (!formacaoHomologada)
-                {
-                    bool confirmada = await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
-                    if (!confirmada)
-                        throw new NegocioException(string.Format(MensagemNegocio.INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA,$"PropostaTurma: {inscricao.PropostaTurmaId} - Usuário: {inscricao.UsuarioId}"));
-
-                    inscricao.Situacao = SituacaoInscricao.Confirmada;
-                    await _repositorioInscricao.Atualizar(inscricao);
-                }
-
-                transacao.Commit();
-
-                return inscricao.Id;
-            }
-            catch
-            {
-                transacao.Rollback();
-                throw;
-            }
-            finally
-            {
-                transacao.Dispose();
             }
         }
     }
