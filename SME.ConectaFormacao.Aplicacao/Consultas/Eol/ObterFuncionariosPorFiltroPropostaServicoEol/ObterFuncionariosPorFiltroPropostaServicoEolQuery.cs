@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterFuncionarioPorFiltroPropostaServicoEolQuery : IRequest<IEnumerable<FuncionarioRfNomeDreCodigoDTO>>
+    public class ObterFuncionarioPorFiltroPropostaServicoEolQuery : IRequest<IEnumerable<FuncionarioRfNomeDreCodigoCargoFuncaoDTO>>
     {
         public ObterFuncionarioPorFiltroPropostaServicoEolQuery(IEnumerable<long> codigosCargos, 
             IEnumerable<long> codigosFuncoes, IEnumerable<long> codigoModalidade, IEnumerable<string> anosTurma, 

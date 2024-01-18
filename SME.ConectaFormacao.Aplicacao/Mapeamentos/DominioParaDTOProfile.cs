@@ -199,9 +199,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             
             CreateMap<FormacaoResumida, FormacaoResumidaDTO>().ReverseMap();
             CreateMap<PropostaTurmaResumida, PropostaTurmaResumidaDTO>().ReverseMap();
-            CreateMap<FuncionarioRfNomeDreCodigoDTO, FuncionarioRfNomeDTO>().ReverseMap();
+            CreateMap<FuncionarioRfNomeDreCodigoCargoFuncaoDTO, FuncionarioRfNomeDreCodigoCargoFuncaoDTO>().ReverseMap();
             
-            CreateMap<Usuario, FuncionarioRfNomeDTO>()
+            CreateMap<Usuario, FuncionarioRfNomeDreCodigoCargoFuncaoDTO>()
                 .ForMember(dest => dest.Rf, opt => opt.MapFrom(o => o.Login))
                 .ReverseMap();
 
