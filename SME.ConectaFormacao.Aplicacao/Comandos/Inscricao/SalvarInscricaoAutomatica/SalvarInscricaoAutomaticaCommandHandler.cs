@@ -28,7 +28,6 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<long> Handle(SalvarInscricaoAutomaticaCommand request, CancellationToken cancellationToken)
         {
             var propostaId = request.InscricaoAutomaticaDTO.PropostaId;
-            var ehFormacaoHomologada = request.InscricaoAutomaticaDTO.EhFormacaoHomologada;
             
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoAutomaticaDTO);
             inscricao.Situacao = SituacaoInscricao.Confirmada;

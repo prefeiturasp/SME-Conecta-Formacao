@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -23,8 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
             var propostaId = long.Parse(param.Mensagem.ToString());
             
-            var formacoesResumidas = await mediator.Send(
-                new ObterPropostaResumidaPorIdQuery(propostaId));
+            var formacoesResumidas = await mediator.Send(new ObterPropostaResumidaPorIdQuery(propostaId));
 
             var anoAtual = DateTimeExtension.HorarioBrasilia().Year;
             var qtdeCursistasSuportadosPorTurma = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, anoAtual));
@@ -37,8 +37,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 var cursistasEOL = await mediator.Send(
                     new ObterFuncionarioPorFiltroPropostaServicoEolQuery(formacaoResumida.PublicosAlvos,
                     formacaoResumida.FuncoesEspecificas, formacaoResumida.Modalidades, formacaoResumida.AnosTurmas, 
-                    formacaoResumida.PropostasTurmas.Select(turma => turma.CodigoDre), 
+                    formacaoResumida.PropostasTurmas.Select(turma => turma.CodigoDre).Distinct(), 
                     formacaoResumida.ComponentesCurriculares, formacaoResumida.EhTipoJornadaJEIF));
+
+                await RealizarTratamentoCargoFuncao(cursistasEOL,formacaoResumida.PublicosAlvos, formacaoResumida.FuncoesEspecificas);
 
                 var inscricaoCursista = new InscricaoCursistaDTO
                 {
@@ -47,10 +49,43 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     QtdeCursistasSuportadosPorTurma = int.Parse(qtdeCursistasSuportadosPorTurma.Valor)
                 };
 
-                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratar, inscricaoCursista, Guid.NewGuid(), null));
+                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarTurmas, inscricaoCursista, Guid.NewGuid(), null));
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// O EOL está retornando apenas os Rfs com base nos filtros: cargos, funções, ano, modalidade e componente
+        /// porém não reflete a ocupação dele, pois para isso é necessário invocar a pesquisa pelo Rf retornado.
+        /// Exemplo: é retornado CP como cargo base, mas o mesmo Rf tem um cargo sobreposto ou função com outro código 
+        /// </summary>
+        /// <param name="cursistasEOL"></param>
+        private async Task RealizarTratamentoCargoFuncao(IEnumerable<FuncionarioRfNomeDreCodigoCargoFuncaoDTO> cursistasEOL, IEnumerable<long> publicosAlvos, IEnumerable<long> funcoesEspecificas)
+        {
+            foreach (var cursistaEOL in cursistasEOL)
+            {
+                cursistaEOL.CargoCodigo = cursistaEOL.CargoCodigo; 
+                cursistaEOL.CargoDreCodigo = cursistaEOL.CargoDreCodigo;
+                cursistaEOL.CargoUeCodigo = cursistaEOL.CargoUeCodigo;
+                cursistaEOL.DreCodigo = cursistaEOL.CargoDreCodigo;
+                
+                if (cursistaEOL.CargoSobrepostoCodigo.EstaPreenchido() && publicosAlvos.Contains(long.Parse(cursistaEOL.CargoSobrepostoCodigo)))
+                {
+                    cursistaEOL.CargoCodigo = cursistaEOL.CargoSobrepostoCodigo; 
+                    cursistaEOL.CargoDreCodigo = cursistaEOL.CargoSobrepostoDreCodigo;
+                    cursistaEOL.CargoUeCodigo = cursistaEOL.CargoSobrepostoUeCodigo;
+                    cursistaEOL.DreCodigo = cursistaEOL.CargoSobrepostoDreCodigo;
+                }
+
+                if (cursistaEOL.FuncaoCodigo.EstaPreenchido() && funcoesEspecificas.Contains(long.Parse(cursistaEOL.FuncaoCodigo)))
+                {
+                    cursistaEOL.FuncaoCodigo = cursistaEOL?.FuncaoCodigo;
+                    cursistaEOL.FuncaoDreCodigo = cursistaEOL?.FuncaoDreCodigo;
+                    cursistaEOL.FuncaoUeCodigo = cursistaEOL?.FuncaoUeCodigo;
+                    cursistaEOL.DreCodigo = cursistaEOL.FuncaoDreCodigo;
+                }
+            }
         }
     }
 }
