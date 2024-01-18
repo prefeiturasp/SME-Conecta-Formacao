@@ -34,8 +34,9 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.GerarPropostaTurmaVaga, new ComandoRabbit("Gerar Tabela Proposta Turma Vaga", typeof(ICasoDeUsoGerarPropostaTurmaVaga), true));
             
             Comandos.Add(RotasRabbit.RealizarInscricaoAutomatica, new ComandoRabbit("Realizar Inscrições Automáticas - Obter Formações e Cursistas", typeof(ICasoDeUsoRealizarInscricaoAutomatica), true));
-            Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaTratar, new ComandoRabbit("Realizar Inscrições Automáticas - Criar as propostas turmas dos cursistas", typeof(ICasoDeUsoRealizarInscricaoAutomaticaTratar), true));
-            Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaTratarInserir, new ComandoRabbit("Realizar Inscrições Automáticas - Inserir inscrições dos cursistas", typeof(ICasoDeUsoRealizarInscricaoAutomaticaTratarInserir), true));
+            Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaTratarTurmas, new ComandoRabbit("Realizar Inscrições Automáticas - Tratar as turmas - incluir novas conforme a quantidade de cursistas", typeof(ICasoDeUsoRealizarInscricaoAutomaticaTratar), true));
+            Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaTratarCursistas, new ComandoRabbit("Realizar Inscrições Automáticas - Iterar sobre os cursistas e coletar o usuário logado", typeof(ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista), true));
+            Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaIncreverCursista, new ComandoRabbit("Realizar Inscrições Automáticas - Iterar sobre os cursistas e coletar o usuário logado", typeof(ICasoDeUsoRealizarInscricaoAutomaticaInscreverCursista), true));
         }
     }
 }

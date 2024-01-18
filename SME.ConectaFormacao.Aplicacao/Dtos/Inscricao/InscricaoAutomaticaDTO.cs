@@ -17,5 +17,7 @@
         
         public long UsuarioId { get; set; }
         public bool EhFormacaoHomologada { get; set; }
+        public string UsuarioRf { get; set; }
+        public string UsuarioNome { get; set; }
     }
 }

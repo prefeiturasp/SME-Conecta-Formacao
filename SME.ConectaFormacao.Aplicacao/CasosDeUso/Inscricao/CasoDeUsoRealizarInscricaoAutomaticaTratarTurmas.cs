@@ -9,11 +9,11 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
-    public class CasoDeUsoRealizarInscricaoAutomaticaTratar : CasoDeUsoAbstrato, ICasoDeUsoRealizarInscricaoAutomaticaTratar
+    public class CasoDeUsoRealizarInscricaoAutomaticaTratarTurmas : CasoDeUsoAbstrato, ICasoDeUsoRealizarInscricaoAutomaticaTratar
     {
         private readonly IMapper _mapper;
         
-        public CasoDeUsoRealizarInscricaoAutomaticaTratar(IMediator mediator,IMapper mapper) : base(mediator)
+        public CasoDeUsoRealizarInscricaoAutomaticaTratarTurmas(IMediator mediator,IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -32,7 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 PropostasTurmasCursistas = propostasTurmasCursistas
             };
 
-            await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarInserir, inseririnscricao, Guid.NewGuid(), null));
+            await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarCursistas, inseririnscricao, Guid.NewGuid(), null));
             
             return true;
         }

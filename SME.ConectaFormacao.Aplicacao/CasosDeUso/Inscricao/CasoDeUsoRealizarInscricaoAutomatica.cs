@@ -52,7 +52,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     QtdeCursistasSuportadosPorTurma = int.Parse(qtdeCursistasSuportadosPorTurma.Valor)
                 };
 
-                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratar, inscricaoCursista, Guid.NewGuid(), null));
+                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarTurmas, inscricaoCursista, Guid.NewGuid(), null));
             }
 
             return true;

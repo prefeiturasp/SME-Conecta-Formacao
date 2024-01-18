@@ -8,11 +8,11 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
-    public class CasoDeUsoRealizarInscricaoAutomaticaTratarInserir : CasoDeUsoAbstrato, ICasoDeUsoRealizarInscricaoAutomaticaTratarInserir
+    public class CasoDeUsoRealizarInscricaoAutomaticaTratarCursista : CasoDeUsoAbstrato, ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista
     {
         private readonly IMapper _mapper;
         
-        public CasoDeUsoRealizarInscricaoAutomaticaTratarInserir(IMediator mediator,IMapper mapper) : base(mediator)
+        public CasoDeUsoRealizarInscricaoAutomaticaTratarCursista(IMediator mediator,IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -25,11 +25,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             {
                 foreach (var cursista in propostaTurmaCursista.Cursistas)
                 {
-                    var usuario = await ObterUsuarioPorLogin(cursista);
-                    
                     var inscricaoAutomaticaDTO = new InscricaoAutomaticaDTO()
                     {
-                        UsuarioId = usuario.Id,
+                        UsuarioRf = cursista.Rf,
+                        UsuarioNome = cursista.Nome,
                         PropostaId = inscricaoCursistaDto.PropostaId,
                         PropostaTurmaId = propostaTurmaCursista.Id,
                         
@@ -41,24 +40,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                         FuncaoDreCodigo = cursista.FuncaoDreCodigo,
                         FuncaoUeCodigo = cursista.FuncaoUeCodigo
                     };
-                    await mediator.Send(new SalvarInscricaoAutomaticaCommand(inscricaoAutomaticaDTO));
+                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaIncreverCursista, inscricaoAutomaticaDTO, Guid.NewGuid(), null));
                 }
             }
             
             return true;
-        }
-
-        private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(FuncionarioRfNomeDreCodigoCargoFuncaoDTO funcionarioRfNomeDreCodigoCargoFuncaoDTO)
-        {
-            var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(funcionarioRfNomeDreCodigoCargoFuncaoDTO.Rf));
-
-            if (usuario.NaoEhNulo()) 
-                return usuario;
-
-            usuario = _mapper.Map<Dominio.Entidades.Usuario>(funcionarioRfNomeDreCodigoCargoFuncaoDTO);
-            
-            await mediator.Send(new SalvarUsuarioCommand(usuario));
-            return usuario;
         }
     }
 }
