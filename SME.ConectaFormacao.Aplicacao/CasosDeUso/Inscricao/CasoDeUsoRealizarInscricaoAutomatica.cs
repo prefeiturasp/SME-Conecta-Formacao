@@ -42,9 +42,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
                 await RealizarTratamentoCargoFuncao(cursistasEOL,formacaoResumida.PublicosAlvos, formacaoResumida.FuncoesEspecificas);
 
-                cursistasEOL = cursistasEOL.Where(w => w.CargoCodigo.EstaPreenchido() && formacaoResumida.PublicosAlvos.Contains(long.Parse(w.CargoCodigo)))
-                    .Union(cursistasEOL.Where(w => w.FuncaoCodigo.EstaPreenchido() && formacaoResumida.FuncoesEspecificas.Contains(long.Parse(w.FuncaoCodigo))));
-
                 var inscricaoCursista = new InscricaoCursistaDTO
                 {
                     FormacaoResumida = _mapper.Map<FormacaoResumidaDTO>(formacaoResumida),
