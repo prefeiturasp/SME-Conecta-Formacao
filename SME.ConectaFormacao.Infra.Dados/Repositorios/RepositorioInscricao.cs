@@ -220,7 +220,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? codigoDaFormacao,
             string? nomeFormacao, int numeroPagina, int numeroRegistros, int totalRegistrosFiltro)
         {
-            var tipoInscricao = (int)TipoInscricao.Optativa;
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var sql = new StringBuilder(@"  select * from(select 
                		pt.proposta_id as id,
@@ -229,7 +228,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                inner join proposta p on p.id = pt.proposta_id
                left join inscricao i on i.proposta_turma_id = pt.id
                where not p.excluido and not pt.excluido  
-                and p.situacao = @situacaoProposta and p.tipo_inscricao = @tipoInscricao ");
+                and p.situacao = @situacaoProposta  ");
 
             if (codigoDaFormacao != null)
                 sql.AppendLine(@" and pt.proposta_id = @codigoDaFormacao ");
@@ -242,13 +241,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
 
             var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
-            var parametros = new { nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta, tipoInscricao };
+            var parametros = new { nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta };
             return conexao.Obter().QueryAsync<Proposta>(sql.ToString(), parametros);
         }
         public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? codigoDaFormacao,
                 string? nomeFormacao)
         {
-            var tipoInscricao = (int)TipoInscricao.Optativa;
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = new StringBuilder(@"	select count(1) from(select 
                		pt.proposta_id as id,
@@ -257,14 +255,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                inner join proposta p on p.id = pt.proposta_id
                left join inscricao i on i.proposta_turma_id = pt.id
                where not p.excluido and not pt.excluido  
-                and p.situacao = @situacaoProposta and p.tipo_inscricao = @tipoInscricao");
+                and p.situacao = @situacaoProposta  ");
             if (!string.IsNullOrEmpty(nomeFormacao))
                 query.AppendLine($" and lower(p.nome_formacao) like '%{nomeFormacao.ToLower()}%'  ");
             if (codigoDaFormacao != null)
                 query.AppendLine("  and pt.proposta_id = @codigoDaFormacao ");
 
             query.AppendLine(@" group by pt.proposta_id,p.nome_formacao)insc  ");
-            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { nomeFormacao, codigoDaFormacao, tipoInscricao, situacaoProposta });
+            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { nomeFormacao, codigoDaFormacao, situacaoProposta });
         }
 
         public Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds)
