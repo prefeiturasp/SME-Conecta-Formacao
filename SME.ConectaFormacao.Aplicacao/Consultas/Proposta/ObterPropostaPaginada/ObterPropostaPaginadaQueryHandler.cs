@@ -47,7 +47,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 request.PropostaFiltrosDTO.PeriodoRealizacaoInicio,
                 request.PropostaFiltrosDTO.PeriodoRealizacaoFim,
                 request.PropostaFiltrosDTO.Situacao,
-                request.PropostaFiltrosDTO.FormacaoHomologada
+                request.PropostaFiltrosDTO.FormacaoHomologada,
+                totalRegistrosFiltro
                 );
             }
 

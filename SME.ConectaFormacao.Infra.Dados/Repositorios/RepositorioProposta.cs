@@ -12,6 +12,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
     public class RepositorioProposta : RepositorioBaseAuditavel<Proposta>, IRepositorioProposta
     {
+        private readonly int QUANTIDADE_MINIMA_PARA_PAGINAR = 10;
         public RepositorioProposta(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
@@ -286,9 +287,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             });
         }
 
-        public Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
+        public Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, 
+            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada,int totalRegistrosFiltro)
         {
-            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+            var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
 
             string query = MontarQueryPaginacao(propostaId, areaPromotoraId, formato, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada);
 
