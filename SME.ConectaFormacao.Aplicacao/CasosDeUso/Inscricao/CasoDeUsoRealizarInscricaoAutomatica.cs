@@ -87,15 +87,5 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 }
             }
         }
-
-        private async Task<IEnumerable<CargoFuncionarioConectaDTO>> ObterCargosFuncoesDresPorRf(string codigoRf)
-        {
-            var cargosFuncoesEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(codigoRf));
-
-            if (cargosFuncoesEol.EhNulo())
-                throw new NegocioException(MensagemNegocio.CARGO_SOBREPOSTO_FUNCAO_ATIVIDADE_NAO_ENCONTRADO);
-            
-            return cargosFuncoesEol;
-        }
     }
 }
