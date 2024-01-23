@@ -24,10 +24,12 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 await _repositorioProposta.InserirTurma(request.Turma);
 
-                foreach (var propostaTurmaDre in request.Turma.Dres)
+                var dres = request?.Turma?.Dres.ToList();
+
+                foreach (var propostaTurmaDre in dres)
                     propostaTurmaDre.PropostaTurmaId = request.Turma.Id;
                 
-                await _repositorioProposta.InserirPropostaTurmasDres(request.Turma.Dres);
+                await _repositorioProposta.InserirPropostaTurmasDres(dres);
 
                 transacao.Commit();
 

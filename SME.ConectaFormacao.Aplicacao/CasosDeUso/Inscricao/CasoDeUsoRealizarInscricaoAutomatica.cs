@@ -1,91 +1,66 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
     public class CasoDeUsoRealizarInscricaoAutomatica : CasoDeUsoAbstrato, ICasoDeUsoRealizarInscricaoAutomatica
     {
-        private readonly IMapper _mapper;
-        
-        public CasoDeUsoRealizarInscricaoAutomatica(IMediator mediator,IMapper mapper) : base(mediator)
+        public CasoDeUsoRealizarInscricaoAutomatica(IMediator mediator) : base(mediator)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var propostaId = long.Parse(param.Mensagem.ToString());
-            
-            var formacoesResumidas = await mediator.Send(new ObterPropostaResumidaPorIdQuery(propostaId));
+            var propostaId = Convert.ToInt64(param.Mensagem);
+            var propostaInscricaoAutomatica = await mediator.Send(new ObterPropostaInscricaoAutomaticaPorIdQuery(propostaId));
 
-            var anoAtual = DateTimeExtension.HorarioBrasilia().Year;
-            var qtdeCursistasSuportadosPorTurma = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, anoAtual));
+            if(propostaInscricaoAutomatica.Situacao != SituacaoProposta.Publicada || !propostaInscricaoAutomatica.EhInscricaoAutomatica)
+                return false;
 
-            if (qtdeCursistasSuportadosPorTurma.Valor.NaoEstaPreenchido())
-                throw new NegocioException(string.Format(MensagemNegocio.PARAMETRO_QTDE_CURSISTAS_SUPORTADOS_POR_TURMA_NAO_ENCONTRADO,anoAtual));
+            var cursistasEOL = await mediator.Send(new ObterFuncionarioPorFiltroPropostaServicoEolQuery(
+                propostaInscricaoAutomatica.PublicosAlvos,
+                propostaInscricaoAutomatica.FuncoesEspecificas,
+                propostaInscricaoAutomatica.Modalidades,
+                propostaInscricaoAutomatica.AnosTurmas,
+                propostaInscricaoAutomatica.PropostasTurmas.Select(turma => turma.CodigoDre).Distinct(),
+                propostaInscricaoAutomatica.ComponentesCurriculares,
+                propostaInscricaoAutomatica.EhTipoJornadaJEIF));
 
-            foreach (var formacaoResumida in formacoesResumidas)
+            var quantidadeMaximaCursistaPorTurma = int.MaxValue;
+
+            if (propostaInscricaoAutomatica.IntegrarNoSGA)
             {
-                var cursistasEOL = await mediator.Send(
-                    new ObterFuncionarioPorFiltroPropostaServicoEolQuery(formacaoResumida.PublicosAlvos,
-                    formacaoResumida.FuncoesEspecificas, formacaoResumida.Modalidades, formacaoResumida.AnosTurmas, 
-                    formacaoResumida.PropostasTurmas.Select(turma => turma.CodigoDre).Distinct(), 
-                    formacaoResumida.ComponentesCurriculares, formacaoResumida.EhTipoJornadaJEIF));
-
-                await RealizarTratamentoCargoFuncao(cursistasEOL,formacaoResumida.PublicosAlvos, formacaoResumida.FuncoesEspecificas);
-
-                var inscricaoCursista = new InscricaoCursistaDTO
-                {
-                    FormacaoResumida = _mapper.Map<FormacaoResumidaDTO>(formacaoResumida),
-                    CursistasEOL = cursistasEOL,
-                    QtdeCursistasSuportadosPorTurma = int.Parse(qtdeCursistasSuportadosPorTurma.Valor)
-                };
-
-                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarTurmas, inscricaoCursista, Guid.NewGuid(), null));
+                ParametroSistema qtdeCursistasSuportadosPorTurma = await ObterParametroQtdeCursistasSuportadosPorTurma();
+                quantidadeMaximaCursistaPorTurma = int.Parse(qtdeCursistasSuportadosPorTurma.Valor);
             }
+
+            var inscricaoAutomaticaTratarTurmas = new InscricaoAutomaticaTratarTurmasDTO
+            {
+                PropostaInscricaoAutomatica = propostaInscricaoAutomatica,
+                CursistasEOL = cursistasEOL,
+                QtdeCursistasSuportadosPorTurma = quantidadeMaximaCursistaPorTurma
+            };
+
+            await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarTurmas, inscricaoAutomaticaTratarTurmas));
 
             return true;
         }
 
-        /// <summary>
-        /// O EOL está retornando apenas os Rfs com base nos filtros: cargos, funções, ano, modalidade e componente
-        /// porém não reflete a ocupação dele, pois para isso é necessário invocar a pesquisa pelo Rf retornado.
-        /// Exemplo: é retornado CP como cargo base, mas o mesmo Rf tem um cargo sobreposto ou função com outro código 
-        /// </summary>
-        /// <param name="cursistasEOL"></param>
-        private async Task RealizarTratamentoCargoFuncao(IEnumerable<FuncionarioRfNomeDreCodigoCargoFuncaoDTO> cursistasEOL, IEnumerable<long> publicosAlvos, IEnumerable<long> funcoesEspecificas)
+        private async Task<ParametroSistema> ObterParametroQtdeCursistasSuportadosPorTurma()
         {
-            foreach (var cursistaEOL in cursistasEOL)
-            {
-                cursistaEOL.CargoCodigo = cursistaEOL.CargoCodigo; 
-                cursistaEOL.CargoDreCodigo = cursistaEOL.CargoDreCodigo;
-                cursistaEOL.CargoUeCodigo = cursistaEOL.CargoUeCodigo;
-                cursistaEOL.DreCodigo = cursistaEOL.CargoDreCodigo;
-                
-                if (cursistaEOL.CargoSobrepostoCodigo.EstaPreenchido() && publicosAlvos.Contains(long.Parse(cursistaEOL.CargoSobrepostoCodigo)))
-                {
-                    cursistaEOL.CargoCodigo = cursistaEOL.CargoSobrepostoCodigo; 
-                    cursistaEOL.CargoDreCodigo = cursistaEOL.CargoSobrepostoDreCodigo;
-                    cursistaEOL.CargoUeCodigo = cursistaEOL.CargoSobrepostoUeCodigo;
-                    cursistaEOL.DreCodigo = cursistaEOL.CargoSobrepostoDreCodigo;
-                }
+            var anoAtual = DateTimeExtension.HorarioBrasilia().Year;
+            var qtdeCursistasSuportadosPorTurma = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, anoAtual));
 
-                if (cursistaEOL.FuncaoCodigo.EstaPreenchido() && funcoesEspecificas.Contains(long.Parse(cursistaEOL.FuncaoCodigo)))
-                {
-                    cursistaEOL.FuncaoCodigo = cursistaEOL?.FuncaoCodigo;
-                    cursistaEOL.FuncaoDreCodigo = cursistaEOL?.FuncaoDreCodigo;
-                    cursistaEOL.FuncaoUeCodigo = cursistaEOL?.FuncaoUeCodigo;
-                    cursistaEOL.DreCodigo = cursistaEOL.FuncaoDreCodigo;
-                }
-            }
+            if (qtdeCursistasSuportadosPorTurma.Valor.NaoEstaPreenchido())
+                throw new NegocioException(string.Format(MensagemNegocio.PARAMETRO_QTDE_CURSISTAS_SUPORTADOS_POR_TURMA_NAO_ENCONTRADO, anoAtual));
+            return qtdeCursistasSuportadosPorTurma;
         }
     }
 }
