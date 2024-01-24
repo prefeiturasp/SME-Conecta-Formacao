@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             PropostaId = propostaId;
         }
-        
+
         public long PropostaId { get; set; }
     }
     public class ObterPropostaInscricaoAutomaticaPorIdQueryValidator : AbstractValidator<ObterPropostaInscricaoAutomaticaPorIdQuery>

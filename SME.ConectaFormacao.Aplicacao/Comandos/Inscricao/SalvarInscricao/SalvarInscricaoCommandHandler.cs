@@ -96,11 +96,11 @@ namespace SME.ConectaFormacao.Aplicacao
             if (cargosProposta.PossuiElementos())
             {
                 if (cargoId.HasValue && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO); 
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
-            { 
+            {
                 if (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }

@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
@@ -112,7 +111,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             AoRealizarInscricaoAutomaticaMock.CargosFuncoesDeparaEol = depara;
 
             var turmasInscricaoAutomatica = new List<PropostaInscricaoAutomaticaTurma>();
-            foreach(var turma in proposta.Turmas)
+            foreach (var turma in proposta.Turmas)
             {
                 foreach (var dre in turma.Dres)
                     turmasInscricaoAutomatica.Add(new PropostaInscricaoAutomaticaTurma

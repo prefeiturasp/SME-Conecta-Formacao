@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioUsuario _repositorioUsuario;
         private readonly ICacheDistribuido _cacheDistribuido;
 
-        public ObterUsuarioPorLoginQueryHandler(IRepositorioUsuario repositorioUsuario,ICacheDistribuido cacheDistribuido)
+        public ObterUsuarioPorLoginQueryHandler(IRepositorioUsuario repositorioUsuario, ICacheDistribuido cacheDistribuido)
         {
             _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
             _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public Task<Usuario> Handle(ObterUsuarioPorLoginQuery request, CancellationToken cancellationToken)
         {
-            return _cacheDistribuido.ObterAsync(string.Format(CacheDistribuidoNomes.Usuario,request.Login), () => _repositorioUsuario.ObterPorLogin(request.Login));
+            return _cacheDistribuido.ObterAsync(string.Format(CacheDistribuidoNomes.Usuario, request.Login), () => _repositorioUsuario.ObterPorLogin(request.Login));
         }
     }
 }

@@ -9,8 +9,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
     public class CasoDeUsoRealizarInscricaoAutomaticaTratarCursista : CasoDeUsoAbstrato, ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista
     {
         private readonly IMapper _mapper;
-        
-        public CasoDeUsoRealizarInscricaoAutomaticaTratarCursista(IMediator mediator,IMapper mapper) : base(mediator)
+
+        public CasoDeUsoRealizarInscricaoAutomaticaTratarCursista(IMediator mediator, IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -30,12 +30,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                         PropostaId = inscricaoCursistaDto.PropostaId,
                         PropostaTurmaId = propostaTurmaCursista.Id,
                         CargoCodigo = cursista.CargoCodigo,
-                        FuncaoCodigo =  cursista.FuncaoCodigo,
+                        FuncaoCodigo = cursista.FuncaoCodigo,
                     };
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaIncreverCursista, inscricaoAutomaticaDTO));
                 }
             }
-            
+
             return true;
         }
     }

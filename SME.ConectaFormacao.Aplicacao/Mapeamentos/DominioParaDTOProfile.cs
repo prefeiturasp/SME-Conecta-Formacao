@@ -194,11 +194,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                         opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"De {s.DataInicio:dd/MM} até {s.DataFim.Value:dd/MM}" : $"{s.DataInicio:dd/MM}")));
 
             CreateMap<Inscricao, InscricaoDTO>().ReverseMap();
-            
+
             CreateMap<Inscricao, InscricaoAutomaticaDTO>().ReverseMap();
-            
+
             CreateMap<CursistaServicoEol, CursistaServicoEol>().ReverseMap();
-            
+
             CreateMap<Usuario, InscricaoAutomaticaDTO>()
                 .ForMember(dest => dest.UsuarioRf, opt => opt.MapFrom(o => o.Login))
                 .ForMember(dest => dest.UsuarioNome, opt => opt.MapFrom(o => o.Nome))
