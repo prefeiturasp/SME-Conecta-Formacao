@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterFuncionarioPorFiltroPropostaServicoEolQuery : IRequest<IEnumerable<FuncionarioRfNomeDreCodigoCargoFuncaoDTO>>
+    public class ObterFuncionarioPorFiltroPropostaServicoEolQuery : IRequest<IEnumerable<CursistaServicoEol>>
     {
         public ObterFuncionarioPorFiltroPropostaServicoEolQuery(IEnumerable<long> codigosCargos, 
             IEnumerable<long> codigosFuncoes, IEnumerable<long> codigoModalidade, IEnumerable<string> anosTurma, 

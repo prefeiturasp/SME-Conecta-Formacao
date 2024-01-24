@@ -4,18 +4,18 @@ using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostaResumidaPorIdQuery : IRequest<IEnumerable<FormacaoResumida>>
+    public class ObterPropostaInscricaoAutomaticaPorIdQuery : IRequest<PropostaInscricaoAutomatica>
     {
-        public ObterPropostaResumidaPorIdQuery(long propostaId)
+        public ObterPropostaInscricaoAutomaticaPorIdQuery(long propostaId)
         {
             PropostaId = propostaId;
         }
         
         public long PropostaId { get; set; }
     }
-    public class ObterPropostaPorTipoInscricaoESituacaoQueryValidator : AbstractValidator<ObterPropostaResumidaPorIdQuery>
+    public class ObterPropostaInscricaoAutomaticaPorIdQueryValidator : AbstractValidator<ObterPropostaInscricaoAutomaticaPorIdQuery>
     {
-        public ObterPropostaPorTipoInscricaoESituacaoQueryValidator()
+        public ObterPropostaInscricaoAutomaticaPorIdQueryValidator()
         {
             RuleFor(x => x.PropostaId)
                 .NotEmpty()

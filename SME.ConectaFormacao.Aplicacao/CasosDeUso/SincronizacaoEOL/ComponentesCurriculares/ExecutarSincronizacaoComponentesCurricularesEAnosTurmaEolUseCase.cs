@@ -1,10 +1,11 @@
 using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
@@ -38,7 +39,7 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase : 
     }
 
     private async Task InserirOuAtualizarComponenteCurricular(IEnumerable<ComponenteCurricular> componentesConecta, AnoTurma anoTurmaExistente,
-        ComponenteCurricularAnoTurmaEOLDTO componenteEAnoTurma, long anoTurmaId)
+        ComponenteCurricularAnoTurmaServicoEol componenteEAnoTurma, long anoTurmaId)
     {
         var componenteCurricular = componentesConecta.LastOrDefault(w => w.AnoTurmaId == anoTurmaExistente?.Id && w.CodigoEOL == componenteEAnoTurma.CodigoComponenteCurricular);
 
@@ -57,7 +58,7 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase : 
         await mediator.Send(new InserirComponenteCurricularCommand(componenteCurricular));
     }
 
-    private async Task<long> InserirOuAtualizarAnoTurma(AnoTurma anoTurmaExistente, ComponenteCurricularAnoTurmaEOLDTO componenteEAnoTurma, int anoLetivo, List<AnoTurma> anosTurmaConecta)
+    private async Task<long> InserirOuAtualizarAnoTurma(AnoTurma anoTurmaExistente, ComponenteCurricularAnoTurmaServicoEol componenteEAnoTurma, int anoLetivo, List<AnoTurma> anosTurmaConecta)
     {
         if (anoTurmaExistente.EhNulo())
         {
@@ -82,7 +83,7 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase : 
         return anoTurmaExistente.Id;
     }
 
-    private AnoTurma ObterAnoTurma(IEnumerable<AnoTurma> anosTurmaConecta, ComponenteCurricularAnoTurmaEOLDTO componenteEAno, int anoLetivo)
+    private AnoTurma ObterAnoTurma(IEnumerable<AnoTurma> anosTurmaConecta, ComponenteCurricularAnoTurmaServicoEol componenteEAno, int anoLetivo)
     {
         var anoTurmaRetornado = anosTurmaConecta.Where(a => a.AnoLetivo == anoLetivo
                                                            && a.CodigoSerieEnsino == componenteEAno.CodigoSerieEnsino);
