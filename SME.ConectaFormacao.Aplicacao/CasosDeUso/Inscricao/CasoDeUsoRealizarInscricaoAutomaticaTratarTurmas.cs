@@ -49,6 +49,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 var dres = inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?.Where(t => t.Id == ultimaTurmaId).Select(s => s.CodigoDre);
 
                 quantidadeAssociado += AssociarCursistasATurma(quantidadeAssociado, inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, propostaTurmaAdicionalId, dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
+
+                contadorDaTurma++;
             }
 
             var inseririnscricao = new InserirInscricaoDTO()
@@ -83,7 +85,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
             var propostaTurmaIdInserida = await mediator.Send(new InserirPropostaTurmaEDreCommand(propostaTurmaAdicional));
 
-            contadorDaTurma++;
             return propostaTurmaIdInserida;
         }
 
