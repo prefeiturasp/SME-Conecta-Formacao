@@ -20,8 +20,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task RemoverFuncoesEspecificas(IEnumerable<PropostaFuncaoEspecifica> funcoesEspecificas);
         Task RemoverPublicosAlvo(IEnumerable<PropostaPublicoAlvo> publicoAlvo);
         Task<int> ObterTotalRegistrosPorFiltros(long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada);
-        Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, 
-            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada,int totalRegistrosFiltro);
+        Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds,
+            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, int totalRegistrosFiltro);
         Task<PropostaEncontro> ObterEncontroPorId(long encontroId);
         Task InserirEncontro(long propostaId, PropostaEncontro encontro);
         Task InserirEncontroTurmas(long propostaId, IEnumerable<PropostaEncontroTurma> turmaIds);

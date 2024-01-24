@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using SME.ConectaFormacao.Dominio.Extensoes;
+﻿using SME.ConectaFormacao.Dominio.Extensoes;
+using System.ComponentModel.DataAnnotations;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -12,15 +12,15 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Automática (JEIF)")]
         AutomaticaJEIF = 3
     }
-    
+
     public static class TipoInscricaoExtensao
     {
         public static bool EhAutomaticaOuJEIF(this TipoInscricao? valor)
         {
             if (valor.EhNulo())
                 return default;
-            
-           return (valor == TipoInscricao.Automatica ||  valor == TipoInscricao.AutomaticaJEIF);
+
+            return (valor == TipoInscricao.Automatica || valor == TipoInscricao.AutomaticaJEIF);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<CursistaServicoEol>> Handle(ObterFuncionarioPorFiltroPropostaServicoEolQuery request, CancellationToken cancellationToken)
         {
-            return await _servicoEol.ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(request.CodigosCargos, 
+            return await _servicoEol.ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(request.CodigosCargos,
                 request.CodigosFuncoes, request.CodigoModalidade, request.AnosTurma, request.CodigosDres,
                 request.CodigosComponentesCurriculares, request.EhTipoJornadaJEIF);
         }
