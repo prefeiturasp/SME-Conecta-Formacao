@@ -2,7 +2,7 @@ using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
@@ -39,7 +39,7 @@ public class TrataSincronizacaoInstitucionalDreCommandHandler : IRequestHandler<
         return true;
     }
 
-    private bool VerificaSeTemAlteracao(DreNomeAbreviacaoDTO dreEol, Dre dreConecta)
+    private bool VerificaSeTemAlteracao(DreServicoEol dreEol, Dre dreConecta)
     {
         if (dreEol.Nome.Trim() != dreConecta.Nome.Trim() ||
             dreEol.Codigo != dreConecta.Codigo ||

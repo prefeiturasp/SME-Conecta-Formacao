@@ -1,8 +1,8 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
 
-namespace SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+namespace SME.ConectaFormacao.Infra.Servicos.Eol;
 
-public class ComponenteCurricularAnoTurmaEOLDTO
+public class ComponenteCurricularAnoTurmaServicoEol
 {
     public long CodigoComponenteCurricular { get; set; }
     public string DescricaoComponenteCurricular { get; set; }

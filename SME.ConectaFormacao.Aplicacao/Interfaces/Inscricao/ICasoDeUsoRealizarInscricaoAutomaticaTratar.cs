@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
 {
-    public interface ICasoDeUsoRealizarInscricaoAutomaticaTratar : IRabbitUseCase
+    public interface ICasoDeUsoRealizarInscricaoAutomaticaTratarTurmas : IRabbitUseCase
     {
     }
 }

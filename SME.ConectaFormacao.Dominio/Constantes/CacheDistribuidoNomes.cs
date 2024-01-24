@@ -50,5 +50,6 @@
         /// 0 - Login (rf)
         /// </summary>
         public const string Usuario = "usuario:{0}";
+        public const string DreTodos = "dre:todos";
     }
 }

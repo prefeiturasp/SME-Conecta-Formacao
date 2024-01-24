@@ -14,7 +14,7 @@ using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
@@ -53,7 +53,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<Dre, DreDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
 
-            CreateMap<Dre, DreNomeAbreviacaoDTO>().ReverseMap();
+            CreateMap<Dre, DreServicoEol>().ReverseMap();
 
             CreateMap<CriterioCertificacao, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Descricao));
@@ -156,11 +156,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaTurma, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome));
             CreateMap<ComponenteCurricular, ComponenteCurricularDTO>().ReverseMap();
-            CreateMap<AnoTurma, ComponenteCurricularAnoTurmaEOLDTO>()
+            CreateMap<AnoTurma, ComponenteCurricularAnoTurmaServicoEol>()
                 .ForMember(dest => dest.CodigoAnoTurma, opt => opt.MapFrom(o => o.CodigoEOL))
                 .ForMember(dest => dest.DescricaoSerieEnsino, opt => opt.MapFrom(o => o.Descricao))
                 .ReverseMap();
-            CreateMap<ComponenteCurricular, ComponenteCurricularAnoTurmaEOLDTO>()
+            CreateMap<ComponenteCurricular, ComponenteCurricularAnoTurmaServicoEol>()
                 .ForMember(dest => dest.CodigoComponenteCurricular, opt => opt.MapFrom(o => o.CodigoEOL))
                 .ForMember(dest => dest.DescricaoComponenteCurricular, opt => opt.MapFrom(o => o.Nome))
                 .ReverseMap();
@@ -197,9 +197,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             
             CreateMap<Inscricao, InscricaoAutomaticaDTO>().ReverseMap();
             
-            CreateMap<FormacaoResumida, FormacaoResumidaDTO>().ReverseMap();
-            CreateMap<PropostaTurmaResumida, PropostaTurmaResumidaDTO>().ReverseMap();
-            CreateMap<FuncionarioRfNomeDreCodigoCargoFuncaoDTO, FuncionarioRfNomeDreCodigoCargoFuncaoDTO>().ReverseMap();
+            CreateMap<CursistaServicoEol, CursistaServicoEol>().ReverseMap();
             
             CreateMap<Usuario, InscricaoAutomaticaDTO>()
                 .ForMember(dest => dest.UsuarioRf, opt => opt.MapFrom(o => o.Login))

@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterCargosFuncoesDresFuncionarioServicoEolQuery : IRequest<IEnumerable<CargoFuncionarioConectaDTO>>
+    public class ObterCargosFuncoesDresFuncionarioServicoEolQuery : IRequest<IEnumerable<CursistaCargoServicoEol>>
     {
         public ObterCargosFuncoesDresFuncionarioServicoEolQuery(string registroFuncional)
         {

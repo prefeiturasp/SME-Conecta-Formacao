@@ -287,8 +287,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             });
         }
 
-        public Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, 
-            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada,int totalRegistrosFiltro)
+        public Task<IEnumerable<Proposta>> ObterDadosPaginados(int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds,
+            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, int totalRegistrosFiltro)
         {
             var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
 
@@ -1448,7 +1448,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 propostaTurma.Id = (long)await conexao.Obter().InsertAsync(propostaTurma);
             }
         }
-        
+
         public async Task InserirTurma(PropostaTurma propostaTurma)
         {
             PreencherAuditoriaCriacao(propostaTurma);
@@ -1804,7 +1804,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return encontros;
         }
-        
+
         public Task<IEnumerable<Proposta>> ObterPropostaResumidaPorId(long propostaId)
         {
             var query = @"select 
@@ -1817,10 +1817,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<Proposta>(query, new { propostaId });
         }
 
-        public async Task<FormacaoResumida> ObterFormacaoResumidaPorPropostaId(long propostaId)
+        public async Task<PropostaInscricaoAutomatica> ObterPropostaInscricaoPorId(long propostaId)
         {
             var query = @"
+            select id as propostaId,
+                   tipo_inscricao as TipoInscricao, 
+                   integrar_no_sga as IntegrarNoSGA,
+                   situacao
+            from proposta
+            where id = @propostaId and not excluido;
+
             select pt.id,
+                   ptd.dre_id as DreId, 
                    dre.dre_id as codigoDre
             from proposta_turma pt
               join proposta_turma_dre ptd on ptd.proposta_turma_id = pt.id 
@@ -1865,17 +1873,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
 
-            var formacaoResumida = new FormacaoResumida
-            {
-                PropostasTurmas = queryMultiple.Read<PropostaTurmaResumida>(),
-                PublicosAlvos = queryMultiple.Read<long>(),
-                FuncoesEspecificas = queryMultiple.Read<long>(),
-                AnosTurmas = queryMultiple.Read<string>(),
-                ComponentesCurriculares = queryMultiple.Read<long>(),
-                Modalidades = queryMultiple.Read<long>()
-            };
+            var propostaInscricaoAutomatica = await queryMultiple.ReadFirstAsync<PropostaInscricaoAutomatica>();
 
-            return formacaoResumida;
+            propostaInscricaoAutomatica.PropostasTurmas = await queryMultiple.ReadAsync<PropostaInscricaoAutomaticaTurma>();
+            propostaInscricaoAutomatica.PublicosAlvos = await queryMultiple.ReadAsync<long>();
+            propostaInscricaoAutomatica.FuncoesEspecificas = await queryMultiple.ReadAsync<long>();
+            propostaInscricaoAutomatica.AnosTurmas = await queryMultiple.ReadAsync<string>();
+            propostaInscricaoAutomatica.ComponentesCurriculares = await queryMultiple.ReadAsync<long>();
+            propostaInscricaoAutomatica.Modalidades = await queryMultiple.ReadAsync<long>();
+
+            return propostaInscricaoAutomatica;
         }
     }
 }

@@ -2,7 +2,6 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Constante;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 using System.Net;
 
@@ -28,7 +27,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             return json.JsonParaObjeto<string>().ToUpper();
         }
 
-        public async Task<IEnumerable<DreNomeAbreviacaoDTO>> ObterCodigosDres()
+        public async Task<IEnumerable<DreServicoEol>> ObterCodigosDres()
         {
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_NOME_ABREVIACAO_DRE);
 
@@ -36,10 +35,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
                 throw new NegocioException(MensagemNegocio.CODIGOS_DRE_NAO_LOCALIZADO, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<DreNomeAbreviacaoDTO[]>();
+            return json.JsonParaObjeto<DreServicoEol[]>();
         }
 
-        public async Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo)
+        public async Task<IEnumerable<ComponenteCurricularAnoTurmaServicoEol>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo)
         {
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO.Parametros(anoLetivo));
 
@@ -47,10 +46,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
                 throw new NegocioException(MensagemNegocio.NENHUM_COMPONENTE_CURRICULAR_DOS_ANOS_DA_TURMA_DO_EOL_FORAM_LOCALIZADOS, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<ComponenteCurricularAnoTurmaEOLDTO[]>();
+            return json.JsonParaObjeto<ComponenteCurricularAnoTurmaServicoEol[]>();
         }
 
-        public async Task<IEnumerable<CargoFuncionarioConectaDTO>> ObterCargosFuncionadoPorRegistroFuncional(string registroFuncional)
+        public async Task<IEnumerable<CursistaCargoServicoEol>> ObterCargosFuncionadoPorRegistroFuncional(string registroFuncional)
         {
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_CARGOS_FUNCIONARIO_POR_RF.Parametros(registroFuncional));
 
@@ -58,10 +57,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<CargoFuncionarioConectaDTO[]>();
+            return json.JsonParaObjeto<CursistaCargoServicoEol[]>();
         }
 
-        public async Task<IEnumerable<FuncionarioRfNomeDreCodigoCargoFuncaoDTO>> ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(IEnumerable<long> codigosCargos, IEnumerable<long> codigosFuncoes,
+        public async Task<IEnumerable<CursistaServicoEol>> ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(IEnumerable<long> codigosCargos, IEnumerable<long> codigosFuncoes,
             IEnumerable<long> codigosModalidades, IEnumerable<string> anosTurma,IEnumerable<string> codigosDres, IEnumerable<long> codigosComponentesCurriculares, bool EhTipoJornadaJEIF)
         {
             var filtrosUrl = "?";
@@ -92,7 +91,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<FuncionarioRfNomeDreCodigoCargoFuncaoDTO[]>();
+            return json.JsonParaObjeto<CursistaServicoEol[]>();
         }
     }
 }

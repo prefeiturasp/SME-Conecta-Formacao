@@ -97,5 +97,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryAsync<Dre>(query);
         }
+
+        public Task<Dre> ObterDreTodos()
+        {
+            var query = @"select
+	                            d.id,
+	                            d.dre_id,
+	                            d.abreviacao,
+	                            d.nome,
+	                            d.data_atualizacao,
+	                            d.criado_em,
+	                            d.criado_por,
+	                            d.alterado_em,
+	                            d.alterado_por,
+	                            d.criado_login,
+	                            d.alterado_login,
+	                            d.excluido
+                            from
+	                            public.dre d  
+                            where d.todos and not d.excluido ";
+            return conexao.Obter().QueryFirstOrDefaultAsync<Dre>(query);
+        }
     }
 }
