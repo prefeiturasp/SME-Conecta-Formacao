@@ -118,7 +118,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             inscricaoAutomaticaPropostaTurmaCursistasDTO.Add(new InscricaoAutomaticaPropostaTurmaCursistasDTO
             {
                 Id = propostaTurmaId,
-                Cursistas = cursistasTurma
+                Cursistas = cursistasTurma.ToList()
             });
 
             foreach (var cur in cursistasTurma)
