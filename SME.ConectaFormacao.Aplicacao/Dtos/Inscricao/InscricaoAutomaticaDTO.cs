@@ -11,5 +11,6 @@
         public long UsuarioId { get; set; }
         public string UsuarioRf { get; set; }
         public string UsuarioNome { get; set; }
+        public string UsuarioCpf { get; set; }
     }
 }

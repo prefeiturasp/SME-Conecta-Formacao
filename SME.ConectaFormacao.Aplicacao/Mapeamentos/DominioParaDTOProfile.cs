@@ -202,6 +202,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<Usuario, InscricaoAutomaticaDTO>()
                 .ForMember(dest => dest.UsuarioRf, opt => opt.MapFrom(o => o.Login))
                 .ForMember(dest => dest.UsuarioNome, opt => opt.MapFrom(o => o.Nome))
+                .ForMember(dest => dest.UsuarioCpf, opt => opt.MapFrom(o => o.Cpf))
                 .ReverseMap();
 
             CreateMap<Inscricao, InscricaoPaginadaDTO>()
