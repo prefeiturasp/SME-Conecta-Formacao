@@ -17,7 +17,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         public async Task<bool> Executar(long propostaId)
         {
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
-
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
@@ -34,7 +33,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (situacao == SituacaoProposta.Publicada && proposta.FormacaoHomologada != FormacaoHomologada.Sim)
                 await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, propostaId));
 
-            if (situacao == SituacaoProposta.Publicada && proposta.TipoInscricao.EhAutomaticaOuJEIF())
+            proposta.TiposInscricao = await mediator.Send(new ObterPropostaTipoInscricaoPorIdQuery(propostaId));
+
+            if (situacao == SituacaoProposta.Publicada && proposta.TiposInscricao.Any(a => a.TipoInscricao == TipoInscricao.Automatica || a.TipoInscricao == TipoInscricao.AutomaticaJEIF))
                 await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomatica, propostaId));
 
             return true;

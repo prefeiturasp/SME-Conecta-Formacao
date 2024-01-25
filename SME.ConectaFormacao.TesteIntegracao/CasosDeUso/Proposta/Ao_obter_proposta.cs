@@ -38,6 +38,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaModalidadesDTO(propostaCompletoDTO.Modalidades, proposta.Id);
             ValidarPropostaAnosTurmasDTO(propostaCompletoDTO.AnosTurmas, proposta.Id);
             ValidarPropostaComponentesCurricularesDTO(propostaCompletoDTO.ComponentesCurriculares, proposta.Id);
+            ValidarPropostaTipoInscricaoDTO(propostaCompletoDTO.TiposInscricao, proposta.Id);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção ao obter por id inválido")]
