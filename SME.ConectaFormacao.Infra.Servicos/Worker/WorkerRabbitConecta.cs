@@ -181,8 +181,8 @@ namespace SME.ConectaFormacao.Infra
                 {
                     transacao?.CaptureException(nex);
 
-                    canalRabbit.BasicAck(ea.DeliveryTag, false);
-                    await servicoMensageriaMetricas.Concluido(rota);
+                    canalRabbit.BasicReject(ea.DeliveryTag, false);
+                    await servicoMensageriaMetricas.Erro(rota);
 
                     await RegistrarErroTratamentoMensagem(ea, mensagemRabbit, nex, LogNivel.Negocio, $"Erros: {nex.Message}");
 
