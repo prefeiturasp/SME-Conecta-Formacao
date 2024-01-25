@@ -36,7 +36,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 AssociarCursistasATurma(inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, turma.Id, turma.Dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
             }
 
-            var contadorDaTurma = 2; //Parte 2...Parte 3...Parte 4
             while (cursistas.Any(t => !t.Associado))
             {
                 var ultimaTurmaId = inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?.LastOrDefault()?.Id;
@@ -56,13 +55,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     }
                 }
 
-                long propostaTurmaAdicionalId = await InserirTurmaAdicional(inscricaoAutomaticaTratarTurmas, possuiDres, contadorDaTurma, ultimaTurmaId.GetValueOrDefault());
+                long propostaTurmaAdicionalId = await mediator.Send(new InserirPropostaTurmaAdicionalCommand(ultimaTurmaId.GetValueOrDefault()));
 
                 var dres = inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?.Where(t => t.Id == ultimaTurmaId).Select(s => s.CodigoDre);
 
                 AssociarCursistasATurma(inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, propostaTurmaAdicionalId, dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
-
-                contadorDaTurma++;
             }
 
             var inseririnscricao = new InserirInscricaoDTO()
@@ -74,30 +71,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarCursistas, inseririnscricao));
 
             return true;
-        }
-
-        private async Task<long> InserirTurmaAdicional(InscricaoAutomaticaTratarTurmasDTO inscricaoAutomaticaTratarTurmas, bool possuiDres, int contadorDaTurma, long ultimaTurmaId)
-        {
-            var ultimaPropostaTurma = await mediator.Send(new ObterPropostaTurmaPorIdQuery(ultimaTurmaId));
-
-            var propostaTurmaAdicional = ultimaPropostaTurma.Clone();
-            propostaTurmaAdicional.Nome += $" - Parte {contadorDaTurma}";
-
-            if (possuiDres)
-            {
-                propostaTurmaAdicional.Dres = inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.PropostasTurmas
-                    .Where(w => w.Id == ultimaTurmaId)
-                    .Select(s => new PropostaTurmaDre { DreId = s.DreId }).Distinct();
-            }
-            else
-            {
-                var dreTodos = await mediator.Send(new ObterDreTodosQuery());
-                propostaTurmaAdicional.Dres = new List<PropostaTurmaDre>() { new PropostaTurmaDre { DreId = dreTodos.Id } };
-            }
-
-            var propostaTurmaIdInserida = await mediator.Send(new InserirPropostaTurmaEDreCommand(propostaTurmaAdicional));
-
-            return propostaTurmaIdInserida;
         }
 
         private static void AssociarCursistasATurma(List<InscricaoAutomaticaPropostaTurmaCursistasDTO> inscricaoAutomaticaPropostaTurmaCursistasDTO, IEnumerable<CursistaServicoEol> cursistas, long propostaTurmaId, IEnumerable<string> dres, int quantidadeMaximaPorTurma, bool possuiDres)

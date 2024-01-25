@@ -1,6 +1,6 @@
 ﻿namespace SME.ConectaFormacao.Dominio.Entidades
 {
-    public class PropostaTurma : EntidadeBaseAuditavel
+    public class PropostaTurma : EntidadeBaseAuditavel, ICloneable
     {
         public long PropostaId { get; set; }
         public string Nome { get; set; }
@@ -9,14 +9,9 @@
         public IEnumerable<PropostaTurmaDre> Dres { get; set; }
         public Proposta Proposta { get; set; }
 
-        public PropostaTurma Clone()
+        public object Clone()
         {
-            return new PropostaTurma()
-            {
-                PropostaId = PropostaId,
-                Nome = Nome,
-                DresIds = Array.Empty<long>()
-            };
+            return this.MemberwiseClone();
         }
     }
 }
