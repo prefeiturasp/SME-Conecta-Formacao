@@ -1884,5 +1884,49 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return propostaInscricaoAutomatica;
         }
+
+        public Task<IEnumerable<PropostaRegente>> ObterRegentesPorPropostaTurmaId(long propostaTurmaId)
+        {
+            var query = @"SELECT
+	                        pr.id,
+	                        pr.proposta_id,
+	                        pr.profissional_rede_municipal,
+	                        pr.registro_funcional,
+	                        pr.nome_regente,
+	                        pr.mini_biografia,
+	                        pr.criado_em,
+	                        pr.criado_por,
+	                        pr.alterado_em,
+	                        pr.alterado_por,
+	                        pr.criado_login,
+	                        pr.alterado_login,
+	                        pr.excluido
+                        FROM proposta_regente_turma prt
+	                    INNER JOIN proposta_regente pr on pr.id = prt.proposta_regente_id and not pr.excluido
+	                    WHERE not prt.excluido and prt.turma_id = @propostaTurmaId;";
+
+            return conexao.Obter().QueryAsync<PropostaRegente>(query, new { propostaTurmaId });
+        }
+
+        public Task<IEnumerable<PropostaTutor>> ObterTutoresPorPropostaTurmaId(long propostaTurmaOrigemId)
+        {
+            var query = @"select
+	                            pt.id,
+	                            pt.proposta_id,
+	                            pt.profissional_rede_municipal,
+	                            pt.registro_funcional,
+	                            pt.nome_tutor,
+	                            pt.criado_em,
+	                            pt.criado_por,
+	                            pt.alterado_em,
+	                            pt.alterado_por,
+	                            pt.criado_login,
+	                            pt.alterado_login,
+	                            pt.excluido
+                            from proposta_tutor_turma ptt
+	                        inner join proposta_tutor pt on pt.id = ptt.proposta_tutor_id and not pt.excluido
+	                        where not ptt.excluido and ptt.turma_id = @propostaTurmaOrigemId;";
+            return conexao.Obter().QueryAsync<PropostaTutor>(query, new { propostaTurmaOrigemId });
+        }
     }
 }
