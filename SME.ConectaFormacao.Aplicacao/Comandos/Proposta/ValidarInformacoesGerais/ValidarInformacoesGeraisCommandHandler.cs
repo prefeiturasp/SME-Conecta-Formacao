@@ -1,5 +1,6 @@
 using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -14,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 erros.Add(MensagemNegocio.TIPO_FORMACAO_NAO_INFORMADO);
             if (proposta.Formato == null)
                 erros.Add(MensagemNegocio.FORMATO_NAO_INFORMADO);
-            if (proposta.TipoInscricao == null)
+            if (proposta.TiposInscricao.NaoPossuiElementos())
                 erros.Add(MensagemNegocio.TIPO_INSCRICAO_NAO_INFORMADA);
             if (string.IsNullOrEmpty(proposta.NomeFormacao))
                 erros.Add(MensagemNegocio.NOME_FORMACAO_NAO_INFORMADO);

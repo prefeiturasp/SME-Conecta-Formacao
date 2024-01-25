@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
     {
         public PropostaTipoInscricaoMap()
         {
-            ToTable("Proposta_tipo_inscricao");
+            ToTable("proposta_tipo_inscricao");
 
             Map(c => c.PropostaId).ToColumn("proposta_id");
             Map(c => c.TipoInscricao).ToColumn("tipo_inscricao");
