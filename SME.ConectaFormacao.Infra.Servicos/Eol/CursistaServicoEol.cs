@@ -13,5 +13,6 @@
         public string Funcao { get; set; }
 
         public string DreCodigo { get; set; }
+        public bool Associado { get; set; }
     }
 }

@@ -22,33 +22,45 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
             var possuiDres = inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.PropostasTurmas.Any(t => t.DreId.HasValue);
 
-
-            int quantidadeAssociado = 0;
             IEnumerable<CursistaServicoEol> cursistas = inscricaoAutomaticaTratarTurmas.CursistasEOL;
-
-            var turmasAgrupadas = inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.PropostasTurmas.GroupBy(g => g.Id).Select(s => new { Id = s.Key, Dres = s.Select(x => x.CodigoDre) });
+            var turmasAgrupadas = inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.PropostasTurmas
+                .GroupBy(g => g.Id)
+                .Select(s => new
+                {
+                    Id = s.Key,
+                    Dres = s.Select(x => x.CodigoDre)
+                });
 
             foreach (var turma in turmasAgrupadas)
             {
-                quantidadeAssociado += AssociarCursistasATurma(quantidadeAssociado, inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, turma.Id, turma.Dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
+                AssociarCursistasATurma(inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, turma.Id, turma.Dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
             }
 
             var contadorDaTurma = 2; //Parte 2...Parte 3...Parte 4
-            while (quantidadeAssociado < cursistas.Count())
+            while (cursistas.Any(t => !t.Associado))
             {
-                var ultimaTurmaId = possuiDres ?
-                    inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?.LastOrDefault(w => w.CodigoDre == cursistas.FirstOrDefault()?.DreCodigo)?.Id :
-                    inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?.LastOrDefault()?.Id;
+                var ultimaTurmaId = inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?.LastOrDefault()?.Id;
 
-                // caso não exista turma para a dre dos cursistas, não realiza a inscrição.
-                if (possuiDres && !ultimaTurmaId.HasValue)
-                    cursistas = cursistas.Where(w => w.DreCodigo == cursistas.FirstOrDefault()?.DreCodigo);
+                if (possuiDres)
+                {
+                    var primeiraCursistaNaoAssociado = cursistas.Where(t => !t.Associado).First();
+
+                    ultimaTurmaId = inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?
+                        .LastOrDefault(w => w.CodigoDre == primeiraCursistaNaoAssociado.DreCodigo)?.Id;
+
+                    // caso não exista turma para a dre do cursista, não realiza a inscrição.
+                    if (!ultimaTurmaId.HasValue)
+                    {
+                        primeiraCursistaNaoAssociado.Associado = true;
+                        continue;
+                    }
+                }
 
                 long propostaTurmaAdicionalId = await InserirTurmaAdicional(inscricaoAutomaticaTratarTurmas, possuiDres, contadorDaTurma, ultimaTurmaId.GetValueOrDefault());
 
                 var dres = inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?.Where(t => t.Id == ultimaTurmaId).Select(s => s.CodigoDre);
 
-                quantidadeAssociado += AssociarCursistasATurma(quantidadeAssociado, inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, propostaTurmaAdicionalId, dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
+                AssociarCursistasATurma(inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, propostaTurmaAdicionalId, dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
 
                 contadorDaTurma++;
             }
@@ -88,16 +100,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             return propostaTurmaIdInserida;
         }
 
-        private static int AssociarCursistasATurma(int quantidadeAssociado, List<InscricaoAutomaticaPropostaTurmaCursistasDTO> inscricaoAutomaticaPropostaTurmaCursistasDTO, IEnumerable<CursistaServicoEol> cursistas, long propostaTurmaId, IEnumerable<string> dres, int quantidadeMaximaPorTurma, bool possuiDres)
+        private static void AssociarCursistasATurma(List<InscricaoAutomaticaPropostaTurmaCursistasDTO> inscricaoAutomaticaPropostaTurmaCursistasDTO, IEnumerable<CursistaServicoEol> cursistas, long propostaTurmaId, IEnumerable<string> dres, int quantidadeMaximaPorTurma, bool possuiDres)
         {
             IEnumerable<CursistaServicoEol> cursistasTurma;
             if (possuiDres)
-                cursistasTurma = cursistas.Where(w => dres.Contains(w.DreCodigo)).Skip(quantidadeAssociado).Take(quantidadeMaximaPorTurma);
+                cursistasTurma = cursistas
+                    .Where(w => !w.Associado && dres.Contains(w.DreCodigo))
+                    .Take(quantidadeMaximaPorTurma);
             else
-                cursistasTurma = cursistas.Skip(quantidadeAssociado).Take(quantidadeMaximaPorTurma);
+                cursistasTurma = cursistas
+                    .Where(w => !w.Associado)
+                    .Take(quantidadeMaximaPorTurma);
 
             if (cursistasTurma.NaoPossuiElementos())
-                return quantidadeMaximaPorTurma;
+                return;
 
             inscricaoAutomaticaPropostaTurmaCursistasDTO.Add(new InscricaoAutomaticaPropostaTurmaCursistasDTO
             {
@@ -105,7 +121,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 Cursistas = cursistasTurma
             });
 
-            return quantidadeMaximaPorTurma;
+            foreach (var cur in cursistasTurma)
+                cur.Associado = true;
         }
     }
 }
