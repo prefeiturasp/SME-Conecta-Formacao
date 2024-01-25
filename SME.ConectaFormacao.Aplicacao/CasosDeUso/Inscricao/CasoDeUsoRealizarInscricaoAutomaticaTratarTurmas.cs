@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Consultas.Dre.ObterDreTodos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 
@@ -36,16 +37,22 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 AssociarCursistasATurma(inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, turma.Id, turma.Dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
             }
 
+            List<PropostaInscricaoAutomaticaTurma> turmas = inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.PropostasTurmas.ToList();
+
             while (cursistas.Any(t => !t.Associado))
             {
-                var ultimaTurmaId = inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?.LastOrDefault()?.Id;
+                turmas = turmas
+                    .OrderBy(o => o.Id)
+                    .ThenBy(t => t.CodigoDre)
+                    .ToList();
+
+                var ultimaTurmaId = turmas.LastOrDefault()?.Id;
 
                 if (possuiDres)
                 {
                     var primeiraCursistaNaoAssociado = cursistas.Where(t => !t.Associado).First();
 
-                    ultimaTurmaId = inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?
-                        .LastOrDefault(w => w.CodigoDre == primeiraCursistaNaoAssociado.DreCodigo)?.Id;
+                    ultimaTurmaId = turmas.LastOrDefault(w => w.CodigoDre == primeiraCursistaNaoAssociado.DreCodigo)?.Id;
 
                     // caso não exista turma para a dre do cursista, não realiza a inscrição.
                     if (!ultimaTurmaId.HasValue)
@@ -57,9 +64,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
                 long propostaTurmaAdicionalId = await mediator.Send(new InserirPropostaTurmaAdicionalCommand(ultimaTurmaId.GetValueOrDefault()));
 
-                var dres = inscricaoAutomaticaTratarTurmas?.PropostaInscricaoAutomatica?.PropostasTurmas?.Where(t => t.Id == ultimaTurmaId).Select(s => s.CodigoDre);
+                var dres = turmas
+                    .Where(t => t.Id == ultimaTurmaId)
+                    .Select(s => s.CodigoDre).ToList();
 
                 AssociarCursistasATurma(inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, propostaTurmaAdicionalId, dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
+
+                foreach (var dre in dres)
+                {
+                    turmas.Add(new PropostaInscricaoAutomaticaTurma
+                    {
+                        Id = propostaTurmaAdicionalId,
+                        CodigoDre = dre
+                    });
+                }
             }
 
             var inseririnscricao = new InserirInscricaoDTO()
