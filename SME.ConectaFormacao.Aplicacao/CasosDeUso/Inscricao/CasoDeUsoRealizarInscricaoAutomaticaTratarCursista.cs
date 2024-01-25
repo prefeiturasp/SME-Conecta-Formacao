@@ -27,6 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     {
                         UsuarioRf = cursista.Rf,
                         UsuarioNome = cursista.Nome,
+                        UsuarioCpf = cursista.Cpf,
                         PropostaId = inscricaoCursistaDto.PropostaId,
                         PropostaTurmaId = propostaTurmaCursista.Id,
                         CargoCodigo = cursista.CargoCodigo,
