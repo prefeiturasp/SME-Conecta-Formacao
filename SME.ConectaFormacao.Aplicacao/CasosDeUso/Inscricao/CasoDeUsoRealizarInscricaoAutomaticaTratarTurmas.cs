@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Dre.ObterDreTodos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra;
@@ -52,7 +50,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 {
                     var primeiraCursistaNaoAssociado = cursistas.Where(t => !t.Associado).First();
 
-                    ultimaTurmaId = turmas.LastOrDefault(w => w.CodigoDre == primeiraCursistaNaoAssociado.DreCodigo)?.Id;
+                    var dreCursista = primeiraCursistaNaoAssociado.FuncaoDreCodigo.EstaPreenchido() ? primeiraCursistaNaoAssociado.FuncaoDreCodigo : primeiraCursistaNaoAssociado.CargoDreCodigo;
+
+                    ultimaTurmaId = turmas.LastOrDefault(w => w.CodigoDre == dreCursista)?.Id;
 
                     // caso não exista turma para a dre do cursista, não realiza a inscrição.
                     if (!ultimaTurmaId.HasValue)
@@ -96,7 +96,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             IEnumerable<CursistaServicoEol> cursistasTurma;
             if (possuiDres)
                 cursistasTurma = cursistas
-                    .Where(w => !w.Associado && dres.Contains(w.DreCodigo))
+                    .Where(w => !w.Associado && (w.FuncaoDreCodigo.EstaPreenchido() ? dres.Contains(w.FuncaoDreCodigo) : dres.Contains(w.CargoDreCodigo)))
                     .Take(quantidadeMaximaPorTurma);
             else
                 cursistasTurma = cursistas
