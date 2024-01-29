@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Infra;
@@ -8,11 +7,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
     public class CasoDeUsoRealizarInscricaoAutomaticaTratarCursista : CasoDeUsoAbstrato, ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista
     {
-        private readonly IMapper _mapper;
-
-        public CasoDeUsoRealizarInscricaoAutomaticaTratarCursista(IMediator mediator, IMapper mapper) : base(mediator)
+        public CasoDeUsoRealizarInscricaoAutomaticaTratarCursista(IMediator mediator) : base(mediator)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
@@ -27,11 +23,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     {
                         UsuarioRf = cursista.Rf,
                         UsuarioNome = cursista.Nome,
+                        UsuarioCpf = cursista.Cpf,
                         PropostaId = inscricaoCursistaDto.PropostaId,
                         PropostaTurmaId = propostaTurmaCursista.Id,
                         CargoCodigo = cursista.CargoCodigo,
+                        CargoDreCodigo = cursista.CargoDreCodigo,
+                        CargoUeCodigo = cursista.CargoUeCodigo,
                         FuncaoCodigo = cursista.FuncaoCodigo,
+                        FuncaoDreCodigo = cursista.FuncaoDreCodigo,
+                        FuncaoUeCodigo = cursista.FuncaoUeCodigo
                     };
+
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaIncreverCursista, inscricaoAutomaticaDTO));
                 }
             }

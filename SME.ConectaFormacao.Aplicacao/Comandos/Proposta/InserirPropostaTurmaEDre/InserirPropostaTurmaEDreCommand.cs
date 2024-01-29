@@ -1,30 +1,25 @@
 ﻿using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class InserirPropostaTurmaEDreCommand : IRequest<long>
+    public class InserirPropostaTurmaAdicionalCommand : IRequest<long>
     {
-        public InserirPropostaTurmaEDreCommand(PropostaTurma turma)
+        public InserirPropostaTurmaAdicionalCommand(long propostaTurmaOrigemId)
         {
-            Turma = turma;
+            PropostaTurmaOrigemId = propostaTurmaOrigemId;
         }
 
-        public PropostaTurma Turma { get; }
+        public long PropostaTurmaOrigemId { get; }
     }
 
-    public class InserirPropostaTurmaEDreCommandValidator : AbstractValidator<InserirPropostaTurmaEDreCommand>
+    public class InserirPropostaTurmaAdicionalCommandValidator : AbstractValidator<InserirPropostaTurmaAdicionalCommand>
     {
-        public InserirPropostaTurmaEDreCommandValidator()
+        public InserirPropostaTurmaAdicionalCommandValidator()
         {
-            RuleFor(x => x.Turma.PropostaId)
+            RuleFor(x => x.PropostaTurmaOrigemId)
                 .NotEmpty()
-                .WithMessage("É necessário informar o id da proposta para inserir as turmas");
-
-            RuleFor(x => x.Turma.Nome)
-                .NotEmpty()
-                .WithMessage("É necessário informar um nome da turma da proposta para salvar as turmas");
+                .WithMessage("É necessário informar o id da proposta turma para adicionar uma turma adicional");
         }
     }
 }

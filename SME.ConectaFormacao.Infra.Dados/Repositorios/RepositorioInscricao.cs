@@ -139,7 +139,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { usuarioId });
         }
 
-        public Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(long inscricaoId, string? login, string? cpf, string? nomeCursista, string? nomeTurma,
+        public Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(long propostaId, string? login, string? cpf, string? nomeCursista, string? nomeTurma,
             int numeroPagina, int numeroRegistros)
         {
             var query = new StringBuilder(@"select 
@@ -161,13 +161,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 											inner join usuario u on
 												i.usuario_id = u.id
 											inner join cargo_funcao cf on
-												coalesce(i.cargo_id,i.funcao_id) = cf.id
+												coalesce(i.funcao_id, i.cargo_id) = cf.id
 											where
 												not i.excluido
 												and not pt.excluido
 												and not u.excluido
 												and not cf.excluido
-												and pt.proposta_id = @inscricaoId ");
+												and pt.proposta_id = @propostaId ");
             if (!string.IsNullOrEmpty(login))
                 query.AppendLine($" and u.login like '%{@login}%' ");
             if (!string.IsNullOrEmpty(cpf))
@@ -184,10 +184,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    inscricao.Funcao = cargoFuncao;
                    inscricao.Usuario = usuario;
                    return inscricao;
-               }, new { inscricaoId, login, cpf, nomeCursista, numeroRegistros, registrosIgnorados }, splitOn: "id, proposta_turma_id, usuario_id,cargo_id");
+               }, new { propostaId, login, cpf, nomeCursista, numeroRegistros, registrosIgnorados }, splitOn: "id, proposta_turma_id, usuario_id,cargo_id");
         }
 
-        public Task<int> ObterInscricaoPorIdComFiltrosTotalRegistros(long inscricaoId, string? login, string? cpf, string? nomeCursista, string? nomeTurma)
+        public Task<int> ObterInscricaoPorIdComFiltrosTotalRegistros(long propostaId, string? login, string? cpf, string? nomeCursista, string? nomeTurma)
         {
             var query = new StringBuilder(@"select count(1) from (select *
 											from
@@ -203,7 +203,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												and not pt.excluido
 												and not u.excluido
 												and not cf.excluido
-												and pt.proposta_id = @inscricaoId ");
+												and pt.proposta_id = @propostaId ");
             if (!string.IsNullOrEmpty(login))
                 query.AppendLine($" and u.login like '%{@login}%' ");
             if (!string.IsNullOrEmpty(cpf))
@@ -214,7 +214,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query.AppendLine($" and lower(pt.nome) like '%{nomeTurma.ToLower()}%' ");
             query.AppendLine(" )tb ");
 
-            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { inscricaoId, login, cpf, nomeCursista });
+            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { propostaId, login, cpf, nomeCursista });
         }
 
         public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? codigoDaFormacao,
