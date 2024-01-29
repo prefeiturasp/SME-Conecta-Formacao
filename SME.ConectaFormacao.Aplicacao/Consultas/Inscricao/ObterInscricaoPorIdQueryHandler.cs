@@ -23,7 +23,8 @@ namespace SME.ConectaFormacao.Aplicacao
             var totalDeRegistros = await _repositorioInscricao.ObterInscricaoPorIdComFiltrosTotalRegistros(request.PropostaId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista, request.filtros.NomeTurma);
             if (totalDeRegistros > 0)
             {
-                var inscricoes = await _repositorioInscricao.ObterInscricaoPorIdComFiltros(request.PropostaId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista, request.filtros.NomeTurma, request.NumeroPagina, request.NumeroRegistros);
+                var inscricoes = await _repositorioInscricao.ObterInscricaoPorIdComFiltros(request.PropostaId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista,
+                    request.filtros.NomeTurma, request.NumeroPagina, request.NumeroRegistros, totalDeRegistros);
                 mapeamento.AddRange(_mapper.Map<IEnumerable<DadosListagemInscricaoDTO>>(inscricoes));
             }
 
