@@ -65,15 +65,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoSalvarInscricao.Executar(id));
         }
 
-        [HttpGet("{inscricaoId}")]
+        [HttpGet("{propostaId}")]
         [ProducesResponseType(typeof(IEnumerable<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
-        public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long inscricaoId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
+        public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long propostaId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
         [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
         {
-            return Ok(await casoDeUsoObterInscricaoPorId.Executar(inscricaoId, filtroListagemInscricaoDTO));
+            return Ok(await casoDeUsoObterInscricaoPorId.Executar(propostaId, filtroListagemInscricaoDTO));
         }
 
         [HttpGet("formacao-turmas")]
