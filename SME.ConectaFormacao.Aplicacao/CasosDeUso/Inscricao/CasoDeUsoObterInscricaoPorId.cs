@@ -12,9 +12,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
         }
 
-        public async Task<PaginacaoResultadoDTO<DadosListagemInscricaoDTO>> Executar(long inscricaoId, FiltroListagemInscricaoDTO filtroListagemInscricaoDTO)
+        public async Task<PaginacaoResultadoDTO<DadosListagemInscricaoDTO>> Executar(long propostaId, FiltroListagemInscricaoDTO filtroListagemInscricaoDTO)
         {
-            return await mediator.Send(new ObterInscricaoPorIdQuery(inscricaoId, filtroListagemInscricaoDTO, NumeroPagina, NumeroRegistros));
+            return await mediator.Send(new ObterInscricaoPorIdQuery(propostaId, filtroListagemInscricaoDTO, NumeroPagina, NumeroRegistros));
         }
     }
 }
