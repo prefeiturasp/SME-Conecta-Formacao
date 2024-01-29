@@ -140,7 +140,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         }
 
         public Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(long propostaId, string? login, string? cpf, string? nomeCursista, string? nomeTurma,
-            int numeroPagina, int numeroRegistros)
+            int numeroPagina, int numeroRegistros,int totalRegistrosFiltro)
         {
             var query = new StringBuilder(@"select 
                                                 i.id,
@@ -177,7 +177,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (!string.IsNullOrEmpty(nomeTurma))
                 query.AppendLine($" and lower(pt.nome) like '%{nomeTurma.ToLower()}%' ");
             query.AppendLine(" limit @numeroRegistros offset @registrosIgnorados ");
-            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+            
+            var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
             return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Usuario, CargoFuncao, Inscricao>(query.ToString(), (inscricao, propostaTurma, usuario, cargoFuncao) =>
                {
                    inscricao.PropostaTurma = propostaTurma;
