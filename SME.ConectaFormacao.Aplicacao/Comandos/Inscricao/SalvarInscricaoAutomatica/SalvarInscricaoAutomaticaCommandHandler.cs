@@ -41,7 +41,25 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
 
-            return await _repositorioInscricao.Inserir(inscricao);
+            var transacao = _transacao.Iniciar();
+            try
+            {
+                await _repositorioInscricao.Inserir(inscricao);
+
+                await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
+
+                transacao.Commit();
+                return inscricao.Id;
+            }
+            catch
+            {
+                transacao.Rollback();
+                throw;
+            }
+            finally
+            {
+                transacao.Dispose();
+            }
         }
 
         private async Task MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
