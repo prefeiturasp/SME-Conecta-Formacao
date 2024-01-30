@@ -52,6 +52,11 @@ namespace SME.ConectaFormacao.Aplicacao
                 if(quantidadeDeTurmasSemInformarDre > 0)
                     erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
                 
+                var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim,proposta.DataRealizacaoFim));
+
+                if (!string.IsNullOrEmpty(validarDatas))
+                    erros.Add(validarDatas);
+                
                 var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
                 if (!string.IsNullOrEmpty(errosRegente))
                     erros.Add(errosRegente);
