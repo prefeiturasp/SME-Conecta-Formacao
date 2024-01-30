@@ -81,8 +81,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
                     }),
 
                 },
-                CursistasEOL = AoRealizarInscricaoAutomaticaMock.ObterCursistasEol(500, dres),
-                QtdeCursistasSuportadosPorTurma = 50
+                CursistasEOL = AoRealizarInscricaoAutomaticaMock.ObterCursistasEol(500, dres)
             };
 
             var mensagem = tratarTurma.ObjetoParaJson();
@@ -129,8 +128,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
                     PropostaId = proposta.Id,
                     PropostasTurmas = turmasInscricaoAutomatica
                 },
-                CursistasEOL = AoRealizarInscricaoAutomaticaMock.ObterCursistasEol(4955, dres),
-                QtdeCursistasSuportadosPorTurma = 50
+                CursistasEOL = AoRealizarInscricaoAutomaticaMock.ObterCursistasEol(4955, dres)
             };
 
             var mensagem = tratarTurma.ObjetoParaJson();

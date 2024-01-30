@@ -8,6 +8,7 @@ namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
         public TipoInscricao TipoInscricao { get; set; }
         public bool IntegrarNoSGA { get; set; }
         public SituacaoProposta Situacao { get; set; }
+        public short QuantidadeVagasTurmas { get; set; }
 
         public IEnumerable<PropostaInscricaoAutomaticaTurma> PropostasTurmas { get; set; }
         public IEnumerable<long> PublicosAlvos { get; set; }

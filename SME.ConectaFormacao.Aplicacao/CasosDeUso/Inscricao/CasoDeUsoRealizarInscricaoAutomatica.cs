@@ -33,34 +33,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 propostaInscricaoAutomatica.ComponentesCurriculares,
                 propostaInscricaoAutomatica.EhTipoJornadaJEIF));
 
-            var quantidadeMaximaCursistaPorTurma = int.MaxValue;
-
-            if (propostaInscricaoAutomatica.IntegrarNoSGA)
-            {
-                ParametroSistema qtdeCursistasSuportadosPorTurma = await ObterParametroQtdeCursistasSuportadosPorTurma();
-                quantidadeMaximaCursistaPorTurma = int.Parse(qtdeCursistasSuportadosPorTurma.Valor);
-            }
-
             var inscricaoAutomaticaTratarTurmas = new InscricaoAutomaticaTratarTurmasDTO
             {
                 PropostaInscricaoAutomatica = propostaInscricaoAutomatica,
-                CursistasEOL = cursistasEOL,
-                QtdeCursistasSuportadosPorTurma = quantidadeMaximaCursistaPorTurma
+                CursistasEOL = cursistasEOL
             };
 
             await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarTurmas, inscricaoAutomaticaTratarTurmas));
 
             return true;
-        }
-
-        private async Task<ParametroSistema> ObterParametroQtdeCursistasSuportadosPorTurma()
-        {
-            var anoAtual = DateTimeExtension.HorarioBrasilia().Year;
-            var qtdeCursistasSuportadosPorTurma = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, anoAtual));
-
-            if (qtdeCursistasSuportadosPorTurma.Valor.NaoEstaPreenchido())
-                throw new NegocioException(string.Format(MensagemNegocio.PARAMETRO_QTDE_CURSISTAS_SUPORTADOS_POR_TURMA_NAO_ENCONTRADO, anoAtual));
-            return qtdeCursistasSuportadosPorTurma;
         }
     }
 }

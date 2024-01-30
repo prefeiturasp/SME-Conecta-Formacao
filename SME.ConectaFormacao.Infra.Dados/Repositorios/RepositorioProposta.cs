@@ -1825,7 +1825,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             select p.id as propostaId,
                    pti.tipo_inscricao as TipoInscricao, 
                    p.integrar_no_sga as IntegrarNoSGA,
-                   p.situacao
+                   p.situacao,
+                   p.quantidade_vagas_turma as QuantidadeVagasTurmas
             from proposta p
             inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id and not pti.excluido
             where p.id = @propostaId and not p.excluido;
