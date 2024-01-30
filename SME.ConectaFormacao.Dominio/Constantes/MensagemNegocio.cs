@@ -82,4 +82,5 @@ public class MensagemNegocio
     public const string USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_PUBLICO_ALVO_NA_FORMACAO = "Cargo não definido no público alvo da formação, sendo assim, não será possível inserir a sua inscrição automática. {0}";
     public const string USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_FUNCAO_ESPECIFICA_NA_FORMACAO = "Função não definido na Função específica da formação, sendo assim, não será possível inserir a sua inscrição automática. {0}";
     public const string DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS = "É necessário informar pelo menos uma DRE para as turmas selecionadas";
+    public const string DATAFIM_INSCRICAO_NAO_PODE_SER_MAIOR_QUE_DATAFIM_REALIZACAO = "A Data Inscrição fim não pode ser maior que a data Realização fim";
 }

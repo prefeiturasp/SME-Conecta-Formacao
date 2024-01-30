@@ -21,6 +21,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
+            var validarDatas = await mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim,proposta.DataRealizacaoFim));
+
+            if (!string.IsNullOrEmpty(validarDatas))
+                throw new NegocioException(validarDatas);
+
             if (proposta.Situacao != SituacaoProposta.Cadastrada)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA);
 
