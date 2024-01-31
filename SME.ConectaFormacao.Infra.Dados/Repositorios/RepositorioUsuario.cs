@@ -26,7 +26,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             alterado_em, 
                             alterado_por, 
                             criado_login, 
-                            alterado_login
+                            alterado_login,
+                            ue_codigo,
+                            tipo,
+                            possui_contrato_externo,
+                            situacao_cadastro
                           from usuario 
                           where login = @login";
 

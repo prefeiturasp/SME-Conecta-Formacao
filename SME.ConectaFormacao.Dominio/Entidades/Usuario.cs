@@ -1,3 +1,5 @@
+using SME.ConectaFormacao.Dominio.Enumerados;
+
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class Usuario : EntidadeBaseAuditavel
@@ -17,6 +19,10 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public Guid? TokenRecuperacaoSenha { get; set; }
         public DateTime? ExpiracaoRecuperacaoSenha { get; set; }
         public string Cpf { get; set; }
+        public string UeCodigo { get; set; }
+        public TipoUsuario Tipo { get; set; }
+        public bool PossuiContratoExterno { get; set; }
+        public SituacaoCadastroUsuario Situacao { get; set; }
 
         public void Atualizar(string email, DateTime? dataHora, string? cpf)
         {
