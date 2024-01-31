@@ -5,9 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricularAnoTurma.Mock;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -24,7 +25,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
         protected override void RegistrarQueryFakes(IServiceCollection services)
         {
             base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterComponentesCurricularesEAnosTurmaEOLQuery, IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>>), typeof(ObterComponentesCurricularesEAnoTurmaEOLQueryFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterComponentesCurricularesEAnosTurmaEOLQuery, IEnumerable<ComponenteCurricularAnoTurmaServicoEol>>), typeof(ObterComponentesCurricularesEAnoTurmaEOLQueryFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<PublicarNaFilaRabbitCommand, bool>), typeof(PublicarNaFilaRabbitCommandFake), ServiceLifetime.Scoped));
         }
 
@@ -92,7 +93,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             ValidacaoAnoTurmaComponente(componenteCurricularAnoTurmaMock);
         }
 
-        private void ValidacaoAnoTurmaComponente(IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> componenteCurricularAnoTurmaMock)
+        private void ValidacaoAnoTurmaComponente(IEnumerable<ComponenteCurricularAnoTurmaServicoEol> componenteCurricularAnoTurmaMock)
         {
             var anoAtual = DateTimeExtension.HorarioBrasilia().Year;
             var anosTurma = ObterTodos<Dominio.Entidades.AnoTurma>();

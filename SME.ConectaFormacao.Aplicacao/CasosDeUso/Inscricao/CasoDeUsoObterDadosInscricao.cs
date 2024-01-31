@@ -2,7 +2,7 @@
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             return retorno;
         }
 
-        private List<DadosInscricaoCargoEol> ObterCargosBaseSobrepostoFuncaoAtividade(IEnumerable<CargoFuncionarioConectaDTO> cargosFuncoesEol)
+        private List<DadosInscricaoCargoEol> ObterCargosBaseSobrepostoFuncaoAtividade(IEnumerable<CursistaCargoServicoEol> cargosFuncoesEol)
         {
             var usuarioCargos = new List<DadosInscricaoCargoEol>();
             foreach (var cargoFuncaoEol in cargosFuncoesEol)
@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             return usuarioCargos;
         }
 
-        private async Task AtualizaCpfUsuario(Dominio.Entidades.Usuario usuarioLogado, IEnumerable<CargoFuncionarioConectaDTO> cargosFuncoesEol)
+        private async Task AtualizaCpfUsuario(Dominio.Entidades.Usuario usuarioLogado, IEnumerable<CursistaCargoServicoEol> cargosFuncoesEol)
         {
             var cpfEol = cargosFuncoesEol.FirstOrDefault().Cpf;
             if (usuarioLogado.Cpf.NaoEstaPreenchido() && cpfEol.EstaPreenchido())

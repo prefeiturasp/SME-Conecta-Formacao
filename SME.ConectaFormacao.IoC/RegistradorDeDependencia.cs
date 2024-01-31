@@ -180,6 +180,7 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaTurmaVagaMap());
             config.AddMap(new PropostaComponenteCurricularMap());
             config.AddMap(new PropostaDreMap());
+            config.AddMap(new PropostaTipoInscricaoMap());
 
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
@@ -331,11 +332,12 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPorId, CasoDeUsoObterInscricaoPorId>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTurmasInscricao, CasoDeUsoObterTurmasInscricao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPaginada, CasoDeUsoObterInscricaoPaginada>();
-        
-        _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomatica, CasoDeUsoRealizarInscricaoAutomatica>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratar, CasoDeUsoRealizarInscricaoAutomaticaTratar>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosPaginadosComFiltros, CasoDeUsoObterDadosPaginadosComFiltros>();
 
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosPaginadosComFiltros,CasoDeUsoObterDadosPaginadosComFiltros>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomatica, CasoDeUsoRealizarInscricaoAutomatica>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratarTurmas, CasoDeUsoRealizarInscricaoAutomaticaTratarTurmas>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista, CasoDeUsoRealizarInscricaoAutomaticaTratarCursista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaInscreverCursista, CasoDeUsoRealizarInscricaoAutomaticaInscreverCursista>();
     }
 
     protected virtual void RegistrarHttpClients()

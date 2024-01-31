@@ -11,10 +11,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<string> ObterCargoFuncaoPorId(long id);
         Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorUsuarioId(long usuarioId, int numeroPagina, int numeroRegistros);
         Task<int> ObterTotalRegistrosPorUsuarioId(long usuarioId);
-        Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(long inscricaoId,string? login,string? cpf,string? nomeCursista, int numeroPagina, int numeroRegistros);
+        Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(long inscricaoId, string? login, string? cpf, string? nomeCursista, string? nomeTurma, int numeroPagina, int numeroRegistros);
 
-        Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long usuarioId, long? codigoDaFormacao,
-            string? nomeFormacao, int numeroPagina, int numeroRegistros);
-        Task<IEnumerable<Inscricao>> DadosListagemFormacaoComTurma(long[] propostaIds);
+        Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? codigoDaFormacao,
+            string? nomeFormacao, int numeroPagina, int numeroRegistros, int totalRegistrosFiltro);
+        Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds);
+        Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? codigoDaFormacao,
+                string? nomeFormacao);
+        Task<int> ObterInscricaoPorIdComFiltrosTotalRegistros(long inscricaoId, string? login, string? cpf, string? nomeCursista, string? nomeTurma);
     }
 }

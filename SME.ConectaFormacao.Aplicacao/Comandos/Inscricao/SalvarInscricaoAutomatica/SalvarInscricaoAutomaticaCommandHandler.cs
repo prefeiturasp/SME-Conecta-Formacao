@@ -28,8 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<long> Handle(SalvarInscricaoAutomaticaCommand request, CancellationToken cancellationToken)
         {
             var propostaId = request.InscricaoAutomaticaDTO.PropostaId;
-            var ehFormacaoHomologada = request.InscricaoAutomaticaDTO.EhFormacaoHomologada;
-            
+
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoAutomaticaDTO);
             inscricao.Situacao = SituacaoInscricao.Confirmada;
 
@@ -37,14 +36,32 @@ namespace SME.ConectaFormacao.Aplicacao
                 return default;
 
             await MapearCargoFuncao(cancellationToken, inscricao);
-            
+
             await ValidarCargoFuncao(propostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
-            
+
             await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
-           
-            return await PersistirInscricao(ehFormacaoHomologada, inscricao);
+
+            var transacao = _transacao.Iniciar();
+            try
+            {
+                await _repositorioInscricao.Inserir(inscricao);
+
+                await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
+
+                transacao.Commit();
+                return inscricao.Id;
+            }
+            catch
+            {
+                transacao.Rollback();
+                throw;
+            }
+            finally
+            {
+                transacao.Dispose();
+            }
         }
-        
+
         private async Task MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
         {
             var codigosFuncoesEol = inscricao.FuncaoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.FuncaoCodigo) } : Enumerable.Empty<long>();
@@ -56,7 +73,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             inscricao.FuncaoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
         }
-        
+
         private async Task ValidarCargoFuncao(long propostaId, long? cargoId, long? funcaoId, CancellationToken cancellationToken)
         {
             var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
@@ -65,11 +82,11 @@ namespace SME.ConectaFormacao.Aplicacao
             if (cargosProposta.PossuiElementos())
             {
                 if (cargoId.HasValue && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
-                    throw new NegocioException(string.Format(MensagemNegocio.USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_PUBLICO_ALVO_NA_FORMACAO,$"Proposta: {propostaId} - Cargo: {cargoId}")); 
+                    throw new NegocioException(string.Format(MensagemNegocio.USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_PUBLICO_ALVO_NA_FORMACAO, $"Proposta: {propostaId} - Cargo: {cargoId}"));
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
-            { 
+            {
                 if (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
                     throw new NegocioException(string.Format(MensagemNegocio.USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_FUNCAO_ESPECIFICA_NA_FORMACAO, $"Proposta: {propostaId} - Função: {funcaoId}"));
             }
@@ -88,39 +105,7 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(cargoDreCodigo)))
                     || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(funcaoDreCodigo))))
-                    throw new NegocioException(string.Format(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_AUTOMATICO,$"PropostaTurma: {0} - Cargo: {cargoDreCodigo} - Função: {funcaoDreCodigo}"));
-            }
-        }
-
-        private async Task<long> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao)
-        {
-            var transacao = _transacao.Iniciar();
-            try
-            {
-                await _repositorioInscricao.Inserir(inscricao);
-
-                if (!formacaoHomologada)
-                {
-                    bool confirmada = await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
-                    if (!confirmada)
-                        throw new NegocioException(string.Format(MensagemNegocio.INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA,$"PropostaTurma: {inscricao.PropostaTurmaId} - Usuário: {inscricao.UsuarioId}"));
-
-                    inscricao.Situacao = SituacaoInscricao.Confirmada;
-                    await _repositorioInscricao.Atualizar(inscricao);
-                }
-
-                transacao.Commit();
-
-                return inscricao.Id;
-            }
-            catch
-            {
-                transacao.Rollback();
-                throw;
-            }
-            finally
-            {
-                transacao.Dispose();
+                    throw new NegocioException(string.Format(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_AUTOMATICO, $"PropostaTurma: {0} - Cargo: {cargoDreCodigo} - Função: {funcaoDreCodigo}"));
             }
         }
     }

@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotNull()
                 .GreaterThan(0)
                 .WithMessage("É necessário informar o Id da proposta turma para fazer a inscrição automática");
-            
+
             RuleFor(f => f.InscricaoAutomaticaDTO.UsuarioId)
                 .NotNull()
                 .GreaterThan(0)

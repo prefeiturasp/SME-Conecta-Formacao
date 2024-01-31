@@ -1,12 +1,12 @@
-﻿namespace SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+﻿namespace SME.ConectaFormacao.Infra.Servicos.Eol;
 
-public class DreNomeAbreviacaoDTO
+public class DreServicoEol
 {
-    public DreNomeAbreviacaoDTO()
+    public DreServicoEol()
     {
     }
 
-    public DreNomeAbreviacaoDTO(string codigo, string nome, string abreviacao, long id = 0)
+    public DreServicoEol(string codigo, string nome, string abreviacao, long id = 0)
     {
         Codigo = codigo;
         Nome = nome;

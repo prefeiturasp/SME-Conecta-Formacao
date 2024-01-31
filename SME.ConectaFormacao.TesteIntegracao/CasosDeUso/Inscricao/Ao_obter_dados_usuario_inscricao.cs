@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
         {
             base.RegistrarQueryFakes(services);
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuarioLogadoQuery, Dominio.Entidades.Usuario>), typeof(ObterUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterCargosFuncoesDresFuncionarioServicoEolQuery, IEnumerable<CargoFuncionarioConectaDTO>>), typeof(ObterCargosFuncoesDresFuncionarioServicoEolQueryHandlerFaker), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterCargosFuncoesDresFuncionarioServicoEolQuery, IEnumerable<CursistaCargoServicoEol>>), typeof(ObterCargosFuncoesDresFuncionarioServicoEolQueryHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Inscrição - Deve retornar os dados do usuario logado para inscrição")]

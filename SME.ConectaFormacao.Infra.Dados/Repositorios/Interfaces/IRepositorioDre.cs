@@ -9,5 +9,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<Dre> ObterDrePorCodigo(string codigoDre);
         Task AtualizarDreComEol(Dre dre);
         Task<IEnumerable<Dre>> ObterIgnorandoExcluidos(bool exibirTodos);
+        Task<Dre> ObterDreTodos();
     }
 }

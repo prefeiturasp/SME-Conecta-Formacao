@@ -1,12 +1,12 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterFuncionarioPorFiltroPropostaServicoEolQuery : IRequest<IEnumerable<FuncionarioRfDreCodigoDTO>>
+    public class ObterFuncionarioPorFiltroPropostaServicoEolQuery : IRequest<IEnumerable<CursistaServicoEol>>
     {
-        public ObterFuncionarioPorFiltroPropostaServicoEolQuery(IEnumerable<long> codigosCargos, 
-            IEnumerable<long> codigosFuncoes, IEnumerable<long> codigoModalidade, IEnumerable<string> anosTurma, 
+        public ObterFuncionarioPorFiltroPropostaServicoEolQuery(IEnumerable<long> codigosCargos,
+            IEnumerable<long> codigosFuncoes, IEnumerable<long> codigoModalidade, IEnumerable<string> anosTurma,
             IEnumerable<string> codigosDres, IEnumerable<long> codigosComponentesCurriculares, bool ehTipoJornadaJEIF)
         {
             CodigosCargos = codigosCargos;

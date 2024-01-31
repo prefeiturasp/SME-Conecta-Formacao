@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.ServicoFake;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
         protected override void RegistrarQueryFakes(IServiceCollection services)
         {
             base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterCodigosDresEOLQuery, IEnumerable<DreNomeAbreviacaoDTO>>), typeof(ObterCodigosDresQueryFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterCodigosDresEOLQuery, IEnumerable<DreServicoEol>>), typeof(ObterCodigosDresQueryFake), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Area Promotora - Deve Inserir uma que não existe")]
@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
 
             var codigoDre = "67";
             var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoInstitucionalDreTratarUseCase>();
-            var mensagem = JsonSerializer.Serialize(new DreNomeAbreviacaoDTO(codigoDre, "Nome da Dre", "abr Dre"));
+            var mensagem = JsonSerializer.Serialize(new DreServicoEol(codigoDre, "Nome da Dre", "abr Dre"));
             await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
 
             var todosAreasDepois = ObterTodos<Dominio.Entidades.Dre>();
@@ -62,7 +62,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
             var abreviacao = "XYZ DRE";
 
             var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoInstitucionalDreTratarUseCase>();
-            var mensagem = JsonSerializer.Serialize(new DreNomeAbreviacaoDTO(dre!.FirstOrDefault()!.Codigo, nomeDre, abreviacao));
+            var mensagem = JsonSerializer.Serialize(new DreServicoEol(dre!.FirstOrDefault()!.Codigo, nomeDre, abreviacao));
             await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
 
 

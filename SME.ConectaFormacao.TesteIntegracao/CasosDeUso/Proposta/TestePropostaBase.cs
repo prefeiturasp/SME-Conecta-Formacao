@@ -17,8 +17,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         }
         protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade)
         {
-            var retorno = new List<Dominio.Entidades.Proposta>();
-
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -43,9 +41,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             modalidades, anosTurmas, componentesCurriculares);
         }
 
-        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada, 
-            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, bool ehTipoInscricaoOptativa = false, bool vincularUltimoCargoAoPublicoAlvo = false,
-            bool vincularUltimoFuncaoAoPublicoAlvo = false)
+        protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada,
+            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool vincularUltimoCargoAoPublicoAlvo = false,
+            bool vincularUltimoFuncaoAoPublicoAlvo = false, bool integrarNoSga = true)
         {
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -68,27 +66,27 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(componentesCurriculares);
 
             if (vincularUltimoCargoAoPublicoAlvo)
-                cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() {cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Cargo)};
-            
+                cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() { cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Cargo) };
+
             if (vincularUltimoFuncaoAoPublicoAlvo)
-                cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() {cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Funcao)};
+                cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() { cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Funcao) };
 
             return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada, ehTipoInscricaoOptativa);
+                modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada, tipoInscricao, integrarNoSga);
         }
 
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora,
             IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,
             IEnumerable<PalavraChave> palavrasChaves, IEnumerable<Dominio.Enumerados.Modalidade> modalidades, IEnumerable<Dominio.Entidades.AnoTurma> anosTurmas,
             IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares, SituacaoProposta situacao = SituacaoProposta.Cadastrada,
-            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, bool ehTipoInscricaoOptativa = false)
+            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool integrarNoSga = true)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
                 TipoFormacao.Curso,
                 Formato.Presencial,
                 situacao,
-                false, false, formacaoHomologada, ehTipoInscricaoOptativa);
+                false, false, formacaoHomologada, integrarNoSga);
 
             proposta.AreaPromotora = areaPromotora;
 
@@ -219,6 +217,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.Regentes = regentes;
             }
 
+            var propostaTiposInscricao = PropostaMock.GerarTiposInscricao(proposta.Id, tipoInscricao);
+            await InserirNaBase(propostaTiposInscricao);
+
             return proposta;
         }
 
@@ -260,7 +261,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             proposta.TipoFormacao.ShouldBe(propostaDTO.TipoFormacao);
             proposta.Formato.ShouldBe(propostaDTO.Formato);
-            proposta.TipoInscricao.ShouldBe(propostaDTO.TipoInscricao);
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
             proposta.QuantidadeVagasTurma.ShouldBe(propostaDTO.QuantidadeVagasTurma);
@@ -301,7 +301,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             proposta.TipoFormacao.ShouldBe(propostaDTO.TipoFormacao);
             proposta.Formato.ShouldBe(propostaDTO.Formato);
-            proposta.TipoInscricao.ShouldBe(propostaDTO.TipoInscricao);
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
             proposta.QuantidadeVagasTurma.ShouldBe(propostaDTO.QuantidadeVagasTurma);
@@ -509,6 +508,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             {
                 propostaComponenteCurricular.PropostaId.ShouldBe(id);
                 propostaComponenteCurricularDTO.Any(t => t.ComponenteCurricularId == propostaComponenteCurricular.ComponenteCurricularId).ShouldBeTrue();
+            }
+        }
+
+        protected void ValidarPropostaTipoInscricaoDTO(IEnumerable<PropostaTipoInscricaoDTO> tiposInscricaoDto, long id)
+        {
+            var tiposInscricao = ObterTodos<PropostaTipoInscricao>().Where(t => !t.Excluido);
+
+            if (tiposInscricaoDto.PossuiElementos() && tiposInscricao.PossuiElementos())
+                tiposInscricaoDto.Count().ShouldBe(tiposInscricao.Count());
+
+            foreach (var tipoInscricao in tiposInscricao)
+            {
+                tipoInscricao.PropostaId.ShouldBe(id);
+                tiposInscricaoDto.FirstOrDefault(t => t.TipoInscricao == tipoInscricao.TipoInscricao).ShouldNotBeNull();
             }
         }
     }

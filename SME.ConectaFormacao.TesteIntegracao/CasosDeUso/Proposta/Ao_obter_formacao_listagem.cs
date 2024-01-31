@@ -5,6 +5,7 @@ using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -28,7 +29,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true);
+                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var filtro = new FiltroListagemFormacaoDTO();
@@ -45,7 +46,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true);
+                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostas = ObterTodos<Dominio.Entidades.Proposta>();
@@ -66,7 +67,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true);
+                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostaPublicoAlvos = ObterTodos<Dominio.Entidades.PropostaPublicoAlvo>();
@@ -87,7 +88,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true);
+                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var areaPromotoras = ObterTodos<Dominio.Entidades.AreaPromotora>();
@@ -108,7 +109,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true);
+                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostas = ObterTodos<Dominio.Entidades.Proposta>();
@@ -129,7 +130,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true);
+                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostas = ObterTodos<Dominio.Entidades.Proposta>();
@@ -150,7 +151,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true);
+                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostas = ObterTodos<Dominio.Entidades.Proposta>();
@@ -171,7 +172,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true);
+                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostaPalavraChaves = ObterTodos<Dominio.Entidades.PropostaPalavraChave>();

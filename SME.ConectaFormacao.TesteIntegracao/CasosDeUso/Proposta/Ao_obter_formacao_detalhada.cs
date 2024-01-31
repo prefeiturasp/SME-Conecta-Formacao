@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(ehTipoInscricaoOptativa: true, situacao:SituacaoProposta.Publicada);
+                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa, situacao: SituacaoProposta.Publicada);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterFormacaoDetalhada>();
 

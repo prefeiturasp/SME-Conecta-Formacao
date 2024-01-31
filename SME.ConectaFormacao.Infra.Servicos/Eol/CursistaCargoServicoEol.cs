@@ -1,6 +1,6 @@
-﻿namespace SME.ConectaFormacao.Infra.Servicos.Eol.Dto
+﻿namespace SME.ConectaFormacao.Infra.Servicos.Eol
 {
-    public class CargoFuncionarioConectaDTO
+    public class CursistaCargoServicoEol
     {
         public long RF { get; set; }
         public string Cpf { get; set; }

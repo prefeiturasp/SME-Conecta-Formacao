@@ -1,53 +1,45 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
     public class CasoDeUsoRealizarInscricaoAutomatica : CasoDeUsoAbstrato, ICasoDeUsoRealizarInscricaoAutomatica
     {
-        private readonly IMapper _mapper;
-        
-        public CasoDeUsoRealizarInscricaoAutomatica(IMediator mediator,IMapper mapper) : base(mediator)
+        public CasoDeUsoRealizarInscricaoAutomatica(IMediator mediator) : base(mediator)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var formacoesResumidas = await mediator.Send(
-                new ObterPropostaPorTipoInscricaoESituacaoQuery(new []
-                { TipoInscricao.Automatica, TipoInscricao.AutomaticaJEIF }, SituacaoProposta.Publicada));
+            var propostaId = Convert.ToInt64(param.Mensagem);
+            var propostaInscricaoAutomatica = await mediator.Send(new ObterPropostaInscricaoAutomaticaPorIdQuery(propostaId));
 
-            var anoAtual = DateTimeExtension.HorarioBrasilia().Year;
-            var qtdeCursistasSuportadosPorTurma = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, anoAtual));
+            if (propostaInscricaoAutomatica.Situacao != SituacaoProposta.Publicada || !propostaInscricaoAutomatica.EhInscricaoAutomatica)
+                return false;
 
-            if (qtdeCursistasSuportadosPorTurma.Valor.NaoEstaPreenchido())
-                throw new NegocioException(string.Format(MensagemNegocio.PARAMETRO_QTDE_CURSISTAS_SUPORTADOS_POR_TURMA_NAO_ENCONTRADO,anoAtual));
+            var cursistasEOL = await mediator.Send(new ObterFuncionarioPorFiltroPropostaServicoEolQuery(
+                propostaInscricaoAutomatica.PublicosAlvos,
+                propostaInscricaoAutomatica.FuncoesEspecificas,
+                propostaInscricaoAutomatica.Modalidades,
+                propostaInscricaoAutomatica.AnosTurmas,
+                propostaInscricaoAutomatica.PropostasTurmas.Select(turma => turma.CodigoDre).Distinct(),
+                propostaInscricaoAutomatica.ComponentesCurriculares,
+                propostaInscricaoAutomatica.EhTipoJornadaJEIF));
 
-            foreach (var formacaoResumida in formacoesResumidas)
+            var inscricaoAutomaticaTratarTurmas = new InscricaoAutomaticaTratarTurmasDTO
             {
-                var cursistasEOL = await mediator.Send(
-                    new ObterFuncionarioPorFiltroPropostaServicoEolQuery(formacaoResumida.PublicosAlvos,
-                    formacaoResumida.FuncoesEspecificas, formacaoResumida.Modalidades, formacaoResumida.AnosTurmas, 
-                    formacaoResumida.PropostasTurmas.Select(turma => turma.CodigoDre), 
-                    formacaoResumida.ComponentesCurriculares, formacaoResumida.EhTipoJornadaJEIF));
+                PropostaInscricaoAutomatica = propostaInscricaoAutomatica,
+                CursistasEOL = cursistasEOL
+            };
 
-                var inscricaoCursista = new InscricaoCursistaDTO
-                {
-                    FormacaoResumida = _mapper.Map<FormacaoResumidaDTO>(formacaoResumida),
-                    CursistasEOL = cursistasEOL,
-                    QtdeCursistasSuportadosPorTurma = int.Parse(qtdeCursistasSuportadosPorTurma.Valor)
-                };
-
-                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratar, inscricaoCursista, Guid.NewGuid(), null));
-            }
+            await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarTurmas, inscricaoAutomaticaTratarTurmas));
 
             return true;
         }

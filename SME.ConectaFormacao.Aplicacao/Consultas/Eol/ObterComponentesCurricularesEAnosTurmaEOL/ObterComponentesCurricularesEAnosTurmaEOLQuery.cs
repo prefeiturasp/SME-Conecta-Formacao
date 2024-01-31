@@ -1,10 +1,10 @@
 using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
-public class ObterComponentesCurricularesEAnosTurmaEOLQuery : IRequest<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>>
+public class ObterComponentesCurricularesEAnosTurmaEOLQuery : IRequest<IEnumerable<ComponenteCurricularAnoTurmaServicoEol>>
 {
     public ObterComponentesCurricularesEAnosTurmaEOLQuery(int anoLetivo)
     {

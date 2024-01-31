@@ -2,7 +2,6 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Constante;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 using System.Net;
 
@@ -28,7 +27,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             return json.JsonParaObjeto<string>().ToUpper();
         }
 
-        public async Task<IEnumerable<DreNomeAbreviacaoDTO>> ObterCodigosDres()
+        public async Task<IEnumerable<DreServicoEol>> ObterCodigosDres()
         {
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_NOME_ABREVIACAO_DRE);
 
@@ -36,10 +35,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
                 throw new NegocioException(MensagemNegocio.CODIGOS_DRE_NAO_LOCALIZADO, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<DreNomeAbreviacaoDTO[]>();
+            return json.JsonParaObjeto<DreServicoEol[]>();
         }
 
-        public async Task<IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo)
+        public async Task<IEnumerable<ComponenteCurricularAnoTurmaServicoEol>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo)
         {
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO.Parametros(anoLetivo));
 
@@ -47,10 +46,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
                 throw new NegocioException(MensagemNegocio.NENHUM_COMPONENTE_CURRICULAR_DOS_ANOS_DA_TURMA_DO_EOL_FORAM_LOCALIZADOS, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<ComponenteCurricularAnoTurmaEOLDTO[]>();
+            return json.JsonParaObjeto<ComponenteCurricularAnoTurmaServicoEol[]>();
         }
 
-        public async Task<IEnumerable<CargoFuncionarioConectaDTO>> ObterCargosFuncionadoPorRegistroFuncional(string registroFuncional)
+        public async Task<IEnumerable<CursistaCargoServicoEol>> ObterCargosFuncionadoPorRegistroFuncional(string registroFuncional)
         {
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_CARGOS_FUNCIONARIO_POR_RF.Parametros(registroFuncional));
 
@@ -58,41 +57,41 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<CargoFuncionarioConectaDTO[]>();
+            return json.JsonParaObjeto<CursistaCargoServicoEol[]>();
         }
 
-        public async Task<IEnumerable<FuncionarioRfDreCodigoDTO>> ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(IEnumerable<long> codigosCargos, IEnumerable<long> codigosFuncoes,
-            IEnumerable<long> codigosModalidades, IEnumerable<string> anosTurma,IEnumerable<string> codigosDres, IEnumerable<long> codigosComponentesCurriculares, bool EhTipoJornadaJEIF)
+        public async Task<IEnumerable<CursistaServicoEol>> ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(IEnumerable<long> codigosCargos, IEnumerable<long> codigosFuncoes,
+            IEnumerable<long> codigosModalidades, IEnumerable<string> anosTurma, IEnumerable<string> codigosDres, IEnumerable<long> codigosComponentesCurriculares, bool EhTipoJornadaJEIF)
         {
             var filtrosUrl = "?";
 
             if (codigosCargos.PossuiElementos())
-                filtrosUrl += string.Join("",codigosCargos.Select(s=> $"&CodigosCargos={s}"));
-            
+                filtrosUrl += string.Join("", codigosCargos.Select(s => $"&CodigosCargos={s}"));
+
             if (codigosFuncoes.PossuiElementos())
-                filtrosUrl += string.Join("",codigosFuncoes.Select(s=> $"&CodigosFuncoes={s}"));
-            
+                filtrosUrl += string.Join("", codigosFuncoes.Select(s => $"&CodigosFuncoes={s}"));
+
             if (anosTurma.PossuiElementos())
-                filtrosUrl += string.Join("",anosTurma.Select(s=> $"&AnosTurma={s}"));
-            
+                filtrosUrl += string.Join("", anosTurma.Select(s => $"&AnosTurma={s}"));
+
             if (codigosComponentesCurriculares.PossuiElementos())
-                filtrosUrl += string.Join("",codigosComponentesCurriculares.Select(s=> $"&CodigosComponentesCurriculares={s}"));
-            
+                filtrosUrl += string.Join("", codigosComponentesCurriculares.Select(s => $"&CodigosComponentesCurriculares={s}"));
+
             if (codigosModalidades.PossuiElementos())
-                filtrosUrl += string.Join("",codigosModalidades.Select(s=> $"&CodigoModalidade={s}"));
-            
+                filtrosUrl += string.Join("", codigosModalidades.Select(s => $"&CodigoModalidade={s}"));
+
             if (codigosDres.PossuiElementos())
-                filtrosUrl += string.Join("",codigosDres.Select(s=> $"&CodigosDres={s}"));
-            
+                filtrosUrl += string.Join("", codigosDres.Select(s => $"&CodigosDres={s}"));
+
             filtrosUrl += $"&EhTipoJornadaJEIF={EhTipoJornadaJEIF}";
-            
+
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.URL_FUNCIONARIOS_REGISTROS_FUNCIONAIS_CONECTA_FORMACAO + filtrosUrl);
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<FuncionarioRfDreCodigoDTO[]>();
+            return json.JsonParaObjeto<CursistaServicoEol[]>();
         }
     }
 }

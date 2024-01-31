@@ -4,6 +4,8 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
@@ -63,21 +65,23 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoSalvarInscricao.Executar(id));
         }
 
-        [HttpGet("{inscricaoId}")]
+        [HttpGet("{propostaId}")]
         [ProducesResponseType(typeof(IEnumerable<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long inscricaoId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long propostaId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
         [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
         {
-            return Ok(await casoDeUsoObterInscricaoPorId.Executar(inscricaoId,filtroListagemInscricaoDTO));
+            return Ok(await casoDeUsoObterInscricaoPorId.Executar(propostaId, filtroListagemInscricaoDTO));
         }
 
         [HttpGet("formacao-turmas")]
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterFormacaoComTurmaPorFiltros([FromQuery] FiltroListagemInscricaoComTurmaDTO filtro,[FromServices]ICasoDeUsoObterDadosPaginadosComFiltros useCase)
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> ObterFormacaoComTurmaPorFiltros([FromQuery] FiltroListagemInscricaoComTurmaDTO filtro, [FromServices] ICasoDeUsoObterDadosPaginadosComFiltros useCase)
         {
             return Ok(await useCase.Executar(filtro));
         }

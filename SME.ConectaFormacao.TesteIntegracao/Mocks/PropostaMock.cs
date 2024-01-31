@@ -8,21 +8,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
     public class PropostaMock : BaseMock
     {
         private static Faker<Proposta> Gerador(
-            long areaPromotoraId,
+           long areaPromotoraId,
            TipoFormacao tipoFormacao,
            Formato formato,
            SituacaoProposta situacao,
            bool gerarFuncaoEspecificaOutros,
            bool gerarCriterioValidacaoInscricaoOutros,
            FormacaoHomologada formacaoHomologada,
-           bool ehTipoInscricaoOptativa = false)
+           bool integrarNoSga = true)
         {
             var faker = new Faker<Proposta>();
             faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
             faker.RuleFor(x => x.FormacaoHomologada, formacaoHomologada);
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
             faker.RuleFor(x => x.Formato, formato);
-            faker.RuleFor(x => x.TipoInscricao, f => ehTipoInscricaoOptativa ? TipoInscricao.Optativa : f.PickRandom<TipoInscricao>());
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
             faker.RuleFor(x => x.QuantidadeTurmas, f => f.Random.Short(1, 50));
             faker.RuleFor(x => x.QuantidadeVagasTurma, f => f.Random.Short(1, 30));
@@ -37,6 +36,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.DataRealizacaoInicio, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.DataRealizacaoFim, DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.IntegrarNoSGA, integrarNoSga);
 
             AuditoriaFaker(faker);
 
@@ -58,10 +58,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             bool gerarFuncaoEspecificaOutros,
             bool gerarCriterioValidacaoInscricaoOutros,
             FormacaoHomologada formacaoHomologada,
-            bool ehTipoInscricaoOptativa = false
+             bool integrarNoSga = true
             )
         {
-            return Gerador(areaPromotoraId, tipoFormacao, formato, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada, ehTipoInscricaoOptativa);
+            return Gerador(areaPromotoraId, tipoFormacao, formato, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada, integrarNoSga);
         }
 
         public static Proposta GerarPropostaRascunho(long areaPromotoraId)
@@ -382,6 +382,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             Auditoria(vaga);
 
             return vaga;
+        }
+
+        public static PropostaTipoInscricao GerarTiposInscricao(long propostaId, TipoInscricao tipoInscricao)
+        {
+            var faker = new Faker<PropostaTipoInscricao>();
+            faker.RuleFor(x => x.PropostaId, propostaId);
+            faker.RuleFor(x => x.TipoInscricao, tipoInscricao);
+
+            AuditoriaFaker(faker);
+
+            return faker.Generate();
         }
     }
 }
