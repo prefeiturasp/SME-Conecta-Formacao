@@ -8,6 +8,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
 {
     public class UsuarioController : BaseController
     {
+        [HttpPost]
+        [ProducesResponseType(typeof(UsuarioExternoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
+        public async Task<IActionResult> Inserir(UsuarioExternoDTO usuarioExternoDto, [FromServices] ICasoDeUsoInserirUsuarioExterno usoInserirUsuario)
+        {
+            return Ok(await usoInserirUsuario.InserirUsuarioExterno(usuarioExternoDto));
+        }
+
         [HttpPost("{login}/solicitar-recuperacao-senha")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

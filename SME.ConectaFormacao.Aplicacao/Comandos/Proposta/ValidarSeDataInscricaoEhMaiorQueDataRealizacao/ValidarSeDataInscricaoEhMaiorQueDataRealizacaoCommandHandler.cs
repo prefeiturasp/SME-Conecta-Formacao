@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommandHandler:IRequestHandler<ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand,string>
+    public class ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommandHandler : IRequestHandler<ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand, string>
     {
         public async Task<string> Handle(ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand request, CancellationToken cancellationToken)
         {

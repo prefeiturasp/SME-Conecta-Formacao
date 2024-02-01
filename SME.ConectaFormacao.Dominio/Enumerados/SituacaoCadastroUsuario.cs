@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
     {
         [Display(Name = "Ativo")]
         Ativo = 1,
-        
+
         [Display(Name = "Aguardando validação do e-mail")]
         AguardandoValidacaoEmail = 2,
     }
