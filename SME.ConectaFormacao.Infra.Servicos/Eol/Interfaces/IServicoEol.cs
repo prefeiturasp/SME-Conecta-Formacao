@@ -9,5 +9,7 @@
         Task<IEnumerable<CursistaServicoEol>> ObterFuncionariosPorCargosFuncoesModalidadeAnosComponentesDres(IEnumerable<long> codigosCargos,
             IEnumerable<long> codigosFuncoes, IEnumerable<long> codigosModalidades, IEnumerable<string> anosTurma,
             IEnumerable<string> codigosDres, IEnumerable<long> codigosComponentesCurriculares, bool ehTipoJornadaJEIF);
+
+        Task<UeServicoEol> ObterUePorCodigo(string ueCodigo);
     }
 }

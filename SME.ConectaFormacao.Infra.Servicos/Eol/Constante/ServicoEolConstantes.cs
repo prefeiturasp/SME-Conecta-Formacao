@@ -5,6 +5,7 @@
         public const string OBTER_NOME_PROFISSIONAL = "funcionarios/nome-servidor/{0}";
         public const string OBTER_NOME_ABREVIACAO_DRE = "abrangencia/nome-abreviacao-dres";
         public const string OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO = "componentes-curriculares/ano-turma/ano-letivo/{0}";
+        public const string OBTER_UE_POR_CODIGO = "escolas/{0}";
         public const string OBTER_CARGOS_FUNCIONARIO_POR_RF = "funcionarios/cargo/{0}";
         public const string URL_AUTENTICACAO_AUTENTICAR = "v1/autenticacao/autenticar";
         public const string URL_AUTENTICACAO_REVALIDAR = "v1/autenticacao/revalidar";
