@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
     public class CasoDeUsoInserirUsuarioExterno : CasoDeUsoAbstrato, ICasoDeUsoInserirUsuarioExterno
     {
 
-        public CasoDeUsoInserirUsuarioExterno(IMediator mediator) : base(mediator){}
+        public CasoDeUsoInserirUsuarioExterno(IMediator mediator) : base(mediator) { }
 
         public async Task<bool> InserirUsuarioExterno(UsuarioExternoDTO usuarioExternoDto)
         {
@@ -58,7 +58,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
             if (senhaNova.Contains(" "))
                 erros.Add(MensagemNegocio.A_SENHA_NAO_PODE_CONTER_ESPACOS_EM_BRANCO);
-            
+
             if (!senhaNova.Equals(confirmarSenha))
                 erros.Add(MensagemNegocio.CONFIRMACAO_SENHA_DEVE_SER_IGUAL_A_SENHA);
 

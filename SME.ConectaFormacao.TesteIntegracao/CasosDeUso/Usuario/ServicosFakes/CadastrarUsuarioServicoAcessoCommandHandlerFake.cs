@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.TesteIntegracao
     {
         public async Task<bool> Handle(CadastrarUsuarioServicoAcessoCommand request, CancellationToken cancellationToken)
         {
-           return true;
+            return true;
         }
     }
 }

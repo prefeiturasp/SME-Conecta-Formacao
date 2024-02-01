@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<Usuario> Handle(ObterUsuarioPorLoginCommand request, CancellationToken cancellationToken)
         {
-             return await repositorioUsuario.ObterPorLogin(request.Login);
+            return await repositorioUsuario.ObterPorLogin(request.Login);
         }
     }
 }

@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class UsuarioExisteNoCoreSsoQueryHandler : IRequestHandler<UsuarioExisteNoCoreSsoQuery,bool>
+    public class UsuarioExisteNoCoreSsoQueryHandler : IRequestHandler<UsuarioExisteNoCoreSsoQuery, bool>
     {
         private readonly IServicoAcessos servicoAcessos;
 

@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             // assert
             retorno.ShouldBeTrue();
         }
-        
+
         [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo com a Confirmação de Senha Diferente da Senha")]
         public async Task Deve_Cadastrar_Usuario_Externo_Com_ConfirmacaoSenha_Diferente_da_Senha()
         {
@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             excecao.StatusCode.ShouldBe(400);
             excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.A_SENHA_DEVE_TER_NO_MÍNIMO_8_CARACTERES);
         }
-        
+
         [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo com senha Maior que  12 digitos")]
         public async Task Deve_Cadastrar_Usuario_Externo_Com_senha_maior_que_doze()
         {
@@ -91,7 +91,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             excecao.StatusCode.ShouldBe(400);
             excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.A_SENHA_DEVE_TER_NO_MÁXIMO_12_CARACTERES);
         }
-        
+
         [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo com senha que tenha espaço")]
         public async Task Deve_Cadastrar_Usuario_Externo_Com_senha_com_espaco()
         {

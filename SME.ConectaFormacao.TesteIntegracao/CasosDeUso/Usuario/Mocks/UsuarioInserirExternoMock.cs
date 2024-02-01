@@ -8,9 +8,9 @@ public class UsuarioInserirExternoMock
 {
     public static UsuarioExternoDTO GerarUsuarioExternoDTO()
     {
-         var pessoa = new Person("pt_BR");
-         var cpf = new Faker().Random.AlphaNumeric(11);
-         var senha = "Minha@Senha1";
+        var pessoa = new Person("pt_BR");
+        var cpf = new Faker().Random.AlphaNumeric(11);
+        var senha = "Minha@Senha1";
         return new UsuarioExternoDTO
         {
             Nome = pessoa.FirstName,
