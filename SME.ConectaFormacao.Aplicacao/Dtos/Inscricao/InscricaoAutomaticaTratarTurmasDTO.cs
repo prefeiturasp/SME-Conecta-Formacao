@@ -7,5 +7,4 @@ public class InscricaoAutomaticaTratarTurmasDTO
 {
     public PropostaInscricaoAutomatica PropostaInscricaoAutomatica { get; set; }
     public IEnumerable<CursistaServicoEol> CursistasEOL { get; set; }
-    public int QtdeCursistasSuportadosPorTurma { get; set; }
 }

@@ -1539,10 +1539,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var situacao = SituacaoProposta.Publicada;
             titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty;
 
-            var query = @"select id 
-                          from proposta p 
+            var query = @"select p.id 
+                          from proposta p
+                          inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id and not pti.excluido
                           where not p.excluido 
-                             and p.tipo_inscricao = @tipoInscricao 
+                             and pti.tipo_inscricao = @tipoInscricao 
                              and p.situacao = @situacao";
 
             if (areasPromotorasIds.PossuiElementos())
@@ -1644,19 +1645,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var situacao = SituacaoProposta.Publicada;
 
             var query = @"select
-                            nome_formacao NomeFormacao,
-                            tipo_formacao tipoFormacao,
-                            formato,
-                            data_realizacao_inicio dataRealizacaoInicio,
-                            data_realizacao_fim dataRealizacaoFim,                            
-                            data_inscricao_fim dataInscricaoFim,
-                            justificativa,
-                            formacao_homologada as FormacaoHomologada    
-                        from proposta
-                        where id = @propostaId 
-                            and not excluido
-                            and tipo_inscricao = @tipoInscricao 
-                            and situacao = @situacao;
+                            p.nome_formacao NomeFormacao,
+                            p.tipo_formacao tipoFormacao,
+                            p.formato,
+                            p.data_realizacao_inicio dataRealizacaoInicio,
+                            p.data_realizacao_fim dataRealizacaoFim,                            
+                            p.data_inscricao_fim dataInscricaoFim,
+                            p.justificativa,
+                            p.formacao_homologada as FormacaoHomologada    
+                        from proposta p
+                        inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id
+                        where p.id = @propostaId 
+                            and not p.excluido
+                            and pti.tipo_inscricao = @tipoInscricao 
+                            and p.situacao = @situacao;
 
                           select
                               ap.nome
@@ -1820,12 +1822,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task<PropostaInscricaoAutomatica> ObterPropostaInscricaoPorId(long propostaId)
         {
             var query = @"
-            select id as propostaId,
-                   tipo_inscricao as TipoInscricao, 
-                   integrar_no_sga as IntegrarNoSGA,
-                   situacao
-            from proposta
-            where id = @propostaId and not excluido;
+            select p.id as propostaId,
+                   pti.tipo_inscricao as TipoInscricao, 
+                   p.integrar_no_sga as IntegrarNoSGA,
+                   p.situacao,
+                   p.quantidade_vagas_turma as QuantidadeVagasTurmas
+            from proposta p
+            inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id and not pti.excluido
+            where p.id = @propostaId and not p.excluido;
 
             select pt.id,
                    ptd.dre_id as DreId, 
@@ -1927,6 +1931,59 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        inner join proposta_tutor pt on pt.id = ptt.proposta_tutor_id and not pt.excluido
 	                        where not ptt.excluido and ptt.turma_id = @propostaTurmaOrigemId;";
             return conexao.Obter().QueryAsync<PropostaTutor>(query, new { propostaTurmaOrigemId });
+        }
+
+        public Task<IEnumerable<PropostaTipoInscricao>> ObterTiposInscricaoPorId(long propostaId)
+        {
+            var query = @"select 
+                            id, 
+                            proposta_id, 
+                            tipo_inscricao,
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from proposta_tipo_inscricao
+                        where proposta_id = @propostaId and not excluido";
+            return conexao.Obter().QueryAsync<PropostaTipoInscricao>(query, new { propostaId });
+        }
+
+        public async Task InserirTiposInscricao(long propostaId, IEnumerable<PropostaTipoInscricao> tiposInscricao)
+        {
+            foreach (var tipoInscricao in tiposInscricao)
+            {
+                PreencherAuditoriaCriacao(tipoInscricao);
+
+                tipoInscricao.PropostaId = propostaId;
+                tipoInscricao.Id = (long)await conexao.Obter().InsertAsync(tipoInscricao);
+            }
+        }
+
+        public Task RemoverTiposInscricao(IEnumerable<PropostaTipoInscricao> tiposInscrocao)
+        {
+            var tipoInscricao = tiposInscrocao.First();
+            PreencherAuditoriaAlteracao(tipoInscricao);
+
+            var parametros = new
+            {
+                ids = tiposInscrocao.Select(t => t.Id).ToArray(),
+                tipoInscricao.AlteradoEm,
+                tipoInscricao.AlteradoPor,
+                tipoInscricao.AlteradoLogin
+            };
+
+            var query = @"update proposta_tipo_inscricao
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
         }
     }
 }

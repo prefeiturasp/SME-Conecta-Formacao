@@ -114,7 +114,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.FormacaoHomologada, f => f.PickRandom<FormacaoHomologada>());
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
             faker.RuleFor(x => x.Formato, formato);
-            faker.RuleFor(x => x.TipoInscricao, f => f.PickRandom<TipoInscricao>());
+            faker.RuleFor(x => x.TiposInscricao, f => new List<PropostaTipoInscricaoDTO>() { new PropostaTipoInscricaoDTO { TipoInscricao = f.PickRandom<TipoInscricao>() } });
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
             faker.RuleFor(x => x.Dres, f => new[] { f.PickRandom(dres) });
             faker.RuleFor(x => x.PublicosAlvo, f => propostaPublicoAlvos.Any() ? new PropostaPublicoAlvoDTO[] { f.PickRandom(propostaPublicoAlvos) } : default);
