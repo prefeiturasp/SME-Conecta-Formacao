@@ -21,6 +21,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ano;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
@@ -35,6 +36,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Modalidade;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Ue;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Aplicacao.Pipelines;
@@ -294,6 +296,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaTutorPaginacao, CasoDeUsoObterPropostaTutorPaginacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaTutorPorId, CasoDeUsoObterPropostaTutorPorId>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterUePorCodigo, CasoDeUsoObterUePorCodigo>();
 
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
