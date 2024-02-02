@@ -16,6 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao
 
         public async Task<UsuarioPerfisRetornoDTO> Executar(AutenticacaoDTO autenticacaoDTO)
         {
+            await mediator.Send(new ValidarUsuarioSituacaoAtivaQuery(autenticacaoDTO.Login));
+            
             var usuarioAutenticadoRetornoDto = await mediator.Send(new ObterUsuarioServicoAcessosPorLoginSenhaQuery(autenticacaoDTO.Login, autenticacaoDTO.Senha));
 
             if (string.IsNullOrEmpty(usuarioAutenticadoRetornoDto.Login))

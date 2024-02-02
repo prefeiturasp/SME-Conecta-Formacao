@@ -49,5 +49,10 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         {
             Situacao = SituacaoCadastroUsuario.Ativo;
         }
+        
+        public bool EstaAguardandoValidacaoEmail()
+        {
+            return Situacao == SituacaoCadastroUsuario.AguardandoValidacaoEmail;
+        }
     }
 }
