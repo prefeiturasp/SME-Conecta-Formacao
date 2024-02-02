@@ -16,6 +16,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
+        
         public async Task<string> ObterNomeProfissionalPorRegistroFuncional(string registroFuncional)
         {
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_NOME_PROFISSIONAL.Parametros(registroFuncional));
@@ -36,6 +37,25 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<DreServicoEol[]>();
+        }
+        public async Task<UeServicoEol> ObterUePorCodigo(string ueCodigo)
+        {
+            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_UE_POR_CODIGO.Parametros(ueCodigo));
+
+            if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
+                throw new NegocioException(MensagemNegocio.UE_NAO_LOCALIZADA_POR_CODIGO, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<UeServicoEol>();
+        }
+
+        public async Task<IEnumerable<FuncionarioExternoServicoEol>> ObterDadosFuncionarioExternoPorCpf(string cpf)
+        {
+            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.URL_FUNCIONARIO_EXTERNO_POR_CPF.Parametros(cpf));
+            if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
+                throw new NegocioException(MensagemNegocio.CONTRATO_EXTERNO_NAO_LOCALIZADO_POR_CPF, resposta.StatusCode);
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<FuncionarioExternoServicoEol[]>();
         }
 
         public async Task<IEnumerable<ComponenteCurricularAnoTurmaServicoEol>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo)
