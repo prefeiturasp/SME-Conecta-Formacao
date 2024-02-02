@@ -289,7 +289,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 left join proposta_encontro_turma pet on pet.turma_id = pt.id and not pet.excluido
                 left join proposta_encontro pe on pe.id = pet.proposta_encontro_id and not pe.excluido
                 left join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
-                where and not p.excluido and p.id = any(@propostaIds)
+                where not p.excluido and p.id = any(@propostaIds)
                 order by ped.data_inicio ";
 
             return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>
