@@ -1,9 +1,9 @@
-using SME.ConectaFormacao.Infra.Servicos.Eol;
+using SME.ConectaFormacao.Aplicacao.Dtos.FuncionarioExterno;
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.FuncionarioExterno.ObterFuncionarioExternoPorCpf
 {
     public interface ICasoDeUsoObterFuncionarioExternoPorCpf
     {
-        Task<IEnumerable<FuncionarioExternoServicoEol>> Executar(string cpf);
+        Task<FuncionarioExternoDTO> Executar(string cpf);
     }
 }
