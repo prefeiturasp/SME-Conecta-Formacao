@@ -3,9 +3,9 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 {
-    public class CasoDeUsoUsuarioValidacaoToken : CasoDeUsoAbstrato, ICasoDeUsoUsuarioValidacaoToken
+    public class CasoDeUsoUsuarioValidacaoSenhaToken : CasoDeUsoAbstrato, ICasoDeUsoUsuarioValidacaoSenhaToken
     {
-        public CasoDeUsoUsuarioValidacaoToken(IMediator mediator) : base(mediator)
+        public CasoDeUsoUsuarioValidacaoSenhaToken(IMediator mediator) : base(mediator)
         {
         }
 

@@ -14,8 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public Task<bool> Handle(ValidarUsuarioTokenServicoAcessosQuery request, CancellationToken cancellationToken)
         {
-            var ehTokenValido = _servicoAcessos.ValidarUsuarioToken(request.Token);
-            
+            return _servicoAcessos.ValidarUsuarioToken(request.Token);
         }
     }
 }

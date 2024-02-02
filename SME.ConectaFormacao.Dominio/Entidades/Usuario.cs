@@ -44,5 +44,10 @@ namespace SME.ConectaFormacao.Dominio.Entidades
                 Cpf = cpf;
             }
         }
+
+        public void Ativar()
+        {
+            Situacao = SituacaoCadastroUsuario.Ativo;
+        }
     }
 }

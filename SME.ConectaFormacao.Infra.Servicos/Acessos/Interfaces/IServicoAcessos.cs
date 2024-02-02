@@ -1,4 +1,6 @@
-﻿namespace SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces
+﻿using SME.ConectaFormacao.Dominio.Enumerados;
+
+namespace SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces
 {
     public interface IServicoAcessos
     {
@@ -17,5 +19,6 @@
         Task<AcessosGrupo> ObterGrupoPorId(Guid grupoId);
         Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login, Guid perfilUsuarioId);
         Task<AcessosPerfisUsuarioRetorno> RevalidarToken(string token);
+        Task<string> ObterLoginUsuarioToken(Guid token, TipoAcao tipoAcao);
     }
 }

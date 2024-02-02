@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
         private async Task<Dominio.Entidades.Usuario> ObterPorLogin(string login)
         {
-            return await mediator.Send(new ObterUsuarioPorLoginCommand(login));
+            return await mediator.Send(new ObterUsuarioPorLoginQuery(login));
         }
 
         private void ValidarSenha(string senhaNova, string confirmarSenha)

@@ -75,7 +75,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         {
             // arrange
             var token = UsuarioRecuperarSenhaMock.TokenInvalido;
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioValidacaoToken>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioValidacaoSenhaToken>();
 
             // act
             var retorno = await casoDeUso.Executar(token);
@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         {
             // arrange
             var token = UsuarioRecuperarSenhaMock.TokenValido;
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioValidacaoToken>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioValidacaoSenhaToken>();
 
             // act
             var retorno = await casoDeUso.Executar(token);
