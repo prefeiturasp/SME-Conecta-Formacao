@@ -18,16 +18,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             PreencherAuditoriaAlteracao(inscricao);
 
-            var query = @"update proposta_turma_vaga set  
+            var query = @"
+                        with vaga as (
+	                        select id 
+	                        from proposta_turma_vaga 
+	                        where proposta_turma_id = @PropostaTurmaId
+	                        and inscricao_id is null limit 1 for update skip locked
+                        )
+
+                        update proposta_turma_vaga set  
                             inscricao_id = @Id,
                             alterado_em = @AlteradoEm, 
                             alterado_por = @AlteradoPor, 
                             alterado_login = @AlteradoLogin
-                          where id = (
-                                select id 
-                                from proposta_turma_vaga 
-                                where proposta_turma_id = @PropostaTurmaId 
-                                  and inscricao_id is null limit 1)";
+                          where id = (select id from vaga)";
 
             return await conexao.Obter().ExecuteAsync(query, inscricao) > 0;
         }
