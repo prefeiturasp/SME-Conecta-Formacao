@@ -11,7 +11,7 @@
         Task<bool> AlterarSenha(string login, string senhaAtual, string senhaNova);
         Task<bool> AlterarEmail(string login, string email);
         Task<string> SolicitarRecuperacaoSenha(string login);
-        Task<bool> TokenRecuperacaoSenhaEstaValido(Guid token);
+        Task<bool> ValidarUsuarioToken(Guid token);
         Task<string> AlterarSenhaComTokenRecuperacao(Guid token, string novaSenha);
         Task<IEnumerable<AcessosGrupo>> ObterGrupos();
         Task<AcessosGrupo> ObterGrupoPorId(Guid grupoId);

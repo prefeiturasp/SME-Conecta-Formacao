@@ -144,7 +144,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             }
         }
 
-        public async Task<bool> TokenRecuperacaoSenhaEstaValido(Guid token)
+        public async Task<bool> ValidarUsuarioToken(Guid token)
         {
             var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.URL_USUARIOS_X_SISTEMAS_Y_VALIDAR, token, _servicoAcessosOptions.CodigoSistema));
 

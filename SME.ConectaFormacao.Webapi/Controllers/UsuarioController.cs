@@ -33,9 +33,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [AllowAnonymous]
-        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidarTokenRecuperacaoSenha casoDeUsoUsuarioValidarTokenRecuperacaoSenha)
+        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidacaoToken casoDeUsoUsuarioValidacaoToken)
         {
-            return Ok(await casoDeUsoUsuarioValidarTokenRecuperacaoSenha.Executar(token));
+            return Ok(await casoDeUsoUsuarioValidacaoToken.Executar(token));
+        }
+        
+        [HttpGet("{token}/validar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidarToken([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidacaoToken casoDeUsoUsuarioValidacaoToken)
+        {
+            return Ok(await casoDeUsoUsuarioValidacaoToken.Executar(token));
         }
 
         [HttpPut("recuperar-senha")]

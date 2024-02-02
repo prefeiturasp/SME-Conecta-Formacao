@@ -1,6 +1,6 @@
 ﻿namespace SME.ConectaFormacao.Aplicacao.Interfaces.Usuario
 {
-    public interface ICasoDeUsoUsuarioValidarTokenRecuperacaoSenha
+    public interface ICasoDeUsoUsuarioValidacaoToken
     {
         Task<bool> Executar(Guid token);
     }
