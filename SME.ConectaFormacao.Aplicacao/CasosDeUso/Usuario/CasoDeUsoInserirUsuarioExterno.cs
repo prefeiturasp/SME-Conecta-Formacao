@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
         public async Task<bool> InserirUsuarioExterno(UsuarioExternoDTO usuarioExternoDto)
         {
-            usuarioExternoDto.Login = usuarioExternoDto.Login.Replace(".", "").Replace("-", "");
+            usuarioExternoDto.Login = usuarioExternoDto.Cpf.Replace(".", "").Replace("-", "");
             ValidarSenha(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha);
             await ValidarCpfEmUsuarioAcervoECoreSSO(usuarioExternoDto.Login);
 
@@ -24,12 +24,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             if (!retornoCoreSSO)
                 throw new NegocioException(MensagemNegocio.NAO_FOI_POSSIVEL_CADASTRAR_USUARIO_EXTERNO_NO_CORESSO);
 
+            var tipo = usuarioExternoDto.Tipo ?? TipoUsuario.Externo;
             await mediator.Send(new SalvarUsuarioCommand(new Dominio.Entidades.Usuario(
                 usuarioExternoDto.Login,
                 usuarioExternoDto.Nome,
                 usuarioExternoDto.Email,
                 usuarioExternoDto.Cpf,
-                usuarioExternoDto.Tipo,
+                tipo,
                 SituacaoCadastroUsuario.AguardandoValidacaoEmail,
                 usuarioExternoDto.CodigoUe
             )));

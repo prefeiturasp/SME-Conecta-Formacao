@@ -5,14 +5,13 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
 {
     public class UsuarioExternoDTO
     {
-        [Required(ErrorMessage = "É necessário informar o cpf.")]
-        public string Login { get; set; }
+        public string? Login { get; set; }
 
+        public string? CodigoUe { get; set; }
 
         [Required(ErrorMessage = "É necessário informar o e-mail.")]
         public string Email { get; set; }
-        public string? CodigoUe { get; set; }
-
+        public TipoUsuario? Tipo { get; set; }
 
         [Required(ErrorMessage = "É necessário informar o nome.")]
         public string Nome { get; set; }
@@ -26,10 +25,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
 
         [Required(ErrorMessage = "É necessário informar confirmar senha.")]
         public string ConfirmarSenha { get; set; }
-
-
-        [Required(ErrorMessage = "É necessário informar o tipo de perfil.")]
-        public TipoUsuario Tipo { get; set; }
 
     }
 }
