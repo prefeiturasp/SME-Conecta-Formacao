@@ -23,5 +23,6 @@
         public const string URL_GRUPOS_SISTEMA_X = "v1/grupos/sistema/{0}";
         public const string URL_GRUPOS_SISTEMA_X_Y = "v1/grupos/sistema/{0}/{1}";
         public const string URL_FUNCIONARIOS_REGISTROS_FUNCIONAIS_CONECTA_FORMACAO = "funcionarios/registros-funcionais/conecta-formacao";
+        public const string URL_FUNCIONARIO_EXTERNO_POR_CPF = "funcionarios/funcionario-externo/{0}";
     }
 }
