@@ -7,7 +7,6 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
-    [Authorize("Bearer")]
     public class FuncionarioExternoController : BaseController
     {
         [HttpGet("{cpf}")]
