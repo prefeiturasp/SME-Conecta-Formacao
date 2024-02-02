@@ -3,8 +3,6 @@ using SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterDadosFuncionarioExterno;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.FuncionarioExterno;
 using SME.ConectaFormacao.Aplicacao.Interfaces.FuncionarioExterno.ObterFuncionarioExternoPorCpf;
-using SME.ConectaFormacao.Infra.Servicos.Eol;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.FuncionarioExterno.ObterFuncionarioExternoPorCpf
 {
@@ -19,7 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.FuncionarioExterno.ObterFunci
         {
             var contratos  = await mediator.Send(new ObterDadosFuncionarioExternoQuery(cpf));
 
-            var ues = contratos.Select(x => new RetornoListagemDTO() {Id = Convert.ToInt64(x.CodigoUE), Descricao = x.NomeUe}).DistinctBy(x =>x.Id);
+            var ues = contratos.Select(x => new RetornoListagemDTO() {Id = Convert.ToInt64(x.CodigoUE), Descricao = x.NomeUe}).DistinctBy(x =>x.Id).ToList();
+            
+            ues.Add(new RetornoListagemDTO() {Id = 0 , Descricao = "SEM UE"});
 
             return new FuncionarioExternoDTO(
                 contratos.FirstOrDefault().NomePessoa,
