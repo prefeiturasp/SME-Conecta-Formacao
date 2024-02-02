@@ -16,7 +16,7 @@ public class MensagemNegocio
     public const string CRITERIOS_PARA_CERTIFICACAO_NAO_INFORMADO = "É necessário informar ao menos 3 critérios para certificação";
     public const string ACAO_INFORMATIVA_NAO_ACEITA = "É necessário aceitar a ação formativa";
     public const string DESCRICAO_DA_CERTIFICACAO_NAO_INFORMADA = "É necessario informar descrição da atividade para certificação";
-    public const string QUANTIDADE_DE_VAGAS_SGA_MAIOR_QUE_O_PERMINTIDO = "A quantidade de vagas informadas é maior que o permitido por turma no SGA(máximo permitodo {0})";
+    public const string QUANTIDADE_DE_VAGAS_SGA_MAIOR_QUE_O_PERMINTIDO = "A quantidade de vagas informada é maior que o permitido por turma no SGA(máximo permitido é {0})";
 
     public const string CARGA_HORARIA_NAO_INFORMADA = "É necessário informar a carga horária presencial";
     public const string JUSTIFICATIVA_NAO_INFORMADA = "É necessário informar a justificativa";
