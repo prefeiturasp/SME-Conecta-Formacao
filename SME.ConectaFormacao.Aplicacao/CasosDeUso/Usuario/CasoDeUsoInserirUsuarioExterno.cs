@@ -11,13 +11,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 {
     public class CasoDeUsoInserirUsuarioExterno : CasoDeUsoAbstrato, ICasoDeUsoInserirUsuarioExterno
     {
-
-        public CasoDeUsoInserirUsuarioExterno(IMediator mediator) : base(mediator) { }
+        public CasoDeUsoInserirUsuarioExterno(IMediator mediator) : base(mediator)
+        {
+        }
 
         public async Task<bool> InserirUsuarioExterno(UsuarioExternoDTO usuarioExternoDto)
         {
-            usuarioExternoDto.Login = usuarioExternoDto.Cpf.Replace(".", "").Replace("-", "");
-            ValidarSenha(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha);
+            var cpfSemPontos = usuarioExternoDto.Cpf.Replace(".", "").Replace("-", "");
+            usuarioExternoDto.Login = cpfSemPontos;
+            usuarioExternoDto.Cpf = cpfSemPontos;
+            Validacoes(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf);
             await ValidarCpfEmUsuarioAcervoECoreSSO(usuarioExternoDto.Login);
 
             var retornoCoreSSO = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
@@ -25,6 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 throw new NegocioException(MensagemNegocio.NAO_FOI_POSSIVEL_CADASTRAR_USUARIO_EXTERNO_NO_CORESSO);
 
             var tipo = usuarioExternoDto.Tipo ?? TipoUsuario.Externo;
+
             await mediator.Send(new SalvarUsuarioCommand(new Dominio.Entidades.Usuario(
                 usuarioExternoDto.Login,
                 usuarioExternoDto.Nome,
@@ -53,7 +57,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             return await mediator.Send(new ObterUsuarioPorLoginCommand(login));
         }
 
-        private void ValidarSenha(string senhaNova, string confirmarSenha)
+        private void Validacoes(string senhaNova, string confirmarSenha, string cpf)
         {
             var erros = new List<string>();
 
@@ -68,6 +72,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
             if (senhaNova.Length > 12)
                 erros.Add(MensagemNegocio.A_SENHA_DEVE_TER_NO_MÁXIMO_12_CARACTERES);
+
+            if (cpf.Length != 11)
+                erros.Add(MensagemNegocio.CPF_DEVE_TER_11_CARACTERES);
 
             var regexSenha = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)[^áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ]{8,12}$");
 
