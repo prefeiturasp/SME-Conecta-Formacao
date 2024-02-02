@@ -11,6 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 {
     public class CasoDeUsoInserirUsuarioExterno : CasoDeUsoAbstrato, ICasoDeUsoInserirUsuarioExterno
     {
+        private const string SEM_UE = "0";
         public CasoDeUsoInserirUsuarioExterno(IMediator mediator) : base(mediator)
         {
         }
@@ -28,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 throw new NegocioException(MensagemNegocio.NAO_FOI_POSSIVEL_CADASTRAR_USUARIO_EXTERNO_NO_CORESSO);
 
             var tipo = usuarioExternoDto.Tipo ?? TipoUsuario.Externo;
-
+            var codigoUe = usuarioExternoDto.CodigoUe != SEM_UE ? usuarioExternoDto.CodigoUe : null;
             await mediator.Send(new SalvarUsuarioCommand(new Dominio.Entidades.Usuario(
                 usuarioExternoDto.Login,
                 usuarioExternoDto.Nome,
@@ -36,7 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 usuarioExternoDto.Cpf,
                 tipo,
                 SituacaoCadastroUsuario.AguardandoValidacaoEmail,
-                usuarioExternoDto.CodigoUe
+                codigoUe
             )));
             return true;
         }
