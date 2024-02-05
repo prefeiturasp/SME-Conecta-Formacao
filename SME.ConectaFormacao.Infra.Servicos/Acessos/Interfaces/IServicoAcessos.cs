@@ -20,5 +20,6 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces
         Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login, Guid perfilUsuarioId);
         Task<AcessosPerfisUsuarioRetorno> RevalidarToken(string token);
         Task<string> ObterLoginUsuarioToken(Guid token, TipoAcao tipoAcao);
+        Task<bool> EnviarEmailValidacaoUsuarioExterno(string login);
     }
 }
