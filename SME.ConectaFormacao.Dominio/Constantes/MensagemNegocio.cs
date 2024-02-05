@@ -12,10 +12,11 @@ public class MensagemNegocio
     public const string NOME_FORMACAO_NAO_INFORMADO = "É necessário informar o nome da formação";
     public const string PUBLICO_ALVO_NAO_INFORMADO = "É necessário informar o público alvo";
     public const string QUANTIDADE_DE_TURMAS_NAO_INFORMADA = "É necessário informar a quantidade de turmas";
-    public const string QUANTIDADE_DE__VAGAS_POR_TURMAS_NAO_INFORMADA = "É necessário informar a quantidade de vagas por turma";
+    public const string QUANTIDADE_DE_VAGAS_POR_TURMAS_NAO_INFORMADA = "É necessário informar a quantidade de vagas por turma";
     public const string CRITERIOS_PARA_CERTIFICACAO_NAO_INFORMADO = "É necessário informar ao menos 3 critérios para certificação";
     public const string ACAO_INFORMATIVA_NAO_ACEITA = "É necessário aceitar a ação formativa";
     public const string DESCRICAO_DA_CERTIFICACAO_NAO_INFORMADA = "É necessario informar descrição da atividade para certificação";
+    public const string QUANTIDADE_DE_VAGAS_SGA_MAIOR_QUE_O_PERMINTIDO = "A quantidade de vagas informada é maior que o permitido por turma no SGA(máximo permitido é {0})";
 
     public const string CARGA_HORARIA_NAO_INFORMADA = "É necessário informar a carga horária presencial";
     public const string JUSTIFICATIVA_NAO_INFORMADA = "É necessário informar a justificativa";
@@ -95,4 +96,5 @@ public class MensagemNegocio
     public const string VOCE_JA_POSSUI_LOGIN_CONECTA = "Você já possui login no sistema. Caso tenha esquecido a senha, clique em 'esqueci a senha'";
     public const string VOCE_JA_POSSUI_LOGIN_CORESSO = "Você já possui login no sistema. Acesse informando seu RF e senha dos Sistemas da SME (SGP ou Plateia)";
     public const string USUARIO_NAO_VALIDOU_EMAIL = "Você não validou seu e-mail ainda. Caso não tenha recebido o e-mail clique no botão 'Reenviar'";
+    public const string EMAIL_FORA_DOMINIO_PERMITIDO_UES_PARCEIRAS = "Endereço de email não está em um domínio permitido";
 }

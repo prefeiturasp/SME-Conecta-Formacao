@@ -23,5 +23,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().QueryFirstOrDefaultAsync<ParametroSistema>(query, new { tipo, ano });
         }
+
+        public async Task<IEnumerable<string>> ObterDominiosPermitidosParaUesParceiras()
+        {
+            var tipo = TipoParametroSistema.DominioPermitidoCadastroUsuarioExterno;
+            var query = @"select 
+                        valor 
+                        from parametro_sistema ps
+                        where ativo = true
+                        and tipo = @tipo ";
+
+            return await conexao.Obter().QueryAsync<string>(query, new {tipo});
+        }
     }
 }

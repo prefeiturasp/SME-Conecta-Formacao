@@ -41,7 +41,27 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
 
-            return await _repositorioInscricao.Inserir(inscricao);
+            var transacao = _transacao.Iniciar();
+            try
+            {
+                await _repositorioInscricao.Inserir(inscricao);
+
+                var confirmada = await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
+                if (!confirmada)
+                    throw new NegocioException("não foi possível realizar a inscrição por falta de vaga na turma");
+
+                transacao.Commit();
+                return inscricao.Id;
+            }
+            catch
+            {
+                transacao.Rollback();
+                throw;
+            }
+            finally
+            {
+                transacao.Dispose();
+            }
         }
 
         private async Task MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
