@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra;
@@ -32,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
             foreach (var turma in turmasAgrupadas)
             {
-                AssociarCursistasATurma(inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, turma.Id, turma.Dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
+                AssociarCursistasATurma(inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, turma.Id, turma.Dres, inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.QuantidadeVagasTurmas, possuiDres);
             }
 
             List<PropostaInscricaoAutomaticaTurma> turmas = inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.PropostasTurmas.ToList();
@@ -62,13 +63,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     }
                 }
 
-                long propostaTurmaAdicionalId = await mediator.Send(new InserirPropostaTurmaAdicionalCommand(ultimaTurmaId.GetValueOrDefault()));
+                long propostaTurmaAdicionalId = await mediator.Send(new InserirPropostaTurmaAdicionalCommand(ultimaTurmaId.GetValueOrDefault(), inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.QuantidadeVagasTurmas));
 
                 var dres = turmas
                     .Where(t => t.Id == ultimaTurmaId)
                     .Select(s => s.CodigoDre).ToList();
 
-                AssociarCursistasATurma(inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, propostaTurmaAdicionalId, dres, inscricaoAutomaticaTratarTurmas.QtdeCursistasSuportadosPorTurma, possuiDres);
+                AssociarCursistasATurma(inscricaoAutomaticaPropostaTurmaCursistasDTO, cursistas, propostaTurmaAdicionalId, dres, inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.QuantidadeVagasTurmas, possuiDres);
 
                 foreach (var dre in dres)
                 {
@@ -86,9 +87,22 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 InscricaoAutomaticaPropostaTurmaCursistasDTO = inscricaoAutomaticaPropostaTurmaCursistasDTO
             };
 
+
+            await RemoverCaches(inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.PropostaId);
+
             await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarCursistas, inseririnscricao));
 
             return true;
+        }
+
+        private async Task RemoverCaches(long propostaId)
+        {
+            await mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.FormacaoResumida.Parametros(propostaId)));
+            await mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.FormacaoDetalhada.Parametros(propostaId)));
+
+            await mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Proposta.Parametros(propostaId)));
+            await mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.PropostaPublicoAlvo.Parametros(propostaId)));
+            await mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.PropostaFuncaoEspecifica.Parametros(propostaId)));
         }
 
         private static void AssociarCursistasATurma(List<InscricaoAutomaticaPropostaTurmaCursistasDTO> inscricaoAutomaticaPropostaTurmaCursistasDTO, IEnumerable<CursistaServicoEol> cursistas, long propostaTurmaId, IEnumerable<string> dres, int quantidadeMaximaPorTurma, bool possuiDres)

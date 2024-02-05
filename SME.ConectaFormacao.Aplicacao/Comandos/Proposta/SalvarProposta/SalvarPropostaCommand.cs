@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         }
 
         public long PropostaId { get; }
-        public Dominio.Entidades.Proposta Proposta { get; }
+        public Proposta Proposta { get; }
 
         public long? ArquivoImagemDivulgacaoId { get; }
     }

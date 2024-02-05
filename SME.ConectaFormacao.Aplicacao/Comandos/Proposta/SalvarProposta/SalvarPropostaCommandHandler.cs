@@ -39,6 +39,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await _mediator.Send(new SalvarPropostaComponenteCurricularCommand(request.PropostaId, request.Proposta.ComponentesCurriculares), cancellationToken);
 
+            await _mediator.Send(new SalvarPropostaTipoInscricaoCommand(request.PropostaId, request.Proposta.TiposInscricao), cancellationToken);
+
             if (request.ArquivoImagemDivulgacaoId.GetValueOrDefault() != request.Proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault())
             {
                 await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(request.Proposta.ArquivoImagemDivulgacaoId), cancellationToken);

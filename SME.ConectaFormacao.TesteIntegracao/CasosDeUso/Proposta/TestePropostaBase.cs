@@ -86,7 +86,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 TipoFormacao.Curso,
                 Formato.Presencial,
                 situacao,
-                false, false, formacaoHomologada, tipoInscricao, integrarNoSga);
+                false, false, formacaoHomologada, integrarNoSga);
 
             proposta.AreaPromotora = areaPromotora;
 
@@ -217,6 +217,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.Regentes = regentes;
             }
 
+            var propostaTiposInscricao = PropostaMock.GerarTiposInscricao(proposta.Id, tipoInscricao);
+            await InserirNaBase(propostaTiposInscricao);
+
             return proposta;
         }
 
@@ -258,7 +261,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             proposta.TipoFormacao.ShouldBe(propostaDTO.TipoFormacao);
             proposta.Formato.ShouldBe(propostaDTO.Formato);
-            proposta.TipoInscricao.ShouldBe(propostaDTO.TipoInscricao);
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
             proposta.QuantidadeVagasTurma.ShouldBe(propostaDTO.QuantidadeVagasTurma);
@@ -299,7 +301,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             proposta.TipoFormacao.ShouldBe(propostaDTO.TipoFormacao);
             proposta.Formato.ShouldBe(propostaDTO.Formato);
-            proposta.TipoInscricao.ShouldBe(propostaDTO.TipoInscricao);
             proposta.NomeFormacao.ShouldBe(propostaDTO.NomeFormacao);
             proposta.QuantidadeTurmas.ShouldBe(propostaDTO.QuantidadeTurmas);
             proposta.QuantidadeVagasTurma.ShouldBe(propostaDTO.QuantidadeVagasTurma);
@@ -507,6 +508,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             {
                 propostaComponenteCurricular.PropostaId.ShouldBe(id);
                 propostaComponenteCurricularDTO.Any(t => t.ComponenteCurricularId == propostaComponenteCurricular.ComponenteCurricularId).ShouldBeTrue();
+            }
+        }
+
+        protected void ValidarPropostaTipoInscricaoDTO(IEnumerable<PropostaTipoInscricaoDTO> tiposInscricaoDto, long id)
+        {
+            var tiposInscricao = ObterTodos<PropostaTipoInscricao>().Where(t => !t.Excluido);
+
+            if (tiposInscricaoDto.PossuiElementos() && tiposInscricao.PossuiElementos())
+                tiposInscricaoDto.Count().ShouldBe(tiposInscricao.Count());
+
+            foreach (var tipoInscricao in tiposInscricao)
+            {
+                tipoInscricao.PropostaId.ShouldBe(id);
+                tiposInscricaoDto.FirstOrDefault(t => t.TipoInscricao == tipoInscricao.TipoInscricao).ShouldNotBeNull();
             }
         }
     }

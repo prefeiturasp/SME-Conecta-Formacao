@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 RuleFor(x => x.PropostaDTO.Formato).NotEqual(Formato.Hibrido).WithMessage("É permitido o formato Híbrido somente para o tipo de formação evento");
             });
 
-            RuleFor(f => f.PropostaDTO.TipoInscricao)
+            RuleFor(f => f.PropostaDTO.TiposInscricao)
                 .NotNull()
                 .WithMessage("É necessário informar o tipo de inscrição para alterar a proposta");
 
