@@ -49,11 +49,11 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             return json.JsonParaObjeto<UeServicoEol>();
         }
 
-        public async Task<IEnumerable<FuncionarioExternoServicoEol>> ObterDadosFuncionarioExternoPorCpf(string cpf)
+        public async Task<IEnumerable<FuncionarioExternoServicoEol>?> ObterDadosFuncionarioExternoPorCpf(string cpf)
         {
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.URL_FUNCIONARIO_EXTERNO_POR_CPF.Parametros(cpf));
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
-                throw new NegocioException(MensagemNegocio.CONTRATO_EXTERNO_NAO_LOCALIZADO_POR_CPF, resposta.StatusCode);
+                return null;
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<FuncionarioExternoServicoEol[]>();
         }

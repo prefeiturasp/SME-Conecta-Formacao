@@ -4,8 +4,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
+using SME.ConectaFormacao.Aplicacao.ObterDominioDeEmailPermitido;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -21,8 +23,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         {
             base.RegistrarCommandFakes(services);
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<CadastrarUsuarioServicoAcessoCommand, bool>), typeof(CadastrarUsuarioServicoAcessoCommandHandlerFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<SalvarUsuarioCommand, bool>), typeof(SalvarUsuarioCommandHandlerFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<UsuarioExisteNoCoreSsoQuery, bool>), typeof(UsuarioExisteNoCoreSsoQueryFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand, bool>), typeof(EnviarEmailValidacaoUsuarioExternoServicoAcessoCommandFake), ServiceLifetime.Scoped));
         }
 
 
