@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Options;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Constante;
 using System.Text;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 {
@@ -41,6 +42,16 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<AcessosPerfisUsuarioRetorno>();
+        }
+
+        public async Task<string> ObterLoginUsuarioToken(Guid token, TipoAcao tipoAcao)
+        {
+            var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.URL_USUARIOS_X_SISTEMAS_Y_VALIDAR_Z, token, _servicoAcessosOptions.CodigoSistema, tipoAcao));
+
+            if (!resposta.IsSuccessStatusCode) return string.Empty;
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<string>();
         }
 
         public async Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login)
@@ -144,7 +155,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             }
         }
 
-        public async Task<bool> TokenRecuperacaoSenhaEstaValido(Guid token)
+        public async Task<bool> ValidarUsuarioToken(Guid token)
         {
             var resposta = await _httpClient.GetAsync(string.Format(ServicoEolConstantes.URL_USUARIOS_X_SISTEMAS_Y_VALIDAR, token, _servicoAcessosOptions.CodigoSistema));
 
@@ -200,6 +211,15 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
                 var mensagem = await resposta.Content.ReadAsStringAsync();
                 throw new NegocioException(mensagem.JsonParaObjeto<string>());
             }
+        }
+        public async Task<bool> EnviarEmailValidacaoUsuarioExterno(string login)
+        {
+            var resposta = await _httpClient.PostAsync(string.Format(ServicoEolConstantes.URL_USUARIOS_X_SISTEMAS_Y_ENVIAR_EMAIL_VALIDACAO, login, _servicoAcessosOptions.CodigoSistema), null);
+
+            if (!resposta.IsSuccessStatusCode) return false;
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<bool>();
         }
     }
 }

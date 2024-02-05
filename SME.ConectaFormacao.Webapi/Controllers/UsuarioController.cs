@@ -3,11 +3,22 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     public class UsuarioController : BaseController
     {
+        [HttpPost]
+        [ProducesResponseType(typeof(UsuarioExternoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
+        public async Task<IActionResult> Inserir(UsuarioExternoDTO usuarioExternoDto, [FromServices] ICasoDeUsoInserirUsuarioExterno usoInserirUsuario)
+        {
+            return Ok(await usoInserirUsuario.InserirUsuarioExterno(usuarioExternoDto));
+        }
+
         [HttpPost("{login}/solicitar-recuperacao-senha")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -23,9 +34,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [AllowAnonymous]
-        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidarTokenRecuperacaoSenha casoDeUsoUsuarioValidarTokenRecuperacaoSenha)
+        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidacaoSenhaToken casoDeUsoUsuarioValidacaoSenhaToken)
         {
-            return Ok(await casoDeUsoUsuarioValidarTokenRecuperacaoSenha.Executar(token));
+            return Ok(await casoDeUsoUsuarioValidacaoSenhaToken.Executar(token));
+        }
+        
+        [HttpGet("validar-email/{token}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidarEmailToken([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidacaoEmailToken casoDeUsoUsuarioValidacaoEmailToken)
+        {
+            return Ok(await casoDeUsoUsuarioValidacaoEmailToken.Executar(token));
         }
 
         [HttpPut("recuperar-senha")]
@@ -66,6 +87,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> AlterarEmail([FromRoute] string login, [FromBody] EmailUsuarioDTO emailUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarEmail casoDeUsoUsuarioAlterarEmail)
         {
             return Ok(await casoDeUsoUsuarioAlterarEmail.Executar(login, emailUsuarioDto.Email));
+        }
+        
+        [HttpGet("{login}/reenviar-email")]
+        [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ReenviarEmailParaValidacao([FromRoute] string login, [FromServices] ICasoDeUsoReenviarEmail casoDeUsoReenviarEmail)
+        {
+            return Ok(await casoDeUsoReenviarEmail.Executar(login));
         }
     }
 }

@@ -49,14 +49,14 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 var erros = new List<string>();
                 var quantidadeDeTurmasSemInformarDre = request.PropostaDTO.Turmas.Count(x => x.DresIds.Contains(DRE_ID_TODOS));
-                if(quantidadeDeTurmasSemInformarDre > 0)
+                if (quantidadeDeTurmasSemInformarDre > 0)
                     erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
-                
-                var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim,proposta.DataRealizacaoFim));
+
+                var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim));
 
                 if (!string.IsNullOrEmpty(validarDatas))
                     erros.Add(validarDatas);
-                
+
                 var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
                 if (!string.IsNullOrEmpty(errosRegente))
                     erros.Add(errosRegente);
