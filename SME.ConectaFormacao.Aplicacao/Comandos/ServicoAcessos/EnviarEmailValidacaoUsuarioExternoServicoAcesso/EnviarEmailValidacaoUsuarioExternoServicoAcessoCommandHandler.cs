@@ -14,6 +14,6 @@ public class EnviarEmailValidacaoUsuarioExternoServicoAcessoCommandHandler : IRe
 
     public Task<bool> Handle(EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand request, CancellationToken cancellationToken)
     {
-        return servicoAcessos.CadastrarUsuarioServicoAcesso(request.Login);
+        return servicoAcessos.EnviarEmailValidacaoUsuarioExterno(request.Login);
     }
 }
