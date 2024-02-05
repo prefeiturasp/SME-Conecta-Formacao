@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 
@@ -15,20 +16,32 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         public async Task<DadosInscricaoDTO> Executar()
         {
             var usuarioLogado = await mediator.Send(ObterUsuarioLogadoQuery.Instancia);
-
-            // TODO: Buscar cargos EOL somente para usuários rede parceira
-            var cargosFuncoesEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuarioLogado.Login));
-
-            await AtualizaCpfUsuario(usuarioLogado, cargosFuncoesEol);
-
-            var retorno = new DadosInscricaoDTO()
+            var retorno = new DadosInscricaoDTO();
+            if (usuarioLogado.Tipo != TipoUsuario.Externo)
             {
-                UsuarioNome = usuarioLogado.Nome,
-                UsuarioCpf = cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"000\.000\.000\-00"),
-                UsuarioEmail = usuarioLogado.Email,
-                UsuarioRf = usuarioLogado.Login,
-                UsuarioCargos = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoesEol)
-            };
+                // TODO: Buscar cargos EOL somente para usuários rede parceira
+                var cargosFuncoesEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuarioLogado.Login));
+
+                await AtualizaCpfUsuario(usuarioLogado, cargosFuncoesEol);
+                retorno = new DadosInscricaoDTO()
+                {
+                    UsuarioNome = usuarioLogado.Nome,
+                    UsuarioCpf = cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"000\.000\.000\-00"),
+                    UsuarioEmail = usuarioLogado.Email,
+                    UsuarioRf = usuarioLogado.Login,
+                    UsuarioCargos = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoesEol)
+                };
+            }
+            else
+            {
+                retorno = new DadosInscricaoDTO()
+                {
+                    UsuarioNome = usuarioLogado.Nome,
+                    UsuarioCpf = usuarioLogado.Login.AplicarMascara(@"000\.000\.000\-00"),
+                    UsuarioEmail = usuarioLogado.Email,
+                    UsuarioRf = usuarioLogado.Login,
+                };
+            }
 
             return retorno;
         }
