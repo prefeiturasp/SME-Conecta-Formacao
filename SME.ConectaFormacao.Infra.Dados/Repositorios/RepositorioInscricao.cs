@@ -40,14 +40,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             var situacaoCancelada = (int)SituacaoInscricao.Cancelada;
 
-            var query = @"select 1 
-                          from inscricao i 
-                          inner join proposta_turma pt on pt.id = i.proposta_turma_id and not pt.excluido
-                          where i.usuario_id = @usuarioId 
-                            and pt.proposta_id = @propostaId
-                            and i.situacao <> @situacaoCancelada
-                            and not i.excluido
-                          limit 1";
+            var query = @"
+                        select 1 
+                        from proposta_turma pt 
+                        left join inscricao i on pt.id = i.proposta_turma_id and not i.excluido
+                        where pt.proposta_id = @propostaId 
+	                        and i.usuario_id = @usuarioId 
+	                        and i.situacao <> @situacaoCancelada
+                        limit 1";
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, usuarioId, situacaoCancelada });
         }
