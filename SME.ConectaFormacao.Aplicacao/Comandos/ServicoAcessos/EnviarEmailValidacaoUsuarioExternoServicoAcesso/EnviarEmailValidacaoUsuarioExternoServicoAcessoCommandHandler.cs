@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
-public class EnviarEmailValidacaoUsuarioExternoServicoAcessoCommandHandler : IRequestHandler<EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand,bool>
+public class EnviarEmailValidacaoUsuarioExternoServicoAcessoCommandHandler : IRequestHandler<EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand, bool>
 {
     private readonly IServicoAcessos servicoAcessos;
 

@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        
+
         public async Task<string> ObterNomeProfissionalPorRegistroFuncional(string registroFuncional)
         {
             var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_NOME_PROFISSIONAL.Parametros(registroFuncional));

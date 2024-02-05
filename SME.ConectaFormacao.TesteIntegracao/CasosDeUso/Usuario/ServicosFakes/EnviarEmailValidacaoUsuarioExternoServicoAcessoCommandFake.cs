@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes
     {
         public async Task<bool> Handle(EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand request, CancellationToken cancellationToken)
         {
-           return true;
+            return true;
         }
     }
 }

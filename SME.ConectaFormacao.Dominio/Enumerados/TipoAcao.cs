@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
     {
         [Display(Description = "Recuperação de senha")]
         RecuperacaoSenha = 1,
-        
+
         [Display(Description = "Validação de e-mail")]
         ValidacaoEmail = 2,
     }

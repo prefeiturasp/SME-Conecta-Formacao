@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue
     public class CasoDeUsoObterUePorCodigo : CasoDeUsoAbstrato, ICasoDeUsoObterUePorCodigo
     {
 
-        public CasoDeUsoObterUePorCodigo(IMediator mediator) : base(mediator){}
+        public CasoDeUsoObterUePorCodigo(IMediator mediator) : base(mediator) { }
 
         public async Task<UeServicoEol> Executar(string ueCodigo)
         {

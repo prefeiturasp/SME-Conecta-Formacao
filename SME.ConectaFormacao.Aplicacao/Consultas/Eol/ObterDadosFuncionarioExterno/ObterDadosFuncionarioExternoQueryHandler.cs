@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterDadosFuncionarioExterno
 {
-    public class ObterDadosFuncionarioExternoQueryHandler : IRequestHandler<ObterDadosFuncionarioExternoQuery,IEnumerable<FuncionarioExternoServicoEol>?>
+    public class ObterDadosFuncionarioExternoQueryHandler : IRequestHandler<ObterDadosFuncionarioExternoQuery, IEnumerable<FuncionarioExternoServicoEol>?>
     {
         private readonly IServicoEol _servicoEol;
 

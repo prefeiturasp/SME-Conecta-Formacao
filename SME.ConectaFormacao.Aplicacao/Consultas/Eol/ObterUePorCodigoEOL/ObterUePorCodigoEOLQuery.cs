@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string UeCodigo { get; set; }
     }
 
-    public class ObterUePorCodigoEOLQueryValidator :AbstractValidator<ObterUePorCodigoEOLQuery>
+    public class ObterUePorCodigoEOLQueryValidator : AbstractValidator<ObterUePorCodigoEOLQuery>
     {
         public ObterUePorCodigoEOLQueryValidator()
         {

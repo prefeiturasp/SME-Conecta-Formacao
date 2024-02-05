@@ -17,12 +17,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         public async Task<UsuarioPerfisRetornoDTO> Executar(Guid token)
         {
             var login = await mediator.Send(new ObterLoginUsuarioTokenServicoAcessosQuery(token, TipoAcao.ValidacaoEmail));
-            
+
             if (login.NaoEstaPreenchido())
                 throw new NegocioException(MensagemNegocio.TOKEN_INVALIDO);
-            
+
             await mediator.Send(new AtivarUsuarioExternoCommand(login));
-            
+
             return await mediator.Send(new ObterTokenAcessoQuery(login, null));
         }
     }
