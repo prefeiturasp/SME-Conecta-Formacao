@@ -2,8 +2,8 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Usuario
 {
-    public interface ICasoDeUsoUsuarioValidacaoEmailToken
+    public interface ICasoDeUsoReenviarEmail
     {
-        Task<UsuarioPerfisRetornoDTO> Executar(Guid token);
+        Task<bool> Executar(string login);
     }
 }
