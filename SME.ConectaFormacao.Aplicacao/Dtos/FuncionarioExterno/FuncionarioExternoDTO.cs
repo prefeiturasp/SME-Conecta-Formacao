@@ -1,6 +1,3 @@
-using SME.ConectaFormacao.Aplicacao.DTOS;
-using SME.ConectaFormacao.Infra.Servicos.Eol;
-
 namespace SME.ConectaFormacao.Aplicacao.Dtos.FuncionarioExterno
 {
     public class FuncionarioExternoDTO

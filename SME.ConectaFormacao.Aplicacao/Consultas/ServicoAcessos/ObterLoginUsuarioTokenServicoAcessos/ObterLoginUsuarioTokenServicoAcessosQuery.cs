@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
         }
 
         public Guid Token { get; }
-        public TipoAcao TipoAcao{ get; }
+        public TipoAcao TipoAcao { get; }
     }
 
     public class ObterLoginUsuarioTokenServicoAcessosQueryValidator : AbstractValidator<ObterLoginUsuarioTokenServicoAcessosQuery>
@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(x => x.Token)
                 .NotEmpty()
                 .WithMessage("É necessário informar o token para obter login com base no token");
-            
+
             RuleFor(x => x.TipoAcao)
                 .NotEmpty()
                 .WithMessage("É necessário informar o tipo da açaõ para obter login com base no token");

@@ -27,9 +27,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
             usuarioExterno.Ativar();
             await _repositorioUsuario.Atualizar(usuarioExterno);
-            
+
             await _cacheDistribuido.RemoverAsync(string.Format(CacheDistribuidoNomes.Usuario, request.Login));
-            
+
             return true;
         }
     }

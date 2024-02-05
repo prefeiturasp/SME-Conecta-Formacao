@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly ICacheDistribuido _cacheDistribuido;
         private readonly IRepositorioUsuario _repositorioUsuario;
 
-        public ValidarUsuarioSituacaoAtivaQueryHandler(ICacheDistribuido cacheDistribuido,IRepositorioUsuario repositorioUsuario)
+        public ValidarUsuarioSituacaoAtivaQueryHandler(ICacheDistribuido cacheDistribuido, IRepositorioUsuario repositorioUsuario)
         {
             _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
             _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (usuario.EhNulo())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO, HttpStatusCode.Unauthorized);
-            
+
             if (usuario.EstaAguardandoValidacaoEmail())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_VALIDOU_EMAIL, HttpStatusCode.Unauthorized);
         }

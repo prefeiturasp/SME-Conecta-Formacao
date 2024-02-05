@@ -1,11 +1,10 @@
 using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos.FuncionarioExterno;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterDadosFuncionarioExterno
 {
-    public class ObterDadosFuncionarioExternoQuery : IRequest<IEnumerable<FuncionarioExternoServicoEol>>
+    public class ObterDadosFuncionarioExternoQuery : IRequest<IEnumerable<FuncionarioExternoServicoEol>?>
     {
         public ObterDadosFuncionarioExternoQuery(string cpf)
         {
