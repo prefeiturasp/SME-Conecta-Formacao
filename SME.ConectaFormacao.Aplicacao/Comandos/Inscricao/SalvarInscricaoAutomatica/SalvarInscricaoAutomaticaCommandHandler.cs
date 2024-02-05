@@ -46,7 +46,9 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 await _repositorioInscricao.Inserir(inscricao);
 
-                await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
+                var confirmada = await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
+                if (!confirmada)
+                    throw new NegocioException("não foi possível realizar a inscrição por falta de vaga na turma");
 
                 transacao.Commit();
                 return inscricao.Id;
