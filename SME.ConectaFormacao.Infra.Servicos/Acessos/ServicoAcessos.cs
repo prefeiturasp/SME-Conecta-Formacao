@@ -212,5 +212,14 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
                 throw new NegocioException(mensagem.JsonParaObjeto<string>());
             }
         }
+        public async Task<bool> CadastrarUsuarioServicoAcesso(string login)
+        {
+            var resposta = await _httpClient.PostAsync(string.Format(ServicoEolConstantes.URL_USUARIOS_X_SISTEMAS_Y_ENVIAR_EMAIL_VALIDACAO, login, _servicoAcessosOptions.CodigoSistema), null);
+
+            if (!resposta.IsSuccessStatusCode) return false;
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<bool>();
+        }
     }
 }

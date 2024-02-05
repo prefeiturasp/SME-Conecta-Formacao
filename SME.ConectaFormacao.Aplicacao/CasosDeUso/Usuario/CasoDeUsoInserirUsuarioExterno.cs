@@ -39,7 +39,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 SituacaoCadastroUsuario.AguardandoValidacaoEmail,
                 codigoUe
             )));
-            return true;
+            
+            return await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
         }
 
         private async Task ValidarCpfEmUsuarioAcervoECoreSSO(string cpf)
