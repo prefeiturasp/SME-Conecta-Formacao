@@ -39,16 +39,6 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoUsuarioValidacaoSenhaToken.Executar(token));
         }
         
-        [HttpGet("{token}/validar")]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [AllowAnonymous]
-        public async Task<IActionResult> ValidarToken([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidacaoSenhaToken casoDeUsoUsuarioValidacaoSenhaToken)
-        {
-            return Ok(await casoDeUsoUsuarioValidacaoSenhaToken.Executar(token));
-        }
-        
         [HttpGet("validar-email/{token}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
