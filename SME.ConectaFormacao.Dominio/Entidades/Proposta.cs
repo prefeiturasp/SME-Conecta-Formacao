@@ -9,7 +9,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public FormacaoHomologada? FormacaoHomologada { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
         public Formato? Formato { get; set; }
-        public TipoInscricao? TipoInscricao { get; set; }
         public string NomeFormacao { get; set; }
         public short? QuantidadeTurmas { get; set; }
         public short? QuantidadeVagasTurma { get; set; }
@@ -69,5 +68,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
                        };
             }
         }
+        public IEnumerable<PropostaTipoInscricao> TiposInscricao { get; set; }
+
     }
 }

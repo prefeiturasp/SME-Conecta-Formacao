@@ -128,6 +128,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<PropostaDre, PropostaDreDTO>().ReverseMap();
 
+            CreateMap<PropostaTipoInscricao, PropostaTipoInscricaoDTO>().ReverseMap();
+
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
 
