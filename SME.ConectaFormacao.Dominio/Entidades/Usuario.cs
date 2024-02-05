@@ -44,5 +44,15 @@ namespace SME.ConectaFormacao.Dominio.Entidades
                 Cpf = cpf;
             }
         }
+
+        public void Ativar()
+        {
+            Situacao = SituacaoCadastroUsuario.Ativo;
+        }
+        
+        public bool EstaAguardandoValidacaoEmail()
+        {
+            return Situacao == SituacaoCadastroUsuario.AguardandoValidacaoEmail;
+        }
     }
 }

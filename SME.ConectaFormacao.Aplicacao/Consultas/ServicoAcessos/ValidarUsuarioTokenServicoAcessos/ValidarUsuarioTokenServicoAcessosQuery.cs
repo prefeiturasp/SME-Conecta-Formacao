@@ -3,9 +3,9 @@ using MediatR;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarTokenRecuperacaoSenhaServicoAcessosQuery : IRequest<bool>
+    public class ValidarUsuarioTokenServicoAcessosQuery : IRequest<bool>
     {
-        public ValidarTokenRecuperacaoSenhaServicoAcessosQuery(Guid token)
+        public ValidarUsuarioTokenServicoAcessosQuery(Guid token)
         {
             Token = token;
         }
@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public Guid Token { get; }
     }
 
-    public class ValidarTokenRecuperacaoSenhaServicoAcessosQueryValidator : AbstractValidator<ValidarTokenRecuperacaoSenhaServicoAcessosQuery>
+    public class ValidarTokenRecuperacaoSenhaServicoAcessosQueryValidator : AbstractValidator<ValidarUsuarioTokenServicoAcessosQuery>
     {
         public ValidarTokenRecuperacaoSenhaServicoAcessosQueryValidator()
         {

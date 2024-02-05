@@ -19,6 +19,7 @@
         public const string URL_USUARIOS_X_EMAIL = "v1/usuarios/{0}/email";
         public const string URL_USUARIOS_X_SISTEMAS_Y_RECUPERAR_SENHA = "v1/usuarios/{0}/sistemas/{1}/recuperar-senha";
         public const string URL_USUARIOS_X_SISTEMAS_Y_VALIDAR = "v1/usuarios/{0}/sistemas/{1}/validar";
+        public const string URL_USUARIOS_X_SISTEMAS_Y_VALIDAR_Z = "v1/usuarios/{0}/sistemas/{1}/validar/{2}";
         public const string URL_USUARIOS_SISTEMAS_X_SENHA = "v1/usuarios/sistemas/{0}/senha";
         public const string URL_GRUPOS_SISTEMA_X = "v1/grupos/sistema/{0}";
         public const string URL_GRUPOS_SISTEMA_X_Y = "v1/grupos/sistema/{0}/{1}";

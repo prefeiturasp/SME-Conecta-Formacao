@@ -32,7 +32,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         protected override void RegistrarQueryFakes(IServiceCollection services)
         {
             base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ValidarTokenRecuperacaoSenhaServicoAcessosQuery, bool>), typeof(ValidarTokenRecuperacaoSenhaServicoAcessosQueryHandlerFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ValidarUsuarioTokenServicoAcessosQuery, bool>), typeof(ValidarTokenRecuperacaoSenhaServicoAcessosQueryHandlerFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterPerfisUsuarioServicoAcessosPorLoginQuery, UsuarioPerfisRetornoDTO>), typeof(ObterPerfisUsuarioServicoAcessosPorLoginQueryHandlerFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<VincularPerfilExternoCoreSSOServicoAcessosCommand, bool>), typeof(VincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
         }
@@ -75,7 +75,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         {
             // arrange
             var token = UsuarioRecuperarSenhaMock.TokenInvalido;
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioValidarTokenRecuperacaoSenha>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioValidacaoSenhaToken>();
 
             // act
             var retorno = await casoDeUso.Executar(token);
@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         {
             // arrange
             var token = UsuarioRecuperarSenhaMock.TokenValido;
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioValidarTokenRecuperacaoSenha>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioValidacaoSenhaToken>();
 
             // act
             var retorno = await casoDeUso.Executar(token);

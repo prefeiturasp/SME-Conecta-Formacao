@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
@@ -33,9 +34,29 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [AllowAnonymous]
-        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidarTokenRecuperacaoSenha casoDeUsoUsuarioValidarTokenRecuperacaoSenha)
+        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidacaoSenhaToken casoDeUsoUsuarioValidacaoSenhaToken)
         {
-            return Ok(await casoDeUsoUsuarioValidarTokenRecuperacaoSenha.Executar(token));
+            return Ok(await casoDeUsoUsuarioValidacaoSenhaToken.Executar(token));
+        }
+        
+        [HttpGet("{token}/validar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidarToken([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidacaoSenhaToken casoDeUsoUsuarioValidacaoSenhaToken)
+        {
+            return Ok(await casoDeUsoUsuarioValidacaoSenhaToken.Executar(token));
+        }
+        
+        [HttpGet("validar-email/{token}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidarEmailToken([FromRoute] Guid token, [FromServices] ICasoDeUsoUsuarioValidacaoEmailToken casoDeUsoUsuarioValidacaoEmailToken)
+        {
+            return Ok(await casoDeUsoUsuarioValidacaoEmailToken.Executar(token));
         }
 
         [HttpPut("recuperar-senha")]
