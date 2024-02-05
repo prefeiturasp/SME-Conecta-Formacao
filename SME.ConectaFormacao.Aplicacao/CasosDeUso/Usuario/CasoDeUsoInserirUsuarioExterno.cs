@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
+using SME.ConectaFormacao.Aplicacao.ObterDominioDeEmailPermitido;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
@@ -21,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var cpfSemPontos = usuarioExternoDto.Cpf.Replace(".", "").Replace("-", "");
             usuarioExternoDto.Login = cpfSemPontos;
             usuarioExternoDto.Cpf = cpfSemPontos;
-            Validacoes(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf);
+            await Validacoes(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf,usuarioExternoDto.Email);
             await ValidarCpfEmUsuarioAcervoECoreSSO(usuarioExternoDto.Login);
 
             var retornoCoreSSO = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
@@ -58,10 +59,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             return await mediator.Send(new ObterUsuarioPorLoginQuery(login));
         }
 
-        private void Validacoes(string senhaNova, string confirmarSenha, string cpf)
+        private async Task<IEnumerable<string>> ObterDominiosPermitidos()
+        {
+            return await mediator.Send(new ObterDominioDeEmailPermitidoQuery());
+        }
+        private async Task Validacoes(string senhaNova, string confirmarSenha, string cpf,string email)
         {
             var erros = new List<string>();
-
+            var dominiosPermitidos = await ObterDominiosPermitidos();
+            
+            if(!dominiosPermitidos.Contains(email))
+                erros.Add(MensagemNegocio.EMAIL_FORA_DOMINIO_PERMITIDO_UES_PARCEIRAS);
+            
             if (senhaNova.Contains(" "))
                 erros.Add(MensagemNegocio.A_SENHA_NAO_PODE_CONTER_ESPACOS_EM_BRANCO);
 
