@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -13,14 +14,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         {
         }
 
-        public async Task<bool> Executar(Guid token)
+        public async Task<UsuarioPerfisRetornoDTO> Executar(Guid token)
         {
             var login = await mediator.Send(new ObterLoginUsuarioTokenServicoAcessosQuery(token, TipoAcao.ValidacaoEmail));
             
             if (login.NaoEstaPreenchido())
                 throw new NegocioException(MensagemNegocio.TOKEN_INVALIDO);
             
-            return await mediator.Send(new AtivarUsuarioExternoCommand(login));
+            await mediator.Send(new AtivarUsuarioExternoCommand(login));
+            
+            return await mediator.Send(new ObterTokenAcessoQuery(login, null));
         }
     }
 }
