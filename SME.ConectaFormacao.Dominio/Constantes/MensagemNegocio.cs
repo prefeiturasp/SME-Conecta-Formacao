@@ -96,4 +96,5 @@ public class MensagemNegocio
     public const string VOCE_JA_POSSUI_LOGIN_CONECTA = "Você já possui login no sistema. Caso tenha esquecido a senha, clique em 'esqueci a senha'";
     public const string VOCE_JA_POSSUI_LOGIN_CORESSO = "Você já possui login no sistema. Acesse informando seu RF e senha dos Sistemas da SME (SGP ou Plateia)";
     public const string USUARIO_NAO_VALIDOU_EMAIL = "Você não validou seu e-mail ainda. Caso não tenha recebido o e-mail clique no botão 'Reenviar'";
+    public const string EMAIL_FORA_DOMINIO_PERMITIDO_UES_PARCEIRAS = "Endereço de email não está em um domínio permitido";
 }
