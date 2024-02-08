@@ -320,6 +320,55 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 splitOn: "id, id");
         }
 
+        public  Task<IEnumerable<Proposta>> ObterPropostasDashBoardPorTipo(long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
+        {
+                var sql = new StringBuilder(); 
+                sql.AppendLine(@"select p.*,pm.* ");
+                sql.AppendLine(@"FROM proposta p");
+                sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
+                sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
+                sql.AppendLine(@"where not p.excluido");
+                if (areaPromotoraId.GetValueOrDefault() > 0)
+                    sql.AppendLine(" and p.area_promotora_id = @areaPromotoraId");
+                if (formato.GetValueOrDefault() > 0)
+                    sql.AppendLine(" and p.formato = @formato");
+                if (publicoAlvoIds != null && publicoAlvoIds.Any())
+                    sql.AppendLine(" and exists(select 1 from proposta_publico_alvo ppa where not ppa.excluido and ppa.proposta_id = p.id and ppa.cargo_funcao_id = any(@publicoAlvoIds) limit 1)");
+                if (!string.IsNullOrEmpty(nomeFormacao))
+                {
+                    nomeFormacao = "%" + nomeFormacao.ToLower() + "%";
+                    sql.AppendLine(" and lower(p.nome_formacao) like @nomeFormacao");
+                }
+                if (periodoRealizacaoInicio.HasValue)
+                    sql.AppendLine(" and data_realizacao_inicio::date >= @periodoRealizacaoInicio");
+                if (periodoRealizacaoFim.HasValue)
+                    sql.AppendLine(" and data_realizacao_fim::date <= @periodoRealizacaoFim");
+                if (situacao.GetValueOrDefault() > 0)
+                    sql.AppendLine(" and p.situacao = @situacao");
+                if (formacaoHomologada.HasValue)
+                    sql.AppendLine(" and p.formacao_homologada = @formacaoHomologada ");
+
+                sql.AppendLine(" ORDER BY coalesce(pm.criado_em,coalesce(p.alterado_em,p.criado_em)) ");
+                
+                return conexao.Obter().QueryAsync<Proposta, PropostaMovimentacao, Proposta>(sql.ToString(), (proposta, movimentacao) =>
+                    {
+                        proposta.Movimentacao = movimentacao;
+                        return proposta;
+                    },
+                    new
+                    {
+                        formato,
+                        publicoAlvoIds,
+                        nomeFormacao,
+                        numeroHomologacao,
+                        periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
+                        periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
+                        situacao,
+                        formacaoHomologada
+                    },
+                    splitOn: "id, id");
+        }
+
         public Task<PropostaEncontro> ObterEncontroPorId(long encontroId)
         {
             var query = @"select 
@@ -656,7 +705,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryAsync<PropostaRegente>(query, new { numeroRegistros, registrosIgnorados, propostaId });
         }
-
+        
         public Task<IEnumerable<PropostaTutor>> ObterTutoresPaginado(int numeroPagina, int numeroRegistros, long propostaId)
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
@@ -996,6 +1045,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
+        public Task RemoverPropostaMovimentacao(long propostaId)
+        {
+            var query = "update proposta_movimentacao set excluido = true, alterado_em = now() where proposta_id = @propostaId ";
+            return conexao.Obter().ExecuteAsync(query, new {propostaId});
+        }
+        
         public Task RemoverComponentesCurriculares(IEnumerable<PropostaComponenteCurricular> componenteCurriculares)
         {
             var componenteCurricular = componenteCurriculares.First();

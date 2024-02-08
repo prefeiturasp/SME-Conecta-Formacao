@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where ativo = true
                         and tipo = @tipo ";
 
-            return await conexao.Obter().QueryAsync<string>(query, new {tipo});
+            return await conexao.Obter().QueryAsync<string>(query, new { tipo });
         }
     }
 }

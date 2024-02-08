@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.FuncionarioExterno.ObterFunci
 {
     public interface ICasoDeUsoObterFuncionarioExternoPorCpf
     {
-        Task<FuncionarioExternoDTO> Executar(string cpf);
+        Task<FuncionarioExternoDTO?> Executar(string cpf);
     }
 }

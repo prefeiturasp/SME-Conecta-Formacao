@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.ObterDominioDeEmailPermitido
 {
-    public class ObterDominioDeEmailPermitidoQueryHandler : IRequestHandler<ObterDominioDeEmailPermitidoQuery,IEnumerable<string>>
+    public class ObterDominioDeEmailPermitidoQueryHandler : IRequestHandler<ObterDominioDeEmailPermitidoQuery, IEnumerable<string>>
     {
         private readonly IRepositorioParametroSistema repositorioParametroSistema;
 

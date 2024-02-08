@@ -7,7 +7,7 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUePorCodigoEOLQueryHandler : IRequestHandler<ObterUePorCodigoEOLQuery,UeServicoEol>
+    public class ObterUePorCodigoEOLQueryHandler : IRequestHandler<ObterUePorCodigoEOLQuery, UeServicoEol>
     {
         public ObterUePorCodigoEOLQueryHandler(IServicoEol servicoEol)
         {
@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<UeServicoEol> Handle(ObterUePorCodigoEOLQuery request, CancellationToken cancellationToken)
         {
             var ue = await _servicoEol.ObterUePorCodigo(request.UeCodigo);
-            if(ue.NomeEscola.EhNulo())
+            if (ue.NomeEscola.EhNulo())
                 throw new NegocioException(MensagemNegocio.UE_NAO_LOCALIZADA_POR_CODIGO);
 
             return ue;

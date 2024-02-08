@@ -43,21 +43,21 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 SituacaoCadastroUsuario.AguardandoValidacaoEmail,
                 codigoUe
             )));
-            
+
             return await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
         }
 
         private async Task ValidarCpfEmUsuarioExisteNoCoreSSO(string cpf)
         {
             var coresso = await mediator.Send(new UsuarioExisteNoCoreSsoQuery(cpf));
-            if(coresso)
+            if (coresso)
                 throw new NegocioException(MensagemNegocio.VOCE_JA_POSSUI_LOGIN_CORESSO);
         }
 
         private async Task UsuarioNaoExisteNoConecta(string login)
         {
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(login));
-            if(usuario.NaoEhNulo())
+            if (usuario.NaoEhNulo())
                 throw new NegocioException(MensagemNegocio.VOCE_JA_POSSUI_LOGIN_CONECTA);
         }
 
@@ -69,11 +69,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         private async Task Validacoes(string senhaNova, string confirmarSenha, string cpf, string email)
         {
             var erros = new List<string>();
-            var dominiosPermitidos = await ObterDominiosPermitidos();
-            var dominioEmailInformado = Regex.Match(email, "@(?<=@)[^@]+").Value;
 
-            if (!dominiosPermitidos.Contains(dominioEmailInformado))
-                erros.Add(MensagemNegocio.EMAIL_FORA_DOMINIO_PERMITIDO_UES_PARCEIRAS);
+            var emailValido = EmailEhValido(email);
+            if (!emailValido)
+                erros.Add(MensagemNegocio.EMAIL_INVALIDO.Parametros(email));
 
             if (senhaNova.Contains(" "))
                 erros.Add(MensagemNegocio.A_SENHA_NAO_PODE_CONTER_ESPACOS_EM_BRANCO);
@@ -97,6 +96,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
             if (erros.Any())
                 throw new NegocioException(erros);
+        }
+        public static bool EmailEhValido(string email)
+        {
+            string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+            Regex regex = new Regex(pattern);
+            return regex.IsMatch(email);
         }
     }
 }

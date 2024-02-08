@@ -52,6 +52,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaModalidade> Modalidades { get; set; }
         public IEnumerable<PropostaAnoTurma> AnosTurmas { get; set; }
         public IEnumerable<PropostaComponenteCurricular> ComponentesCurriculares { get; set; }
+        public PropostaMovimentacao Movimentacao { get; set; }
         public IEnumerable<PropostaTurmaDre> ObterPropostaTurmasDres
         {
             get
