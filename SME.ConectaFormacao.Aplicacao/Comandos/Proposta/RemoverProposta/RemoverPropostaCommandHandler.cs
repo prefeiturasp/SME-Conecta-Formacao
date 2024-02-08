@@ -69,6 +69,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (proposta.ComponentesCurriculares.Any())
                     await _repositorioProposta.RemoverComponentesCurriculares(proposta.ComponentesCurriculares);
 
+                await _repositorioProposta.RemoverPropostaMovimentacao(proposta.Id);
                 await _repositorioProposta.Remover(proposta);
 
                 transacao.Commit();

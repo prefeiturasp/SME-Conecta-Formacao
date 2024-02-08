@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
@@ -15,7 +16,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             if (propostaDTO.Situacao == Dominio.Enumerados.SituacaoProposta.Rascunho)
                 return await mediator.Send(new AlterarPropostaRascunhoCommand(id, propostaDTO));
+
+            await SalvarMovimentacao(id, propostaDTO.Situacao);
             return await mediator.Send(new AlterarPropostaCommand(id, propostaDTO));
+        }
+        private async Task SalvarMovimentacao(long propostaId, SituacaoProposta situacao)
+        {
+            await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
         }
     }
 }
