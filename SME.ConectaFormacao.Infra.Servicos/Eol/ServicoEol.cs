@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<string> ObterNomeProfissionalPorRegistroFuncional(string registroFuncional)
         {
-            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_NOME_PROFISSIONAL.Parametros(registroFuncional));
+            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_NOME_PROFISSIONAL.Parametros(registroFuncional));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO, resposta.StatusCode);
@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<IEnumerable<DreServicoEol>> ObterCodigosDres()
         {
-            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_NOME_ABREVIACAO_DRE);
+            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_NOME_ABREVIACAO_DRE);
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.CODIGOS_DRE_NAO_LOCALIZADO, resposta.StatusCode);
@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
         }
         public async Task<UeServicoEol> ObterUePorCodigo(string ueCodigo)
         {
-            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_UE_POR_CODIGO.Parametros(ueCodigo));
+            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_UE_POR_CODIGO.Parametros(ueCodigo));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.UE_NAO_LOCALIZADA_POR_CODIGO, resposta.StatusCode);
@@ -51,7 +51,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<IEnumerable<FuncionarioExternoServicoEol>?> ObterDadosFuncionarioExternoPorCpf(string cpf)
         {
-            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.URL_FUNCIONARIO_EXTERNO_POR_CPF.Parametros(cpf));
+            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.URL_FUNCIONARIO_EXTERNO_POR_CPF.Parametros(cpf));
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 return null;
             var json = await resposta.Content.ReadAsStringAsync();
@@ -60,7 +60,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<IEnumerable<ComponenteCurricularAnoTurmaServicoEol>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo)
         {
-            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO.Parametros(anoLetivo));
+            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO.Parametros(anoLetivo));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.NENHUM_COMPONENTE_CURRICULAR_DOS_ANOS_DA_TURMA_DO_EOL_FORAM_LOCALIZADOS, resposta.StatusCode);
@@ -71,7 +71,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<IEnumerable<CursistaCargoServicoEol>> ObterCargosFuncionadoPorRegistroFuncional(string registroFuncional)
         {
-            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.OBTER_CARGOS_FUNCIONARIO_POR_RF.Parametros(registroFuncional));
+            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_CARGOS_FUNCIONARIO_POR_RF.Parametros(registroFuncional));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, resposta.StatusCode);
@@ -105,7 +105,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
             filtrosUrl += $"&EhTipoJornadaJEIF={EhTipoJornadaJEIF}";
 
-            var resposta = await _httpClient.GetAsync(ServicoEolConstantes.URL_FUNCIONARIOS_REGISTROS_FUNCIONAIS_CONECTA_FORMACAO + filtrosUrl);
+            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.URL_FUNCIONARIOS_REGISTROS_FUNCIONAIS_CONECTA_FORMACAO + filtrosUrl);
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL, resposta.StatusCode);
