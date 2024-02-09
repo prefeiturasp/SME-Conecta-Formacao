@@ -33,8 +33,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                     {
                         Situacao = situacao.Nome(),
                         Cor = situacao.Cor(),
-                        TotalRegistros = total > QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS ? total - QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS : total,
-                        HabilitarVerMais = !(total > QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS)
+                        SituacaoCodigo = (int) situacao,
+                        TotalRegistros = total > QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS ? (total - QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS).ToString() : string.Empty,
                     };
                     var propostasParaAdicionar = propostas.Take(5);
                     foreach (var propostaItem in propostasParaAdicionar)
