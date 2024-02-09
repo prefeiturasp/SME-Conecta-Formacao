@@ -4,6 +4,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
     public class PropostaFiltrosDashboardDTO
     {
+        public long? Id { get; set; }
         public long? AreaPromotoraId { get; set; }
         public Formato? Formato { get; set; }
         public long[]? PublicoAlvoIds { get; set; }
