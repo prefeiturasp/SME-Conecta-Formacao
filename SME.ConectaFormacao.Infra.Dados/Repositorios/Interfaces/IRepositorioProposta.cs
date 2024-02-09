@@ -103,6 +103,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task InserirTiposInscricao(long propostaId, IEnumerable<PropostaTipoInscricao> tiposInscricao);
         Task RemoverTiposInscricao(IEnumerable<PropostaTipoInscricao> tiposInscrocao);
         Task RemoverPropostaMovimentacao(long propostaId);
-        Task<IEnumerable<Proposta>> ObterPropostasDashBoardPorTipo(long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada);
+        Task<IEnumerable<Proposta>> ObterPropostasDashBoardPorTipo(long? propostaId,long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada);
     }
 }

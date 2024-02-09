@@ -320,14 +320,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 splitOn: "id, id");
         }
 
-        public  Task<IEnumerable<Proposta>> ObterPropostasDashBoardPorTipo(long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
+        public  Task<IEnumerable<Proposta>> ObterPropostasDashBoardPorTipo(long? propostaId,long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
         {
                 var sql = new StringBuilder(); 
                 sql.AppendLine(@"select p.*,pm.* ");
                 sql.AppendLine(@"FROM proposta p");
                 sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
                 sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
-                sql.AppendLine(@"where not p.excluido");
+                sql.AppendLine(@"where not p.excluido ");
+                if (propostaId.GetValueOrDefault() > 0)
+                    sql.AppendLine(" and p.id = @propostaId ");
                 if (areaPromotoraId.GetValueOrDefault() > 0)
                     sql.AppendLine(" and p.area_promotora_id = @areaPromotoraId");
                 if (formato.GetValueOrDefault() > 0)

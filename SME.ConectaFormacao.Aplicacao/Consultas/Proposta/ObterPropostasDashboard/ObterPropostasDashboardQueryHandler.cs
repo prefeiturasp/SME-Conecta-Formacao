@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<IEnumerable<Proposta>> Handle(ObterPropostasDashboardQuery request, CancellationToken cancellationToken)
         {
             var filtro = request.Filtro;
-            return await _repositorioProposta.ObterPropostasDashBoardPorTipo(filtro.AreaPromotoraId,filtro.Formato,
+            return await _repositorioProposta.ObterPropostasDashBoardPorTipo(filtro.Id,filtro.AreaPromotoraId,filtro.Formato,
                                                                              filtro.PublicoAlvoIds,filtro.NomeFormacao,filtro.NumeroHomologacao,
                                                                              filtro.PeriodoRealizacaoInicio,filtro.PeriodoRealizacaoFim,
                                                                              filtro.Situacao,filtro.FormacaoHomologada);
