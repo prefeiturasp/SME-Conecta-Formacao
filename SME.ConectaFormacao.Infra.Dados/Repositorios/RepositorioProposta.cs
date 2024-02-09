@@ -359,6 +359,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     },
                     new
                     {
+                        propostaId,
                         formato,
                         publicoAlvoIds,
                         nomeFormacao,
