@@ -363,6 +363,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         formato,
                         publicoAlvoIds,
                         nomeFormacao,
+                        areaPromotoraId,
                         numeroHomologacao,
                         periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
                         periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
