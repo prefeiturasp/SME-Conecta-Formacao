@@ -363,6 +363,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         formato,
                         publicoAlvoIds,
                         nomeFormacao,
+                        areaPromotoraId,
                         numeroHomologacao,
                         periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
                         periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
@@ -1591,11 +1592,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         }
 
         public Task<IEnumerable<long>> ObterListagemFormacoesPorFiltro(long[] publicosAlvosIds, string titulo, long[] areasPromotorasIds,
-            DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds)
+            DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds, int numeroPagina, int numeroRegistro)
         {
             var tipoInscricao = TipoInscricao.Optativa;
             var situacao = SituacaoProposta.Publicada;
             titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty;
+
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistro;
 
             var query = @"select p.id 
                           from proposta p
@@ -1613,8 +1616,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (dataInicial.HasValue && dataFinal.HasValue)
                 query += @" and (
                                 (p.data_realizacao_inicio::date between @dataInicial and @dataFinal) or 
-                                (p.data_realizacao_fim::date between @dataInicial and @dataFinal) or 
-                                (p.data_realizacao_inicio::date <= @dataInicial and p.data_realizacao_fim::date >= @dataFinal)
+                                (p.data_realizacao_fim::date between @dataInicial and @dataFinal)
                                 )";
 
             if (formatosIds.PossuiElementos())
@@ -1638,19 +1640,21 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                          and ppc.palavra_chave_id = any(@palavrasChavesIds)) ";
             }
 
-            query += @" order by p.data_realizacao_inicio, p.data_realizacao_fim ";
+            query += @" order by p.data_realizacao_inicio, p.data_realizacao_fim limit @numeroRegistro offset @registrosIgnorados";
 
             return conexao.Obter().QueryAsync<long>(query, new
             {
                 palavrasChavesIds,
                 formatosIds,
-                dataInicial,
-                dataFinal,
+                dataInicial = dataInicial.GetValueOrDefault().Date,
+                dataFinal = dataFinal.GetValueOrDefault().Date,
                 areasPromotorasIds,
                 titulo,
                 publicosAlvosIds,
                 tipoInscricao,
-                situacao
+                situacao,
+                numeroRegistro,
+                registrosIgnorados
             });
         }
 

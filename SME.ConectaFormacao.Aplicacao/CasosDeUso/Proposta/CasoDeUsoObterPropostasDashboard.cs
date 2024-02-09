@@ -31,10 +31,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                     var total = propostas.Count();
                     var item = new PropostaDashboardDTO
                     {
-                        Situacao = situacao.Nome(),
+                        Situacao = situacao,
                         Cor = situacao.Cor(),
-                        TotalRegistros = total > QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS ? total - QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS : total,
-                        VerMais = total > QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS
+                        TotalRegistros = total > QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS ? (total - QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS).ToString() : string.Empty,
                     };
                     var propostasParaAdicionar = propostas.Take(5);
                     foreach (var propostaItem in propostasParaAdicionar)

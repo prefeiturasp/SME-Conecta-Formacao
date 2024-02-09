@@ -20,6 +20,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             if (propostaInscricaoAutomatica.Situacao != SituacaoProposta.Publicada || !propostaInscricaoAutomatica.EhInscricaoAutomatica)
                 return false;
 
+            await mediator.Send(new GerarPropostaTurmaVagaCommand(propostaId, propostaInscricaoAutomatica.QuantidadeVagasTurmas));
+
             var cursistasEOL = await mediator.Send(new ObterFuncionarioPorFiltroPropostaServicoEolQuery(
                 propostaInscricaoAutomatica.PublicosAlvos,
                 propostaInscricaoAutomatica.FuncoesEspecificas,
