@@ -4,9 +4,9 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUePorCodigoEOLQuery : IRequest<UeServicoEol>
+    public class ObterUnidadePorCodigoEOLQuery : IRequest<UnidadeEol>
     {
-        public ObterUePorCodigoEOLQuery(string ueCodigo)
+        public ObterUnidadePorCodigoEOLQuery(string ueCodigo)
         {
             UeCodigo = ueCodigo;
         }
@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string UeCodigo { get; set; }
     }
 
-    public class ObterUePorCodigoEOLQueryValidator : AbstractValidator<ObterUePorCodigoEOLQuery>
+    public class ObterUePorCodigoEOLQueryValidator : AbstractValidator<ObterUnidadePorCodigoEOLQuery>
     {
         public ObterUePorCodigoEOLQueryValidator()
         {

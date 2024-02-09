@@ -38,15 +38,15 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<DreServicoEol[]>();
         }
-        public async Task<UeServicoEol> ObterUePorCodigo(string ueCodigo)
+        public async Task<UnidadeEol> ObterUnidadePorCodigoEol(string codigoEol)
         {
-            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_UE_POR_CODIGO.Parametros(ueCodigo));
+            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_UNIDADE_POR_CODIGO.Parametros(codigoEol));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
-                throw new NegocioException(MensagemNegocio.UE_NAO_LOCALIZADA_POR_CODIGO, resposta.StatusCode);
+                throw new NegocioException(MensagemNegocio.UNIDADE_NAO_LOCALIZADA_POR_CODIGO, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<UeServicoEol>();
+            return json.JsonParaObjeto<UnidadeEol>();
         }
 
         public async Task<IEnumerable<FuncionarioExternoServicoEol>?> ObterDadosFuncionarioExternoPorCpf(string cpf)
