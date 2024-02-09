@@ -21,7 +21,10 @@ namespace SME.ConectaFormacao.Aplicacao
                 request.FiltroListagemFormacaoDTO.DataInicial,
                 request.FiltroListagemFormacaoDTO.DataFinal,
                 request.FiltroListagemFormacaoDTO.FormatosIds,
-                request.FiltroListagemFormacaoDTO.PalavrasChavesIds);
+                request.FiltroListagemFormacaoDTO.PalavrasChavesIds,
+                request.NumeroPagina,
+                request.NumeroRegistros
+                );
         }
     }
 }
