@@ -52,5 +52,6 @@
         public const string Usuario = "usuario:{0}";
         public const string DreTodos = "dre:todos";
         public const string Dashboard = "dashboard";
+        public const string DashboardTotalPorTipo = "dashboard-total-por-tipo";
     }
 }

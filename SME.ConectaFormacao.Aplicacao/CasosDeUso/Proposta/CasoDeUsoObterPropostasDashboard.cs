@@ -22,12 +22,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         public async Task<IEnumerable<PropostaDashboardDTO>> Executar(PropostaFiltrosDashboardDTO filtro)
         {
             var listaRetorno = new List<PropostaDashboardDTO>();
-            var propostasId = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.Dashboard, () => mediator.Send(new ObterPropostasIdDashboardQuery(filtro)));
+            var propostasId = await  mediator.Send(new ObterPropostasIdDashboardQuery(filtro));
 
             if (propostasId.PossuiElementos())
             {
-                var listaDePropostasNaBase = await mediator.Send(new ObterPropostasDashboardQuery(propostasId));
-                var totalPorTipo = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.Dashboard, () => mediator.Send(new ObterTotalDashboardPorTipoQuery(filtro)));
+                var listaDePropostasNaBase = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.Dashboard, () =>  mediator.Send(new ObterPropostasDashboardQuery(propostasId)));
+                var totalPorTipo = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.DashboardTotalPorTipo, () => mediator.Send(new ObterTotalDashboardPorTipoQuery(filtro)));
                 var listaDeSituacoesExistentes =  Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
 
                 foreach (var situacao in listaDeSituacoesExistentes)
