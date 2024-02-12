@@ -7,7 +7,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
     {
         public string? Login { get; set; }
 
-        public string? CodigoUe { get; set; }
+        [Required(ErrorMessage = "É necessário informar a Unidade.")]
+        public string CodigoUnidade { get; set; }
 
         [Required(ErrorMessage = "É necessário informar o e-mail.")]
         public string Email { get; set; }
