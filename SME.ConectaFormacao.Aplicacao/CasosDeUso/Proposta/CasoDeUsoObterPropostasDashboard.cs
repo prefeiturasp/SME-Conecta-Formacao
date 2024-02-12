@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (propostasId.PossuiElementos())
             {
                 var listaDePropostasNaBase = await mediator.Send(new ObterPropostasDashboardQuery(propostasId));
-                var totalPorTipo = await mediator.Send(new ObterTotalDashboardPorTipoQuery(filtro));
+                var totalPorTipo = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.Dashboard, () => mediator.Send(new ObterTotalDashboardPorTipoQuery(filtro)));
                 var listaDeSituacoesExistentes =  Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
 
                 foreach (var situacao in listaDeSituacoesExistentes)
