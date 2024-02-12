@@ -1,27 +1,28 @@
-using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
     public class CasoDeUsoObterPropostasDashboard : CasoDeUsoAbstrato,ICasoDeUsoObterPropostasDashboard
     {
-        private readonly IMapper _mapper;
         private const int QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS = 5;
+        private readonly ICacheDistribuido _cacheDistribuido;
 
-        public CasoDeUsoObterPropostasDashboard(IMediator mediator, IMapper mapper) : base(mediator)
+        public CasoDeUsoObterPropostasDashboard(IMediator mediator, ICacheDistribuido cacheDistribuido) : base(mediator)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
         }
 
         public async Task<IEnumerable<PropostaDashboardDTO>> Executar(PropostaFiltrosDashboardDTO filtro)
         {
             var listaRetorno = new List<PropostaDashboardDTO>();
-
-            var propostasId = await mediator.Send(new ObterPropostasIdDashboardQuery(filtro));
+            var propostasId = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.Dashboard, () => mediator.Send(new ObterPropostasIdDashboardQuery(filtro)));
 
             if (propostasId.PossuiElementos())
             {
