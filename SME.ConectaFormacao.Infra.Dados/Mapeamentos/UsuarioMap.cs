@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.TokenRecuperacaoSenha).ToColumn("token_recuperacao_senha");
             Map(c => c.ExpiracaoRecuperacaoSenha).ToColumn("expiracao_recuperacao_senha");
             Map(c => c.Cpf).ToColumn("cpf");
-            Map(c => c.CodigoEolUnidade).ToColumn("codigo_eol_unidade ");
+            Map(c => c.CodigoEolUnidade).ToColumn("codigo_eol_unidade");
             Map(c => c.Tipo).ToColumn("tipo");
             Map(c => c.PossuiContratoExterno).ToColumn("possui_contrato_externo");
             Map(c => c.Situacao).ToColumn("situacao_cadastro");
