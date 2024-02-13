@@ -5,18 +5,18 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
-    public class UeController : BaseController
+    public class UnidadeEolController : BaseController
     {
-        [HttpGet("{ueCodigo}")]
-        [ProducesResponseType(typeof(UeServicoEol), 200)]
+        [HttpGet("{codigoEol}")]
+        [ProducesResponseType(typeof(UnidadeEol), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> BuscarUePorCodigo(
-            [FromRoute] string ueCodigo,
-            [FromServices] ICasoDeUsoObterUePorCodigo useCase
+        public async Task<IActionResult> BuscarUnidadePorCodigoEol(
+            [FromRoute] string codigoEol,
+            [FromServices] ICasoDeUsoObterUnidadePorCodigoEol useCase
             )
         {
-            return Ok(await useCase.Executar(ueCodigo));
+            return Ok(await useCase.Executar(codigoEol));
         }
     }
 }
