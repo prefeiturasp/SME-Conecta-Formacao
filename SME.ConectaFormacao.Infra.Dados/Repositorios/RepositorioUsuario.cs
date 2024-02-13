@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             alterado_por, 
                             criado_login, 
                             alterado_login,
-                            ue_codigo,
+                            codigo_eol_unidade,
                             tipo,
                             possui_contrato_externo,
                             situacao_cadastro
