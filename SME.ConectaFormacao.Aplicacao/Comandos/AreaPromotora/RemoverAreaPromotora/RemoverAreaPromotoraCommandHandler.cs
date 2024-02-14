@@ -26,6 +26,10 @@ namespace SME.ConectaFormacao.Aplicacao
             var areaPromotora = await _repositorioAreaPromotora.ObterPorId(request.Id) ??
                 throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
+            var existeProposta = await _repositorioAreaPromotora.ExistePropostaPorId(areaPromotora.Id);
+            if (!existeProposta)
+                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_POSSUI_PROPOSTA);
+
             var telefones = await _repositorioAreaPromotora.ObterTelefonesPorId(request.Id);
 
             var transacao = _transacao.Iniciar();

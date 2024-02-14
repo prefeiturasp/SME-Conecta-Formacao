@@ -39,6 +39,7 @@ public class MensagemNegocio
     public const string AREA_PROMOTORA_EMAIL_FORA_DOMINIO_REDE_DIRETA = "Para área promotora do tipo rede direta é permitido somente e-mails com o domínio @SME ou @EDU.SME";
     public const string AREA_PROMOTORA_EXISTE_GRUPO_CADASTRADO = "Já existe uma área promotora cadastrada para o perfil selecionado";
     public const string AREA_PROMOTORA_EXISTE_GRUPO_DRE_CADASTRADO = "Já existe uma área promotora cadastrada para o perfil e dre selecionado";
+    public const string AREA_PROMOTORA_POSSUI_PROPOSTA = "Área promotora já possui proposta cadastrada";
     public const string EMAIL_INVALIDO = "E-mail {0} é inválido";
     public const string PROPOSTA_NAO_ENCONTRADA = "Proposta não encontrada";
     public const string TOKEN_INVALIDO = "Token inválido";
