@@ -388,7 +388,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_encontro 
-                        where id = @encontroId";
+                        where id = @encontroId and not excluido";
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaEncontro>(query, new { encontroId });
         }
 
@@ -410,7 +410,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        excluido
                         FROM
 	                        public.proposta_regente
-	                        where not excluido and  id = @id;";
+	                        where not excluido and id = @id;";
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new { id });
         }
 
@@ -431,7 +431,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                            excluido
                             from
 	                            public.proposta_tutor
-	                        where not excluido and  id = @id;";
+	                        where not excluido and id = @id;";
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaTutor>(query, new { id });
         }
 
@@ -1542,7 +1542,75 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             alterado_em = @AlteradoEm, 
                             alterado_por = @AlteradoPor, 
                             alterado_login = @AlteradoLogin 
-                          where not excluido and id = any(@ids)";
+                          where not excluido and id = any(@ids);
+
+                          update proposta_encontro_turma
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and turma_id = any(@ids);
+
+                          -- remove os encontros vinculados as turmas excluidas caso não possua nenhuma turma ativa.  
+                          update proposta_encontro
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido 
+                            and exists(select 1 from proposta_encontro_turma pet where pet.proposta_encontro_id = proposta_encontro.id and pet.turma_id = any(@ids))
+                            and not exists(select 1 from proposta_encontro_turma pet where not pet.excluido and pet.proposta_encontro_id = proposta_encontro.id);
+
+                          -- remove as datas dos encontros excluidos.  
+                          update proposta_encontro_data
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido 
+                            and exists(select 1 from proposta_encontro pe where pe.id = proposta_encontro_data.proposta_encontro_id and pe.excluido);
+                            
+                          update proposta_regente_turma
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and turma_id = any(@ids);
+
+                          -- remove os regentes vinculados as turmas excluidas caso não possua nenhuma turma ativa.  
+                          update proposta_regente
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido 
+                            and exists(select 1 from proposta_regente_turma prt where prt.proposta_regente_id = proposta_regente.id and prt.turma_id = any(@ids))
+                            and not exists(select 1 from proposta_regente_turma prt where not prt.excluido and prt.proposta_regente_id = proposta_regente.id);
+
+                          update proposta_tutor_turma
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and turma_id = any(@ids);
+
+                          -- remove os tutores vinculados as turmas excluidas caso não possua nenhuma turma ativa.  
+                          update proposta_tutor
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido 
+                            and exists(select 1 from proposta_tutor_turma prt where prt.proposta_tutor_id = proposta_tutor.id and prt.turma_id = any(@ids))
+                            and not exists(select 1 from proposta_tutor_turma prt where not prt.excluido and prt.proposta_tutor_id = proposta_tutor.id);
+                ";
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
@@ -1672,18 +1740,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         p.area_promotora_id,
                         p.arquivo_imagem_divulgacao_id
                     from public.proposta p  
-                    where p.id = any(@propostaIds);
+                    where not p.excluido and p.id = any(@propostaIds);
 
                     select ap.id,
 	                       ap.nome 
                     from area_promotora ap 
-                    where exists(select 1 from proposta p where ap.id = p.area_promotora_id and p.id = any(@propostaIds));
+                    where not ap.excluido and exists(select 1 from proposta p where not p.excluido and ap.id = p.area_promotora_id and p.id = any(@propostaIds));
 
                     select a.id,
                            a.nome,
                            a.codigo
                     from arquivo a 
-                    where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = any(@propostaIds));";
+                    where not a.excluido and exists(select 1 from proposta p where not p.excluido and a.id = p.arquivo_imagem_divulgacao_id and p.id = any(@propostaIds));";
 
             var multiQuery = await conexao.Obter().QueryMultipleAsync(query, new { propostaIds });
 
@@ -1775,7 +1843,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         select a.nome,
                                a.codigo
                         from arquivo a 
-                        where exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId);";
+                        where not a.excluido and exists(select 1 from proposta p where not p.excluido and a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId);";
 
             var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao });
 
@@ -1931,6 +1999,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             from proposta_componente_curricular pcc
               join componente_curricular cc on cc.id = pcc.componente_curricular_id
             where  not cc.excluido 
+               and not pcc.excluido 
                and not cc.todos
                and proposta_id = @propostaId; 
 
