@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                             buscarPropostaBanco.Add(propostaId.Id);
                         else
                         {
-                            var dataFormatada = (propostaItem.Movimentacao?.CriadoEm ?? propostaItem?.AlteradoEm ?? propostaItem!.CriadoEm).ToString("g");
+                            var dataFormatada = (propostaItem.Movimentacao?.CriadoEm ?? propostaItem?.AlteradoEm ?? propostaItem!.CriadoEm).ToString("dd/MM/yyyy HH:mm");
                             var itemProposta = new PropostaDashboardItemDTO
                             {
                                 Numero = propostaItem.Id,
