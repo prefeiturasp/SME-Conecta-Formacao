@@ -345,37 +345,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             };
             return await conexao.Obter().QueryAsync<QuantidadeTipoDashboardDTO>(sql.ToString(), parametros);
         }
-        public async Task<IEnumerable<long>> ObterPropostasIdsDashBoard(long? propostaId, long? areaPromotoraId, Formato? formato, 
-            long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
+        public async Task<IEnumerable<Proposta>> ObterPropostasIdsDashBoard(long? propostaId, long? areaPromotoraId, Formato? formato, 
+            long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada,SituacaoProposta situacaoProposta)
         {
              var sql = new StringBuilder(); 
-             ConsultaDashBoardPublicadas(sql);
+             ConsultaPropostaSituacao(sql, situacaoProposta);
              nomeFormacao = ObterPropostasIdDashboardWhere(propostaId, areaPromotoraId, formato, publicoAlvoIds, nomeFormacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, sql);
-             sql.AppendLine(" LIMIT 5)as consulta  union all ");
              
-             ConsultaDashBoardCadastrada(sql);
-             nomeFormacao = ObterPropostasIdDashboardWhere(propostaId, areaPromotoraId, formato, publicoAlvoIds, nomeFormacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, sql);
-             sql.AppendLine(" LIMIT 5)as consulta  union all ");
-             
-             ConsultaDashBoardAguardandoAnaliseDf(sql);
-             nomeFormacao = ObterPropostasIdDashboardWhere(propostaId, areaPromotoraId, formato, publicoAlvoIds, nomeFormacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, sql);
-             sql.AppendLine(" LIMIT 5)as consulta  union all ");
-             
-             ConsultaDashBoardAguardandoAnaliseGestao(sql);
-             nomeFormacao = ObterPropostasIdDashboardWhere(propostaId, areaPromotoraId, formato, publicoAlvoIds, nomeFormacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, sql);
-             sql.AppendLine(" LIMIT 5)as consulta  union all ");
-             
-             ConsultaDashBoardDesfavoravel(sql);
-             nomeFormacao = ObterPropostasIdDashboardWhere(propostaId, areaPromotoraId, formato, publicoAlvoIds, nomeFormacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, sql);
-             sql.AppendLine(" LIMIT 5)as consulta  union all ");
-             
-             ConsultaDashBoardDevolvida(sql);
-             nomeFormacao = ObterPropostasIdDashboardWhere(propostaId, areaPromotoraId, formato, publicoAlvoIds, nomeFormacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, sql);
-             sql.AppendLine(" LIMIT 5)as consulta  union all ");
-             
-             ConsultaDashBoardRascunho(sql);
-             nomeFormacao = ObterPropostasIdDashboardWhere(propostaId, areaPromotoraId, formato, publicoAlvoIds, nomeFormacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, sql);
-             sql.AppendLine(" LIMIT 5)as consulta; ");
                 var parametros = new
                 {
                     propostaId,
@@ -389,66 +365,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     situacao,
                     formacaoHomologada
                 };
-                return await conexao.Obter().QueryAsync<long>(sql.ToString(), parametros);
+                var consulta = await conexao.Obter().QueryAsync<Proposta>(sql.ToString(), parametros);
+                return consulta;
         }
 
-        private static void ConsultaDashBoardDesfavoravel(StringBuilder sql)
+        private static void ConsultaPropostaSituacao(StringBuilder sql ,SituacaoProposta situacao)
         {
-            sql.AppendLine(@"select * from( select p.id ");
+            sql.AppendLine(@" select p.* ");
             sql.AppendLine(@"FROM proposta p");
             sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
             sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
-            sql.AppendLine(@$"where not p.excluido and p.situacao = {(int)SituacaoProposta.Desfavoravel} ");
-        }
-        private static void ConsultaDashBoardDevolvida(StringBuilder sql)
-        {
-            sql.AppendLine(@"select * from( select p.id ");
-            sql.AppendLine(@"FROM proposta p");
-            sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
-            sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
-            sql.AppendLine(@$"where not p.excluido and p.situacao = {(int)SituacaoProposta.Devolvida} ");
-        }
-        private static void ConsultaDashBoardPublicadas(StringBuilder sql)
-        {
-            sql.AppendLine(@"select * from( select p.id ");
-            sql.AppendLine(@"FROM proposta p");
-            sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
-            sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
-            sql.AppendLine(@$"where not p.excluido and p.situacao = {(int)SituacaoProposta.Publicada} ");
-        }
-        private static void ConsultaDashBoardCadastrada(StringBuilder sql)
-        {
-            sql.AppendLine(@"select * from( select p.id ");
-            sql.AppendLine(@"FROM proposta p");
-            sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
-            sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
-            sql.AppendLine(@$"where not p.excluido and p.situacao = {(int)SituacaoProposta.Cadastrada} ");
-        }
-        
-        private static void ConsultaDashBoardAguardandoAnaliseGestao(StringBuilder sql)
-        {
-            sql.AppendLine(@"select * from( select p.id ");
-            sql.AppendLine(@"FROM proposta p");
-            sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
-            sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
-            sql.AppendLine(@$"where not p.excluido and p.situacao = {(int)SituacaoProposta.AguardandoAnaliseGestao} ");
-        }
-        
-        private static void ConsultaDashBoardAguardandoAnaliseDf(StringBuilder sql)
-        {
-            sql.AppendLine(@"select * from( select p.id ");
-            sql.AppendLine(@"FROM proposta p");
-            sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
-            sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
-            sql.AppendLine(@$"where not p.excluido and p.situacao = {(int)SituacaoProposta.AguardandoAnaliseDf} ");
-        }
-        private static void ConsultaDashBoardRascunho(StringBuilder sql)
-        {
-            sql.AppendLine(@"select * from( select p.id ");
-            sql.AppendLine(@"FROM proposta p");
-            sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
-            sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
-            sql.AppendLine(@$"where not p.excluido and p.situacao = {(int)SituacaoProposta.Rascunho} ");
+            sql.AppendLine(@$"where not p.excluido and p.situacao = {(int)situacao} ");
         }
 
         private static string? ObterPropostasIdDashboardWhere(long? propostaId, long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, StringBuilder sql,bool ordenar = true)

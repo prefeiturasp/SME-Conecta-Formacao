@@ -1,10 +1,7 @@
 using MediatR;
-using Minio.DataModel;
-using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
@@ -43,23 +40,25 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 if (propostasId.PossuiElementos())
                 {
                     var buscarPropostaBanco = new List<long>();
-                    foreach(var propostaId in propostasId.take(QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS))
+                    foreach(var propostaId in propostasId.Take(QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS))
                     {
-                        var chaveCache = CacheDistribuidoNomes.DashboardProposta.Parametros(propostaId);
+                        var chaveCache = CacheDistribuidoNomes.DashboardProposta.Parametros(propostaId.Id);
                         var propostaItem = await _cacheDistribuido.ObterObjetoAsync<Dominio.Entidades.Proposta>(chaveCache);
 
                         if (propostaItem.EhNulo())
-                            buscarPropostaBanco.Add(propostaId);
-
-                        var dataFormatada = (propostaItem.Movimentacao?.CriadoEm ?? propostaItem?.AlteradoEm ?? propostaItem!.CriadoEm).ToString("g");
-                        var itemProposta = new PropostaDashboardItemDTO
+                            buscarPropostaBanco.Add(propostaId.Id);
+                        else
                         {
-                            Numero = propostaItem.Id,
-                            Nome = propostaItem.NomeFormacao,
-                            Data = dataFormatada
-                        };
+                            var dataFormatada = (propostaItem.Movimentacao?.CriadoEm ?? propostaItem?.AlteradoEm ?? propostaItem!.CriadoEm).ToString("g");
+                            var itemProposta = new PropostaDashboardItemDTO
+                            {
+                                Numero = propostaItem.Id,
+                                Nome = propostaItem.NomeFormacao,
+                                Data = dataFormatada
+                            };
 
-                        item.Propostas.Add(itemProposta);
+                            item.Propostas.Add(itemProposta);
+                        }
                     }
 
                     if(buscarPropostaBanco.PossuiElementos())
@@ -83,8 +82,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                         }
                     }
                 }
-
-                listaRetorno.Add(item);
+                if (item.Propostas.PossuiElementos())
+                        listaRetorno.Add(item);
             }
 
             return listaRetorno;

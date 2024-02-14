@@ -62,6 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Proposta.Parametros(propostaId)), cancellationToken);
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.PropostaPublicoAlvo.Parametros(propostaId)), cancellationToken);
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.PropostaFuncaoEspecifica.Parametros(propostaId)), cancellationToken);
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.DashboardProposta.Parametros(propostaId)), cancellationToken);
         }
     }
 }
