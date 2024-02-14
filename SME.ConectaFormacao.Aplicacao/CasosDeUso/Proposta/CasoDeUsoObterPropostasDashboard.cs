@@ -1,8 +1,10 @@
 using MediatR;
+using Minio.DataModel;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
@@ -22,42 +24,69 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         public async Task<IEnumerable<PropostaDashboardDTO>> Executar(PropostaFiltrosDashboardDTO filtro)
         {
             var listaRetorno = new List<PropostaDashboardDTO>();
-            var propostasId = await  mediator.Send(new ObterPropostasIdDashboardQuery(filtro));
+            var listaDeSituacoesExistentes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
 
-            if (propostasId.PossuiElementos())
+            foreach (var situacao in listaDeSituacoesExistentes)
             {
-                var listaDePropostasNaBase = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.Dashboard, () =>  mediator.Send(new ObterPropostasDashboardQuery(propostasId)));
-                var totalPorTipo = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.DashboardTotalPorTipo, () => mediator.Send(new ObterTotalDashboardPorTipoQuery(filtro)));
-                var listaDeSituacoesExistentes =  Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
+                var propostasId = await mediator.Send(new ObterPropostasIdDashboardQuery(filtro, situacao));
 
-                foreach (var situacao in listaDeSituacoesExistentes)
+                var total = propostasId.Count();
+
+                var item = new PropostaDashboardDTO
                 {
-                    var propostas = listaDePropostasNaBase.Where(x => x.Situacao == situacao);
-                    if (propostas.Any())
+                    Situacao = situacao,
+                    Cor = situacao.Cor(),
+                    TotalRegistros = total > QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS ? (total - QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS).ToString() : string.Empty,
+                };
+
+
+                if (propostasId.PossuiElementos())
+                {
+                    var buscarPropostaBanco = new List<long>();
+                    foreach(var propostaId in propostasId.take(QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS))
                     {
-                        var total = totalPorTipo.FirstOrDefault(x => x.Situacao == situacao).Quantidade;
-                        var item = new PropostaDashboardDTO
+                        var chaveCache = CacheDistribuidoNomes.DashboardProposta.Parametros(propostaId);
+                        var propostaItem = await _cacheDistribuido.ObterObjetoAsync<Dominio.Entidades.Proposta>(chaveCache);
+
+                        if (propostaItem.EhNulo())
+                            buscarPropostaBanco.Add(propostaId);
+
+                        var dataFormatada = (propostaItem.Movimentacao?.CriadoEm ?? propostaItem?.AlteradoEm ?? propostaItem!.CriadoEm).ToString("g");
+                        var itemProposta = new PropostaDashboardItemDTO
                         {
-                            Situacao = situacao,
-                            Cor = situacao.Cor(),
-                            TotalRegistros = total > QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS ? (total - QUANTIDADE_MINIMA_PARA_EXIBIR_VERMAIS).ToString() : string.Empty,
+                            Numero = propostaItem.Id,
+                            Nome = propostaItem.NomeFormacao,
+                            Data = dataFormatada
                         };
-                        foreach (var propostaItem in propostas)
+
+                        item.Propostas.Add(itemProposta);
+                    }
+
+                    if(buscarPropostaBanco.PossuiElementos())
+                    {
+                        var propostas = await mediator.Send(new ObterPropostasDashboardQuery(buscarPropostaBanco.ToArray()));
+
+                        foreach(var proposta in propostas)
                         {
-                            var dataFormatada = (propostaItem.Movimentacao?.CriadoEm ?? propostaItem?.AlteradoEm ?? propostaItem!.CriadoEm).ToString("g");
+                            var dataFormatada = (proposta.Movimentacao?.CriadoEm ?? proposta?.AlteradoEm ?? proposta!.CriadoEm).ToString("g");
                             var itemProposta = new PropostaDashboardItemDTO
                             {
-                                Numero = propostaItem.Id,
-                                Nome = propostaItem.NomeFormacao,
+                                Numero = proposta.Id,
+                                Nome = proposta.NomeFormacao,
                                 Data = dataFormatada
                             };
-                            item.Propostas.Add(itemProposta);
-                        }
 
-                        listaRetorno.Add(item);
+                            item.Propostas.Add(itemProposta);
+
+                            var chaveCache = CacheDistribuidoNomes.DashboardProposta.Parametros(proposta.Id);
+                            await _cacheDistribuido.SalvarAsync(chaveCache, proposta);
+                        }
                     }
                 }
+
+                listaRetorno.Add(item);
             }
+
             return listaRetorno;
         }
     }
