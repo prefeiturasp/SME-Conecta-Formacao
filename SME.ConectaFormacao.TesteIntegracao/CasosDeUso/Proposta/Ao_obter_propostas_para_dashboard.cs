@@ -43,7 +43,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             retorno.Count().ShouldBeEquivalentTo(situacoes.Count());
 
             foreach (var situacao in situacoes)
-                retorno.Count(x => x.Situacao == situacao.Nome()).ShouldBeEquivalentTo(1);
+                retorno.Count(x => x.Situacao.Nome() == situacao.Nome()).ShouldBeEquivalentTo(1);
             
         }
 

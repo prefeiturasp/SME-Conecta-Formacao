@@ -320,37 +320,104 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 splitOn: "id, id");
         }
 
-        public  Task<IEnumerable<Proposta>> ObterPropostasDashBoardPorTipo(long? propostaId,long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
+        public async Task<IEnumerable<QuantidadeTipoDashboardDTO>> ObterDashBoardQuantidadePorTipo(long? propostaId, long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
+        {
+            var sql = new StringBuilder(); 
+            sql.AppendLine(@"select p.situacao ,count(p.id) as Quantidade  ");
+            sql.AppendLine(@"FROM proposta p");
+            sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
+            sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
+            sql.AppendLine(@"where not p.excluido ");
+            nomeFormacao = ObterPropostasIdDashboardWhere(propostaId, areaPromotoraId, formato, publicoAlvoIds, nomeFormacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, sql,false);
+            sql.AppendLine(@" group by  p.situacao ");
+            var parametros = new
+            {
+                propostaId,
+                formato,
+                publicoAlvoIds,
+                nomeFormacao,
+                areaPromotoraId,
+                numeroHomologacao,
+                periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
+                periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
+                situacao,
+                formacaoHomologada
+            };
+            return await conexao.Obter().QueryAsync<QuantidadeTipoDashboardDTO>(sql.ToString(), parametros);
+        }
+        public async Task<IEnumerable<Proposta>> ObterPropostasIdsDashBoard(long? propostaId, long? areaPromotoraId, Formato? formato, 
+            long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada,SituacaoProposta situacaoProposta)
+        {
+             var sql = new StringBuilder(); 
+             ConsultaPropostaSituacao(sql, situacaoProposta);
+             nomeFormacao = ObterPropostasIdDashboardWhere(propostaId, areaPromotoraId, formato, publicoAlvoIds, nomeFormacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, sql);
+             
+                var parametros = new
+                {
+                    propostaId,
+                    formato,
+                    publicoAlvoIds,
+                    nomeFormacao,
+                    areaPromotoraId,
+                    numeroHomologacao,
+                    periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
+                    periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
+                    situacao,
+                    formacaoHomologada
+                };
+                var consulta = await conexao.Obter().QueryAsync<Proposta>(sql.ToString(), parametros);
+                return consulta;
+        }
+
+        private static void ConsultaPropostaSituacao(StringBuilder sql ,SituacaoProposta situacao)
+        {
+            sql.AppendLine(@" select p.* ");
+            sql.AppendLine(@"FROM proposta p");
+            sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
+            sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
+            sql.AppendLine(@$"where not p.excluido and p.situacao = {(int)situacao} ");
+        }
+
+        private static string? ObterPropostasIdDashboardWhere(long? propostaId, long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, StringBuilder sql,bool ordenar = true)
+        {
+            if (propostaId.GetValueOrDefault() > 0)
+                sql.AppendLine(" and p.id = @propostaId ");
+            if (areaPromotoraId.GetValueOrDefault() > 0)
+                sql.AppendLine(" and p.area_promotora_id = @areaPromotoraId");
+            if (formato.GetValueOrDefault() > 0)
+                sql.AppendLine(" and p.formato = @formato");
+            if (publicoAlvoIds != null && publicoAlvoIds.Any())
+                sql.AppendLine(" and exists(select 1 from proposta_publico_alvo ppa where not ppa.excluido and ppa.proposta_id = p.id and ppa.cargo_funcao_id = any(@publicoAlvoIds) limit 1)");
+            if (!string.IsNullOrEmpty(nomeFormacao))
+            {
+                nomeFormacao = "%" + nomeFormacao.ToLower() + "%";
+                sql.AppendLine(" and lower(p.nome_formacao) like @nomeFormacao");
+            }
+            if (periodoRealizacaoInicio.HasValue)
+                sql.AppendLine(" and data_realizacao_inicio::date >= @periodoRealizacaoInicio");
+            if (periodoRealizacaoFim.HasValue)
+                sql.AppendLine(" and data_realizacao_fim::date <= @periodoRealizacaoFim");
+            if (situacao.GetValueOrDefault() > 0)
+                sql.AppendLine(" and p.situacao = @situacao");
+            if (formacaoHomologada.HasValue)
+                sql.AppendLine(" and p.formacao_homologada = @formacaoHomologada ");
+
+            if(ordenar)
+                sql.AppendLine(" ORDER BY coalesce(pm.criado_em,coalesce(p.alterado_em,p.criado_em)) ");
+            return nomeFormacao;
+        }
+
+        public  Task<IEnumerable<Proposta>> ObterPropostasDashBoard(long[] propostasIds)
         {
                 var sql = new StringBuilder(); 
                 sql.AppendLine(@"select p.*,pm.* ");
-                sql.AppendLine(@"FROM proposta p");
+                sql.AppendLine(@"FROM proposta p ");
                 sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
-                sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
+                sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido ");
                 sql.AppendLine(@"where not p.excluido ");
-                if (propostaId.GetValueOrDefault() > 0)
-                    sql.AppendLine(" and p.id = @propostaId ");
-                if (areaPromotoraId.GetValueOrDefault() > 0)
-                    sql.AppendLine(" and p.area_promotora_id = @areaPromotoraId");
-                if (formato.GetValueOrDefault() > 0)
-                    sql.AppendLine(" and p.formato = @formato");
-                if (publicoAlvoIds != null && publicoAlvoIds.Any())
-                    sql.AppendLine(" and exists(select 1 from proposta_publico_alvo ppa where not ppa.excluido and ppa.proposta_id = p.id and ppa.cargo_funcao_id = any(@publicoAlvoIds) limit 1)");
-                if (!string.IsNullOrEmpty(nomeFormacao))
-                {
-                    nomeFormacao = "%" + nomeFormacao.ToLower() + "%";
-                    sql.AppendLine(" and lower(p.nome_formacao) like @nomeFormacao");
-                }
-                if (periodoRealizacaoInicio.HasValue)
-                    sql.AppendLine(" and data_realizacao_inicio::date >= @periodoRealizacaoInicio");
-                if (periodoRealizacaoFim.HasValue)
-                    sql.AppendLine(" and data_realizacao_fim::date <= @periodoRealizacaoFim");
-                if (situacao.GetValueOrDefault() > 0)
-                    sql.AppendLine(" and p.situacao = @situacao");
-                if (formacaoHomologada.HasValue)
-                    sql.AppendLine(" and p.formacao_homologada = @formacaoHomologada ");
+                sql.AppendLine(@" and p.id = any(@propostasIds) ");
 
-                sql.AppendLine(" ORDER BY coalesce(pm.criado_em,coalesce(p.alterado_em,p.criado_em)) ");
+                sql.AppendLine(" ORDER BY coalesce(pm.criado_em,coalesce(p.alterado_em,p.criado_em)); ");
                 
                 return conexao.Obter().QueryAsync<Proposta, PropostaMovimentacao, Proposta>(sql.ToString(), (proposta, movimentacao) =>
                     {
@@ -359,16 +426,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     },
                     new
                     {
-                        propostaId,
-                        formato,
-                        publicoAlvoIds,
-                        nomeFormacao,
-                        areaPromotoraId,
-                        numeroHomologacao,
-                        periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
-                        periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
-                        situacao,
-                        formacaoHomologada
+                        propostasIds
                     },
                     splitOn: "id, id");
         }
