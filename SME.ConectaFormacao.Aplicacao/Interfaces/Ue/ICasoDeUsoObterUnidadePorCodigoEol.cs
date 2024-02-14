@@ -2,8 +2,8 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Ue
 {
-    public interface ICasoDeUsoObterUePorCodigo
+    public interface ICasoDeUsoObterUnidadePorCodigoEol
     {
-        Task<UeServicoEol> Executar(string ueCodigo);
+        Task<UnidadeEol> Executar(string codigoEolUnidade);
     }
 }

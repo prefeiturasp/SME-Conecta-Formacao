@@ -12,8 +12,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 {
     public class CasoDeUsoInserirUsuarioExterno : CasoDeUsoAbstrato, ICasoDeUsoInserirUsuarioExterno
     {
-        private const string SEM_UE = "0";
-
         public CasoDeUsoInserirUsuarioExterno(IMediator mediator) : base(mediator)
         {
         }
@@ -33,7 +31,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
 
             var tipo = usuarioExternoDto.Tipo ?? TipoUsuario.Externo;
-            var codigoUe = usuarioExternoDto.CodigoUe != SEM_UE ? usuarioExternoDto.CodigoUe : null;
             await mediator.Send(new SalvarUsuarioCommand(new Dominio.Entidades.Usuario(
                 usuarioExternoDto.Login,
                 usuarioExternoDto.Nome,
@@ -41,7 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 usuarioExternoDto.Cpf,
                 tipo,
                 SituacaoCadastroUsuario.AguardandoValidacaoEmail,
-                codigoUe
+                usuarioExternoDto.CodigoUnidade
             )));
 
             return await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
