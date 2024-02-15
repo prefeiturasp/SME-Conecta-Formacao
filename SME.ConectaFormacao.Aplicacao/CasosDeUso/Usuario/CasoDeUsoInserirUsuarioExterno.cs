@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
@@ -7,6 +6,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 {

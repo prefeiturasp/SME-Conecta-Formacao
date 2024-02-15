@@ -40,7 +40,7 @@ public class ConectaFormacaoConexao : IConectaFormacaoConexao
             _conexao.Close();
 
         GC.SuppressFinalize(this);
-    }  
+    }
 
     public void Abrir()
     {

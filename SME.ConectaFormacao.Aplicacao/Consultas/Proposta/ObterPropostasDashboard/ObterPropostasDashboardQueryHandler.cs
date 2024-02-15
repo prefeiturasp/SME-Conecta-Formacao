@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostasDashboardQueryHandler : IRequestHandler<ObterPropostasDashboardQuery,IEnumerable<Proposta>>
+    public class ObterPropostasDashboardQueryHandler : IRequestHandler<ObterPropostasDashboardQuery, IEnumerable<Proposta>>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 

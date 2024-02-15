@@ -15,7 +15,7 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
-    public class Ao_obter_propostas_para_dashboard :TestePropostaBase
+    public class Ao_obter_propostas_para_dashboard : TestePropostaBase
     {
         public Ao_obter_propostas_para_dashboard(CollectionFixture collectionFixture) : base(collectionFixture)
         {
@@ -33,18 +33,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await CriarPropostaValida();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
             var filtro = new PropostaFiltrosDashboardDTO();
-            var situacoes =  Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
-            
+            var situacoes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
+
             // act 
             var retorno = await casoDeUso.Executar(filtro);
-            
+
             // assert
             retorno.ShouldNotBeNull();
             retorno.Count().ShouldBeEquivalentTo(situacoes.Count());
 
             foreach (var situacao in situacoes)
                 retorno.Count(x => x.Situacao.Nome() == situacao.Nome()).ShouldBeEquivalentTo(1);
-            
+
         }
 
         #region Criar Uma Proposta Valida de Cada Situação
@@ -92,7 +92,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var anosTurmasDTO = anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id });
             var componentesCurricularesDTO = componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO() { ComponenteCurricularId = t.Id });
 
-            var listaDeSituacoesExistentes =  Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
+            var listaDeSituacoesExistentes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
 
             foreach (var situacao in listaDeSituacoesExistentes)
             {
@@ -111,7 +111,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                     situacao);
 
                 var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
-                await casoDeUso.Executar(propostaDTO);   
+                await casoDeUso.Executar(propostaDTO);
             }
         }
         #endregion

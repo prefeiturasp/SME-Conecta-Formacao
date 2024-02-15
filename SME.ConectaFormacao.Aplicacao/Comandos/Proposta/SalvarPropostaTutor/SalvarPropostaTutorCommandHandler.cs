@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var arrayTurma = request.PropostaTutorDto.Turmas.Select(x => x.TurmaId);
             var turmaConsulta = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
-            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaId, request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, turmaConsulta));
+            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, turmaConsulta));
 
 
             var transacao = _transacao.Iniciar();
