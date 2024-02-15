@@ -851,48 +851,44 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
         }
 
-        public async Task<IEnumerable<long>> ObterTurmasJaExistenteParaRegente(long propostaId, string? nomeRegente, string? registroFuncional, long[] turmaIds)
+        public async Task<IEnumerable<PropostaTurma>> ObterTurmasJaExistenteParaRegente(string? nomeRegente, string? registroFuncional, long[] turmaIds)
         {
-            var query = new StringBuilder(@"select
-	                                            distinct prt.turma_id
-                                            from
-	                                            proposta_regente pr
-                                            inner join proposta_regente_turma prt on
-	                                            pr.id = prt.proposta_regente_id
-                                            where
-	                                            not pr.excluido
-	                                            and not prt.excluido 
-	                                            and pr.proposta_id = @propostaId
-	                                            and prt.turma_id = any(@turmaIds)");
+            var query = @"select 
+                            pt.id, 
+                            pt.nome
+                        from proposta_turma pt 
+                        inner join proposta_regente_turma prt on prt.turma_id = pt.id and not prt.excluido 
+                        inner join proposta_regente pr on pr.id = prt.proposta_regente_id and not pr.excluido
+                        where not pt.excluido
+	                      and pt.id = any(@turmaIds)";
 
             if (!string.IsNullOrEmpty(registroFuncional))
-                query.AppendLine(" and pr.registro_funcional = @registroFuncional ");
-            if (string.IsNullOrEmpty(registroFuncional) && !string.IsNullOrEmpty(nomeRegente))
-                query.AppendLine(" and trim(pr.nome_regente) = @nomeRegente ");
+                query += " and pr.registro_funcional = @registroFuncional ";
 
-            return await conexao.Obter().QueryAsync<long>(query.ToString(), new { propostaId, nomeRegente, registroFuncional, turmaIds });
+            if (string.IsNullOrEmpty(registroFuncional) && !string.IsNullOrEmpty(nomeRegente))
+                query += " and trim(pr.nome_regente) = @nomeRegente ";
+
+            return await conexao.Obter().QueryAsync<PropostaTurma>(query.ToString(), new { nomeRegente, registroFuncional, turmaIds });
         }
 
-        public async Task<IEnumerable<long>> ObterTurmasJaExistenteParaTutor(long propostaId, string? nomeTutor, string? registroFuncional, long[] turmaIds)
+        public async Task<IEnumerable<PropostaTurma>> ObterTurmasJaExistenteParaTutor(string? nomeTutor, string? registroFuncional, long[] turmaIds)
         {
-            var query = new StringBuilder(@"select
-	                                            distinct ptt.turma_id
-                                            from
-	                                            proposta_tutor pt
-                                            inner join proposta_tutor_turma ptt on
-	                                            pt.id = ptt.proposta_tutor_id 
-                                            where
-	                                            not pt.excluido
-	                                            and not ptt.excluido 
-	                                            and pt.proposta_id = @propostaId
-	                                            and ptt.turma_id = any(@turmaIds) ");
+            var query = @"select 
+                            pt.id, 
+                            pt.nome
+                        from proposta_turma pt 
+                        inner join proposta_tutor_turma ptt on ptt.turma_id = pt.id and not ptt.excluido 
+                        inner join proposta_tutor ptr on ptr.id = ptt.proposta_tutor_id and not ptr.excluido
+                        where not pt.excluido
+	                      and pt.id = any(@turmaIds)";
 
             if (!string.IsNullOrEmpty(registroFuncional))
-                query.AppendLine(" and pt.registro_funcional = @registroFuncional ");
-            if (string.IsNullOrEmpty(registroFuncional) && !string.IsNullOrEmpty(nomeTutor))
-                query.AppendLine(" and trim(pt.nome_tutor) = @nomeTutor ");
+                query += " and ptr.registro_funcional = @registroFuncional ";
 
-            return await conexao.Obter().QueryAsync<long>(query.ToString(), new { propostaId, nomeTutor, registroFuncional, turmaIds });
+            if (string.IsNullOrEmpty(registroFuncional) && !string.IsNullOrEmpty(nomeTutor))
+                query += " and trim(ptr.nome_tutor) = @nomeTutor ";
+
+            return await conexao.Obter().QueryAsync<PropostaTurma>(query.ToString(), new { nomeTutor, registroFuncional, turmaIds });
         }
 
         public Task AtualizarSituacao(long id, SituacaoProposta situacaoProposta)
