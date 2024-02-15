@@ -51,6 +51,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
             }
 
+            retornoFormacaoDetalhadaDto.InscricaoEncerrada = retornoFormacaoDetalhadaDto.DataInscricaoFim.Date < DateTimeExtension.HorarioBrasilia().Date || !retornoFormacaoDetalhadaDto.Turmas.Any(a => !a.InscricaoEncerrada);
+
             return retornoFormacaoDetalhadaDto;
         }
     }

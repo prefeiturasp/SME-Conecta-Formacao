@@ -182,8 +182,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                     opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
                 .ForMember(dest => dest.FormatoDescricao,
                     opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
-                .ForMember(dest => dest.InscricaoEncerrada,
-                    opt => opt.MapFrom(o => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim))
+                .ForMember(dest => dest.DataInscricaoFim, opt => opt.MapFrom(o => o.DataInscricaoFim))
                 .ForMember(dest => dest.Periodo,
                     opt => opt.MapFrom(o =>
                         $"De {o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"));
