@@ -21,9 +21,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
             
             var existeFuncaoEspecificaOutros = await mediator.Send(new ExisteCargoFuncaoOutrosNaPropostaQuery(proposta.Id));
-            if(proposta.TiposInscricao.Any(a => a.TipoInscricao == TipoInscricao.Automatica || a.TipoInscricao == TipoInscricao.AutomaticaJEIF) && existeFuncaoEspecificaOutros)
-                throw new NegocioException(MensagemNegocio.PROPOSTA_JEIF_COM_OUTROS);
-            
+            var propostasTipoInscricao = await mediator.Send(new ObterPropostaTipoInscricaoPorIdQuery(proposta.Id));
+            if (propostasTipoInscricao.PossuiElementos())
+            {
+                if (propostasTipoInscricao.Any(a => a.TipoInscricao == TipoInscricao.Automatica || a.TipoInscricao == TipoInscricao.AutomaticaJEIF) && existeFuncaoEspecificaOutros)
+                    throw new NegocioException(MensagemNegocio.PROPOSTA_JEIF_COM_OUTROS);
+            }
+
 
 
             var validarDatas = await mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim));
