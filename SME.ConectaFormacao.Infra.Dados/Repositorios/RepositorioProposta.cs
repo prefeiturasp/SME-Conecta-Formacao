@@ -143,6 +143,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where proposta_id = @propostaId and not excluido";
             return conexao.Obter().QueryAsync<PropostaFuncaoEspecifica>(query, new { propostaId });
         }
+        
+        public Task<bool> ExisteCargoFuncaoOutrosNaProposta(long propostaId)
+        {
+            var tipoOutros = (int)CargoFuncaoTipo.Outros;
+            var query = @"select count(*)>0 as existe
+				                from proposta_funcao_especifica pfe 
+				                inner join cargo_funcao cf on cf.id = pfe.cargo_funcao_id 
+			                    where not pfe.excluido 
+			                    and pfe.proposta_id  = @propostaId 
+			                     and cf.tipo = @tipoOutros ";
+            return conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, new{propostaId, tipoOutros});
+        }
 
         public Task<IEnumerable<PropostaPublicoAlvo>> ObterPublicoAlvoPorId(long propostaId)
         {

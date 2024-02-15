@@ -17,6 +17,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         public async Task<bool> Executar(long propostaId)
         {
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
+
+            var existeFuncaoEspecificaOutros = await mediator.Send(new ExisteCargoFuncaoOutrosNaPropostaQuery(proposta.Id));
+            if(proposta.TiposInscricao.Any(a => a.TipoInscricao == TipoInscricao.Automatica || a.TipoInscricao == TipoInscricao.AutomaticaJEIF) && existeFuncaoEspecificaOutros)
+                throw new NegocioException(MensagemNegocio.PROPOSTA_JEIF_COM_OUTROS);
+            
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
