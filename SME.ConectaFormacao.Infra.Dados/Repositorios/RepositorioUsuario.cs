@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
@@ -30,11 +31,22 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             codigo_eol_unidade,
                             tipo,
                             possui_contrato_externo,
-                            situacao_cadastro
+                            situacao_cadastro,
+                            cpf
                           from usuario 
                           where login = @login";
 
             return conexao.Obter().QueryFirstOrDefaultAsync<Usuario>(query, new { login });
+        }
+
+        public Task AtivarCadastroUsuario(long usuarioId)
+        {
+            var situacaoCadastro = (int)SituacaoCadastroUsuario.Ativo;
+            var query  = @" UPDATE public.usuario
+                            SET alterado_em= now(), alterado_por='Sistema',  alterado_login='Sistema', situacao_cadastro= @situacaoCadastro
+                            WHERE id= @usuarioId ";
+
+           return  conexao.Obter().ExecuteAsync(query, new {usuarioId, situacaoCadastro});
         }
     }
 }

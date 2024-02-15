@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
 
@@ -19,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public Task<Usuario> Handle(ObterUsuarioPorLoginQuery request, CancellationToken cancellationToken)
         {
-            return _cacheDistribuido.ObterAsync(string.Format(CacheDistribuidoNomes.Usuario, request.Login), () => _repositorioUsuario.ObterPorLogin(request.Login));
+            return _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.Usuario.Parametros(request.Login), () => _repositorioUsuario.ObterPorLogin(request.Login));
         }
     }
 }
