@@ -1,10 +1,10 @@
-using System.Net;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
+using System.Net;
 
 namespace SME.ConectaFormacao.Aplicacao
 {

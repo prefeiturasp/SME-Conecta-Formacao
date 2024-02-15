@@ -143,7 +143,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where proposta_id = @propostaId and not excluido";
             return conexao.Obter().QueryAsync<PropostaFuncaoEspecifica>(query, new { propostaId });
         }
-        
+
         public Task<bool> ExisteCargoFuncaoOutrosNaProposta(long propostaId)
         {
             var tipoOutros = (int)CargoFuncaoTipo.Outros;
@@ -153,7 +153,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 			                    where not pfe.excluido 
 			                    and pfe.proposta_id  = @propostaId 
 			                     and cf.tipo = @tipoOutros ";
-            return conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, new{propostaId, tipoOutros});
+            return conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, new { propostaId, tipoOutros });
         }
 
         public Task<IEnumerable<PropostaPublicoAlvo>> ObterPublicoAlvoPorId(long propostaId)
@@ -362,7 +362,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             };
             return await conexao.Obter().QueryAsync<QuantidadeTipoDashboardDTO>(sql.ToString(), parametros);
         }
-        
+
         public Task<IEnumerable<long>> ObterPropostasIdsDashBoard(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato,
             long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, SituacaoProposta situacaoProposta)
         {

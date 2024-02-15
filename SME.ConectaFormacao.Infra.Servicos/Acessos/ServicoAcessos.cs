@@ -1,11 +1,11 @@
 ﻿using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Servicos.Acessos.Constante;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Options;
 using System.Text;
-using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Infra.Servicos.Acessos.Constante;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 {
