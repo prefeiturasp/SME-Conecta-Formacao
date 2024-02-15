@@ -10,38 +10,37 @@ namespace SME.ConectaFormacao.Aplicacao
     public class ObterDadosPaginadosComFiltrosQueryHandler : IRequestHandler<ObterDadosPaginadosComFiltrosQuery, PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>>
     {
         private readonly IRepositorioInscricao _repositorioInscricao;
+        private readonly IMapper _mapper;
+
         public ObterDadosPaginadosComFiltrosQueryHandler(IRepositorioInscricao repositorioInscricao, IMapper mapper)
         {
-            _repositorioInscricao =
-                repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
+            _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
-
-        private readonly IMapper _mapper;
 
         public async Task<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>> Handle(ObterDadosPaginadosComFiltrosQuery request, CancellationToken cancellationToken)
         {
             var retornoComTurmas = new List<DadosListagemFormacaoComTurmaDTO>();
-            var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.CodigoFormacao, request.NomeFormacao);
+            var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao);
             if (totalRegistrosFiltro > 0)
             {
-                var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros, totalRegistrosFiltro);
-                var mapeamentoDto = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
+                var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros, totalRegistrosFiltro);
+
+                var formacao = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
                 var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
                 var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
-                retornoComTurmas.AddRange(ObterTurmas(turmas, mapeamentoDto));
+                retornoComTurmas.AddRange(ObterTurmas(turmas, formacao));
             }
             return new PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas, totalRegistrosFiltro, request.NumeroRegistros);
         }
 
-        private IEnumerable<DadosListagemFormacaoComTurmaDTO> ObterTurmas(IEnumerable<ListagemFormacaoComTurmaDTO>? inscricoes, IEnumerable<DadosListagemFormacaoComTurmaDTO> propostas)
+        private static IEnumerable<DadosListagemFormacaoComTurmaDTO> ObterTurmas(IEnumerable<ListagemFormacaoComTurmaDTO>? turmasFormacao, IEnumerable<DadosListagemFormacaoComTurmaDTO> formacoes)
         {
-
-            var retorno = propostas;
-            foreach (var proposta in propostas)
+            var retorno = formacoes;
+            foreach (var proposta in formacoes)
             {
 
-                var inscricao = inscricoes?.Where(x => x.PropostaId == proposta.Id);
+                var inscricao = turmasFormacao?.Where(x => x.PropostaId == proposta.Id);
                 var turmas = inscricao!.Select(i => new DadosListagemFormacaoTurma
                 {
                     NomeTurma = i.NomeTurma,

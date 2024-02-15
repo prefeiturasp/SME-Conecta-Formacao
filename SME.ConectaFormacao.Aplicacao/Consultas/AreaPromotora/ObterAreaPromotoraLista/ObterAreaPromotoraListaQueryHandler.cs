@@ -24,6 +24,9 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var areasPromotoras = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.AreaPromotora, () => _repositorioAreaPromotora.ObterLista());
 
+            if (request.AreaPromotoraIdUsuarioLogado.GetValueOrDefault() > 0)
+                areasPromotoras = areasPromotoras.Where(t => t.Id == request.AreaPromotoraIdUsuarioLogado.Value);
+
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(areasPromotoras);
         }
     }
