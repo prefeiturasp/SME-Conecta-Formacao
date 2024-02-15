@@ -1,11 +1,9 @@
 using MediatR;
-using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostasIdDashboardQueryHandler : IRequestHandler<ObterPropostasIdDashboardQuery, IEnumerable<Proposta>>
+    public class ObterPropostasIdDashboardQueryHandler : IRequestHandler<ObterPropostasIdDashboardQuery, IEnumerable<long>>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 
@@ -14,17 +12,21 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public async Task<IEnumerable<Proposta>> Handle(ObterPropostasIdDashboardQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<long>> Handle(ObterPropostasIdDashboardQuery request, CancellationToken cancellationToken)
         {
-            var filtro = request.Filtro;
-            var propostas = await _repositorioProposta.ObterPropostasIdsDashBoard(filtro.Id, filtro.AreaPromotoraId, filtro.Formato,
-                                                                                 filtro.PublicoAlvoIds, filtro.NomeFormacao, filtro.NumeroHomologacao,
-                                                                                 filtro.PeriodoRealizacaoInicio, filtro.PeriodoRealizacaoFim, filtro.Situacao, filtro.FormacaoHomologada, request.Situacao);
-
-            if (propostas.PossuiElementos())
-                return propostas;
-
-            return new List<Proposta>() { };
+            return _repositorioProposta.ObterPropostasIdsDashBoard(
+                request.AreaPromotoraIdUsuarioLogado,
+                request.Filtro.Id,
+                request.Filtro.AreaPromotoraId,
+                request.Filtro.Formato,
+                request.Filtro.PublicoAlvoIds,
+                request.Filtro.NomeFormacao,
+                request.Filtro.NumeroHomologacao,
+                request.Filtro.PeriodoRealizacaoInicio,
+                request.Filtro.PeriodoRealizacaoFim,
+                request.Filtro.Situacao,
+                request.Filtro.FormacaoHomologada,
+                request.Situacao);
         }
     }
 }
