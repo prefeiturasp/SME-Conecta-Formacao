@@ -403,7 +403,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 sql.AppendLine(" and p.formacao_homologada = @formacaoHomologada ");
 
             if(ordenar)
-                sql.AppendLine(" ORDER BY coalesce(pm.criado_em,coalesce(p.alterado_em,p.criado_em)) ");
+                sql.AppendLine(" ORDER BY coalesce(pm.criado_em,coalesce(p.alterado_em,p.criado_em)) desc ");
             return nomeFormacao;
         }
 
