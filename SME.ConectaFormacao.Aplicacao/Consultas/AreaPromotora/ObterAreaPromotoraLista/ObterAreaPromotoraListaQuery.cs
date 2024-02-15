@@ -5,7 +5,11 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterAreaPromotoraListaQuery : IRequest<IEnumerable<RetornoListagemDTO>>
     {
-        private static ObterAreaPromotoraListaQuery _instancia;
-        public static ObterAreaPromotoraListaQuery Instancia => _instancia ??= new();
+        public ObterAreaPromotoraListaQuery(long? areaPromotoraIdUsuarioLogado)
+        {
+            AreaPromotoraIdUsuarioLogado = areaPromotoraIdUsuarioLogado;
+        }
+
+        public long? AreaPromotoraIdUsuarioLogado { get; }
     }
 }

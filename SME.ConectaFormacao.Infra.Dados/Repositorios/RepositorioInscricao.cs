@@ -222,13 +222,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { propostaId, login, cpf, nomeCursista });
         }
 
-        public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? codigoDaFormacao,
-            string? nomeFormacao, int numeroPagina, int numeroRegistros, int totalRegistrosFiltro)
+        public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros, int totalRegistrosFiltro)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"  
-               select * 
-               from(
                     select 
                		    p.id,
                		    p.nome_formacao
@@ -241,59 +238,67 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (codigoDaFormacao != null)
                 query += "  and p.id = @codigoDaFormacao ";
 
-            query += " ) insc order by id desc limit @numeroRegistros offset @registrosIgnorados  ";
+            query += " order by p.id desc limit @numeroRegistros offset @registrosIgnorados  ";
 
             var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
             var parametros = new { nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta };
             return conexao.Obter().QueryAsync<Proposta>(query.ToString(), parametros);
         }
 
-        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? codigoDaFormacao,
-                string? nomeFormacao)
+        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"	
                 select count(1) 
-                from(
-                    select 
-               		    p.id,
-               		    p.nome_formacao
-                    from proposta p
-                    where not p.excluido 
-                      and p.situacao = @situacaoProposta ";
+                from proposta p
+                where not p.excluido 
+                  and p.situacao = @situacaoProposta ";
+
+            if (areaPromotoraIdUsuarioLogado.GetValueOrDefault() > 0)
+
+                query += " and p.area_promotora_id = @areaPromotoraIdUsuarioLogado";
 
             if (!string.IsNullOrEmpty(nomeFormacao))
                 query += $" and lower(p.nome_formacao) like '%{nomeFormacao.ToLower()}%' ";
+
             if (codigoDaFormacao != null)
                 query += "  and p.id = @codigoDaFormacao ";
 
-            query += " ) insc ";
-
-            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { nomeFormacao, codigoDaFormacao, situacaoProposta });
+            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta });
         }
 
         public Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds)
         {
             var query = @" 
-                select
-	                p.id as PropostaId,
-	                p.quantidade_vagas_turma as QuantidadeVagas,
-	                pt.nome as NomeTurma,
-                    case  
- 	                 when ped.data_fim is null then TO_CHAR(ped.data_inicio,	'dd/mm/yyyy')
-	                 else TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')|| ' até ' || TO_CHAR(ped.data_fim, 'dd/mm/yyyy')
-                    end as Datas,
-	                (select count(1) from inscricao i where i.proposta_turma_id = pt.id and not i.excluido and i.situacao = 1) as totalinscricoes
-                from proposta p
-                left join proposta_turma pt on pt.proposta_id = p.id and not pt.excluido
-                left join proposta_encontro_turma pet on pet.turma_id = pt.id and not pet.excluido
-                left join proposta_encontro pe on pe.id = pet.proposta_encontro_id and not pe.excluido
-                left join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
-                where not p.excluido and p.id = any(@propostaIds)
-                order by ped.data_inicio ";
+                    with inscricoes_turma as (
+                        select pt.id, count(1) as total_inscricoes
+                        from proposta_turma pt 
+                        inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido 
+                        where not pt.excluido 
+                          and i.situacao = 1
+                          and pt.proposta_id = any(@propostaIds)
+                        group by pt.id
+                    )
 
-            return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>
-                (query.ToString(), new { propostaIds });
+                    select
+                        p.id as PropostaId,
+                        p.quantidade_vagas_turma as QuantidadeVagas,
+                        pt.nome as NomeTurma,
+                        case 
+                         when ped.data_fim is null then TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')
+                         else TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')|| ' até ' || TO_CHAR(ped.data_fim, 'dd/mm/yyyy')
+                        end as Datas,
+                        it.total_inscricoes as totalinscricoes
+                    from proposta p
+                    left join proposta_turma pt on pt.proposta_id = p.id and not pt.excluido
+                    left join proposta_encontro_turma pet on pet.turma_id = pt.id and not pet.excluido
+                    left join proposta_encontro pe on pe.id = pet.proposta_encontro_id and not pe.excluido
+                    left join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
+                    left join inscricoes_turma it on it.id = pt.id
+                    where not p.excluido and p.id = any(@propostaIds)
+                    order by ped.data_inicio ";
+
+            return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>(query.ToString(), new { propostaIds });
         }
     }
 }

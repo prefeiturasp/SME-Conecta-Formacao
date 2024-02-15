@@ -19,7 +19,7 @@ public class UsuarioInserirExternoMock
             Cpf = cpf,
             Senha = senha,
             ConfirmarSenha = senha,
-            CodigoUe = new Faker().Random.AlphaNumeric(4).ToString(),
+            CodigoUnidade = new Faker().Random.AlphaNumeric(4).ToString(),
             Tipo = TipoUsuario.Externo
         };
     }

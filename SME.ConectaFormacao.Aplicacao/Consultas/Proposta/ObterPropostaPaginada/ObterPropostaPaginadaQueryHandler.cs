@@ -21,6 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PaginacaoResultadoDTO<PropostaPaginadaDTO>> Handle(ObterPropostaPaginadaQuery request, CancellationToken cancellationToken)
         {
             var totalRegistrosFiltro = await _repositorioProposta.ObterTotalRegistrosPorFiltros(
+                request.AreaPromotoraIdUsuarioLogado,
                 request.PropostaFiltrosDTO.Id,
                 request.PropostaFiltrosDTO.AreaPromotoraId,
                 request.PropostaFiltrosDTO.Formato,
@@ -36,20 +37,20 @@ namespace SME.ConectaFormacao.Aplicacao
             if (totalRegistrosFiltro > 0)
             {
                 propostas = await _repositorioProposta.ObterDadosPaginados(
-                request.NumeroPagina,
-                request.NumeroRegistros,
-                request.PropostaFiltrosDTO.Id,
-                request.PropostaFiltrosDTO.AreaPromotoraId,
-                request.PropostaFiltrosDTO.Formato,
-                request.PropostaFiltrosDTO.PublicoAlvoIds,
-                request.PropostaFiltrosDTO.NomeFormacao,
-                request.PropostaFiltrosDTO.NumeroHomologacao,
-                request.PropostaFiltrosDTO.PeriodoRealizacaoInicio,
-                request.PropostaFiltrosDTO.PeriodoRealizacaoFim,
-                request.PropostaFiltrosDTO.Situacao,
-                request.PropostaFiltrosDTO.FormacaoHomologada,
-                totalRegistrosFiltro
-                );
+                    request.AreaPromotoraIdUsuarioLogado,
+                    request.NumeroPagina,
+                    request.NumeroRegistros,
+                    request.PropostaFiltrosDTO.Id,
+                    request.PropostaFiltrosDTO.AreaPromotoraId,
+                    request.PropostaFiltrosDTO.Formato,
+                    request.PropostaFiltrosDTO.PublicoAlvoIds,
+                    request.PropostaFiltrosDTO.NomeFormacao,
+                    request.PropostaFiltrosDTO.NumeroHomologacao,
+                    request.PropostaFiltrosDTO.PeriodoRealizacaoInicio,
+                    request.PropostaFiltrosDTO.PeriodoRealizacaoFim,
+                    request.PropostaFiltrosDTO.Situacao,
+                    request.PropostaFiltrosDTO.FormacaoHomologada,
+                    totalRegistrosFiltro);
             }
 
             var items = _mapper.Map<IEnumerable<PropostaPaginadaDTO>>(propostas);

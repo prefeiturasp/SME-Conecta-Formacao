@@ -30,9 +30,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterListaAreaPromotora(
-           [FromServices] ICasoDeUsoObterAreaPromotoraLista casoDeUsoObterAreaPromotoraLista)
+           [FromServices] ICasoDeUsoObterAreaPromotoraListaAreaPublica casoDeUsoObterAreaPromotoraListaAreaPublica)
         {
-            return Ok(await casoDeUsoObterAreaPromotoraLista.Executar());
+            return Ok(await casoDeUsoObterAreaPromotoraListaAreaPublica.Executar());
         }
 
         [HttpGet("palavra-chave")]

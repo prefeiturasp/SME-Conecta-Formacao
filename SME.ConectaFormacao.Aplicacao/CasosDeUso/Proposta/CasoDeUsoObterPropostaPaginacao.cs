@@ -14,7 +14,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<PaginacaoResultadoDTO<PropostaPaginadaDTO>> Executar(PropostaFiltrosDTO propostaFiltrosDTO)
         {
-            return await mediator.Send(new ObterPropostaPaginadaQuery(propostaFiltrosDTO, NumeroPagina, NumeroRegistros));
+            var areaPromotoraUsuarioLogado = await mediator.Send(ObterAreaPromotoraUsuarioLogadoQuery.Instancia());
+            return await mediator.Send(new ObterPropostaPaginadaQuery(propostaFiltrosDTO, NumeroPagina, NumeroRegistros, areaPromotoraUsuarioLogado?.Id));
         }
     }
 }
