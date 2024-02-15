@@ -1578,8 +1578,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         
                         select 
                             d.id,
-                            d.dre_id as codigo,
-                            d.nome
+                            d.dre_id as Codigo,
+                            d.nome,
+                            d.todos
                         from proposta_turma_dre ptd
                         join dre d on d.id = ptd.dre_id and not d.excluido
                         where ptd.proposta_turma_id = any(@propostaTurmaIds) and not ptd.excluido;";
@@ -1591,8 +1592,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             foreach (var turmaDre in turmaDres)
             {
-                turmaDre.Dre = dres.FirstOrDefault(t => t.Id == turmaDre.DreId);
-                turmaDre.DreCodigo = turmaDre.Dre.Codigo;
+                var dre = dres.FirstOrDefault(t => t.Id == turmaDre.DreId);
+                turmaDre.Dre = dre;
+                turmaDre.DreCodigo = dre?.Codigo;
             }
 
             return turmaDres;
