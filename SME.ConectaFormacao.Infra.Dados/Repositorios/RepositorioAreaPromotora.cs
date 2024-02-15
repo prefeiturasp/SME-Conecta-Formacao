@@ -184,7 +184,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<bool> ExistePropostaPorId(long id)
         {
-            var query = @"select count(1) from proposta where not excluido and area_promotora_id = @id limit 1 ";
+            var query = @"select 1 from proposta where not excluido and area_promotora_id = @id limit 1 ";
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { id });
         }
     }
