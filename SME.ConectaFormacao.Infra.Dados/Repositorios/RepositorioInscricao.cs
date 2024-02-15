@@ -80,10 +80,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"
                 select
 	                case
-		                when i.cargo_id is not null
-		                and i.funcao_id is not null then concat(cfc.nome,
-		                '/',
-		                cff.nome)
+		                when i.funcao_id is not null then cff.nome
 		                when i.cargo_id is not null then cfc.nome
 		                else ''
 	                end as cargo_funcao
