@@ -106,5 +106,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<QuantidadeTipoDashboardDTO>> ObterDashBoardQuantidadePorTipo(long? propostaId,long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada);
         Task<IEnumerable<Proposta>> ObterPropostasIdsDashBoard(long? propostaId,long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada,SituacaoProposta situacaoProposta);
         Task<IEnumerable<Proposta>> ObterPropostasDashBoard(long[] propostasIds);
+        Task<bool> ExisteCargoFuncaoOutrosNaProposta(long propostaId);
     }
 }
