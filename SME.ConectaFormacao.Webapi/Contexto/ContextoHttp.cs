@@ -24,6 +24,7 @@ public class ContextoHttp : ContextoBase
         Variaveis.Add("NomeUsuario", httpContextAccessor.HttpContext?.User?.FindFirst("Nome")?.Value ?? "Sistema");
         Variaveis.Add("PerfilUsuario", ObterPerfilAtual());
         Variaveis.Add("EmailUsuario", httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == "email")?.Value ?? string.Empty);
+        Variaveis.Add("Dres", httpContextAccessor.HttpContext?.User?.Claims?.Where(a => a.Type == "dres").Select(s => s.Value).ToArray());
 
         var authorizationHeader = httpContextAccessor.HttpContext?.Request?.Headers["authorization"];
 

@@ -2,6 +2,7 @@
 using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Data;
 
@@ -157,11 +158,21 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { grupoId, dreId, ignorarAreaPromotoraId });
         }
 
-        public Task<AreaPromotora> ObterPorGrupoId(Guid grupoId)
+        public Task<AreaPromotora> ObterPorGrupoIdEDres(Guid grupoId, string[] dres)
         {
-            var query = @"select id, nome, tipo, email from area_promotora where grupo_id = @grupoId and not excluido limit 1";
+            var query = @"
+                    select ap.id, ap.nome, ap.tipo, ap.email, ap.dreid  
+                    from area_promotora ap
+                    left join dre d on d.id = ap.dreid and not d.excluido  
+                    where ap.grupo_id = @grupoId 
+                      and not ap.excluido ";
 
-            return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { grupoId });
+            if (dres.PossuiElementos())
+                query += " and d.dre_id = any(@dres) ";
+
+            query += " limit 1";
+
+            return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { grupoId, dres });
         }
 
         public Task<IEnumerable<AreaPromotora>> ObterLista()
