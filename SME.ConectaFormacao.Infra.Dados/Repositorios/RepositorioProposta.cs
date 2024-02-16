@@ -1768,13 +1768,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var tipoInscricao = TipoInscricao.Optativa;
             var situacao = SituacaoProposta.Publicada;
             titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty;
+            var dataAtual = DateTimeExtension.HorarioBrasilia().Date;
 
             var query = @"select distinct p.id, p.data_realizacao_inicio, p.data_realizacao_fim
                           from proposta p
                           inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id and not pti.excluido
                           where not p.excluido 
                              and pti.tipo_inscricao = @tipoInscricao 
-                             and p.situacao = @situacao";
+                             and p.situacao = @situacao
+                             and @dataAtual between p.data_inscricao_inicio::date and  p.data_inscricao_fim::date";
 
             if (areasPromotorasIds.PossuiElementos())
                 query += " and p.area_promotora_id = any(@areasPromotorasIds) ";
@@ -1813,6 +1815,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryAsync<long>(query, new
             {
+                dataAtual,
                 palavrasChavesIds,
                 formatosIds,
                 dataInicial = dataInicial.GetValueOrDefault().Date,
