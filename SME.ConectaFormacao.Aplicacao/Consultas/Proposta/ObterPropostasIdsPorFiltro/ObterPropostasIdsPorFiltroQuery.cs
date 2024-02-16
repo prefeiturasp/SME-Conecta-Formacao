@@ -5,15 +5,10 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterPropostasIdsPorFiltroQuery : IRequest<IEnumerable<long>>
     {
-        public ObterPropostasIdsPorFiltroQuery(FiltroListagemFormacaoDTO filtroListagemFormacaoDto, int numeroPagina, int numeroRegistros)
+        public ObterPropostasIdsPorFiltroQuery(FiltroListagemFormacaoDTO filtroListagemFormacaoDto)
         {
             FiltroListagemFormacaoDTO = filtroListagemFormacaoDto;
-            NumeroPagina = numeroPagina;
-            NumeroRegistros = numeroRegistros;
         }
-
-        public int NumeroPagina { get; set; }
-        public int NumeroRegistros { get; set; }
 
         public FiltroListagemFormacaoDTO FiltroListagemFormacaoDTO { get; }
     }

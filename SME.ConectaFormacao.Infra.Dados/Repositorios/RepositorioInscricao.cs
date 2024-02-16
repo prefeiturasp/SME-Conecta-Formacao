@@ -155,19 +155,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                                 i.cargo_id,
                                                 i.funcao_id,
 												cf.nome
-											from
-												inscricao i
-											inner join proposta_turma pt on
-												i.proposta_turma_id = pt.id
-											inner join usuario u on
-												i.usuario_id = u.id
-											inner join cargo_funcao cf on
-												coalesce(i.funcao_id, i.cargo_id) = cf.id
+											from proposta_turma pt
+											inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido
+											inner join usuario u on i.usuario_id = u.id and not u.excluido
+											left join cargo_funcao cf on coalesce(i.funcao_id, i.cargo_id) = cf.id and not cf.excluido
 											where
-												not i.excluido
-												and not pt.excluido
-												and not u.excluido
-												and not cf.excluido
+												not pt.excluido
 												and pt.proposta_id = @propostaId ");
             if (!string.IsNullOrEmpty(login))
                 query.AppendLine($" and u.login like '%{@login}%' ");
@@ -191,30 +184,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<int> ObterInscricaoPorIdComFiltrosTotalRegistros(long propostaId, string? login, string? cpf, string? nomeCursista, string? nomeTurma)
         {
-            var query = new StringBuilder(@"select count(1) from (select *
-											from
-												inscricao i
-											inner join proposta_turma pt on
-												i.proposta_turma_id = pt.id
-											inner join usuario u on
-												i.usuario_id = u.id
-											inner join cargo_funcao cf on
-												coalesce(i.cargo_id,i.funcao_id) = cf.id
+            var query = new StringBuilder(@"select count(1)
+											from proposta_turma pt
+											inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido
+											inner join usuario u on i.usuario_id = u.id and not u.excluido
+											left join cargo_funcao cf on coalesce(i.cargo_id, i.funcao_id) = cf.id and not cf.excluido
 											where
-												not i.excluido
-												and not pt.excluido
-												and not u.excluido
-												and not cf.excluido
+                                                not pt.excluido
 												and pt.proposta_id = @propostaId ");
+
             if (!string.IsNullOrEmpty(login))
                 query.AppendLine($" and u.login like '%{@login}%' ");
+
             if (!string.IsNullOrEmpty(cpf))
                 query.AppendLine($"and u.cpf like '%{@cpf}%' ");
+
             if (!string.IsNullOrEmpty(nomeCursista))
                 query.AppendLine($" and lower(u.nome) like '%{@nomeCursista.ToLower()}%' ");
+
             if (!string.IsNullOrEmpty(nomeTurma))
                 query.AppendLine($" and lower(pt.nome) like '%{nomeTurma.ToLower()}%' ");
-            query.AppendLine(" )tb ");
 
             return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { propostaId, login, cpf, nomeCursista });
         }

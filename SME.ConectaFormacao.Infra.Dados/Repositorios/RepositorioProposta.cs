@@ -1763,15 +1763,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         }
 
         public Task<IEnumerable<long>> ObterListagemFormacoesPorFiltro(long[] publicosAlvosIds, string titulo, long[] areasPromotorasIds,
-            DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds, int numeroPagina, int numeroRegistro)
+            DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds)
         {
             var tipoInscricao = TipoInscricao.Optativa;
             var situacao = SituacaoProposta.Publicada;
             titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty;
 
-            var registrosIgnorados = (numeroPagina - 1) * numeroRegistro;
-
-            var query = @"select p.id 
+            var query = @"select distinct p.id, p.data_realizacao_inicio, p.data_realizacao_fim
                           from proposta p
                           inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id and not pti.excluido
                           where not p.excluido 
@@ -1811,7 +1809,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                          and ppc.palavra_chave_id = any(@palavrasChavesIds)) ";
             }
 
-            query += @" order by p.data_realizacao_inicio, p.data_realizacao_fim limit @numeroRegistro offset @registrosIgnorados";
+            query += @" order by p.data_realizacao_inicio, p.data_realizacao_fim";
 
             return conexao.Obter().QueryAsync<long>(query, new
             {
@@ -1823,9 +1821,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 titulo,
                 publicosAlvosIds,
                 tipoInscricao,
-                situacao,
-                numeroRegistro,
-                registrosIgnorados
+                situacao
             });
         }
 

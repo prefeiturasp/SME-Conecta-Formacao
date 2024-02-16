@@ -16,11 +16,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
         {
             if (NumeroRegistros < 12) NumeroRegistros = 12;
 
-            var propostasIds = await mediator.Send(new ObterPropostasIdsPorFiltroQuery(filtroListagemFormacaoDTO, NumeroPagina, NumeroRegistros));
+            var registrosIgnorados = (NumeroPagina - 1) * NumeroRegistros;
+
+            var propostasIds = await mediator.Send(new ObterPropostasIdsPorFiltroQuery(filtroListagemFormacaoDTO));
+            var propostasPaginadas = propostasIds.Skip(registrosIgnorados).Take(NumeroRegistros);
 
             var formacoes = Enumerable.Empty<RetornoListagemFormacaoDTO>();
-            if (propostasIds.PossuiElementos())
-                formacoes = await mediator.Send(new ObterPropostasPorIdsQuery(propostasIds.Distinct()));
+            if (propostasPaginadas.PossuiElementos())
+                formacoes = await mediator.Send(new ObterPropostasPorIdsQuery(propostasPaginadas));
 
             return new PaginacaoResultadoDTO<RetornoListagemFormacaoDTO>(formacoes, propostasIds.Count(), NumeroRegistros);
         }
