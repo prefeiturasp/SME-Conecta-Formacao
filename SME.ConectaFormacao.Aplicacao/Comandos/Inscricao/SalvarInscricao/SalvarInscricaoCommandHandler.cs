@@ -110,11 +110,11 @@ namespace SME.ConectaFormacao.Aplicacao
         private async Task ValidarDre(long propostaTurmaId, string cargoDreCodigo, string funcaoDreCodigo, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId), cancellationToken);
-
+            dres = dres.Where(t => !t.Dre.Todos);
             if (dres.PossuiElementos())
             {
-                if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(cargoDreCodigo)))
-                    || (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.DreCodigo.ToString().Equals(funcaoDreCodigo))))
+                if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.Dre.Codigo == cargoDreCodigo)) ||
+                    (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.Dre.Codigo == funcaoDreCodigo)))
                     throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
             }
         }
