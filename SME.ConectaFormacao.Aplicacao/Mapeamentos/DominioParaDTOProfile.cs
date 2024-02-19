@@ -12,6 +12,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
@@ -204,7 +205,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.UsuarioRf, opt => opt.MapFrom(o => o.Login))
                 .ForMember(dest => dest.UsuarioNome, opt => opt.MapFrom(o => o.Nome))
                 .ForMember(dest => dest.UsuarioCpf, opt => opt.MapFrom(o => o.Cpf))
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(dest => dest.Tipo, opt => opt.MapFrom(o => TipoUsuario.Interno))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => SituacaoCadastroUsuario.Ativo));
 
             CreateMap<Inscricao, InscricaoPaginadaDTO>()
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.Id))

@@ -243,7 +243,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         private static string MontarQueryPaginacao(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
         {
             var query = new StringBuilder();
-            query.AppendLine("select p.*, ap.* ");
+            query.AppendLine("select p.id, p.tipo_formacao, p.formato, p.nome_formacao, p.data_realizacao_inicio, p.data_realizacao_fim, p.situacao, p.formacao_homologada, ap.id, ap.nome ");
             query.AppendLine("from proposta p ");
             query.AppendLine("inner join area_promotora ap on ap.id = p.area_promotora_id and not ap.excluido");
             query.AppendLine("where not p.excluido ");
@@ -303,17 +303,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             });
         }
 
-        public Task<IEnumerable<Proposta>> ObterDadosPaginados(long? areaPromotoraIdUsuarioLogado, int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds,
-            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, int totalRegistrosFiltro)
+        public async Task<IEnumerable<Proposta>> ObterDadosPaginados(long? areaPromotoraIdUsuarioLogado, int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds,
+            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
         {
-            var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
+            var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
 
             string query = MontarQueryPaginacao(areaPromotoraIdUsuarioLogado, propostaId, areaPromotoraId, formato, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada);
 
             query += " order by p.criado_em desc";
             query += " limit @numeroRegistros offset @registrosIgnorados";
 
-            return conexao.Obter().QueryAsync<Proposta, AreaPromotora, Proposta>(query, (proposta, areaPromotora) =>
+            return await conexao.Obter().QueryAsync<Proposta, AreaPromotora, Proposta>(query, (proposta, areaPromotora) =>
                 {
                     proposta.AreaPromotora = areaPromotora;
                     return proposta;
@@ -337,40 +337,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 splitOn: "id, id");
         }
 
-        public async Task<IEnumerable<QuantidadeTipoDashboardDTO>> ObterDashBoardQuantidadePorTipo(long? propostaId, long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
-        {
-            var sql = new StringBuilder();
-            sql.AppendLine(@"select p.situacao ,count(p.id) as Quantidade  ");
-            sql.AppendLine(@"FROM proposta p");
-            sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
-            sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido");
-            sql.AppendLine(@"where not p.excluido ");
-            nomeFormacao = ObterPropostasIdDashboardWhere(propostaId, areaPromotoraId, formato, publicoAlvoIds, nomeFormacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, sql, false);
-            sql.AppendLine(@" group by  p.situacao ");
-            var parametros = new
-            {
-                propostaId,
-                formato,
-                publicoAlvoIds,
-                nomeFormacao,
-                areaPromotoraId,
-                numeroHomologacao,
-                periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
-                periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
-                situacao,
-                formacaoHomologada
-            };
-            return await conexao.Obter().QueryAsync<QuantidadeTipoDashboardDTO>(sql.ToString(), parametros);
-        }
-
-        public Task<IEnumerable<long>> ObterPropostasIdsDashBoard(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato,
-            long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, SituacaoProposta situacaoProposta)
+        public Task<IEnumerable<Proposta>> ObterPropostasIdsDashBoard(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId,
+            Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio,
+            DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, IEnumerable<SituacaoProposta> situacoesProposta)
         {
             var query = @" 
-                        SELECT p.id 
+                        with movimentacoes as (
+	                        select 
+		                        ROW_NUMBER() OVER(PARTITION BY proposta_id ORDER BY pm.criado_em DESC) AS Linha,
+		                        pm.proposta_id, 
+		                        pm.criado_em,
+                                pm.situacao
+	                        from proposta_movimentacao pm
+	                        where not pm.excluido and pm.situacao = any(@situacoesProposta)
+                        )
+
+                        SELECT p.id, p.situacao
                         FROM proposta p
-                        LEFT join proposta_movimentacao pm on p.id = pm.proposta_id and p.situacao = pm.situacao and not pm.excluido
-                        WHERE not p.excluido and p.situacao = @situacaoProposta";
+                        LEFT join movimentacoes pm on p.id = pm.proposta_id and pm.situacao = p.situacao and pm.linha = 1
+                        WHERE not p.excluido and p.situacao = any(@situacoesProposta)";
 
             if (areaPromotoraIdUsuarioLogado.GetValueOrDefault() > 0)
                 query += " and p.area_promotora_id = @areaPromotoraIdUsuarioLogado ";
@@ -394,10 +379,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
 
             if (periodoRealizacaoInicio.HasValue)
-                query += " and data_realizacao_inicio::date >= @periodoRealizacaoInicio";
+                query += " and p.data_realizacao_inicio::date >= @periodoRealizacaoInicio";
 
             if (periodoRealizacaoFim.HasValue)
-                query += " and data_realizacao_fim::date <= @periodoRealizacaoFim";
+                query += " and p.data_realizacao_fim::date <= @periodoRealizacaoFim";
 
             if (situacao.GetValueOrDefault() > 0)
                 query += " and p.situacao = @situacao";
@@ -405,7 +390,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (formacaoHomologada.HasValue)
                 query += " and p.formacao_homologada = @formacaoHomologada ";
 
-            query += " ORDER BY coalesce(pm.criado_em, p.alterado_em, p.criado_em) desc ";
+            query += " ORDER BY coalesce(pm.criado_em, p.alterado_em, p.criado_em) DESC ";
 
             var parametros = new
             {
@@ -420,53 +405,30 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                 situacao,
                 formacaoHomologada,
-                situacaoProposta
+                situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray(),
             };
-            return conexao.Obter().QueryAsync<long>(query, parametros);
+            return conexao.Obter().QueryAsync<Proposta>(query, parametros);
         }
 
-        private static string? ObterPropostasIdDashboardWhere(long? propostaId, long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, StringBuilder sql, bool ordenar = true)
+        public async Task<IEnumerable<Proposta>> ObterPropostasDashBoard(long[] propostasIds)
         {
-            if (propostaId.GetValueOrDefault() > 0)
-                sql.AppendLine(" and p.id = @propostaId ");
-            if (areaPromotoraId.GetValueOrDefault() > 0)
-                sql.AppendLine(" and p.area_promotora_id = @areaPromotoraId");
-            if (formato.GetValueOrDefault() > 0)
-                sql.AppendLine(" and p.formato = @formato");
-            if (publicoAlvoIds != null && publicoAlvoIds.Any())
-                sql.AppendLine(" and exists(select 1 from proposta_publico_alvo ppa where not ppa.excluido and ppa.proposta_id = p.id and ppa.cargo_funcao_id = any(@publicoAlvoIds) limit 1)");
-            if (!string.IsNullOrEmpty(nomeFormacao))
-            {
-                nomeFormacao = "%" + nomeFormacao.ToLower() + "%";
-                sql.AppendLine(" and lower(p.nome_formacao) like @nomeFormacao");
-            }
-            if (periodoRealizacaoInicio.HasValue)
-                sql.AppendLine(" and data_realizacao_inicio::date >= @periodoRealizacaoInicio");
-            if (periodoRealizacaoFim.HasValue)
-                sql.AppendLine(" and data_realizacao_fim::date <= @periodoRealizacaoFim");
-            if (situacao.GetValueOrDefault() > 0)
-                sql.AppendLine(" and p.situacao = @situacao");
-            if (formacaoHomologada.HasValue)
-                sql.AppendLine(" and p.formacao_homologada = @formacaoHomologada ");
+            var sql = @"
+                        with movimentacoes as (
+	                        select 
+		                        ROW_NUMBER() OVER(PARTITION BY proposta_id ORDER BY pm.criado_em DESC) AS Linha,
+		                        pm.*
+	                        from proposta_movimentacao pm
+	                        where not pm.excluido and pm.proposta_id = any(@propostasIds)
+                        )
 
-            if (ordenar)
-                sql.AppendLine(" ORDER BY coalesce(pm.criado_em,coalesce(p.alterado_em,p.criado_em)) desc ");
-            return nomeFormacao;
-        }
+                        SELECT p.*, pm.* 
+                        FROM proposta p 
+                        LEFT JOIN movimentacoes pm ON p.id = pm.proposta_id AND p.situacao = pm.situacao AND pm.linha = 1
+                        WHERE NOT p.excluido
+                          AND p.id = any(@propostasIds)
+                        ORDER BY coalesce(pm.criado_em, p.alterado_em, p.criado_em) DESC ";
 
-        public Task<IEnumerable<Proposta>> ObterPropostasDashBoard(long[] propostasIds)
-        {
-            var sql = new StringBuilder();
-            sql.AppendLine(@"select p.*,pm.* ");
-            sql.AppendLine(@"FROM proposta p ");
-            sql.AppendLine(@"left join proposta_movimentacao pm on p.id = pm.proposta_id ");
-            sql.AppendLine(@"and p.situacao = pm.situacao and not pm.excluido ");
-            sql.AppendLine(@"where not p.excluido ");
-            sql.AppendLine(@" and p.id = any(@propostasIds) ");
-
-            sql.AppendLine(" ORDER BY coalesce(pm.criado_em,coalesce(p.alterado_em,p.criado_em)); ");
-
-            return conexao.Obter().QueryAsync<Proposta, PropostaMovimentacao, Proposta>(sql.ToString(), (proposta, movimentacao) =>
+            return await conexao.Obter().QueryAsync<Proposta, PropostaMovimentacao, Proposta>(sql.ToString(), (proposta, movimentacao) =>
                 {
                     proposta.Movimentacao = movimentacao;
                     return proposta;

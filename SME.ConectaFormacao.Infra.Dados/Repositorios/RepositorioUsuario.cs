@@ -42,11 +42,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public Task AtivarCadastroUsuario(long usuarioId)
         {
             var situacaoCadastro = (int)SituacaoCadastroUsuario.Ativo;
-            var query  = @" UPDATE public.usuario
+            var query = @" UPDATE public.usuario
                             SET alterado_em= now(), alterado_por='Sistema',  alterado_login='Sistema', situacao_cadastro= @situacaoCadastro
                             WHERE id= @usuarioId ";
 
-           return  conexao.Obter().ExecuteAsync(query, new {usuarioId, situacaoCadastro});
+            return conexao.Obter().ExecuteAsync(query, new { usuarioId, situacaoCadastro });
         }
     }
 }

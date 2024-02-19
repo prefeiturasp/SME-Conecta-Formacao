@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-            
+
             var existeFuncaoEspecificaOutros = await mediator.Send(new ExisteCargoFuncaoOutrosNaPropostaQuery(proposta.Id));
             var propostasTipoInscricao = await mediator.Send(new ObterPropostaTipoInscricaoPorIdQuery(proposta.Id));
             if (propostasTipoInscricao.PossuiElementos())

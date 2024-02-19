@@ -26,10 +26,14 @@ namespace SME.ConectaFormacao.Aplicacao
             var listaRetorno = new List<PropostaDashboardDTO>();
             var listaDeSituacoesExistentes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
 
+            if (request.PropostaFiltrosDashboardDTO.Situacao.HasValue)
+                listaDeSituacoesExistentes = listaDeSituacoesExistentes.Where(t => t == request.PropostaFiltrosDashboardDTO.Situacao.Value);
+
+            var propostas = await _mediator.Send(new ObterPropostasIdDashboardQuery(request.PropostaFiltrosDashboardDTO, listaDeSituacoesExistentes, request.AreaPromotoraIdUsuarioLogado), cancellationToken);
+
             foreach (var situacao in listaDeSituacoesExistentes)
             {
-                var propostasId = await _mediator.Send(new ObterPropostasIdDashboardQuery(request.PropostaFiltrosDashboardDTO, situacao, request.AreaPromotoraIdUsuarioLogado), cancellationToken);
-
+                var propostasId = propostas.Where(w => w.Situacao == situacao).Select(t => t.Id);
                 var total = propostasId.Count();
 
                 var item = new PropostaDashboardDTO
@@ -58,9 +62,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
                     if (buscarPropostaBanco.PossuiElementos())
                     {
-                        var propostas = await _mediator.Send(new ObterPropostasDashboardQuery(buscarPropostaBanco.ToArray()), cancellationToken);
+                        var propostasCompleta = await _mediator.Send(new ObterPropostasDashboardQuery(buscarPropostaBanco.ToArray()), cancellationToken);
 
-                        foreach (var proposta in propostas)
+                        foreach (var proposta in propostasCompleta)
                         {
                             MapearProposta(item, proposta);
 
