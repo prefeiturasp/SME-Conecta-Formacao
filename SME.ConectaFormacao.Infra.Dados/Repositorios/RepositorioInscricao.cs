@@ -219,15 +219,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     where not p.excluido 
                       and p.situacao = @situacaoProposta  ";
 
+            if (areaPromotoraIdUsuarioLogado.GetValueOrDefault() > 0)
+                query += " and p.area_promotora_id = @areaPromotoraIdUsuarioLogado";
+
             if (!string.IsNullOrEmpty(nomeFormacao))
                 query += $" and lower(p.nome_formacao) like '%{nomeFormacao.ToLower()}%' ";
+
             if (codigoDaFormacao != null)
                 query += "  and p.id = @codigoDaFormacao ";
 
             query += " order by p.id desc limit @numeroRegistros offset @registrosIgnorados  ";
 
             var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
-            var parametros = new { nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta };
+            var parametros = new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta };
             return conexao.Obter().QueryAsync<Proposta>(query.ToString(), parametros);
         }
 
@@ -241,7 +245,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                   and p.situacao = @situacaoProposta ";
 
             if (areaPromotoraIdUsuarioLogado.GetValueOrDefault() > 0)
-
                 query += " and p.area_promotora_id = @areaPromotoraIdUsuarioLogado";
 
             if (!string.IsNullOrEmpty(nomeFormacao))
