@@ -1,9 +1,10 @@
 using MediatR;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostasIdDashboardQueryHandler : IRequestHandler<ObterPropostasIdDashboardQuery, IEnumerable<long>>
+    public class ObterPropostasIdDashboardQueryHandler : IRequestHandler<ObterPropostasIdDashboardQuery, IEnumerable<Proposta>>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 
@@ -12,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public Task<IEnumerable<long>> Handle(ObterPropostasIdDashboardQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<Proposta>> Handle(ObterPropostasIdDashboardQuery request, CancellationToken cancellationToken)
         {
             return _repositorioProposta.ObterPropostasIdsDashBoard(
                 request.AreaPromotoraIdUsuarioLogado,
@@ -26,7 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 request.Filtro.PeriodoRealizacaoFim,
                 request.Filtro.Situacao,
                 request.Filtro.FormacaoHomologada,
-                request.Situacao);
+                request.Situacoes);
         }
     }
 }
