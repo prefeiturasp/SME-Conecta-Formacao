@@ -6,19 +6,19 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterUnidadePorCodigoEOLQuery : IRequest<UnidadeEol>
     {
-        public ObterUnidadePorCodigoEOLQuery(string ueCodigo)
+        public ObterUnidadePorCodigoEOLQuery(string unidadeCodigo)
         {
-            UeCodigo = ueCodigo;
+            UnidadeCodigo = unidadeCodigo;
         }
 
-        public string UeCodigo { get; set; }
+        public string UnidadeCodigo { get; set; }
     }
 
     public class ObterUePorCodigoEOLQueryValidator : AbstractValidator<ObterUnidadePorCodigoEOLQuery>
     {
         public ObterUePorCodigoEOLQueryValidator()
         {
-            RuleFor(x => x.UeCodigo).NotEmpty().NotNull().WithMessage("Informe o código da UE para realizar a consulta no EOL");
+            RuleFor(x => x.UnidadeCodigo).NotEmpty().NotNull().WithMessage("Informe o código da Unidade para realizar a consulta no EOL");
         }
     }
 }
