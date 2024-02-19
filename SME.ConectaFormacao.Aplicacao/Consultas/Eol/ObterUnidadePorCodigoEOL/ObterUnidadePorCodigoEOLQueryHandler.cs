@@ -7,9 +7,9 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUePorCodigoEOLQueryHandler : IRequestHandler<ObterUnidadePorCodigoEOLQuery, UnidadeEol>
+    public class ObterUnidadePorCodigoEOLQueryHandler : IRequestHandler<ObterUnidadePorCodigoEOLQuery, UnidadeEol>
     {
-        public ObterUePorCodigoEOLQueryHandler(IServicoEol servicoEol)
+        public ObterUnidadePorCodigoEOLQueryHandler(IServicoEol servicoEol)
         {
             _servicoEol = servicoEol ?? throw new ArgumentNullException(nameof(servicoEol));
         }
@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IServicoEol _servicoEol;
         public async Task<UnidadeEol> Handle(ObterUnidadePorCodigoEOLQuery request, CancellationToken cancellationToken)
         {
-            var ue = await _servicoEol.ObterUnidadePorCodigoEol(request.UeCodigo);
+            var ue = await _servicoEol.ObterUnidadePorCodigoEol(request.UnidadeCodigo);
             if (ue.NomeUnidade.EhNulo())
                 throw new NegocioException(MensagemNegocio.UNIDADE_NAO_LOCALIZADA_POR_CODIGO);
 

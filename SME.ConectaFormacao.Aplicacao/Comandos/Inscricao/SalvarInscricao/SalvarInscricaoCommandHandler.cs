@@ -34,17 +34,21 @@ namespace SME.ConectaFormacao.Aplicacao
             inscricao.UsuarioId = usuarioLogado.Id;
             inscricao.Situacao = SituacaoInscricao.EmAnalise;
 
-            await MapearCargoFuncao(cancellationToken, inscricao);
+            await MapearCargoFuncao(inscricao, cancellationToken);
 
             var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
                                 throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
 
             await ValidarExisteInscricaoNaProposta(propostaTurma.PropostaId, inscricao.UsuarioId);
 
-            if (usuarioLogado.Tipo != TipoUsuario.Externo)
+            if (usuarioLogado.Tipo == TipoUsuario.Interno)
+            {
                 await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
 
-            await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
+                await ValidarDreUsuarioInterno(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
+            }
+            else
+                await ValidarDreUsuarioExterno(inscricao.PropostaTurmaId, usuarioLogado.CodigoEolUnidade, cancellationToken);
 
             await ValidarEmail(usuarioLogado.Login, usuarioLogado.Email, request.InscricaoDTO.Email, cancellationToken);
 
@@ -54,7 +58,7 @@ namespace SME.ConectaFormacao.Aplicacao
             return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao);
         }
 
-        private async Task MapearCargoFuncao(CancellationToken cancellationToken, Inscricao inscricao)
+        private async Task MapearCargoFuncao(Inscricao inscricao, CancellationToken cancellationToken)
         {
             var codigosFuncoesEol = inscricao.FuncaoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.FuncaoCodigo) } : Enumerable.Empty<long>();
             var codigosCargosEol = inscricao.CargoCodigo.EstaPreenchido() ? new List<long> { long.Parse(inscricao.CargoCodigo) } : Enumerable.Empty<long>();
@@ -109,7 +113,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
         }
 
-        private async Task ValidarDre(long propostaTurmaId, string cargoDreCodigo, string funcaoDreCodigo, CancellationToken cancellationToken)
+        private async Task ValidarDreUsuarioInterno(long propostaTurmaId, string cargoDreCodigo, string funcaoDreCodigo, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId), cancellationToken);
             dres = dres.Where(t => !t.Dre.Todos);
@@ -117,6 +121,20 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 if ((cargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.Dre.Codigo == cargoDreCodigo)) ||
                     (funcaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.Dre.Codigo == funcaoDreCodigo)))
+                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
+            }
+        }
+
+        private async Task ValidarDreUsuarioExterno(long propostaTurmaId, string codigoEolUnidade, CancellationToken cancellationToken)
+        {
+            var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId), cancellationToken);
+            dres = dres.Where(t => !t.Dre.Todos);
+            if (dres.PossuiElementos())
+            {
+                var unidade = await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(codigoEolUnidade), cancellationToken);
+
+                var codigo = unidade.Tipo == Infra.Servicos.Eol.UnidadeEolTipo.Escola ? unidade.CodigoReferencia : unidade.Codigo;
+                if (!dres.Any(t => t.Dre.Codigo == codigo))
                     throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
             }
         }
