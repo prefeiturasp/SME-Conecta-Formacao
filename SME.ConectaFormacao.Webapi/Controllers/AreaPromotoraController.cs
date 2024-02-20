@@ -47,7 +47,6 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterAreaPromotoraPorId.Executar(id));
         }
 
-
         [HttpGet("lista")]
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

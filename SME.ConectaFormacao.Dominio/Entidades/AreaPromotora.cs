@@ -17,5 +17,10 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             Dre = dre;
             DreId = dre?.Id;
         }
+
+        public bool EhDireta()
+        {
+            return Tipo == AreaPromotoraTipo.RedeDireta;
+        }
     }
 }

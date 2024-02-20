@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Infra.Dados;
+using SME.ConectaFormacao.Infra.Servicos.Cache;
 using SME.ConectaFormacao.IoC;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.Webapi.Contexto;
@@ -37,6 +38,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
         {
             _serviceCollection.AddScoped<IConectaFormacaoConexao, ConectaFormacaoConexao>();
             _serviceCollection.AddScoped<ITransacao, Transacao>();
+        }
+
+        protected override void RegistrarCacheDistribuido()
+        {
+            _serviceCollection.AddScoped<ICacheDistribuido, CacheDistribuidoFaker>();
         }
     }
 }

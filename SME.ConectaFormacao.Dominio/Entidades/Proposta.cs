@@ -1,4 +1,5 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
@@ -8,7 +9,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public FormacaoHomologada? FormacaoHomologada { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
         public Formato? Formato { get; set; }
-        public TipoInscricao? TipoInscricao { get; set; }
         public string NomeFormacao { get; set; }
         public short? QuantidadeTurmas { get; set; }
         public short? QuantidadeVagasTurma { get; set; }
@@ -33,8 +33,10 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? DescricaoDaAtividade { get; set; }
         public string? AcaoFormativaTexto { get; set; }
         public string? AcaoFormativaLink { get; set; }
+        public bool? IntegrarNoSGA { get; set; }
 
         public AreaPromotora AreaPromotora { get; set; }
+        public Arquivo ArquivoImagemDivulgacao { get; set; }
         public IEnumerable<PropostaDre> Dres { get; set; }
         public IEnumerable<PropostaPublicoAlvo> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecifica> FuncoesEspecificas { get; set; }
@@ -46,8 +48,28 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaRegente> Regentes { get; set; }
         public IEnumerable<PropostaTutor> Tutores { get; set; }
         public IEnumerable<PropostaTurma> Turmas { get; set; }
+        public IEnumerable<PropostaTurmaDre> TurmasDres { get; set; }
         public IEnumerable<PropostaModalidade> Modalidades { get; set; }
         public IEnumerable<PropostaAnoTurma> AnosTurmas { get; set; }
         public IEnumerable<PropostaComponenteCurricular> ComponentesCurriculares { get; set; }
+        public PropostaMovimentacao Movimentacao { get; set; }
+        public IEnumerable<PropostaTurmaDre> ObterPropostaTurmasDres
+        {
+            get
+            {
+                if (Turmas.EhNulo())
+                    return default;
+
+                return from propostaTurma in Turmas
+                       from dreId in propostaTurma.DresIds
+                       select new PropostaTurmaDre()
+                       {
+                           PropostaTurmaId = propostaTurma.Id,
+                           DreId = dreId
+                       };
+            }
+        }
+        public IEnumerable<PropostaTipoInscricao> TiposInscricao { get; set; }
+
     }
 }

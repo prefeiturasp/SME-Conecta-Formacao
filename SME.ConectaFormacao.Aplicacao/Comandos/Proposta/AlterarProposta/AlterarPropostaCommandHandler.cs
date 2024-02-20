@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Comandos.Proposta.SalvarPropostaDre;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -16,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioProposta _repositorioProposta;
+        private const int DRE_ID_TODOS = 14;
 
         public AlterarPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
         {
@@ -28,12 +28,12 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
-            
+
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
-            
+
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
-            
-            await _mediator.Send(new ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand(request.PropostaDTO.PublicosAlvo, request.PropostaDTO.FuncoesEspecificas, 
+
+            await _mediator.Send(new ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand(request.PropostaDTO.PublicosAlvo, request.PropostaDTO.FuncoesEspecificas,
                 request.PropostaDTO.Modalidades, request.PropostaDTO.AnosTurmas, request.PropostaDTO.ComponentesCurriculares), cancellationToken);
 
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
@@ -43,9 +43,20 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
             propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
 
+            await _mediator.Send(new ValidarAreaPromotoraCommand(propostaDepois.AreaPromotoraId, propostaDepois.IntegrarNoSGA), cancellationToken);
+
             if (request.PropostaDTO.Situacao != SituacaoProposta.Rascunho)
             {
                 var erros = new List<string>();
+                var quantidadeDeTurmasSemInformarDre = request.PropostaDTO.Turmas.Count(x => x.DresIds.Contains(DRE_ID_TODOS));
+                if (quantidadeDeTurmasSemInformarDre > 0)
+                    erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
+
+                var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim));
+
+                if (!string.IsNullOrEmpty(validarDatas))
+                    erros.Add(validarDatas);
+
                 var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
                 if (!string.IsNullOrEmpty(errosRegente))
                     erros.Add(errosRegente);
@@ -75,35 +86,7 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 await _repositorioProposta.Atualizar(propostaDepois);
 
-                await _mediator.Send(new SalvarPropostaPublicoAlvoCommand(request.Id, propostaDepois.PublicosAlvo), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaFuncaoEspecificaCommand(request.Id, propostaDepois.FuncoesEspecificas), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaCriteriosValidacaoInscricaoCommand(request.Id, propostaDepois.CriteriosValidacaoInscricao), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaVagaRemanecenteCommand(request.Id, propostaDepois.VagasRemanecentes), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaPalavraChaveCommand(request.Id, propostaDepois.PalavrasChaves), cancellationToken);
-
-                await _mediator.Send(new SalvarCriterioCertificacaoCommand(request.Id, propostaDepois.CriterioCertificacao), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaDreCommand(request.Id, propostaDepois.Dres), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaTurmaCommand(request.Id, propostaDepois.Turmas), cancellationToken);
-                
-                await _mediator.Send(new SalvarPropostaModalidadeCommand(request.Id, propostaDepois.Modalidades), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaAnoTurmaCommand(request.Id, propostaDepois.AnosTurmas), cancellationToken);
-
-                await _mediator.Send(new SalvarPropostaComponenteCurricularCommand(request.Id, propostaDepois.ComponentesCurriculares), cancellationToken);
-
-                if (proposta.ArquivoImagemDivulgacaoId.GetValueOrDefault() != propostaDepois.ArquivoImagemDivulgacaoId.GetValueOrDefault())
-                {
-                    await _mediator.Send(new ValidarArquivoImagemDivulgacaoPropostaCommand(propostaDepois.ArquivoImagemDivulgacaoId), cancellationToken);
-
-                    if (proposta.ArquivoImagemDivulgacaoId.HasValue)
-                        await _mediator.Send(new RemoverArquivoPorIdCommand(proposta.ArquivoImagemDivulgacaoId.Value), cancellationToken);
-                }
+                await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
 
                 transacao.Commit();
 

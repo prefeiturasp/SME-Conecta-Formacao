@@ -10,12 +10,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string Formato { get; set; }
         public string NomeFormacao { get; set; }
         public long NumeroHomologacao { get; set; }
-        public DateTime? PeriodoRealizacaoInicio { get; set; }
-        public DateTime? PeriodoRealizacaoFim { get; set; }
-        public DateTime? DataRealizacaoInicio { get; set; }
-        public DateTime? DataRealizacaoFim { get; set; }
-        public DateTime? DataInscricaoInicio { get; set; }
-        public DateTime? DataInscricaoFim { get; set; }
+        public string DataRealizacaoInicio { get; set; }
+        public string DataRealizacaoFim { get; set; }
         public string Situacao { get; set; }
         public FormacaoHomologada FormacaoHomologada { get; set; }
     }

@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas
             {
                 regentes = await _repositorioProposta.ObterRegentesPaginado(request.NumeroPagina, request.NumeroRegistros, request.PropostaId);
                 var ids = regentes.Select(t => t.Id).ToArray();
-                
+
                 var turmas = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(ids);
 
                 foreach (var regente in regentes)

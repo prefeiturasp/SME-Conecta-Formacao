@@ -1,7 +1,7 @@
 ﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Dre
 {
-    public class DreDTO : RetornoListagemDTO
+    public class DreDTO : RetornoListagemTodosDTO
     {
-        public bool Todos { get; set; }
+        public string Codigo { get; set; }
     }
 }

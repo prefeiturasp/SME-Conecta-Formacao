@@ -1,19 +1,18 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using Bogus;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.ServicoFake;
-using SME.ConectaFormacao.TesteIntegracao.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.Setup;
-using System.Text.Json;
-using AutoMapper;
-using Bogus;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricularAnoTurma.Mock;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.Setup;
+using System.Text.Json;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricularAnoTurma
@@ -26,7 +25,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
         protected override void RegistrarQueryFakes(IServiceCollection services)
         {
             base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterComponentesCurricularesEAnosTurmaEOLQuery, IEnumerable<ComponenteCurricularAnoTurmaEOLDTO>>), typeof(ObterComponentesCurricularesEAnoTurmaEOLQueryFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterComponentesCurricularesEAnosTurmaEOLQuery, IEnumerable<ComponenteCurricularAnoTurmaServicoEol>>), typeof(ObterComponentesCurricularesEAnoTurmaEOLQueryFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<PublicarNaFilaRabbitCommand, bool>), typeof(PublicarNaFilaRabbitCommandFake), ServiceLifetime.Scoped));
         }
 
@@ -47,7 +46,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             ValidacaoAnoTurmaComponente(componenteCurricularAnoTurmaMock);
         }
 
-       [Fact(DisplayName = "Componente Curricular e Ano da Turma - Deve atualizar nome do componente curricular e a descrição do ano da turma")]
+        [Fact(DisplayName = "Componente Curricular e Ano da Turma - Deve atualizar nome do componente curricular e a descrição do ano da turma")]
         public async Task Deve_alterar_nome_do_componentes_e_descricao_do_ano_turma()
         {
             // arrange
@@ -55,14 +54,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             var faker = new Faker();
             var componenteCurricularAnoTurmaMock = ComponenteCurricularAnoTurmaMock.GerarLista();
             var anoTurmaId = 1;
-            
+
             foreach (var componenteAnoTurmaEol in componenteCurricularAnoTurmaMock)
             {
                 var anoTurma = mapper.Map<Dominio.Entidades.AnoTurma>(componenteAnoTurmaEol);
                 anoTurma.AnoLetivo = DateTimeExtension.HorarioBrasilia().Year;
                 GerarAuditoria(anoTurma);
                 await InserirNaBase(anoTurma);
-                
+
                 var componente = mapper.Map<Dominio.Entidades.ComponenteCurricular>(componenteAnoTurmaEol);
                 componente.AnoTurmaId = anoTurmaId;
                 GerarAuditoria(componente);
@@ -78,11 +77,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             {
                 //Modificando o nome do componente - a descrição (eol) do componente_curricular (nome)
                 componentesEAnoTurma.DescricaoComponenteCurricular = faker.Lorem.Text().Limite(70);
-                
+
                 //Modificando a série ensino (eol) do ano_turma (descrição) 
                 componentesEAnoTurma.DescricaoSerieEnsino = $"{faker.Random.Int(min: 1, max: 9)}º {faker.Lorem.Text().Limite(15)}";
             }
-            
+
             var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase>();
 
             // act 
@@ -93,8 +92,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             retorno.ShouldBeTrue();
             ValidacaoAnoTurmaComponente(componenteCurricularAnoTurmaMock);
         }
-       
-        private void ValidacaoAnoTurmaComponente(IEnumerable<ComponenteCurricularAnoTurmaEOLDTO> componenteCurricularAnoTurmaMock)
+
+        private void ValidacaoAnoTurmaComponente(IEnumerable<ComponenteCurricularAnoTurmaServicoEol> componenteCurricularAnoTurmaMock)
         {
             var anoAtual = DateTimeExtension.HorarioBrasilia().Year;
             var anosTurma = ObterTodos<Dominio.Entidades.AnoTurma>();
@@ -121,7 +120,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
             }
         }
 
-        private void GerarAuditoria<T>(T entidade) where T: EntidadeBaseAuditavel
+        private void GerarAuditoria<T>(T entidade) where T : EntidadeBaseAuditavel
         {
             entidade.CriadoEm = DateTimeExtension.HorarioBrasilia();
             entidade.CriadoPor = "Sistema";

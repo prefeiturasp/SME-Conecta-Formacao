@@ -1,35 +1,36 @@
 using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
 public class ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase : CasoDeUsoAbstrato, IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase
 {
     private readonly IMapper _mapper;
-    public ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase(IMediator mediator,IMapper mapper) : base(mediator)
+    public ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase(IMediator mediator, IMapper mapper) : base(mediator)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public async Task<bool> Executar(MensagemRabbit param)
     {
-        var anoLetivo = param.Mensagem.EhNulo() ?  DateTimeExtension.HorarioBrasilia().Year : param.ObterObjetoMensagem<AnoLetivoDTO>().AnoLetivo;
-        
+        var anoLetivo = param.Mensagem.EhNulo() ? DateTimeExtension.HorarioBrasilia().Year : param.ObterObjetoMensagem<AnoLetivoDTO>().AnoLetivo;
+
         var componentesCurricularesEAnoTurmaEOL = await mediator.Send(new ObterComponentesCurricularesEAnosTurmaEOLQuery(anoLetivo));
 
-        var anosTurmaConecta = (await mediator.Send(new ObterTodosOsAnosTurmaPorAnoLetivoQuery(anoLetivo))).ToList(); 
-            
+        var anosTurmaConecta = (await mediator.Send(new ObterTodosOsAnosTurmaPorAnoLetivoQuery(anoLetivo))).ToList();
+
         var componentesConecta = await mediator.Send(new ObterTodosOsComponentesCurricularesPorAnoLetivoQuery(anoLetivo));
-        
+
         foreach (var componenteEAnoTurma in componentesCurricularesEAnoTurmaEOL)
         {
             var anoTurmaExistente = ObterAnoTurma(anosTurmaConecta, componenteEAnoTurma, anoLetivo);
-            
+
             var anoTurmaId = await InserirOuAtualizarAnoTurma(anoTurmaExistente, componenteEAnoTurma, anoLetivo, anosTurmaConecta);
 
             await InserirOuAtualizarComponenteCurricular(componentesConecta, anoTurmaExistente, componenteEAnoTurma, anoTurmaId);
@@ -38,7 +39,7 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase : 
     }
 
     private async Task InserirOuAtualizarComponenteCurricular(IEnumerable<ComponenteCurricular> componentesConecta, AnoTurma anoTurmaExistente,
-        ComponenteCurricularAnoTurmaEOLDTO componenteEAnoTurma, long anoTurmaId)
+        ComponenteCurricularAnoTurmaServicoEol componenteEAnoTurma, long anoTurmaId)
     {
         var componenteCurricular = componentesConecta.LastOrDefault(w => w.AnoTurmaId == anoTurmaExistente?.Id && w.CodigoEOL == componenteEAnoTurma.CodigoComponenteCurricular);
 
@@ -57,7 +58,7 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase : 
         await mediator.Send(new InserirComponenteCurricularCommand(componenteCurricular));
     }
 
-    private async Task<long> InserirOuAtualizarAnoTurma(AnoTurma anoTurmaExistente, ComponenteCurricularAnoTurmaEOLDTO componenteEAnoTurma, int anoLetivo, List<AnoTurma> anosTurmaConecta)
+    private async Task<long> InserirOuAtualizarAnoTurma(AnoTurma anoTurmaExistente, ComponenteCurricularAnoTurmaServicoEol componenteEAnoTurma, int anoLetivo, List<AnoTurma> anosTurmaConecta)
     {
         if (anoTurmaExistente.EhNulo())
         {
@@ -67,7 +68,7 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase : 
             anosTurmaConecta.Add(anoTurma);
             return anoTurmaId;
         }
-        
+
         if (!anoTurmaExistente.Descricao.Equals(componenteEAnoTurma.DescricaoSerieEnsino) ||
             !anoTurmaExistente.Modalidade.Equals(componenteEAnoTurma.Modalidade) ||
             !anoTurmaExistente.CodigoEOL.Equals(componenteEAnoTurma.CodigoAnoTurma))
@@ -82,9 +83,9 @@ public class ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase : 
         return anoTurmaExistente.Id;
     }
 
-    private AnoTurma ObterAnoTurma(IEnumerable<AnoTurma> anosTurmaConecta, ComponenteCurricularAnoTurmaEOLDTO componenteEAno, int anoLetivo)
+    private AnoTurma ObterAnoTurma(IEnumerable<AnoTurma> anosTurmaConecta, ComponenteCurricularAnoTurmaServicoEol componenteEAno, int anoLetivo)
     {
-        var anoTurmaRetornado = anosTurmaConecta.Where(a=> a.AnoLetivo == anoLetivo
+        var anoTurmaRetornado = anosTurmaConecta.Where(a => a.AnoLetivo == anoLetivo
                                                            && a.CodigoSerieEnsino == componenteEAno.CodigoSerieEnsino);
         return anoTurmaRetornado.Any() ? anoTurmaRetornado.LastOrDefault() : default;
     }

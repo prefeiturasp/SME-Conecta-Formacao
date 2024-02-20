@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -12,14 +14,20 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
+        private readonly ICacheDistribuido _cacheDistribuido;
 
-        public InserirAreaPromotoraCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioAreaPromotora repositorioAreaPromotora)
+        public InserirAreaPromotoraCommandHandler(
+            IMediator mediator,
+            IMapper mapper,
+            ITransacao transacao,
+            IRepositorioAreaPromotora repositorioAreaPromotora,
+            ICacheDistribuido cacheDistribuido)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
-
+            _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
         }
 
         public async Task<long> Handle(InserirAreaPromotoraCommand request, CancellationToken cancellationToken)
@@ -44,6 +52,8 @@ namespace SME.ConectaFormacao.Aplicacao
                     await _repositorioAreaPromotora.InserirTelefones(transacao, id, areaPromotora.Telefones);
 
                 transacao.Commit();
+
+                await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.AreaPromotora);
 
                 return id;
             }

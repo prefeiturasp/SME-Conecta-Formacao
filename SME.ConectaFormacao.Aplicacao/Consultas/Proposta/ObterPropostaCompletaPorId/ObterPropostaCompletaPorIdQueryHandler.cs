@@ -38,6 +38,10 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.ComponentesCurriculares = await _repositorioProposta.ObterComponentesCurricularesPorId(request.Id);
             proposta.CriterioCertificacao = await _repositorioProposta.ObterCriterioCertificacaoPorPropostaId(request.Id);
             proposta.Turmas = await _repositorioProposta.ObterTurmasPorId(request.Id);
+            proposta.TiposInscricao = await _repositorioProposta.ObterTiposInscricaoPorId(request.Id);
+
+            foreach (var turma in proposta.Turmas)
+                turma.Dres = await _repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(turma.Id);
 
             var propostaCompletaDTO = _mapper.Map<PropostaCompletoDTO>(proposta);
             propostaCompletaDTO.Auditoria = _mapper.Map<AuditoriaDTO>(proposta);

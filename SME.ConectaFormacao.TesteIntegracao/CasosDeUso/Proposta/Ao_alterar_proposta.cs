@@ -97,9 +97,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
         }
 
         [Fact(DisplayName = "Proposta - Deve alterar proposta válida")]
@@ -162,9 +164,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção para campos obrigatórios")]
@@ -263,9 +267,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
             ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção quando o tipo de formação for curso e formato hibrido")]
@@ -465,14 +471,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             id.ShouldBeGreaterThan(0);
 
             ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(publicosAlvoDTO, id);
-            ValidarPropostaVagaRemanecenteDTO(vagasRemanecentesDTO, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(criteriosDTO, id);
-            ValidarPropostaPalavrasChavesDTO(palavrasChavesDTO, id);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, id);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção quando critério validação inscrição outros estiver habilitado")]
@@ -603,14 +612,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             id.ShouldBeGreaterThan(0);
 
             ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(publicosAlvoDTO, id);
-            ValidarPropostaVagaRemanecenteDTO(vagasRemanecentesDTO, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(criteriosDTO, id);
-            ValidarPropostaPalavrasChavesDTO(palavrasChavesDTO, id);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaCriterioCertificacaoDTO(propostaDTO.CriterioCertificacao, id);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
         }
 
         [Fact(DisplayName = "Proposta - Não deve alterar quando os campos Público Alvo, Funções Específicas, Modalidade, Ano Turma e Componente Curricular não forem preenchidos")]
@@ -802,14 +814,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             id.ShouldBeGreaterThan(0);
 
             ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(publicosAlvoDTO, id);
-            ValidarPropostaVagaRemanecenteDTO(vagasRemanecentesDTO, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(criteriosDTO, id);
-            ValidarPropostaPalavrasChavesDTO(palavrasChavesDTO, id);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaCriterioCertificacaoDTO(propostaDTO.CriterioCertificacao, id);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
         }
 
         [Fact(DisplayName = "Proposta - Deve alterar quando for preenchido somente Funções Específicas e os campos: Público Alvo, Modalidade, Ano da Turma e Componente Curricular omitidos")]
@@ -875,14 +890,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             id.ShouldBeGreaterThan(0);
 
             ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(publicosAlvoDTO, id);
-            ValidarPropostaVagaRemanecenteDTO(vagasRemanecentesDTO, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(criteriosDTO, id);
-            ValidarPropostaPalavrasChavesDTO(palavrasChavesDTO, id);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaCriterioCertificacaoDTO(propostaDTO.CriterioCertificacao, id);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
         }
 
         [Fact(DisplayName = "Proposta - Deve alterar quando for preenchido somente Modalidade, Ano Turma e Componente Curricular e os campos: Público Alvo e Funções Específicas omitidos")]
@@ -948,14 +966,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             id.ShouldBeGreaterThan(0);
 
             ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(publicosAlvoDTO, id);
-            ValidarPropostaVagaRemanecenteDTO(vagasRemanecentesDTO, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(criteriosDTO, id);
-            ValidarPropostaPalavrasChavesDTO(palavrasChavesDTO, id);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
+            ValidarPropostaCriterioCertificacaoDTO(propostaDTO.CriterioCertificacao, id);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
             ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
             ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
         }
     }
 }

@@ -1,17 +1,17 @@
 using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
 public class TrataSincronizacaoInstitucionalDreCommand : IRequest<bool>
 {
-    public TrataSincronizacaoInstitucionalDreCommand(DreNomeAbreviacaoDTO nomeAbreviacaoDto)
+    public TrataSincronizacaoInstitucionalDreCommand(DreServicoEol nomeAbreviacaoDto)
     {
         NomeAbreviacaoDto = nomeAbreviacaoDto;
     }
 
-    public DreNomeAbreviacaoDTO NomeAbreviacaoDto { get; set; }
+    public DreServicoEol NomeAbreviacaoDto { get; set; }
 }
 
 public class TrataSincronizacaoInstitucionalDreCommandValidator : AbstractValidator<TrataSincronizacaoInstitucionalDreCommand>

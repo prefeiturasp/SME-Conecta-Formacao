@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.DTOS;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
@@ -342,6 +343,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromRoute] long propostaId)
         {
             return Ok(await useCase.Executar(propostaId));
+        }
+
+        [HttpGet("dashboard")]
+        [ProducesResponseType(typeof(IEnumerable<PropostaDashboardDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
+        public async Task<IActionResult> ObterPropostasDashboard([FromQuery] PropostaFiltrosDashboardDTO filtro,
+        [FromServices] ICasoDeUsoObterPropostasDashboard useCase)
+        {
+            return Ok(await useCase.Executar(filtro));
         }
     }
 }

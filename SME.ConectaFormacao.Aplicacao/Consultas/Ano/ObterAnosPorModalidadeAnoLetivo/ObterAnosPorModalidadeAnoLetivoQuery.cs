@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(x => x.Modalidade)
                 .NotEmpty()
                 .WithMessage("É necessário informar a modalidade para obter os componentes curriculares");
-            
+
             RuleFor(x => x.AnoLetivo)
                 .NotEmpty()
                 .WithMessage("É necessário informar o ano letivo para obter os componentes curriculares");

@@ -16,20 +16,33 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<long> Executar(PropostaDTO propostaDTO)
         {
+            var grupoUsuarioLogadoId = await mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
+            var dres = await mediator.Send(ObterDresUsuarioLogadoQuery.Instancia());
+
+            var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorGrupoIdEDresQuery(grupoUsuarioLogadoId, dres)) ??
+                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO, System.Net.HttpStatusCode.NotFound);
+
             var comunicado = await ObterComunicaddoParametroSistema();
             propostaDTO.AcaoFormativaTexto = comunicado.Descricao;
             propostaDTO.AcaoFormativaLink = comunicado.Url;
 
-            var grupoUsuarioLogadoId = await mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
-            var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorGrupoIdQuery(grupoUsuarioLogadoId)) ??
-                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO, System.Net.HttpStatusCode.NotFound);
-
+            long propostaId;
             if (propostaDTO.Situacao == SituacaoProposta.Rascunho)
-                return await mediator.Send(new InserirPropostaRascunhoCommand(areaPromotora.Id, propostaDTO));
+            {
+                propostaId = await mediator.Send(new InserirPropostaRascunhoCommand(areaPromotora.Id, propostaDTO));
+                await SalvarMovimentacao(propostaId, propostaDTO.Situacao);
+                return propostaId;
+            }
 
-            return await mediator.Send(new InserirPropostaCommand(areaPromotora.Id, propostaDTO));
+            propostaId = await mediator.Send(new InserirPropostaCommand(areaPromotora.Id, propostaDTO));
+            await SalvarMovimentacao(propostaId, propostaDTO.Situacao);
+            return propostaId;
         }
 
+        private async Task SalvarMovimentacao(long propostaId, SituacaoProposta situacao)
+        {
+            await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
+        }
         private async Task<ComunicadoAcaoFormativaDTO> ObterComunicaddoParametroSistema()
         {
             var comunicadoAcaoFormativaTexto = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.ComunicadoAcaoFormativaDescricao, DateTimeExtension.HorarioBrasilia().Year));

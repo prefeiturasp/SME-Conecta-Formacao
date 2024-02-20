@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public FormacaoHomologada? FormacaoHomologada { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
         public Formato? Formato { get; set; }
-        public TipoInscricao? TipoInscricao { get; set; }
+
         [MaxLength(150, ErrorMessage = "O nome da formação não pode conter mais que 150 caracteres")]
         public string? NomeFormacao { get; set; }
         public short? QuantidadeTurmas { get; set; }
@@ -34,6 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? DescricaoDaAtividade { get; set; }
         public string? AcaoFormativaTexto { get; set; }
         public string? AcaoFormativaLink { get; set; }
+        public bool? IntegrarNoSGA { get; set; }
 
         public IEnumerable<PropostaDreDTO> Dres { get; set; }
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
@@ -44,9 +45,10 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaPalavraChaveDTO> PalavrasChaves { get; set; }
         public IEnumerable<CriterioCertificacaoDTO> CriterioCertificacao { get; set; }
         public IEnumerable<PropostaTurmaDTO> Turmas { get; set; }
-        
+
         public IEnumerable<PropostaModalidadeDTO> Modalidades { get; set; }
         public IEnumerable<PropostaAnoTurmaDTO> AnosTurmas { get; set; }
         public IEnumerable<PropostaComponenteCurricularDTO> ComponentesCurriculares { get; set; }
+        public IEnumerable<PropostaTipoInscricaoDTO> TiposInscricao { get; set; }
     }
 }

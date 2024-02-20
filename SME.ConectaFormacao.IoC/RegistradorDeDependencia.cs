@@ -15,10 +15,14 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.FuncionarioExterno.ObterFuncionarioExternoPorCpf;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ano;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
@@ -27,10 +31,14 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.FuncionarioExterno.ObterFuncionarioExternoPorCpf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Modalidade;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Ue;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Aplicacao.Pipelines;
@@ -39,6 +47,7 @@ using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
+using SME.ConectaFormacao.Infra.Servicos.CacheDistribuido.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Options;
@@ -75,9 +84,15 @@ public class RegistradorDeDependencia
         RegistrarProfiles();
         RegistrarHttpClients();
         RegistrarServicoArmazenamento();
+        RegistrarCacheDistribuido();
     }
 
-    private void RegistrarServicoArmazenamento()
+    protected virtual void RegistrarCacheDistribuido()
+    {
+        _serviceCollection.ConfigurarCacheDistribuidoRedis(_configuration);
+    }
+
+    protected virtual void RegistrarServicoArmazenamento()
     {
         _serviceCollection.ConfigurarArmazenamento(_configuration);
     }
@@ -143,6 +158,7 @@ public class RegistradorDeDependencia
             config.AddMap(new CriterioValidacaoInscricaoMap());
             config.AddMap(new RoteiroPropostaFormativaMap());
             config.AddMap(new CargoFuncaoMap());
+            config.AddMap(new CargoFuncaoDeparaEolMap());
             config.AddMap(new PalavraChaveMap());
             config.AddMap(new CriterioCertificacaoMap());
 
@@ -162,9 +178,13 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaTutorMap());
             config.AddMap(new PropostaMovimentacaoMap());
             config.AddMap(new PropostaTurmaMap());
+            config.AddMap(new PropostaTurmaDreMap());
             config.AddMap(new PropostaModalidadeMap());
             config.AddMap(new PropostaAnoTurmaMap());
+            config.AddMap(new PropostaTurmaVagaMap());
             config.AddMap(new PropostaComponenteCurricularMap());
+            config.AddMap(new PropostaDreMap());
+            config.AddMap(new PropostaTipoInscricaoMap());
 
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
@@ -173,9 +193,10 @@ public class RegistradorDeDependencia
 
             config.AddMap(new ParametroSistemaMap());
             config.AddMap(new DreMap());
-            config.AddMap(new PropostaDreMap());
+
             config.AddMap(new AnoTurmaMap());
             config.AddMap(new ComponenteCurricularMap());
+            config.AddMap(new InscricaoMap());
 
             config.ForDommel();
         });
@@ -220,6 +241,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaMovimentacao, RepositorioPropostaMovimentacao>();
         _serviceCollection.TryAddScoped<IRepositorioAnoTurma, RepositorioAnoTurma>();
         _serviceCollection.TryAddScoped<IRepositorioComponenteCurricular, RepositorioComponenteCurricular>();
+        _serviceCollection.TryAddScoped<IRepositorioCargoFuncaoDeparaEol, RepositorioCargoFuncaoDeparaEol>();
+        _serviceCollection.TryAddScoped<IRepositorioInscricao, RepositorioInscricao>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -231,9 +254,12 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioMeusDados, CasoDeUsoUsuarioMeusDados>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarEmail, CasoDeUsoUsuarioAlterarEmail>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarSenha, CasoDeUsoUsuarioAlterarSenha>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoInserirUsuarioExterno, CasoDeUsoInserirUsuarioExterno>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoReenviarEmail, CasoDeUsoReenviarEmail>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioSolicitarRecuperacaoSenha, CasoDeUsoUsuarioSolicitarRecuperacaoSenha>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioValidarTokenRecuperacaoSenha, CasoDeUsoUsuarioValidarTokenRecuperacaoSenha>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioValidacaoSenhaToken, CasoDeUsoUsuarioValidacaoSenhaToken>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioValidacaoEmailToken, CasoDeUsoUsuarioValidacaoEmailToken>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioRecuperarSenha, CasoDeUsoUsuarioRecuperarSenha>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>();
@@ -250,6 +276,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoAlterarAreaPromotora, CasoDeUsoAlterarAreaPromotora>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverAreaPromotora, CasoDeUsoRemoverAreaPromotora>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraLista, CasoDeUsoObterAreaPromotoraLista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraListaAreaPublica, CasoDeUsoObterAreaPromotoraListaAreaPublica>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoFormacao, CasoDeUsoObterTipoFormacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoInscricao, CasoDeUsoObterTipoInscricao>();
@@ -275,6 +302,9 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaTutorPaginacao, CasoDeUsoObterPropostaTutorPaginacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaTutorPorId, CasoDeUsoObterPropostaTutorPorId>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterUnidadePorCodigoEol, CasoDeUsoObterUnidadePorCodigoEol>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterFuncionarioExternoPorCpf, CasoDeUsoObterFuncionarioExternoPorCpf>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostasDashboard, CasoDeUsoObterPropostasDashboard>();
 
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
@@ -292,13 +322,33 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerProposta, CasoDeUsoObterParecerProposta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoHomologada, CasoDeUsoObterFormacaoHomologada>();
-        
+
         _serviceCollection.TryAddScoped<ICasoDeUsoObterListaComponentesCurriculares, CasoDeUsoObterListaComponentesCurriculares>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterListaAnoTurma, CasoDeUsoObterListaAnoTurma>();
-        
+
         _serviceCollection.TryAddScoped<IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase, ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterModalidade, CasoDeUsoObterModalidade>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTodosFormatos, CasoDeUsoObterTodosFormatos>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterListagemFormacaoPaginada, CasoDeUsoObterListagemFormacaoPaginada>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoDetalhada, CasoDeUsoObterFormacaoDetalhada>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosInscricao, CasoDeUsoObterDadosInscricao>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoGerarPropostaTurmaVaga, CasoDeUsoGerarPropostaTurmaVaga>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoSalvarInscricao, CasoDeUsoSalvarInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoCancelarInscricao, CasoDeUsoCancelarInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPorId, CasoDeUsoObterInscricaoPorId>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTurmasInscricao, CasoDeUsoObterTurmasInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPaginada, CasoDeUsoObterInscricaoPaginada>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosPaginadosComFiltros, CasoDeUsoObterDadosPaginadosComFiltros>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomatica, CasoDeUsoRealizarInscricaoAutomatica>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratarTurmas, CasoDeUsoRealizarInscricaoAutomaticaTratarTurmas>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista, CasoDeUsoRealizarInscricaoAutomaticaTratarCursista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaInscreverCursista, CasoDeUsoRealizarInscricaoAutomaticaInscreverCursista>();
     }
 
     protected virtual void RegistrarHttpClients()

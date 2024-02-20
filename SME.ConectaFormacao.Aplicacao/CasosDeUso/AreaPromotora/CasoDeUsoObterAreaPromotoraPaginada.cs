@@ -2,21 +2,19 @@
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
+using SME.ConectaFormacao.Dominio.Contexto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora
 {
-    public class CasoDeUsoObterAreaPromotoraPaginada : CasoDeUsoAbstrato, ICasoDeUsoObterAreaPromotoraPaginada
+    public class CasoDeUsoObterAreaPromotoraPaginada : CasoDeUsoAbstratoPaginado, ICasoDeUsoObterAreaPromotoraPaginada
     {
-        public CasoDeUsoObterAreaPromotoraPaginada(IMediator mediator) : base(mediator)
+        public CasoDeUsoObterAreaPromotoraPaginada(IMediator mediator, IContextoAplicacao contextoAplicacao) : base(mediator, contextoAplicacao)
         {
         }
 
         public async Task<PaginacaoResultadoDTO<AreaPromotoraPaginadaDTO>> Executar(AreaPromotoraFiltrosDTO filtrosAreaPromotoraDTO)
         {
-            int numeroPagina = int.TryParse(await mediator.Send(new ObterVariavelContextoAplicacaoQuery("NumeroPagina")), out numeroPagina) ? numeroPagina : 1;
-            int numeroRegistros = int.TryParse(await mediator.Send(new ObterVariavelContextoAplicacaoQuery("NumeroRegistros")), out numeroRegistros) ? numeroRegistros : 10;
-
-            return await mediator.Send(new ObterAreasPromotorasPaginadasQuery(filtrosAreaPromotoraDTO, numeroPagina, numeroRegistros));
+            return await mediator.Send(new ObterAreasPromotorasPaginadasQuery(filtrosAreaPromotoraDTO, NumeroPagina, NumeroRegistros));
         }
     }
 }

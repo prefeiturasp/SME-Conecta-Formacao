@@ -14,6 +14,6 @@ public class InserirComponenteCurricularCommandHandler : IRequestHandler<Inserir
 
     public async Task<long> Handle(InserirComponenteCurricularCommand request, CancellationToken cancellationToken)
     {
-       return await _repositorioComponenteCurricular.Inserir(request.ComponenteCurricular);
+        return await _repositorioComponenteCurricular.Inserir(request.ComponenteCurricular);
     }
 }

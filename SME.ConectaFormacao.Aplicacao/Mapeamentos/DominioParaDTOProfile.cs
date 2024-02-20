@@ -6,13 +6,16 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Dtos.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using SME.ConectaFormacao.Infra.Servicos.Eol.Dto;
+using SME.ConectaFormacao.Dominio.ObjetosDeValor;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
@@ -51,7 +54,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<Dre, DreDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
 
-            CreateMap<Dre, DreNomeAbreviacaoDTO>().ReverseMap();
+            CreateMap<Dre, DreServicoEol>().ReverseMap();
 
             CreateMap<CriterioCertificacao, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Descricao));
@@ -89,7 +92,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.TipoFormacao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
                 .ForMember(dest => dest.Formato, opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(x => x.Situacao.Nome()))
-                .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(x => x.AreaPromotora.Nome));
+                .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(x => x.AreaPromotora.Nome))
+                .ForMember(dest => dest.DataRealizacaoInicio, opt => opt.MapFrom(x => x.DataRealizacaoInicio.HasValue ? x.DataRealizacaoInicio.Value.ToString("dd/MM/yyyy") : string.Empty))
+                .ForMember(dest => dest.DataRealizacaoFim, opt => opt.MapFrom(x => x.DataRealizacaoFim.HasValue ? x.DataRealizacaoFim.Value.ToString("dd/MM/yyyy") : string.Empty));
 
             CreateMap<Arquivo, PropostaImagemDivulgacaoDTO>()
                 .ForMember(dest => dest.ArquivoId, opt => opt.MapFrom(x => x.Id));
@@ -124,28 +129,107 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<PropostaDre, PropostaDreDTO>().ReverseMap();
 
+            CreateMap<PropostaTipoInscricao, PropostaTipoInscricaoDTO>().ReverseMap();
+
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
 
             CreateMap<PropostaMovimentacao, PropostaMovimentacaoDTO>().ReverseMap();
-            
+
             CreateMap<AnoTurma, RetornoListagemTodosDTO>().ReverseMap();
             CreateMap<AnoTurma, AnoTurmaDTO>().ReverseMap();
-            CreateMap<ComponenteCurricular, RetornoListagemTodosDTO>().ReverseMap();
+            CreateMap<ComponenteCurricular, RetornoListagemTodosDTO>()
+                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome))
+                .ReverseMap();
 
-            CreateMap<PropostaTurma,  PropostaTurmaDTO>().ReverseMap();
+            CreateMap<PropostaTurma, PropostaTurmaDTO>()
+                .ReverseMap();
+
+            CreateMap<PropostaTurmaDre, PropostaTurmaDreDTO>()
+                .ForMember(dest => dest.DreNome, opt => opt.MapFrom(o => o.Dre.Nome))
+                .ReverseMap();
+
+            CreateMap<PropostaTurma, PropostaTurmaCompletoDTO>()
+                .ReverseMap();
+
+            CreateMap<PropostaTurmaDre, PropostaTurmaDreCompletoDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Dre.Nome))
+                .ReverseMap();
 
             CreateMap<PropostaTurma, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome));
             CreateMap<ComponenteCurricular, ComponenteCurricularDTO>().ReverseMap();
-            CreateMap<AnoTurma, ComponenteCurricularAnoTurmaEOLDTO>()
+            CreateMap<AnoTurma, ComponenteCurricularAnoTurmaServicoEol>()
                 .ForMember(dest => dest.CodigoAnoTurma, opt => opt.MapFrom(o => o.CodigoEOL))
                 .ForMember(dest => dest.DescricaoSerieEnsino, opt => opt.MapFrom(o => o.Descricao))
                 .ReverseMap();
-            CreateMap<ComponenteCurricular, ComponenteCurricularAnoTurmaEOLDTO>()
+            CreateMap<ComponenteCurricular, ComponenteCurricularAnoTurmaServicoEol>()
                 .ForMember(dest => dest.CodigoComponenteCurricular, opt => opt.MapFrom(o => o.CodigoEOL))
                 .ForMember(dest => dest.DescricaoComponenteCurricular, opt => opt.MapFrom(o => o.Nome))
                 .ReverseMap();
+
+            CreateMap<Proposta, RetornoListagemFormacaoDTO>()
+                .ForMember(dest => dest.Titulo, opt => opt.MapFrom(o => o.NomeFormacao))
+                .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(o => o.AreaPromotora.Nome))
+                .ForMember(dest => dest.TipoFormacaoDescricao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
+                .ForMember(dest => dest.FormatoDescricao, opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
+                .ForMember(dest => dest.InscricaoEncerrada, opt => opt.MapFrom(o => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim))
+                .ForMember(dest => dest.Periodo, opt => opt.MapFrom(o => $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"));
+
+            CreateMap<FormacaoDetalhada, RetornoFormacaoDetalhadaDTO>()
+                .ForMember(dest => dest.Titulo, opt => opt.MapFrom(x => x.NomeFormacao))
+                .ForMember(dest => dest.Justificativa, opt => opt.MapFrom(x => x.Justificativa.RemoverTagsHtml()))
+                .ForMember(dest => dest.TipoFormacaoDescricao,
+                    opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
+                .ForMember(dest => dest.FormatoDescricao,
+                    opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
+                .ForMember(dest => dest.DataInscricaoFim, opt => opt.MapFrom(o => o.DataInscricaoFim))
+                .ForMember(dest => dest.Periodo,
+                    opt => opt.MapFrom(o =>
+                        $"De {o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"));
+
+            CreateMap<FormacaoTurma, RetornoTurmaDetalheDTO>()
+                .ForMember(dest => dest.Horario,
+                    opt => opt.MapFrom(o => $"{o.HoraInicio} até {o.HoraFim}"))
+                .ForMember(dest => dest.Periodos,
+                    opt =>
+                        opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"De {s.DataInicio:dd/MM} até {s.DataFim.Value:dd/MM}" : $"{s.DataInicio:dd/MM}")));
+
+            CreateMap<Inscricao, InscricaoDTO>().ReverseMap();
+
+            CreateMap<Inscricao, InscricaoAutomaticaDTO>().ReverseMap();
+
+            CreateMap<CursistaServicoEol, CursistaServicoEol>().ReverseMap();
+
+            CreateMap<Usuario, InscricaoAutomaticaDTO>()
+                .ForMember(dest => dest.UsuarioRf, opt => opt.MapFrom(o => o.Login))
+                .ForMember(dest => dest.UsuarioNome, opt => opt.MapFrom(o => o.Nome))
+                .ForMember(dest => dest.UsuarioCpf, opt => opt.MapFrom(o => o.Cpf))
+                .ReverseMap()
+                .ForMember(dest => dest.Tipo, opt => opt.MapFrom(o => TipoUsuario.Interno))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => SituacaoCadastroUsuario.Ativo));
+
+            CreateMap<Inscricao, InscricaoPaginadaDTO>()
+                .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.Id))
+                .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.NomeFormacao))
+                .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
+                .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => $"{o.PropostaTurma.Proposta.DataRealizacaoInicio.Value:dd/MM/yyyy} até {o.PropostaTurma.Proposta.DataRealizacaoFim.Value:dd/MM/yyyy}"))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()))
+                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao == Dominio.Enumerados.SituacaoInscricao.Confirmada && o.PropostaTurma.Proposta.DataRealizacaoInicio.Value > DateTimeExtension.HorarioBrasilia()));
+
+            CreateMap<Inscricao, DadosListagemInscricaoDTO>()
+                .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
+                .ForMember(dest => dest.NomeCursista, opt => opt.MapFrom(o => o.Usuario.Nome))
+                .ForMember(dest => dest.RegistroFuncional, opt => opt.MapFrom(o => o.Usuario.Login))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Usuario.Cpf))
+                .ForMember(dest => dest.CargoFuncao, opt => opt.MapFrom(o => o.Funcao.Nome))
+                .ForMember(dest => dest.SituacaoCodigo, opt => opt.MapFrom(o => o.Situacao))
+                .ForMember(dest => dest.InscricaoId, opt => opt.MapFrom(o => o.Id))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()));
+            CreateMap<Proposta, DadosListagemFormacaoComTurmaDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(o => o.Id))
+                .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.NomeFormacao))
+                .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
         }
     }
 }

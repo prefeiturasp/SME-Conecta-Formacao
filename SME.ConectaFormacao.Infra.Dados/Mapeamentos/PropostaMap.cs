@@ -11,7 +11,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.AreaPromotoraId).ToColumn("area_promotora_id");
             Map(c => c.TipoFormacao).ToColumn("tipo_formacao");
             Map(c => c.Formato).ToColumn("formato");
-            Map(c => c.TipoInscricao).ToColumn("tipo_inscricao");
             Map(c => c.NomeFormacao).ToColumn("nome_formacao");
             Map(c => c.QuantidadeTurmas).ToColumn("quantidade_turmas");
             Map(c => c.QuantidadeVagasTurma).ToColumn("quantidade_vagas_turma");
@@ -37,6 +36,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.AcaoFormativaLink).ToColumn("acao_formativa_link");
             Map(t => t.DescricaoDaAtividade).ToColumn("descricao_atividade");
             Map(t => t.FormacaoHomologada).ToColumn("formacao_homologada");
+            Map(t => t.IntegrarNoSGA).ToColumn("integrar_no_sga");
         }
     }
 }
