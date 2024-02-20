@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SME.ConectaFormacao.Dominio\SME.ConectaFormacao.Dominio.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.0.123" />
+      <PackageReference Include="Dapper.FluentMap.Dommel" Version="2.0.0" />
+      <PackageReference Include="Dommel" Version="3.0.0" />      
+      <PackageReference Include="Npgsql" Version="6.0.9" />
+    </ItemGroup>
+</Project>
