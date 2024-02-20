@@ -1,0 +1,29 @@
+﻿using MediatR;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+
+namespace SME.ConectaFormacao.Aplicacao
+{
+    public class ValidarFuncaoEspecificaOutrosCommandHandler : IRequestHandler<ValidarFuncaoEspecificaOutrosCommand>
+    {
+        private readonly IRepositorioCargoFuncao _repositorioCargoFuncao;
+
+        public ValidarFuncaoEspecificaOutrosCommandHandler(IRepositorioCargoFuncao repositorioCargoFuncao)
+        {
+            _repositorioCargoFuncao = repositorioCargoFuncao ?? throw new ArgumentNullException(nameof(repositorioCargoFuncao));
+        }
+
+        public async Task Handle(ValidarFuncaoEspecificaOutrosCommand request, CancellationToken cancellationToken)
+        {
+            if (request.PropostaFuncoesEspecificas != null && request.PropostaFuncoesEspecificas.Any())
+            {
+                var ids = request.PropostaFuncoesEspecificas.Select(t => t.CargoFuncaoId).ToArray();
+                var existeOpcaoOutros = await _repositorioCargoFuncao.ExisteCargoFuncaoOutros(ids);
+
+                if (existeOpcaoOutros && string.IsNullOrEmpty(request.FuncaoEspecificaOutros))
+                    throw new NegocioException(MensagemNegocio.PROPOSTA_FUNCAO_ESPECIFICA_OUTROS);
+            }
+        }
+    }
+}
