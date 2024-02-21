@@ -81,9 +81,6 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (!emailValidar.EmailEhValido())
                     throw new NegocioException(string.Format(MensagemNegocio.EMAIL_INVALIDO, emailValidar));
 
-                if (!emailValidar.ToLower().Contains("@sme") && !emailValidar.ToLower().Contains("@edu.sme"))
-                    throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_EMAIL_FORA_DOMINIO_REDE_DIRETA);
-
                 await _mediator.Send(new AlterarEmailServicoAcessosCommand(login, emailValidar), cancellationToken);
             }
         }
