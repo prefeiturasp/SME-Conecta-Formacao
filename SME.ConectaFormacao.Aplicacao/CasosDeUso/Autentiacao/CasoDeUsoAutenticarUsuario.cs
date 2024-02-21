@@ -18,8 +18,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao
         {
             var usuarioAutenticadoRetornoDto = await mediator.Send(new ObterUsuarioServicoAcessosPorLoginSenhaQuery(autenticacaoDTO.Login, autenticacaoDTO.Senha));
 
-            await mediator.Send(new ValidarUsuarioSituacaoAtivaQuery(autenticacaoDTO.Login));
-
             if (string.IsNullOrEmpty(usuarioAutenticadoRetornoDto.Login))
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, HttpStatusCode.Unauthorized);
 
