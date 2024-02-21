@@ -92,7 +92,6 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _repositorioProposta.Atualizar(propostaDepois);
 
                 await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
-                await SalvarMovimentacao(request.Id,request.PropostaDTO.Situacao);
                 transacao.Commit();
                 return request.Id;
             }
@@ -105,10 +104,6 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 transacao.Dispose();
             }
-        }
-        private async Task SalvarMovimentacao(long propostaId, SituacaoProposta situacao)
-        {
-            await _mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
         }
     }
 }
