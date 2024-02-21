@@ -21,6 +21,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             Login = login;
             Nome = nome;
             Email = email;
+            Tipo = TipoUsuario.Interno;
+            Situacao = SituacaoCadastroUsuario.Ativo;
         }
 
         public string Login { get; set; }
