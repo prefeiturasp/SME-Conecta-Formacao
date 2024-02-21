@@ -27,6 +27,11 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
+            var existeDreTodos = request.PropostaDTO.Turmas.Select(x => x.DresIds).Count(x => x.Contains(DRE_ID_TODOS));
+
+            if(existeDreTodos > 0)
+                throw new NegocioException(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
+            
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
@@ -87,9 +92,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _repositorioProposta.Atualizar(propostaDepois);
 
                 await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
-
+                await SalvarMovimentacao(request.Id,request.PropostaDTO.Situacao);
                 transacao.Commit();
-
                 return request.Id;
             }
             catch
@@ -101,6 +105,10 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 transacao.Dispose();
             }
+        }
+        private async Task SalvarMovimentacao(long propostaId, SituacaoProposta situacao)
+        {
+            await _mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
         }
     }
 }
