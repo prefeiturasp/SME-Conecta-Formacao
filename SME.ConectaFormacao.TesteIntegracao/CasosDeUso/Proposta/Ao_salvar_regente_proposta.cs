@@ -112,5 +112,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             excecao.Mensagens.Contains("Informe o nome do Regente").ShouldBeTrue();
         }
+
+        [Fact(DisplayName = "Proposta - Não Deve criar um Regente com CPF invalido")]
+        public async Task Nao_deve_criar_regente_com_cpf_invalido()
+        {
+            // arrange
+            var proposta = await InserirNaBaseProposta();
+
+            var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaRegente>();
+            var regenteDto = PropostaSalvarMock.GerarRegente(3);
+            regenteDto.Cpf = "11111111111";
+
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(useCase.Executar(proposta.Id, regenteDto));
+
+            // assert
+            excecao.Mensagens.Contains(MensagemNegocio.CPF_INVALIDO).ShouldBeTrue();
+        }
     }
 }

@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Dre.ObterDreTodos
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterDreTodosQueryHandler : IRequestHandler<ObterDreTodosQuery, Dominio.Entidades.Dre>
     {
