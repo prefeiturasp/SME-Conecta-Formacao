@@ -1928,10 +1928,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return formacaoDetalhe;
         }
 
-        public Task InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga)
+        public Task InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga, int quantidade)
         {
             PreencherAuditoriaCriacao(propostaTurmaVaga);
-            return conexao.Obter().InsertAsync(propostaTurmaVaga);
+
+            var insert = "insert into proposta_turma_vaga (proposta_turma_id, criado_em, criado_por, criado_login) values (@PropostaTurmaId, @CriadoEm, @CriadoPor, @CriadoLogin);";
+
+            var inserts = new StringBuilder();
+
+            for (int i = 0; i < quantidade; i++)
+                inserts.AppendLine(insert);
+
+            return conexao.Obter().ExecuteAsync(inserts.ToString(), propostaTurmaVaga);
         }
 
         public Task<PropostaTurma> ObterTurmaPorId(long propostaTurmaId)
