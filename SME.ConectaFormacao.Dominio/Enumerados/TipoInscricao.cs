@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Automática (JEIF)")]
         AutomaticaJEIF = 3,
         [Display(Name = "Manual")]
-        Manual  = 4,
+        Manual = 4,
         [Display(Name = "Externa")]
         Externa = 5
     }

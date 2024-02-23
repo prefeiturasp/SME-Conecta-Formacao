@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterInscricaoTipoListaQuery : IRequest<IEnumerable<RetornoListagemDTO>>
     {
-    
+
     }
 }

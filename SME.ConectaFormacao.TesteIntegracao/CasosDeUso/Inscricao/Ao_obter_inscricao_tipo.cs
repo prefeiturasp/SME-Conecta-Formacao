@@ -20,14 +20,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             //Arrange
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoTipo>();
             var tipos = Enum.GetValues(typeof(TipoInscricao)).Cast<TipoInscricao>();
-            
+
             // act 
             var retorno = await casoDeUso.Executar();
-            
+
             // assert
             retorno.ShouldNotBeNull();
             retorno.Count().ShouldBeEquivalentTo(tipos.Count());
-            
+
             foreach (var tipo in tipos)
                 retorno.Count(x => x.Descricao == tipo.Nome()).ShouldBeEquivalentTo(1);
         }

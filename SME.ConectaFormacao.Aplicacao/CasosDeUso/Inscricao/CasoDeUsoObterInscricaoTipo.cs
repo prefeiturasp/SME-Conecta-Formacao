@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class CasoDeUsoObterInscricaoTipo :CasoDeUsoAbstrato,ICasoDeUsoObterInscricaoTipo
+    public class CasoDeUsoObterInscricaoTipo : CasoDeUsoAbstrato, ICasoDeUsoObterInscricaoTipo
     {
         public CasoDeUsoObterInscricaoTipo(IMediator mediator) : base(mediator)
         {

@@ -30,9 +30,9 @@ namespace SME.ConectaFormacao.Aplicacao
             var quantidadeDeRegistroComDreVazia = request.PropostaDTO.Turmas.Count(x => x.DresIds.Length == 0);
             var quantidadeDeRegistroComDreTodos = request.PropostaDTO.Turmas.Select(x => x.DresIds).Count(x => x.Contains(DRE_ID_TODOS));
 
-            if(quantidadeDeRegistroComDreTodos > 0 || quantidadeDeRegistroComDreVazia > 0)
+            if (quantidadeDeRegistroComDreTodos > 0 || quantidadeDeRegistroComDreVazia > 0)
                 throw new NegocioException(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
-            
+
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
