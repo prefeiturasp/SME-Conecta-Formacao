@@ -15,7 +15,6 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioProposta _repositorioProposta;
-        private const int DRE_ID_TODOS = 14;
 
         public AlterarPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
         {
@@ -48,11 +47,22 @@ namespace SME.ConectaFormacao.Aplicacao
             if (request.PropostaDTO.Situacao != SituacaoProposta.Rascunho)
             {
                 var erros = new List<string>();
-                var quantidadeDeTurmasSemInformarDre = request.PropostaDTO.Turmas.Count(x => x.DresIds.Contains(DRE_ID_TODOS));
-                if (quantidadeDeTurmasSemInformarDre > 0)
+
+                var possuiTurmaSemDrePreenchida = request.PropostaDTO.Turmas.Any(x => x.DresIds.Length == 0);
+                if (possuiTurmaSemDrePreenchida)
                     erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
 
-                var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim));
+                if (!possuiTurmaSemDrePreenchida)
+                {
+                    var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia(), cancellationToken);
+                    var possuiTurmaComTodasAsDres = request.PropostaDTO.Turmas.Any(c => c.DresIds.Contains(dreTodos.Id));
+                    var possuiTurmaComDreSelecionada = request.PropostaDTO.Turmas.Any(c => !c.DresIds.Contains(dreTodos.Id));
+
+                    if (possuiTurmaComTodasAsDres && possuiTurmaComDreSelecionada)
+                        erros.Add(MensagemNegocio.TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS);
+                }
+
+                var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim), cancellationToken);
 
                 if (!string.IsNullOrEmpty(validarDatas))
                     erros.Add(validarDatas);

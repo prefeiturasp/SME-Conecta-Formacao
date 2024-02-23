@@ -86,7 +86,8 @@ public class MensagemNegocio
     public const string INTEGRAR_NO_SGA_EH_OBRIGATORIO_QUANDO_AREA_PROMOTORA_DIRETA = "O campo 'Integrar no SGA' deve ser preenchido quando a área promotora for direta.";
     public const string USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_PUBLICO_ALVO_NA_FORMACAO = "Cargo não definido no público alvo da formação, sendo assim, não será possível inserir a sua inscrição automática. {0}";
     public const string USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_FUNCAO_ESPECIFICA_NA_FORMACAO = "Função não definido na Função específica da formação, sendo assim, não será possível inserir a sua inscrição automática. {0}";
-    public const string DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS = "É necessário informar pelo menos uma DRE para as turmas selecionadas";
+    public const string DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS = "É necessário informar pelo menos uma DRE para as turmas selecionadas ou opçao todas";
+    public const string TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS = "Todas as turmas devem possuir uma DRE selecionada ou a opção de todas";
     public const string DATAFIM_INSCRICAO_NAO_PODE_SER_MAIOR_QUE_DATAFIM_REALIZACAO = "A Data Inscrição fim não pode ser maior que a data Realização fim";
     public const string CONFIRMACAO_SENHA_DEVE_SER_IGUAL_A_SENHA = "Confirmação da senha: Deve ser igual a senha";
     public const string A_SENHA_DEVE_TER_NO_MÍNIMO_8_CARACTERES = "A senha deve conter no minimo 8 caracteres";
