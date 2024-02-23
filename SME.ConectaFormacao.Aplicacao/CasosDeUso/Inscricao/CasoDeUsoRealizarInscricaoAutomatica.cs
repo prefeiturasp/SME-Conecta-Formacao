@@ -30,10 +30,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
             await mediator.Send(new GerarPropostaTurmaVagaCommand(propostaId, propostaInscricaoAutomatica.QuantidadeVagasTurmas));
 
+            var modalidadesEol = ObterModalidadeEol(propostaInscricaoAutomatica.Modalidades);
+
             var cursistasEOL = await mediator.Send(new ObterFuncionarioPorFiltroPropostaServicoEolQuery(
                 propostaInscricaoAutomatica.PublicosAlvos.Select(t => t.Value),
                 propostaInscricaoAutomatica.FuncoesEspecificas.Select(t => t.Value),
-                propostaInscricaoAutomatica.Modalidades,
+                modalidadesEol,
                 propostaInscricaoAutomatica.AnosTurmas,
                 propostaInscricaoAutomatica.PropostasTurmas.Select(turma => turma.CodigoDre).Distinct(),
                 propostaInscricaoAutomatica.ComponentesCurriculares,
@@ -48,6 +50,37 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaTratarTurmas, inscricaoAutomaticaTratarTurmas));
 
             return true;
+        }
+
+        private static IEnumerable<long> ObterModalidadeEol(IEnumerable<long> modalidades)
+        {
+            var retorno = new List<long>();
+
+            foreach (var modalidade in modalidades)
+            {
+                switch ((Dominio.Enumerados.Modalidade)modalidade)
+                {
+                    case Dominio.Enumerados.Modalidade.EducacaoInfantil:
+                        retorno.Add(1);
+                        retorno.Add(10);
+                        break;
+                    case Dominio.Enumerados.Modalidade.Fundamental:
+                        retorno.Add(5);
+                        retorno.Add(13);
+                        break;
+                    case Dominio.Enumerados.Modalidade.Medio:
+                        retorno.Add(6);
+                        retorno.Add(9);
+                        retorno.Add(14);
+                        retorno.Add(17);
+                        break;
+                    default:
+                        retorno.Add(modalidade);
+                        break;
+                }
+            }
+
+            return retorno;
         }
     }
 }

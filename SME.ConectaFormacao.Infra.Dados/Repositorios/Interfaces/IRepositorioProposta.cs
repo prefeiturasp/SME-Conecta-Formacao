@@ -91,7 +91,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<Proposta>> ObterPropostasResumidasPorId(long[] propostaIds);
         Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId);
         Task<IEnumerable<PropostaTurma>> ObterTurmasComVagaPorId(long propostaId);
-        Task InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga);
+        Task InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga, int quantidade);
         Task<PropostaTurma> ObterTurmaPorId(long propostaTurmaId);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorPropostaTurmaId(long turmaId);
         Task<IEnumerable<Proposta>> ObterPropostaResumidaPorId(long propostaId);
