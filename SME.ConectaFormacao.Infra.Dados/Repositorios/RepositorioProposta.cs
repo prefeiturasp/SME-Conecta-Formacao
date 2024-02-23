@@ -2041,19 +2041,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
               
             select distinct cfde.codigo_cargo_eol
             from proposta_publico_alvo ppa
-              join cargo_funcao_depara_eol cfde on cfde.cargo_funcao_id = ppa.cargo_funcao_id 
+            left join cargo_funcao_depara_eol cfde on cfde.cargo_funcao_id = ppa.cargo_funcao_id and not ppa.excluido
             where not ppa.excluido   
-            and not ppa.excluido
-                  and ppa.proposta_id = @propostaId;
+              and ppa.proposta_id = @propostaId;
             
             select distinct cfde.codigo_funcao_eol
             from proposta_funcao_especifica pfe
-              join cargo_funcao_depara_eol cfde on cfde.cargo_funcao_id = pfe.cargo_funcao_id 
+            left join cargo_funcao_depara_eol cfde on cfde.cargo_funcao_id = pfe.cargo_funcao_id and not cfde.excluido
             where not pfe.excluido
-                  and not cfde.excluido
-                  and pfe.proposta_id = @propostaId;
+              and pfe.proposta_id = @propostaId;
             
-            select at.codigo_eol
+            select distinct at.codigo_eol
             from proposta_ano_turma pat
               join ano_turma at on at.id = pat.ano_turma_id 
             where not pat.excluido
@@ -2061,7 +2059,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
               and not at.todos
               and proposta_id = @propostaId;
             
-            select componente_curricular_id
+            select distinct cc.codigo_eol
             from proposta_componente_curricular pcc
               join componente_curricular cc on cc.id = pcc.componente_curricular_id
             where  not cc.excluido 
@@ -2080,8 +2078,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             propostaInscricaoAutomatica.TiposInscricao = await queryMultiple.ReadAsync<TipoInscricao>();
             propostaInscricaoAutomatica.PropostasTurmas = await queryMultiple.ReadAsync<PropostaInscricaoAutomaticaTurma>();
-            propostaInscricaoAutomatica.PublicosAlvos = await queryMultiple.ReadAsync<long>();
-            propostaInscricaoAutomatica.FuncoesEspecificas = await queryMultiple.ReadAsync<long>();
+            propostaInscricaoAutomatica.PublicosAlvos = await queryMultiple.ReadAsync<long?>();
+            propostaInscricaoAutomatica.FuncoesEspecificas = await queryMultiple.ReadAsync<long?>();
             propostaInscricaoAutomatica.AnosTurmas = await queryMultiple.ReadAsync<string>();
             propostaInscricaoAutomatica.ComponentesCurriculares = await queryMultiple.ReadAsync<long>();
             propostaInscricaoAutomatica.Modalidades = await queryMultiple.ReadAsync<long>();

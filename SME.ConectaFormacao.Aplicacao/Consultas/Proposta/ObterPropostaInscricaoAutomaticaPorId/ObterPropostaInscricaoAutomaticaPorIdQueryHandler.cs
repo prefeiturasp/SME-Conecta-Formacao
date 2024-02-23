@@ -13,9 +13,9 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public async Task<PropostaInscricaoAutomatica> Handle(ObterPropostaInscricaoAutomaticaPorIdQuery request, CancellationToken cancellationToken)
+        public Task<PropostaInscricaoAutomatica> Handle(ObterPropostaInscricaoAutomaticaPorIdQuery request, CancellationToken cancellationToken)
         {
-            return await _repositorioProposta.ObterPropostaInscricaoPorId(request.PropostaId);
+            return _repositorioProposta.ObterPropostaInscricaoPorId(request.PropostaId);
         }
     }
 }
