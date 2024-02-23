@@ -83,8 +83,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             if (senhaNova.Length > 12)
                 erros.Add(MensagemNegocio.A_SENHA_DEVE_TER_NO_MÁXIMO_12_CARACTERES);
 
-            if (cpf.Length != 11)
-                erros.Add(MensagemNegocio.CPF_DEVE_TER_11_CARACTERES);
+            if (!cpf.CpfEhValido())
+                erros.Add(MensagemNegocio.CPF_INVALIDO);
 
             var regexSenha = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)[^áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ]{8,12}$");
 

@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.Extensions.Brazil;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -56,20 +57,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
 
         public static Faker<PropostaRegenteDTO> GeradorRegente(int quantidadeTurmas)
         {
-            var faker = new Faker<PropostaRegenteDTO>();
+            var faker = new Faker<PropostaRegenteDTO>("pt_BR");
             faker.RuleFor(x => x.ProfissionalRedeMunicipal, f => true);
             faker.RuleFor(x => x.RegistroFuncional, f => f.Random.Short(100, 1000).ToString());
+            faker.RuleFor(x => x.Cpf, f => f.Person.Cpf());
             faker.RuleFor(x => x.NomeRegente, f => f.Person.FullName);
             faker.RuleFor(x => x.MiniBiografia, f => f.Lorem.Sentence(3));
+
             faker.RuleFor(x => x.Turmas, GerarPropostaRegenteTurmas(quantidadeTurmas));
 
             return faker;
         }
         public static Faker<PropostaTutorDTO> GeradorTutor(int quantidadeTurmas)
         {
-            var faker = new Faker<PropostaTutorDTO>();
+            var faker = new Faker<PropostaTutorDTO>("pt_BR");
             faker.RuleFor(x => x.ProfissionalRedeMunicipal, f => true);
             faker.RuleFor(x => x.RegistroFuncional, f => f.Random.Short(100, 1000).ToString());
+            faker.RuleFor(x => x.Cpf, f => f.Person.Cpf());
             faker.RuleFor(x => x.NomeTutor, f => f.Person.FullName.ToUpper());
             faker.RuleFor(x => x.Turmas, GerarPropostaTutorTurmas(quantidadeTurmas));
 
