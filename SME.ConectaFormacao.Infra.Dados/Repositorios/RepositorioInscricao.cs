@@ -230,7 +230,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             query += " order by p.id desc limit @numeroRegistros offset @registrosIgnorados  ";
 
-            var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
+            var registrosIgnorados = totalRegistrosFiltro - numeroRegistros <= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
             var parametros = new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta };
             return conexao.Obter().QueryAsync<Proposta>(query.ToString(), parametros);
         }
