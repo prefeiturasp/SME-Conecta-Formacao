@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Dre.ObterDreTodos;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -27,12 +26,6 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
-            var quantidadeDeRegistroComDreVazia = request.PropostaDTO.Turmas.Count(x => x.DresIds.Length == 0);
-            var quantidadeDeRegistroComDreTodos = request.PropostaDTO.Turmas.Select(x => x.DresIds).Count(x => x.Contains(DRE_ID_TODOS));
-
-            if(quantidadeDeRegistroComDreTodos > 0 || quantidadeDeRegistroComDreVazia > 0)
-                throw new NegocioException(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
-            
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
@@ -55,9 +48,8 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 var erros = new List<string>();
 
-                var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia, cancellationToken);
-                var quantidadeDeTurmasSemInformarDre = request.PropostaDTO.Turmas.Count(x => x.DresIds.Length == 0 || x.DresIds.Contains(dreTodos.Id));
-                if (quantidadeDeTurmasSemInformarDre > 0)
+                var possuiTurmaSemDrePreenchida = request.PropostaDTO.Turmas.Any(x => x.DresIds.Length == 0);
+                if (possuiTurmaSemDrePreenchida)
                     erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
 
                 if (!possuiTurmaSemDrePreenchida)
