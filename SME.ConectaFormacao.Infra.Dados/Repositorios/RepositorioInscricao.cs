@@ -9,7 +9,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
     public class RepositorioInscricao : RepositorioBaseAuditavel<Inscricao>, IRepositorioInscricao
     {
-        private readonly int QUANTIDADE_MINIMA_PARA_PAGINAR = 10;
         public RepositorioInscricao(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
@@ -141,7 +140,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         }
 
         public Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(long propostaId, string? login, string? cpf, string? nomeCursista, string? nomeTurma,
-            int numeroPagina, int numeroRegistros, int totalRegistrosFiltro)
+            int numeroPagina, int numeroRegistros)
         {
             var query = new StringBuilder(@"select 
                                                 i.id,
@@ -172,7 +171,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query.AppendLine($" and lower(pt.nome) like '%{nomeTurma.ToLower()}%' ");
             query.AppendLine(" limit @numeroRegistros offset @registrosIgnorados ");
 
-            var registrosIgnorados = totalRegistrosFiltro - numeroRegistros >= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
+            var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
             return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Usuario, CargoFuncao, Inscricao>(query.ToString(), (inscricao, propostaTurma, usuario, cargoFuncao) =>
                {
                    inscricao.PropostaTurma = propostaTurma;
@@ -208,7 +207,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { propostaId, login, cpf, nomeCursista });
         }
 
-        public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros, int totalRegistrosFiltro)
+        public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"  
@@ -230,7 +229,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             query += " order by p.id desc limit @numeroRegistros offset @registrosIgnorados  ";
 
-            var registrosIgnorados = totalRegistrosFiltro - numeroRegistros <= QUANTIDADE_MINIMA_PARA_PAGINAR ? (numeroPagina - 1) * numeroRegistros : 0;
+            var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
             var parametros = new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta };
             return conexao.Obter().QueryAsync<Proposta>(query.ToString(), parametros);
         }
