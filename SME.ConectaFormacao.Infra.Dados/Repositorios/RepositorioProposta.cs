@@ -2081,15 +2081,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
 
-            var propostaInscricaoAutomatica = await queryMultiple.ReadFirstAsync<PropostaInscricaoAutomatica>();
-
-            propostaInscricaoAutomatica.TiposInscricao = await queryMultiple.ReadAsync<TipoInscricao>();
-            propostaInscricaoAutomatica.PropostasTurmas = await queryMultiple.ReadAsync<PropostaInscricaoAutomaticaTurma>();
-            propostaInscricaoAutomatica.PublicosAlvos = await queryMultiple.ReadAsync<long?>();
-            propostaInscricaoAutomatica.FuncoesEspecificas = await queryMultiple.ReadAsync<long?>();
-            propostaInscricaoAutomatica.AnosTurmas = await queryMultiple.ReadAsync<string>();
-            propostaInscricaoAutomatica.ComponentesCurriculares = await queryMultiple.ReadAsync<long>();
-            propostaInscricaoAutomatica.Modalidades = await queryMultiple.ReadAsync<long>();
+            var propostaInscricaoAutomatica = await queryMultiple.ReadFirstOrDefaultAsync<PropostaInscricaoAutomatica>();
+            if (propostaInscricaoAutomatica.NaoEhNulo())
+            {
+                propostaInscricaoAutomatica.TiposInscricao = await queryMultiple.ReadAsync<TipoInscricao>();
+                propostaInscricaoAutomatica.PropostasTurmas = await queryMultiple.ReadAsync<PropostaInscricaoAutomaticaTurma>();
+                propostaInscricaoAutomatica.PublicosAlvos = await queryMultiple.ReadAsync<long?>();
+                propostaInscricaoAutomatica.FuncoesEspecificas = await queryMultiple.ReadAsync<long?>();
+                propostaInscricaoAutomatica.AnosTurmas = await queryMultiple.ReadAsync<string>();
+                propostaInscricaoAutomatica.ComponentesCurriculares = await queryMultiple.ReadAsync<long>();
+                propostaInscricaoAutomatica.Modalidades = await queryMultiple.ReadAsync<long>();
+            }
 
             return propostaInscricaoAutomatica;
         }
