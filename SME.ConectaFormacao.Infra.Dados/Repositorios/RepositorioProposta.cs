@@ -12,7 +12,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
     public class RepositorioProposta : RepositorioBaseAuditavel<Proposta>, IRepositorioProposta
     {
-        private readonly int QUANTIDADE_MINIMA_PARA_PAGINAR = 10;
         public RepositorioProposta(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
@@ -1928,10 +1927,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return formacaoDetalhe;
         }
 
-        public Task InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga)
+        public Task InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga, int quantidade)
         {
             PreencherAuditoriaCriacao(propostaTurmaVaga);
-            return conexao.Obter().InsertAsync(propostaTurmaVaga);
+
+            var insert = "insert into proposta_turma_vaga (proposta_turma_id, criado_em, criado_por, criado_login) values (@PropostaTurmaId, @CriadoEm, @CriadoPor, @CriadoLogin);";
+
+            var inserts = new StringBuilder();
+
+            for (int i = 0; i < quantidade; i++)
+                inserts.AppendLine(insert);
+
+            return conexao.Obter().ExecuteAsync(inserts.ToString(), propostaTurmaVaga);
         }
 
         public Task<PropostaTurma> ObterTurmaPorId(long propostaTurmaId)
@@ -2033,10 +2040,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    ptd.dre_id as DreId, 
                    dre.dre_id as codigoDre
             from proposta_turma pt
-              join proposta_turma_dre ptd on ptd.proposta_turma_id = pt.id 
-              join dre on dre.id = ptd.dre_id 
+              join proposta_turma_dre ptd on ptd.proposta_turma_id = pt.id and not ptd.excluido 
+              left join dre on dre.id = ptd.dre_id and not dre.excluido and not dre.todos
             where not pt.excluido 
-              and not ptd.excluido 
               and pt.proposta_id = @propostaId;
               
             select distinct cfde.codigo_cargo_eol
@@ -2074,15 +2080,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId });
 
-            var propostaInscricaoAutomatica = await queryMultiple.ReadFirstAsync<PropostaInscricaoAutomatica>();
-
-            propostaInscricaoAutomatica.TiposInscricao = await queryMultiple.ReadAsync<TipoInscricao>();
-            propostaInscricaoAutomatica.PropostasTurmas = await queryMultiple.ReadAsync<PropostaInscricaoAutomaticaTurma>();
-            propostaInscricaoAutomatica.PublicosAlvos = await queryMultiple.ReadAsync<long?>();
-            propostaInscricaoAutomatica.FuncoesEspecificas = await queryMultiple.ReadAsync<long?>();
-            propostaInscricaoAutomatica.AnosTurmas = await queryMultiple.ReadAsync<string>();
-            propostaInscricaoAutomatica.ComponentesCurriculares = await queryMultiple.ReadAsync<long>();
-            propostaInscricaoAutomatica.Modalidades = await queryMultiple.ReadAsync<long>();
+            var propostaInscricaoAutomatica = await queryMultiple.ReadFirstOrDefaultAsync<PropostaInscricaoAutomatica>();
+            if (propostaInscricaoAutomatica.NaoEhNulo())
+            {
+                propostaInscricaoAutomatica.TiposInscricao = await queryMultiple.ReadAsync<TipoInscricao>();
+                propostaInscricaoAutomatica.PropostasTurmas = await queryMultiple.ReadAsync<PropostaInscricaoAutomaticaTurma>();
+                propostaInscricaoAutomatica.PublicosAlvos = await queryMultiple.ReadAsync<long?>();
+                propostaInscricaoAutomatica.FuncoesEspecificas = await queryMultiple.ReadAsync<long?>();
+                propostaInscricaoAutomatica.AnosTurmas = await queryMultiple.ReadAsync<string>();
+                propostaInscricaoAutomatica.ComponentesCurriculares = await queryMultiple.ReadAsync<long>();
+                propostaInscricaoAutomatica.Modalidades = await queryMultiple.ReadAsync<long>();
+            }
 
             return propostaInscricaoAutomatica;
         }
@@ -2182,6 +2190,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           where not excluido and id = any(@ids)";
 
             return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+
+        public Task<int> ObterTotalVagasTurma(long propostaTurmaIr)
+        {
+            var query = "select count(1) from proposta_turma_vaga where proposta_turma_id = @propostaTurmaIr and not excluido";
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaTurmaIr });
         }
     }
 }
