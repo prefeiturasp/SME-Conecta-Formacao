@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
@@ -96,9 +97,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         }
         public static bool EmailEhValido(string email)
         {
-            string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
-            Regex regex = new Regex(pattern);
-            return regex.IsMatch(email);
+            var valid = true;
+            try
+            {
+                var emailAddress = new MailAddress(email);
+            }
+            catch
+            {
+                valid = false;
+            }
+
+            return valid;
         }
     }
 }
