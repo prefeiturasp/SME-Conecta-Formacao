@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Dre.ObterDreTodos;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -49,12 +48,21 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 var erros = new List<string>();
 
-                var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia, cancellationToken);
-                var quantidadeDeTurmasSemInformarDre = request.PropostaDTO.Turmas.Count(x => x.DresIds.Length == 0 || x.DresIds.Contains(dreTodos.Id));
-                if (quantidadeDeTurmasSemInformarDre > 0)
+                var possuiTurmaSemDrePreenchida = request.PropostaDTO.Turmas.Any(x => x.DresIds.Length == 0);
+                if (possuiTurmaSemDrePreenchida)
                     erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
 
-                var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim));
+                if (!possuiTurmaSemDrePreenchida)
+                {
+                    var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia(), cancellationToken);
+                    var possuiTurmaComTodasAsDres = request.PropostaDTO.Turmas.Any(c => c.DresIds.Contains(dreTodos.Id));
+                    var possuiTurmaComDreSelecionada = request.PropostaDTO.Turmas.Any(c => !c.DresIds.Contains(dreTodos.Id));
+
+                    if (possuiTurmaComTodasAsDres && possuiTurmaComDreSelecionada)
+                        erros.Add(MensagemNegocio.TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS);
+                }
+
+                var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim), cancellationToken);
 
                 if (!string.IsNullOrEmpty(validarDatas))
                     erros.Add(validarDatas);
@@ -89,9 +97,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _repositorioProposta.Atualizar(propostaDepois);
 
                 await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
-
                 transacao.Commit();
-
                 return request.Id;
             }
             catch
