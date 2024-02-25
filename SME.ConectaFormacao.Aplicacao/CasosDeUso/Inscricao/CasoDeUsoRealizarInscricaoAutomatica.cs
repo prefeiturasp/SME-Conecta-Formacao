@@ -33,12 +33,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
             var modalidadesEol = ObterModalidadeEol(propostaInscricaoAutomatica.Modalidades);
 
+            var dres = propostaInscricaoAutomatica.PropostasTurmas.Where(t => !string.IsNullOrEmpty(t.CodigoDre)).Select(turma => turma.CodigoDre).Distinct();
+
             var cursistasEOL = await mediator.Send(new ObterFuncionarioPorFiltroPropostaServicoEolQuery(
                 propostaInscricaoAutomatica.PublicosAlvos.Select(t => t.Value),
                 propostaInscricaoAutomatica.FuncoesEspecificas.Select(t => t.Value),
                 modalidadesEol,
                 propostaInscricaoAutomatica.AnosTurmas,
-                propostaInscricaoAutomatica.PropostasTurmas.Select(turma => turma.CodigoDre).Distinct(),
+                dres,
                 propostaInscricaoAutomatica.ComponentesCurriculares,
                 propostaInscricaoAutomatica.EhTipoJornadaJEIF));
 
