@@ -2040,10 +2040,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    ptd.dre_id as DreId, 
                    dre.dre_id as codigoDre
             from proposta_turma pt
-              join proposta_turma_dre ptd on ptd.proposta_turma_id = pt.id 
-              join dre on dre.id = ptd.dre_id 
+              join proposta_turma_dre ptd on ptd.proposta_turma_id = pt.id and not ptd.excluido 
+              join dre on dre.id = ptd.dre_id and not dre.excluido and not dre.todos
             where not pt.excluido 
-              and not ptd.excluido 
               and pt.proposta_id = @propostaId;
               
             select distinct cfde.codigo_cargo_eol
