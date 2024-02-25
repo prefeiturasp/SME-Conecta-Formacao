@@ -12,7 +12,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
     public class RepositorioProposta : RepositorioBaseAuditavel<Proposta>, IRepositorioProposta
     {
-        private readonly int QUANTIDADE_MINIMA_PARA_PAGINAR = 10;
         public RepositorioProposta(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
@@ -2190,6 +2189,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           where not excluido and id = any(@ids)";
 
             return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+
+        public Task<int> ObterTotalVagasTurma(long propostaTurmaIr)
+        {
+            var query = "select count(1) from proposta_turma_vaga where proposta_turma_id = @propostaTurmaIr and not excluido";
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaTurmaIr });
         }
     }
 }

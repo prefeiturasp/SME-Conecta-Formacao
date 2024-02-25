@@ -30,10 +30,16 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 foreach (var turma in turmas)
                 {
-                    await _repositorioProposta.InserirPropostaTurmaVagas(new PropostaTurmaVaga
+                    int quantidadeVagasGeradas = await _repositorioProposta.ObterTotalVagasTurma(turma.Id);
+                    int vagasGerar = request.QuantidadeVagasTurma - quantidadeVagasGeradas;
+
+                    if (vagasGerar > 0)
                     {
-                        PropostaTurmaId = turma.Id
-                    }, request.QuantidadeVagasTurma);
+                        await _repositorioProposta.InserirPropostaTurmaVagas(new PropostaTurmaVaga
+                        {
+                            PropostaTurmaId = turma.Id
+                        }, vagasGerar);
+                    }
                 }
 
                 transacao.Commit();
