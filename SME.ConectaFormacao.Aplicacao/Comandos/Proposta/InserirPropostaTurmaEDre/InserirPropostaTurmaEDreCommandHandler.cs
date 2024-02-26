@@ -97,13 +97,10 @@ namespace SME.ConectaFormacao.Aplicacao
                     }
                 }
 
-                for (int i = 0; i < request.QuantidadeVagasTurma; i++)
+                await _repositorioProposta.InserirPropostaTurmaVagas(new PropostaTurmaVaga
                 {
-                    await _repositorioProposta.InserirPropostaTurmaVagas(new PropostaTurmaVaga
-                    {
-                        PropostaTurmaId = propostaTurmaAdicional.Id
-                    });
-                }
+                    PropostaTurmaId = propostaTurmaAdicional.Id
+                }, request.QuantidadeVagasTurma);
 
                 transacao.Commit();
 

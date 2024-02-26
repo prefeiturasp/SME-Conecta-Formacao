@@ -86,7 +86,8 @@ public class MensagemNegocio
     public const string INTEGRAR_NO_SGA_EH_OBRIGATORIO_QUANDO_AREA_PROMOTORA_DIRETA = "O campo 'Integrar no SGA' deve ser preenchido quando a área promotora for direta.";
     public const string USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_PUBLICO_ALVO_NA_FORMACAO = "Cargo não definido no público alvo da formação, sendo assim, não será possível inserir a sua inscrição automática. {0}";
     public const string USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_FUNCAO_ESPECIFICA_NA_FORMACAO = "Função não definido na Função específica da formação, sendo assim, não será possível inserir a sua inscrição automática. {0}";
-    public const string DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS = "É necessário informar pelo menos uma DRE para as turmas selecionadas";
+    public const string DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS = "É necessário informar pelo menos uma DRE para as turmas selecionadas ou opçao todas";
+    public const string TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS = "Todas as turmas devem possuir uma DRE selecionada ou a opção de todas";
     public const string DATAFIM_INSCRICAO_NAO_PODE_SER_MAIOR_QUE_DATAFIM_REALIZACAO = "A Data Inscrição fim não pode ser maior que a data Realização fim";
     public const string CONFIRMACAO_SENHA_DEVE_SER_IGUAL_A_SENHA = "Confirmação da senha: Deve ser igual a senha";
     public const string A_SENHA_DEVE_TER_NO_MÍNIMO_8_CARACTERES = "A senha deve conter no minimo 8 caracteres";
@@ -96,7 +97,10 @@ public class MensagemNegocio
     public const string A_SENHA_DEVE_CONTER_SOMENTE = "A senha deve conter pelo menos 1 letra maiúscula, 1 minúscula, 1 número e/ou 1 caractere especial e não pode conter acentuação";
     public const string NAO_FOI_POSSIVEL_CADASTRAR_USUARIO_EXTERNO_NO_CORESSO = "Não foi possível cadastrar usuário externo no CoreSSO";
     public const string VOCE_JA_POSSUI_LOGIN_CONECTA = "Você já possui login no sistema. Caso tenha esquecido a senha, clique em 'esqueci a senha'";
-    public const string VOCE_JA_POSSUI_LOGIN_CORESSO = "Você já possui login no sistema. Acesse informando seu RF e senha dos Sistemas da SME";
+    public const string VOCE_JA_POSSUI_LOGIN_CORESSO = "Você já possui login no sistema. Acesse informando seu RF ou CPF e senha dos Sistemas da SME";
     public const string USUARIO_NAO_VALIDOU_EMAIL = "Você não validou seu e-mail ainda. Caso não tenha recebido o e-mail clique no botão 'Reenviar'";
     public const string EMAIL_FORA_DOMINIO_PERMITIDO_UES_PARCEIRAS = "Endereço de email não está em um domínio permitido";
+
+    public const string PROPOSTA_COM_PUBLICO_ALVO_SEM_DEPARA_CONFIGURADO = "A Proposta {0} possui publico alvo sem o depara com eol configurado";
+    public const string PROPOSTA_COM_FUNCAO_ESPECIFICA_SEM_DEPARA_CONFIGURADO = "A Proposta {0} possui função específica sem o depara com eol configurado";
 }
