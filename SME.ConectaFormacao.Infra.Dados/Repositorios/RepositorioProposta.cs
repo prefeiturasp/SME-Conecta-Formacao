@@ -465,6 +465,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        proposta_id,
 	                        profissional_rede_municipal,
 	                        registro_funcional,
+                            cpf,
 	                        nome_regente,
 	                        mini_biografia,
 	                        criado_em,
@@ -487,6 +488,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                            proposta_id,
 	                            profissional_rede_municipal,
 	                            registro_funcional,
+                                cpf,
 	                            nome_tutor,
 	                            criado_em,
 	                            criado_por,
@@ -757,6 +759,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        proposta_id,
 	                        profissional_rede_municipal,
 	                        registro_funcional,
+                            cpf,
 	                        nome_regente,
 	                        mini_biografia,
 	                        criado_em,
@@ -785,6 +788,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        proposta_id,
 	                        profissional_rede_municipal,
 	                        registro_funcional,
+                            cpf,
 	                        nome_tutor,
 	                        criado_em,
 	                        criado_por,
@@ -1170,7 +1174,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             PreencherAuditoriaCriacao(regente);
 
             regente.PropostaId = propostaId;
-            regente.NomeRegente = regente.NomeRegente.ToUpper();
             regente.Id = (long)await conexao.Obter().InsertAsync(regente);
         }
 
@@ -1231,7 +1234,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task InserirPropostaTutor(long propostaId, PropostaTutor tutor)
         {
             PreencherAuditoriaCriacao(tutor);
-            tutor.NomeTutor = tutor.NomeTutor?.ToUpper();
             tutor.PropostaId = propostaId;
             tutor.Id = (long)await conexao.Obter().InsertAsync(tutor);
         }
@@ -1394,14 +1396,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task AtualizarPropostaRegente(PropostaRegente propostaRegente)
         {
             PreencherAuditoriaAlteracao(propostaRegente);
-            propostaRegente.NomeRegente = propostaRegente.NomeRegente.ToUpper();
             await conexao.Obter().UpdateAsync(propostaRegente);
         }
 
         public async Task AtualizarPropostaTutor(PropostaTutor propostaTutor)
         {
             PreencherAuditoriaAlteracao(propostaTutor);
-            propostaTutor.NomeTutor = propostaTutor.NomeTutor?.ToUpper();
             await conexao.Obter().UpdateAsync(propostaTutor);
         }
 
@@ -2102,6 +2102,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        pr.proposta_id,
 	                        pr.profissional_rede_municipal,
 	                        pr.registro_funcional,
+                            pr.cpf,
 	                        pr.nome_regente,
 	                        pr.mini_biografia,
 	                        pr.criado_em,
@@ -2125,6 +2126,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                            pt.proposta_id,
 	                            pt.profissional_rede_municipal,
 	                            pt.registro_funcional,
+                                pt.cpf,
 	                            pt.nome_tutor,
 	                            pt.criado_em,
 	                            pt.criado_por,
