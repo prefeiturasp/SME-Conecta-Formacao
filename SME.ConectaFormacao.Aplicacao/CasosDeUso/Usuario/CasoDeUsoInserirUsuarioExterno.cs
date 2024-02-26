@@ -6,8 +6,8 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using System.Net.Mail;
 using System.Text.RegularExpressions;
+using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 {
@@ -68,7 +68,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         {
             var erros = new List<string>();
 
-            var emailValido = EmailEhValido(email);
+            var cpfValido = UtilValidacoes.CpfEhValido(cpf);
+            if (!cpfValido)
+                erros.Add(MensagemNegocio.CPF_INVALIDO.Parametros(cpf));
+            
+            var emailValido = UtilValidacoes.EmailEhValido(email);
             if (!emailValido)
                 erros.Add(MensagemNegocio.EMAIL_INVALIDO.Parametros(email));
 
@@ -94,20 +98,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
             if (erros.Any())
                 throw new NegocioException(erros);
-        }
-        public static bool EmailEhValido(string email)
-        {
-            var valid = true;
-            try
-            {
-                var emailAddress = new MailAddress(email);
-            }
-            catch
-            {
-                valid = false;
-            }
-
-            return valid;
         }
     }
 }
