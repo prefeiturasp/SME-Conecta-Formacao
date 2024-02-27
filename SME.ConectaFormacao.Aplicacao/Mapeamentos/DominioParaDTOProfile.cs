@@ -107,12 +107,16 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaRegente, PropostaRegenteDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
                 .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(dest => dest.NomeRegente, opt => opt.MapFrom(o => o.NomeRegente.NaoEhNulo() ? o.NomeRegente.Trim().ToUpper() : null))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf.NaoEhNulo() ? o.Cpf.SomenteNumeros() : null));
 
             CreateMap<PropostaTutor, PropostaTutorDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
                 .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(dest => dest.NomeTutor, opt => opt.MapFrom(o => o.NomeTutor.NaoEhNulo() ? o.NomeTutor.Trim().ToUpper() : null))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf.NaoEhNulo() ? o.Cpf.SomenteNumeros() : null));
 
             CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>()
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
@@ -214,8 +218,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.NomeFormacao))
                 .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
                 .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => $"{o.PropostaTurma.Proposta.DataRealizacaoInicio.Value:dd/MM/yyyy} até {o.PropostaTurma.Proposta.DataRealizacaoFim.Value:dd/MM/yyyy}"))
-                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()))
-                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao == Dominio.Enumerados.SituacaoInscricao.Confirmada && o.PropostaTurma.Proposta.DataRealizacaoInicio.Value > DateTimeExtension.HorarioBrasilia()));
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()));
 
             CreateMap<Inscricao, DadosListagemInscricaoDTO>()
                 .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
