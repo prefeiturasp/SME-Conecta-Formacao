@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
-using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
@@ -15,7 +13,6 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(ArquivoArmazenadoDTO), 200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
         public async Task<IActionResult> Carregar(
             [FromServices] ICasoDeUsoArquivoCarregarTemporario casoDeUsoArquivoCarregarTemporario,
             IFormFile file)
@@ -27,7 +24,6 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
         public async Task<IActionResult> Excluir(
             [FromServices] ICasoDeUsoArquivoExcluir casoDeUsoArquivoExcluir,
             [FromBody] Guid[] codigos)
@@ -39,7 +35,6 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
         public async Task<IActionResult> Baixar(
             [FromServices] ICasoDeUsoArquivoBaixar casoDeUsoArquivoBaixar,
             Guid codigoArquivo)
