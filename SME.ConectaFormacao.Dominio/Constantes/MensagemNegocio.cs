@@ -107,5 +107,4 @@ public class MensagemNegocio
     public const string TUTOR_JA_EXISTE_NA_PROPOSTA = "Já existe um tutor com o CPF informado para {0}";
     public const string REGENTE_JA_EXISTE_NA_PROPOSTA = "Já existe um regente com o CPF informado para {0}";
     public const string INFORME_O_CARGO = "É necessário informar o cargo ";
-
 }
