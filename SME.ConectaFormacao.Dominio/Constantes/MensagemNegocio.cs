@@ -104,4 +104,5 @@ public class MensagemNegocio
 
     public const string PROPOSTA_COM_PUBLICO_ALVO_SEM_DEPARA_CONFIGURADO = "A Proposta {0} possui publico alvo sem o depara com eol configurado";
     public const string PROPOSTA_COM_FUNCAO_ESPECIFICA_SEM_DEPARA_CONFIGURADO = "A Proposta {0} possui função específica sem o depara com eol configurado";
+    public const string INFORME_O_CARGO = "É necessário informar o cargo ";
 }
