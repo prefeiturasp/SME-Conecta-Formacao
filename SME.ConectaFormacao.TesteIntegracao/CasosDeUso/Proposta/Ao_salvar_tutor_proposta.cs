@@ -122,7 +122,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaTutor>();
             var tutorDto = PropostaSalvarMock.GerarTutor(3);
-            tutorDto.Cpf= "11111111111";
+            tutorDto.Cpf = "11111111111";
 
             // act
             var excecao = await Should.ThrowAsync<NegocioException>(useCase.Executar(proposta.Id, tutorDto));

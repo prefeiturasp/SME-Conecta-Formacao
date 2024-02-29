@@ -1,13 +1,11 @@
 using MediatR;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
     public class ExisteCargoFuncaoOutrosNaPropostaQueryHandler : IRequestHandler<ExisteCargoFuncaoOutrosNaPropostaQuery, bool>
     {
         private readonly IRepositorioProposta _repositorioProposta;
-        private readonly ICacheDistribuido _cacheDistribuido;
 
         public ExisteCargoFuncaoOutrosNaPropostaQueryHandler(IRepositorioProposta repositorioProposta)
         {
