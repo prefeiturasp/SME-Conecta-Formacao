@@ -79,7 +79,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
                 return false;
 
             char primeiroDigito = cpf[0];
-            if(cpf == string.Empty.PadLeft(11, primeiroDigito))
+            if (cpf == string.Empty.PadLeft(11, primeiroDigito))
                 return false;
 
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };

@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Utilitarios
     {
         public static bool EmailEhValido(string email)
         {
-            var pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";;
+            var pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"; ;
 
             if (Regex.IsMatch(email, pattern))
                 return true;
@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Utilitarios
                 return false;
 
             char primeiroDigito = cpf[0];
-            if(cpf == string.Empty.PadLeft(11, primeiroDigito))
+            if (cpf == string.Empty.PadLeft(11, primeiroDigito))
                 return false;
 
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
