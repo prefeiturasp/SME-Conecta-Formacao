@@ -186,7 +186,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId, cpf ,turmaId});
         }
         
-        public Task<IEnumerable<PropostaPublicoAlvo>> ObterPublicoAlvoPorId(long propostaId)
+        public async Task<IEnumerable<PropostaPublicoAlvo>> ObterPublicoAlvoPorId(long propostaId)
         {
             var query = @"select 
                             id, 
