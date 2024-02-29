@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         public async Task<bool> Executar(MensagemRabbit param)
         {
             var propostaId = Convert.ToInt64(param.Mensagem);
-            var propostaInscricaoAutomatica = await mediator.Send(new ObterPropostaInscricaoAutomaticaPorIdQuery(propostaId)) ?? 
+            var propostaInscricaoAutomatica = await mediator.Send(new ObterPropostaInscricaoAutomaticaPorIdQuery(propostaId)) ??
                 throw new Exception(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
             if (propostaInscricaoAutomatica.Situacao != SituacaoProposta.Publicada || !propostaInscricaoAutomatica.EhInscricaoAutomatica)

@@ -71,7 +71,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var cpfValido = UtilValidacoes.CpfEhValido(cpf);
             if (!cpfValido)
                 erros.Add(MensagemNegocio.CPF_COM_DIGITO_VERIFICADOR_INVALIDO.Parametros(cpf));
-            
+
             var emailValido = UtilValidacoes.EmailEhValido(email);
             if (!emailValido)
                 erros.Add(MensagemNegocio.EMAIL_INVALIDO.Parametros(email));

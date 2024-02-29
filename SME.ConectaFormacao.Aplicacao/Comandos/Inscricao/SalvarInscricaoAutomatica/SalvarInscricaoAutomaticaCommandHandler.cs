@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly ITransacao _transacao;
 
-        public SalvarInscricaoAutomaticaCommandHandler(IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao, IRepositorioProposta repositorioProposta, ITransacao transacao)
+        public SalvarInscricaoAutomaticaCommandHandler(IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao, ITransacao transacao)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));

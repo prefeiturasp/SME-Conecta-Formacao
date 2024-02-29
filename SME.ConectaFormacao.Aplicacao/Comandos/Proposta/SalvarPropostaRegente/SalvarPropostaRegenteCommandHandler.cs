@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (regenteDepois.Cpf.NaoEhNulo() && !regenteDepois.Cpf.CpfEhValido())
                 throw new NegocioException(MensagemNegocio.CPF_INVALIDO);
-            
+
             var turmasAntes = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(regenteDepois.Id);
             var arrayTurma = request.PropostaRegenteDTO.Turmas.Select(x => x.TurmaId);
             var turmasConsultar = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();

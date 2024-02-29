@@ -12,9 +12,9 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public Task<IEnumerable<long>> Handle(ObterPropostasIdsPorFiltroQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<long>> Handle(ObterPropostasIdsPorFiltroQuery request, CancellationToken cancellationToken)
         {
-            return _repositorioProposta.ObterListagemFormacoesPorFiltro(
+            return await _repositorioProposta.ObterListagemFormacoesPorFiltro(
                 request.FiltroListagemFormacaoDTO.PublicosAlvosIds,
                 request.FiltroListagemFormacaoDTO.Titulo,
                 request.FiltroListagemFormacaoDTO.AreasPromotorasIds,
