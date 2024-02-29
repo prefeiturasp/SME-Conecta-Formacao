@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
             var tutorAntes = await _repositorioProposta.ObterPropostaTutorPorId(request.PropostaTutorDto.Id);
             var tutorDepois = _mapper.Map<PropostaTutor>(request.PropostaTutorDto);
-            
+
             if (tutorDepois.Cpf.NaoEhNulo() && !tutorDepois.Cpf.CpfEhValido())
                 listaErros.Add(MensagemNegocio.CPF_INVALIDO);
             if(listaErros.PossuiElementos())

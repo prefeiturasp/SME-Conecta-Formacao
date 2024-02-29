@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { ids });
         }
 
-        public Task<IEnumerable<CargoFuncao>> ObterIgnorandoExcluidosPorTipo(CargoFuncaoTipo? tipo, bool exibirOutros)
+        public async Task<IEnumerable<CargoFuncao>> ObterIgnorandoExcluidosPorTipo(CargoFuncaoTipo? tipo, bool exibirOutros)
         {
             var tipos = new short[] {
                 (short)CargoFuncaoTipo.Outros,
@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             query += " order by ordem";
 
-            return conexao.Obter().QueryAsync<CargoFuncao>(query, new { tipos });
+            return await conexao.Obter().QueryAsync<CargoFuncao>(query, new { tipos });
         }
 
         public Task<IEnumerable<CargoFuncao>> ObterPorCodigoEol(long[] codigosCargosEol, long[] codigosFuncoesEol)
