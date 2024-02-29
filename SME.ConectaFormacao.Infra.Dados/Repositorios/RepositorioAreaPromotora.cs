@@ -175,11 +175,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { grupoId, dres });
         }
 
-        public Task<IEnumerable<AreaPromotora>> ObterLista()
+        public async Task<IEnumerable<AreaPromotora>> ObterLista()
         {
             var query = @"select id, nome from area_promotora where not excluido order by nome";
 
-            return conexao.Obter().QueryAsync<AreaPromotora>(query);
+            return await conexao.Obter().QueryAsync<AreaPromotora>(query);
         }
 
         public Task<bool> ExistePropostaPorId(long id)
