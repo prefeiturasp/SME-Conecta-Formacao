@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -27,8 +28,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         }
 
 
-        [Fact(DisplayName = "Usuário - Deve Cadastrar Um Usuario Externo")]
-        public async Task Deve_Cadastrar_Usuario_Externo()
+        [Fact(DisplayName = "Usuário - Deve Cadastrar Um Usuario Externo - aguardando validar email")]
+        public async Task Deve_Cadastrar_Usuario_Externo_aguardando_validar_email()
         {
             //arrange
             var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
@@ -39,6 +40,31 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
 
             // assert
             retorno.ShouldBeTrue();
+
+            var usuario = ObterTodos<Dominio.Entidades.Usuario>();
+
+            usuario.FirstOrDefault().Situacao.ShouldBe(Dominio.Enumerados.SituacaoCadastroUsuario.AguardandoValidacaoEmail);
+        }
+
+        [Fact(DisplayName = "Usuário - Deve Cadastrar Um Usuario Externo - sem validar email")]
+        public async Task Deve_Cadastrar_Usuario_Externo_sem_validar_email()
+        {
+            //arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(Dominio.Enumerados.TipoParametroSistema.ConfirmarEmailUsuarioExterno, "false");
+            await InserirNaBase(parametro);
+
+            var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
+
+            // act
+            var retorno = await casoDeUso.InserirUsuarioExterno(usuarioExterno);
+
+            // assert
+            retorno.ShouldBeTrue();
+
+            var usuario = ObterTodos<Dominio.Entidades.Usuario>();
+
+            usuario.FirstOrDefault().Situacao.ShouldBe(Dominio.Enumerados.SituacaoCadastroUsuario.Ativo);
         }
 
         [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo com a Confirmação de Senha Diferente da Senha")]
