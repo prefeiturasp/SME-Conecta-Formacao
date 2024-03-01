@@ -13,6 +13,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.Cpf).ToColumn("cpf");
             Map(t => t.NomeRegente).ToColumn("nome_regente");
             Map(t => t.MiniBiografia).ToColumn("mini_biografia");
+
+            Map(t => t.Turmas).Ignore();
         }
     }
 }

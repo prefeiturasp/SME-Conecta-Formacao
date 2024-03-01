@@ -12,5 +12,6 @@
 
         Task<UnidadeEol> ObterUnidadePorCodigoEol(string codigoEol);
         Task<IEnumerable<FuncionarioExternoServicoEol>?> ObterDadosFuncionarioExternoPorCpf(string cpf);
+        Task<IEnumerable<DreUeAtribuicaoServicoEol>> ObterDreUeAtribuicaoPorFuncionarioCargo(string registroFuncional, long codigoCargo);
     }
 }
