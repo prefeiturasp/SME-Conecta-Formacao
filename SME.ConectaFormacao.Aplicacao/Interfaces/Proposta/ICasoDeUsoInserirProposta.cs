@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
     public interface ICasoDeUsoInserirProposta
     {
-        Task<long> Executar(PropostaDTO propostaDTO);
+        Task<RetornoDTO> Executar(PropostaDTO propostaDTO);
     }
 }
