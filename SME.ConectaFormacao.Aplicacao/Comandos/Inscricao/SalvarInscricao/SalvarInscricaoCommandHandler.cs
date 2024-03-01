@@ -80,7 +80,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             if (emailUsuario != novoEmail)
             {
-                var emailValidar = novoEmail.ToLower();
+                var emailValidar = novoEmail.ToLower().Trim();
 
                 if (!emailValidar.EmailEhValido())
                     throw new NegocioException(string.Format(MensagemNegocio.EMAIL_INVALIDO, emailValidar));
