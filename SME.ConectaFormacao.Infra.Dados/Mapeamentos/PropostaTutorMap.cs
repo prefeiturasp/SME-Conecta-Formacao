@@ -12,6 +12,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.Cpf).ToColumn("cpf");
             Map(t => t.RegistroFuncional).ToColumn("registro_funcional");
             Map(t => t.NomeTutor).ToColumn("nome_tutor");
+
+            Map(c => c.Turmas).Ignore();
         }
     }
 }

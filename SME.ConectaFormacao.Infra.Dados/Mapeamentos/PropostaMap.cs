@@ -37,6 +37,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.DescricaoDaAtividade).ToColumn("descricao_atividade");
             Map(t => t.FormacaoHomologada).ToColumn("formacao_homologada");
             Map(t => t.IntegrarNoSGA).ToColumn("integrar_no_sga");
+
+            Map(t => t.AreaPromotora).Ignore();
+            Map(t => t.ArquivoImagemDivulgacao).Ignore();
+            Map(t => t.Dres).Ignore();
+            Map(t => t.PublicosAlvo).Ignore();
+            Map(t => t.FuncoesEspecificas).Ignore();
+            Map(t => t.CriteriosValidacaoInscricao).Ignore();
+            Map(t => t.VagasRemanecentes).Ignore();
+            Map(t => t.Encontros).Ignore();
+            Map(t => t.PalavrasChaves).Ignore();
+            Map(t => t.CriterioCertificacao).Ignore();
+            Map(t => t.Regentes).Ignore();
+            Map(t => t.Tutores).Ignore();
+            Map(t => t.Turmas).Ignore();
+            Map(t => t.TurmasDres).Ignore();
+            Map(t => t.Modalidades).Ignore();
+            Map(t => t.AnosTurmas).Ignore();
+            Map(t => t.ComponentesCurriculares).Ignore();
+            Map(t => t.Movimentacao).Ignore();
+            Map(t => t.ObterPropostaTurmasDres).Ignore();
         }
     }
 }

@@ -13,6 +13,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.HoraFim).ToColumn("hora_fim");
             Map(c => c.Tipo).ToColumn("tipo");
             Map(c => c.Local).ToColumn("local");
+
+            Map(c => c.Turmas).Ignore();
+            Map(c => c.Datas).Ignore();
         }
     }
 }
