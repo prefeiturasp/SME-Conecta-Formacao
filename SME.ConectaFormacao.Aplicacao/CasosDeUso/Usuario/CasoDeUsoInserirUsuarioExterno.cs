@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         {
         }
 
-        public async Task<bool> InserirUsuarioExterno(UsuarioExternoDTO usuarioExternoDto)
+        public async Task<InserirUsuarioRetornoDTO> InserirUsuarioExterno(UsuarioExternoDTO usuarioExternoDto)
         {
             var cpfSemPontos = usuarioExternoDto.Cpf.SomenteNumeros();
             usuarioExternoDto.Login = cpfSemPontos;
@@ -29,6 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var retornoCoreSSO = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
             if (!retornoCoreSSO)
                 throw new NegocioException(MensagemNegocio.NAO_FOI_POSSIVEL_CADASTRAR_USUARIO_EXTERNO_NO_CORESSO);
+
             bool confirmarEmail = await ObterParametroConfirmarEmailUsuarioExterno();
 
             var tipo = usuarioExternoDto.Tipo ?? TipoUsuario.Externo;
@@ -45,9 +46,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             )));
 
             if (confirmarEmail)
-                return await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
+                await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
 
-            return true;
+            var mensagem = confirmarEmail ? MensagemNegocio.VALIDAR_EMAIL_USUARIO_EXTERNO : MensagemNegocio.USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO;
+
+            return new InserirUsuarioRetornoDTO
+            {
+                ValidarEmail = confirmarEmail,
+                Mensagem = mensagem
+            };
         }
 
         private async Task<bool> ObterParametroConfirmarEmailUsuarioExterno()
