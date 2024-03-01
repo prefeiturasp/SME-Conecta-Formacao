@@ -22,6 +22,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 
             Map(c => c.ArquivoId).ToColumn("arquivo_id");
             Map(c => c.Situacao).ToColumn("situacao");
+
+
+            Map(c => c.PropostaTurma).Ignore();
+            Map(c => c.Cargo).Ignore();
+            Map(c => c.Funcao).Ignore();
+            Map(c => c.Usuario).Ignore();
         }
     }
 }
