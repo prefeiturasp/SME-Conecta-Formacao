@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
         public async Task<bool> InserirUsuarioExterno(UsuarioExternoDTO usuarioExternoDto)
         {
-            var cpfSemPontos = usuarioExternoDto.Cpf.Replace(".", "").Replace("-", "");
+            var cpfSemPontos = usuarioExternoDto.Cpf.SomenteNumeros();
             usuarioExternoDto.Login = cpfSemPontos;
             usuarioExternoDto.Cpf = cpfSemPontos;
             await Validacoes(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email);
@@ -29,20 +29,34 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var retornoCoreSSO = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
             if (!retornoCoreSSO)
                 throw new NegocioException(MensagemNegocio.NAO_FOI_POSSIVEL_CADASTRAR_USUARIO_EXTERNO_NO_CORESSO);
-
+            bool confirmarEmail = await ObterParametroConfirmarEmailUsuarioExterno();
 
             var tipo = usuarioExternoDto.Tipo ?? TipoUsuario.Externo;
+            var situacaoCadastroUsuario = confirmarEmail ? SituacaoCadastroUsuario.AguardandoValidacaoEmail : SituacaoCadastroUsuario.Ativo;
+
             await mediator.Send(new SalvarUsuarioCommand(new Dominio.Entidades.Usuario(
                 usuarioExternoDto.Login,
                 usuarioExternoDto.Nome,
                 usuarioExternoDto.Email,
                 usuarioExternoDto.Cpf,
                 tipo,
-                SituacaoCadastroUsuario.AguardandoValidacaoEmail,
+                situacaoCadastroUsuario,
                 usuarioExternoDto.CodigoUnidade
             )));
 
-            return await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
+            if (confirmarEmail)
+                return await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
+
+            return true;
+        }
+
+        private async Task<bool> ObterParametroConfirmarEmailUsuarioExterno()
+        {
+            var confirmarEmailUsuarioExterno = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.ConfirmarEmailUsuarioExterno, DateTimeExtension.HorarioBrasilia().Year));
+            if (bool.TryParse(confirmarEmailUsuarioExterno?.Valor, out bool confirmarEmail))
+                return confirmarEmail;
+
+            return true;
         }
 
         private async Task ValidarCpfEmUsuarioExisteNoCoreSSO(string cpf)
