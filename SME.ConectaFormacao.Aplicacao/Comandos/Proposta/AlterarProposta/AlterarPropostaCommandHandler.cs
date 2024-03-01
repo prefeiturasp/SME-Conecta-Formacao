@@ -44,52 +44,49 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await _mediator.Send(new ValidarAreaPromotoraCommand(propostaDepois.AreaPromotoraId, propostaDepois.IntegrarNoSGA), cancellationToken);
 
-            if (request.PropostaDTO.Situacao != SituacaoProposta.Rascunho)
+            var erros = new List<string>();
+
+            var possuiTurmaSemDrePreenchida = request.PropostaDTO.Turmas.Any(x => x.DresIds.Length == 0);
+            if (possuiTurmaSemDrePreenchida)
+                erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
+
+            if (!possuiTurmaSemDrePreenchida)
             {
-                var erros = new List<string>();
+                var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia(), cancellationToken);
+                var possuiTurmaComTodasAsDres = request.PropostaDTO.Turmas.Any(c => c.DresIds.Contains(dreTodos.Id));
+                var possuiTurmaComDreSelecionada = request.PropostaDTO.Turmas.Any(c => !c.DresIds.Contains(dreTodos.Id));
 
-                var possuiTurmaSemDrePreenchida = request.PropostaDTO.Turmas.Any(x => x.DresIds.Length == 0);
-                if (possuiTurmaSemDrePreenchida)
-                    erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
-
-                if (!possuiTurmaSemDrePreenchida)
-                {
-                    var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia(), cancellationToken);
-                    var possuiTurmaComTodasAsDres = request.PropostaDTO.Turmas.Any(c => c.DresIds.Contains(dreTodos.Id));
-                    var possuiTurmaComDreSelecionada = request.PropostaDTO.Turmas.Any(c => !c.DresIds.Contains(dreTodos.Id));
-
-                    if (possuiTurmaComTodasAsDres && possuiTurmaComDreSelecionada)
-                        erros.Add(MensagemNegocio.TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS);
-                }
-
-                var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim), cancellationToken);
-
-                if (!string.IsNullOrEmpty(validarDatas))
-                    erros.Add(validarDatas);
-
-                var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
-                if (!string.IsNullOrEmpty(errosRegente))
-                    erros.Add(errosRegente);
-
-                var errosInformacoesGerais = await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
-                if (errosInformacoesGerais.Any())
-                    erros.AddRange(errosInformacoesGerais);
-
-                var errosDatas = await _mediator.Send(new ValidarDatasExistentesNaPropostaCommand(request.Id, request.PropostaDTO), cancellationToken);
-                if (errosDatas.Any())
-                    erros.AddRange(errosDatas);
-
-                var errosDetalhamento = await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
-                if (errosDetalhamento.Any())
-                    erros.AddRange(errosDetalhamento);
-
-                var errosCritériosCertificacao = await _mediator.Send(new ValidarCertificacaoPropostaCommand(request.PropostaDTO), cancellationToken);
-                if (errosCritériosCertificacao.Any())
-                    erros.AddRange(errosCritériosCertificacao);
-
-                if (erros.Any())
-                    throw new NegocioException(erros);
+                if (possuiTurmaComTodasAsDres && possuiTurmaComDreSelecionada)
+                    erros.Add(MensagemNegocio.TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS);
             }
+
+            var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim), cancellationToken);
+
+            if (!string.IsNullOrEmpty(validarDatas))
+                erros.Add(validarDatas);
+
+            var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
+            if (!string.IsNullOrEmpty(errosRegente))
+                erros.Add(errosRegente);
+
+            var errosInformacoesGerais = await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
+            if (errosInformacoesGerais.Any())
+                erros.AddRange(errosInformacoesGerais);
+
+            var errosDatas = await _mediator.Send(new ValidarDatasExistentesNaPropostaCommand(request.Id, request.PropostaDTO), cancellationToken);
+            if (errosDatas.Any())
+                erros.AddRange(errosDatas);
+
+            var errosDetalhamento = await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
+            if (errosDetalhamento.Any())
+                erros.AddRange(errosDetalhamento);
+
+            var errosCritériosCertificacao = await _mediator.Send(new ValidarCertificacaoPropostaCommand(request.PropostaDTO), cancellationToken);
+            if (errosCritériosCertificacao.Any())
+                erros.AddRange(errosCritériosCertificacao);
+
+            if (erros.Any())
+                throw new NegocioException(erros);
 
             var transacao = _transacao.Iniciar();
             try
