@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 
             if(listaErros.PossuiElementos()) 
                 throw new NegocioException(listaErros);
-            
+
             var turmasAntes = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(regenteDepois.Id);
             var arrayTurma = request.PropostaRegenteDTO.Turmas.Select(x => x.TurmaId);
             var turmasConsultar = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
