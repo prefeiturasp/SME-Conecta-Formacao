@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.Extensions.Brazil;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
@@ -9,7 +10,7 @@ public class UsuarioInserirExternoMock
     public static UsuarioExternoDTO GerarUsuarioExternoDTO()
     {
         var pessoa = new Person("pt_BR");
-        var cpf = new Faker().Random.AlphaNumeric(11);
+        var cpf = pessoa.Cpf();
         var senha = "Minha@Senha1";
         return new UsuarioExternoDTO
         {
