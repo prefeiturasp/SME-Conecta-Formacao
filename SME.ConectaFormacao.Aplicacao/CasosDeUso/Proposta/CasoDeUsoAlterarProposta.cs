@@ -18,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 return await mediator.Send(new AlterarPropostaRascunhoCommand(id, propostaDTO));
 
             await SalvarMovimentacao(id, propostaDTO.Situacao);
+
             return await mediator.Send(new AlterarPropostaCommand(id, propostaDTO));
         }
         private async Task SalvarMovimentacao(long propostaId, SituacaoProposta situacao)

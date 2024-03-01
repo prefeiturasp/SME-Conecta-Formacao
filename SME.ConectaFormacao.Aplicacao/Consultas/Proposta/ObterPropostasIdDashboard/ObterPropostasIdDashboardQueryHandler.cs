@@ -13,9 +13,9 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public Task<IEnumerable<Proposta>> Handle(ObterPropostasIdDashboardQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Proposta>> Handle(ObterPropostasIdDashboardQuery request, CancellationToken cancellationToken)
         {
-            return _repositorioProposta.ObterPropostasIdsDashBoard(
+            return await _repositorioProposta.ObterPropostasIdsDashBoard(
                 request.AreaPromotoraIdUsuarioLogado,
                 request.Filtro.Id,
                 request.Filtro.AreaPromotoraId,

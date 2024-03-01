@@ -9,6 +9,6 @@
         public string Datas { get; set; }
         public string CargoFuncao { get; set; }
         public string Situacao { get; set; }
-        public bool PodeCancelar { get; set; }
+        public bool PodeCancelar { get; set; } = true;
     }
 }

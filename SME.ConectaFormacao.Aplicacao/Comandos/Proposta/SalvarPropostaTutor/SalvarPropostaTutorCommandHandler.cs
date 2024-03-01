@@ -1,6 +1,9 @@
 using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -25,13 +28,15 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var tutorAntes = await _repositorioProposta.ObterPropostaTutorPorId(request.PropostaTutorDto.Id);
             var tutorDepois = _mapper.Map<PropostaTutor>(request.PropostaTutorDto);
-            tutorDepois.NomeTutor = tutorDepois.NomeTutor.Trim();
+
+            if (tutorDepois.Cpf.NaoEhNulo() && !tutorDepois.Cpf.CpfEhValido())
+                throw new NegocioException(MensagemNegocio.CPF_INVALIDO);
+
             var turmasAntes = await _repositorioProposta.ObterTutorTurmasPorTutorId(tutorDepois.Id);
 
             var arrayTurma = request.PropostaTutorDto.Turmas.Select(x => x.TurmaId);
             var turmaConsulta = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
-            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, turmaConsulta));
-
+            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, turmaConsulta), cancellationToken);
 
             var transacao = _transacao.Iniciar();
             try
@@ -39,7 +44,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (tutorAntes != null)
                 {
                     if (tutorAntes.ProfissionalRedeMunicipal != tutorDepois.ProfissionalRedeMunicipal
-                        || tutorAntes.RegistroFuncional.Trim() != tutorDepois.RegistroFuncional
+                        || tutorAntes.RegistroFuncional != tutorDepois.RegistroFuncional
                         || tutorAntes.NomeTutor != tutorDepois.NomeTutor)
                     {
                         tutorDepois.PropostaId = request.PropostaId;

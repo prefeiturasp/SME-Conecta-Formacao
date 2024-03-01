@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
             var inscricaoAutomaticaPropostaTurmaCursistasDTO = new List<InscricaoAutomaticaPropostaTurmaCursistasDTO>();
 
-            var possuiDres = inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.PropostasTurmas.Any(t => t.DreId.HasValue);
+            var possuiDres = inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.PropostasTurmas.Any(t => !string.IsNullOrEmpty(t.CodigoDre));
 
             IEnumerable<CursistaServicoEol> cursistas = inscricaoAutomaticaTratarTurmas.CursistasEOL;
             var turmasAgrupadas = inscricaoAutomaticaTratarTurmas.PropostaInscricaoAutomatica.PropostasTurmas

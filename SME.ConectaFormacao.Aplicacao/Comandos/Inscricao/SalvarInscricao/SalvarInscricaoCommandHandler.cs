@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly ITransacao _transacao;
 
-        public SalvarInscricaoCommandHandler(IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao, IRepositorioProposta repositorioProposta, ITransacao transacao)
+        public SalvarInscricaoCommandHandler(IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao, ITransacao transacao)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -29,6 +29,10 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia, cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+
+            if (usuarioLogado.Tipo == TipoUsuario.Interno)
+                if (request.InscricaoDTO.CargoCodigo.EhNulo())
+                    throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
 
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoDTO);
             inscricao.UsuarioId = usuarioLogado.Id;
@@ -76,13 +80,10 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             if (emailUsuario != novoEmail)
             {
-                var emailValidar = novoEmail.ToLower();
+                var emailValidar = novoEmail.ToLower().Trim();
 
                 if (!emailValidar.EmailEhValido())
                     throw new NegocioException(string.Format(MensagemNegocio.EMAIL_INVALIDO, emailValidar));
-
-                if (!emailValidar.ToLower().Contains("@sme") && !emailValidar.ToLower().Contains("@edu.sme"))
-                    throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_EMAIL_FORA_DOMINIO_REDE_DIRETA);
 
                 await _mediator.Send(new AlterarEmailServicoAcessosCommand(login, emailValidar), cancellationToken);
             }
