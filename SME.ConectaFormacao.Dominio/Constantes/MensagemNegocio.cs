@@ -107,4 +107,7 @@ public class MensagemNegocio
     public const string TUTOR_JA_EXISTE_NA_PROPOSTA = "Já existe um tutor com o CPF informado para {0}";
     public const string REGENTE_JA_EXISTE_NA_PROPOSTA = "Já existe um regente com o CPF informado para {0}";
     public const string INFORME_O_CARGO = "É necessário informar o cargo ";
+
+    public const string VALIDAR_EMAIL_USUARIO_EXTERNO = "Cadastro inserido com sucesso. Enviamos um e-mail para validação do seu cadastro. Confira a sua caixa de entrada!";
+    public const string USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO = "Cadastro realizado com sucesso";
 }
