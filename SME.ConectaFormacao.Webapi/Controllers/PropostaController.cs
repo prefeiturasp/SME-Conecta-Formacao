@@ -151,7 +151,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
@@ -163,7 +163,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_A, Policy = "Bearer")]
