@@ -1834,6 +1834,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             p.formato,
                             p.data_realizacao_inicio dataRealizacaoInicio,
                             p.data_realizacao_fim dataRealizacaoFim,                            
+                            p.data_inscricao_inicio dataInscricaoInicio,
                             p.data_inscricao_fim dataInscricaoFim,
                             p.justificativa,
                             p.formacao_homologada as FormacaoHomologada    

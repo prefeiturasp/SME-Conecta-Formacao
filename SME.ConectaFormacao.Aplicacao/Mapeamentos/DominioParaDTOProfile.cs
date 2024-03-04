@@ -178,7 +178,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.TipoFormacaoDescricao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
                 .ForMember(dest => dest.FormatoDescricao, opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
                 .ForMember(dest => dest.InscricaoEncerrada, opt => opt.MapFrom(o => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim))
-                .ForMember(dest => dest.Periodo, opt => opt.MapFrom(o => $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"));
+                .ForMember(dest => dest.Periodo, opt => opt.MapFrom(o => $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"))
+                .ForMember(dest => dest.PeriodoInscricao, opt => opt.MapFrom(o => $"{o.DataInscricaoInicio.GetValueOrDefault():dd/MM} até {o.DataInscricaoFim.GetValueOrDefault():dd/MM}"));
 
             CreateMap<FormacaoDetalhada, RetornoFormacaoDetalhadaDTO>()
                 .ForMember(dest => dest.Titulo, opt => opt.MapFrom(x => x.NomeFormacao))
@@ -190,7 +191,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.DataInscricaoFim, opt => opt.MapFrom(o => o.DataInscricaoFim))
                 .ForMember(dest => dest.Periodo,
                     opt => opt.MapFrom(o =>
-                        $"De {o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"));
+                        $"De {o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"))
+                .ForMember(dest => dest.PeriodoInscricao,
+                opt => opt.MapFrom(o =>
+                        $"De {o.DataInscricaoInicio.GetValueOrDefault():dd/MM} até {o.DataInscricaoFim.GetValueOrDefault():dd/MM}"));
 
             CreateMap<FormacaoTurma, RetornoTurmaDetalheDTO>()
                 .ForMember(dest => dest.Horario,

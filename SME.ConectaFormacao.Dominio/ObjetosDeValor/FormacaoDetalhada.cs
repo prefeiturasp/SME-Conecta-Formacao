@@ -10,6 +10,7 @@ namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
         public string NomeFormacao { get; set; }
         public DateTime? DataRealizacaoInicio { get; set; }
         public DateTime? DataRealizacaoFim { get; set; }
+        public DateTime? DataInscricaoInicio { get; set; }
         public DateTime? DataInscricaoFim { get; set; }
         public string Justificativa { get; set; }
         public FormacaoHomologada FormacaoHomologada { get; set; }

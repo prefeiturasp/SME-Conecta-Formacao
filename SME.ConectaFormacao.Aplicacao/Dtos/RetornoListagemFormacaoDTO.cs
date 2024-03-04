@@ -7,6 +7,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public long Id { get; set; }
         public string Titulo { get; set; }
         public string Periodo { get; set; }
+        public string PeriodoInscricao { get; set; }
         public string AreaPromotora { get; set; }
         public TipoFormacao TipoFormacao { get; set; }
         public string TipoFormacaoDescricao { get; set; }
