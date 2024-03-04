@@ -108,10 +108,10 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (ehPropostaPublicada)
                 {
-                    mensagem.AppendLine(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA);
+                    mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA);
 
                     if (ehPropostaAutomatica)
-                        mensagem.AppendLine(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
+                        mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
                 }
                 
                 return RetornoDTO.RetornarSucesso(mensagem.ToString(),request.Id);
