@@ -9,9 +9,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         {
         }
 
-        public async Task<bool> Executar(string login, string email)
+        public async Task<bool> Executar(string login, string nome)
         {
-            return await mediator.Send(new AlterarNomeServicoAcessosCommand(login, email));
+            return await mediator.Send(new AlterarNomeServicoAcessosCommand(login, nome));
         }
     }
 }
