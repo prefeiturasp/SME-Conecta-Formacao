@@ -60,6 +60,13 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Descricao));
 
             // -> Proposta
+            CreateMap<AreaPromotora, PropostaInformacoesCadastranteDTO>()
+                .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(x => x.Nome))
+                .ForMember(dest => dest.AreaPromotoraEmails, opt => opt.MapFrom(x => x.Email.Replace(";", ", ")))
+                .ForMember(dest => dest.AreaPromotoraTelefones, opt => opt.MapFrom(x => string.Join(", ", x.Telefones.Select(t => t.Telefone.Length > 10 ? t.Telefone.AplicarMascara(@"\(00\) 00000\-0000") : t.Telefone.AplicarMascara(@"\(00\) 0000\-0000")))))
+                .ForMember(dest => dest.AreaPromotoraTipo, opt => opt.MapFrom(x => x.Tipo.Nome()))
+                .ForMember(dest => dest.AreaPromotoraTipoId, opt => opt.MapFrom(x => x.Tipo));
+
             CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
             CreateMap<CargoFuncao, CargoFuncaoDTO>();
             CreateMap<PalavraChave, PalavraChaveDTO>();

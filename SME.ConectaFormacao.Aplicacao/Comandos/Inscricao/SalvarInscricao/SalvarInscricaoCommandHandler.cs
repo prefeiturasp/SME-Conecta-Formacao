@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<RetornoDTO> Handle(SalvarInscricaoCommand request, CancellationToken cancellationToken)
         {
-            var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia, cancellationToken) ??
+            var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             if (usuarioLogado.Tipo == TipoUsuario.Interno)
