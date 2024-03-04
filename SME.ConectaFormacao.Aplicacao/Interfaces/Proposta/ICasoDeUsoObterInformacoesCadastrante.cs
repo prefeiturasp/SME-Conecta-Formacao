@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
     public interface ICasoDeUsoObterInformacoesCadastrante
     {
-        Task<PropostaInformacoesCadastranteDTO> Executar();
+        Task<PropostaInformacoesCadastranteDTO> Executar(long? propostaId);
     }
 }

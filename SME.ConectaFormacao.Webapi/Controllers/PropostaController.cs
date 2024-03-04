@@ -19,9 +19,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterInformacoesCadastrante(
-            [FromServices] ICasoDeUsoObterInformacoesCadastrante casoDeUsoObterInformacoesCadastrante)
+            [FromServices] ICasoDeUsoObterInformacoesCadastrante casoDeUsoObterInformacoesCadastrante,
+            [FromQuery] long? propostaId)
         {
-            return Ok(await casoDeUsoObterInformacoesCadastrante.Executar());
+            return Ok(await casoDeUsoObterInformacoesCadastrante.Executar(propostaId));
         }
 
         [HttpGet("roteiro")]
