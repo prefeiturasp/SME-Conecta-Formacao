@@ -46,12 +46,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var retornoDto = await casoDeUso.Executar(propostaDTO);
 
             // assert
-            id.ShouldBeGreaterThan(0);
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
 
-            ValidarPropostaDTO(propostaDTO, id);
+            ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
         }
 
         [Fact(DisplayName = "Proposta - Deve inserir proposta válida")]
@@ -117,23 +117,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var retornoDto = await casoDeUso.Executar(propostaDTO);
 
             // assert
-            id.ShouldBeGreaterThan(0);
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
 
-            ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, id);
-            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
-            ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, retornoDto.EntidadeId);
+            ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, retornoDto.EntidadeId);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, retornoDto.EntidadeId);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, retornoDto.EntidadeId);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, retornoDto.EntidadeId);
+            ValidarPropostaTurmasDTO(propostaDTO.Turmas, retornoDto.EntidadeId);
             ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
-            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
-            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
-            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
-            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
+            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, retornoDto.EntidadeId);
+            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, retornoDto.EntidadeId);
+            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, retornoDto.EntidadeId);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, retornoDto.EntidadeId);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção para campos obrigatórios")]
@@ -230,23 +230,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var retornoDto = await casoDeUso.Executar(propostaDTO);
 
             // assert
-            id.ShouldBeGreaterThan(0);
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
 
-            ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, id);
-            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
-            ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, retornoDto.EntidadeId);
+            ValidarPropostaFuncaoEspecificaDTO(propostaDTO.FuncoesEspecificas, retornoDto.EntidadeId);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, retornoDto.EntidadeId);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, retornoDto.EntidadeId);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, retornoDto.EntidadeId);
+            ValidarPropostaTurmasDTO(propostaDTO.Turmas, retornoDto.EntidadeId);
             ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
-            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
-            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
-            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
-            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
+            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, retornoDto.EntidadeId);
+            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, retornoDto.EntidadeId);
+            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, retornoDto.EntidadeId);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, retornoDto.EntidadeId);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção quando o tipo de formação for curso e formato hibrido")]
@@ -449,22 +449,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var retornoDto = await casoDeUso.Executar(propostaDTO);
 
             // assert
-            id.ShouldBeGreaterThan(0);
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
 
-            ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
-            ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, retornoDto.EntidadeId);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, retornoDto.EntidadeId);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, retornoDto.EntidadeId);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, retornoDto.EntidadeId);
+            ValidarPropostaTurmasDTO(propostaDTO.Turmas, retornoDto.EntidadeId);
             ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
-            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
-            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
-            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
-            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
+            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, retornoDto.EntidadeId);
+            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, retornoDto.EntidadeId);
+            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, retornoDto.EntidadeId);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, retornoDto.EntidadeId);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção quando critério validação inscrição outros estiver habilitado")]
@@ -595,22 +595,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var retornoDto = await casoDeUso.Executar(propostaDTO);
 
             // assert
-            id.ShouldBeGreaterThan(0);
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
 
-            ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
-            ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, retornoDto.EntidadeId);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, retornoDto.EntidadeId);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, retornoDto.EntidadeId);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, retornoDto.EntidadeId);
+            ValidarPropostaTurmasDTO(propostaDTO.Turmas, retornoDto.EntidadeId);
             ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
-            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
-            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
-            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
-            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
+            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, retornoDto.EntidadeId);
+            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, retornoDto.EntidadeId);
+            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, retornoDto.EntidadeId);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, retornoDto.EntidadeId);
         }
 
         [Fact(DisplayName = "Proposta - Não deve inserir quando os campos Público Alvo, Funções Específicas, Modalidade, Ano Turma e Componente Curricular forem omitidos")]
@@ -788,22 +788,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var retornoDto = await casoDeUso.Executar(propostaDTO);
 
             // assert
-            id.ShouldBeGreaterThan(0);
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
 
-            ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
-            ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, retornoDto.EntidadeId);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, retornoDto.EntidadeId);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, retornoDto.EntidadeId);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, retornoDto.EntidadeId);
+            ValidarPropostaTurmasDTO(propostaDTO.Turmas, retornoDto.EntidadeId);
             ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
-            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
-            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
-            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
-            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
+            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, retornoDto.EntidadeId);
+            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, retornoDto.EntidadeId);
+            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, retornoDto.EntidadeId);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, retornoDto.EntidadeId);
         }
 
         [Fact(DisplayName = "Proposta - Deve inserir quando for preenchido somente Funções Específicas e os campos: Público Alvo, Modalidade, Ano da Turma e Componente Curricular omitidos")]
@@ -866,22 +866,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var retornoDto = await casoDeUso.Executar(propostaDTO);
 
             // assert
-            id.ShouldBeGreaterThan(0);
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
 
-            ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
-            ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, retornoDto.EntidadeId);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, retornoDto.EntidadeId);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, retornoDto.EntidadeId);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, retornoDto.EntidadeId);
+            ValidarPropostaTurmasDTO(propostaDTO.Turmas, retornoDto.EntidadeId);
             ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
-            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
-            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
-            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
-            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
+            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, retornoDto.EntidadeId);
+            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, retornoDto.EntidadeId);
+            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, retornoDto.EntidadeId);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, retornoDto.EntidadeId);
         }
 
         [Fact(DisplayName = "Proposta - Deve inserir quando for preenchido somente Modalidade, Ano Turma e Componente Curricular e os campos: Público Alvo e Funções Específicas omitidos")]
@@ -944,22 +944,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 
             // act 
-            var id = await casoDeUso.Executar(propostaDTO);
+            var retornoDto = await casoDeUso.Executar(propostaDTO);
 
             // assert
-            id.ShouldBeGreaterThan(0);
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
 
-            ValidarPropostaDTO(propostaDTO, id);
-            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, id);
-            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, id);
-            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, id);
-            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, id);
-            ValidarPropostaTurmasDTO(propostaDTO.Turmas, id);
+            ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
+            ValidarPropostaPublicoAlvoDTO(propostaDTO.PublicosAlvo, retornoDto.EntidadeId);
+            ValidarPropostaVagaRemanecenteDTO(propostaDTO.VagasRemanecentes, retornoDto.EntidadeId);
+            ValidarPropostaCriterioValidacaoInscricaoDTO(propostaDTO.CriteriosValidacaoInscricao, retornoDto.EntidadeId);
+            ValidarPropostaPalavrasChavesDTO(propostaDTO.PalavrasChaves, retornoDto.EntidadeId);
+            ValidarPropostaTurmasDTO(propostaDTO.Turmas, retornoDto.EntidadeId);
             ValidarPropostaTurmasDresDTO(propostaDTO.Turmas);
-            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, id);
-            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, id);
-            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, id);
-            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, id);
+            ValidarPropostaModalidadesDTO(propostaDTO.Modalidades, retornoDto.EntidadeId);
+            ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, retornoDto.EntidadeId);
+            ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, retornoDto.EntidadeId);
+            ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, retornoDto.EntidadeId);
         }
     }
 }

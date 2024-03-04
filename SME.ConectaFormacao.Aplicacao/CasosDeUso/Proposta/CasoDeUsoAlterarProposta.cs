@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<long> Executar(long id, PropostaDTO propostaDTO)
+        public async Task<RetornoDTO> Executar(long id, PropostaDTO propostaDTO)
         {
 
             if (propostaDTO.Situacao == Dominio.Enumerados.SituacaoProposta.Rascunho)

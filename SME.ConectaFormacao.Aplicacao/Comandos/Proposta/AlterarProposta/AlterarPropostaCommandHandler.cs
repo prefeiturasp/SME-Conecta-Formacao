@@ -1,15 +1,19 @@
-﻿using AutoMapper;
+﻿using System.Reflection.Metadata;
+using System.Text;
+using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class AlterarPropostaCommandHandler : IRequestHandler<AlterarPropostaCommand, long>
+    public class AlterarPropostaCommandHandler : IRequestHandler<AlterarPropostaCommand, RetornoDTO>
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -24,9 +28,13 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
+        public async Task<RetornoDTO> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
+
+            var ehPropostaPublicada = proposta.Situacao.EstaPublicada();
+
+            var ehPropostaAutomatica = request.PropostaDTO.TiposInscricao.PossuiElementos() && request.PropostaDTO.TiposInscricao.Any(a => a.TipoInscricao.EhAutomaticaOuJEIF());
 
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
 
@@ -60,7 +68,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     erros.Add(MensagemNegocio.TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS);
             }
 
-            var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim), cancellationToken);
+            var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(propostaDepois.DataInscricaoFim, propostaDepois.DataRealizacaoFim), cancellationToken);
 
             if (!string.IsNullOrEmpty(validarDatas))
                 erros.Add(validarDatas);
@@ -95,7 +103,18 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
                 transacao.Commit();
-                return request.Id;
+
+                var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
+
+                if (ehPropostaPublicada)
+                {
+                    mensagem.AppendLine(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA);
+
+                    if (ehPropostaAutomatica)
+                        mensagem.AppendLine(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
+                }
+                
+                return RetornoDTO.RetornarSucesso(mensagem.ToString(),request.Id);
             }
             catch
             {

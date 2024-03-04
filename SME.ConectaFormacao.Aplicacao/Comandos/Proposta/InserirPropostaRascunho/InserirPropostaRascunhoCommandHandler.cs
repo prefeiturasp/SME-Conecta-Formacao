@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados;
@@ -7,7 +9,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class InserirPropostaRascunhoCommandHandler : IRequestHandler<InserirPropostaRascunhoCommand, long>
+    public class InserirPropostaRascunhoCommandHandler : IRequestHandler<InserirPropostaRascunhoCommand, RetornoDTO>
     {
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
@@ -22,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<long> Handle(InserirPropostaRascunhoCommand request, CancellationToken cancellationToken)
+        public async Task<RetornoDTO> Handle(InserirPropostaRascunhoCommand request, CancellationToken cancellationToken)
         {
             var proposta = _mapper.Map<Proposta>(request.PropostaDTO);
             proposta.AreaPromotoraId = request.AreaPromotoraId;
@@ -38,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 transacao.Commit();
 
-                return id;
+                return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_INSERIDA_COM_SUCESSO, id),id);
             }
             catch
             {
