@@ -1,10 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarInscricaoCommand : IRequest<long>
+    public class SalvarInscricaoCommand : IRequest<RetornoDTO>
     {
         public SalvarInscricaoCommand(InscricaoDTO inscricaoDTO)
         {
