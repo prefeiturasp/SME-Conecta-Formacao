@@ -11,6 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public Formato Formato { get; set; }
         public string FormatoDescricao { get; set; }
         public string Periodo { get; set; }
+        public string PeriodoInscricao { get; set; }
         public string Justificativa { get; set; }
         public string[] PublicosAlvo { get; set; }
         public string[] PalavrasChaves { get; set; }
