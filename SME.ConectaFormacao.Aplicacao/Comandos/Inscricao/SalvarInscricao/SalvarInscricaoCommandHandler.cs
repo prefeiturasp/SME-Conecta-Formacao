@@ -141,7 +141,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
         }
 
-        private async Task<RetornoDTO> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao, bool intrgraNoSGA)
+        private async Task<RetornoDTO> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao, bool intrgrarNoSGA)
         {
             var transacao = _transacao.Iniciar();
             try
@@ -160,7 +160,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 transacao.Commit();
 
-                var mensagem = !formacaoHomologada && intrgraNoSGA ? MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA : MensagemNegocio.INSCRICAO_CONFIRMADA;
+                var mensagem = !formacaoHomologada && intrgrarNoSGA ? MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA : MensagemNegocio.INSCRICAO_CONFIRMADA;
                 return RetornoDTO.RetornarSucesso(mensagem, inscricao.Id);
             }
             catch
