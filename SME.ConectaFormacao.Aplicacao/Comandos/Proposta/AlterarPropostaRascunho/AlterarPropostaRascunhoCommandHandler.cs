@@ -3,7 +3,6 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -33,7 +32,6 @@ namespace SME.ConectaFormacao.Aplicacao
 
             propostaDepois.Id = proposta.Id;
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
-            propostaDepois.Situacao = SituacaoProposta.Rascunho;
             propostaDepois.ManterCriador(proposta);
             propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
             propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
