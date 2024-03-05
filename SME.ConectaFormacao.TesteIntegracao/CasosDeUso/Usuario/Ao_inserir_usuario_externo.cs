@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var retorno = await casoDeUso.InserirUsuarioExterno(usuarioExterno);
 
             // assert
-            retorno.ShouldBeTrue();
+            retorno.Mensagem.ShouldBe(MensagemNegocio.VALIDAR_EMAIL_USUARIO_EXTERNO);
 
             var usuario = ObterTodos<Dominio.Entidades.Usuario>();
 
@@ -60,7 +60,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var retorno = await casoDeUso.InserirUsuarioExterno(usuarioExterno);
 
             // assert
-            retorno.ShouldBeTrue();
+            retorno.Mensagem.ShouldBe(MensagemNegocio.USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO);
 
             var usuario = ObterTodos<Dominio.Entidades.Usuario>();
 
