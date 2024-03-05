@@ -103,7 +103,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> AlterarNomeCoreSSO([FromRoute] string login, [FromBody] NomeUsuarioDTO nomeUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarNome casoDeUsoUsuarioAlterarNome)
+        public async Task<IActionResult> AlterarNomeConectaECoreSSO([FromRoute] string login, [FromBody] NomeUsuarioDTO nomeUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarNome casoDeUsoUsuarioAlterarNome)
         {
             return Ok(await casoDeUsoUsuarioAlterarNome.Executar(login, nomeUsuarioDto.Nome));
         }
