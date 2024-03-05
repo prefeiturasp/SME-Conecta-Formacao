@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
+using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterAreaPromotoraPorIdQuery : IRequest<AreaPromotoraCompletoDTO>
+    public class ObterAreaPromotoraPorIdQuery : IRequest<AreaPromotora>
     {
         public ObterAreaPromotoraPorIdQuery(long id)
         {

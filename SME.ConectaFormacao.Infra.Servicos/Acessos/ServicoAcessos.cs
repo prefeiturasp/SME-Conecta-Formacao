@@ -225,5 +225,11 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<bool>();
         }
+
+        public Task<bool> AlterarNome(string login, string nome)
+        {
+            var json = new { login, nome }.ObjetoParaJson();
+            return InvocarPutServicoAcessosRetornandoBool(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_NOME, login), json);
+        }
     }
 }

@@ -25,5 +25,42 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Devolvida", Prompt = "#D06D12")]
         Devolvida = 7,
     }
+    public static class SituacaoPropostaExtensao
+    {
+        public static bool EstaPublicada(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Publicada;
+        }
+
+        public static bool EstaCadastrada(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Cadastrada;
+        }
+
+        public static bool EhRascunho(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Rascunho;
+        }
+
+        public static bool EstaAguardandoAnaliseDf(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnaliseDf;
+        }
+
+        public static bool EstaAguardandoAnaliseGestao(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnaliseGestao;
+        }
+
+        public static bool EstaDesfavoravel(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Desfavoravel;
+        }
+
+        public static bool EstaDevolvida(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Devolvida;
+        }
+    }
 
 }

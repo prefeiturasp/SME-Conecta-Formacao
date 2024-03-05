@@ -735,16 +735,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<int> ObterTotalRegentes(long propostaId)
         {
-            var query = @"select
-	                        count(distinct prt.turma_id)
-                        from
-	                        proposta_regente_turma prt
-                        inner join proposta_regente pr on
-	                        prt.proposta_regente_id = pr.id
-                        where
-	                        not prt.excluido
-	                        and not pr.excluido
-	                        and pr.proposta_id = @propostaId ";
+            var query = @"select count(1) from proposta_regente where not excluido and proposta_id  = @propostaId ";
             return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
         }
 
@@ -1874,6 +1865,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             p.formato,
                             p.data_realizacao_inicio dataRealizacaoInicio,
                             p.data_realizacao_fim dataRealizacaoFim,                            
+                            p.data_inscricao_inicio dataInscricaoInicio,
                             p.data_inscricao_fim dataInscricaoFim,
                             p.justificativa,
                             p.formacao_homologada as FormacaoHomologada    

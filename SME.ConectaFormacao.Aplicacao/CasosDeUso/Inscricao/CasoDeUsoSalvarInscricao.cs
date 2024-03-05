@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
@@ -10,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
         }
 
-        public async Task<long> Executar(InscricaoDTO inscricaoDTO)
+        public async Task<RetornoDTO> Executar(InscricaoDTO inscricaoDTO)
         {
             return await mediator.Send(new SalvarInscricaoCommand(inscricaoDTO));
         }
