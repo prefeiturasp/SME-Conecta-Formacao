@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(request.Login), cancellationToken);
 
-            if (usuario == null && request.Login.Length > TAMANHO_RF)
+            if (usuario == null && request.Login.Trim().Length > TAMANHO_RF)
                 throw new NegocioException(MensagemNegocio.REALIZE_SEU_CADASTRO_NO_SISTEMA, HttpStatusCode.Unauthorized);
             
             if (usuario == null)
