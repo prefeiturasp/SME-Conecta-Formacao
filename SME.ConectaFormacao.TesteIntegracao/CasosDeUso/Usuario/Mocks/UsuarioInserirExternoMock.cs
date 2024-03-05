@@ -11,7 +11,7 @@ public class UsuarioInserirExternoMock
     public static UsuarioExternoDTO GerarUsuarioExternoDTO()
     {
         var pessoa = new Person("pt_BR");
-        var cpf = pessoa.Cpf().Limite(11);
+        var cpf = pessoa.Cpf().Replace(".","").Replace("-","");
         var senha = "Minha@Senha1";
         return new UsuarioExternoDTO
         {
