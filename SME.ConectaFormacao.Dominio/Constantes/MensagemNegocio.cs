@@ -70,6 +70,7 @@ public class MensagemNegocio
     public const string NENHUM_COMPONENTE_CURRICULAR_DOS_ANOS_DA_TURMA_DO_EOL_FORAM_LOCALIZADOS = "Não foi possível localizar nenhum componente curricular para os anos das turmas do EOL";
     public const string ERRO_OBTER_CARGOS_FUNCIONARIO_EOL = "Não foi possível localizar os cargos do funcionário no EOL";
     public const string ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL = "Não foi possível localizar os funcionário no EOL com base nos critérios de cargo, função, ano, modalidade e componente curricular";
+    public const string ERRO_OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_E_CARGO_EOL = "Não foi possível obter as dre com atribuicao do servidor e cargo no EOL";
 
     public const string TURMA_NAO_ENCONTRADA = "Turma não encontrada";
     public const string NENHUMA_TURMA_ENCONTRADA = "Nenhuma turma encontrada para a proposta";
