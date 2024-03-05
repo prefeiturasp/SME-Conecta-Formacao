@@ -43,7 +43,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_UNIDADE_POR_CODIGO.Parametros(codigoEol));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
-                throw new NegocioException(MensagemNegocio.UNIDADE_NAO_LOCALIZADA_POR_CODIGO, resposta.StatusCode);
+                throw new NegocioException(MensagemNegocio.UNIDADE_NAO_LOCALIZADA_POR_CODIGO);
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<UnidadeEol>();
