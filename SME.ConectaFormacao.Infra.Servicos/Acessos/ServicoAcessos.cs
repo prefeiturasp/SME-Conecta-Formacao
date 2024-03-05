@@ -97,6 +97,17 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             return json.JsonParaObjeto<bool>();
         }
 
+        public async Task<bool> AtualizarUsuarioCoreSSO(string login, string nome, string email, string senha)
+        {
+            var parametros = new { login, nome, email, senha }.ObjetoParaJson();
+            var resposta = await _httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_USUARIOS_ATUALIZAR.Parametros(login), new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+
+            if (!resposta.IsSuccessStatusCode) return false;
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<bool>();
+        }
+
         public async Task<bool> VincularPerfilExternoCoreSSO(string login, Guid perfilId)
         {
             var resposta = await _httpClient.PostAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_VINCULAR_PERFIL_Y, login, perfilId), null);
