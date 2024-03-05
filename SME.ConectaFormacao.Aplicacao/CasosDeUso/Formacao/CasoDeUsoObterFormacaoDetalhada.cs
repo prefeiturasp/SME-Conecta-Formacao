@@ -9,9 +9,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
         public CasoDeUsoObterFormacaoDetalhada(IMediator mediator) : base(mediator)
         { }
 
-        public Task<RetornoFormacaoDetalhadaDTO> Executar(long propostaId)
+        public async Task<RetornoFormacaoDetalhadaDTO> Executar(long propostaId)
         {
-            return mediator.Send(new ObterFormacaoDetalhadaPorIdQuery(propostaId));
+            return await mediator.Send(new ObterFormacaoDetalhadaPorIdQuery(propostaId));
         }
     }
 }
