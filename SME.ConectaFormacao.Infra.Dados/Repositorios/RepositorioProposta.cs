@@ -738,6 +738,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"select count(1) from proposta_regente where not excluido and proposta_id  = @propostaId ";
             return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
         }
+        
+        public async Task<int> ObterTotalTurmasRegentes(long propostaId)
+        {
+            var query = @"select count(1)
+                          from proposta_regente pr
+                          join proposta_regente_turma prt on prt.proposta_regente_id = pr.id and not prt.excluido
+                          where not pr.excluido 
+                            and pr.proposta_id = @propostaId ";
+            
+            return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
+        }
 
         public async Task<int> ObterTotalTutores(long propostaId)
         {

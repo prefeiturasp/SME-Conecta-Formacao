@@ -109,5 +109,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> ObterTotalVagasTurma(long id);
         Task<IEnumerable<PropostaTurma>> ExisteRegenteComCpfInformadoNaProposta(long propostaId, string cpf, long[] turmaId);
         Task<IEnumerable<PropostaTurma>> ExisteTutorComCpfInformadoNaProposta(long propostaId, string cpf,long[] turmaId);
+        Task<int> ObterTotalTurmasRegentes(long propostaId);
     }
 }
