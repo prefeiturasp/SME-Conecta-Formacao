@@ -27,7 +27,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (usuario == null && request.Login.Length > TAMANHO_RF)
                 throw new NegocioException(MensagemNegocio.REALIZE_SEU_CADASTRO_NO_SISTEMA, HttpStatusCode.Unauthorized);
-            else if (usuario == null)
+            
+            if (usuario == null)
             {
                 usuario = new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email);
             }
