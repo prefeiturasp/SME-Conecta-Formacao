@@ -72,7 +72,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (!string.IsNullOrEmpty(validarDatas))
                 erros.Add(validarDatas);
 
-            var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
+            var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTurmaCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
             if (!string.IsNullOrEmpty(errosRegente))
                 erros.Add(errosRegente);
 
