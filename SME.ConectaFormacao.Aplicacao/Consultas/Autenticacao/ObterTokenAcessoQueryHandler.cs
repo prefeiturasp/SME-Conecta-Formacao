@@ -11,6 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao
     public class ObterTokenAcessoQueryHandler : IRequestHandler<ObterTokenAcessoQuery, UsuarioPerfisRetornoDTO>
     {
         private readonly IMediator mediator;
+        private const int TAMANHO_RF = 7;
 
         public ObterTokenAcessoQueryHandler(IMediator mediator)
         {
@@ -24,8 +25,13 @@ namespace SME.ConectaFormacao.Aplicacao
 
             usuarioPerfisRetornoDto = await ValidarPerfisAutomaticos(request, usuarioPerfisRetornoDto, cancellationToken);
 
-            var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(usuarioPerfisRetornoDto.UsuarioLogin), cancellationToken) ??
-                new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email);
+            var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(usuarioPerfisRetornoDto.UsuarioLogin), cancellationToken);
+
+            if (usuario == null && request.Login.Length > TAMANHO_RF)
+                throw new NegocioException(MensagemNegocio.REALIZE_SEU_CADASTRO_NO_SISTEMA, HttpStatusCode.Unauthorized);
+            else if(usuario == null)
+                usuario = new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email);
+                
 
             if (usuario.Tipo == Dominio.Enumerados.TipoUsuario.Externo && usuario.EstaAguardandoValidacaoEmail())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_VALIDOU_EMAIL, HttpStatusCode.Unauthorized);
