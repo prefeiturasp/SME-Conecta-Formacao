@@ -6,8 +6,8 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using System.Text.RegularExpressions;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
+using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 {
@@ -108,9 +108,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
             if (senhaNova.Length > 12)
                 erros.Add(MensagemNegocio.A_SENHA_DEVE_TER_NO_MÁXIMO_12_CARACTERES);
-
-            if (!cpf.CpfEhValido())
-                erros.Add(MensagemNegocio.CPF_INVALIDO);
 
             var regexSenha = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)[^áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ]{8,12}$");
 

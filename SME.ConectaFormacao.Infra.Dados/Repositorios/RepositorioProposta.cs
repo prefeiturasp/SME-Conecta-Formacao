@@ -155,6 +155,37 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, new { propostaId, tipoOutros });
         }
 
+        public Task<IEnumerable<PropostaTurma>> ExisteRegenteComCpfInformadoNaProposta(long propostaId, string cpf,long[] turmaId)
+        {
+            var query = @" select pt.* 
+	                           from proposta_regente_turma prt
+	                           inner join proposta_regente pr on prt.proposta_regente_id = pr.id
+	                           and not pr.profissional_rede_municipal 
+	                           inner join proposta_turma pt on prt.turma_id = pt.id and pr.proposta_id  = pt.proposta_id 
+	                           where not prt.excluido and not pr.excluido and not  pt.excluido 
+	                           and pr.registro_funcional  is null
+	                           and prt.turma_id = any(@turmaId)
+	                           and pr.proposta_id = @propostaId
+	                           and pr.cpf = @cpf ";
+            return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId, cpf,turmaId});
+        }
+        
+        public Task<IEnumerable<PropostaTurma>> ExisteTutorComCpfInformadoNaProposta(long propostaId, string cpf,long[] turmaId)
+        {
+            var query = @" select pt.* 
+	                           from proposta_tutor_turma ptt
+	                           inner join proposta_tutor tutor on ptt.proposta_tutor_id = tutor.id
+	                           and not tutor.profissional_rede_municipal 
+	                           inner join proposta_turma pt on ptt.turma_id = pt.id and tutor.proposta_id  = pt.proposta_id 
+	                           where not ptt.excluido and not tutor.excluido and not  pt.excluido 
+	                           and tutor.registro_funcional  is null
+	                           and ptt.turma_id = any(@turmaId)
+	                           and tutor.proposta_id = @propostaId
+	                           and tutor.cpf = @cpf   ";
+            
+            return conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId, cpf ,turmaId});
+        }
+        
         public async Task<IEnumerable<PropostaPublicoAlvo>> ObterPublicoAlvoPorId(long propostaId)
         {
             var query = @"select 
@@ -704,16 +735,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<int> ObterTotalRegentes(long propostaId)
         {
-            var query = @"select
-	                        count(distinct prt.turma_id)
-                        from
-	                        proposta_regente_turma prt
-                        inner join proposta_regente pr on
-	                        prt.proposta_regente_id = pr.id
-                        where
-	                        not prt.excluido
-	                        and not pr.excluido
-	                        and pr.proposta_id = @propostaId ";
+            var query = @"select count(1) from proposta_regente where not excluido and proposta_id  = @propostaId ";
+            return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
+        }
+        
+        public async Task<int> ObterTotalTurmasRegentes(long propostaId)
+        {
+            var query = @"select count(1)
+                          from proposta_regente pr
+                          join proposta_regente_turma prt on prt.proposta_regente_id = pr.id and not prt.excluido
+                          where not pr.excluido 
+                            and pr.proposta_id = @propostaId ";
+            
             return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
         }
 
@@ -1843,6 +1876,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             p.formato,
                             p.data_realizacao_inicio dataRealizacaoInicio,
                             p.data_realizacao_fim dataRealizacaoFim,                            
+                            p.data_inscricao_inicio dataInscricaoInicio,
                             p.data_inscricao_fim dataInscricaoFim,
                             p.justificativa,
                             p.formacao_homologada as FormacaoHomologada    

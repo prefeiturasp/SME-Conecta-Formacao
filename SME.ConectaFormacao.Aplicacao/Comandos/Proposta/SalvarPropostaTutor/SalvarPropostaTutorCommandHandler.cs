@@ -26,11 +26,20 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(SalvarPropostaTutorCommand request, CancellationToken cancellationToken)
         {
+            var listaErros = new List<string>();
+            if (!request.PropostaTutorDto.ProfissionalRedeMunicipal)
+            {
+                var tutorExistente = await _repositorioProposta.ExisteTutorComCpfInformadoNaProposta(request.PropostaId,request.PropostaTutorDto.Cpf.SomenteNumeros(),request.PropostaTutorDto.Turmas.Select(x => x.TurmaId).ToArray());
+                foreach (var erro in tutorExistente)
+                    listaErros.Add(MensagemNegocio.TUTOR_JA_EXISTE_NA_PROPOSTA.Parametros(erro.Nome));
+            }
             var tutorAntes = await _repositorioProposta.ObterPropostaTutorPorId(request.PropostaTutorDto.Id);
             var tutorDepois = _mapper.Map<PropostaTutor>(request.PropostaTutorDto);
 
             if (tutorDepois.Cpf.NaoEhNulo() && !tutorDepois.Cpf.CpfEhValido())
-                throw new NegocioException(MensagemNegocio.CPF_INVALIDO);
+                listaErros.Add(MensagemNegocio.CPF_INVALIDO);
+            if(listaErros.PossuiElementos())
+                throw new NegocioException(listaErros);
 
             var turmasAntes = await _repositorioProposta.ObterTutorTurmasPorTutorId(tutorDepois.Id);
 

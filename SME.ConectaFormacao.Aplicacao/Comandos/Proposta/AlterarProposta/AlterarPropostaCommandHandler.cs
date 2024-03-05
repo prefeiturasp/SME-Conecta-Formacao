@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class AlterarPropostaCommandHandler : IRequestHandler<AlterarPropostaCommand, long>
+    public class AlterarPropostaCommandHandler : IRequestHandler<AlterarPropostaCommand, RetornoDTO>
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -24,9 +27,13 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public async Task<long> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
+        public async Task<RetornoDTO> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
+
+            var ehPropostaPublicada = proposta.Situacao.EstaPublicada();
+
+            var ehPropostaAutomatica = request.PropostaDTO.TiposInscricao.PossuiElementos() && request.PropostaDTO.TiposInscricao.Any(a => a.TipoInscricao.EhAutomaticaOuJEIF());
 
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
 
@@ -44,52 +51,49 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await _mediator.Send(new ValidarAreaPromotoraCommand(propostaDepois.AreaPromotoraId, propostaDepois.IntegrarNoSGA), cancellationToken);
 
-            if (request.PropostaDTO.Situacao != SituacaoProposta.Rascunho)
+            var erros = new List<string>();
+
+            var possuiTurmaSemDrePreenchida = request.PropostaDTO.Turmas.Any(x => x.DresIds.Length == 0);
+            if (possuiTurmaSemDrePreenchida)
+                erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
+
+            if (!possuiTurmaSemDrePreenchida)
             {
-                var erros = new List<string>();
+                var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia(), cancellationToken);
+                var possuiTurmaComTodasAsDres = request.PropostaDTO.Turmas.Any(c => c.DresIds.Contains(dreTodos.Id));
+                var possuiTurmaComDreSelecionada = request.PropostaDTO.Turmas.Any(c => !c.DresIds.Contains(dreTodos.Id));
 
-                var possuiTurmaSemDrePreenchida = request.PropostaDTO.Turmas.Any(x => x.DresIds.Length == 0);
-                if (possuiTurmaSemDrePreenchida)
-                    erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
-
-                if (!possuiTurmaSemDrePreenchida)
-                {
-                    var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia(), cancellationToken);
-                    var possuiTurmaComTodasAsDres = request.PropostaDTO.Turmas.Any(c => c.DresIds.Contains(dreTodos.Id));
-                    var possuiTurmaComDreSelecionada = request.PropostaDTO.Turmas.Any(c => !c.DresIds.Contains(dreTodos.Id));
-
-                    if (possuiTurmaComTodasAsDres && possuiTurmaComDreSelecionada)
-                        erros.Add(MensagemNegocio.TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS);
-                }
-
-                var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim), cancellationToken);
-
-                if (!string.IsNullOrEmpty(validarDatas))
-                    erros.Add(validarDatas);
-
-                var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTutorCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
-                if (!string.IsNullOrEmpty(errosRegente))
-                    erros.Add(errosRegente);
-
-                var errosInformacoesGerais = await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
-                if (errosInformacoesGerais.Any())
-                    erros.AddRange(errosInformacoesGerais);
-
-                var errosDatas = await _mediator.Send(new ValidarDatasExistentesNaPropostaCommand(request.Id, request.PropostaDTO), cancellationToken);
-                if (errosDatas.Any())
-                    erros.AddRange(errosDatas);
-
-                var errosDetalhamento = await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
-                if (errosDetalhamento.Any())
-                    erros.AddRange(errosDetalhamento);
-
-                var errosCritériosCertificacao = await _mediator.Send(new ValidarCertificacaoPropostaCommand(request.PropostaDTO), cancellationToken);
-                if (errosCritériosCertificacao.Any())
-                    erros.AddRange(errosCritériosCertificacao);
-
-                if (erros.Any())
-                    throw new NegocioException(erros);
+                if (possuiTurmaComTodasAsDres && possuiTurmaComDreSelecionada)
+                    erros.Add(MensagemNegocio.TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS);
             }
+
+            var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(propostaDepois.DataInscricaoFim, propostaDepois.DataRealizacaoFim), cancellationToken);
+
+            if (!string.IsNullOrEmpty(validarDatas))
+                erros.Add(validarDatas);
+
+            var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTurmaCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
+            if (!string.IsNullOrEmpty(errosRegente))
+                erros.Add(errosRegente);
+
+            var errosInformacoesGerais = await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
+            if (errosInformacoesGerais.Any())
+                erros.AddRange(errosInformacoesGerais);
+
+            var errosDatas = await _mediator.Send(new ValidarDatasExistentesNaPropostaCommand(request.Id, request.PropostaDTO), cancellationToken);
+            if (errosDatas.Any())
+                erros.AddRange(errosDatas);
+
+            var errosDetalhamento = await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
+            if (errosDetalhamento.Any())
+                erros.AddRange(errosDetalhamento);
+
+            var errosCritériosCertificacao = await _mediator.Send(new ValidarCertificacaoPropostaCommand(request.PropostaDTO), cancellationToken);
+            if (errosCritériosCertificacao.Any())
+                erros.AddRange(errosCritériosCertificacao);
+
+            if (erros.Any())
+                throw new NegocioException(erros);
 
             var transacao = _transacao.Iniciar();
             try
@@ -98,7 +102,18 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
                 transacao.Commit();
-                return request.Id;
+
+                var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
+
+                if (ehPropostaPublicada)
+                {
+                    mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA);
+
+                    if (ehPropostaAutomatica)
+                        mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
+                }
+
+                return RetornoDTO.RetornarSucesso(mensagem.ToString(), request.Id);
             }
             catch
             {

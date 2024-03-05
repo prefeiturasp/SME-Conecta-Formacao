@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class AlterarPropostaCommand : IRequest<long>
+    public class AlterarPropostaCommand : IRequest<RetornoDTO>
     {
         public AlterarPropostaCommand(long id, PropostaDTO propostaDTO)
         {

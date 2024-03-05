@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class InserirPropostaCommand : IRequest<long>
+    public class InserirPropostaCommand : IRequest<RetornoDTO>
     {
         public InserirPropostaCommand(long areaPromotoraId, PropostaDTO propostaDTO)
         {

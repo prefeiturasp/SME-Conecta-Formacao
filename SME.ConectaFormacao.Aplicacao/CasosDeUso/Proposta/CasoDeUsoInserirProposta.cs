@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<long> Executar(PropostaDTO propostaDTO)
+        public async Task<RetornoDTO> Executar(PropostaDTO propostaDTO)
         {
             var grupoUsuarioLogadoId = await mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
             var dres = await mediator.Send(ObterDresUsuarioLogadoQuery.Instancia());
@@ -26,17 +26,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             propostaDTO.AcaoFormativaTexto = comunicado.Descricao;
             propostaDTO.AcaoFormativaLink = comunicado.Url;
 
-            long propostaId;
+            RetornoDTO retornoDto;
             if (propostaDTO.Situacao == SituacaoProposta.Rascunho)
             {
-                propostaId = await mediator.Send(new InserirPropostaRascunhoCommand(areaPromotora.Id, propostaDTO));
-                await SalvarMovimentacao(propostaId, propostaDTO.Situacao);
-                return propostaId;
+                retornoDto = await mediator.Send(new InserirPropostaRascunhoCommand(areaPromotora.Id, propostaDTO));
+                await SalvarMovimentacao(retornoDto.EntidadeId, propostaDTO.Situacao);
+                return retornoDto;
             }
 
-            propostaId = await mediator.Send(new InserirPropostaCommand(areaPromotora.Id, propostaDTO));
-            await SalvarMovimentacao(propostaId, propostaDTO.Situacao);
-            return propostaId;
+            retornoDto = await mediator.Send(new InserirPropostaCommand(areaPromotora.Id, propostaDTO));
+            await SalvarMovimentacao(retornoDto.EntidadeId, propostaDTO.Situacao);
+            return retornoDto;
         }
 
         private async Task SalvarMovimentacao(long propostaId, SituacaoProposta situacao)

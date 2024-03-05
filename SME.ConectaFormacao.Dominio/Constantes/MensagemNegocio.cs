@@ -2,6 +2,8 @@ namespace SME.ConectaFormacao.Dominio.Constantes;
 
 public class MensagemNegocio
 {
+    public const string INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA = "Sua inscrição foi confirmada. Na data de início da sua turma acesse o SGA para iniciar a formação.";
+    public const string INSCRICAO_CONFIRMADA = "Sua inscrição foi confirmada.";
     public const string PARAMETRO_QTDE_CURSISTAS_SUPORTADOS_POR_TURMA_NAO_ENCONTRADO = "Parâmetro de QtdeCursistasSuportadosPorTurma ausente para o ano {0}.";
     public const string FORMACAO_NAO_ENCONTRADA = "Formação não encontrada";
     public const string PERIODO_REALIZACAO_NAO_INFORMADO = "É necessário informar as datas do período de realização";
@@ -29,6 +31,7 @@ public class MensagemNegocio
     public const string QUANTIDADE_TURMAS_COM_ENCONTRO_DIFERENTE_QUANTIDADE_DE_TURMAS = "A quantidade de turmas informada deve ser a mesma de turmas com encontros";
     public const string PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN = "Os perfis do usuário não foram localizados! Verifique o usuário.";
     public const string USUARIO_OU_SENHA_INVALIDOS = "Usuário ou senha inválidos";
+    public const string SERVICO_AUTENTICACAO_FORA = "Falha ao tentar se autenticar no servidor";
     public const string CONFIRMACAO_SENHA_INVALIDA = "Confirmação de senha não confere";
     public const string SENHA_NAO_ATENDE_CRITERIOS_SEGURANCA = "A senha não atendo os critérios de segurança: \r\nUma letra maiúscula \r\nUma letra minúscula \r\nUm algarismo (número) ou um símbolo (caractere especial) \r\nNão é permitido caracteres acentuados \r\nDeve ter no mínimo 8 e no máximo 12 caracteres.";
     public const string LOGIN_OU_SENHA_ATUAL_NAO_CONFEREM = "Usuário ou senha atual não conferem";
@@ -81,6 +84,7 @@ public class MensagemNegocio
     public const string INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição, a turma selecionada não possui mais vagas disponível.";
     public const string INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição automática, a turma selecionada não possui mais vagas disponível. {0}";
     public const string USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
+    public const string NOME_USUARIO_NAO_PREENCHIDO = "Nome do usuário não preenchido";
     public const string CARGO_SOBREPOSTO_FUNCAO_ATIVIDADE_NAO_ENCONTRADO = "Informações de Cargo, CargoSobreposto e Função Atividade no EOL não foram encontradas";
     public const string EMAIL_FORA_DOMINIO_REDE_DIRETA = "É permitido somente e-mails com o domínio @SME ou @EDU.SME";
     public const string INSCRICAO_NAO_ENCONTRADA = "Inscrição não encontrada";
@@ -109,6 +113,10 @@ public class MensagemNegocio
     public const string REGENTE_JA_EXISTE_NA_PROPOSTA = "Já existe um regente com o CPF informado para {0}";
     public const string INFORME_O_CARGO = "É necessário informar o cargo ";
 
+    public const string PROPOSTA_X_ALTERADA_COM_SUCESSO = "Proposta '{0}' alterada com sucesso!";
+    public const string PROPOSTA_X_INSERIDA_COM_SUCESSO = "Proposta '{0}' inserida com sucesso!";
+    public const string PROPOSTA_PUBLICADA_ALTERADA = "\nForam realizadas alterações de parâmetros de inscrição. Caso necessário cancele as inscrições com os parâmetros anteriores na tela de inscrições.";
+    public const string PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA = "\nAtenção: Não serão feitas novas inscrições automáticas para os novos parâmetros.";
     public const string VALIDAR_EMAIL_USUARIO_EXTERNO = "Cadastro inserido com sucesso. Enviamos um e-mail para validação do seu cadastro. Confira a sua caixa de entrada!";
     public const string USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO = "Cadastro realizado com sucesso";
 }

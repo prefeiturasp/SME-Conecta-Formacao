@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -10,7 +11,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarInscricaoCommandHandler : IRequestHandler<SalvarInscricaoCommand, long>
+    public class SalvarInscricaoCommandHandler : IRequestHandler<SalvarInscricaoCommand, RetornoDTO>
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
@@ -25,9 +26,9 @@ namespace SME.ConectaFormacao.Aplicacao
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
         }
 
-        public async Task<long> Handle(SalvarInscricaoCommand request, CancellationToken cancellationToken)
+        public async Task<RetornoDTO> Handle(SalvarInscricaoCommand request, CancellationToken cancellationToken)
         {
-            var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia, cancellationToken) ??
+            var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             if (usuarioLogado.Tipo == TipoUsuario.Interno)
@@ -59,7 +60,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao);
+            return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao, proposta.IntegrarNoSGA);
         }
 
         private async Task MapearCargoFuncao(Inscricao inscricao, CancellationToken cancellationToken)
@@ -151,7 +152,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
         }
 
-        private async Task<long> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao)
+        private async Task<RetornoDTO> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao, bool integrarNoSGA)
         {
             var transacao = _transacao.Iniciar();
             try
@@ -170,7 +171,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 transacao.Commit();
 
-                return inscricao.Id;
+                var mensagem = !formacaoHomologada && integrarNoSGA ? MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA : MensagemNegocio.INSCRICAO_CONFIRMADA;
+                return RetornoDTO.RetornarSucesso(mensagem, inscricao.Id);
             }
             catch
             {
