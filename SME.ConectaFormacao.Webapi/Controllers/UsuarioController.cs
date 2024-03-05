@@ -97,7 +97,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoReenviarEmail.Executar(login));
         }
-        
+
         [HttpPut("{login}/nome")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterDreUeAtribuicaoPorRegistroFuncionalCodigoCargoQueryHandler : IRequestHandler<ObterDreUeAtribuicaoPorRegistroFuncionalCodigoCargoQuery, IEnumerable<DreUeAtribuicaoServicoEol>>
     {
-        private readonly IServicoEol   _servicoEol;
+        private readonly IServicoEol _servicoEol;
 
         public ObterDreUeAtribuicaoPorRegistroFuncionalCodigoCargoQueryHandler(IServicoEol servicoEol)
         {

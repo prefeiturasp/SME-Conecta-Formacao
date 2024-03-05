@@ -6,8 +6,8 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using System.Text.RegularExpressions;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
+using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 {
@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             )));
 
             if (confirmarEmail)
-                return await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
+                await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
 
             var mensagem = confirmarEmail ? MensagemNegocio.VALIDAR_EMAIL_USUARIO_EXTERNO : MensagemNegocio.USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO;
 

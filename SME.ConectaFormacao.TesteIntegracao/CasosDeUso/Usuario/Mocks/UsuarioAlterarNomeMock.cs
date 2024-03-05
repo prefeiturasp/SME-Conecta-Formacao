@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks
 {

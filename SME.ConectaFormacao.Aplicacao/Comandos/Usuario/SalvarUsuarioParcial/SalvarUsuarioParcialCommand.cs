@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(x => x.Login)
                 .NotEmpty()
                 .WithMessage("É necessário informar o login do usuário para alterar usuário");
-            
+
             RuleFor(x => x.Nome)
                 .NotEmpty()
                 .WithMessage("É necessário informar o nome do usuário para alterar usuário");

@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var mapper = ObterCasoDeUso<IMapper>();
             var usuario = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
             await InserirNaBase(mapper.Map<Dominio.Entidades.Usuario>(usuario));
-            
+
             var login = usuario.Login;
             var nome = UsuarioAlterarNomeMock.NomeValido;
 
@@ -51,7 +51,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
 
             // assert
             retorno.ShouldBeTrue();
-            
+
             var usuarioAlterado = ObterTodos<Dominio.Entidades.Usuario>();
             usuarioAlterado.ShouldNotBeNull();
             usuarioAlterado.FirstOrDefault().Login.ShouldBe(login);

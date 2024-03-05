@@ -108,9 +108,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_valida()
         {
             //arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma,"950");
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
             await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
-                
+
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -173,14 +173,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, retornoDto.EntidadeId);
             ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, retornoDto.EntidadeId);
         }
-        
+
         [Fact(DisplayName = "Proposta - Deve alterar proposta publicada válida sem inscrição automática ")]
         public async Task Deve_alterar_proposta_publicada_valida_sem_inscricao_automatica()
         {
             //arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma,"950");
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
             await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
-                
+
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -205,7 +205,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(componentesCurriculares);
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, situacao:SituacaoProposta.Publicada, tipoInscricao:TipoInscricao.Optativa);
+                modalidades, anosTurmas, componentesCurriculares, situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Optativa);
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
@@ -246,14 +246,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, retornoDto.EntidadeId);
             ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, retornoDto.EntidadeId);
         }
-        
+
         [Fact(DisplayName = "Proposta - Deve alterar proposta publicada válida com inscrição automática ")]
         public async Task Deve_alterar_proposta_publicada_valida_com_inscricao_automatica()
         {
             //arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma,"950");
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
             await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
-                
+
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -278,7 +278,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(componentesCurriculares);
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, situacao:SituacaoProposta.Publicada, tipoInscricao:TipoInscricao.Automatica);
+                modalidades, anosTurmas, componentesCurriculares, situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Automatica);
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
                 TipoFormacao.Curso,
@@ -351,9 +351,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_tipo_formacao_evento_e_formato_hibrido_valido()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma,"950");
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
             await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
-            
+
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -561,9 +561,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_funcao_especifica_outros_valido()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma,"950");
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
             await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
-            
+
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -708,9 +708,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_criterio_validacao_inscricao_outros_valido()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma,"950");
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
             await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
-            
+
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -913,9 +913,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_quando_for_preenchido_somente_publico_alvo_e_os_campos_fucoes_especificas_modalidade_ano_da_turma_e_componente_curricular_omitidos()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma,"950");
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
             await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
-            
+
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -992,9 +992,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_quando_for_preenchido_somente_funcoes_especificas_e_os_campos_publico_alvo_modalidade_ano_da_turma_e_componente_curricular_omitidos()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma,"950");
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
             await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
-            
+
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -1071,9 +1071,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_quando_for_preenchido_somente_modalidade_ano_da_turma_e_componente_curricular_e_os_campos_publico_alvo_e_funcoes_especificas_omitidos()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma,"950");
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
             await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
-            
+
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 

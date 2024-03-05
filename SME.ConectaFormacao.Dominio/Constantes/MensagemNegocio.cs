@@ -112,7 +112,7 @@ public class MensagemNegocio
     public const string TUTOR_JA_EXISTE_NA_PROPOSTA = "Já existe um tutor com o CPF informado para {0}";
     public const string REGENTE_JA_EXISTE_NA_PROPOSTA = "Já existe um regente com o CPF informado para {0}";
     public const string INFORME_O_CARGO = "É necessário informar o cargo ";
-  
+
     public const string PROPOSTA_X_ALTERADA_COM_SUCESSO = "Proposta '{0}' alterada com sucesso!";
     public const string PROPOSTA_X_INSERIDA_COM_SUCESSO = "Proposta '{0}' inserida com sucesso!";
     public const string PROPOSTA_PUBLICADA_ALTERADA = "\nForam realizadas alterações de parâmetros de inscrição. Caso necessário cancele as inscrições com os parâmetros anteriores na tela de inscrições.";

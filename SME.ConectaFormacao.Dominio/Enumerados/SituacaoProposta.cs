@@ -31,36 +31,36 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoProposta.Publicada;
         }
-        
+
         public static bool EstaCadastrada(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.Cadastrada;
         }
-        
+
         public static bool EhRascunho(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.Rascunho;
         }
-        
+
         public static bool EstaAguardandoAnaliseDf(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.AguardandoAnaliseDf;
         }
-        
+
         public static bool EstaAguardandoAnaliseGestao(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.AguardandoAnaliseGestao;
         }
-        
+
         public static bool EstaDesfavoravel(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.Desfavoravel;
         }
-        
+
         public static bool EstaDevolvida(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.Devolvida;
         }
     }
-    
+
 }

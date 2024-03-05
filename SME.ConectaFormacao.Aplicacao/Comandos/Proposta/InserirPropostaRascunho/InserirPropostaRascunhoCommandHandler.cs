@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 transacao.Commit();
 
-                return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_INSERIDA_COM_SUCESSO, id),id);
+                return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_INSERIDA_COM_SUCESSO, id), id);
             }
             catch
             {

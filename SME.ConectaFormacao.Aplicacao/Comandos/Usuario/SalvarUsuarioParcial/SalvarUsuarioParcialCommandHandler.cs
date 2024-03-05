@@ -19,14 +19,14 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             if (request.Nome.NaoEstaPreenchido())
                 throw new NegocioException(MensagemNegocio.NOME_USUARIO_NAO_PREENCHIDO);
-            
+
             var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);
 
             if (usuario.EhNulo())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-            
+
             usuario.Nome = request.Nome;
-            
+
             return (await _repositorioUsuario.Atualizar(usuario)).Id > 0;
         }
     }

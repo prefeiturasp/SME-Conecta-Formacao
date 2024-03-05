@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -10,6 +8,7 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -113,8 +112,8 @@ namespace SME.ConectaFormacao.Aplicacao
                     if (ehPropostaAutomatica)
                         mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
                 }
-                
-                return RetornoDTO.RetornarSucesso(mensagem.ToString(),request.Id);
+
+                return RetornoDTO.RetornarSucesso(mensagem.ToString(), request.Id);
             }
             catch
             {
