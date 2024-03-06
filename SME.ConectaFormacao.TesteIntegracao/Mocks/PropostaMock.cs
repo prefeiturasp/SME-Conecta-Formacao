@@ -34,6 +34,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(200));
+            faker.RuleFor(x => x.DataInscricaoInicio, DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataInscricaoFim, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.DataRealizacaoInicio, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.DataRealizacaoFim, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.IntegrarNoSGA, integrarNoSga);

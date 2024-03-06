@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
     public interface ICasoDeUsoAlterarProposta
     {
-        Task<long> Executar(long id, PropostaDTO propostaDTO);
+        Task<RetornoDTO> Executar(long id, PropostaDTO propostaDTO);
     }
 }

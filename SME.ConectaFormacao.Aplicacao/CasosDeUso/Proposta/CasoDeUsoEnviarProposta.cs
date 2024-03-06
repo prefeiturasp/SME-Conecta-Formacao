@@ -20,6 +20,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
+            if (proposta.Situacao != SituacaoProposta.Cadastrada)
+                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA);
+
             var existeFuncaoEspecificaOutros = await mediator.Send(new ExisteCargoFuncaoOutrosNaPropostaQuery(proposta.Id));
             var propostasTipoInscricao = await mediator.Send(new ObterPropostaTipoInscricaoPorIdQuery(proposta.Id));
             if (propostasTipoInscricao.PossuiElementos())
@@ -28,15 +31,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                     throw new NegocioException(MensagemNegocio.PROPOSTA_JEIF_COM_OUTROS);
             }
 
-
-
             var validarDatas = await mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim));
-
             if (!string.IsNullOrEmpty(validarDatas))
                 throw new NegocioException(validarDatas);
-
-            if (proposta.Situacao != SituacaoProposta.Cadastrada)
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA);
 
             var situacao = proposta.FormacaoHomologada == FormacaoHomologada.Sim ?
                 SituacaoProposta.AguardandoAnaliseDf :

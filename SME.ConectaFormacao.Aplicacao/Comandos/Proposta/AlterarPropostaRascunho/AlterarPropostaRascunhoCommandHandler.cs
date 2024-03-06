@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class AlterarPropostaRascunhoCommandHandler : IRequestHandler<AlterarPropostaRascunhoCommand, long>
+    public class AlterarPropostaRascunhoCommandHandler : IRequestHandler<AlterarPropostaRascunhoCommand, RetornoDTO>
     {
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<long> Handle(AlterarPropostaRascunhoCommand request, CancellationToken cancellationToken)
+        public async Task<RetornoDTO> Handle(AlterarPropostaRascunhoCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
@@ -32,7 +32,6 @@ namespace SME.ConectaFormacao.Aplicacao
 
             propostaDepois.Id = proposta.Id;
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
-            propostaDepois.Situacao = SituacaoProposta.Rascunho;
             propostaDepois.ManterCriador(proposta);
             propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
             propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
@@ -46,7 +45,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 transacao.Commit();
 
-                return request.Id;
+                return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id), request.Id);
             }
             catch
             {

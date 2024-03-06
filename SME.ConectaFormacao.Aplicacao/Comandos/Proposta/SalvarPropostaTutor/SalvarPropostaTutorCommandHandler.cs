@@ -33,10 +33,10 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.CPF_INVALIDO);
 
             var turmasAntes = await _repositorioProposta.ObterTutorTurmasPorTutorId(tutorDepois.Id);
-
             var arrayTurma = request.PropostaTutorDto.Turmas.Select(x => x.TurmaId);
             var turmaConsulta = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
-            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, turmaConsulta), cancellationToken);
+
+            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(tutorDepois.RegistroFuncional, tutorDepois.Cpf, tutorDepois.NomeTutor, turmaConsulta), cancellationToken);
 
             var transacao = _transacao.Iniciar();
             try

@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             try
             {
-                return await mediator.Send(ObterUsuarioLogadoQuery.Instancia);
+                return await mediator.Send(ObterUsuarioLogadoQuery.Instancia());
             }
             catch
             {
