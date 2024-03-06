@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
-            var ehPropostaPublicada = proposta.Situacao.EstaPublicada();
+            var ehPropostaPublicada = proposta.Situacao.EstaPublicada() || proposta.Situacao.EhAlterando();
 
             var ehPropostaAutomatica = request.PropostaDTO.TiposInscricao.PossuiElementos() && request.PropostaDTO.TiposInscricao.Any(a => a.TipoInscricao.EhAutomaticaOuJEIF());
 
