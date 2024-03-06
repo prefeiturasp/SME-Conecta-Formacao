@@ -26,28 +26,17 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(SalvarPropostaRegenteCommand request, CancellationToken cancellationToken)
         {
-            var listaErros = new List<string>();
-            if (!request.PropostaRegenteDTO.ProfissionalRedeMunicipal)
-            {
-                var regenteExistente = await _repositorioProposta.ExisteRegenteComCpfInformadoNaProposta(request.PropostaId,request.PropostaRegenteDTO.Cpf.SomenteNumeros(),request.PropostaRegenteDTO.Turmas.Select(x => x.TurmaId).ToArray());
-                foreach (var erro in regenteExistente)
-                    listaErros.Add(MensagemNegocio.REGENTE_JA_EXISTE_NA_PROPOSTA.Parametros(erro.Nome));
-            }
-            
             var regenteAntes = await _repositorioProposta.ObterPropostaRegentePorId(request.PropostaRegenteDTO.Id);
             var regenteDepois = _mapper.Map<PropostaRegente>(request.PropostaRegenteDTO);
 
             if (regenteDepois.Cpf.NaoEhNulo() && !regenteDepois.Cpf.CpfEhValido())
-                listaErros.Add(MensagemNegocio.CPF_INVALIDO);
-                
-            if(listaErros.PossuiElementos()) 
-                throw new NegocioException(listaErros);
-            
+                throw new NegocioException(MensagemNegocio.CPF_INVALIDO);
+
             var turmasAntes = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(regenteDepois.Id);
             var arrayTurma = request.PropostaRegenteDTO.Turmas.Select(x => x.TurmaId);
             var turmasConsultar = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
 
-            await _mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(request.PropostaRegenteDTO.RegistroFuncional, regenteDepois.NomeRegente, turmasConsultar), cancellationToken);
+            await _mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(regenteDepois.RegistroFuncional, regenteDepois.Cpf, regenteDepois.NomeRegente, turmasConsultar), cancellationToken);
 
             var transacao = _transacao.Iniciar();
             try
@@ -57,7 +46,8 @@ namespace SME.ConectaFormacao.Aplicacao
                     if (regenteAntes.ProfissionalRedeMunicipal != regenteDepois.ProfissionalRedeMunicipal
                         || regenteAntes.RegistroFuncional != regenteDepois.RegistroFuncional
                         || regenteAntes.NomeRegente != regenteDepois.NomeRegente
-                        || regenteAntes.MiniBiografia != regenteDepois.MiniBiografia)
+                        || regenteAntes.MiniBiografia != regenteDepois.MiniBiografia
+                        || regenteAntes.Cpf != regenteDepois.Cpf)
                     {
                         regenteDepois.PropostaId = request.PropostaId;
                         regenteDepois.ManterCriador(regenteAntes);
