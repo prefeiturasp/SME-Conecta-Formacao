@@ -851,9 +851,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                      and pt.id = any(@turmaIds)";
 
             if (registroFuncional.EstaPreenchido())
-                query += " and pt.registro_funcional = @registroFuncional ";
+                query += " and ptr.registro_funcional = @registroFuncional ";
             else if (cpf.EstaPreenchido())
-                query += " and pt.cpf = @cpf ";
+                query += " and ptr.cpf = @cpf ";
             else
                 query += " and trim(ptr.nome_tutor) = @nomeTutor ";
 
