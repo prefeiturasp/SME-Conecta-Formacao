@@ -71,5 +71,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoProposta.Rascunho || valor == SituacaoProposta.Alterando;
         }
+        
+        public static bool EhAlterando(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Alterando;
+        }
     }
 }
