@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task Handle(ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand request, CancellationToken cancellationToken)
         {
             var erros = new List<string>();
-            var turmasExistentes = await _repositorioProposta.ObterTurmasJaExistenteParaTutor(request.NomeTutor, request.RegistroFuncional, request.TurmaIds);
+            var turmasExistentes = await _repositorioProposta.ObterTurmasJaExistenteParaTutor(request.RegistroFuncional, request.Cpf, request.NomeTutor, request.TurmaIds);
             foreach (var turma in request.TurmaIds)
             {
                 var turmaExiste = turmasExistentes.FirstOrDefault(a => a.Id.Equals(turma));

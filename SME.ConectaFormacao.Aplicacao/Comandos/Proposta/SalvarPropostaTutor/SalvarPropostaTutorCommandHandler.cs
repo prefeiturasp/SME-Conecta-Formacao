@@ -26,26 +26,17 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(SalvarPropostaTutorCommand request, CancellationToken cancellationToken)
         {
-            var listaErros = new List<string>();
-            if (!request.PropostaTutorDto.ProfissionalRedeMunicipal)
-            {
-                var tutorExistente = await _repositorioProposta.ExisteTutorComCpfInformadoNaProposta(request.PropostaId,request.PropostaTutorDto.Cpf.SomenteNumeros(),request.PropostaTutorDto.Turmas.Select(x => x.TurmaId).ToArray());
-                foreach (var erro in tutorExistente)
-                    listaErros.Add(MensagemNegocio.TUTOR_JA_EXISTE_NA_PROPOSTA.Parametros(erro.Nome));
-            }
             var tutorAntes = await _repositorioProposta.ObterPropostaTutorPorId(request.PropostaTutorDto.Id);
             var tutorDepois = _mapper.Map<PropostaTutor>(request.PropostaTutorDto);
 
             if (tutorDepois.Cpf.NaoEhNulo() && !tutorDepois.Cpf.CpfEhValido())
-                listaErros.Add(MensagemNegocio.CPF_INVALIDO);
-            if(listaErros.PossuiElementos())
-                throw new NegocioException(listaErros);
+                throw new NegocioException(MensagemNegocio.CPF_INVALIDO);
 
             var turmasAntes = await _repositorioProposta.ObterTutorTurmasPorTutorId(tutorDepois.Id);
-
             var arrayTurma = request.PropostaTutorDto.Turmas.Select(x => x.TurmaId);
             var turmaConsulta = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
-            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(request.PropostaTutorDto.RegistroFuncional, request.PropostaTutorDto.NomeTutor, turmaConsulta), cancellationToken);
+
+            await _mediator.Send(new ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(tutorDepois.RegistroFuncional, tutorDepois.Cpf, tutorDepois.NomeTutor, turmaConsulta), cancellationToken);
 
             var transacao = _transacao.Iniciar();
             try
