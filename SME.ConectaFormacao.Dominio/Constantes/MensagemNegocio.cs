@@ -119,4 +119,5 @@ public class MensagemNegocio
     public const string PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA = "\nAtenção: Não serão feitas novas inscrições automáticas para os novos parâmetros.";
     public const string VALIDAR_EMAIL_USUARIO_EXTERNO = "Cadastro inserido com sucesso. Enviamos um e-mail para validação do seu cadastro. Confira a sua caixa de entrada!";
     public const string USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO = "Cadastro realizado com sucesso";
+    public const string REALIZE_SEU_CADASTRO_NO_SISTEMA = "Usuário não cadastrado no sistema, realize o seu cadastro";
 }
