@@ -5,14 +5,16 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand : IRequest
     {
-        public ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(string? registroFuncional, string? nomeTutor, long[] turmaIds)
+        public ValidarSeJaExisteTutorTurmaAntesDeCadastrarCommand(string? registroFuncional, string? cpf, string? nomeTutor, long[] turmaIds)
         {
             RegistroFuncional = registroFuncional;
+            Cpf = cpf;
             NomeTutor = nomeTutor;
             TurmaIds = turmaIds;
         }
 
         public string? RegistroFuncional { get; }
+        public string? Cpf { get; }
         public string? NomeTutor { get; }
         public long[] TurmaIds { get; }
     }

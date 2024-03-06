@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao
 
         public async Task<UsuarioPerfisRetornoDTO> Executar(Guid PerfilUsuarioId)
         {
-            var usuarioLogado = await mediator.Send(ObterUsuarioLogadoQuery.Instancia)
+            var usuarioLogado = await mediator.Send(ObterUsuarioLogadoQuery.Instancia())
                 ?? throw new NegocioException(MensagemNegocio.LOGIN_NAO_ENCONTRADO, System.Net.HttpStatusCode.Unauthorized);
 
             return await mediator.Send(new ObterTokenAcessoQuery(usuarioLogado.Login, PerfilUsuarioId));

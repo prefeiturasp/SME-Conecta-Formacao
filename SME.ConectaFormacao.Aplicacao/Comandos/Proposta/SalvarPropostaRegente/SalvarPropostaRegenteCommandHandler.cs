@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var arrayTurma = request.PropostaRegenteDTO.Turmas.Select(x => x.TurmaId);
             var turmasConsultar = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
 
-            await _mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(request.PropostaRegenteDTO.RegistroFuncional, regenteDepois.NomeRegente, turmasConsultar), cancellationToken);
+            await _mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(regenteDepois.RegistroFuncional, regenteDepois.Cpf, regenteDepois.NomeRegente, turmasConsultar), cancellationToken);
 
             var transacao = _transacao.Iniciar();
             try
@@ -46,7 +46,8 @@ namespace SME.ConectaFormacao.Aplicacao
                     if (regenteAntes.ProfissionalRedeMunicipal != regenteDepois.ProfissionalRedeMunicipal
                         || regenteAntes.RegistroFuncional != regenteDepois.RegistroFuncional
                         || regenteAntes.NomeRegente != regenteDepois.NomeRegente
-                        || regenteAntes.MiniBiografia != regenteDepois.MiniBiografia)
+                        || regenteAntes.MiniBiografia != regenteDepois.MiniBiografia
+                        || regenteAntes.Cpf != regenteDepois.Cpf)
                     {
                         regenteDepois.PropostaId = request.PropostaId;
                         regenteDepois.ManterCriador(regenteAntes);

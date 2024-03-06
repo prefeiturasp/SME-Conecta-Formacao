@@ -1,5 +1,5 @@
-using System.Text.RegularExpressions;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Utilitarios
 {

@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class AlterarPropostaRascunhoCommand : IRequest<long>
+    public class AlterarPropostaRascunhoCommand : IRequest<RetornoDTO>
     {
         public AlterarPropostaRascunhoCommand(long id, PropostaDTO propostaDTO)
         {

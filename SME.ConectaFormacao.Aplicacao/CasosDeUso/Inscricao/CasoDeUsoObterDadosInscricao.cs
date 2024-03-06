@@ -15,8 +15,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
         public async Task<DadosInscricaoDTO> Executar()
         {
-            var usuarioLogado = await mediator.Send(ObterUsuarioLogadoQuery.Instancia);
-            var retorno = new DadosInscricaoDTO();
+            var usuarioLogado = await mediator.Send(ObterUsuarioLogadoQuery.Instancia());
+            DadosInscricaoDTO retorno;
             if (usuarioLogado.Tipo != TipoUsuario.Externo)
             {
                 // TODO: Buscar cargos EOL somente para usuários rede parceira

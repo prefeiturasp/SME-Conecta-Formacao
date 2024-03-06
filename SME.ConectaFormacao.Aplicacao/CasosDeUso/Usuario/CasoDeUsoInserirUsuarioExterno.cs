@@ -6,8 +6,8 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using System.Text.RegularExpressions;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
+using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 {
@@ -22,12 +22,19 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var cpfSemPontos = usuarioExternoDto.Cpf.SomenteNumeros();
             usuarioExternoDto.Login = cpfSemPontos;
             usuarioExternoDto.Cpf = cpfSemPontos;
-            await Validacoes(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email);
-            await ValidarCpfEmUsuarioExisteNoCoreSSO(usuarioExternoDto.Login);
+
+            ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email);
             await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login);
 
-            var retornoCoreSSO = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
-            if (!retornoCoreSSO)
+            var existeNoCoreSSO = await mediator.Send(new UsuarioExisteNoCoreSsoQuery(usuarioExternoDto.Login));
+
+            bool usuarioCriadoCoresso;
+            if (existeNoCoreSSO)
+                usuarioCriadoCoresso = await mediator.Send(new AtualizarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
+            else
+                usuarioCriadoCoresso = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
+
+            if (!usuarioCriadoCoresso)
                 throw new NegocioException(MensagemNegocio.NAO_FOI_POSSIVEL_CADASTRAR_USUARIO_EXTERNO_NO_CORESSO);
 
             bool confirmarEmail = await ObterParametroConfirmarEmailUsuarioExterno();
@@ -66,13 +73,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             return true;
         }
 
-        private async Task ValidarCpfEmUsuarioExisteNoCoreSSO(string cpf)
-        {
-            var coresso = await mediator.Send(new UsuarioExisteNoCoreSsoQuery(cpf));
-            if (coresso)
-                throw new NegocioException(MensagemNegocio.VOCE_JA_POSSUI_LOGIN_CORESSO);
-        }
-
         private async Task UsuarioNaoExisteNoConecta(string login)
         {
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(login));
@@ -85,7 +85,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             return await mediator.Send(new ObterDominioDeEmailPermitidoQuery());
         }
 
-        private async Task Validacoes(string senhaNova, string confirmarSenha, string cpf, string email)
+        private static void ValidacoesPreenchimento(string senhaNova, string confirmarSenha, string cpf, string email)
         {
             var erros = new List<string>();
 
@@ -108,9 +108,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 
             if (senhaNova.Length > 12)
                 erros.Add(MensagemNegocio.A_SENHA_DEVE_TER_NO_MÁXIMO_12_CARACTERES);
-
-            if (!cpf.CpfEhValido())
-                erros.Add(MensagemNegocio.CPF_INVALIDO);
 
             var regexSenha = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)[^áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ]{8,12}$");
 
