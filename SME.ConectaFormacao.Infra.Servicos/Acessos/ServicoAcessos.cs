@@ -104,7 +104,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
         public async Task<bool> AtualizarUsuarioCoreSSO(string login, string nome, string email, string senha)
         {
             var parametros = new { login, nome, email, senha }.ObjetoParaJson();
-            var resposta = await _httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_USUARIOS_ATUALIZAR.Parametros(login), new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            var resposta = await _httpClient.PutAsync(EndpointsServicoAcessosConstantes.URL_USUARIOS_ATUALIZAR.Parametros(login), new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode) return false;
 
