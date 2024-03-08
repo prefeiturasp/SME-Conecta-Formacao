@@ -262,6 +262,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioValidacaoSenhaToken, CasoDeUsoUsuarioValidacaoSenhaToken>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioValidacaoEmailToken, CasoDeUsoUsuarioValidacaoEmailToken>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioRecuperarSenha, CasoDeUsoUsuarioRecuperarSenha>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarUnidadeEol, CasoDeUsoUsuarioAlterarUnidadeEol>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterCargoFuncao, CasoDeUsoObterCargoFuncao>();
