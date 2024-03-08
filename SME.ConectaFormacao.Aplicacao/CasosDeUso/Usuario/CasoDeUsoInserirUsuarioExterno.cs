@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 usuarioCriadoCoresso = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
 
             if (!usuarioCriadoCoresso)
-                throw new NegocioException(MensagemNegocio.NAO_FOI_POSSIVEL_CADASTRAR_USUARIO_EXTERNO_NO_CORESSO);
+                throw new NegocioException(MensagemNegocio.USUARIO_JA_POSSUI_ACESSO_NO_CORRESSO);
 
             bool confirmarEmail = await ObterParametroConfirmarEmailUsuarioExterno();
 
