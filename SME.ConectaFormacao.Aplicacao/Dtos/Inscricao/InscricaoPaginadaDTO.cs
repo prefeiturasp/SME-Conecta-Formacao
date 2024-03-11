@@ -10,5 +10,6 @@
         public string CargoFuncao { get; set; }
         public string Situacao { get; set; }
         public bool PodeCancelar { get; set; } = true;
+        public string Origem { get; set; }
     }
 }

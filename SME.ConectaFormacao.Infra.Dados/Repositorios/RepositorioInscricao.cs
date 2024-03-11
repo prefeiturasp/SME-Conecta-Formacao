@@ -101,6 +101,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"
                 select i.id,
                        i.situacao,
+                       i.origem, 
                        i.proposta_turma_id,
                        pt.nome,
                        pt.proposta_id,
@@ -145,6 +146,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = new StringBuilder(@"select 
                                                 i.id,
 												i.situacao,
+                                                i.origem,
                                                 i.proposta_turma_id,
 												pt.nome,
                                                 i.usuario_id ,
@@ -152,7 +154,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												u.cpf ,
 												u.nome,
                                                 i.cargo_id,
-                                                i.funcao_id,
+                                                i.funcao_id,    
 												cf.nome
 											from proposta_turma pt
 											inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido

@@ -31,6 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoAutomaticaDTO);
             inscricao.Situacao = SituacaoInscricao.Confirmada;
+            inscricao.Origem = OrigemInscricao.Automatica;
 
             if (await ValidarExisteInscricaoNaProposta(propostaId, inscricao.UsuarioId))
                 return default;

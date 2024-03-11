@@ -12,5 +12,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public string? CargoFuncao { get; set; }
         public SituacaoInscricao SituacaoCodigo { get; set; }
         public string? Situacao { get; set; }
+        public string? Origem { get; set; }
     }
 }
