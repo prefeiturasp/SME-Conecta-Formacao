@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<UnidadeEol> Handle(ObterUnidadePorCodigoEOLQuery request, CancellationToken cancellationToken)
         {
             
-            var ue = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.NomeUnidade.Parametros(request.UnidadeCodigo), () => _servicoEol.ObterUnidadePorCodigoEol(request.UnidadeCodigo));
+            var ue = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.UnidadeEol.Parametros(request.UnidadeCodigo), () => _servicoEol.ObterUnidadePorCodigoEol(request.UnidadeCodigo));
             if (ue.NomeUnidade.EhNulo())
                 throw new NegocioException(MensagemNegocio.UNIDADE_NAO_LOCALIZADA_POR_CODIGO);
 
