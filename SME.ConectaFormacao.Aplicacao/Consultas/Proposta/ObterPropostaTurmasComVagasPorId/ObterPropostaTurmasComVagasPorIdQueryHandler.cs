@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -13,11 +14,13 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly IMapper _mapper;
+        private readonly ICacheDistribuido _cacheDistribuido;
 
-        public ObterPropostaTurmasComVagasPorIdQueryHandler(IRepositorioProposta repositorioProposta, IMapper mapper)
+        public ObterPropostaTurmasComVagasPorIdQueryHandler(IRepositorioProposta repositorioProposta, IMapper mapper, ICacheDistribuido cacheDistribuido)
         {
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
         }
 
         public async Task<IEnumerable<RetornoListagemDTO>> Handle(ObterPropostaTurmasComVagasPorIdQuery request, CancellationToken cancellationToken)
@@ -37,21 +40,35 @@ namespace SME.ConectaFormacao.Aplicacao
 
             foreach (var turma in turmas)
             {
-                var encontros = await _repositorioProposta.ObterEncontrosPorPropostaTurmaId(turma.Id);
-
-                var datas = new List<string>();
-                foreach (var encontro in encontros)
-                {
-                    foreach (var data in encontro.Datas)
-                    {
-                        datas.Add(data.DataFim.HasValue ? $" {data.DataInicio.Value:dd/MM/yyyy} até {data.DataFim.Value:dd/MM/yyyy}" : $" {data.DataInicio.Value:dd/MM/yyyy}");
-                    }
-                }
-
-                turma.Nome += string.Join(",", datas);
+                turma.Nome += await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.PropostaTurmaDescricaoEncontro.Parametros(turma.Id), () => ObterPeríodoEncontrosTurma(turma.Id));
             }
 
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
+        }
+
+        private async Task<string> ObterPeríodoEncontrosTurma(long turmaId)
+        {
+            var datasInicio = new List<DateTime>();
+            var datasFim = new List<DateTime>();
+
+            var encontros = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.PropostaTurmaEncontro.Parametros(turmaId), () => _repositorioProposta.ObterEncontrosPorPropostaTurmaId(turmaId));
+
+            foreach (var encontro in encontros)
+            {
+                foreach (var data in encontro.Datas)
+                {
+                    if (data.DataInicio.HasValue)
+                        datasInicio.Add(data.DataInicio.Value);
+
+                    if (data.DataFim.HasValue)
+                        datasFim.Add(data.DataFim.Value);
+                }
+            }
+
+            var menorDataInicio = datasInicio.OrderBy(o => o.Date).FirstOrDefault();
+            var maiorDataFim = datasFim.OrderBy(o => o.Date).LastOrDefault();
+
+            return datasFim.PossuiElementos() ? $" {menorDataInicio:dd/MM/yyyy} até {maiorDataFim:dd/MM/yyyy}" : $" {menorDataInicio:dd/MM/yyyy}";
         }
     }
 }
