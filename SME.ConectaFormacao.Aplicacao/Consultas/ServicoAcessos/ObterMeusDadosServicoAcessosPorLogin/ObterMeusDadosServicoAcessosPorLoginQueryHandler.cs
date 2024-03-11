@@ -31,9 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
             if (usuarioLogado.Tipo == TipoUsuario.Externo)
             {
-                var unidade =  await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade));
-                await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.NomeUnidade.Parametros(usuarioLogado.CodigoEolUnidade), () => _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade)));
-                
+                var unidade = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.NomeUnidade.Parametros(usuarioLogado.CodigoEolUnidade), () => _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade)));
                 acessoDadosUsuario.Tipo = (int)TipoUsuario.Externo;
                 acessoDadosUsuario.NomeUnidade = unidade.NomeUnidade;
             }
