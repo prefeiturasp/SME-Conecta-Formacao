@@ -15,5 +15,6 @@
         public string Cidade { get; set; }
         public string Estado { get; set; }
         public int Tipo { get; set; }
+        public string NomeUnidade { get; set; }
     }
 }

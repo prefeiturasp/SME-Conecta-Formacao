@@ -54,6 +54,7 @@
         /// </summary>
         public const string Usuario = "usuario:{0}";
         public const string DreTodos = "dre:todos";
+        public const string UnidadeEol = "unidade-eol:{0}";
         public const string DashboardProposta = "dashboard:{0}";
         public const string DashboardTotalPorTipo = "dashboard-total-por-tipo";
     }
