@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Nao_deve_gerar_proposta_turma_vaga_proposta_diferente_de_publicada_e_nao_homologada()
         {
             // arrange
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.Cadastrada, formacaoHomologada: FormacaoHomologada.NaoCursosPorIN);
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.Cadastrada, formacaoHomologada: FormacaoHomologada.Sim);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoGerarPropostaTurmaVaga>();
 

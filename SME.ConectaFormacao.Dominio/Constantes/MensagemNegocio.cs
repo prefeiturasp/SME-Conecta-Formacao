@@ -50,6 +50,9 @@ public class MensagemNegocio
     public const string TOKEN_INVALIDO = "Token inválido";
 
     public const string PROPOSTA_FUNCAO_ESPECIFICA_OUTROS = "É necessário informar função específicas outros da proposta";
+    public const string PROPOSTA_PUBLICO_ALVO_OUTROS = "É necessário informar público alvo outros da proposta";
+    public const string PROPOSTA_PUBLICO_ALVO_OUTROS_NAO_PODE_SER_PROPOSTA_AUTOMATICA = "Não é permitido selecionar público alvo outros em uma formação com inscrição automática";
+    public const string PROPOSTA_PUBLICO_ALVO_OUTROS_NAO_PERMITE_MAIS_CARGO_SELECIONADO = "Ao selecionar o público alvo outros, não é permitido selecionar mais cargos";
     public const string PROPOSTA_CRITERIO_VALIDACAO_INSCRICAO_OUTROS = "É necessário informar critérios de validação das inscrições outros da proposta";
     public const string PROPOSTA_CRITERIO_VALIDACAO_PUBLICO_ALVO_ANO_TURMA_COMPONENTE_CURRICULAR = "É necessário informar Público Alvo ou Função Específica ou Modalidade, Ano da Turma e Componente Curricular da proposta";
     public const string PROPOSTA_PALAVRA_CHAVE = "É necessário informar palavras chaves da proposta";

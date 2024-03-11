@@ -101,16 +101,22 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
             var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
-
+            
             if (cargosProposta.PossuiElementos())
             {
-                if (cargoId.HasValue && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
+                var cargoFuncaoOutros = await _mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia(), cancellationToken);
+                var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
+
+                if (cargoId.HasValue &&
+                    !cargoEhOutros &&
+                    !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
             {
-                if (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
+                if (funcaoId.HasValue &&
+                    !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }
         }
