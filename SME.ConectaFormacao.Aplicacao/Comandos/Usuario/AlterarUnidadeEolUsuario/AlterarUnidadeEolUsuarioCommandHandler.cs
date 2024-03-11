@@ -32,7 +32,6 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.UsuarioLogado.Parametros(login)));
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Usuario.Parametros(login)));
-            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.UnidadeEol.Parametros(codigoUnidade)));
         }
     }
 }
