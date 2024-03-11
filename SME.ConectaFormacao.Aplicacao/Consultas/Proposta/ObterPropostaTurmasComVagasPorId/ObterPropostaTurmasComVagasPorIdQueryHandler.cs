@@ -39,9 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             foreach (var turma in turmas)
-            {
-                turma.Nome += await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.PropostaTurmaDescricaoEncontro.Parametros(turma.Id), () => ObterPeríodoEncontrosTurma(turma.Id));
-            }
+                turma.Nome += await ObterPeríodoEncontrosTurma(turma.Id);
 
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
         }

@@ -45,10 +45,6 @@
         /// </summary>
         public const string PropostaTurmaEncontro = "proposta-turma:{0}:encontro";
         /// <summary>
-        /// 0 - Código da turma da proposta
-        /// </summary>
-        public const string PropostaTurmaDescricaoEncontro = "proposta-turma:{0}:encontro-descricao";
-        /// <summary>
         /// 0 - Código da proposta
         /// </summary>
         public const string PropostaPublicoAlvo = "proposta:{0}:publico-alvo";
