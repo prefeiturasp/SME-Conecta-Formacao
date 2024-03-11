@@ -35,6 +35,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var ehPropostaAutomatica = request.PropostaDTO.TiposInscricao.PossuiElementos() && request.PropostaDTO.TiposInscricao.Any(a => a.TipoInscricao.EhAutomaticaOuJEIF());
 
+            await _mediator.Send(new ValidarPublicoAlvoOutrosCommand(ehPropostaAutomatica, request.PropostaDTO.PublicosAlvo, request.PropostaDTO.PublicoAlvoOutros), cancellationToken);
+
             await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
 
             await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);

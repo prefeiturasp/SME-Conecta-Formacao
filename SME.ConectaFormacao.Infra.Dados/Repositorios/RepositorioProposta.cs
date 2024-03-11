@@ -1809,9 +1809,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             and not ap.excluido;
 
                         select 
-                               cf.nome
+                               case when cf.outros then p.publico_alvo_outros else cf.nome end as nome
                         from proposta_publico_alvo ppa
                         join cargo_funcao cf on cf.id = ppa.cargo_funcao_id
+                        join proposta p on p.id = ppa.proposta_id and not p.excluido
                         where ppa.proposta_id = @propostaId
                           and not ppa.excluido 
                           and not cf.excluido;
