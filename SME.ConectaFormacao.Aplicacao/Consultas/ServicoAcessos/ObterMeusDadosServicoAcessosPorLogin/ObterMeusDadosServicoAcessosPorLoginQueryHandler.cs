@@ -15,14 +15,12 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly IServicoAcessos _servicoAcessos;
         private readonly IMediator _mediator;
-        private readonly ICacheDistribuido _cacheDistribuido;
 
-        public ObterMeusDadosServicoAcessosPorLoginQueryHandler(IMapper mapper, IServicoAcessos servicoAcessos,IMediator mediator,ICacheDistribuido cacheDistribuido)
+        public ObterMeusDadosServicoAcessosPorLoginQueryHandler(IMapper mapper, IServicoAcessos servicoAcessos,IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _servicoAcessos = servicoAcessos ?? throw new ArgumentNullException(nameof(servicoAcessos));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
         }
 
         public async Task<DadosUsuarioDTO> Handle(ObterMeusDadosServicoAcessosPorLoginQuery request, CancellationToken cancellationToken)
@@ -31,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
             if (usuarioLogado.Tipo == TipoUsuario.Externo)
             {
-                var unidade = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.NomeUnidade.Parametros(usuarioLogado.CodigoEolUnidade), () => _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade)));
+                var unidade = await  _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade));
                 acessoDadosUsuario.Tipo = (int)TipoUsuario.Externo;
                 acessoDadosUsuario.NomeUnidade = unidade.NomeUnidade;
             }
