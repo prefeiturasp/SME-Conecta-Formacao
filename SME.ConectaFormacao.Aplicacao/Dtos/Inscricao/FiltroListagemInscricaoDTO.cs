@@ -5,6 +5,6 @@
         public string? RegistroFuncional { get; set; }
         public string? Cpf { get; set; }
         public string? NomeCursista { get; set; }
-        public long? TurmaId { get; set; }
+        public long[]? TurmasId { get; set; }
     }
 }
