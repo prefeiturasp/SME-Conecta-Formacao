@@ -87,6 +87,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoUsuarioAlterarEmail.Executar(login, emailUsuarioDto.Email));
         }
+        
+        [HttpPut("{login}/alterar-email")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> AlterarEmailEReenviarEmailParaValidacao([FromRoute] string login, [FromBody] EmailUsuarioDTO emailUsuarioDto, [FromServices] ICasoDeUsoAlterarEmailEReenviarEmailParaValidacao useCase)
+        {
+            return Ok(await useCase.Executar(login, emailUsuarioDto.Email));
+        }
 
         [HttpGet("{login}/reenviar-email")]
         [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
