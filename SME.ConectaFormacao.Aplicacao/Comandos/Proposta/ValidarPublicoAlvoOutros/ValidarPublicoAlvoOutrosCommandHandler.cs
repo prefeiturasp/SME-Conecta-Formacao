@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (existeOpcaoOutros && string.IsNullOrEmpty(request.PublicoAlvoOutros))
                     throw new NegocioException(MensagemNegocio.PROPOSTA_PUBLICO_ALVO_OUTROS);
 
-                if(existeOpcaoOutros && request.EhPropostaAutomatica)
+                if (existeOpcaoOutros && request.EhPropostaAutomatica)
                     throw new NegocioException(MensagemNegocio.PROPOSTA_PUBLICO_ALVO_OUTROS_NAO_PODE_SER_PROPOSTA_AUTOMATICA);
             }
         }

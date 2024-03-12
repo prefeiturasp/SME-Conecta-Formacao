@@ -124,6 +124,6 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<DreUeAtribuicaoServicoEol[]>();
         }
-        
+
     }
 }
