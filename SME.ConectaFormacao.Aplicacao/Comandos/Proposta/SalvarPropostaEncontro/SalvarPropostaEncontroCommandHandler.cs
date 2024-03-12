@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -11,12 +14,14 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly ITransacao _transacao;
+        private readonly ICacheDistribuido _cacheDistribuido;
 
-        public SalvarPropostaEncontroCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao)
+        public SalvarPropostaEncontroCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao, ICacheDistribuido cacheDistribuido)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
+            _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
         }
 
         public async Task<long> Handle(SalvarPropostaEncontroCommand request, CancellationToken cancellationToken)
@@ -81,6 +86,9 @@ namespace SME.ConectaFormacao.Aplicacao
                     await _repositorioProposta.RemoverEncontroDatas(datasExcluir);
 
                 transacao.Commit();
+
+                foreach (var turma in turmasAntes)
+                    await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.PropostaTurmaEncontro.Parametros(turma.Id));
 
                 return encontroDepois.Id;
             }
