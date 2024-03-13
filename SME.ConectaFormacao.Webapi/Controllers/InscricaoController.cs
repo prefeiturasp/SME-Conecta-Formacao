@@ -86,6 +86,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar(filtro));
         }
+
         [HttpGet("tipos")]
         [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -95,6 +96,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoObterInscricaoTipo casoDeUsoObterInscricaoTipo)
         {
             return Ok(await casoDeUsoObterInscricaoTipo.Executar());
+        }
+
+        [HttpGet("cursista")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> ObterCursistaInscricao(
+            [FromServices] ICasoDeUsoObterNomeCursistaInscricao casoDeUsoObterCursistaInscricao,
+            [FromQuery] string? registroFuncional,
+            [FromQuery] string? cpf)
+        {
+            return Ok(await casoDeUsoObterCursistaInscricao.Executar(registroFuncional, cpf));
         }
     }
 }
