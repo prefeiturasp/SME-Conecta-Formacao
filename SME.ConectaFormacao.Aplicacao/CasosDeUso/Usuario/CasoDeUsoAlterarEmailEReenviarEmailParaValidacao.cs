@@ -18,11 +18,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var usuarioAutenticadoRetornoDto = await mediator.Send(new ObterUsuarioServicoAcessosPorLoginSenhaQuery(emailUsuarioDto.Login, emailUsuarioDto.Senha));
             if (string.IsNullOrEmpty(usuarioAutenticadoRetornoDto.Login))
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, HttpStatusCode.Unauthorized);
-            else
-            {
-                await mediator.Send(new AlterarEmailServicoAcessosCommand(emailUsuarioDto.Login, emailUsuarioDto.Email));
-                return await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(emailUsuarioDto.Login));
-            }
+            
+            
+            await mediator.Send(new AlterarEmailServicoAcessosCommand(emailUsuarioDto.Login, emailUsuarioDto.Email));
+            return await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(emailUsuarioDto.Login));
         }
     }
 }
