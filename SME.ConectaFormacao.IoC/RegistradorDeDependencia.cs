@@ -257,11 +257,13 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoInserirUsuarioExterno, CasoDeUsoInserirUsuarioExterno>();
         _serviceCollection.TryAddScoped<ICasoDeUsoReenviarEmail, CasoDeUsoReenviarEmail>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarNome, CasoDeUsoUsuarioAlterarNome>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAlterarEmailEReenviarEmailParaValidacao, CasoDeUsoAlterarEmailEReenviarEmailParaValidacao>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioSolicitarRecuperacaoSenha, CasoDeUsoUsuarioSolicitarRecuperacaoSenha>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioValidacaoSenhaToken, CasoDeUsoUsuarioValidacaoSenhaToken>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioValidacaoEmailToken, CasoDeUsoUsuarioValidacaoEmailToken>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioRecuperarSenha, CasoDeUsoUsuarioRecuperarSenha>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarUnidadeEol, CasoDeUsoUsuarioAlterarUnidadeEol>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterCargoFuncao, CasoDeUsoObterCargoFuncao>();

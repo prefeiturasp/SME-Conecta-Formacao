@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarPropostaTurmaCommand : IRequest<bool>
     {
-        public SalvarPropostaTurmaCommand(long propostaId, IEnumerable<PropostaTurma> turmas,SituacaoProposta situacao)
+        public SalvarPropostaTurmaCommand(long propostaId, IEnumerable<PropostaTurma> turmas, SituacaoProposta situacao)
         {
             PropostaId = propostaId;
             Turmas = turmas;

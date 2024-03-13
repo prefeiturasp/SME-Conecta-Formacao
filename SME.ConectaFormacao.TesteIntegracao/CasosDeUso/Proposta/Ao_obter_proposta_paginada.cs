@@ -18,6 +18,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             var propostas = await InserirNaBaseProposta(15);
+            await InserirNaBase(propostas);
 
             var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOValido(propostas.FirstOrDefault().AreaPromotora, propostas);
 
@@ -36,6 +37,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             var propostas = await InserirNaBaseProposta(15);
+            await InserirNaBase(propostas);
 
             var filtro = new PropostaFiltrosDTO();
 
@@ -54,6 +56,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             var propostas = await InserirNaBaseProposta(15);
+            await InserirNaBase(propostas);
 
             var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOInvalido();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPaginacao>();

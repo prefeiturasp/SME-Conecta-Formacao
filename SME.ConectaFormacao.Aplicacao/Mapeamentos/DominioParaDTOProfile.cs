@@ -231,6 +231,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
                 .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => $"{o.PropostaTurma.Proposta.DataRealizacaoInicio.Value:dd/MM/yyyy} até {o.PropostaTurma.Proposta.DataRealizacaoFim.Value:dd/MM/yyyy}"))
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()))
+                .ForMember(dest => dest.Origem, opt => opt.MapFrom(o => o.Origem.Nome()))
+                .ForMember(dest => dest.IntegrarNoSga, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.IntegrarNoSGA))
+                .ForMember(dest => dest.Iniciado, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.DataRealizacaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date))
                 .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != Dominio.Enumerados.SituacaoInscricao.Cancelada));
 
             CreateMap<Inscricao, DadosListagemInscricaoDTO>()
@@ -241,7 +244,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.CargoFuncao, opt => opt.MapFrom(o => o.Funcao.Nome))
                 .ForMember(dest => dest.SituacaoCodigo, opt => opt.MapFrom(o => o.Situacao))
                 .ForMember(dest => dest.InscricaoId, opt => opt.MapFrom(o => o.Id))
-                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()));
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()))
+                .ForMember(dest => dest.Origem, opt => opt.MapFrom(o => o.Origem.Nome()))
+                .ForMember(dest => dest.IntegrarNoSga, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.IntegrarNoSGA))
+                .ForMember(dest => dest.Iniciado, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.DataRealizacaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date));
+
             CreateMap<Proposta, DadosListagemFormacaoComTurmaDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(o => o.Id))
                 .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.NomeFormacao))

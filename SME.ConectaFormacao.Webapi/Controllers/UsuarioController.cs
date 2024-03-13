@@ -87,6 +87,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoUsuarioAlterarEmail.Executar(login, emailUsuarioDto.Email));
         }
+        
+        [HttpPut("alterar-email")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> AlterarEmailEReenviarEmailParaValidacao([FromBody] AlterarEmailUsuarioDto emailUsuarioDto, [FromServices] ICasoDeUsoAlterarEmailEReenviarEmailParaValidacao useCase)
+        {
+            return Ok(await useCase.Executar(emailUsuarioDto));
+        }
 
         [HttpGet("{login}/reenviar-email")]
         [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
@@ -106,6 +116,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> AlterarNomeConectaECoreSSO([FromRoute] string login, [FromBody] NomeUsuarioDTO nomeUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarNome casoDeUsoUsuarioAlterarNome)
         {
             return Ok(await casoDeUsoUsuarioAlterarNome.Executar(login, nomeUsuarioDto.Nome));
+        }
+
+        [HttpPut("{login}/unidade-eol")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> AlterarUnidadeEol([FromRoute] string login, [FromBody] UnidadeEolUsuarioDTO unidadeEolUsuarioDTO, [FromServices] ICasoDeUsoUsuarioAlterarUnidadeEol casoDeUsoUsuarioAlterarUnidadeEol)
+        {
+            return Ok(await casoDeUsoUsuarioAlterarUnidadeEol.Executar(login, unidadeEolUsuarioDTO.CodigoEolUnidade));
         }
     }
 }
