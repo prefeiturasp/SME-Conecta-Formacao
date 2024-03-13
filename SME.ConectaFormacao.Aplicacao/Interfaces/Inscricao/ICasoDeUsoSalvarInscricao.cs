@@ -1,9 +1,10 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
 {
     public interface ICasoDeUsoSalvarInscricao
     {
-        Task<long> Executar(InscricaoDTO inscricaoDTO);
+        Task<RetornoDTO> Executar(InscricaoDTO inscricaoDTO);
     }
 }

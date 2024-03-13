@@ -43,7 +43,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_UNIDADE_POR_CODIGO.Parametros(codigoEol));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
-                throw new NegocioException(MensagemNegocio.UNIDADE_NAO_LOCALIZADA_POR_CODIGO, resposta.StatusCode);
+                throw new NegocioException(MensagemNegocio.UNIDADE_NAO_LOCALIZADA_POR_CODIGO);
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<UnidadeEol>();
@@ -113,5 +113,17 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<CursistaServicoEol[]>();
         }
+
+        public async Task<IEnumerable<DreUeAtribuicaoServicoEol>> ObterDreUeAtribuicaoPorFuncionarioCargo(string registroFuncional, long codigoCargo)
+        {
+            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_CARGO.Parametros(registroFuncional, codigoCargo));
+
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.ERRO_OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_E_CARGO_EOL, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<DreUeAtribuicaoServicoEol[]>();
+        }
+        
     }
 }

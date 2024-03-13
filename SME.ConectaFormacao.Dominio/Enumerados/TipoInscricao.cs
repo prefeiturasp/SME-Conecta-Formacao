@@ -26,5 +26,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 
             return (valor == TipoInscricao.Automatica || valor == TipoInscricao.AutomaticaJEIF);
         }
+
+        public static bool EhAutomaticaOuJEIF(this TipoInscricao valor)
+        {
+            return (valor == TipoInscricao.Automatica || valor == TipoInscricao.AutomaticaJEIF);
+        }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -45,7 +46,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(DadosInscricaoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> SalvarInscricao(
