@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await _mediator.Send(new SalvarPropostaDreCommand(request.PropostaId, request.Proposta.Dres), cancellationToken);
 
-            await _mediator.Send(new SalvarPropostaTurmaCommand(request.PropostaId, request.Proposta.Turmas), cancellationToken);
+            await _mediator.Send(new SalvarPropostaTurmaCommand(request.PropostaId, request.Proposta.Turmas,request.Proposta.Situacao), cancellationToken);
 
             await _mediator.Send(new SalvarPropostaTurmaDreCommand(request.Proposta.ObterPropostaTurmasDres), cancellationToken);
 
@@ -62,6 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Proposta.Parametros(propostaId)), cancellationToken);
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.PropostaPublicoAlvo.Parametros(propostaId)), cancellationToken);
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.PropostaFuncaoEspecifica.Parametros(propostaId)), cancellationToken);
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.DashboardProposta.Parametros(propostaId)), cancellationToken);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -6,10 +8,12 @@ namespace SME.ConectaFormacao.Aplicacao
     public class SalvarPropostaTurmaCommandHandler : IRequestHandler<SalvarPropostaTurmaCommand, bool>
     {
         private readonly IRepositorioProposta _repositorioProposta;
+        private readonly IMediator _mediator;
 
-        public SalvarPropostaTurmaCommandHandler(IRepositorioProposta repositorioProposta)
+        public SalvarPropostaTurmaCommandHandler(IRepositorioProposta repositorioProposta,IMediator mediator)
         {
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<bool> Handle(SalvarPropostaTurmaCommand request, CancellationToken cancellationToken)
@@ -21,7 +25,12 @@ namespace SME.ConectaFormacao.Aplicacao
             var turmasExcluir = turmasAntes.Where(w => !request.Turmas.Any(a => a.Id == w.Id));
 
             if (turmasInserir.Any())
+            {
                 await _repositorioProposta.InserirTurmas(request.PropostaId, turmasInserir);
+
+                if (request.Situacao.EhAlterando())
+                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, request.PropostaId),cancellationToken); 
+            }
 
             if (turmasAlterar.Any())
             {

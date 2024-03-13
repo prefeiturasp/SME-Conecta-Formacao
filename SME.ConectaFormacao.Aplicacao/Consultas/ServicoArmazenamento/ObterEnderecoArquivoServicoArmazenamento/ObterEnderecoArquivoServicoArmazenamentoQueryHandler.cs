@@ -12,9 +12,9 @@ namespace SME.ConectaFormacao.Aplicacao
             _servicoArmazenamento = servicoArmazenamento ?? throw new ArgumentNullException(nameof(servicoArmazenamento));
         }
 
-        public Task<string> Handle(ObterEnderecoArquivoServicoArmazenamentoQuery request, CancellationToken cancellationToken)
+        public async Task<string> Handle(ObterEnderecoArquivoServicoArmazenamentoQuery request, CancellationToken cancellationToken)
         {
-            return _servicoArmazenamento.Obter(request.NomeArquivoFisico, request.EhTemp);
+            return await _servicoArmazenamento.Obter(request.NomeArquivoFisico, request.EhTemp);
         }
     }
 }

@@ -7,6 +7,6 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private static ObterUsuarioLogadoQuery _instancia;
 
-        public static ObterUsuarioLogadoQuery Instancia => _instancia ??= new();
+        public static ObterUsuarioLogadoQuery Instancia() => _instancia ??= new();
     }
 }

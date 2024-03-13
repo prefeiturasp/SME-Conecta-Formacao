@@ -83,7 +83,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> AlterarEmail([FromRoute] string login, [FromBody] EmailUsuarioDTO emailUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarEmail casoDeUsoUsuarioAlterarEmail)
+        public async Task<IActionResult> AlterarEmailCoreSSO([FromRoute] string login, [FromBody] EmailUsuarioDTO emailUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarEmail casoDeUsoUsuarioAlterarEmail)
         {
             return Ok(await casoDeUsoUsuarioAlterarEmail.Executar(login, emailUsuarioDto.Email));
         }
@@ -96,6 +96,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ReenviarEmailParaValidacao([FromRoute] string login, [FromServices] ICasoDeUsoReenviarEmail casoDeUsoReenviarEmail)
         {
             return Ok(await casoDeUsoReenviarEmail.Executar(login));
+        }
+
+        [HttpPut("{login}/nome")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> AlterarNomeConectaECoreSSO([FromRoute] string login, [FromBody] NomeUsuarioDTO nomeUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarNome casoDeUsoUsuarioAlterarNome)
+        {
+            return Ok(await casoDeUsoUsuarioAlterarNome.Executar(login, nomeUsuarioDto.Nome));
         }
     }
 }

@@ -14,7 +14,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
         public async Task<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>> Executar(FiltroListagemInscricaoComTurmaDTO filtro)
         {
-            return await mediator.Send(new ObterDadosPaginadosComFiltrosQuery(NumeroPagina, NumeroRegistros, filtro.CodigoFormacao, filtro.NomeFormacao));
+            var areaPromotoraUsuarioLogado = await mediator.Send(ObterAreaPromotoraUsuarioLogadoQuery.Instancia());
+            return await mediator.Send(new ObterDadosPaginadosComFiltrosQuery(NumeroPagina, NumeroRegistros, filtro.CodigoFormacao, filtro.NomeFormacao, areaPromotoraUsuarioLogado?.Id));
         }
     }
 }

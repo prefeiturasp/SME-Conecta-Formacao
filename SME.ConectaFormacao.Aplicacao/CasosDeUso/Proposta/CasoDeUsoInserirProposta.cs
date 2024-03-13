@@ -14,27 +14,29 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<long> Executar(PropostaDTO propostaDTO)
+        public async Task<RetornoDTO> Executar(PropostaDTO propostaDTO)
         {
+            var grupoUsuarioLogadoId = await mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
+            var dres = await mediator.Send(ObterDresUsuarioLogadoQuery.Instancia());
+
+            var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorGrupoIdEDresQuery(grupoUsuarioLogadoId, dres)) ??
+                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO, System.Net.HttpStatusCode.NotFound);
+
             var comunicado = await ObterComunicaddoParametroSistema();
-            long propostaId = 0;
             propostaDTO.AcaoFormativaTexto = comunicado.Descricao;
             propostaDTO.AcaoFormativaLink = comunicado.Url;
 
-            var grupoUsuarioLogadoId = await mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
-            var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorGrupoIdQuery(grupoUsuarioLogadoId)) ??
-                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO, System.Net.HttpStatusCode.NotFound);
-
+            RetornoDTO retornoDto;
             if (propostaDTO.Situacao == SituacaoProposta.Rascunho)
             {
-                propostaId =  await mediator.Send(new InserirPropostaRascunhoCommand(areaPromotora.Id, propostaDTO));
-                await SalvarMovimentacao(propostaId,propostaDTO.Situacao);
-                return propostaId;
+                retornoDto = await mediator.Send(new InserirPropostaRascunhoCommand(areaPromotora.Id, propostaDTO));
+                await SalvarMovimentacao(retornoDto.EntidadeId, propostaDTO.Situacao);
+                return retornoDto;
             }
 
-            propostaId =  await mediator.Send(new InserirPropostaCommand(areaPromotora.Id, propostaDTO));
-            await SalvarMovimentacao(propostaId,propostaDTO.Situacao);
-            return propostaId;
+            retornoDto = await mediator.Send(new InserirPropostaCommand(areaPromotora.Id, propostaDTO));
+            await SalvarMovimentacao(retornoDto.EntidadeId, propostaDTO.Situacao);
+            return retornoDto;
         }
 
         private async Task SalvarMovimentacao(long propostaId, SituacaoProposta situacao)

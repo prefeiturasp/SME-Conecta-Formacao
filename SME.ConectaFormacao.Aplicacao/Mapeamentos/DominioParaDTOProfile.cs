@@ -10,8 +10,10 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
@@ -59,6 +61,13 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Descricao));
 
             // -> Proposta
+            CreateMap<AreaPromotora, PropostaInformacoesCadastranteDTO>()
+                .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(x => x.Nome))
+                .ForMember(dest => dest.AreaPromotoraEmails, opt => opt.MapFrom(x => x.Email.Replace(";", ", ")))
+                .ForMember(dest => dest.AreaPromotoraTelefones, opt => opt.MapFrom(x => string.Join(", ", x.Telefones.Select(t => t.Telefone.Length > 10 ? t.Telefone.AplicarMascara(@"\(00\) 00000\-0000") : t.Telefone.AplicarMascara(@"\(00\) 0000\-0000")))))
+                .ForMember(dest => dest.AreaPromotoraTipo, opt => opt.MapFrom(x => x.Tipo.Nome()))
+                .ForMember(dest => dest.AreaPromotoraTipoId, opt => opt.MapFrom(x => x.Tipo));
+
             CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
             CreateMap<CargoFuncao, CargoFuncaoDTO>();
             CreateMap<PalavraChave, PalavraChaveDTO>();
@@ -106,12 +115,16 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaRegente, PropostaRegenteDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
                 .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(dest => dest.NomeRegente, opt => opt.MapFrom(o => o.NomeRegente.NaoEhNulo() ? o.NomeRegente.Trim().ToUpper() : null))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf.NaoEhNulo() ? o.Cpf.SomenteNumeros() : null));
 
             CreateMap<PropostaTutor, PropostaTutorDTO>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
                 .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(dest => dest.NomeTutor, opt => opt.MapFrom(o => o.NomeTutor.NaoEhNulo() ? o.NomeTutor.Trim().ToUpper() : null))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf.NaoEhNulo() ? o.Cpf.SomenteNumeros() : null));
 
             CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>()
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
@@ -173,7 +186,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.TipoFormacaoDescricao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
                 .ForMember(dest => dest.FormatoDescricao, opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
                 .ForMember(dest => dest.InscricaoEncerrada, opt => opt.MapFrom(o => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim))
-                .ForMember(dest => dest.Periodo, opt => opt.MapFrom(o => $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"));
+                .ForMember(dest => dest.Periodo, opt => opt.MapFrom(o => $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"))
+                .ForMember(dest => dest.PeriodoInscricao, opt => opt.MapFrom(o => $"{o.DataInscricaoInicio.GetValueOrDefault():dd/MM} até {o.DataInscricaoFim.GetValueOrDefault():dd/MM}"));
 
             CreateMap<FormacaoDetalhada, RetornoFormacaoDetalhadaDTO>()
                 .ForMember(dest => dest.Titulo, opt => opt.MapFrom(x => x.NomeFormacao))
@@ -182,11 +196,13 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                     opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
                 .ForMember(dest => dest.FormatoDescricao,
                     opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
-                .ForMember(dest => dest.InscricaoEncerrada,
-                    opt => opt.MapFrom(o => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim))
+                .ForMember(dest => dest.DataInscricaoFim, opt => opt.MapFrom(o => o.DataInscricaoFim))
                 .ForMember(dest => dest.Periodo,
                     opt => opt.MapFrom(o =>
-                        $"De {o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"));
+                        $"De {o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"))
+                .ForMember(dest => dest.PeriodoInscricao,
+                opt => opt.MapFrom(o =>
+                        $"De {o.DataInscricaoInicio.GetValueOrDefault():dd/MM} até {o.DataInscricaoFim.GetValueOrDefault():dd/MM}"));
 
             CreateMap<FormacaoTurma, RetornoTurmaDetalheDTO>()
                 .ForMember(dest => dest.Horario,
@@ -205,7 +221,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.UsuarioRf, opt => opt.MapFrom(o => o.Login))
                 .ForMember(dest => dest.UsuarioNome, opt => opt.MapFrom(o => o.Nome))
                 .ForMember(dest => dest.UsuarioCpf, opt => opt.MapFrom(o => o.Cpf))
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(dest => dest.Tipo, opt => opt.MapFrom(o => TipoUsuario.Interno))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => SituacaoCadastroUsuario.Ativo));
 
             CreateMap<Inscricao, InscricaoPaginadaDTO>()
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.Id))
@@ -213,7 +231,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
                 .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => $"{o.PropostaTurma.Proposta.DataRealizacaoInicio.Value:dd/MM/yyyy} até {o.PropostaTurma.Proposta.DataRealizacaoFim.Value:dd/MM/yyyy}"))
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()))
-                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao == Dominio.Enumerados.SituacaoInscricao.Confirmada && o.PropostaTurma.Proposta.DataRealizacaoInicio.Value > DateTimeExtension.HorarioBrasilia()));
+                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != Dominio.Enumerados.SituacaoInscricao.Cancelada));
 
             CreateMap<Inscricao, DadosListagemInscricaoDTO>()
                 .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
@@ -228,6 +246,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(o => o.Id))
                 .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.NomeFormacao))
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
+
+            CreateMap<UsuarioExternoDTO, Usuario>().ReverseMap();
         }
     }
 }

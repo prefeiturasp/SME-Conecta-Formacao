@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostasDashboardQueryHandler : IRequestHandler<ObterPropostasDashboardQuery,IEnumerable<Proposta>>
+    public class ObterPropostasDashboardQueryHandler : IRequestHandler<ObterPropostasDashboardQuery, IEnumerable<Proposta>>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 
@@ -15,11 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<Proposta>> Handle(ObterPropostasDashboardQuery request, CancellationToken cancellationToken)
         {
-            var filtro = request.Filtro;
-            return await _repositorioProposta.ObterPropostasDashBoardPorTipo(filtro.Id,filtro.AreaPromotoraId,filtro.Formato,
-                                                                             filtro.PublicoAlvoIds,filtro.NomeFormacao,filtro.NumeroHomologacao,
-                                                                             filtro.PeriodoRealizacaoInicio,filtro.PeriodoRealizacaoFim,
-                                                                             filtro.Situacao,filtro.FormacaoHomologada);
+            return await _repositorioProposta.ObterPropostasDashBoard(request.PropostasIds);
         }
     }
 }

@@ -1,19 +1,22 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarPropostaTurmaCommand : IRequest<bool>
     {
-        public SalvarPropostaTurmaCommand(long propostaId, IEnumerable<PropostaTurma> turmas)
+        public SalvarPropostaTurmaCommand(long propostaId, IEnumerable<PropostaTurma> turmas,SituacaoProposta situacao)
         {
             PropostaId = propostaId;
             Turmas = turmas;
+            Situacao = situacao;
         }
 
         public long PropostaId { get; }
         public IEnumerable<PropostaTurma> Turmas { get; }
+        public SituacaoProposta Situacao { get; }
     }
 
     public class SalvarPropostaTurmaCommandValidator : AbstractValidator<SalvarPropostaTurmaCommand>

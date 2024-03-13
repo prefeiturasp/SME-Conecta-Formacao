@@ -39,6 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao
         {
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<PublicarNaFilaRabbitCommand, bool>), typeof(PublicarNaFilaRabbitCommandFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<AlterarEmailServicoAcessosCommand, bool>), typeof(AlterarEmailServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<AlterarNomeServicoAcessosCommand, bool>), typeof(AlterarNomeServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
         }
 
         protected virtual void RegistrarQueryFakes(IServiceCollection services)

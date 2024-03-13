@@ -1,6 +1,9 @@
 using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -25,13 +28,15 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var regenteAntes = await _repositorioProposta.ObterPropostaRegentePorId(request.PropostaRegenteDTO.Id);
             var regenteDepois = _mapper.Map<PropostaRegente>(request.PropostaRegenteDTO);
-            regenteDepois.NomeRegente = regenteDepois.NomeRegente.Trim();
+
+            if (regenteDepois.Cpf.NaoEhNulo() && !regenteDepois.Cpf.CpfEhValido())
+                throw new NegocioException(MensagemNegocio.CPF_INVALIDO);
 
             var turmasAntes = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(regenteDepois.Id);
-
             var arrayTurma = request.PropostaRegenteDTO.Turmas.Select(x => x.TurmaId);
             var turmasConsultar = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
-            await _mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(request.PropostaId, request.PropostaRegenteDTO.RegistroFuncional, regenteDepois.NomeRegente, turmasConsultar));
+
+            await _mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(regenteDepois.RegistroFuncional, regenteDepois.Cpf, regenteDepois.NomeRegente, turmasConsultar), cancellationToken);
 
             var transacao = _transacao.Iniciar();
             try
@@ -40,8 +45,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     if (regenteAntes.ProfissionalRedeMunicipal != regenteDepois.ProfissionalRedeMunicipal
                         || regenteAntes.RegistroFuncional != regenteDepois.RegistroFuncional
-                        || regenteAntes.NomeRegente.Trim() != regenteDepois.NomeRegente
-                        || regenteAntes.MiniBiografia != regenteDepois.MiniBiografia)
+                        || regenteAntes.NomeRegente != regenteDepois.NomeRegente
+                        || regenteAntes.MiniBiografia != regenteDepois.MiniBiografia
+                        || regenteAntes.Cpf != regenteDepois.Cpf)
                     {
                         regenteDepois.PropostaId = request.PropostaId;
                         regenteDepois.ManterCriador(regenteAntes);

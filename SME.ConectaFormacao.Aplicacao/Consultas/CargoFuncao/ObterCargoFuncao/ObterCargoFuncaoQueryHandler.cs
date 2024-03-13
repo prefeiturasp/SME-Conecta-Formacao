@@ -24,9 +24,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<IEnumerable<CargoFuncaoDTO>> Handle(ObterCargoFuncaoQuery request, CancellationToken cancellationToken)
         {
             var nomeCache = CacheDistribuidoNomes.CargoFuncao.Parametros(request.Tipo);
-            var obterDados = _repositorioCargoFuncao.ObterIgnorandoExcluidosPorTipo(request.Tipo, request.ExibirOutros);
 
-            var cargosFuncoes = await _cacheDistribuido.ObterAsync(nomeCache, () => obterDados);
+            var cargosFuncoes = await _cacheDistribuido.ObterAsync(nomeCache, () => _repositorioCargoFuncao.ObterIgnorandoExcluidosPorTipo(request.Tipo, request.ExibirOutros));
 
             return _mapper.Map<IEnumerable<CargoFuncaoDTO>>(cargosFuncoes);
         }

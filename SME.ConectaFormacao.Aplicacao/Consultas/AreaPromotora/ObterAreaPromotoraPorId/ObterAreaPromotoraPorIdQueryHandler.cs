@@ -1,34 +1,25 @@
-﻿using AutoMapper;
-using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
-using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Excecoes;
+﻿using MediatR;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterAreaPromotoraPorIdQueryHandler : IRequestHandler<ObterAreaPromotoraPorIdQuery, AreaPromotoraCompletoDTO>
+    public class ObterAreaPromotoraPorIdQueryHandler : IRequestHandler<ObterAreaPromotoraPorIdQuery, AreaPromotora>
     {
-        private readonly IMapper _mapper;
         private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
 
-        public ObterAreaPromotoraPorIdQueryHandler(IMapper mapper, IRepositorioAreaPromotora repositorioAreaPromotora)
+        public ObterAreaPromotoraPorIdQueryHandler(IRepositorioAreaPromotora repositorioAreaPromotora)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
         }
 
-        public async Task<AreaPromotoraCompletoDTO> Handle(ObterAreaPromotoraPorIdQuery request, CancellationToken cancellationToken)
+        public async Task<AreaPromotora> Handle(ObterAreaPromotoraPorIdQuery request, CancellationToken cancellationToken)
         {
-            var areaPromotora = await _repositorioAreaPromotora.ObterAreaPromotoraPorIdComDre(request.Id);
-            if (areaPromotora == null || areaPromotora.Excluido)
-                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
+            var areaPromotora = await _repositorioAreaPromotora.ObterPorId(request.Id);
+            if (areaPromotora != null)
+                areaPromotora.Telefones = await _repositorioAreaPromotora.ObterTelefonesPorId(areaPromotora.Id);
 
-            areaPromotora.Telefones = await _repositorioAreaPromotora.ObterTelefonesPorId(request.Id);
-            var retorno = _mapper.Map<AreaPromotoraCompletoDTO>(areaPromotora);
-            retorno.Auditoria = _mapper.Map<AuditoriaDTO>(areaPromotora);
-
-            return retorno;
+            return areaPromotora;
         }
     }
 }

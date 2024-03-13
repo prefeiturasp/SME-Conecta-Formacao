@@ -25,10 +25,9 @@ namespace SME.ConectaFormacao.Aplicacao
             if (usuarioExterno.EhNulo())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            usuarioExterno.Ativar();
-            await _repositorioUsuario.Atualizar(usuarioExterno);
+            await _repositorioUsuario.AtivarCadastroUsuario(usuarioExterno.Id);
 
-            await _cacheDistribuido.RemoverAsync(string.Format(CacheDistribuidoNomes.Usuario, request.Login));
+            await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.Usuario.Parametros(request.Login));
 
             return true;
         }

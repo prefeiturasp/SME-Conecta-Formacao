@@ -32,7 +32,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (!exibirTodos)
                 query += " and not todos ";
 
-            query += " order by ordem ";
+            query += " order by ordem, descricao ";
 
             return conexao.Obter().QueryAsync<AnoTurma>(query, new { modalidades, anoLetivo });
         }

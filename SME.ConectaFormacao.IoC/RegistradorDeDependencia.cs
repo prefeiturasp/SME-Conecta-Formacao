@@ -256,6 +256,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarSenha, CasoDeUsoUsuarioAlterarSenha>();
         _serviceCollection.TryAddScoped<ICasoDeUsoInserirUsuarioExterno, CasoDeUsoInserirUsuarioExterno>();
         _serviceCollection.TryAddScoped<ICasoDeUsoReenviarEmail, CasoDeUsoReenviarEmail>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarNome, CasoDeUsoUsuarioAlterarNome>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioSolicitarRecuperacaoSenha, CasoDeUsoUsuarioSolicitarRecuperacaoSenha>();
         _serviceCollection.TryAddScoped<ICasoDeUsoUsuarioValidacaoSenhaToken, CasoDeUsoUsuarioValidacaoSenhaToken>();
@@ -276,6 +277,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoAlterarAreaPromotora, CasoDeUsoAlterarAreaPromotora>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverAreaPromotora, CasoDeUsoRemoverAreaPromotora>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraLista, CasoDeUsoObterAreaPromotoraLista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraListaAreaPublica, CasoDeUsoObterAreaPromotoraListaAreaPublica>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoFormacao, CasoDeUsoObterTipoFormacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoInscricao, CasoDeUsoObterTipoInscricao>();

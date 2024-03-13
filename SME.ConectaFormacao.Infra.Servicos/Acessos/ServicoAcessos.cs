@@ -1,11 +1,12 @@
-﻿using SME.ConectaFormacao.Dominio.Constantes;
+﻿using System.Net;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Servicos.Acessos.Constante;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Options;
 using System.Text;
-using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Infra.Servicos.Acessos.Constante;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 {
@@ -25,9 +26,12 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var parametros = new { login, senha }.ObjetoParaJson();
             var resposta = await _httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_AUTENTICACAO_AUTENTICAR, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
+            if(resposta.StatusCode == HttpStatusCode.InternalServerError || resposta.StatusCode == HttpStatusCode.BadGateway || resposta.StatusCode == HttpStatusCode.ServiceUnavailable || resposta.StatusCode == HttpStatusCode.GatewayTimeout)
+                throw new NegocioException(MensagemNegocio.SERVICO_AUTENTICACAO_FORA);
+            
             if (!resposta.IsSuccessStatusCode)
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, resposta.StatusCode);
-
+            
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<AcessosUsuarioAutenticacaoRetorno>();
         }
@@ -90,6 +94,17 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
         {
             var parametros = new { login, nome, email, senha }.ObjetoParaJson();
             var resposta = await _httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_USUARIOS_CADASTRAR, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+
+            if (!resposta.IsSuccessStatusCode) return false;
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<bool>();
+        }
+
+        public async Task<bool> AtualizarUsuarioCoreSSO(string login, string nome, string email, string senha)
+        {
+            var parametros = new { login, nome, email, senha }.ObjetoParaJson();
+            var resposta = await _httpClient.PutAsync(EndpointsServicoAcessosConstantes.URL_USUARIOS_ATUALIZAR.Parametros(login), new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode) return false;
 
@@ -220,6 +235,12 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<bool>();
+        }
+
+        public Task<bool> AlterarNome(string login, string nome)
+        {
+            var json = new { login, nome }.ObjetoParaJson();
+            return InvocarPutServicoAcessosRetornandoBool(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_NOME, login), json);
         }
     }
 }

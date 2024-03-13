@@ -113,5 +113,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             excecao.Mensagens.Contains("Informe o nome do Tutor").ShouldBeTrue();
         }
+
+        [Fact(DisplayName = "Proposta - Não Deve criar um Tutor com cpf invalido")]
+        public async Task Nao_deve_criar_tutor_com_cpf_invalido()
+        {
+            // arrange
+            var proposta = await InserirNaBaseProposta();
+
+            var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaTutor>();
+            var tutorDto = PropostaSalvarMock.GerarTutor(3);
+            tutorDto.Cpf = "11111111111";
+
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(useCase.Executar(proposta.Id, tutorDto));
+
+            // assert
+            excecao.Mensagens.Contains(MensagemNegocio.CPF_INVALIDO).ShouldBeTrue();
+        }
     }
 }

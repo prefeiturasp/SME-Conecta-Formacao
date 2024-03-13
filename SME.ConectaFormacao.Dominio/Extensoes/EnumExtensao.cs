@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Dominio.Extensoes
 {
@@ -24,7 +23,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
         public static string Descricao(this Enum enumValue)
            => enumValue.ObterAtributos<DisplayAttribute>().Description;
-        
+
         public static string Cor(this Enum enumValue)
             => enumValue.ObterAtributos<DisplayAttribute>().Prompt;
 
