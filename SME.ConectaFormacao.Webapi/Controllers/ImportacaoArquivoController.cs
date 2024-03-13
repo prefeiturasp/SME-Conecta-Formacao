@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ImportarArquivoInscricaoCursista([FromBody] ImportacaoArquivoInscricaoDTO importacaoArquivoInscricaoDto, 
             [FromServices] ICasoDeUsoImportacaoArquivoInscricaoCursista casoDeUsoImportacaoArquivoInscricaoCursista)
         {
-            return Ok(await casoDeUsoImportacaoArquivoInscricaoCursista.ImportarArquivo(importacaoArquivoInscricaoDto));
+            return Ok(await casoDeUsoImportacaoArquivoInscricaoCursista.Executar(importacaoArquivoInscricaoDto));
         }
     }
 }

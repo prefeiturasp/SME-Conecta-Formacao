@@ -18,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioProposta _repositorioProposta;
+        private const int DRE_ID_TODOS = 14;
 
         public AlterarPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
         {

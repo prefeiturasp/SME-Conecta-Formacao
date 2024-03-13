@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo
         {
         }
 
-        public async Task<RetornoDTO> ImportarArquivo(ImportacaoArquivoInscricaoDTO inscricao)
+        public async Task<RetornoDTO> Executar(ImportacaoArquivoInscricaoDTO inscricao)
         {
             if (inscricao.Arquivo == null || inscricao.Arquivo.Length == 0)
                 throw new NegocioException(MensagemNegocio.ARQUIVO_VAZIO);

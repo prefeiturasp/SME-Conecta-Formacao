@@ -248,6 +248,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
 
             CreateMap<UsuarioExternoDTO, Usuario>().ReverseMap();
+            
+            CreateMap<ImportacaoArquivoDTO,ImportacaoArquivo>().ReverseMap();
         }
     }
 }
