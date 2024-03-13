@@ -112,5 +112,15 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             digito += resto.ToString();
             return cpf.EndsWith(digito);
         }
+        
+        public static bool NaoEhArquivoXlsx(this string texto)
+        {
+            return !EhArquivoXlsx(texto);
+        }
+        
+        public static bool EhArquivoXlsx(this string texto)
+        {
+            return texto.Equals(Constantes.MensagemNegocio.CONTENT_TYPE_EXCEL);
+        }
     }
 }
