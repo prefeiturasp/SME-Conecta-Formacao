@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Arquivo.Mocks
             file.Setup(f => f.FileName).Returns("importacao_arquivo.xlsx").Verifiable();
             file.Setup(f => f.ContentType).Returns("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             
-            var bytes = Encoding.UTF8.GetBytes("conteudo do arquivo");
+            var bytes = Encoding.UTF8.GetBytes("Turma; Colaborador da rede; Registro funcional;");
             var ms = new MemoryStream(bytes);
 
             file.Setup(f => f.Length).Returns(ms.Length);

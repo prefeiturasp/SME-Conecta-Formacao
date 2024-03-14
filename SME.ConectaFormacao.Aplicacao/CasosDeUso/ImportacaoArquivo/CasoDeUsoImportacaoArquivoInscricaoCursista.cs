@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo
             if (arquivo.ContentType.NaoEhArquivoXlsx())
                 throw new NegocioException(MensagemNegocio.SOMENTE_ARQUIVO_XLSX_SUPORTADO);
 
-            var importacaoArquivoDTO = new ImportacaoArquivoDTO(propostaId, arquivo.FileName, TipoImportacaoArquivo.Inscricao_Manual, SituacaoImportacaoArquivo.Enviado);
+            var importacaoArquivoDTO = new ImportacaoArquivoDTO(propostaId, arquivo.FileName, TipoImportacaoArquivo.Inscricao_Manual, SituacaoImportacaoArquivo.CarregamentoInicial);
 
             var id = await mediator.Send(new InserirImportacaoArquivoCommand(importacaoArquivoDTO));
             

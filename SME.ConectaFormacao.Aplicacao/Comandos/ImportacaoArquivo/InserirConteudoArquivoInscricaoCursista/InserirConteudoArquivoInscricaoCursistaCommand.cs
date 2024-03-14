@@ -5,8 +5,9 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class InserirConteudoArquivoInscricaoCursistaCommand  : IRequest<bool>
     {
-        public InserirConteudoArquivoInscricaoCursistaCommand(long ImportacaoArquivoId, Stream streamArquivo)
+        public InserirConteudoArquivoInscricaoCursistaCommand(long importacaoArquivoId, Stream streamArquivo)
         {
+            ImportacaoArquivoId = importacaoArquivoId;
             StreamArquivo = streamArquivo;
         }
 
