@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
         }
 
-        public Task<PaginacaoResultadoDTO<ArquivoInscricaoImportadoDto>> Executar(long propostaId)
+        public Task<PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>> Executar(long propostaId)
         {
             return mediator.Send(new ObterArquivosInscricaoImportadosQuery(QuantidadeRegistrosIgnorados, NumeroRegistros, propostaId));
         }

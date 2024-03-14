@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Inscricao
 {
-    public class ObterArquivosInscricaoImportadosQuery : IRequest<PaginacaoResultadoDTO<ArquivoInscricaoImportadoDto>>
+    public class ObterArquivosInscricaoImportadosQuery : IRequest<PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>>
     {
         public ObterArquivosInscricaoImportadosQuery(int quantidadeRegistroIgnorados, int numeroRegistros, long propostaId)
         {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SME.ConectaFormacao.Infra.Dados.Dtos.Inscricao
 {
-    public class ArquivosImportadosDto
+    public class ArquivosImportadosDTO
     {
         public long Id { get; set; }
         public string Nome { get; set; }

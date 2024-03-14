@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public async Task<ArquivosInscricaoPaginadoDto> ObterArquivosInscricaoImportacao(int quantidadeRegistroIgnorados, int numeroRegistros, long propostaId)
+        public async Task<ArquivosInscricaoPaginadoDTO> ObterArquivosInscricaoImportacao(int quantidadeRegistroIgnorados, int numeroRegistros, long propostaId)
         {
             var sql = new StringBuilder();
 
@@ -46,11 +46,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var parametros = new { propostaId, situacaoProcessado = SituacaoImportacaoArquivoRegistro.Processado };
 
-            var retorno = new ArquivosInscricaoPaginadoDto();
+            var retorno = new ArquivosInscricaoPaginadoDTO();
 
             using (var multi = await conexao.Obter().QueryMultipleAsync(sql.ToString(), parametros))
             {
-                retorno.Arquivos = multi.Read<ArquivosImportadosDto>();
+                retorno.Arquivos = multi.Read<ArquivosImportadosDTO>();
                 retorno.TotalDeRegistros = multi.ReadFirst<int>();
             }
 

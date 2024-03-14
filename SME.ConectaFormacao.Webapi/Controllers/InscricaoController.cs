@@ -113,7 +113,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{propostaId}/arquivos-importados")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<ArquivoInscricaoImportadoDto>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_C, Policy = "Bearer")]

@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Inscricao
 {
-    public class ObterArquivosInscricaoImportadosQueryHandler : IRequestHandler<ObterArquivosInscricaoImportadosQuery, PaginacaoResultadoDTO<ArquivoInscricaoImportadoDto>>
+    public class ObterArquivosInscricaoImportadosQueryHandler : IRequestHandler<ObterArquivosInscricaoImportadosQuery, PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>>
     {
         private readonly IRepositorioImportacaoArquivo repositorioImportacao;
 
@@ -14,14 +14,14 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Inscricao
             this.repositorioImportacao = repositorioImportacao ?? throw new ArgumentNullException(nameof(repositorioImportacao));
         }
 
-        public async Task<PaginacaoResultadoDTO<ArquivoInscricaoImportadoDto>> Handle(ObterArquivosInscricaoImportadosQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>> Handle(ObterArquivosInscricaoImportadosQuery request, CancellationToken cancellationToken)
         {
-            var Arquivos = new List<ArquivoInscricaoImportadoDto>();
-            var ArquivoImportados = await repositorioImportacao.ObterArquivosInscricaoImportacao(request.QuantidadeRegistrosIgnorados, request.NumeroRegistros, request.PropostaId);
+            var arquivos = new List<ArquivoInscricaoImportadoDTO>();
+            var arquivoImportados = await repositorioImportacao.ObterArquivosInscricaoImportacao(request.QuantidadeRegistrosIgnorados, request.NumeroRegistros, request.PropostaId);
 
-            if (ArquivoImportados.TotalDeRegistros > 0)
-                foreach (var arquivo in ArquivoImportados.Arquivos)
-                    Arquivos.Add(new ArquivoInscricaoImportadoDto()
+            if (arquivoImportados.TotalDeRegistros > 0)
+                foreach (var arquivo in arquivoImportados.Arquivos)
+                    arquivos.Add(new ArquivoInscricaoImportadoDTO()
                     {
                         Id = arquivo.Id,
                         Nome = arquivo.Nome,
@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Inscricao
                         TotalRegistros = arquivo.TotalRegistros
                     });
 
-            return new PaginacaoResultadoDTO<ArquivoInscricaoImportadoDto>(Arquivos, ArquivoImportados.TotalDeRegistros, request.NumeroRegistros);
+            return new PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>(arquivos, arquivoImportados.TotalDeRegistros, request.NumeroRegistros);
         }
     }
 }

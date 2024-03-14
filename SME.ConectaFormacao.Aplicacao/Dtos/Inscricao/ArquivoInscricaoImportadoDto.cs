@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
 {
-    public class ArquivoInscricaoImportadoDto
+    public class ArquivoInscricaoImportadoDTO
     {
         public long Id { get; set; }
         public string Nome { get; set;}
