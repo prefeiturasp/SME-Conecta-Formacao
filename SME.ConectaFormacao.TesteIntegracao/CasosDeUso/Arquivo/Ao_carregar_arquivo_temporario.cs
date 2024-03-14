@@ -57,7 +57,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Arquivo
             retorno.Mensagens.Contains(MensagemNegocio.ARQUIVO_MAIOR_QUE_10_MB).ShouldBeTrue();
         }
 
-        [Fact(DisplayName = "Arquivo - Deve retornar excecao quando o arquivo for maior que 10 mb")]
+        [Fact(DisplayName = "Arquivo - Deve carregar arquivo com sucesso")]
         public async Task Deve_carregar_arquivo_com_sucesso()
         {
             // arrange
