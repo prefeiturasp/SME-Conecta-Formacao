@@ -18,22 +18,21 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo
         {
         }
 
-        public async Task<RetornoDTO> Executar(ImportacaoArquivoInscricaoDTO inscricao)
+        public async Task<RetornoDTO> Executar(IFormFile arquivo, long propostaId)
         {
-            if (inscricao.Arquivo == null || inscricao.Arquivo.Length == 0)
+            if (arquivo == null || arquivo.Length == 0)
                 throw new NegocioException(MensagemNegocio.ARQUIVO_VAZIO);
             
-            if (inscricao.Arquivo.ContentType.NaoEhArquivoXlsx())
+            if (arquivo.ContentType.NaoEhArquivoXlsx())
                 throw new NegocioException(MensagemNegocio.SOMENTE_ARQUIVO_XLSX_SUPORTADO);
 
-            var importacaoArquivoDTO = new ImportacaoArquivoDTO(inscricao.PropostaId, inscricao.Arquivo.FileName, TipoImportacaoArquivo.Inscricao_Manual, SituacaoImportacaoArquivo.Enviado);
+            var importacaoArquivoDTO = new ImportacaoArquivoDTO(propostaId, arquivo.FileName, TipoImportacaoArquivo.Inscricao_Manual, SituacaoImportacaoArquivo.Enviado);
 
             var id = await mediator.Send(new InserirImportacaoArquivoCommand(importacaoArquivoDTO));
-            // var caminho = await mediator.Send(new ArmazenarArquivoTemporarioServicoArmazenamentoCommand(importacaoArquivoDTO));
-            //
-            // return new ArquivoArmazenadoDTO(id, importacaoArquivoDTO.Codigo, caminho);
             
-            return default;
+            var caminho = await mediator.Send(new InserirConteudoArquivoInscricaoCursistaCommand(id, arquivo.OpenReadStream()));
+
+            return RetornoDTO.RetornarSucesso(MensagemNegocio.ARQUIVO_IMPORTADO_COM_SUCESSO, id);
         }
     }
 }

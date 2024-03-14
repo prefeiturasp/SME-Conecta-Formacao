@@ -1,6 +1,6 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
 
-namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
+namespace SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo
 {
     public class ImportacaoArquivoRegistroDTO
     {

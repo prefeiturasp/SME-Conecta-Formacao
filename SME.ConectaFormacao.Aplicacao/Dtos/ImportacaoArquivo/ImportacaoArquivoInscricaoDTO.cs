@@ -12,7 +12,5 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo
 
         public TipoImportacaoArquivo Tipo { get; set; }
         public SituacaoImportacaoArquivo Situacao { get; set; }
-
-        public IFormFile Arquivo { get; set; }
     }
 }

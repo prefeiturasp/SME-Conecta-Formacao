@@ -6,6 +6,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo
 {
     public interface ICasoDeUsoImportacaoArquivoInscricaoCursista
     {
-        Task<RetornoDTO> Executar(ImportacaoArquivoInscricaoDTO inscricao);
+        Task<RetornoDTO> Executar(IFormFile arquivo, long propostaId);
     }
 }

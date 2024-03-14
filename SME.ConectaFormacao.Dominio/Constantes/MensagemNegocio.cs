@@ -2,6 +2,8 @@ namespace SME.ConectaFormacao.Dominio.Constantes;
 
 public class MensagemNegocio
 {
+    public const string A_PLANILHA_DE_INSCRICAO_CURSISTA_NAO_TEM_O_NOME_DA_COLUNA_Y_NA_COLUNA_Z = "A planilha de inscrição de cursistas deveria apresentar o nome '{1}' na coluna '{2}', conforme previsto planilha modelo.";
+    public const string ARQUIVO_IMPORTADO_COM_SUCESSO = "Arquivo importado com sucesso";
     public const string CONTENT_TYPE_EXCEL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     public const string SOMENTE_ARQUIVO_XLSX_SUPORTADO = "Esse arquivo não é um XLSX. Somente arquivos do tipo XLSX são permitidos";
     public const string INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA = "Sua inscrição foi confirmada. Na data de início da sua turma acesse o SGA para iniciar a formação.";
