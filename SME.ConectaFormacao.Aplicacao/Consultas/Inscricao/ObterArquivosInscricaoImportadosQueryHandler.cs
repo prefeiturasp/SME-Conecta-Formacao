@@ -19,8 +19,8 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Inscricao
             var arquivos = new List<ArquivoInscricaoImportadoDTO>();
             var arquivoImportados = await repositorioImportacao.ObterArquivosInscricaoImportacao(request.QuantidadeRegistrosIgnorados, request.NumeroRegistros, request.PropostaId);
 
-            if (arquivoImportados.TotalDeRegistros > 0)
-                foreach (var arquivo in arquivoImportados.Arquivos)
+            if (arquivoImportados.TotalRegistros > 0)
+                foreach (var arquivo in arquivoImportados.Registros)
                     arquivos.Add(new ArquivoInscricaoImportadoDTO()
                     {
                         Id = arquivo.Id,
@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Inscricao
                         TotalRegistros = arquivo.TotalRegistros
                     });
 
-            return new PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>(arquivos, arquivoImportados.TotalDeRegistros, request.NumeroRegistros);
+            return new PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>(arquivos, arquivoImportados.TotalRegistros, request.NumeroRegistros);
         }
     }
 }
