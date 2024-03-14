@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
         }
 
 
-        public async Task<string> ObterNomeProfissionalPorRegistroFuncional(string registroFuncional)
+        public async Task<CursistaResumidoServicoEol> ObterNomeCpfProfissionalPorRegistroFuncional(string registroFuncional)
         {
             var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_NOME_PROFISSIONAL.Parametros(registroFuncional));
 
@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
                 throw new NegocioException(MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<string>().ToUpper();
+            return json.JsonParaObjeto<CursistaResumidoServicoEol>();
         }
 
         public async Task<IEnumerable<DreServicoEol>> ObterCodigosDres()

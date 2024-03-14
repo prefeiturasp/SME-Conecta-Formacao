@@ -1,7 +1,9 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
+﻿using SME.ConectaFormacao.Aplicacao.Dtos;
+
+namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
 {
     public interface ICasoDeUsoObterNomeCursistaInscricao
     {
-        Task<string> Executar(string? registroFuncional, string? cpf);
+        Task<RetornoUsuarioDTO> Executar(string? registroFuncional, string? cpf);
     }
 }
