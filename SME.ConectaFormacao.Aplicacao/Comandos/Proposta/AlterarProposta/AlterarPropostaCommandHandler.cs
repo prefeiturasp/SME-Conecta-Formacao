@@ -29,6 +29,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<RetornoDTO> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
+            var quantidadeDeRegistroComDreVazia = request.PropostaDTO.Turmas.Count(x => x.DresIds.Length == 0);
+            var quantidadeDeRegistroComDreTodos = request.PropostaDTO.Turmas.Select(x => x.DresIds).Count();
+
+            if (quantidadeDeRegistroComDreTodos > 0 || quantidadeDeRegistroComDreVazia > 0)
+                throw new NegocioException(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
+
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
             var ehPropostaPublicada = proposta.Situacao.EstaPublicada() || proposta.Situacao.EhAlterando();
