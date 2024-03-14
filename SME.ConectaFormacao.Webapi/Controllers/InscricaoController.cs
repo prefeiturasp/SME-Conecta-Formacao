@@ -111,5 +111,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterCpfCursistaInscricao.Executar(registroFuncional, cpf));
         }
+
+        [HttpGet("{propostaId}/arquivos-importados")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_C, Policy = "Bearer")]
+        public async Task<IActionResult> ObterArquivosImportados([FromRoute] long propostaId, [FromServices] ICasoDeUsoObterArquivosInscricaoImportados useCase)
+        {
+            return Ok(await useCase.Executar(propostaId));
+        }
     }
 }
