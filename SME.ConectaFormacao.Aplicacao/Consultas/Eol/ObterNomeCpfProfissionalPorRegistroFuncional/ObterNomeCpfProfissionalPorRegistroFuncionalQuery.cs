@@ -1,19 +1,20 @@
 ﻿using FluentValidation;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Dominio.Constantes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterNomeProfissionalPorRegistroFuncionalQuery : IRequest<string>
+    public class ObterNomeCpfProfissionalPorRegistroFuncionalQuery : IRequest<RetornoUsuarioDTO>
     {
-        public ObterNomeProfissionalPorRegistroFuncionalQuery(string registroFuncional)
+        public ObterNomeCpfProfissionalPorRegistroFuncionalQuery(string registroFuncional)
         {
             RegistroFuncional = registroFuncional;
         }
 
         public string RegistroFuncional { get; set; }
     }
-    public class ObterNomeProfissionalPorRegistroFuncionalQueryValidator : AbstractValidator<ObterNomeProfissionalPorRegistroFuncionalQuery>
+    public class ObterNomeProfissionalPorRegistroFuncionalQueryValidator : AbstractValidator<ObterNomeCpfProfissionalPorRegistroFuncionalQuery>
     {
         public ObterNomeProfissionalPorRegistroFuncionalQueryValidator()
         {

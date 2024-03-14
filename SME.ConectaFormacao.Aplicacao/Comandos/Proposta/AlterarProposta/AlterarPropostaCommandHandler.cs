@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<RetornoDTO> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
             var quantidadeDeRegistroComDreVazia = request.PropostaDTO.Turmas.Count(x => x.DresIds.Length == 0);
-            var quantidadeDeRegistroComDreTodos = request.PropostaDTO.Turmas.Select(x => x.DresIds).Count(x => x.Contains(DRE_ID_TODOS));
+            var quantidadeDeRegistroComDreTodos = request.PropostaDTO.Turmas.Select(x => x.DresIds).Count();
 
             if (quantidadeDeRegistroComDreTodos > 0 || quantidadeDeRegistroComDreVazia > 0)
                 throw new NegocioException(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
