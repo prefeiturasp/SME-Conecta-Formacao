@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Dominio.Extensoes
 {
@@ -111,6 +113,32 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
                 resto = 11 - resto;
             digito += resto.ToString();
             return cpf.EndsWith(digito);
+        }
+        
+        public static bool NaoEhArquivoXlsx(this string texto)
+        {
+            return !EhArquivoXlsx(texto);
+        }
+        
+        public static bool EhArquivoXlsx(this string texto)
+        {
+            return texto.Equals(Constantes.MensagemNegocio.CONTENT_TYPE_EXCEL);
+        }
+        
+        public static string RemoverAcentuacao(this string valor)
+        {
+            if (valor.NaoEstaPreenchido())
+                return valor;
+            
+            return new string(valor
+                .Normalize(NormalizationForm.FormD)
+                .Where(ch => char.GetUnicodeCategory(ch) != UnicodeCategory.NonSpacingMark)
+                .ToArray());
+        }
+        
+        public static bool SaoDiferentes(this string valor, string valorAComparar)
+        {
+            return !valor.ToLower().Equals(valorAComparar.ToLower()); 
         }
     }
 }

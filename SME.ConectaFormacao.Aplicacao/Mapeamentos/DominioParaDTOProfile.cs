@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Dtos.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
+using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
@@ -249,6 +250,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<UsuarioExternoDTO, Usuario>().ReverseMap();
             
+            CreateMap<ImportacaoArquivoDTO,ImportacaoArquivo>().ReverseMap();
+            CreateMap<ImportacaoArquivoRegistroDTO,ImportacaoArquivoRegistro>().ReverseMap();
+
             CreateMap<RetornoUsuarioDTO, Usuario>().ReverseMap();
             CreateMap<RetornoUsuarioDTO, CursistaResumidoServicoEol>().ReverseMap();
         }
