@@ -9,7 +9,7 @@ using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
 {
     public class Ao_obter_arquivos_importacao : TestePropostaBase
     {

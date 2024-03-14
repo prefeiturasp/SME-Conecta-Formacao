@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Inscricao
     {
         public ObterArquivosInscricaoImportadosQuery(int quantidadeRegistroIgnorados, int numeroRegistros, long propostaId)
         {
-            QuantidadeRegistrosIgnorados = QuantidadeRegistrosIgnorados;
+            QuantidadeRegistrosIgnorados = quantidadeRegistroIgnorados;
             NumeroRegistros = numeroRegistros;
             PropostaId = propostaId;
   

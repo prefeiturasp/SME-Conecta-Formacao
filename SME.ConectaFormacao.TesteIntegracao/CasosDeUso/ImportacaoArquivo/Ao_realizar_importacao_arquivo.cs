@@ -94,7 +94,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Arquivo
             retorno.EntidadeId.ShouldBe(1);
             retorno.Sucesso.ShouldBeTrue();
                 
-            var importacaoArquivos = ObterTodos<ImportacaoArquivo>();
+            var importacaoArquivos = ObterTodos<Dominio.Entidades.ImportacaoArquivo> ();
             importacaoArquivos.Count().ShouldBe(1);
             importacaoArquivos.FirstOrDefault().Id.ShouldBe(1);
             importacaoArquivos.FirstOrDefault().Nome.ShouldNotBeEmpty();
