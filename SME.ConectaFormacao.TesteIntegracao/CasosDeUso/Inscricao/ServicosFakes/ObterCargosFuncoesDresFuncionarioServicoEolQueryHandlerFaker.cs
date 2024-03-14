@@ -17,7 +17,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes
                 {
                     RF = long.Parse(AoObterDadosUsuarioInscricaoMock.Usuario.Login),
                     Cpf = string.Empty,
-                    CdCargoBase = codigoCargo
+                    CdCargoBase = codigoCargo,
+                    CdDreCargoBase = codigoCargo.ToString(),
+                    CdUeCargoBase = codigoCargo.ToString(),
                 });
             }
 
@@ -27,7 +29,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes
                 {
                     RF = long.Parse(AoObterDadosUsuarioInscricaoMock.Usuario.Login),
                     Cpf = string.Empty,
-                    CdFuncaoAtividade = codigoFuncao
+                    CdFuncaoAtividade = codigoFuncao,
+                    CdDreFuncaoAtividade = codigoFuncao.ToString(),
+                    CdUeFuncaoAtividade = codigoFuncao.ToString(),
+                    CdCargoBase = codigoFuncao,
+                    CdDreCargoBase = codigoFuncao.ToString(),
+                    CdUeCargoBase = codigoFuncao.ToString(),
                 });
             }
 
