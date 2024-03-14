@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using ClosedXML.Excel;
 using MediatR;
@@ -15,8 +16,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 namespace SME.ConectaFormacao.Aplicacao
 {
     public class
-        InserirConteudoArquivoInscricaoCursistaCommandHandler : IRequestHandler<
-        InserirConteudoArquivoInscricaoCursistaCommand, bool>
+        InserirConteudoArquivoInscricaoCursistaCommandHandler : IRequestHandler<InserirConteudoArquivoInscricaoCursistaCommand, bool>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioImportacaoArquivoRegistro _repositorioImportacaoArquivoRegistro;
@@ -62,9 +62,9 @@ namespace SME.ConectaFormacao.Aplicacao
                         Linha = numeroLinha,
                         ImportacaoArquivoId = request.ImportacaoArquivoId,
                         Situacao = SituacaoImportacaoArquivoRegistro.CarregamentoInicial,
-                        Conteudo = ObterInscricaoCursistaDto(planilha, numeroLinha)
+                        Conteudo =  ObterInscricaoCursistaDto(planilha, numeroLinha).ObjetoParaJson()
                     };
-                    
+
                     await _repositorioImportacaoArquivoRegistro.Inserir(_mapper.Map<ImportacaoArquivoRegistro>(item));
                 }
             }
@@ -91,16 +91,16 @@ namespace SME.ConectaFormacao.Aplicacao
                     nomeDaColuna, numeroDaColuna));
         }
 
-        private string ObterInscricaoCursistaDto(IXLWorksheet planilha, int numeroLinha)
+        private InscricaoCursistaDTO ObterInscricaoCursistaDto(IXLWorksheet planilha, int numeroLinha)
         {
-            return JsonConvert.SerializeObject(new InscricaoCursistaDTO()
+            return new InscricaoCursistaDTO()
             {
                 Turma = planilha.ObterValorDaCelula(numeroLinha, COLUNA_TURMA_NUMERO),
                 ColaboradorRede = planilha.ObterValorDaCelula(numeroLinha, COLUNA_COLABORADOR_DA_REDE_NUMERO),
                 RegistroFuncional = planilha.ObterValorDaCelula(numeroLinha, COLUNA_REGISTRO_FUNCIONAL_NUMERO),
                 Cpf = planilha.ObterValorDaCelula(numeroLinha, COLUNA_CPF_NUMERO),
                 Nome = planilha.ObterValorDaCelula(numeroLinha, COLUNA_NOME_NUMERO)
-            });
+            };
         }
     }
 }

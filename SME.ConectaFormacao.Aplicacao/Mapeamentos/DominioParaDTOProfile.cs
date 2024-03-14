@@ -251,6 +251,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<UsuarioExternoDTO, Usuario>().ReverseMap();
             
             CreateMap<ImportacaoArquivoDTO,ImportacaoArquivo>().ReverseMap();
+            CreateMap<ImportacaoArquivoRegistroDTO,ImportacaoArquivoRegistro>().ReverseMap();
         }
     }
 }

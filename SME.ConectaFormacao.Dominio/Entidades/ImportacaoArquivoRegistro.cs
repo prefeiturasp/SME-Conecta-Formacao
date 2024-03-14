@@ -1,3 +1,4 @@
+using System.Text.Json;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Dominio.Entidades

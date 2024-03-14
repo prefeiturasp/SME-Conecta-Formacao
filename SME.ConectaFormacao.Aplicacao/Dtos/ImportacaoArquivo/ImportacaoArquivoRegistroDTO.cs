@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using System.Text.Json;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo
 {
