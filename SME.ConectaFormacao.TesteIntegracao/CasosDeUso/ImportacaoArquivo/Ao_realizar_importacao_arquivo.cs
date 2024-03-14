@@ -81,7 +81,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Arquivo
 
             await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves, modalidades, anosTurmas, componentesCurriculares);
             
-            var arquivoValido = ImportacaoArquivoMock.GerarArquivoValido();
+            var arquivoValido = Mocks.ImportacaoArquivoMock.GerarArquivoValido();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoImportacaoArquivoInscricaoCursista>();
 
