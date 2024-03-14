@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
@@ -29,7 +30,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
         protected override void RegistrarQueryFakes(IServiceCollection services)
         {
             base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterNomeProfissionalPorRegistroFuncionalQuery, string>), typeof(ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFaker), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioDTO>), typeof(ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Inscrição - Deve obter nome cursista")]
@@ -39,13 +40,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var usuario = UsuarioMock.GerarUsuario();
             await InserirNaBase(usuario);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCursistaInscricao>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCpfCursistaInscricao>();
 
             // act
             var cursista = await casoDeUso.Executar(usuario.Login, null);
 
             // assert
-            cursista.ShouldBe(usuario.Nome);
+            cursista.Nome.ShouldBe(usuario.Nome);
         }
 
         [Fact(DisplayName = "Inscrição - Deve obter nome cursista eol")]
@@ -56,13 +57,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var usuario = UsuarioMock.GerarUsuario();
             ObterNomeCursistaInscricaoMock.Usuario = usuario;
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCursistaInscricao>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCpfCursistaInscricao>();
 
             // act
             var cursista = await casoDeUso.Executar(usuario.Login, null);
 
             // assert
-            cursista.ShouldBe(usuario.Nome);
+            cursista.Nome.ShouldBe(usuario.Nome);
         }
 
         [Fact(DisplayName = "Inscrição - Deve obter nome cursista eol")]
@@ -70,7 +71,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
         {
             // arrange
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCursistaInscricao>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCpfCursistaInscricao>();
 
             // act
             var excecao = await Should.ThrowAsync<NegocioException>(() => casoDeUso.Executar("teste", null));
