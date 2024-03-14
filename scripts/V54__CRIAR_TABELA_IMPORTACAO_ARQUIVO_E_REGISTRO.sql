@@ -21,7 +21,7 @@ CREATE TABLE if not exists public.importacao_arquivo_registro (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 CACHE 1 NO CYCLE),
 	importacao_arquivo_id int8 not null,	
 	linha int2 NOT NULL,		
-	conteudo jsonb NOT NULL, 
+	conteudo text NOT NULL, 
 	situacao int2 NOT NULL,
 	erro text null,
 	excluido bool NOT NULL DEFAULT false,
