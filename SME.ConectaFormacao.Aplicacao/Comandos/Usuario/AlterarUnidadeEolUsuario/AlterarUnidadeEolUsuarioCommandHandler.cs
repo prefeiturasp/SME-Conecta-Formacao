@@ -24,10 +24,11 @@ namespace SME.ConectaFormacao.Aplicacao
 
             usuario.CodigoEolUnidade = request.CodigoEolUnidade;
             await _repositorioUsuario.Atualizar(usuario);
+            await RemoverCache(request.Login);
 
             return true;
         }
-        private async Task RemoverCache(string login, string codigoUnidade)
+        private async Task RemoverCache(string login)
         {
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.UsuarioLogado.Parametros(login)));
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Usuario.Parametros(login)));
