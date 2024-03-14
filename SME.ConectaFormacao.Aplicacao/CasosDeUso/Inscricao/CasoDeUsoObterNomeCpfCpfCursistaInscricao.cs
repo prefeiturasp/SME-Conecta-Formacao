@@ -8,10 +8,10 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
-    public class CasoDeUsoObterNomeCursistaInscricao : CasoDeUsoAbstrato, ICasoDeUsoObterNomeCursistaInscricao
+    public class CasoDeUsoObterNomeCpfCpfCursistaInscricao : CasoDeUsoAbstrato, ICasoDeUsoObterNomeCpfCursistaInscricao
     {
         private readonly IMapper _mapper;
-        public CasoDeUsoObterNomeCursistaInscricao(IMediator mediator,IMapper mapper) : base(mediator)
+        public CasoDeUsoObterNomeCpfCpfCursistaInscricao(IMediator mediator,IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }

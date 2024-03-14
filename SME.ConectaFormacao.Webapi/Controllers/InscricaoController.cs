@@ -105,11 +105,11 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         // [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterCursistaInscricao(
-            [FromServices] ICasoDeUsoObterNomeCursistaInscricao casoDeUsoObterCursistaInscricao,
+            [FromServices] ICasoDeUsoObterNomeCpfCursistaInscricao casoDeUsoObterCpfCursistaInscricao,
             [FromQuery] string? registroFuncional,
             [FromQuery] string? cpf)
         {
-            return Ok(await casoDeUsoObterCursistaInscricao.Executar(registroFuncional, cpf));
+            return Ok(await casoDeUsoObterCpfCursistaInscricao.Executar(registroFuncional, cpf));
         }
     }
 }

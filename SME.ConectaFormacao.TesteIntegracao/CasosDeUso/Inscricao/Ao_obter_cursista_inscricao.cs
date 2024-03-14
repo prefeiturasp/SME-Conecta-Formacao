@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var usuario = UsuarioMock.GerarUsuario();
             await InserirNaBase(usuario);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCursistaInscricao>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCpfCursistaInscricao>();
 
             // act
             var cursista = await casoDeUso.Executar(usuario.Login, null);
@@ -57,7 +57,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var usuario = UsuarioMock.GerarUsuario();
             ObterNomeCursistaInscricaoMock.Usuario = usuario;
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCursistaInscricao>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCpfCursistaInscricao>();
 
             // act
             var cursista = await casoDeUso.Executar(usuario.Login, null);
@@ -71,7 +71,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
         {
             // arrange
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCursistaInscricao>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeCpfCursistaInscricao>();
 
             // act
             var excecao = await Should.ThrowAsync<NegocioException>(() => casoDeUso.Executar("teste", null));
