@@ -710,7 +710,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<int> ObterTotalTurmasRegentes(long propostaId)
         {
-            var query = @"select count(1)
+            var query = @"select count(distinct prt.turma_id)
                           from proposta_regente pr
                           join proposta_regente_turma prt on prt.proposta_regente_id = pr.id and not prt.excluido
                           where not pr.excluido 
