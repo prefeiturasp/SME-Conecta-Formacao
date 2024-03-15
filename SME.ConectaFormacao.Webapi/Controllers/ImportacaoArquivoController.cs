@@ -32,5 +32,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar(propostaId));
         }
+
+        [HttpGet("{arquivoId}/registros-inconsistencia")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDTO<RegistroDaInscricaoInsconsistenteDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_C, Policy = "Bearer")]
+        public async Task<IActionResult> ObterRegistrosComInconsistencia([FromRoute] long arquivoId, [FromServices] ICasoDeUsoObterRegistrosDaIncricaoInconsistentes useCase)
+        {
+            return Ok(await useCase.Executar(arquivoId));
+        }
     }
 }
