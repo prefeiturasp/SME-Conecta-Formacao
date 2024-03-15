@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo
 {
-    public interface ICasoDeUsoValidarImportacaoArquivoInscricaoCursista : IRabbitUseCase
+    public interface ICasoDeUsoImportacaoInscricaoCursistaValidarItem : IRabbitUseCase
     {
     }
 }

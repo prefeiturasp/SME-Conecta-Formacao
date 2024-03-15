@@ -5,9 +5,9 @@ using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterRegistrosImportacaoArquivoInscricaoCursistasPaginadosQuery : IRequest<PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>>
+    public class ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery : IRequest<PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>>
     {
-        public ObterRegistrosImportacaoArquivoInscricaoCursistasPaginadosQuery(int numeroPagina, int numeroRegistros, long importacaoArquivoId)
+        public ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(int numeroPagina, int numeroRegistros, long importacaoArquivoId)
         {
             NumeroPagina = numeroPagina;
             NumeroRegistros = numeroRegistros;
@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long ImportacaoArquivoId { get; set; }
     }
     
-    public class ObterRegistrosImportacaoArquivoInscricaoCursistasPaginadosQueryValidator : AbstractValidator<ObterRegistrosImportacaoArquivoInscricaoCursistasPaginadosQuery>
+    public class ObterRegistrosImportacaoArquivoInscricaoCursistasPaginadosQueryValidator : AbstractValidator<ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery>
     {
         public ObterRegistrosImportacaoArquivoInscricaoCursistasPaginadosQueryValidator()
         {

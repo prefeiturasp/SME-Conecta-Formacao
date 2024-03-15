@@ -1,10 +1,13 @@
 ﻿using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Repositorios;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
     public interface IRepositorioImportacaoArquivoRegistro : IRepositorioBaseAuditavel<ImportacaoArquivoRegistro>
     {
-        Task<IEnumerable<ImportacaoArquivoRegistro>> ObterRegistrosImportacaoArquivoInscricaoCursistasPaginados(long importacaoArquivoId, int numeroRegistros, int quantidadeRegistroIgnorados);
+        Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosComErro(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId);
+        Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosValidados(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId);
+        Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId, SituacaoImportacaoArquivoRegistro situacao);
     }
 }

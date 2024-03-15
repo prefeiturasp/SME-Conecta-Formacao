@@ -39,7 +39,8 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaTratarCursistas, new ComandoRabbit("Realizar Inscrições Automáticas - Iterar sobre os cursistas e enviar para fila de inscrição", typeof(ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista), true));
             Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaIncreverCursista, new ComandoRabbit("Realizar Inscrições Automáticas - Coletar usuário e inscrever cursista", typeof(ICasoDeUsoRealizarInscricaoAutomaticaInscreverCursista), true));
             
-            Comandos.Add(RotasRabbit.ValidarImportacaoArquivoValidarInscricaoCursista, new ComandoRabbit("Validar o conteúdo da importação de arquivo de inscrições de cursistas", typeof(ICasoDeUsoValidarImportacaoArquivoInscricaoCursista), true));
+            Comandos.Add(RotasRabbit.RealizarImportacaoInscricaoCursistaValidar, new ComandoRabbit("Realizar a busca dos itens da importação das inscrições de cursistas de forma paginada para processar a validação dos itens", typeof(ICasoDeUsoImportacaoInscricaoCursistaValidar), true));
+            Comandos.Add(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem, new ComandoRabbit("Realiza a validação de cada linha da importação da inscrição do cursista", typeof(ICasoDeUsoImportacaoInscricaoCursistaValidarItem), true));
         }
     }
 }

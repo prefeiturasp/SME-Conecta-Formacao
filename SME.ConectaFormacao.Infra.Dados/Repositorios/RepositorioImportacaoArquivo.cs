@@ -2,7 +2,6 @@
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricao;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricao;
@@ -15,7 +14,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public async Task<ArquivosInscricaoPaginadoDTO> ObterArquivosInscricaoImportacao(int quantidadeRegistroIgnorados, int numeroRegistros, long propostaId)
+        public async Task<RegistrosPaginados<ArquivosImportadosTotalRegistro>> ObterArquivosInscricaoImportacao(int quantidadeRegistroIgnorados, int numeroRegistros, long propostaId)
         {
             var sql = new StringBuilder();
 
@@ -47,12 +46,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var parametros = new { propostaId, situacaoProcessado = SituacaoImportacaoArquivoRegistro.Processado };
 
-            var retorno = new ArquivosInscricaoPaginadoDTO();
+            var retorno = new RegistrosPaginados<ArquivosImportadosTotalRegistro>();
 
             using (var multi = await conexao.Obter().QueryMultipleAsync(sql.ToString(), parametros))
             {
-                retorno.Arquivos = multi.Read<ArquivosImportadosDTO>();
-                retorno.TotalDeRegistros = multi.ReadFirst<int>();
+                retorno.Registros = multi.Read<ArquivosImportadosTotalRegistro>();
+                retorno.TotalRegistros = multi.ReadFirst<int>();
             }
 
             return retorno;

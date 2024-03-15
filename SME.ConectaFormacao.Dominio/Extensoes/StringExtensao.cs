@@ -140,5 +140,10 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         {
             return !valor.ToLower().Equals(valorAComparar.ToLower()); 
         }
+        
+        public static bool EhColaboradorRede(this string valor)
+        {
+            return valor.Equals("1"); 
+        }
     }
 }
