@@ -52,6 +52,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
             await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
             
+            await mediator.Send(new AlterarSituacaoImportacaoArquivoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Validado));
+            
             return true;
         }
         

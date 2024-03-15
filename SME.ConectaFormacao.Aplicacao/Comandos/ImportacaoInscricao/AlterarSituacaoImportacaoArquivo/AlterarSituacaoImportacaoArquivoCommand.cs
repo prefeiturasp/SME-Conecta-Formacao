@@ -6,13 +6,13 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class AlterarSituacaoImportacaoArquivoCommand : IRequest<bool>
     {
-        public AlterarSituacaoImportacaoArquivoCommand(long importacaoArquivoId, SituacaoImportacaoArquivo situacao)
+        public AlterarSituacaoImportacaoArquivoCommand(long id, SituacaoImportacaoArquivo situacao)
         {
-            ImportacaoArquivoId = importacaoArquivoId;
+            Id = id;
             Situacao = situacao;
         }
 
-        public long ImportacaoArquivoId { get; }
+        public long Id { get; }
         public SituacaoImportacaoArquivo Situacao { get; }
     }
 
@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         public AlterarSituacaoImportacaoArquivoCommandValidator()
         {
-            RuleFor(x => x.ImportacaoArquivoId)
+            RuleFor(x => x.Id)
                 .NotEmpty()
                 .WithMessage("É necessário informar o identificador da importação arquivo para alterar a situação");
 

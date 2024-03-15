@@ -148,7 +148,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
 
             var importacaoArquivosRegistros = ObterTodos<Dominio.Entidades.ImportacaoArquivoRegistro>();
 
-            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDTO>(importacaoArquivosRegistros.FirstOrDefault());
+            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDTO>(importacaoArquivosRegistros.FirstOrDefault(f=> f.Id == 1));
+            importacaoArquivoRegistroDto.PropostaId = proposta.Id;
             
             // act
             var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(importacaoArquivoRegistroDto.ObjetoParaJson()));
@@ -157,7 +158,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             retorno.ShouldBeTrue();
             
             importacaoArquivosRegistros = ObterTodos<Dominio.Entidades.ImportacaoArquivoRegistro>();
-            importacaoArquivosRegistros.FirstOrDefault().Situacao.ShouldBe(SituacaoImportacaoArquivoRegistro.Validado);
+            importacaoArquivosRegistros.Any(f=> f.Id == 1 && f.Situacao == SituacaoImportacaoArquivoRegistro.Validado).ShouldBeTrue();
+            importacaoArquivosRegistros.Any(f=> f.Id != 1 && f.Situacao == SituacaoImportacaoArquivoRegistro.CarregamentoInicial).ShouldBeTrue();
         }
     }
 }
