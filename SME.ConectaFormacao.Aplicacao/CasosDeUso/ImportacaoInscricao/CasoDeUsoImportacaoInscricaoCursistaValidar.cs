@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 registrosPaginados = await ObterRegistrosParaValidar(qtdeRegistros, importacaoArquivoDto.Id, registrosValidados);
             }
             
-            await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoDto.Id, SituacaoImportacaoArquivo.Validado));
+            await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoDto.Id, SituacaoImportacaoArquivo.Validando));
             
             return true;
         }
