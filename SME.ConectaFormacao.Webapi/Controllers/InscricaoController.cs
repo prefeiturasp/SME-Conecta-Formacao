@@ -56,6 +56,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoSalvarInscricao.Executar(inscricaoDTO));
         }
 
+        [HttpPost("manual")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> SalvarInscricaoManual(
+            [FromServices] ICasoDeUsoSalvarInscricaoManual casoDeUsoSalvarInscricaoManual,
+            [FromBody] InscricaoManualDTO inscricaoDTO)
+        {
+            return Ok(await casoDeUsoSalvarInscricaoManual.Executar(inscricaoDTO));
+        }
+
         [HttpPut("{id}/cancelar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
