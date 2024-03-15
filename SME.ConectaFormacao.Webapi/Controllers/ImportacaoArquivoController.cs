@@ -42,5 +42,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar(arquivoId));
         }
+
+
+        [HttpPost("{arquivoImportacaoId}/continuar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ContinuarProcessamentoArquivo([FromRoute] long arquivoImportacaoId, [FromServices] ICasoDeUsoInscricaoManualContinuarProcessamento useCase)
+        {
+            return Ok(await useCase.Executar(arquivoImportacaoId));
+        }
     }
 }

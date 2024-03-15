@@ -23,7 +23,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Processado = 6,
         
         [Display(Name = "Cancelado")]
-        Cancelado = 7
+        Cancelado = 7,
+
+        [Display(Name = "Aguardando processamento")]
+        AguardandoProcessamento = 8
     }
     
     public static class SituacaoImportacaoArquivoExtensao
