@@ -3,7 +3,7 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Inscricao
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterArquivosInscricaoImportadosQuery : IRequest<PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>>
     {

@@ -131,4 +131,6 @@ public class MensagemNegocio
     public const string REALIZE_SEU_CADASTRO_NO_SISTEMA = "Usuário não cadastrado no sistema, realize o seu cadastro";
 
     public const string INSCRICAO_MANUAL_REALIZADA_COM_SUCESSO = "Inscrição manual realizada com sucesso";
+
+    public const string SITUACAO_DO_ARQUIVO_DEVE_SER_VALIDADO = "A situação do arquivo deve ser validado";
 }
