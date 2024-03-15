@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Comandos.ImportacaoArquivo.AlterarSituacaoArquivosParaAguardandoProcessamento;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo

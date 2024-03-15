@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 
-namespace SME.ConectaFormacao.Aplicacao.Comandos.ImportacaoArquivo.AlterarSituacaoArquivosParaAguardandoProcessamento
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class AlterarSituacaoArquivosParaAguardandoProcessamentoCommand : IRequest<bool>
     {

@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
