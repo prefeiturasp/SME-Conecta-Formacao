@@ -29,6 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<RetornoDTO> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
         {
+            var erros = new List<string>();
             var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
             var ehPropostaPublicada = proposta.Situacao.EstaPublicada() || proposta.Situacao.EhAlterando();
@@ -52,8 +53,6 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
 
             await _mediator.Send(new ValidarAreaPromotoraCommand(propostaDepois.AreaPromotoraId, propostaDepois.IntegrarNoSGA), cancellationToken);
-
-            var erros = new List<string>();
 
             var possuiTurmaSemDrePreenchida = request.PropostaDTO.Turmas.Any(x => x.DresIds.Length == 0);
             if (possuiTurmaSemDrePreenchida)
@@ -93,6 +92,15 @@ namespace SME.ConectaFormacao.Aplicacao
             var errosCritériosCertificacao = await _mediator.Send(new ValidarCertificacaoPropostaCommand(request.PropostaDTO), cancellationToken);
             if (errosCritériosCertificacao.Any())
                 erros.AddRange(errosCritériosCertificacao);
+            
+            if(((string.IsNullOrEmpty(request.PropostaDTO.PublicoAlvoOutros) && (!request.PropostaDTO.PublicosAlvo.Any())) 
+                && (string.IsNullOrEmpty(request.PropostaDTO.FuncaoEspecificaOutros) && (!request.PropostaDTO.FuncoesEspecificas.Any()))))
+            {
+                if(!request.PropostaDTO.ComponentesCurriculares.Any())
+                    erros.Add(MensagemNegocio.COMPONENTE_CURRICULAR_NAO_INFORMADO);
+                if(!request.PropostaDTO.AnosTurmas.Any())
+                    erros.Add(MensagemNegocio.ANOS_TURMA_NAO_INFORMADO);
+            }
 
             if (erros.Any())
                 throw new NegocioException(erros);
