@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
     public class CasoDeUsoObterNomeCpfCpfCursistaInscricao : CasoDeUsoAbstrato, ICasoDeUsoObterNomeCpfCursistaInscricao
     {
         private readonly IMapper _mapper;
-        public CasoDeUsoObterNomeCpfCpfCursistaInscricao(IMediator mediator,IMapper mapper) : base(mediator)
+        public CasoDeUsoObterNomeCpfCpfCursistaInscricao(IMediator mediator, IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -28,7 +28,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             {
                 var cursistaResumidoServicoEol = await mediator.Send(new ObterNomeCpfProfissionalPorRegistroFuncionalQuery(registroFuncional));
 
-                return _mapper.Map<RetornoUsuarioDTO>(cursistaResumidoServicoEol);
+                if (cursistaResumidoServicoEol.NaoEhNulo())
+                    return _mapper.Map<RetornoUsuarioDTO>(cursistaResumidoServicoEol);
             }
 
             throw new NegocioException(MensagemNegocio.CURSISTA_NAO_ENCONTRADO);
