@@ -77,5 +77,53 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             excecao.ShouldNotBeNull();
             excecao.Mensagens.Contains(MensagemNegocio.SITUACAO_DO_ARQUIVO_DEVE_SER_VALIDADO).ShouldBeTrue();
         }
+
+        [Fact(DisplayName = "Importação Arquivo - Deve alterar situação do arquivo para cancelado")]
+        public async Task Deve_alterar_situacao_arquivo_para_cancelado()
+        {
+            // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AoObterDadosUsuarioInscricaoMock.Usuario = usuario;
+
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.Publicada, FormacaoHomologada.NaoCursosPorIN);
+
+            var arquivosValidado = ImportacaoArquivoMock.GerarImportacaoArquivo(proposta.Id, SituacaoImportacaoArquivo.Validado, 2);
+            await InserirNaBase(arquivosValidado);
+
+            // act
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInscricaoManualCancelarProcessamento>();
+
+            var retorno = await casoDeUso.Executar(arquivosValidado.FirstOrDefault().Id);
+
+            // assert
+            var arquivos = ObterTodos<Dominio.Entidades.ImportacaoArquivo>();
+            arquivos.ShouldNotBeNull();
+            arquivos.Count(a => a.Situacao == SituacaoImportacaoArquivo.Cancelado).ShouldBe(1);
+        }
+
+        [Fact(DisplayName = "Importação Arquivo - Arquivo não encontrado ao cancelar")]
+        public async Task Arquivo_nao_encontrado_ao_cancelar()
+        {
+            // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AoObterDadosUsuarioInscricaoMock.Usuario = usuario;
+
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.Publicada, FormacaoHomologada.NaoCursosPorIN);
+
+            var arquivosInicial = ImportacaoArquivoMock.GerarImportacaoArquivo(proposta.Id, SituacaoImportacaoArquivo.CarregamentoInicial, 1);
+            await InserirNaBase(arquivosInicial);
+
+            // act 
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInscricaoManualCancelarProcessamento>();
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(99));
+
+            // assert 
+            excecao.ShouldNotBeNull();
+            excecao.Mensagens.Contains(MensagemNegocio.ARQUIVO_NAO_ENCONTRADO).ShouldBeTrue();
+        }
     }
 }
