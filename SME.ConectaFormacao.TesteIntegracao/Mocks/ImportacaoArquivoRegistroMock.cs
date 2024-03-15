@@ -37,5 +37,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             AuditoriaFaker(faker);
             return faker.Generate(quantidade);
         }
+        
+        public static IEnumerable<ImportacaoArquivoRegistro> GerarImportacaoArquivoCarregamentoInicial(
+            long ImportacaoArquivoId,
+            int quantidade = 1)
+        {
+            var faker = new Faker<ImportacaoArquivoRegistro>();
+            faker.RuleFor(x => x.ImportacaoArquivoId, ImportacaoArquivoId);
+            faker.RuleFor(x => x.Linha, f => f.IndexVariable);
+            faker.RuleFor(x => x.Conteudo, f => f.Company.CompanyName());
+            faker.RuleFor(x => x.Situacao, SituacaoImportacaoArquivoRegistro.CarregamentoInicial);
+            AuditoriaFaker(faker);
+            return faker.Generate(quantidade);
+        }
     }
 }

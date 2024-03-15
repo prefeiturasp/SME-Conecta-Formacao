@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             sql.AppendLine(@"select count(id)
                              from importacao_arquivo_registro
-                             where importacao_arquivo_id = @arquivoId
+                             where importacao_arquivo_id = @importacaoArquivoId
                                and situacao = @situacao;");
 
             var parametros = new { importacaoArquivoId, situacao };
