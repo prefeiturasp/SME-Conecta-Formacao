@@ -30,6 +30,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             sql.AppendLine(@" select linha, conteudo, erro
                               from importacao_arquivo_registro
                               where importacao_arquivo_id = @arquivoId
+                                and not excluido
                                 and situacao = @situacao
                               order by linha");
 
@@ -38,6 +39,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             sql.AppendLine(@"select count(id)
                              from importacao_arquivo_registro
                              where importacao_arquivo_id = @arquivoId
+                               and not excluido
                                and situacao = @situacao;");
 
             var parametros = new { arquivoId, situacao };
