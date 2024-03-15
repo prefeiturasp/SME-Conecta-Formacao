@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Infra;
