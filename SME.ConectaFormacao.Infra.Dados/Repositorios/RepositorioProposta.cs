@@ -2155,5 +2155,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaTurma>(query, new { nome = nome.ToLower(), propostaId });
         }
+
+        public Task<bool> UsuarioEstaInscritoNaProposta(long usuarioId, long propostaId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

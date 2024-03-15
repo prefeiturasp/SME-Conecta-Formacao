@@ -2,21 +2,24 @@ using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery : IRequest<PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>>
     {
-        public ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(int numeroPagina, int numeroRegistros, long importacaoArquivoId)
+        public ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(int numeroPagina, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacao)
         {
             NumeroPagina = numeroPagina;
             NumeroRegistros = numeroRegistros;
             ImportacaoArquivoId = importacaoArquivoId;
+            Situacao = situacao;
         }
 
         public int NumeroPagina { get; set; }
         public int NumeroRegistros { get; set; }
         public long ImportacaoArquivoId { get; set; }
+        public SituacaoImportacaoArquivoRegistro Situacao { get; set; }
     }
     
     public class ObterRegistrosImportacaoArquivoInscricaoCursistasPaginadosQueryValidator : AbstractValidator<ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery>
