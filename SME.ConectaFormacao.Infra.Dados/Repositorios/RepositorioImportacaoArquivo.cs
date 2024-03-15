@@ -59,5 +59,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return retorno;
         }
+
+        public async Task<IEnumerable<ImportacaoArquivo>> ObterImportacaoArquivosValidados(long propostaId)
+        {
+            var sql = new StringBuilder();
+
+            sql.AppendLine(@" select id, proposta_id, nome, tipo,
+                                    situacao, excluido, criado_em, criado_por,
+                                    alterado_em, alterado_por, criado_login, alterado_login
+                              from importacao_arquivo
+                              where proposta_id = @propostaId
+                                and situacao = @situacaoValidado 
+                                and not excluido;");
+
+            return await conexao.Obter().QueryAsync<ImportacaoArquivo>(sql.ToString(), new { propostaId, situacaoValidado = SituacaoImportacaoArquivo.Validado });
+        }
     }
 }

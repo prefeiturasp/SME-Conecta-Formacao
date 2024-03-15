@@ -364,6 +364,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoImportacaoArquivoInscricaoCursista, CasoDeUsoImportacaoArquivoInscricaoCursista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterArquivosInscricaoImportados, CasoDeUsoObterArquivosInscricaoImportados>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterRegistrosDaIncricaoInconsistentes, CasoDeUsoObterRegistrosDaIncricaoInconsistentes>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAlterarSituacaoArquivosParaAguardandoProcessamento, CasoDeUsoAlterarSituacaoArquivosParaAguardandoProcessamento>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarInscricaoManual, CasoDeUsoSalvarInscricaoManual>();
     }

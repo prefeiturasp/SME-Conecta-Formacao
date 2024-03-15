@@ -42,5 +42,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar(arquivoId));
         }
+
+
+        [HttpPost("{propostaId}/situacao/aguardando-processamento")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> AlterarSituacaoArquivosParaAguardandoProcessamento([FromRoute] long propostaId, [FromServices] ICasoDeUsoAlterarSituacaoArquivosParaAguardandoProcessamento useCase)
+        {
+            return Ok(await useCase.Executar(propostaId));
+        }
     }
 }
