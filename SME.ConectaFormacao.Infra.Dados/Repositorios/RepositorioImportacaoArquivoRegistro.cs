@@ -13,26 +13,37 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosComErro(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId)
+        public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosComErro(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId)
         {
-            return await ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, arquivoId, SituacaoImportacaoArquivoRegistro.Erro);
+            return await ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Erro);
         }
 
-        public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosValidados(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId)
+        public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosValidados(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId)
         {
-            return await ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, arquivoId, SituacaoImportacaoArquivoRegistro.Validado);
+            return await ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Validado);
         }
 
-        private async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId, SituacaoImportacaoArquivoRegistro situacao)
+        public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacao)
         {
             var sql = new StringBuilder();
 
-            sql.AppendLine(@" select linha, conteudo, erro
-                              from importacao_arquivo_registro
-                              where importacao_arquivo_id = @arquivoId
-                                and not excluido
-                                and situacao = @situacao
-                              order by linha");
+            sql.AppendLine(@" SELECT id,
+                                     importacao_arquivo_id,
+                                     linha,
+                                     conteudo,
+                                     situacao,
+                                     erro,
+                                     criado_em,
+                                     criado_por,
+                                     criado_login,
+                                     alterado_em,
+                                     alterado_por,
+                                     alterado_login,
+                                     excluido
+                              FROM importacao_arquivo_registro
+                              WHERE importacao_arquivo_id = @importacaoArquivoId
+                                AND situacao = @situacao
+                              ORDER BY linha");
 
             sql.AppendLine($" OFFSET {quantidadeRegistroIgnorados} ROWS FETCH NEXT {numeroRegistros} ROWS ONLY; ");
 
@@ -42,7 +53,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                and not excluido
                                and situacao = @situacao;");
 
-            var parametros = new { arquivoId, situacao };
+            var parametros = new { importacaoArquivoId, situacao };
 
             var retorno = new RegistrosPaginados<ImportacaoArquivoRegistro>();
 

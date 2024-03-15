@@ -10,11 +10,11 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
-    public class CasoDeUsoImportacaoArquivoInscricaoCursista : CasoDeUsoAbstrato, ICasoDeUsoImportacaoArquivoInscricaoCursista
+    public class CasoDeUsoImportacaoInscricaoCursista : CasoDeUsoAbstrato, ICasoDeUsoImportacaoArquivoInscricaoCursista
     {
-        public CasoDeUsoImportacaoArquivoInscricaoCursista(IMediator mediator) : base(mediator)
+        public CasoDeUsoImportacaoInscricaoCursista(IMediator mediator) : base(mediator)
         {
         }
 
