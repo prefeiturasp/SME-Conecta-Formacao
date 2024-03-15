@@ -3,8 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricularAnoTurma;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
@@ -39,24 +41,41 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
 
             var proposta = await InserirNaBaseProposta(SituacaoProposta.Publicada, FormacaoHomologada.NaoCursosPorIN);
 
-            var arquivosInicial = ImportacaoArquivoMock.GerarImportacaoArquivo(proposta.Id, SituacaoImportacaoArquivo.CarregamentoInicial, 2);
-            await InserirNaBase(arquivosInicial);
-
-            var arquivosValidando = ImportacaoArquivoMock.GerarImportacaoArquivo(proposta.Id, SituacaoImportacaoArquivo.Validando, 2);
-            await InserirNaBase(arquivosValidando);
-
             var arquivosValidado = ImportacaoArquivoMock.GerarImportacaoArquivo(proposta.Id, SituacaoImportacaoArquivo.Validado, 2);
             await InserirNaBase(arquivosValidado);
 
             // act
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarSituacaoArquivosParaAguardandoProcessamento>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInscricaoManualContinuarProcessamento>();
 
-            var retorno = await casoDeUso.Executar(proposta.Id);
+            var retorno = await casoDeUso.Executar(arquivosValidado.FirstOrDefault().Id);
 
             // assert
             var arquivos = ObterTodos<Dominio.Entidades.ImportacaoArquivo>();
             arquivos.ShouldNotBeNull();
-            arquivos.Count(a => a.Situacao == SituacaoImportacaoArquivo.AguardandoProcessamento).ShouldBe(2);
+            arquivos.Count(a => a.Situacao == SituacaoImportacaoArquivo.AguardandoProcessamento).ShouldBe(1);
+        }
+
+        [Fact(DisplayName = "Importação Arquivo - Situação do arquivo deve ser validado")]
+        public async Task Situacao_arquivo_deve_ser_validado()
+        {
+            // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AoObterDadosUsuarioInscricaoMock.Usuario = usuario;
+
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.Publicada, FormacaoHomologada.NaoCursosPorIN);
+
+            var arquivosInicial = ImportacaoArquivoMock.GerarImportacaoArquivo(proposta.Id, SituacaoImportacaoArquivo.CarregamentoInicial, 1);
+            await InserirNaBase(arquivosInicial);
+
+            // act 
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInscricaoManualContinuarProcessamento>();
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(arquivosInicial.FirstOrDefault().Id));
+
+            // assert 
+            excecao.ShouldNotBeNull();
+            excecao.Mensagens.Contains(MensagemNegocio.SITUACAO_DO_ARQUIVO_DEVE_SER_VALIDADO).ShouldBeTrue();
         }
     }
 }
