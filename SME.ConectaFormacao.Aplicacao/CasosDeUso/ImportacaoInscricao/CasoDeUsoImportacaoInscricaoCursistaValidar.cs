@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         {
             var importacaoArquivoDto = param.ObterObjetoMensagem<ImportacaoArquivoDTO>() 
                                             ?? throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_NAO_LOCALIZADA);
-            
+
             var qtdeRegistros = await ObterParametroQtdeRegistrosAProcessar();
 
             var registrosPaginados = await ObterRegistrosParaValidar(qtdeRegistros, importacaoArquivoDto.Id);

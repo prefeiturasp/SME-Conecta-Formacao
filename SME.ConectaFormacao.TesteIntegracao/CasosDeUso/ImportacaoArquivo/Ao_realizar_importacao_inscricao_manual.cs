@@ -6,7 +6,9 @@ using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
@@ -159,6 +161,75 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             
             importacaoArquivosRegistros = ObterTodos<Dominio.Entidades.ImportacaoArquivoRegistro>();
             importacaoArquivosRegistros.Any(f=> f.Id == 1 && f.Situacao == SituacaoImportacaoArquivoRegistro.Validado).ShouldBeTrue();
+            importacaoArquivosRegistros.Any(f=> f.Id != 1 && f.Situacao == SituacaoImportacaoArquivoRegistro.CarregamentoInicial).ShouldBeTrue();
+        }
+        
+        [Fact(DisplayName = "Importação de Inscrição Cursista - Deve apresentar erro na linha")]
+        public async Task Deve_apresentar_erro_na_linha()
+        {
+            // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(Dominio.Enumerados.TipoParametroSistema.QtdeRegistrosImportacaoArquivoInscricaoCursista, "1000");
+            await InserirNaBase(parametro);
+            
+            var usuario = UsuarioMock.GerarUsuarioFaker().Generate(5);
+            await InserirNaBase(usuario);
+
+            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.Publicada, Dominio.Enumerados.FormacaoHomologada.NaoCursosPorIN);
+
+            var CargosFuncoes = ObterTodos<Dominio.Entidades.CargoFuncao>();
+
+            var depara = CargoFuncaoDeparaEolMock.GerarCargoFuncaoDeparaEol(CargosFuncoes);
+            await InserirNaBase(depara);
+
+            var vagas = PropostaMock.GerarTurmaVagas(proposta.Turmas, proposta.QuantidadeVagasTurma.GetValueOrDefault());
+            await InserirNaBase(vagas);
+
+            AoObterDadosUsuarioInscricaoMock.Usuario = usuario.FirstOrDefault();
+            AoObterDadosUsuarioInscricaoMock.CodigoCargos = depara.Where(t => t.CodigoCargoEol.HasValue).Select(s => s.CodigoCargoEol.GetValueOrDefault()).ToArray();
+            AoObterDadosUsuarioInscricaoMock.CodigoFuncoes = depara.Where(t => t.CodigoFuncaoEol.HasValue).Select(s => s.CodigoFuncaoEol.GetValueOrDefault()).ToArray();
+
+            var importacaoArquivo = ImportacaoArquivoMock.GerarImportacaoArquivo(proposta.Id, SituacaoImportacaoArquivo.CarregamentoInicial);
+            await InserirNaBase(importacaoArquivo);
+            
+            var itensImportacao = ImportacaoArquivoRegistroMock.GerarImportacaoArquivoCarregamentoInicial(1,5);
+
+            var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
+            var propostaTurmas = ObterTodos<Dominio.Entidades.PropostaTurma>();
+            
+            var count = 0;
+            foreach (var item in itensImportacao)
+            {
+                item.Conteudo = (new InscricaoCursistaDTO()
+                {
+                    Turma = "Conecta",
+                    ColaboradorRede = "1",
+                    RegistroFuncional = usuarios[count].Login,
+                    Cpf = usuarios[count].Cpf,
+                    Nome = usuarios[count].Nome
+                }).ObjetoParaJson();
+                count++;
+                await InserirNaBase(item);
+            }
+           
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoImportacaoInscricaoCursistaValidarItem>();
+            
+            var mapper = ObterCasoDeUso<IMapper>();
+
+            var importacaoArquivosRegistros = ObterTodos<Dominio.Entidades.ImportacaoArquivoRegistro>();
+
+            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDTO>(importacaoArquivosRegistros.FirstOrDefault(f=> f.Id == 1));
+            importacaoArquivoRegistroDto.PropostaId = proposta.Id;
+            
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(() => casoDeUso.Executar(new Infra.MensagemRabbit(importacaoArquivoRegistroDto.ObjetoParaJson())));
+
+            // assert
+            excecao.ShouldNotBeNull();
+            excecao.Mensagens.Contains(MensagemNegocio.TURMA_NAO_ENCONTRADA).ShouldBeTrue();
+            
+            importacaoArquivosRegistros = ObterTodos<Dominio.Entidades.ImportacaoArquivoRegistro>();
+            importacaoArquivosRegistros.Any(f=> f.Id == 1 && f.Situacao == SituacaoImportacaoArquivoRegistro.Erro).ShouldBeTrue();
+            importacaoArquivosRegistros.Any(f=> f.Id == 1 && f.Erro.EstaPreenchido()).ShouldBeTrue();
             importacaoArquivosRegistros.Any(f=> f.Id != 1 && f.Situacao == SituacaoImportacaoArquivoRegistro.CarregamentoInicial).ShouldBeTrue();
         }
     }

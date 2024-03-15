@@ -23,38 +23,47 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         {
             var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>() 
                                             ?? throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
-
-            var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaDTO>();
-
-            var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorNomeQuery(importacaoInscricaoCursista.Turma, importacaoArquivoRegistro.PropostaId)) 
-                                ?? throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
             
-            var usuario = await ObterUsuarioPorLogin(importacaoInscricaoCursista) ??
-                          throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-
-            var inscricao = new Dominio.Entidades.Inscricao()
+            try
             {
-                PropostaTurmaId = propostaTurma.Id,
-                UsuarioId = usuario.Id,
-                Situacao = SituacaoInscricao.EmAnalise
-            };
+                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaDTO>();
+
+                var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorNomeQuery(importacaoInscricaoCursista.Turma, importacaoArquivoRegistro.PropostaId)) 
+                                    ?? throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
+                
+                var usuario = await ObterUsuarioPorLogin(importacaoInscricaoCursista) ??
+                              throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+
+                var inscricao = new Dominio.Entidades.Inscricao()
+                {
+                    PropostaTurmaId = propostaTurma.Id,
+                    UsuarioId = usuario.Id,
+                    Situacao = SituacaoInscricao.EmAnalise
+                };
+                
+                if (usuario.Tipo == TipoUsuario.Interno)
+                {
+                    await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId);
+
+                    await ValidarDreUsuarioInterno(usuario.Login, inscricao);
+                }
+                else
+                {
+                    await ValidarDreUsuarioExterno(inscricao.PropostaTurmaId, usuario.CodigoEolUnidade);
+                }
+
+                await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
+                
+                await mediator.Send(new AlterarSituacaoImportacaoArquivoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Validado));
+                
+                return true;
             
-            if (usuario.Tipo == TipoUsuario.Interno)
-            {
-                await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId);
-
-                await ValidarDreUsuarioInterno(usuario.Login, inscricao);
             }
-            else
+            catch (Exception e)
             {
-                await ValidarDreUsuarioExterno(inscricao.PropostaTurmaId, usuario.CodigoEolUnidade);
+                await mediator.Send(new AlterarSituacaoImportacaoArquivoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Erro, e.Message));
+                throw;
             }
-
-            await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
-            
-            await mediator.Send(new AlterarSituacaoImportacaoArquivoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Validado));
-            
-            return true;
         }
         
         private async Task MapearValidarCargoFuncao(Dominio.Entidades.Inscricao inscricao, string login, long propostaId)

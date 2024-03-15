@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (importacaoArquivoRegistro.EhNulo())
                 throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
 
-            importacaoArquivoRegistro.DefinirSituacao(request.Situacao);
+            importacaoArquivoRegistro.DefinirSituacaoErro(request.Situacao, request.Erro);
             
             await _repositorioImportacaoArquivoRegistro.Atualizar(importacaoArquivoRegistro);
 
