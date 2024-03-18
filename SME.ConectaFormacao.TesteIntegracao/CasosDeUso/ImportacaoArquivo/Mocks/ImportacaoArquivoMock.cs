@@ -4,7 +4,7 @@ using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Moq;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Arquivo.Mocks
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo.Mocks
 {
     public class ImportacaoArquivoMock
     {
