@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
             var id = await mediator.Send(new InserirImportacaoArquivoCommand(importacaoArquivoDTO));
             
-            var caminho = await mediator.Send(new InserirConteudoArquivoInscricaoCursistaCommand(id, arquivo.OpenReadStream()));
+            await mediator.Send(new InserirConteudoArquivoInscricaoCursistaCommand(id, arquivo.OpenReadStream()));
 
             return RetornoDTO.RetornarSucesso(MensagemNegocio.ARQUIVO_IMPORTADO_COM_SUCESSO, id);
         }

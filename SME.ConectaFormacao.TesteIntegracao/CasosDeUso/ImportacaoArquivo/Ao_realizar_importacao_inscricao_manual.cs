@@ -95,7 +95,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             retorno.ShouldBeTrue();
             
             importacaoArquivos = ObterTodos<Dominio.Entidades.ImportacaoArquivo>();
-            importacaoArquivos.FirstOrDefault().Situacao.ShouldBe(SituacaoImportacaoArquivo.Validado);
+            importacaoArquivos.FirstOrDefault().Situacao.ShouldBe(SituacaoImportacaoArquivo.Validando);
         }
         
         [Fact(DisplayName = "Importação de Inscrição Cursista - Deve realizar inscrição manual com sucesso")]

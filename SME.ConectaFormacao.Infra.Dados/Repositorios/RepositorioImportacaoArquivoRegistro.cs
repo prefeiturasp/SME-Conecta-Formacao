@@ -13,14 +13,30 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosComErro(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId)
+        public Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosComErro(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId)
         {
-            return await ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Erro);
+            return ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Erro, false);
         }
 
-        public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro? ignorarSituacao)
+        public Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro? ignorarSituacao)
+        {
+            return ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, ignorarSituacao, true);
+        }
+
+        public async Task<bool> TodosRegistroForamProcessadosDoArquivo(long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacaoVerificar)
+        {
+            var sql = @"select count(1)
+                        from importacao_arquivo_registro
+                        where importacao_arquivo_id = @importacaoArquivoId
+                          and situacao = @situacao limit 1";
+
+            return await conexao.Obter().ExecuteScalarAsync<bool>(sql, new { importacaoArquivoId, situacao = situacaoVerificar });
+        }
+
+        private async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro? situacao, bool ignorar)
         {
             var sql = new StringBuilder();
+            var sinalSituacao = ignorar ? "<>" : "=";
 
             sql.AppendLine(@" SELECT id,
                                      importacao_arquivo_id,
@@ -38,8 +54,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                               FROM importacao_arquivo_registro
                               WHERE importacao_arquivo_id = @importacaoArquivoId and not excluido");
 
-            if (ignorarSituacao.HasValue)
-                sql.AppendLine(" AND situacao <> @ignorarSituacao ");
+            if (situacao.HasValue)
+                sql.AppendLine($" AND situacao {sinalSituacao} @situacao ");
 
             sql.AppendLine(" ORDER BY linha ");
 
@@ -50,12 +66,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                              where importacao_arquivo_id = @importacaoArquivoId
                                and not excluido");
 
-            if (ignorarSituacao.HasValue)
-                sql.AppendLine(" AND situacao <> @ignorarSituacao ");
+            if (situacao.HasValue)
+                sql.AppendLine($" AND situacao {sinalSituacao} @situacao ");
 
             sql.Append(';');
 
-            var parametros = new { importacaoArquivoId, ignorarSituacao };
+            var parametros = new { importacaoArquivoId, situacao };
 
             var retorno = new RegistrosPaginados<ImportacaoArquivoRegistro>();
 
@@ -66,16 +82,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
 
             return retorno;
-        }
-
-        public async Task<bool> TodosRegistroForamProcessadosDoArquivo(long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacaoVerificar)
-        {
-            var sql = @"select count(1)
-                        from importacao_arquivo_registro
-                        where importacao_arquivo_id = @importacaoArquivoId
-                          and situacao = @situacao limit 1";
-
-            return await conexao.Obter().ExecuteScalarAsync<bool>(sql, new { importacaoArquivoId, situacao = situacaoVerificar });
         }
     }
 }

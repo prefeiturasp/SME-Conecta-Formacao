@@ -63,7 +63,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                 ColaboradorRede = "1",
                 Cpf = usuario.Cpf,
                 RegistroFuncional = usuario.Login,
-                Turma = proposta.Turmas.FirstOrDefault().Nome
+                Turma = proposta.Turmas.FirstOrDefault().Nome,
+                Inscricao  = new Dominio.Entidades.Inscricao()
+                {
+                    PropostaTurmaId = 1,
+                    UsuarioId = 1,
+                    FuncaoId = 1
+                }
             });
 
             var registro1 = ImportacaoArquivoRegistroMock.GerarImportacaoArquivo(
