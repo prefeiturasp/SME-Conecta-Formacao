@@ -88,8 +88,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 transacao.Commit();
 
                 foreach (var turma in turmasAntes)
-                    await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.PropostaTurmaEncontro.Parametros(turma.Id));
-
+                    await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.PropostaTurmaEncontro.Parametros(turma.TurmaId));
+                await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.FormacaoDetalhada.Parametros(request.PropostaId));
                 return encontroDepois.Id;
             }
             catch
