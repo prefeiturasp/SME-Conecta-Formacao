@@ -40,8 +40,10 @@ namespace SME.ConectaFormacao.Aplicacao
 
             foreach (var turma in turmas)
                 turma.Nome += await ObterPeríodoEncontrosTurma(turma.Id);
-
-            return _mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
+            
+            var lista = _mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
+            lista = lista.OrderBy(x => x.Descricao);
+            return lista;
         }
 
         private async Task<string> ObterPeríodoEncontrosTurma(long turmaId)
@@ -64,9 +66,17 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             var menorDataInicio = datasInicio.OrderBy(o => o.Date).FirstOrDefault();
-            var maiorDataFim = datasFim.OrderBy(o => o.Date).LastOrDefault();
+            DateTime? maiorDataFim = null;
+            if (datasFim.NaoPossuiElementos() && datasInicio.Count > 1)
+            {
+                maiorDataFim = datasInicio.OrderBy(o => o.Date).LastOrDefault();
+            }
+            else if (datasFim.PossuiElementos())
+            {
+                maiorDataFim = datasFim.OrderBy(o => o.Date).LastOrDefault();
+            }
 
-            return datasFim.PossuiElementos() ? $" {menorDataInicio:dd/MM/yyyy} até {maiorDataFim:dd/MM/yyyy}" : $" {menorDataInicio:dd/MM/yyyy}";
+            return maiorDataFim != null ? $" {menorDataInicio:dd/MM/yyyy} até {maiorDataFim:dd/MM/yyyy}" : $" {menorDataInicio:dd/MM/yyyy}";
         }
     }
 }
