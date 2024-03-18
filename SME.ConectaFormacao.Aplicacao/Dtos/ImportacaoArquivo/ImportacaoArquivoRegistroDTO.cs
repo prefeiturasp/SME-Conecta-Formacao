@@ -13,5 +13,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo
         public string Erro { get; set; }
         
         public SituacaoImportacaoArquivoRegistro Situacao { get; set; }
+        public long PropostaId { get; set; }
     }
 }

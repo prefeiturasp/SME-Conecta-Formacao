@@ -73,6 +73,15 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             texto = RegexEspacosEmBranco.Replace(texto, " ").Trim();
             return texto.Trim();
         }
+        
+        public static string RemoverEspacoEmBranco(this string texto)
+        {
+            if (texto.NaoEstaPreenchido())
+                return string.Empty;
+
+            texto = RegexEspacosEmBranco.Replace(texto, " ").Trim();
+            return texto.Trim();
+        }
 
         public static bool CpfEhValido(this string cpf)
         {
@@ -139,6 +148,11 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         public static bool SaoDiferentes(this string valor, string valorAComparar)
         {
             return !valor.ToLower().Equals(valorAComparar.ToLower()); 
+        }
+        
+        public static bool EhColaboradorRede(this string valor)
+        {
+            return valor.Equals("1"); 
         }
     }
 }

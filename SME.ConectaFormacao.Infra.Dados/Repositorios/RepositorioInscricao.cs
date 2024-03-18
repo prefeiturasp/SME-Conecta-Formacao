@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().ExecuteAsync(query, inscricao) > 0;
         }
 
-        public Task<bool> ExisteInscricaoNaProposta(long propostaId, long usuarioId)
+        public Task<bool> UsuarioEstaInscritoNaProposta(long propostaId, long usuarioId)
         {
             var situacaoCancelada = (int)SituacaoInscricao.Cancelada;
 

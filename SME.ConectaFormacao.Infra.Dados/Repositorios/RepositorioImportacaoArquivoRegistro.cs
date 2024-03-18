@@ -13,36 +13,65 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosComErro(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId)
+        public Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosComErro(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId)
         {
-            return await ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, arquivoId, SituacaoImportacaoArquivoRegistro.Erro);
+            return ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Erro, false);
         }
 
-        public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosValidados(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId)
+        public Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro? ignorarSituacao)
         {
-            return await ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, arquivoId, SituacaoImportacaoArquivoRegistro.Validado);
+            return ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, ignorarSituacao, true);
         }
 
-        private async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId, SituacaoImportacaoArquivoRegistro situacao)
+        public async Task<bool> TodosRegistroForamProcessadosDoArquivo(long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacaoVerificar)
+        {
+            var sql = @"select count(1)
+                        from importacao_arquivo_registro
+                        where importacao_arquivo_id = @importacaoArquivoId
+                          and situacao = @situacao limit 1";
+
+            return await conexao.Obter().ExecuteScalarAsync<bool>(sql, new { importacaoArquivoId, situacao = situacaoVerificar });
+        }
+
+        private async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro? situacao, bool ignorar)
         {
             var sql = new StringBuilder();
+            var sinalSituacao = ignorar ? "<>" : "=";
 
-            sql.AppendLine(@" select linha, conteudo, erro
-                              from importacao_arquivo_registro
-                              where importacao_arquivo_id = @arquivoId
-                                and not excluido
-                                and situacao = @situacao
-                              order by linha");
+            sql.AppendLine(@" SELECT id,
+                                     importacao_arquivo_id,
+                                     linha,
+                                     conteudo,
+                                     situacao,
+                                     erro,
+                                     criado_em,
+                                     criado_por,
+                                     criado_login,
+                                     alterado_em,
+                                     alterado_por,
+                                     alterado_login,
+                                     excluido
+                              FROM importacao_arquivo_registro
+                              WHERE importacao_arquivo_id = @importacaoArquivoId and not excluido");
+
+            if (situacao.HasValue)
+                sql.AppendLine($" AND situacao {sinalSituacao} @situacao ");
+
+            sql.AppendLine(" ORDER BY linha ");
 
             sql.AppendLine($" OFFSET {quantidadeRegistroIgnorados} ROWS FETCH NEXT {numeroRegistros} ROWS ONLY; ");
 
             sql.AppendLine(@"select count(id)
                              from importacao_arquivo_registro
-                             where importacao_arquivo_id = @arquivoId
-                               and not excluido
-                               and situacao = @situacao;");
+                             where importacao_arquivo_id = @importacaoArquivoId
+                               and not excluido");
 
-            var parametros = new { arquivoId, situacao };
+            if (situacao.HasValue)
+                sql.AppendLine($" AND situacao {sinalSituacao} @situacao ");
+
+            sql.Append(';');
+
+            var parametros = new { importacaoArquivoId, situacao };
 
             var retorno = new RegistrosPaginados<ImportacaoArquivoRegistro>();
 
