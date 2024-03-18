@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using MediatR;
-using RabbitMQ.Client;
+﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
@@ -9,15 +7,16 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
     public class CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao : CasoDeUsoAbstrato, ICasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao
     {
-        private readonly IModel _model;
-        public CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao(IMediator mediator, IModel model) : base(mediator)
+        private readonly IConexoesRabbit _conexoesRabbit;
+        public CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao(IMediator mediator, IConexoesRabbit conexoesRabbit) : base(mediator)
         {
-            _model = model ?? throw new ArgumentNullException(nameof(model));
+            _conexoesRabbit = conexoesRabbit ?? throw new ArgumentNullException(nameof(conexoesRabbit));
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
@@ -38,7 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         private async Task AlterarSituacaoArquivo(long importacaoArquivoId)
         {
             var possuiRegistroValidado = await mediator.Send(new PossuiRegistroPorArquivoSituacaoQuery(importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Validado));
-            var possuiRegistrosNaFila = _model.MessageCount(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem) > 0;
+            var possuiRegistrosNaFila = _conexoesRabbit.Get().MessageCount(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem) > 0;
 
             if (!possuiRegistroValidado || !possuiRegistrosNaFila)
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoId, SituacaoImportacaoArquivo.Processado));
