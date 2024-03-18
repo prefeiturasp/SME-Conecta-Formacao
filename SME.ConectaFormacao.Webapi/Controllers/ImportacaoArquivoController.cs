@@ -45,8 +45,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await useCase.Executar(arquivoId));
         }
 
-
-        [HttpPost("{arquivoImportacaoId}/continuar")]
+        [HttpPut("{arquivoImportacaoId}/continuar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
@@ -55,7 +54,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await useCase.Executar(arquivoImportacaoId));
         }
 
-        [HttpPost("{arquivoImportacaoId}/cancelar")]
+        [HttpPut("{arquivoImportacaoId}/cancelar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
