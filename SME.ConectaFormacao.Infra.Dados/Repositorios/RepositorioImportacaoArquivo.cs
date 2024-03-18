@@ -15,46 +15,40 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<RegistrosPaginados<ArquivosImportadosTotalRegistro>> ObterArquivosInscricaoImportacao(int quantidadeRegistroIgnorados, int numeroRegistros, long propostaId)
         {
-            var sql = new StringBuilder();
+            var sql = @$"
+                    select ia.id,
+	                       ia.nome,
+	                       ia.situacao,
+	                       ia.criado_em,
+	                       count(iar.id) as TotalRegistros,
+	                       sum(
+		                       case 
+	   		                    when (ia.situacao = {(int)SituacaoImportacaoArquivo.Validado} or ia.situacao = {(int)SituacaoImportacaoArquivo.Validando}) and iar.situacao = {(int)SituacaoImportacaoArquivoRegistro.Validado} then 1
+	   		                    when (ia.situacao = {(int)SituacaoImportacaoArquivo.Processado} or ia.situacao = {(int)SituacaoImportacaoArquivo.Processando}) and iar.situacao = {(int)SituacaoImportacaoArquivoRegistro.Processado} then 1
+	   		                    when ia.situacao = {(int)SituacaoImportacaoArquivo.Cancelado} then 1
+	   		                    when iar.situacao = {(int)SituacaoImportacaoArquivoRegistro.Erro} then 1
+		   	                    else 0
+		                       end
+	                       ) as TotalProcessados
+                    from importacao_arquivo ia
+                    inner join importacao_arquivo_registro iar on iar.importacao_arquivo_id = ia.id and not iar.excluido
+                    where ia.proposta_id = @propostaId
+                      and not ia.excluido
+                    group by ia.id, ia.nome, ia.situacao, ia.criado_em
+                    order by ia.criado_em desc ";
 
-            sql.AppendLine(@"with TotalRegistro as (
-                            select count (id)TotalRegistro, importacao_arquivo_id
-                            from importacao_arquivo_registro
-                            where not excluido
-                            group by importacao_arquivo_id
-                            ),");
-            sql.AppendLine(@"TotalProcessados as (
-                            select count (id)TotalProcessados, importacao_arquivo_id
-                            from importacao_arquivo_registro
-                            where situacao = @situacaoProcessado
-                              and not excluido
-                            group by importacao_arquivo_id
-                            )");
-            sql.AppendLine(@" select id, nome, situacao, 
-                                    coalesce(tr.TotalRegistro, 0) as TotalRegistros, 
-                                    coalesce(tp.TotalProcessados, 0) as TotalProcessados
-                              from importacao_arquivo ia
-                              left join TotalRegistro tr on tr.importacao_arquivo_id = ia.id
-                              left join TotalProcessados tp on tp.importacao_arquivo_id = ia.id
-                              where proposta_id = @propostaId
-                                and not excluido
-                              order by criado_em desc");
+            sql += $" OFFSET {quantidadeRegistroIgnorados} ROWS FETCH NEXT {numeroRegistros} ROWS ONLY; ";
 
-            sql.AppendLine($" OFFSET {quantidadeRegistroIgnorados} ROWS FETCH NEXT {numeroRegistros} ROWS ONLY; ");
+            sql += "select count(id) from importacao_arquivo where proposta_id = @propostaId and not excluido;";
 
-            sql.AppendLine(@"select count(id)
-                             from importacao_arquivo
-                             where proposta_id = @propostaId
-                               and not excluido;");
-
-            var parametros = new { propostaId, situacaoProcessado = SituacaoImportacaoArquivoRegistro.Processado };
+            var parametros = new { propostaId };
 
             var retorno = new RegistrosPaginados<ArquivosImportadosTotalRegistro>();
 
             using (var multi = await conexao.Obter().QueryMultipleAsync(sql.ToString(), parametros))
             {
-                retorno.Registros = multi.Read<ArquivosImportadosTotalRegistro>();
-                retorno.TotalRegistros = multi.ReadFirst<int>();
+                retorno.Registros = await multi.ReadAsync<ArquivosImportadosTotalRegistro>();
+                retorno.TotalRegistros = await multi.ReadFirstAsync<int>();
             }
 
             return retorno;
