@@ -18,11 +18,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Erro);
         }
 
-        public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosValidados(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId)
-        {
-            return await ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Validado);
-        }
-
         public async Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacao)
         {
             var sql = new StringBuilder();
@@ -49,7 +44,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             sql.AppendLine(@"select count(id)
                              from importacao_arquivo_registro
-                             where importacao_arquivo_id = @arquivoId
+                             where importacao_arquivo_id = @importacaoArquivoId
                                and not excluido
                                and situacao = @situacao;");
 
@@ -64,6 +59,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
 
             return retorno;
+        }
+
+        public async Task<bool> TodosRegistroForamProcessadosDoArquivo(long importacaoArquivoId)
+        {
+            var sql = @"select 1 
+                        from importacao_arquivo_registro
+                        where importacao_arquivo_id = @importacaoArquivoId
+                          and situacao = @situacaoValidado";
+
+            return !(await conexao.Obter().QueryFirstOrDefaultAsync<bool>(sql, new { importacaoArquivoId, situacaoValidado = SituacaoImportacaoArquivoRegistro.Validado }));
         }
     }
 }

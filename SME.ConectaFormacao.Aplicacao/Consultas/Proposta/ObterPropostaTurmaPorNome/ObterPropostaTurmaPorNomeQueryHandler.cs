@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PropostaTurma> Handle(ObterPropostaTurmaPorNomeQuery request, CancellationToken cancellationToken)
         {
             var nomeChave = CacheDistribuidoNomes.PropostaTurma.Parametros(request.PropostaTurmaNome);
-            return await _cacheDistribuido.ObterAsync(nomeChave, () => _repositorioProposta.ObterTurmaPorNome(request.PropostaTurmaNome));
+            return await _cacheDistribuido.ObterAsync(nomeChave, () => _repositorioProposta.ObterTurmaPorNome(request.PropostaTurmaNome, request.PropostaId));
         }
     }
 }
