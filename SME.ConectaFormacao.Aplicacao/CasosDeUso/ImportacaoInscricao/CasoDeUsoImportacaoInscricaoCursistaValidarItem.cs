@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -21,16 +22,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>() 
+            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>()
                                             ?? throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
-            
+
             try
             {
-                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaDTO>();
+                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDTO>();
 
-                var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorNomeQuery(importacaoInscricaoCursista.Turma, importacaoArquivoRegistro.PropostaId)) 
+                var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorNomeQuery(importacaoInscricaoCursista.Turma, importacaoArquivoRegistro.PropostaId))
                                     ?? throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
-                
+
                 var usuario = await ObterUsuarioPorLogin(importacaoInscricaoCursista) ??
                               throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
@@ -40,7 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                     UsuarioId = usuario.Id,
                     Situacao = SituacaoInscricao.EmAnalise
                 };
-                
+
                 if (usuario.Tipo == TipoUsuario.Interno)
                 {
                     await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId);
@@ -53,11 +54,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 }
 
                 await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
-                
-                await mediator.Send(new AlterarSituacaoImportacaoArquivoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Validado));
-                
+
+                importacaoInscricaoCursista.Inscricao = inscricao;
+
+                await mediator.Send(new AlterarImportacaoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Validado, importacaoInscricaoCursista.ObjetoParaJson()));
+
+                await AlterarSituacaoArquivo(importacaoArquivoRegistro.ImportacaoArquivoId);
+
                 return true;
-            
             }
             catch (Exception e)
             {
@@ -169,7 +173,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             }
         }
 
-        private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(InscricaoCursistaDTO inscricaoCursistaDTO ) 
+        private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDTO inscricaoCursistaDTO ) 
         {
             var ehProfissionalRede = inscricaoCursistaDTO.ColaboradorRede.EhColaboradorRede();
             
@@ -193,6 +197,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             }
 
             return usuario;
+        }
+
+        private async Task AlterarSituacaoArquivo(long importacaoArquivoId)
+        {
+            var possuiRegistroCarregamentoInicial = await mediator.Send(new PossuiRegistroPorArquivoSituacaoQuery(importacaoArquivoId, SituacaoImportacaoArquivoRegistro.CarregamentoInicial));
+            if (!possuiRegistroCarregamentoInicial)
+                await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoId, SituacaoImportacaoArquivo.Validado));
         }
     }
 }

@@ -51,8 +51,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             return await mediator.Send(new ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(
                 qtdeRegistroIgnorados, 
                 qtdeRegistros, 
-                importacaoArquivoId,
-                SituacaoImportacaoArquivoRegistro.CarregamentoInicial));
+                importacaoArquivoId, null));
         }
 
         private async Task<int> ObterParametroQtdeRegistrosAProcessar()

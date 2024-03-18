@@ -8,18 +8,18 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery : IRequest<PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>>
     {
-        public ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(int numeroPagina, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacao)
+        public ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(int numeroPagina, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro? ignorarSituacao)
         {
             NumeroPagina = numeroPagina;
             NumeroRegistros = numeroRegistros;
             ImportacaoArquivoId = importacaoArquivoId;
-            Situacao = situacao;
+            IgnorarSituacao = ignorarSituacao;
         }
 
         public int NumeroPagina { get; set; }
         public int NumeroRegistros { get; set; }
         public long ImportacaoArquivoId { get; set; }
-        public SituacaoImportacaoArquivoRegistro Situacao { get; set; }
+        public SituacaoImportacaoArquivoRegistro? IgnorarSituacao { get; set; }
     }
     
     public class ObterRegistrosImportacaoArquivoInscricaoCursistasPaginadosQueryValidator : AbstractValidator<ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery>

@@ -21,22 +21,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>()
                                 ?? throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
 
-            var arquivo = await mediator.Send(new ObterImportacaoArquivoPorIdQuery(importacaoArquivoRegistro.ImportacaoArquivoId));
-            var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaDTO>();
+            var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDTO>();
 
-            var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorNomeQuery(importacaoInscricaoCursista.Turma, arquivo.PropostaId))
-                    ?? throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
-
-            var inscricaoManual = new InscricaoManualDTO()
-            {
-                Cpf = importacaoInscricaoCursista.Cpf,
-                RegistroFuncional = importacaoInscricaoCursista.RegistroFuncional,
-                ProfissionalRede = importacaoInscricaoCursista.ColaboradorRede.EhColaboradorRede(),
-                PropostaTurmaId = propostaTurma.Id
-            };
-
-            await mediator.Send(new SalvarInscricaoManualCommand(inscricaoManual));
-
+            await mediator.Send(new SalvarInscricaoImportacaoCommand(importacaoInscricaoCursista));
             await mediator.Send(new AlterarSituacaoRegistroImportacaoArquivoCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Processado));
 
             await AlterarSituacaoArquivo(importacaoArquivoRegistro.ImportacaoArquivoId);
@@ -46,7 +33,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
         private async Task AlterarSituacaoArquivo(long importacaoArquivoId)
         {
-            if (await mediator.Send(new TodosRegistroForamProcessadosQuery(importacaoArquivoId)))
+            var possuiRegistroValidado = await mediator.Send(new PossuiRegistroPorArquivoSituacaoQuery(importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Validado));
+            if (!possuiRegistroValidado)
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoId, SituacaoImportacaoArquivo.Processado));
         }
     }
