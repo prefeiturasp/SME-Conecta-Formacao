@@ -290,5 +290,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>(query.ToString(), new { propostaIds });
         }
+
+        public Task<IEnumerable<PropostaTipoInscricao>> ObterTiposInscricaoPorPropostaIds(long[] codigosFormacao)
+        {
+            var query = @"select id, proposta_id, tipo_inscricao from proposta_tipo_inscricao where proposta_id = any(@codigosFormacao) and not excluido";
+
+            return conexao.Obter().QueryAsync<PropostaTipoInscricao>(query.ToString(), new { codigosFormacao });
+        }
     }
 }

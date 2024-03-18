@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
@@ -9,18 +8,19 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
     public class CasoDeUsoImportacaoInscricaoCursistaValidarItem : CasoDeUsoAbstrato, ICasoDeUsoImportacaoInscricaoCursistaValidarItem
     {
         private readonly IMapper _mapper;
-        private readonly IModel _model;
-        
-        public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator,IMapper mapper, IModel model) : base(mediator)
+        private readonly IConexoesRabbit _conexoesRabbit;
+
+        public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator, IMapper mapper, IConexoesRabbit conexoesRabbit) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _model = model ?? throw new ArgumentNullException(nameof(model));
+            _conexoesRabbit = conexoesRabbit ?? throw new ArgumentNullException(nameof(conexoesRabbit));
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
@@ -204,7 +204,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         private async Task AlterarSituacaoArquivo(long importacaoArquivoId)
         {
             var possuiRegistroCarregamentoInicial = await mediator.Send(new PossuiRegistroPorArquivoSituacaoQuery(importacaoArquivoId, SituacaoImportacaoArquivoRegistro.CarregamentoInicial));
-            var possuiRegistrosNaFila = _model.MessageCount(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem) > 0;
+            var possuiRegistrosNaFila = _conexoesRabbit.Get().MessageCount(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem) > 0;
 
             if (!possuiRegistroCarregamentoInicial || !possuiRegistrosNaFila)
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoId, SituacaoImportacaoArquivo.Validado));
