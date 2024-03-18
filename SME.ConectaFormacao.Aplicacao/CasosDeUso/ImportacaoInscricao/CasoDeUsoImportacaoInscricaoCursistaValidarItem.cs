@@ -58,16 +58,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 importacaoInscricaoCursista.Inscricao = inscricao;
 
                 await mediator.Send(new AlterarImportacaoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Validado, importacaoInscricaoCursista.ObjetoParaJson()));
-
-                await AlterarSituacaoArquivo(importacaoArquivoRegistro.ImportacaoArquivoId);
-
-                return true;
             }
-            catch (Exception e)
+            catch (NegocioException e)
             {
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Erro, e.Message));
-                throw;
             }
+
+            await AlterarSituacaoArquivo(importacaoArquivoRegistro.ImportacaoArquivoId);
+
+            return true;
         }
         
         private async Task MapearValidarCargoFuncao(Dominio.Entidades.Inscricao inscricao, string login, long propostaId)
