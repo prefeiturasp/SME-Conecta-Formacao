@@ -35,15 +35,34 @@ namespace SME.ConectaFormacao.Aplicacao
             var ehPropostaPublicada = proposta.Situacao.EstaPublicada() || proposta.Situacao.EhAlterando();
 
             var ehPropostaAutomatica = request.PropostaDTO.TiposInscricao.PossuiElementos() && request.PropostaDTO.TiposInscricao.Any(a => a.TipoInscricao.EhAutomaticaOuJEIF());
+            if(((string.IsNullOrEmpty(request.PropostaDTO.PublicoAlvoOutros) && (!request.PropostaDTO.PublicosAlvo.Any())) 
+                && (string.IsNullOrEmpty(request.PropostaDTO.FuncaoEspecificaOutros) && (!request.PropostaDTO.FuncoesEspecificas.Any()))))
+            {
+                if(!request.PropostaDTO.ComponentesCurriculares.Any() || !request.PropostaDTO.AnosTurmas.Any())
+                    erros.Add(MensagemNegocio.INFORMAR_PUBLICO_FUNCAO_MODALIDADE);
+            }
 
-            await _mediator.Send(new ValidarPublicoAlvoOutrosCommand(ehPropostaAutomatica, request.PropostaDTO.PublicosAlvo, request.PropostaDTO.PublicoAlvoOutros), cancellationToken);
+            var validarPublicoAlvoOutrosCommand = await _mediator.Send(new ValidarPublicoAlvoOutrosCommand(ehPropostaAutomatica, request.PropostaDTO.PublicosAlvo, request.PropostaDTO.PublicoAlvoOutros), cancellationToken);
+            
+            if(validarPublicoAlvoOutrosCommand.Any())
+                erros.AddRange(validarPublicoAlvoOutrosCommand);
 
-            await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
+            var validarFuncaoEspecificaOutrosCommand = await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
+            if(validarFuncaoEspecificaOutrosCommand.Any())
+                erros.AddRange(validarFuncaoEspecificaOutrosCommand);
 
-            await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
-
-            await _mediator.Send(new ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand(request.PropostaDTO.PublicosAlvo, request.PropostaDTO.FuncoesEspecificas,
+            var validarCriterioValidacaoInscricaoOutrosCommand =  await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
+            if(validarCriterioValidacaoInscricaoOutrosCommand.Any())
+                erros.AddRange(validarCriterioValidacaoInscricaoOutrosCommand);
+            
+            var validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand = await _mediator.Send(new ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand(request.PropostaDTO.PublicosAlvo, request.PropostaDTO.FuncoesEspecificas,
                 request.PropostaDTO.Modalidades, request.PropostaDTO.AnosTurmas, request.PropostaDTO.ComponentesCurriculares), cancellationToken);
+            
+            if(validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand.Any())
+                erros.AddRange(validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand);
+            
+            if (erros.Any())
+                throw new NegocioException(erros);
 
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
             propostaDepois.Id = proposta.Id;
@@ -93,12 +112,6 @@ namespace SME.ConectaFormacao.Aplicacao
             if (errosCritériosCertificacao.Any())
                 erros.AddRange(errosCritériosCertificacao);
             
-            if(((string.IsNullOrEmpty(request.PropostaDTO.PublicoAlvoOutros) && (!request.PropostaDTO.PublicosAlvo.Any())) 
-                && (string.IsNullOrEmpty(request.PropostaDTO.FuncaoEspecificaOutros) && (!request.PropostaDTO.FuncoesEspecificas.Any()))))
-            {
-                if(!request.PropostaDTO.ComponentesCurriculares.Any() || !request.PropostaDTO.AnosTurmas.Any())
-                    erros.Add(MensagemNegocio.INFORMAR_PUBLICO_FUNCAO_MODALIDADE);
-            }
 
             if (erros.Any())
                 throw new NegocioException(erros);
