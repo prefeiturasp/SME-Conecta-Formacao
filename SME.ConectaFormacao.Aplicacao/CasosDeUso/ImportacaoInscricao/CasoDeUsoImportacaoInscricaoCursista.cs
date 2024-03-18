@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
@@ -31,6 +32,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             var id = await mediator.Send(new InserirImportacaoArquivoCommand(importacaoArquivoDTO));
             
             await mediator.Send(new InserirConteudoArquivoInscricaoCursistaCommand(id, arquivo.OpenReadStream()));
+
+            await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarImportacaoInscricaoCursistaValidar, importacaoArquivoDTO));
 
             return RetornoDTO.RetornarSucesso(MensagemNegocio.ARQUIVO_IMPORTADO_COM_SUCESSO, id);
         }
