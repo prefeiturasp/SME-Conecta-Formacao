@@ -45,6 +45,7 @@ namespace SME.ConectaFormacao.Aplicacao
             lista = lista.OrderBy(x => x.Descricao);
             return lista;
         }
+        
 
         private async Task<string> ObterPeríodoEncontrosTurma(long turmaId)
         {

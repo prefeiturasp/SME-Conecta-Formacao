@@ -96,10 +96,8 @@ namespace SME.ConectaFormacao.Aplicacao
             if(((string.IsNullOrEmpty(request.PropostaDTO.PublicoAlvoOutros) && (!request.PropostaDTO.PublicosAlvo.Any())) 
                 && (string.IsNullOrEmpty(request.PropostaDTO.FuncaoEspecificaOutros) && (!request.PropostaDTO.FuncoesEspecificas.Any()))))
             {
-                if(!request.PropostaDTO.ComponentesCurriculares.Any())
-                    erros.Add(MensagemNegocio.COMPONENTE_CURRICULAR_NAO_INFORMADO);
-                if(!request.PropostaDTO.AnosTurmas.Any())
-                    erros.Add(MensagemNegocio.ANOS_TURMA_NAO_INFORMADO);
+                if(!request.PropostaDTO.ComponentesCurriculares.Any() || !request.PropostaDTO.AnosTurmas.Any())
+                    erros.Add(MensagemNegocio.INFORMAR_PUBLICO_FUNCAO_MODALIDADE);
             }
 
             if (erros.Any())

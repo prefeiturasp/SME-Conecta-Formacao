@@ -125,6 +125,5 @@ public class MensagemNegocio
     public const string USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO = "Cadastro realizado com sucesso";
     public const string REALIZE_SEU_CADASTRO_NO_SISTEMA = "Usuário não cadastrado no sistema, realize o seu cadastro";
     public const string FUNCAOESPECIFICA_OU_PUBLICOALVO_NAO_INFORMADO = "Os campos de público alvo e função específica não foram informados, por favor informe Ano/Etapa e componente curricular";
-    public const string COMPONENTE_CURRICULAR_NAO_INFORMADO = "É necessário informar Componente Curricular";
-    public const string ANOS_TURMA_NAO_INFORMADO = "É necessário informar Componente Curricular";
+    public const string INFORMAR_PUBLICO_FUNCAO_MODALIDADE = "É necessário informar o público alvo ou função especifica ou Modalidade com Ano/Etapa com Componente Curricular";
 }
