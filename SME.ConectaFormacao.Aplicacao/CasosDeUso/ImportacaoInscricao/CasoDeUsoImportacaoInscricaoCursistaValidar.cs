@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         {
             var importacaoArquivoDto = param.ObterObjetoMensagem<ImportacaoArquivoDTO>() 
                                             ?? throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_NAO_LOCALIZADA);
-            
+
             var qtdeRegistros = await ObterParametroQtdeRegistrosAProcessar();
 
             var registrosPaginados = await ObterRegistrosParaValidar(qtdeRegistros, importacaoArquivoDto.Id);
@@ -41,19 +41,26 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 registrosPaginados = await ObterRegistrosParaValidar(qtdeRegistros, importacaoArquivoDto.Id, registrosValidados);
             }
             
-            await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoDto.Id, SituacaoImportacaoArquivo.Validado));
+            await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoDto.Id, SituacaoImportacaoArquivo.Validando));
             
             return true;
         }
 
         private async Task<PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>> ObterRegistrosParaValidar(int qtdeRegistros, long importacaoArquivoId, int qtdeRegistroIgnorados = 0)
         {
-            return await mediator.Send(new ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(qtdeRegistroIgnorados, qtdeRegistros, importacaoArquivoId, SituacaoImportacaoArquivoRegistro.CarregamentoInicial));
+            return await mediator.Send(new ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(
+                qtdeRegistroIgnorados, 
+                qtdeRegistros, 
+                importacaoArquivoId,
+                SituacaoImportacaoArquivoRegistro.CarregamentoInicial));
         }
 
         private async Task<int> ObterParametroQtdeRegistrosAProcessar()
         {
-            var parametro = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.QtdeRegistrosImportacaoArquivoInscricaoCursista, DateTimeExtension.HorarioBrasilia().Year));
+            var parametro = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(
+                TipoParametroSistema.QtdeRegistrosImportacaoArquivoInscricaoCursista, 
+                DateTimeExtension.HorarioBrasilia().Year));
+            
             return int.Parse(parametro.Valor);
         }
     }

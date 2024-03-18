@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(AlterarSituacaoImportacaoArquivoCommand request, CancellationToken cancellationToken)
         {
-            var importacaoArquivo = await _repositorioImportacaoArquivo.ObterPorId(request.ImportacaoArquivoId);
+            var importacaoArquivo = await _repositorioImportacaoArquivo.ObterPorId(request.Id);
 
             if (importacaoArquivo.EhNulo())
                 throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_NAO_LOCALIZADA);

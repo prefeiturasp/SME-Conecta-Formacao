@@ -73,6 +73,15 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             texto = RegexEspacosEmBranco.Replace(texto, " ").Trim();
             return texto.Trim();
         }
+        
+        public static string RemoverEspacoEmBranco(this string texto)
+        {
+            if (texto.NaoEstaPreenchido())
+                return string.Empty;
+
+            texto = RegexEspacosEmBranco.Replace(texto, " ").Trim();
+            return texto.Trim();
+        }
 
         public static bool CpfEhValido(this string cpf)
         {
