@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -67,7 +68,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var count = 0;
             foreach (var item in itensImportacao)
             {
-                item.Conteudo = (new InscricaoCursistaDTO()
+                item.Conteudo = (new InscricaoCursistaImportacaoDTO()
                 {
                     Turma = propostaTurmas.FirstOrDefault().Nome,
                     ColaboradorRede = "1",
@@ -94,7 +95,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             retorno.ShouldBeTrue();
             
             importacaoArquivos = ObterTodos<Dominio.Entidades.ImportacaoArquivo>();
-            importacaoArquivos.FirstOrDefault().Situacao.ShouldBe(SituacaoImportacaoArquivo.Validado);
+            importacaoArquivos.FirstOrDefault().Situacao.ShouldBe(SituacaoImportacaoArquivo.Validando);
         }
         
         [Fact(DisplayName = "Importação de Inscrição Cursista - Deve realizar inscrição manual com sucesso")]
@@ -132,7 +133,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var count = 0;
             foreach (var item in itensImportacao)
             {
-                item.Conteudo = (new InscricaoCursistaDTO()
+                item.Conteudo = (new InscricaoCursistaImportacaoDTO()
                 {
                     Turma = propostaTurmas.FirstOrDefault().Nome,
                     ColaboradorRede = "1",
@@ -199,7 +200,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var count = 0;
             foreach (var item in itensImportacao)
             {
-                item.Conteudo = (new InscricaoCursistaDTO()
+                item.Conteudo = (new InscricaoCursistaImportacaoDTO()
                 {
                     Turma = "Conecta",
                     ColaboradorRede = "1",

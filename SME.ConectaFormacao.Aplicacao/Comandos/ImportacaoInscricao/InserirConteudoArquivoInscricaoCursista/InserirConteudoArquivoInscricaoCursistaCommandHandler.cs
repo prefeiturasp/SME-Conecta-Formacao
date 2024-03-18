@@ -1,8 +1,6 @@
-using System.Text.Json;
 using AutoMapper;
 using ClosedXML.Excel;
 using MediatR;
-using Newtonsoft.Json;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Extensoes;
@@ -62,7 +60,7 @@ namespace SME.ConectaFormacao.Aplicacao
                         Linha = numeroLinha,
                         ImportacaoArquivoId = request.ImportacaoArquivoId,
                         Situacao = SituacaoImportacaoArquivoRegistro.CarregamentoInicial,
-                        Conteudo =  ObterInscricaoCursistaDto(planilha, numeroLinha).ObjetoParaJson()
+                        Conteudo = ObterInscricaoCursistaDto(planilha, numeroLinha).ObjetoParaJson()
                     };
 
                     await _repositorioImportacaoArquivoRegistro.Inserir(_mapper.Map<ImportacaoArquivoRegistro>(item));
@@ -91,9 +89,9 @@ namespace SME.ConectaFormacao.Aplicacao
                     nomeDaColuna, numeroDaColuna));
         }
 
-        private InscricaoCursistaDTO ObterInscricaoCursistaDto(IXLWorksheet planilha, int numeroLinha)
+        private InscricaoCursistaImportacaoDTO ObterInscricaoCursistaDto(IXLWorksheet planilha, int numeroLinha)
         {
-            return new InscricaoCursistaDTO()
+            return new InscricaoCursistaImportacaoDTO()
             {
                 Turma = planilha.ObterValorDaCelula(numeroLinha, COLUNA_TURMA_NUMERO),
                 ColaboradorRede = planilha.ObterValorDaCelula(numeroLinha, COLUNA_COLABORADOR_DA_REDE_NUMERO),

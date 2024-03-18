@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (arquivo.Situacao != SituacaoImportacaoArquivo.Validado)
                     throw new NegocioException(MensagemNegocio.SITUACAO_DO_ARQUIVO_DEVE_SER_VALIDADO);
 
-            arquivo.Situacao = SituacaoImportacaoArquivo.AguardandoProcessamento;
+            arquivo.DefinirSituacao(SituacaoImportacaoArquivo.AguardandoProcessamento);
 
             await _repositorioImportacaoArquivo.Atualizar(arquivo);
 

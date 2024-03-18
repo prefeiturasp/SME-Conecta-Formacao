@@ -2,7 +2,6 @@ using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -21,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>> Handle(ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery request, CancellationToken cancellationToken)
         {
             var registrosPaginados = await _repositorioInscricaoImportacaoArquivoRegistro.ObterRegistroPorSituacao(
-                request.NumeroPagina,request.NumeroRegistros, request.ImportacaoArquivoId, request.Situacao);
+                request.NumeroPagina,request.NumeroRegistros, request.ImportacaoArquivoId, request.IgnorarSituacao);
 
             return new PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>(_mapper.Map<IEnumerable<ImportacaoArquivoRegistroDTO>>(
                 registrosPaginados.Registros), registrosPaginados.TotalRegistros, request.NumeroRegistros);

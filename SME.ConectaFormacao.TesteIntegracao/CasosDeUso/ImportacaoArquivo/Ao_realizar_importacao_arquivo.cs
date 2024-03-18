@@ -5,13 +5,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Arquivo.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
@@ -19,7 +16,7 @@ using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Arquivo
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
 {
     public class Ao_realizar_importacao_arquivo : TestePropostaBase
     {

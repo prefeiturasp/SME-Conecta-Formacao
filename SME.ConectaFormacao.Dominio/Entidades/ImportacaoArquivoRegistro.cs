@@ -14,6 +14,11 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         
         public SituacaoImportacaoArquivoRegistro Situacao { get; set; }
 
+        public void DefinirSituacao(SituacaoImportacaoArquivoRegistro situacao)
+        {
+            Situacao = situacao;
+        }
+
         public void DefinirSituacaoErro(SituacaoImportacaoArquivoRegistro situacao, string erro)
         {
             Situacao = situacao;

@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (arquivo.EhNulo())
                 throw new NegocioException(MensagemNegocio.ARQUIVO_NAO_ENCONTRADO);
 
-            arquivo.Situacao = SituacaoImportacaoArquivo.Cancelado;
+            arquivo.DefinirSituacao(SituacaoImportacaoArquivo.Cancelado);
 
             await _repositorioImportacaoArquivo.Atualizar(arquivo);
 

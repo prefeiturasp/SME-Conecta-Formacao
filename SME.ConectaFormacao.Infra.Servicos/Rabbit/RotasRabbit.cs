@@ -16,5 +16,6 @@ namespace SME.ConectaFormacao.Infra
         public const string RealizarImportacaoInscricaoCursistaValidar = "conecta.importacao.inscricao.cursista.validar";
         public const string RealizarImportacaoInscricaoCursistaValidarItem = "conecta.importacao.inscricao.cursista.validar.item";
         public const string ProcessarArquivoDeImportacaoInscricao = "conecta.inscricao.processar.arquivo.importacao";
+        public const string ProcessarRegistroDoArquivoDeImportacaoInscricao = "conecta.inscricao.processar.registro.arquivo.importacao";
     }
 }
