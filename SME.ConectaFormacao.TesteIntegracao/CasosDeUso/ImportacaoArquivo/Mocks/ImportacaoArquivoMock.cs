@@ -44,7 +44,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Arquivo.Mocks
                 worksheet.Cell("D2").Value = COLUNA_CPF_TEXTO;
                 worksheet.Cell("E2").Value = COLUNA_NOME_TEXTO;
                 workbook.SaveAs(stream);
-                workbook.SaveAs("C://pdf//texte.xls");
             } 
 
             return stream;
