@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
@@ -14,10 +15,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
     public class CasoDeUsoImportacaoInscricaoCursistaValidarItem : CasoDeUsoAbstrato, ICasoDeUsoImportacaoInscricaoCursistaValidarItem
     {
         private readonly IMapper _mapper;
+        private readonly IModel _model;
         
-        public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator,IMapper mapper) : base(mediator)
+        public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator,IMapper mapper, IModel model) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _model = model ?? throw new ArgumentNullException(nameof(model));
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
@@ -201,7 +204,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         private async Task AlterarSituacaoArquivo(long importacaoArquivoId)
         {
             var possuiRegistroCarregamentoInicial = await mediator.Send(new PossuiRegistroPorArquivoSituacaoQuery(importacaoArquivoId, SituacaoImportacaoArquivoRegistro.CarregamentoInicial));
-            if (!possuiRegistroCarregamentoInicial)
+            var possuiRegistrosNaFila = _model.MessageCount(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem) > 0;
+
+            if (!possuiRegistroCarregamentoInicial || !possuiRegistrosNaFila)
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoId, SituacaoImportacaoArquivo.Validado));
         }
     }

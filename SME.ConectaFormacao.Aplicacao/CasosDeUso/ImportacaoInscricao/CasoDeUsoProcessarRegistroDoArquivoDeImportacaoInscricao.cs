@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.EMMA;
+using MediatR;
+using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
@@ -12,8 +14,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
     public class CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao : CasoDeUsoAbstrato, ICasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao
     {
-        public CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao(IMediator mediator) : base(mediator)
+        private readonly IModel _model;
+        public CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao(IMediator mediator, IModel model) : base(mediator)
         {
+            _model = model ?? throw new ArgumentNullException(nameof(model));
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
@@ -34,7 +38,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         private async Task AlterarSituacaoArquivo(long importacaoArquivoId)
         {
             var possuiRegistroValidado = await mediator.Send(new PossuiRegistroPorArquivoSituacaoQuery(importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Validado));
-            if (!possuiRegistroValidado)
+            var possuiRegistrosNaFila = _model.MessageCount(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem) > 0;
+
+            if (!possuiRegistroValidado || !possuiRegistrosNaFila)
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoId, SituacaoImportacaoArquivo.Processado));
         }
     }
