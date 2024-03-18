@@ -96,7 +96,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task<bool> ValidarExisteInscricaoNaProposta(long propostaId, long usuarioId)
         {
-            return await _repositorioInscricao.ExisteInscricaoNaProposta(propostaId, usuarioId);
+            return await _repositorioInscricao.UsuarioEstaInscritoNaProposta(propostaId, usuarioId);
         }
 
         private async Task ValidarDre(long propostaTurmaId, string cargoDreCodigo, string funcaoDreCodigo, CancellationToken cancellationToken)

@@ -189,7 +189,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task ValidarExisteInscricaoNaProposta(long propostaId, long usuarioId)
         {
-            var possuiInscricaoNaProposta = await _repositorioInscricao.ExisteInscricaoNaProposta(propostaId, usuarioId);
+            var possuiInscricaoNaProposta = await _repositorioInscricao.UsuarioEstaInscritoNaProposta(propostaId, usuarioId);
             if (possuiInscricaoNaProposta)
                 throw new NegocioException(MensagemNegocio.USUARIO_JA_INSCRITO_NA_PROPOSTA);
         }
