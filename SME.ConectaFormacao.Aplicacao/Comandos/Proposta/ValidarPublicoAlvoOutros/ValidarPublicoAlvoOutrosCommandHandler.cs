@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarPublicoAlvoOutrosCommandHandler : IRequestHandler<ValidarPublicoAlvoOutrosCommand>
+    public class ValidarPublicoAlvoOutrosCommandHandler : IRequestHandler<ValidarPublicoAlvoOutrosCommand, List<string>>
     {
         private readonly IRepositorioCargoFuncao _repositorioCargoFuncao;
 
@@ -15,22 +15,24 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioCargoFuncao = repositorioCargoFuncao ?? throw new ArgumentNullException(nameof(repositorioCargoFuncao));
         }
 
-        public async Task Handle(ValidarPublicoAlvoOutrosCommand request, CancellationToken cancellationToken)
+        public async Task<List<string>> Handle(ValidarPublicoAlvoOutrosCommand request, CancellationToken cancellationToken)
         {
+            var erros = new List<string>();
             if (request.PublicosAlvo.PossuiElementos())
             {
                 var ids = request.PublicosAlvo.Select(t => t.CargoFuncaoId).ToArray();
                 var existeOpcaoOutros = await _repositorioCargoFuncao.ExisteCargoFuncaoOutros(ids);
 
                 if (existeOpcaoOutros && ids.Count() > 1)
-                    throw new NegocioException(MensagemNegocio.PROPOSTA_PUBLICO_ALVO_OUTROS_NAO_PERMITE_MAIS_CARGO_SELECIONADO);
+                    erros.Add(MensagemNegocio.PROPOSTA_PUBLICO_ALVO_OUTROS_NAO_PERMITE_MAIS_CARGO_SELECIONADO);
 
                 if (existeOpcaoOutros && string.IsNullOrEmpty(request.PublicoAlvoOutros))
-                    throw new NegocioException(MensagemNegocio.PROPOSTA_PUBLICO_ALVO_OUTROS);
+                    erros.Add(MensagemNegocio.PROPOSTA_PUBLICO_ALVO_OUTROS);
 
                 if (existeOpcaoOutros && request.EhPropostaAutomatica)
-                    throw new NegocioException(MensagemNegocio.PROPOSTA_PUBLICO_ALVO_OUTROS_NAO_PODE_SER_PROPOSTA_AUTOMATICA);
+                    erros.Add(MensagemNegocio.PROPOSTA_PUBLICO_ALVO_OUTROS_NAO_PODE_SER_PROPOSTA_AUTOMATICA);
             }
+            return erros; 
         }
     }
 }

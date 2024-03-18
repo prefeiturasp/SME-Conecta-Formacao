@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarPublicoAlvoOutrosCommand : IRequest
+    public class ValidarPublicoAlvoOutrosCommand : IRequest<List<string>>
     {
         public ValidarPublicoAlvoOutrosCommand(bool ehPropostaAutomatica, IEnumerable<PropostaPublicoAlvoDTO> publicosAlvo, string? publicoAlvoOutros)
         {
