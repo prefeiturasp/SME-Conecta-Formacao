@@ -29,13 +29,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
             var importacaoArquivoDTO = new ImportacaoArquivoDTO(propostaId, arquivo.FileName, TipoImportacaoArquivo.Inscricao_Manual, SituacaoImportacaoArquivo.CarregamentoInicial);
 
-            var id = await mediator.Send(new InserirImportacaoArquivoCommand(importacaoArquivoDTO));
+            importacaoArquivoDTO.Id = await mediator.Send(new InserirImportacaoArquivoCommand(importacaoArquivoDTO));
             
-            await mediator.Send(new InserirConteudoArquivoInscricaoCursistaCommand(id, arquivo.OpenReadStream()));
+            await mediator.Send(new InserirConteudoArquivoInscricaoCursistaCommand(importacaoArquivoDTO.Id, arquivo.OpenReadStream()));
 
             await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarImportacaoInscricaoCursistaValidar, importacaoArquivoDTO));
 
-            return RetornoDTO.RetornarSucesso(MensagemNegocio.ARQUIVO_IMPORTADO_COM_SUCESSO, id);
+            return RetornoDTO.RetornarSucesso(MensagemNegocio.ARQUIVO_IMPORTADO_COM_SUCESSO, importacaoArquivoDTO.Id);
         }
     }
 }
