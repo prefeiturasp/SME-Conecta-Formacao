@@ -11,7 +11,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<string> Executar(string registroFuncional)
         {
-            return await mediator.Send(new ObterNomeProfissionalPorRegistroFuncionalQuery(registroFuncional));
+            var retornoUsuario = await mediator.Send(new ObterNomeCpfProfissionalPorRegistroFuncionalQuery(registroFuncional));
+            return retornoUsuario.Nome;
         }
     }
 }

@@ -2134,5 +2134,31 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = "select count(1) from proposta_turma_vaga where proposta_turma_id = @propostaTurmaIr and not excluido";
             return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaTurmaIr });
         }
+        
+        public async Task<PropostaTurma> ObterTurmaPorNome(string nome, long propostaId)
+        {
+            var query = @"
+            SELECT id,
+                   proposta_id,
+                   criado_em,
+                   criado_por,
+                   alterado_em,
+                   alterado_por,
+                   criado_login,
+                   alterado_login,
+                   excluido bool,
+                   nome
+            FROM proposta_turma
+            WHERE not excluido
+            AND f_unaccent(lower(nome)) = f_unaccent(@nome) 
+            AND proposta_id = @propostaId ";
+            
+            return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaTurma>(query, new { nome = nome.ToLower(), propostaId });
+        }
+
+        public Task<bool> UsuarioEstaInscritoNaProposta(long usuarioId, long propostaId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

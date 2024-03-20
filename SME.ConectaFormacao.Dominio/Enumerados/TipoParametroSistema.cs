@@ -6,6 +6,7 @@
         ComunicadoAcaoFormativaUrl = 2,
         QtdeCursistasSuportadosPorTurma = 3,
         DominioPermitidoCadastroUsuarioExterno = 4,
-        ConfirmarEmailUsuarioExterno = 5
+        ConfirmarEmailUsuarioExterno = 5,
+        QtdeRegistrosImportacaoArquivoInscricaoCursista = 6,
     }
 }

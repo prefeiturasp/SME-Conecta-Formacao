@@ -2,6 +2,13 @@ namespace SME.ConectaFormacao.Dominio.Constantes;
 
 public class MensagemNegocio
 {
+    public const string IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA = "Importação arquivo registro não localizada";
+    public const string IMPORTACAO_ARQUIVO_NAO_LOCALIZADA = "Importação arquivo não localizada";
+    public const string PARAMETRO_X_NAO_ENCONTRADO_PARA_ANO_Y = "Parâmetro '{0}' não encontrado para o ano '{1}'.";
+    public const string A_PLANILHA_DE_INSCRICAO_CURSISTA_NAO_TEM_O_NOME_DA_COLUNA_Y_NA_COLUNA_Z = "A planilha de inscrição de cursistas deveria apresentar o nome '{1}' na coluna '{2}', conforme previsto planilha modelo.";
+    public const string ARQUIVO_IMPORTADO_COM_SUCESSO = "Arquivo importado com sucesso";
+    public const string CONTENT_TYPE_EXCEL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public const string SOMENTE_ARQUIVO_XLSX_SUPORTADO = "Esse arquivo não é um XLSX. Somente arquivos do tipo XLSX são permitidos";
     public const string INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA = "Sua inscrição foi confirmada. Na data de início da sua turma acesse o SGA para iniciar a formação.";
     public const string INSCRICAO_CONFIRMADA = "Sua inscrição foi confirmada.";
     public const string PARAMETRO_QTDE_CURSISTAS_SUPORTADOS_POR_TURMA_NAO_ENCONTRADO = "Parâmetro de QtdeCursistasSuportadosPorTurma ausente para o ano {0}.";
@@ -107,6 +114,8 @@ public class MensagemNegocio
     public const string USUARIO_NAO_VALIDOU_EMAIL = "Você não validou seu e-mail ainda. Caso não tenha recebido o e-mail clique no botão 'Reenviar'";
     public const string EMAIL_FORA_DOMINIO_PERMITIDO_UES_PARCEIRAS = "Endereço de email não está em um domínio permitido";
 
+    public const string CURSISTA_NAO_ENCONTRADO = "Nenhum cursista foi encontrado";
+  
     public const string PROPOSTA_COM_PUBLICO_ALVO_SEM_DEPARA_CONFIGURADO = "A Proposta {0} possui publico alvo sem o depara com eol configurado";
     public const string PROPOSTA_COM_FUNCAO_ESPECIFICA_SEM_DEPARA_CONFIGURADO = "A Proposta {0} possui função específica sem o depara com eol configurado";
     public const string TUTOR_JA_EXISTE_NA_PROPOSTA = "Já existe um tutor com o CPF informado para {0}";
@@ -120,4 +129,8 @@ public class MensagemNegocio
     public const string VALIDAR_EMAIL_USUARIO_EXTERNO = "Cadastro inserido com sucesso. Enviamos um e-mail para validação do seu cadastro. Confira a sua caixa de entrada!";
     public const string USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO = "Cadastro realizado com sucesso";
     public const string REALIZE_SEU_CADASTRO_NO_SISTEMA = "Usuário não cadastrado no sistema, realize o seu cadastro";
+
+    public const string INSCRICAO_MANUAL_REALIZADA_COM_SUCESSO = "Inscrição manual realizada com sucesso";
+
+    public const string SITUACAO_DO_ARQUIVO_DEVE_SER_VALIDADO = "A situação do arquivo deve ser validado";
 }

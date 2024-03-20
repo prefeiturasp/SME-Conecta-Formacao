@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Infra;
@@ -37,6 +38,12 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaTratarTurmas, new ComandoRabbit("Realizar Inscrições Automáticas - Tratar as turmas - incluir novas conforme a quantidade de cursistas", typeof(ICasoDeUsoRealizarInscricaoAutomaticaTratarTurmas), true));
             Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaTratarCursistas, new ComandoRabbit("Realizar Inscrições Automáticas - Iterar sobre os cursistas e enviar para fila de inscrição", typeof(ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista), true));
             Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaIncreverCursista, new ComandoRabbit("Realizar Inscrições Automáticas - Coletar usuário e inscrever cursista", typeof(ICasoDeUsoRealizarInscricaoAutomaticaInscreverCursista), true));
+            
+            Comandos.Add(RotasRabbit.RealizarImportacaoInscricaoCursistaValidar, new ComandoRabbit("Realizar a busca dos itens da importação das inscrições de cursistas de forma paginada para processar a validação dos itens", typeof(ICasoDeUsoImportacaoInscricaoCursistaValidar), true));
+            Comandos.Add(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem, new ComandoRabbit("Realiza a validação de cada linha da importação da inscrição do cursista", typeof(ICasoDeUsoImportacaoInscricaoCursistaValidarItem), true));
+
+            Comandos.Add(RotasRabbit.ProcessarArquivoDeImportacaoInscricao, new ComandoRabbit("Processar arquivo de importação e seus registro validos", typeof(ICasoDeUsoProcessarArquivoDeImportacaoInscricao), true));
+            Comandos.Add(RotasRabbit.ProcessarRegistroDoArquivoDeImportacaoInscricao, new ComandoRabbit("Processar registro do arquivo de importação", typeof(ICasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao), true));
         }
     }
 }
