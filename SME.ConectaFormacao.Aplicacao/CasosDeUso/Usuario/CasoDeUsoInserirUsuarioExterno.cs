@@ -102,7 +102,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             {
                 var emailEduValido = UtilValidacoes.EmailEduEhValido(emailEdu);
                 if (!emailEduValido)
-                    erros.Add(MensagemNegocio.EMAIL_EDU_INVALIDO.Parametros(emailEdu));
+                    erros.Add(MensagemNegocio.EMAIL_EDU_INVALIDO_NAO_VALIDO);
             }
             else
             {
