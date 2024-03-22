@@ -36,7 +36,8 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 PropostaTurmaId = request.InscricaoManualDTO.PropostaTurmaId,
                 UsuarioId = usuario.Id,
-                Situacao = SituacaoInscricao.EmAnalise
+                Situacao = SituacaoInscricao.EmAnalise,
+                TipoVinculo = request.InscricaoManualDTO.TipoVinculo
             };
 
             var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
