@@ -13,6 +13,10 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
 
         [Required(ErrorMessage = "É necessário informar o e-mail.")]
         public string Email { get; set; }
+        
+        [Required(ErrorMessage = "É necessário informar o e-mail @edu")]
+        public string EmailEducacional { get; set; }
+        
         public TipoUsuario? Tipo { get; set; }
 
         [Required(ErrorMessage = "É necessário informar o nome.")]

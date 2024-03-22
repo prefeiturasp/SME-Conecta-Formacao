@@ -15,6 +15,15 @@ namespace SME.ConectaFormacao.Infra.Servicos.Utilitarios
                 return false;
         }
 
+        public static bool EmailEduEhValido(string email)
+        {
+            var pattern = @"^\w+@edu\.sme\.prefeitura\.sp\.gov\.br$";
+            if (Regex.IsMatch(email, pattern))
+                return true;
+
+            return false;
+        }
+
         public static bool CpfEhValido(string cpf)
         {
             cpf = cpf.SomenteNumeros();
