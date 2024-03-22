@@ -19,6 +19,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             login,                             
                             nome,       
                             email,
+                            email_educacional,
                             ultimo_login, 
                             expiracao_recuperacao_senha, 
                             token_recuperacao_senha,
@@ -47,6 +48,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             WHERE id= @usuarioId ";
 
             return conexao.Obter().ExecuteAsync(query, new { usuarioId, situacaoCadastro });
+        }
+        public Task AtualizarEmailEducacional(long usuarioId, string email)
+        {
+            var query = @" UPDATE public.usuario
+                            SET alterado_em= now(), alterado_por='Sistema',  alterado_login='Sistema', email_educacional = @email
+                            WHERE id= @usuarioId ";
+
+            return conexao.Obter().ExecuteAsync(query, new { usuarioId, email });
         }
     }
 }
