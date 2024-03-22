@@ -57,5 +57,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, new { usuarioId, email });
         }
+
+        public Task<string?> ObterEmailEducacionalPorLogin(string login)
+        {
+            var query = @"select 
+	                        email_educacional as EmailEducacional
+                        from usuario where login = @login";
+
+            return conexao.Obter().QueryFirstOrDefaultAsync<string?>(query, new { login });
+        }
     }
 }
