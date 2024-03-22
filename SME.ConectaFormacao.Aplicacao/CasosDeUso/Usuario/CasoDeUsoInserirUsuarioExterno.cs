@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             usuarioExternoDto.Login = cpfSemPontos;
             usuarioExternoDto.Cpf = cpfSemPontos;
 
-            ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email);
+            ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email, usuarioExternoDto.EmailEducacional);
             await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login);
 
             var existeNoCoreSSO = await mediator.Send(new UsuarioExisteNoCoreSsoQuery(usuarioExternoDto.Login));
@@ -49,7 +49,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 usuarioExternoDto.Cpf,
                 tipo,
                 situacaoCadastroUsuario,
-                usuarioExternoDto.CodigoUnidade
+                usuarioExternoDto.CodigoUnidade,
+                usuarioExternoDto.EmailEducacional
             )));
 
             if (confirmarEmail)
@@ -85,7 +86,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             return await mediator.Send(new ObterDominioDeEmailPermitidoQuery());
         }
 
-        private static void ValidacoesPreenchimento(string senhaNova, string confirmarSenha, string cpf, string email)
+        private static void ValidacoesPreenchimento(string senhaNova, string confirmarSenha, string cpf, string email, string emailEdu)
         {
             var erros = new List<string>();
 
@@ -96,6 +97,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var emailValido = UtilValidacoes.EmailEhValido(email);
             if (!emailValido)
                 erros.Add(MensagemNegocio.EMAIL_INVALIDO.Parametros(email));
+
+            if (!string.IsNullOrEmpty(emailEdu))
+            {
+                var emailEduValido = UtilValidacoes.EmailEduEhValido(emailEdu);
+                if (!emailEduValido)
+                    erros.Add(MensagemNegocio.EMAIL_EDU_INVALIDO_NAO_VALIDO);
+            }
+            else
+            {
+                erros.Add(MensagemNegocio.EMAIL_EDU_INVALIDO);
+            }
+            
 
             if (senhaNova.Contains(" "))
                 erros.Add(MensagemNegocio.A_SENHA_NAO_PODE_CONTER_ESPACOS_EM_BRANCO);

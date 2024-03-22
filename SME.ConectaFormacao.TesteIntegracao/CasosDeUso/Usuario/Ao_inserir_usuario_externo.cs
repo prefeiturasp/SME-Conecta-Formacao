@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -32,6 +33,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         public async Task Deve_Cadastrar_Usuario_Externo_aguardando_validar_email()
         {
             //arrange
+
             var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
@@ -44,6 +46,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var usuario = ObterTodos<Dominio.Entidades.Usuario>();
 
             usuario.FirstOrDefault().Situacao.ShouldBe(Dominio.Enumerados.SituacaoCadastroUsuario.AguardandoValidacaoEmail);
+
         }
 
         [Fact(DisplayName = "Usuário - Deve Cadastrar Um Usuario Externo - sem validar email")]
@@ -152,6 +155,55 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             excecao.ShouldNotBeNull();
             excecao.StatusCode.ShouldBe(400);
             excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.A_SENHA_DEVE_CONTER_SOMENTE);
+        }
+        
+        [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo com E-mail Edu Invalido")]
+        public async Task Deve_Cadastrar_Usuario_Externo_Com_Email_Edu_Invalido()
+        {
+            //arrange
+            var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
+            usuarioExterno.EmailEducacional = "teste@edu.sme.prefeitura.sp.gov";
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
+
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+
+            // assert
+            excecao.ShouldNotBeNull();
+            excecao.StatusCode.ShouldBe(400);
+            excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.EMAIL_EDU_INVALIDO.Parametros(usuarioExterno.EmailEducacional));
+        }
+        [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo sem informar o E-mail Edu")]
+        public async Task Deve_Cadastrar_Usuario_Externo_sem_informar_email_edu()
+        {
+            //arrange
+            var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
+            usuarioExterno.EmailEducacional = null;
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
+
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+
+            // assert
+            excecao.ShouldNotBeNull();
+            excecao.StatusCode.ShouldBe(400);
+            excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.EMAIL_EDU_INVALIDO);
+        }
+        [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo Caso o Front envie uma string vazia no email @edu")]
+        public async Task Deve_Cadastrar_Usuario_Externo_caso_front_envia_string_vazia_email_edu()
+        {
+            //arrange
+            var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
+            usuarioExterno.EmailEducacional = string.Empty;
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
+
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+
+            // assert
+            excecao.ShouldNotBeNull();
+            excecao.StatusCode.ShouldBe(400);
+            excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.EMAIL_EDU_INVALIDO);
         }
     }
 }

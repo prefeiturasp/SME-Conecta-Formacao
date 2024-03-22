@@ -18,6 +18,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.Tipo).ToColumn("tipo");
             Map(c => c.PossuiContratoExterno).ToColumn("possui_contrato_externo");
             Map(c => c.Situacao).ToColumn("situacao_cadastro");
+            Map(c => c.EmailEducacional).ToColumn("email_educacional");
         }
     }
 }
