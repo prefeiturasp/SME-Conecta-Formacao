@@ -97,11 +97,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var emailValido = UtilValidacoes.EmailEhValido(email);
             if (!emailValido)
                 erros.Add(MensagemNegocio.EMAIL_INVALIDO.Parametros(email));
+
+            if (!string.IsNullOrEmpty(emailEdu))
+            {
+                var emailEduValido = UtilValidacoes.EmailEduEhValido(emailEdu);
+                if (!emailEduValido)
+                    erros.Add(MensagemNegocio.EMAIL_EDU_INVALIDO.Parametros(emailEdu));
+            }
+            else
+            {
+                erros.Add(MensagemNegocio.EMAIL_EDU_INVALIDO);
+            }
             
-            
-            var emailEduValido = UtilValidacoes.EmailEduEhValido(emailEdu);
-            if (!emailEduValido)
-                erros.Add(MensagemNegocio.EMAIL_EDU_INVALIDO.Parametros(emailEdu));
 
             if (senhaNova.Contains(" "))
                 erros.Add(MensagemNegocio.A_SENHA_NAO_PODE_CONTER_ESPACOS_EM_BRANCO);
