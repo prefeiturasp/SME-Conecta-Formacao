@@ -36,6 +36,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public TipoUsuario Tipo { get; set; }
         public bool PossuiContratoExterno { get; set; }
         public SituacaoCadastroUsuario Situacao { get; set; }
+        public string? EmailEducacional { get; set; }
 
         public void Atualizar(string email, DateTime? dataHora, string? cpf)
         {
