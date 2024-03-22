@@ -181,6 +181,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             
             var login = ehProfissionalRede ? inscricaoCursistaDTO.RegistroFuncional : inscricaoCursistaDTO.Cpf;
 
+            if (login.NaoEstaPreenchido())
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS); 
+                
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(login.SomenteNumeros()));
             if (usuario.NaoEhNulo())
                 return usuario;

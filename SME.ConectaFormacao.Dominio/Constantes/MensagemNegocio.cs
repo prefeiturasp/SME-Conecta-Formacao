@@ -134,4 +134,5 @@ public class MensagemNegocio
     public const string INSCRICAO_MANUAL_REALIZADA_COM_SUCESSO = "Inscrição manual realizada com sucesso";
 
     public const string SITUACAO_DO_ARQUIVO_DEVE_SER_VALIDADO = "A situação do arquivo deve ser validado";
+    public const string USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS = "O usuário não foi encontrado com o Registro Funcional ou CPF informados";
 }
