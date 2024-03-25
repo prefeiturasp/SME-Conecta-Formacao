@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterDadosFuncionarioExterno;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
-using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
