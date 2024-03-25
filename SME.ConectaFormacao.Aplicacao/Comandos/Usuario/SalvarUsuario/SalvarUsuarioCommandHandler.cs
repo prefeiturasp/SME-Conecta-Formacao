@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -21,6 +22,9 @@ namespace SME.ConectaFormacao.Aplicacao
             if (request.Usuario.Id > 0)
             {
                 await RemoverCache(request.Usuario.Login);
+                if(string.IsNullOrEmpty(request.Usuario.EmailEducacional))
+                    request.Usuario.EmailEducacional = await _mediator.Send(new MontarEmailEducacionalCommand(request.Usuario.Nome), cancellationToken);
+                
                 return await _repositorioUsuario.Atualizar(request.Usuario) != null;
             }
             else
