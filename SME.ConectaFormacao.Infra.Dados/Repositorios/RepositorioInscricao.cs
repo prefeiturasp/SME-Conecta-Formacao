@@ -153,7 +153,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												u.nome,
                                                 i.cargo_id,
                                                 i.funcao_id,
-												cf.nome
+												case 
+													when i.tipo_vinculo is not null then trim(cf.nome) || ' - v' || cast(i.tipo_vinculo as varchar(10))
+													else trim(cf.nome)
+												end as nome,
+												i.tipo_vinculo
 											from proposta_turma pt
 											inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido
 											inner join usuario u on i.usuario_id = u.id and not u.excluido

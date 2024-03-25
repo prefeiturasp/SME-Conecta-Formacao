@@ -10,6 +10,5 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public string RegistroFuncional { get; set; }
         [Required(ErrorMessage = "CPF é obrigatório")]
         public string Cpf { get; set; }
-        public int? TipoVinculo { get; set; }
     }
 }
