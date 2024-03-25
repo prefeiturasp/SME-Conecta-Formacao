@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterDadosFuncionarioExterno;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
-using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
-using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -14,12 +11,15 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IMapper _mapper;
         private readonly IServicoAcessos _servicoAcessos;
+        private readonly IRepositorioUsuario _repositorioUsuario;
         private readonly IMediator _mediator;
 
-        public ObterMeusDadosServicoAcessosPorLoginQueryHandler(IMapper mapper, IServicoAcessos servicoAcessos,IMediator mediator)
+        public ObterMeusDadosServicoAcessosPorLoginQueryHandler(IMapper mapper, IServicoAcessos servicoAcessos,IRepositorioUsuario repositorioUsuario,
+        IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _servicoAcessos = servicoAcessos ?? throw new ArgumentNullException(nameof(servicoAcessos));
+            _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
@@ -33,6 +33,11 @@ namespace SME.ConectaFormacao.Aplicacao
                 acessoDadosUsuario.Tipo = (int)TipoUsuario.Externo;
                 acessoDadosUsuario.NomeUnidade = unidade.NomeUnidade;
             }
+            acessoDadosUsuario.EmailEducacional = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
+            
+            if(string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
+                acessoDadosUsuario.EmailEducacional = await _mediator.Send(new MontarEmailEducacionalCommand(acessoDadosUsuario.Nome), cancellationToken);
+            
             return _mapper.Map<DadosUsuarioDTO>(acessoDadosUsuario);
         }
     }
