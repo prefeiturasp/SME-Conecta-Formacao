@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -30,6 +31,10 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+            
+            var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
+            if (!Regex.IsMatch(request.InscricaoDTO.Email, pattern, RegexOptions.IgnoreCase))
+                throw new NegocioException(MensagemNegocio.EMAIL_EDU_INVALIDO);
 
             if (usuarioLogado.Tipo == TipoUsuario.Interno)
                 if (request.InscricaoDTO.CargoCodigo.EhNulo())
