@@ -27,8 +27,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 retorno = new DadosInscricaoDTO()
                 {
                     UsuarioNome = usuarioLogado.Nome,
-                    UsuarioCpf = cargosFuncoesEol.Any() ? cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"000\.000\.000\-00") : usuarioLogado.Login.AplicarMascara(@"000\.000\.000\-00"),
-                    UsuarioEmail = usuarioLogado.Email,
+                    UsuarioCpf = cargosFuncoesEol.Any() ? cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"000\.000\.000\-00") :  usuarioLogado.Login.AplicarMascara(@"000\.000\.000\-00"),
+                    UsuarioEmail = usuarioLogado.EmailEducacional  ?? string.Empty,
                     UsuarioRf = usuarioLogado.Login,
                     UsuarioCargos = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoesEol)
                 };
@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 {
                     UsuarioNome = usuarioLogado.Nome,
                     UsuarioCpf = usuarioLogado.Login.AplicarMascara(@"000\.000\.000\-00"),
-                    UsuarioEmail = usuarioLogado.Email,
+                    UsuarioEmail = usuarioLogado.EmailEducacional ?? string.Empty,
                     UsuarioRf = usuarioLogado.Login,
                 };
             }

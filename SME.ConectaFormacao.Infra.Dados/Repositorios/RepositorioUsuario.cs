@@ -49,13 +49,22 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, new { usuarioId, situacaoCadastro });
         }
-        public Task AtualizarEmailEducacional(long usuarioId, string email)
+        public async Task<bool> AtualizarEmailEducacional(string login, string email)
         {
             var query = @" UPDATE public.usuario
                             SET alterado_em= now(), alterado_por='Sistema',  alterado_login='Sistema', email_educacional = @email
-                            WHERE id= @usuarioId ";
+                            WHERE login= @login ";
 
-            return conexao.Obter().ExecuteAsync(query, new { usuarioId, email });
+            return await conexao.Obter().ExecuteAsync(query, new { login, email }) > 0;
+        }
+
+        public Task<string?> ObterEmailEducacionalPorLogin(string login)
+        {
+            var query = @"select 
+	                        email_educacional as EmailEducacional
+                        from usuario where login = @login";
+
+            return conexao.Obter().QueryFirstOrDefaultAsync<string?>(query, new { login });
         }
     }
 }
