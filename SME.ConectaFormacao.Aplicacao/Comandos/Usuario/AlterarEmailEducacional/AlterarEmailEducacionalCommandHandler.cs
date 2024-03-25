@@ -18,8 +18,8 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Usuario.AlterarEmailEducacional
 
         public async Task<bool> Handle(AlterarEmailEducacionalCommand request, CancellationToken cancellationToken)
         {
-            var pattern = @"^\w+@edu\.sme\.prefeitura\.sp\.gov\.br$";
-            if (!Regex.IsMatch(request.Email, pattern))
+            var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
+            if (!Regex.IsMatch(request.Email, pattern, RegexOptions.IgnoreCase))
                 throw new NegocioException(MensagemNegocio.EMAIL_EDU_INVALIDO);
 
             var realizouAtualizacao = await _repositorioUsuario.AtualizarEmailEducacional(request.Login, request.Email);
