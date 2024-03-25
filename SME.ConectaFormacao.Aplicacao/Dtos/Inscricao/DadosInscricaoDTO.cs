@@ -15,6 +15,7 @@
         public string Descricao { get; set; }
         public string DreCodigo { get; set; }
         public string UeCodigo { get; set; }
+        public int TipoVinculo { get; set; }        
         public List<DadosInscricaoCargoEol> Funcoes { get; set; } = new();
     }
 }
