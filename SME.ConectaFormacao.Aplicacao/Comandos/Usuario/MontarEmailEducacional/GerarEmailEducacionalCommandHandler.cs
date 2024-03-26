@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var partesNome = request.Usuario.Nome.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var primeiroNome = partesNome.FirstOrDefault();
             var ultimoNome = partesNome.LastOrDefault();
-            var emailEdu = !string.IsNullOrEmpty(ultimoNome) ? $"{primeiroNome}.{ultimoNome}.{cpfOuRf}.{DOMINIO_EMAIL}" 
+            var emailEdu = !string.IsNullOrEmpty(ultimoNome) ? $"{primeiroNome}{ultimoNome}.{cpfOuRf}.{DOMINIO_EMAIL}" 
                                                                   : $"{primeiroNome}.{cpfOuRf}.{DOMINIO_EMAIL}";
             return emailEdu.RemoverAcentosECaracteresEspeciais().ToLower();
         }
