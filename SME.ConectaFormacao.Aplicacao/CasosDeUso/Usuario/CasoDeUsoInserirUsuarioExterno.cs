@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var cpfSemPontos = usuarioExternoDto.Cpf.SomenteNumeros();
             usuarioExternoDto.Login = cpfSemPontos;
             usuarioExternoDto.Cpf = cpfSemPontos;
-
+            usuarioExternoDto.EmailEducacional = usuarioExternoDto.EmailEducacional.Trim().RemoverAcentosECaracteresEspeciais().ToLower();
             ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email, usuarioExternoDto.EmailEducacional);
             await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login);
 
