@@ -20,8 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<ParametroSistema> Handle(ObterParametroSistemaPorTipoEAnoQuery request,
             CancellationToken cancellationToken)
         {
-            var chave = string.Format(CacheDistribuidoNomes.ParametroSistemaTipo, request.TipoParametroSistema);
-            return await _cacheDistribuido.ObterAsync(chave, () => repositorioParametroSistema.ObterParametroPorTipoEAno(request.TipoParametroSistema, request.Ano));
+            return await repositorioParametroSistema.ObterParametroPorTipoEAno(request.TipoParametroSistema, request.Ano);
         }
     }
 }
