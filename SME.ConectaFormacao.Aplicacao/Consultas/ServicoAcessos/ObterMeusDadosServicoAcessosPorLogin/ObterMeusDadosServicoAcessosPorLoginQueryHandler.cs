@@ -24,11 +24,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<DadosUsuarioDTO> Handle(ObterMeusDadosServicoAcessosPorLoginQuery request, CancellationToken cancellationToken)
         {
+            var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery());
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
             acessoDadosUsuario.EmailEducacional = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
             
             if(string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
-                acessoDadosUsuario.EmailEducacional = await _mediator.Send(new MontarEmailEducacionalCommand(acessoDadosUsuario.Nome), cancellationToken);
+                acessoDadosUsuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuarioLogado), cancellationToken);
             
             return _mapper.Map<DadosUsuarioDTO>(acessoDadosUsuario);
         }

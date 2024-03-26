@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 await RemoverCache(request.Usuario.Login);
                 if(string.IsNullOrEmpty(request.Usuario.EmailEducacional))
-                    request.Usuario.EmailEducacional = await _mediator.Send(new MontarEmailEducacionalCommand(request.Usuario.Nome), cancellationToken);
+                    request.Usuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(request.Usuario), cancellationToken);
                 
                 return await _repositorioUsuario.Atualizar(request.Usuario) != null;
             }
