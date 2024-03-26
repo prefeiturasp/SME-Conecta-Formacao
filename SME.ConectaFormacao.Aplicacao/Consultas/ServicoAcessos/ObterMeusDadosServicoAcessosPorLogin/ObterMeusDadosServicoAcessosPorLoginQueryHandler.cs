@@ -1,12 +1,10 @@
-﻿using System.Text.RegularExpressions;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
-using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
