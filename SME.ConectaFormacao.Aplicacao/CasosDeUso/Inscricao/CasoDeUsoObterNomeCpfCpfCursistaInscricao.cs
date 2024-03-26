@@ -21,14 +21,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             var login = registroFuncional.EstaPreenchido() ? registroFuncional : cpf;
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(login.SomenteNumeros()));
-            if (usuario.NaoEhNulo())
+            if (usuario is {Nome: not null, Cpf: not null})
                 return _mapper.Map<RetornoUsuarioDTO>(usuario);
 
             if (registroFuncional.EstaPreenchido())
             {
                 var cursistaResumidoServicoEol = await mediator.Send(new ObterNomeCpfProfissionalPorRegistroFuncionalQuery(registroFuncional));
 
-                if (cursistaResumidoServicoEol.NaoEhNulo())
+                if (cursistaResumidoServicoEol is {Nome: not null, Cpf:not null})
                     return _mapper.Map<RetornoUsuarioDTO>(cursistaResumidoServicoEol);
             }
 
