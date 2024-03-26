@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 using MediatR;
-using Microsoft.AspNetCore.Components;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;

@@ -1,6 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
@@ -27,6 +30,10 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery());
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
             acessoDadosUsuario.EmailEducacional = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
+            
+            var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
+            if (Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) && string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
+                acessoDadosUsuario.EmailEducacional = acessoDadosUsuario.Email;
             
             if(string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
                 acessoDadosUsuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuarioLogado), cancellationToken);
