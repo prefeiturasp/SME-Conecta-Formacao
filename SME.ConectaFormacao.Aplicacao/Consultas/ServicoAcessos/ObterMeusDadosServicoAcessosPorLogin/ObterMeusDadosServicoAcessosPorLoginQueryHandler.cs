@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -34,6 +35,10 @@ namespace SME.ConectaFormacao.Aplicacao
                 acessoDadosUsuario.NomeUnidade = unidade.NomeUnidade;
             }
             acessoDadosUsuario.EmailEducacional = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
+            
+            var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
+            if (Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) && string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
+                acessoDadosUsuario.EmailEducacional = acessoDadosUsuario.Email;
             
             if(string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
                 acessoDadosUsuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuarioLogado), cancellationToken);
