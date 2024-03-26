@@ -76,22 +76,27 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<string> ObterCargoFuncaoPorId(long id)
         {
-            var query = @"
-                select
-	                case
-		                when i.funcao_id is not null then cff.nome
-		                when i.cargo_id is not null then cfc.nome
-		                else ''
-	                end as cargo_funcao
-                from
-	                inscricao i
-                left join cargo_funcao cfc on
-	                cfc.id = i.cargo_id
-                left join cargo_funcao cff on
-	                cff.id = i.funcao_id
-                where
-	                i.id = @id
-                ";
+            const string query = @"
+                                    select
+                                        case
+                                            when i.tipo_vinculo is not null then
+                                                case
+                                                    when i.funcao_id is not null then trim(cff.nome) || '- v' || cast(i.tipo_vinculo as varchar(10))
+                                                    when i.cargo_id is not null then trim(cfc.nome) || '- v' || cast(i.tipo_vinculo as varchar(10))
+                                                    else ''
+                                                end
+                                            else
+                                                case
+                                                    when i.funcao_id is not null then cff.nome
+                                                    when i.cargo_id is not null then cfc.nome
+                                                    else ''
+                                                end
+                                        end as cargo_funcao
+                                    from inscricao i
+                                    left join cargo_funcao cfc on cfc.id = i.cargo_id
+                                    left join cargo_funcao cff on cff.id = i.funcao_id
+                                    where i.id = @id
+                                    ";
 
             return conexao.Obter().ExecuteScalarAsync<string>(query, new { id });
         }
