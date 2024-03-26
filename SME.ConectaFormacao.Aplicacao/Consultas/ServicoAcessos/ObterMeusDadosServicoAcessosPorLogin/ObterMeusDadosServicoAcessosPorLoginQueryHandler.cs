@@ -3,6 +3,7 @@ using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
@@ -29,6 +30,12 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery());
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
+            if (usuarioLogado.Tipo == TipoUsuario.Externo)
+            {
+                var unidade = await  _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade));
+                acessoDadosUsuario.Tipo = (int)TipoUsuario.Externo;
+                acessoDadosUsuario.NomeUnidade = unidade.NomeUnidade;
+            }
             acessoDadosUsuario.EmailEducacional = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
             
             var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
