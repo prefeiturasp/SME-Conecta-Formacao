@@ -27,7 +27,11 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var items = _mapper.Map<IEnumerable<InscricaoPaginadaDTO>>(registros);
             foreach (var item in items)
-                item.CargoFuncao = await _repositorioInscricao.ObterCargoFuncaoPorId(item.Id);
+            {
+                var cargoFuncao = await _repositorioInscricao.ObterCargoFuncaoPorId(item.Id);
+                item.CargoFuncaoCodigo = cargoFuncao.CargoFuncaoCodigo;
+                item.CargoFuncao = cargoFuncao.CargoFuncaoNome;
+            }
 
             return new PaginacaoResultadoDTO<InscricaoPaginadaDTO>(items, totalRegistrosFiltro, request.NumeroRegistros);
         }

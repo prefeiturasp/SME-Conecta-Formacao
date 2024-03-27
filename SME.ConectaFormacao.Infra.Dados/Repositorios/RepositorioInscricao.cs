@@ -74,15 +74,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 });
         }
 
-        public Task<string> ObterCargoFuncaoPorId(long id)
+        public Task<CargoFuncaoDTO> ObterCargoFuncaoPorId(long id)
         {
             const string query = @"
                                     select
                                         case
+                                            when i.funcao_id is not null then i.funcao_codigo
+                                            when i.cargo_id is not null then i.cargo_codigo
+                                            else ''
+                                        end as CargoFuncaoCodigo,
+                                        case
                                             when i.tipo_vinculo is not null then
                                                 case
-                                                    when i.funcao_id is not null then trim(cff.nome) || '- v' || cast(i.tipo_vinculo as varchar(10))
-                                                    when i.cargo_id is not null then trim(cfc.nome) || '- v' || cast(i.tipo_vinculo as varchar(10))
+                                                    when i.funcao_id is not null then trim(cff.nome) || ' - v' || cast(i.tipo_vinculo as varchar(10))
+                                                    when i.cargo_id is not null then trim(cfc.nome) || ' - v' || cast(i.tipo_vinculo as varchar(10))
                                                     else ''
                                                 end
                                             else
@@ -91,14 +96,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                                     when i.cargo_id is not null then cfc.nome
                                                     else ''
                                                 end
-                                        end as cargo_funcao
+                                        end as CargoFuncaoNome
                                     from inscricao i
                                     left join cargo_funcao cfc on cfc.id = i.cargo_id
                                     left join cargo_funcao cff on cff.id = i.funcao_id
                                     where i.id = @id
                                     ";
 
-            return conexao.Obter().ExecuteScalarAsync<string>(query, new { id });
+            return conexao.Obter().QueryFirstOrDefaultAsync<CargoFuncaoDTO>(query, new { id });
         }
 
         public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorUsuarioId(long usuarioId, int numeroPagina, int numeroRegistros)

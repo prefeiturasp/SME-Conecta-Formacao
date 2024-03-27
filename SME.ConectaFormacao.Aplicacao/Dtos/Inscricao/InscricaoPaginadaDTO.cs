@@ -7,6 +7,7 @@
         public string NomeFormacao { get; set; }
         public string NomeTurma { get; set; }
         public string Datas { get; set; }
+        public string CargoFuncaoCodigo { get; set; }
         public string CargoFuncao { get; set; }
         public string Situacao { get; set; }
         public bool PodeCancelar { get; set; } = true;
