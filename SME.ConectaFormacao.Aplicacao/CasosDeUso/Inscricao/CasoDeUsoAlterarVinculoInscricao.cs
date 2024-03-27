@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
@@ -9,9 +10,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
         }
 
-        public async Task<bool> Executar(long id, int tipoVinculo)
+        public async Task<bool> Executar(long id, VinculoIncricaoDTO vinculoIncricao)
         {
-            return await mediator.Send(new AlterarVinculoInscricaoCommand(id, tipoVinculo));
+            return await mediator.Send(new AlterarVinculoInscricaoCommand(id, vinculoIncricao));
         }
     }
 }

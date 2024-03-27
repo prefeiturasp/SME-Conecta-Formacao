@@ -11,9 +11,9 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string CargoUeCodigo { get; set; }
         public long? CargoId { get; set; }
 
-        public string FuncaoCodigo { get; set; }
-        public string FuncaoDreCodigo { get; set; }
-        public string FuncaoUeCodigo { get; set; }
+        public string? FuncaoCodigo { get; set; }
+        public string? FuncaoDreCodigo { get; set; }
+        public string? FuncaoUeCodigo { get; set; }
         public long? FuncaoId { get; set; }
 
         public long? ArquivoId { get; set; }
