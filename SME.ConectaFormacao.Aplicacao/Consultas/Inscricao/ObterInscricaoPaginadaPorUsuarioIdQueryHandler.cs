@@ -31,6 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 var cargoFuncao = await _repositorioInscricao.ObterCargoFuncaoPorId(item.Id);
                 item.CargoFuncaoCodigo = cargoFuncao.CargoFuncaoCodigo;
                 item.CargoFuncao = cargoFuncao.CargoFuncaoNome;
+                item.TipoVinculo = cargoFuncao.TipoVinculo;
             }
 
             return new PaginacaoResultadoDTO<InscricaoPaginadaDTO>(items, totalRegistrosFiltro, request.NumeroRegistros);

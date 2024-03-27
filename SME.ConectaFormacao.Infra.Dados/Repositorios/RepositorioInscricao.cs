@@ -96,7 +96,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                                     when i.cargo_id is not null then cfc.nome
                                                     else ''
                                                 end
-                                        end as CargoFuncaoNome
+                                        end as CargoFuncaoNome,
+                                        i.tipo_vinculo as TipoVinculo
                                     from inscricao i
                                     left join cargo_funcao cfc on cfc.id = i.cargo_id
                                     left join cargo_funcao cff on cff.id = i.funcao_id
