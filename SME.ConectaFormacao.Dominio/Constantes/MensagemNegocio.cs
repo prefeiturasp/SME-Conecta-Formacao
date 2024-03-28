@@ -87,7 +87,7 @@ public class MensagemNegocio
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível inserir sua inscrição.";
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL = "A lotação/local de trabalho do cursista não corresponde com a DRE promotora desta formação. Deseja continuar?";
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_AUTOMATICO = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível inserir sua inscrição. {0}";
-    public const string USUARIO_JA_INSCRITO_NA_PROPOSTA = "Você já está matriculado nesta formação. Confira mais detalhes em \"Minhas inscrições\".";
+    public const string USUARIO_JA_INSCRITO_NA_PROPOSTA = "Este cursista já está matriculado nesta formação. Confira mais detalhes na lista de inscrição dessa formação.";
     public const string USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO = "Cargo/Função selecionado não definido no público alvo da formação, sendo assim, não será possível inserir a sua inscrição.";
     public const string INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição, a turma selecionada não possui mais vagas disponível.";
     public const string INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição automática, a turma selecionada não possui mais vagas disponível. {0}";
@@ -136,4 +136,5 @@ public class MensagemNegocio
     public const string SITUACAO_DO_ARQUIVO_DEVE_SER_VALIDADO = "A situação do arquivo deve ser validado";
     public const string USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS = "O usuário não foi encontrado com o Registro Funcional ou CPF informados";
     public const string INSCRICAO_FORA_DO_PERIODO_INSCRICAO = "Inscrição fora do período de inscrição";
+    public const string RF_MENOR_QUE_7_DIGITOS = "RF do arquivo foi preenchido com menos de 7 dígitos";
 }
