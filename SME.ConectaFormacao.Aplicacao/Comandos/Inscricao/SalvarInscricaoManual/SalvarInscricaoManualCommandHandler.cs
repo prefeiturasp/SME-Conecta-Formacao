@@ -62,7 +62,17 @@ namespace SME.ConectaFormacao.Aplicacao
             var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
+            ValidaPeriodoDeInscricao(proposta);
+
             return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao, proposta.IntegrarNoSGA);
+        }
+
+        private void ValidaPeriodoDeInscricao(Proposta proposta)
+        {
+            var dataAtual = DateTimeExtension.HorarioBrasilia().Date;
+            if (proposta.DataInscricaoInicio.EhNulo() ||
+                !(dataAtual >= proposta.DataInscricaoInicio.GetValueOrDefault().Date && dataAtual <= proposta.DataInscricaoFim.GetValueOrDefault().Date))
+                throw new NegocioException(MensagemNegocio.INSCRICAO_FORA_DO_PERIODO_INSCRICAO);
         }
 
         private async Task<Usuario> ObterUsuarioPorLogin(InscricaoManualDTO inscricaoManualDTO, CancellationToken cancellationToken)
