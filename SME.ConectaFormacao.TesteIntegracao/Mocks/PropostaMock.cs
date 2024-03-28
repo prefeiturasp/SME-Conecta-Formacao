@@ -15,7 +15,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
            bool gerarFuncaoEspecificaOutros,
            bool gerarCriterioValidacaoInscricaoOutros,
            FormacaoHomologada formacaoHomologada,
-           bool integrarNoSga = true)
+           bool integrarNoSga = true,
+           bool dataInscricaoForaPeriodo = false)
         {
             var faker = new Faker<Proposta>();
             faker.RuleFor(x => x.AreaPromotoraId, areaPromotoraId);
@@ -34,8 +35,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(200));
-            faker.RuleFor(x => x.DataInscricaoInicio, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.DataInscricaoFim, DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataInscricaoInicio, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataInscricaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-1) : DateTimeExtension.HorarioBrasilia().AddMonths(1));
             faker.RuleFor(x => x.DataRealizacaoInicio, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.DataRealizacaoFim, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.IntegrarNoSGA, integrarNoSga);
@@ -60,10 +61,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             bool gerarFuncaoEspecificaOutros,
             bool gerarCriterioValidacaoInscricaoOutros,
             FormacaoHomologada formacaoHomologada,
-             bool integrarNoSga = true
+             bool integrarNoSga = true,
+             bool dataInscricaoForaPeriodo = false
             )
         {
-            return Gerador(areaPromotoraId, tipoFormacao, formato, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada, integrarNoSga);
+            return Gerador(areaPromotoraId, tipoFormacao, formato, situacao, gerarFuncaoEspecificaOutros, gerarCriterioValidacaoInscricaoOutros, formacaoHomologada, integrarNoSga, dataInscricaoForaPeriodo);
         }
 
         public static Proposta GerarPropostaRascunho(long areaPromotoraId)
