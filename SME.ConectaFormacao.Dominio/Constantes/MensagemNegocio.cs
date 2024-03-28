@@ -44,6 +44,9 @@ public class MensagemNegocio
     public const string AREA_PROMOTORA_EXISTE_GRUPO_DRE_CADASTRADO = "Já existe uma área promotora cadastrada para o perfil e dre selecionado";
     public const string AREA_PROMOTORA_POSSUI_PROPOSTA = "Área promotora já possui proposta cadastrada";
     public const string EMAIL_INVALIDO = "E-mail {0} é inválido";
+    public const string EMAIL_EDU_INVALIDO = "E-mail @edu é inválido";
+    public const string EMAIL_NAO_ATUALIZADO = "Não foi possível atualizar o e-mail";
+    public const string EMAIL_EDU_INVALIDO_NAO_VALIDO = "E-mail @edu informado não é um e-mail @edu válido";
     public const string CPF_COM_DIGITO_VERIFICADOR_INVALIDO = "CPF {0} é inválido";
     public const string PROPOSTA_NAO_ENCONTRADA = "Proposta não encontrada";
     public const string PROPOSTA_JEIF_COM_OUTROS = "Proposta com os Tipos Inscrição Automática e Automática (JEIF) não podem conter a Função específica outros";

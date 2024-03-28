@@ -18,6 +18,7 @@ public class UsuarioInserirExternoMock
             Nome = pessoa.FirstName,
             Login = cpf,
             Email = pessoa.Email,
+            EmailEducacional = "teste@edu.sme.prefeitura.sp.gov.br",
             Cpf = cpf,
             Senha = senha,
             ConfirmarSenha = senha,
