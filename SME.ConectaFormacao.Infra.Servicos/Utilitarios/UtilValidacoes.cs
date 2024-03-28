@@ -7,21 +7,14 @@ namespace SME.ConectaFormacao.Infra.Servicos.Utilitarios
     {
         public static bool EmailEhValido(string email)
         {
-            var pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"; ;
-
-            if (Regex.IsMatch(email, pattern))
-                return true;
-            else
-                return false;
+            const string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            return Regex.IsMatch(email, pattern);
         }
 
         public static bool EmailEduEhValido(string email)
         {
-            var pattern = @"^[\w.]+@edu\.sme\.prefeitura\.sp\.gov\.br$";
-            if (Regex.IsMatch(email, pattern))
-                return true;
-
-            return false;
+            const string pattern = @"^[a-zA-Z0-9._%+-]+@edu\.sme\.prefeitura\.sp\.gov\.br$";
+            return Regex.IsMatch(email, pattern);
         }
 
         public static bool CpfEhValido(string cpf)
