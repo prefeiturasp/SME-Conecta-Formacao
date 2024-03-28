@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var cpfSemPontos = usuarioExternoDto.Cpf.SomenteNumeros();
             usuarioExternoDto.Login = cpfSemPontos;
             usuarioExternoDto.Cpf = cpfSemPontos;
-            usuarioExternoDto.EmailEducacional = usuarioExternoDto.EmailEducacional.Trim().RemoverAcentosECaracteresEspeciais().ToLower();
+            usuarioExternoDto.EmailEducacional = usuarioExternoDto.EmailEducacional.Trim().ToLower();
             ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email, usuarioExternoDto.EmailEducacional);
             await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login);
 
@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             if (confirmarEmail)
                 await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
 
-            var mensagem = confirmarEmail ? MensagemNegocio.VALIDAR_EMAIL_USUARIO_EXTERNO : MensagemNegocio.USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO;
+            const string mensagem = MensagemNegocio.USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO;
 
             return new InserirUsuarioRetornoDTO
             {
@@ -108,7 +108,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             {
                 erros.Add(MensagemNegocio.EMAIL_EDU_INVALIDO);
             }
-            
 
             if (senhaNova.Contains(" "))
                 erros.Add(MensagemNegocio.A_SENHA_NAO_PODE_CONTER_ESPACOS_EM_BRANCO);
