@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             if (confirmarEmail)
                 await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(usuarioExternoDto.Login));
 
-            const string mensagem = MensagemNegocio.USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO;
+            var mensagem = confirmarEmail ? MensagemNegocio.VALIDAR_EMAIL_USUARIO_EXTERNO : MensagemNegocio.USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO;
 
             return new InserirUsuarioRetornoDTO
             {
