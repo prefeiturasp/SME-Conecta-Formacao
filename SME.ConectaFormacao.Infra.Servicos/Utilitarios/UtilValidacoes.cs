@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Utilitarios
 
         public static bool EmailEduEhValido(string email)
         {
-            var pattern = @"^\w+@edu\.sme\.prefeitura\.sp\.gov\.br$";
+            var pattern = @"^[\w.]+@edu\.sme\.prefeitura\.sp\.gov\.br$";
             if (Regex.IsMatch(email, pattern))
                 return true;
 
