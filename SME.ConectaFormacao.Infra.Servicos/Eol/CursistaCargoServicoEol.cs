@@ -9,15 +9,18 @@
         public string CdDreCargoBase { get; set; }
         public string CdUeCargoBase { get; set; }
         public string UeCargoBase { get; set; }
+        public int? TipoVinculoCargoBase { get; set; }
         public long? CdCargoSobreposto { get; set; }
         public string CargoSobreposto { get; set; }
         public string CdDreCargoSobreposto { get; set; }
         public string CdUeCargoSobreposto { get; set; }
         public string UeCargoSobreposto { get; set; }
+        public int? TipoVinculoCargoSobreposto { get; set; }
         public long? CdFuncaoAtividade { get; set; }
         public string FuncaoAtividade { get; set; }
         public string CdDreFuncaoAtividade { get; set; }
         public string CdUeFuncaoAtividade { get; set; }
         public string UeFuncaoAtividade { get; set; }
+        public int? TipoVinculoFuncaoAtividade { get; set; }
     }
 }

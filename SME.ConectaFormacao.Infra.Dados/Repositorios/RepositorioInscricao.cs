@@ -74,26 +74,37 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 });
         }
 
-        public Task<string> ObterCargoFuncaoPorId(long id)
+        public Task<CargoFuncaoDTO> ObterCargoFuncaoPorId(long id)
         {
-            var query = @"
-                select
-	                case
-		                when i.funcao_id is not null then cff.nome
-		                when i.cargo_id is not null then cfc.nome
-		                else ''
-	                end as cargo_funcao
-                from
-	                inscricao i
-                left join cargo_funcao cfc on
-	                cfc.id = i.cargo_id
-                left join cargo_funcao cff on
-	                cff.id = i.funcao_id
-                where
-	                i.id = @id
-                ";
+            const string query = @"
+                                    select
+                                        case
+                                            when i.funcao_id is not null then i.funcao_codigo
+                                            when i.cargo_id is not null then i.cargo_codigo
+                                            else ''
+                                        end as CargoFuncaoCodigo,
+                                        case
+                                            when i.tipo_vinculo is not null then
+                                                case
+                                                    when i.funcao_id is not null then trim(cff.nome) || ' - v' || cast(i.tipo_vinculo as varchar(10))
+                                                    when i.cargo_id is not null then trim(cfc.nome) || ' - v' || cast(i.tipo_vinculo as varchar(10))
+                                                    else ''
+                                                end
+                                            else
+                                                case
+                                                    when i.funcao_id is not null then cff.nome
+                                                    when i.cargo_id is not null then cfc.nome
+                                                    else ''
+                                                end
+                                        end as CargoFuncaoNome,
+                                        i.tipo_vinculo as TipoVinculo
+                                    from inscricao i
+                                    left join cargo_funcao cfc on cfc.id = i.cargo_id
+                                    left join cargo_funcao cff on cff.id = i.funcao_id
+                                    where i.id = @id
+                                    ";
 
-            return conexao.Obter().ExecuteScalarAsync<string>(query, new { id });
+            return conexao.Obter().QueryFirstOrDefaultAsync<CargoFuncaoDTO>(query, new { id });
         }
 
         public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorUsuarioId(long usuarioId, int numeroPagina, int numeroRegistros)
@@ -153,7 +164,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												u.nome,
                                                 i.cargo_id,
                                                 i.funcao_id,
-												cf.nome
+												case 
+													when i.tipo_vinculo is not null then trim(cf.nome) || ' - v' || cast(i.tipo_vinculo as varchar(10))
+													else trim(cf.nome)
+												end as nome,
+												i.tipo_vinculo
 											from proposta_turma pt
 											inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido
 											inner join usuario u on i.usuario_id = u.id and not u.excluido
