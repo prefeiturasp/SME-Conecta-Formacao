@@ -126,7 +126,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
 
                 if (!inscricao.CargoId.HasValue)
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
             }
 
             var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
@@ -160,7 +160,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
 
                 if (!inscricao.FuncaoId.HasValue)
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
             }
         }
 
