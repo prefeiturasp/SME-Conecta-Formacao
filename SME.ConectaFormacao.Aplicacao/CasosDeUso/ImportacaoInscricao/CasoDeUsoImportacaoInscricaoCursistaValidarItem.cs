@@ -185,11 +185,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS);
 
             if (ehProfissionalRede)
+            {
                 if (login.Length < 7)
                     throw new NegocioException(MensagemNegocio.RF_MENOR_QUE_7_DIGITOS);
+            }
             else
+            {
                 if (!UtilValidacoes.CpfEhValido(login))
                     throw new NegocioException(MensagemNegocio.CPF_INVALIDO);
+            }
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(login.SomenteNumeros()));
             if (usuario.NaoEhNulo())
