@@ -6,14 +6,15 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class AlterarVinculoInscricaoCommand : IRequest<bool>
     {
-        public AlterarVinculoInscricaoCommand(long id, VinculoIncricaoDTO vinculoIncricao)
+        public AlterarVinculoInscricaoCommand(long id, IEnumerable<DadosInscricaoCargoEol> dadosInscricao)
         {
             Id = id;
-            VinculoIncricao = vinculoIncricao;
+            DadosInscricao = dadosInscricao;
         }
 
         public long Id { get; }
-        public VinculoIncricaoDTO VinculoIncricao { get; }
+
+        public IEnumerable<DadosInscricaoCargoEol> DadosInscricao { get; }
     }
 
     public class AlterarVinculoInscricaoCommandValidator : AbstractValidator<AlterarVinculoInscricaoCommand>
@@ -21,23 +22,12 @@ namespace SME.ConectaFormacao.Aplicacao
         public AlterarVinculoInscricaoCommandValidator()
         {
             RuleFor(c => c.Id)
-                .NotEmpty()
-                .WithMessage("É necessário informar o id da inscrição");
+                .GreaterThan(0)
+                .WithMessage("O Id da inscrição deve ser informado para alteração do vínculo.");
 
-            RuleFor(c => c.VinculoIncricao)
+            RuleFor(c => c.DadosInscricao)
                 .NotNull()
-                .WithMessage("Os dados para alteração do vínculo da inscrição devem ser informados.")
-                .DependentRules(() =>
-                {
-                    RuleFor(c => c.VinculoIncricao.CargoCodigo)
-                        .NotEmpty()
-                        .NotNull()
-                        .WithMessage("É necessário informar o cargo da inscrição");
-
-                    RuleFor(c => c.VinculoIncricao.TipoVinculo)
-                        .GreaterThan(0)
-                        .WithMessage("É necessário informa o vínculo da inscrição.");
-                });
+                .WithMessage("Os dados da inscrição devem ser informados para a alteração.");
         }
     }
 }

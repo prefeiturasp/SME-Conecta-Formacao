@@ -58,7 +58,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     Descricao = cargoFuncaoEol.CargoBase,
                     DreCodigo = cargoFuncaoEol.CdDreCargoBase,
                     UeCodigo = cargoFuncaoEol.CdUeCargoBase,
-                    TipoVinculo = cargoFuncaoEol.TipoVinculoCargoBase ?? 0
+                    TipoVinculo = cargoFuncaoEol.TipoVinculoCargoBase ?? 0,
+                    DataInicio = cargoFuncaoEol.DataInicioCargoBase
                 };
 
                 if (cargoFuncaoEol.CdFuncaoAtividade.HasValue)
@@ -69,7 +70,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                         Descricao = cargoFuncaoEol.FuncaoAtividade,
                         DreCodigo = cargoFuncaoEol.CdDreFuncaoAtividade,
                         UeCodigo = cargoFuncaoEol.CdUeFuncaoAtividade,
-                        TipoVinculo = cargoFuncaoEol.TipoVinculoFuncaoAtividade ?? 0
+                        TipoVinculo = cargoFuncaoEol.TipoVinculoFuncaoAtividade ?? 0,
+                        DataInicio = cargoFuncaoEol.DataInicioFuncaoAtividade
                     });
                 }
                 usuarioCargos.Add(item);
@@ -82,7 +84,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                         Descricao = cargoFuncaoEol.CargoSobreposto,
                         DreCodigo = cargoFuncaoEol.CdDreCargoSobreposto,
                         UeCodigo = cargoFuncaoEol.CdUeCargoSobreposto,
-                        TipoVinculo = cargoFuncaoEol.TipoVinculoCargoSobreposto ?? 0
+                        TipoVinculo = cargoFuncaoEol.TipoVinculoCargoSobreposto ?? 0,
+                        DataInicio = cargoFuncaoEol.DataInicioCargoSobreposto
                     });
                 }
             }

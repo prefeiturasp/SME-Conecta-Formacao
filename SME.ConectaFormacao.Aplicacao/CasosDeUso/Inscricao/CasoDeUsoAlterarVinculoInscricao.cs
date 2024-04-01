@@ -10,9 +10,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
         }
 
-        public async Task<bool> Executar(long id, VinculoIncricaoDTO vinculoIncricao)
+        public async Task<bool> Executar(long id, AlterarCargoFuncaoVinculoIncricaoDTO alterarCargoFuncaoVinculoIncricao)
         {
-            return await mediator.Send(new AlterarVinculoInscricaoCommand(id, vinculoIncricao));
+            return await mediator.Send(new AlterarCargoFuncaoVinculoInscricaoCommand(id, alterarCargoFuncaoVinculoIncricao));
         }
     }
 }

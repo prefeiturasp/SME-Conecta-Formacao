@@ -312,5 +312,32 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryAsync<PropostaTipoInscricao>(query.ToString(), new { codigosFormacao });
         }
+
+        public async Task<IEnumerable<Inscricao>> ObterInscricoesConfirmadas()
+        {
+            const string query = @"select i.id,
+                                        i.proposta_turma_id,
+                                        i.usuario_id,
+                                        i.cargo_codigo,
+                                        i.cargo_dre_codigo,
+                                        i.cargo_ue_codigo,
+                                        i.cargo_id,
+                                        i.funcao_codigo,
+                                        i.funcao_dre_codigo,
+                                        i.funcao_ue_codigo,
+                                        i.funcao_id,
+                                        u.login,
+                                        u.cpf
+                                    from inscricao i
+                                    inner join usuario u on i.usuario_id = u.id and not u.excluido
+                                    where not i.excluido
+                                    and i.situacao = @situacao";
+
+            return await conexao.Obter().QueryAsync<Inscricao, Usuario, Inscricao>(query, (inscricao, usuario) =>
+               {
+                   inscricao.Usuario = usuario;
+                   return inscricao;
+               }, new { situacao = (int)SituacaoInscricao.Confirmada }, splitOn: "id, login");
+        }
     }
 }
