@@ -34,6 +34,7 @@ public class AlterarVinculoInscricaoCommandHandler : IRequestHandler<AlterarVinc
             throw new NegocioException("O cargo não foi encontrado para alteração do vínculo da inscrição");
 
         inscricao.CargoId = cargo.Id;
+        inscricao.CargoCodigo = request.VinculoIncricao.CargoCodigo;
         inscricao.FuncaoCodigo = null;
         inscricao.FuncaoDreCodigo = null;
         inscricao.FuncaoUeCodigo = null;
