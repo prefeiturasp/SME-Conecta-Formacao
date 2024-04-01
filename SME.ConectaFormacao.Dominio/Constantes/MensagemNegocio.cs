@@ -5,7 +5,7 @@ public class MensagemNegocio
     public const string IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA = "Importação arquivo registro não localizada";
     public const string IMPORTACAO_ARQUIVO_NAO_LOCALIZADA = "Importação arquivo não localizada";
     public const string PARAMETRO_X_NAO_ENCONTRADO_PARA_ANO_Y = "Parâmetro '{0}' não encontrado para o ano '{1}'.";
-    public const string A_PLANILHA_DE_INSCRICAO_CURSISTA_NAO_TEM_O_NOME_DA_COLUNA_Y_NA_COLUNA_Z = "A planilha de inscrição de cursistas deveria apresentar o nome '{1}' na coluna '{2}', conforme previsto planilha modelo.";
+    public const string A_PLANILHA_DE_INSCRICAO_CURSISTA_NAO_TEM_O_NOME_DA_COLUNA_Y_NA_COLUNA_Z = "A planilha de inscrição de cursistas deveria apresentar o nome '{0}' na coluna '{1}', conforme previsto planilha modelo.";
     public const string ARQUIVO_IMPORTADO_COM_SUCESSO = "Arquivo importado com sucesso";
     public const string CONTENT_TYPE_EXCEL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     public const string SOMENTE_ARQUIVO_XLSX_SUPORTADO = "Esse arquivo não é um XLSX. Somente arquivos do tipo XLSX são permitidos";
