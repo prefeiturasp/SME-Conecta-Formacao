@@ -20,17 +20,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
             var login = registroFuncional.EstaPreenchido() ? registroFuncional : cpf;
 
+            var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(login.SomenteNumeros()));
+            if (usuario is { Nome: not null, Cpf: not null })
+                return _mapper.Map<RetornoUsuarioDTO>(usuario);
+
             if (registroFuncional.EstaPreenchido())
             {
                 var cursistaResumidoServicoEol = await mediator.Send(new ObterNomeCpfProfissionalPorRegistroFuncionalQuery(registroFuncional));
 
-                if (cursistaResumidoServicoEol is {Nome: not null, Cpf:not null})
+                if (cursistaResumidoServicoEol is { Nome: not null, Cpf: not null })
                     return _mapper.Map<RetornoUsuarioDTO>(cursistaResumidoServicoEol);
-            } else
-            {
-                var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(login.SomenteNumeros()));
-                if (usuario is { Nome: not null, Cpf: not null })
-                    return _mapper.Map<RetornoUsuarioDTO>(usuario);
             }
 
             throw new NegocioException(MensagemNegocio.CURSISTA_NAO_ENCONTRADO);
