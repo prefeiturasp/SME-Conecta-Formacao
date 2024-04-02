@@ -62,7 +62,17 @@ namespace SME.ConectaFormacao.Aplicacao
             var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
+            ValidaPeriodoDeInscricao(proposta);
+
             return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao, proposta.IntegrarNoSGA);
+        }
+
+        private void ValidaPeriodoDeInscricao(Proposta proposta)
+        {
+            var dataAtual = DateTimeExtension.HorarioBrasilia().Date;
+            if (proposta.DataInscricaoInicio.EhNulo() ||
+                !(dataAtual >= proposta.DataInscricaoInicio.GetValueOrDefault().Date && dataAtual <= proposta.DataInscricaoFim.GetValueOrDefault().Date))
+                throw new NegocioException(MensagemNegocio.INSCRICAO_FORA_DO_PERIODO_INSCRICAO);
         }
 
         private async Task<Usuario> ObterUsuarioPorLogin(InscricaoManualDTO inscricaoManualDTO, CancellationToken cancellationToken)
@@ -118,7 +128,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
 
                 if (!inscricao.CargoId.HasValue)
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
             }
 
             var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
@@ -154,7 +164,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
 
                 if (!inscricao.FuncaoId.HasValue)
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
             }
         }
 
