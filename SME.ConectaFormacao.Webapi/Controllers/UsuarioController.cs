@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
@@ -139,6 +140,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> AlterarUnidadeEol([FromRoute] string login, [FromBody] UnidadeEolUsuarioDTO unidadeEolUsuarioDTO, [FromServices] ICasoDeUsoUsuarioAlterarUnidadeEol casoDeUsoUsuarioAlterarUnidadeEol)
         {
             return Ok(await casoDeUsoUsuarioAlterarUnidadeEol.Executar(login, unidadeEolUsuarioDTO.CodigoEolUnidade));
+        }
+
+        [HttpGet("tipo-email")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ObterListaTipoEmail([FromServices] ICasoDeUsoObterTiposEmail useCase)
+        {
+            return Ok(await useCase.Executar());
         }
     }
 }

@@ -1,4 +1,5 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
@@ -38,6 +39,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public bool PossuiContratoExterno { get; set; }
         public SituacaoCadastroUsuario Situacao { get; set; }
         public string? EmailEducacional { get; set; }
+        public TipoEmail? TipoEmail { get; set; }
 
         public void Atualizar(string email, DateTime? dataHora, string? cpf)
         {
@@ -47,6 +49,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             {
                 Cpf = cpf;
             }
+
+            TipoEmail ??= Enumerados.TipoEmail.FuncionarioUnidadeParceira;
         }
 
         public void Ativar()
