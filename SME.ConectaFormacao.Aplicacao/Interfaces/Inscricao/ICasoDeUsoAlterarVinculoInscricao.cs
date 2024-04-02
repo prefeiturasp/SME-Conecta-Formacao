@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
 {
     public interface ICasoDeUsoAlterarVinculoInscricao
     {
-        Task<bool> Executar(long id, VinculoIncricaoDTO vinculoIncricao);
+        Task<bool> Executar(long id, AlterarCargoFuncaoVinculoIncricaoDTO alterarCargoFuncaoVinculoIncricao);
     }
 }

@@ -130,9 +130,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> AlterarVinculo(
             [FromServices] ICasoDeUsoAlterarVinculoInscricao casoDeUsoAlterarVinculoInscricao,
             [FromRoute] long id,
-            [FromBody] VinculoIncricaoDTO vinculoIncricao)
+            [FromBody] AlterarCargoFuncaoVinculoIncricaoDTO alterarCargoFuncaoVinculoIncricao)
         {
-            return Ok(await casoDeUsoAlterarVinculoInscricao.Executar(id, vinculoIncricao));
+            return Ok(await casoDeUsoAlterarVinculoInscricao.Executar(id, alterarCargoFuncaoVinculoIncricao));
         }        
     }
 }

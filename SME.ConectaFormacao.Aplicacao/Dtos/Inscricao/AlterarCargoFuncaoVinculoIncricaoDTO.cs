@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
 {
-    public class VinculoIncricaoDTO
+    public class AlterarCargoFuncaoVinculoIncricaoDTO
     {
         [Required(ErrorMessage = "O Cargo é obrigatório")]
         public string CargoCodigo { get; set; } = string.Empty;
