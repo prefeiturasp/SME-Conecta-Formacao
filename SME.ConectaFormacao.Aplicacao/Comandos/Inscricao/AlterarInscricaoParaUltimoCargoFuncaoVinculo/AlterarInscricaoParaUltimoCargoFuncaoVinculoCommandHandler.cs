@@ -6,18 +6,18 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class AlterarVinculoInscricaoCommandHandler : IRequestHandler<AlterarVinculoInscricaoCommand, bool>
+    public class AlterarInscricaoParaUltimoCargoFuncaoVinculoCommandHandler : IRequestHandler<AlterarInscricaoParaUltimoCargoFuncaoVinculoCommand, bool>
     {
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly IMediator _mediator;
 
-        public AlterarVinculoInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao, IMediator mediator)
+        public AlterarInscricaoParaUltimoCargoFuncaoVinculoCommandHandler(IRepositorioInscricao repositorioInscricao, IMediator mediator)
         {
             _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<bool> Handle(AlterarVinculoInscricaoCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(AlterarInscricaoParaUltimoCargoFuncaoVinculoCommand request, CancellationToken cancellationToken)
         {
             var ultimoCargo = request.DadosInscricao.MaxBy(c => c.DataInicio);
             var cargoCodigo = ultimoCargo?.Codigo;

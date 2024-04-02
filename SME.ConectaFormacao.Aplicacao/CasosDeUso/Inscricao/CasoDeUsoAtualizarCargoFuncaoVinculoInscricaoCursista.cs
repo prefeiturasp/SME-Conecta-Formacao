@@ -5,9 +5,9 @@ using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
-    public class CasoDeUsoAtualizarVinculoInscricaoCursista : CasoDeUsoAbstrato, ICasoDeUsoAtualizarVinculoInscricaoCursista
+    public class CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista : CasoDeUsoAbstrato, ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista
     {
-        public CasoDeUsoAtualizarVinculoInscricaoCursista(IMediator mediator) : base(mediator)
+        public CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista(IMediator mediator) : base(mediator)
         {
         }
 
@@ -20,8 +20,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
             foreach (var inscricao in inscricoesConfirmadas)
             {
-                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.AtualizarVinculoInscricaoCursistaTratar,
-                    new AtualizarVinculoInscricaoCursistaTratarDto
+                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.AtualizarCargoFuncaoVinculoInscricaoCursistaTratar,
+                    new AtualizarCargoFuncaoVinculoInscricaoCursistaTratarDto
                     {
                         Id = inscricao.Id,
                         Login = inscricao.Usuario.Login,

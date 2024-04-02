@@ -8,26 +8,27 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
-    public class CasoDeUsoAtualizarVinculoInscricaoCursistaTratar : CasoDeUsoAbstrato, ICasoDeUsoAtualizarVinculoInscricaoCursistaTratar
+    public class CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar : CasoDeUsoAbstrato, ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar
     {
-        public CasoDeUsoAtualizarVinculoInscricaoCursistaTratar(IMediator mediator) : base(mediator)
+        public CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar(IMediator mediator) : base(mediator)
         {
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var atualizarVinculoInscricao = param.ObterObjetoMensagem<AtualizarVinculoInscricaoCursistaTratarDto>() ??
-                                       throw new NegocioException(MensagemNegocio.ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA);
+            var atualizarCargoFuncaoVinculoInscricao =
+                param.ObterObjetoMensagem<AtualizarCargoFuncaoVinculoInscricaoCursistaTratarDto>() ??
+                throw new NegocioException(MensagemNegocio.ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA);
 
-            var cargosFuncoes = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(atualizarVinculoInscricao.Login));
+            var cargosFuncoes = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(atualizarCargoFuncaoVinculoInscricao.Login));
             if (!cargosFuncoes.Any())
                 return false;
 
             var dadosInscricao = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoes);
-            if (atualizarVinculoInscricao.CargoCodigo != null)
-                dadosInscricao = dadosInscricao.Where(c => c.Codigo == atualizarVinculoInscricao.CargoCodigo);
+            if (atualizarCargoFuncaoVinculoInscricao.CargoCodigo != null)
+                dadosInscricao = dadosInscricao.Where(c => c.Codigo == atualizarCargoFuncaoVinculoInscricao.CargoCodigo);
             
-            await mediator.Send(new AlterarVinculoInscricaoCommand(atualizarVinculoInscricao.Id, dadosInscricao));
+            await mediator.Send(new AlterarInscricaoParaUltimoCargoFuncaoVinculoCommand(atualizarCargoFuncaoVinculoInscricao.Id, dadosInscricao));
             return true;
         }
         

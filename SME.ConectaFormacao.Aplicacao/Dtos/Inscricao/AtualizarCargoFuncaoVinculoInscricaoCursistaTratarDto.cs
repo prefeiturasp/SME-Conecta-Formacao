@@ -1,6 +1,6 @@
 ﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
 {
-    public class AtualizarVinculoInscricaoCursistaTratarDto
+    public class AtualizarCargoFuncaoVinculoInscricaoCursistaTratarDto
     {
         public long Id { get; set; }
         public string Login { get; set; } = string.Empty;

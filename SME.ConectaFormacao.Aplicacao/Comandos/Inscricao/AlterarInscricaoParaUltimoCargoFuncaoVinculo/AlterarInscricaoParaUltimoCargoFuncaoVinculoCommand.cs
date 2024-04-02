@@ -4,9 +4,9 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class AlterarVinculoInscricaoCommand : IRequest<bool>
+    public class AlterarInscricaoParaUltimoCargoFuncaoVinculoCommand : IRequest<bool>
     {
-        public AlterarVinculoInscricaoCommand(long id, IEnumerable<DadosInscricaoCargoEol> dadosInscricao)
+        public AlterarInscricaoParaUltimoCargoFuncaoVinculoCommand(long id, IEnumerable<DadosInscricaoCargoEol> dadosInscricao)
         {
             Id = id;
             DadosInscricao = dadosInscricao;
@@ -17,9 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<DadosInscricaoCargoEol> DadosInscricao { get; }
     }
 
-    public class AlterarVinculoInscricaoCommandValidator : AbstractValidator<AlterarVinculoInscricaoCommand>
+    public class AlterarInscricaoParaUltimoCargoFuncaoVinculoCommandValidator : AbstractValidator<AlterarInscricaoParaUltimoCargoFuncaoVinculoCommand>
     {
-        public AlterarVinculoInscricaoCommandValidator()
+        public AlterarInscricaoParaUltimoCargoFuncaoVinculoCommandValidator()
         {
             RuleFor(c => c.Id)
                 .GreaterThan(0)
