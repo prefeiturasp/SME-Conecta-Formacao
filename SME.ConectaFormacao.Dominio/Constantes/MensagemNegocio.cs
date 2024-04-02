@@ -138,4 +138,7 @@ public class MensagemNegocio
     public const string USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS = "O usuário não foi encontrado com o Registro Funcional ou CPF informados";
     public const string INSCRICAO_FORA_DO_PERIODO_INSCRICAO = "Inscrição fora do período de inscrição";
     public const string RF_MENOR_QUE_7_DIGITOS = "RF do arquivo foi preenchido com menos de 7 dígitos";
+
+    public const string CARGO_NAO_ENCONTRATO_PARA_ALTERACAO_VINCULO_INSCRICAO = "O cargo não foi encontrado para alteração do vínculo da inscrição";
+    public const string ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA = "Atualização do vínculo da inscrição não localizada";
 }

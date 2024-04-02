@@ -74,26 +74,37 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 });
         }
 
-        public Task<string> ObterCargoFuncaoPorId(long id)
+        public Task<CargoFuncaoDTO> ObterCargoFuncaoPorId(long id)
         {
-            var query = @"
-                select
-	                case
-		                when i.funcao_id is not null then cff.nome
-		                when i.cargo_id is not null then cfc.nome
-		                else ''
-	                end as cargo_funcao
-                from
-	                inscricao i
-                left join cargo_funcao cfc on
-	                cfc.id = i.cargo_id
-                left join cargo_funcao cff on
-	                cff.id = i.funcao_id
-                where
-	                i.id = @id
-                ";
+            const string query = @"
+                                    select
+                                        case
+                                            when i.funcao_id is not null then i.funcao_codigo
+                                            when i.cargo_id is not null then i.cargo_codigo
+                                            else ''
+                                        end as CargoFuncaoCodigo,
+                                        case
+                                            when i.tipo_vinculo is not null then
+                                                case
+                                                    when i.funcao_id is not null then trim(cff.nome) || ' - v' || cast(i.tipo_vinculo as varchar(10))
+                                                    when i.cargo_id is not null then trim(cfc.nome) || ' - v' || cast(i.tipo_vinculo as varchar(10))
+                                                    else ''
+                                                end
+                                            else
+                                                case
+                                                    when i.funcao_id is not null then cff.nome
+                                                    when i.cargo_id is not null then cfc.nome
+                                                    else ''
+                                                end
+                                        end as CargoFuncaoNome,
+                                        i.tipo_vinculo as TipoVinculo
+                                    from inscricao i
+                                    left join cargo_funcao cfc on cfc.id = i.cargo_id
+                                    left join cargo_funcao cff on cff.id = i.funcao_id
+                                    where i.id = @id
+                                    ";
 
-            return conexao.Obter().ExecuteScalarAsync<string>(query, new { id });
+            return conexao.Obter().QueryFirstOrDefaultAsync<CargoFuncaoDTO>(query, new { id });
         }
 
         public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorUsuarioId(long usuarioId, int numeroPagina, int numeroRegistros)
@@ -153,7 +164,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												u.nome,
                                                 i.cargo_id,
                                                 i.funcao_id,
-												cf.nome
+												case 
+													when i.tipo_vinculo is not null then trim(cf.nome) || ' - v' || cast(i.tipo_vinculo as varchar(10))
+													else trim(cf.nome)
+												end as nome,
+												i.tipo_vinculo
 											from proposta_turma pt
 											inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido
 											inner join usuario u on i.usuario_id = u.id and not u.excluido
@@ -296,6 +311,33 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"select id, proposta_id, tipo_inscricao from proposta_tipo_inscricao where proposta_id = any(@codigosFormacao) and not excluido";
 
             return conexao.Obter().QueryAsync<PropostaTipoInscricao>(query.ToString(), new { codigosFormacao });
+        }
+
+        public async Task<IEnumerable<Inscricao>> ObterInscricoesConfirmadas()
+        {
+            const string query = @"select i.id,
+                                        i.proposta_turma_id,
+                                        i.usuario_id,
+                                        i.cargo_codigo,
+                                        i.cargo_dre_codigo,
+                                        i.cargo_ue_codigo,
+                                        i.cargo_id,
+                                        i.funcao_codigo,
+                                        i.funcao_dre_codigo,
+                                        i.funcao_ue_codigo,
+                                        i.funcao_id,
+                                        u.login,
+                                        u.cpf
+                                    from inscricao i
+                                    inner join usuario u on i.usuario_id = u.id and not u.excluido
+                                    where not i.excluido
+                                    and i.situacao = @situacao";
+
+            return await conexao.Obter().QueryAsync<Inscricao, Usuario, Inscricao>(query, (inscricao, usuario) =>
+               {
+                   inscricao.Usuario = usuario;
+                   return inscricao;
+               }, new { situacao = (int)SituacaoInscricao.Confirmada }, splitOn: "id, login");
         }
     }
 }

@@ -122,5 +122,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterCpfCursistaInscricao.Executar(registroFuncional, cpf));
         }
+        
+        [HttpPut("{id}/alterar-vinculo")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> AlterarVinculo(
+            [FromServices] ICasoDeUsoAlterarVinculoInscricao casoDeUsoAlterarVinculoInscricao,
+            [FromRoute] long id,
+            [FromBody] AlterarCargoFuncaoVinculoIncricaoDTO alterarCargoFuncaoVinculoIncricao)
+        {
+            return Ok(await casoDeUsoAlterarVinculoInscricao.Executar(id, alterarCargoFuncaoVinculoIncricao));
+        }        
     }
 }

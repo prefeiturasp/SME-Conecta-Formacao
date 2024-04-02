@@ -99,7 +99,7 @@ namespace SME.ConectaFormacao.Aplicacao
             return await _repositorioInscricao.UsuarioEstaInscritoNaProposta(propostaId, usuarioId);
         }
 
-        private async Task ValidarDre(long propostaTurmaId, string cargoDreCodigo, string funcaoDreCodigo, CancellationToken cancellationToken)
+        private async Task ValidarDre(long propostaTurmaId, string cargoDreCodigo, string? funcaoDreCodigo, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId), cancellationToken);
             dres = dres.Where(t => !t.Dre.Todos);

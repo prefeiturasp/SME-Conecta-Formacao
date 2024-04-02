@@ -32,7 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuario = await ObterUsuarioPorLogin(request.InscricaoManualDTO, cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            var inscricao = new Inscricao()
+            var inscricao = new Inscricao
             {
                 PropostaTurmaId = request.InscricaoManualDTO.PropostaTurmaId,
                 UsuarioId = usuario.Id,
@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId, cancellationToken);
 
-                var possuiErros = await ValidarSeDreDreUsuarioInternoPossuiErros(usuario.Login, inscricao, cancellationToken);
+                var possuiErros = await ValidarSeDreUsuarioInternoPossuiErros(usuario.Login, inscricao, cancellationToken);
                 if (!request.InscricaoManualDTO.PodeContinuar && possuiErros)
                     throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL);
             }
@@ -111,16 +111,18 @@ namespace SME.ConectaFormacao.Aplicacao
                     var codigoCargo = cargoEol.CdCargoSobreposto.HasValue ? cargoEol.CdCargoSobreposto.Value : cargoEol.CdCargoBase.Value;
                     var codigoDre = cargoEol.CdCargoSobreposto.HasValue ? cargoEol.CdDreCargoSobreposto : cargoEol.CdDreCargoBase;
                     var codigoUe = cargoEol.CdCargoSobreposto.HasValue ? cargoEol.CdUeCargoSobreposto : cargoEol.CdUeCargoBase;
+                    var tipoVinculo = cargoEol.TipoVinculoCargoSobreposto ?? cargoEol.TipoVinculoCargoBase;
 
                     var cargoFuncao = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(new long[] { codigoCargo }, new long[] { }), cancellationToken);
-
                     var cargoId = cargoFuncao.FirstOrDefault(t => t.Tipo == CargoFuncaoTipo.Cargo)?.Id;
+                    
                     if (cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
                     {
                         inscricao.CargoCodigo = codigoCargo.ToString();
                         inscricao.CargoDreCodigo = codigoDre;
                         inscricao.CargoUeCodigo = codigoUe;
                         inscricao.CargoId = cargoId;
+                        inscricao.TipoVinculo = tipoVinculo;
                         break;
                     }
                 }
@@ -137,6 +139,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     var codigoCargo = funcaoEol.CdCargoSobreposto.HasValue ? funcaoEol.CdCargoSobreposto.Value : funcaoEol.CdCargoBase.Value;
                     var codigoDre = funcaoEol.CdCargoSobreposto.HasValue ? funcaoEol.CdDreCargoSobreposto : funcaoEol.CdDreCargoBase;
                     var codigoUe = funcaoEol.CdCargoSobreposto.HasValue ? funcaoEol.CdUeCargoSobreposto : funcaoEol.CdUeCargoBase;
+                    var tipoVinculo = funcaoEol.TipoVinculoCargoSobreposto ?? funcaoEol.TipoVinculoCargoBase;
 
                     var cargoFuncao = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(new long[] { codigoCargo }, new long[] { funcaoEol.CdFuncaoAtividade.Value }), cancellationToken);
 
@@ -149,10 +152,11 @@ namespace SME.ConectaFormacao.Aplicacao
                         inscricao.CargoDreCodigo = codigoDre;
                         inscricao.CargoUeCodigo = codigoUe;
                         inscricao.CargoId = cargoId;
+                        inscricao.TipoVinculo = tipoVinculo;
 
                         inscricao.FuncaoCodigo = funcaoEol.CdFuncaoAtividade.Value.ToString();
-                        inscricao.FuncaoDreCodigo = funcaoEol.CdDreFuncaoAtividade.ToString();
-                        inscricao.FuncaoUeCodigo = funcaoEol.CdUeFuncaoAtividade.ToString();
+                        inscricao.FuncaoDreCodigo = funcaoEol.CdDreFuncaoAtividade;
+                        inscricao.FuncaoUeCodigo = funcaoEol.CdUeFuncaoAtividade;
                         inscricao.FuncaoId = funcaoId;
 
                         break;
@@ -164,7 +168,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
         }
 
-        private async Task<bool> ValidarSeDreDreUsuarioInternoPossuiErros(string registroFuncional, Inscricao inscricao, CancellationToken cancellationToken)
+        private async Task<bool> ValidarSeDreUsuarioInternoPossuiErros(string registroFuncional, Inscricao inscricao, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(inscricao.PropostaTurmaId), cancellationToken);
             dres = dres.Where(t => !t.Dre.Todos);
