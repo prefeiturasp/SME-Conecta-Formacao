@@ -2,14 +2,14 @@
 {
     public class PaginacaoResultadoComMensagemDTO<T> : PaginacaoResultadoDTO<T>
     {
-        public PaginacaoResultadoComMensagemDTO(IEnumerable<T> items, int totalRegistros, int numeroRegistros, bool podeInscrever, string mensagem) 
+        public PaginacaoResultadoComMensagemDTO(IEnumerable<T> items, int totalRegistros, int numeroRegistros, bool sucesso, string mensagem = "") 
             : base(items, totalRegistros, numeroRegistros)
         {
-            PodeInscrever = podeInscrever;
+            Sucesso = sucesso;
             Mensagem = mensagem;
         }
 
-        public bool PodeInscrever { get; set; }
+        public bool Sucesso { get; set; }
         public string Mensagem { get; set; }
     }
 }

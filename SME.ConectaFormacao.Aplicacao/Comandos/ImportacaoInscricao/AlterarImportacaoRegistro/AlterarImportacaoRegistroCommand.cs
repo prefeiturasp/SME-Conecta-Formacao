@@ -6,16 +6,18 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class AlterarImportacaoRegistroCommand : IRequest<bool>
     {
-        public AlterarImportacaoRegistroCommand(long id, SituacaoImportacaoArquivoRegistro situacao, string conteudo)
+        public AlterarImportacaoRegistroCommand(long id, SituacaoImportacaoArquivoRegistro situacao, string conteudo, string erro = "")
         {
             Id = id;
             Situacao = situacao;
             Conteudo = conteudo;
+            Erro = erro;
         }
 
         public long Id { get; }
         public SituacaoImportacaoArquivoRegistro Situacao { get; }
         public string Conteudo { get; }
+        public string Erro { get; }
     }
 
     public class AlterarImportacaoRegistroCommandValidator : AbstractValidator<AlterarImportacaoRegistroCommand>

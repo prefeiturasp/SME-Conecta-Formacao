@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var mapeamento = new List<DadosListagemInscricaoDTO>();
             var podeInscrever = false;
-            var mensagem = string.Empty;
+            var mensagem = MensagemNegocio.INSCRICAO_NAO_ENCONTRADA;
             
             var totalDeRegistros = await _repositorioInscricao.ObterInscricaoPorIdComFiltrosTotalRegistros(request.PropostaId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista, request.filtros.TurmaId);
             if (totalDeRegistros > 0)

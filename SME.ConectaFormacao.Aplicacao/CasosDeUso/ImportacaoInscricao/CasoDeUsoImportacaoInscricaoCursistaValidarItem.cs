@@ -46,22 +46,22 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                     Situacao = SituacaoInscricao.EmAnalise
                 };
 
+                await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
+
+                var mensagem = string.Empty;
+                
                 if (usuario.Tipo == TipoUsuario.Interno)
                 {
                     await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId);
 
-                    await ValidarDreUsuarioInterno(usuario.Login, inscricao);
+                    mensagem = await ValidarDreUsuarioInterno(usuario.Login, inscricao);
                 }
                 else
-                {
-                    await ValidarDreUsuarioExterno(inscricao.PropostaTurmaId, usuario.CodigoEolUnidade);
-                }
-
-                await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
+                    mensagem = await ValidarDreUsuarioExterno(inscricao.PropostaTurmaId, usuario.CodigoEolUnidade);
 
                 importacaoInscricaoCursista.Inscricao = inscricao;
 
-                await mediator.Send(new AlterarImportacaoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Validado, importacaoInscricaoCursista.ObjetoParaJson()));
+                await mediator.Send(new AlterarImportacaoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Validado, importacaoInscricaoCursista.ObjetoParaJson(),mensagem));
             }
             catch (NegocioException e)
             {
@@ -139,7 +139,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             }
         }
 
-        private async Task ValidarDreUsuarioInterno(string registroFuncional, Dominio.Entidades.Inscricao inscricao)
+        private async Task<string> ValidarDreUsuarioInterno(string registroFuncional, Dominio.Entidades.Inscricao inscricao)
         {
             var dres = await mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(inscricao.PropostaTurmaId));
             dres = dres.Where(t => !t.Dre.Todos);
@@ -158,11 +158,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 if ((inscricao.CargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.Dre.Codigo == inscricao.CargoDreCodigo)) ||
                     (inscricao.FuncaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.Dre.Codigo == inscricao.FuncaoDreCodigo)))
-                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL);
+                    return MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL;
             }
+            return string.Empty;
         }
 
-        private async Task ValidarDreUsuarioExterno(long propostaTurmaId, string codigoEolUnidade)
+        private async Task<string> ValidarDreUsuarioExterno(long propostaTurmaId, string codigoEolUnidade)
         {
             var dres = await mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId));
             dres = dres.Where(t => !t.Dre.Todos);
@@ -172,8 +173,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 var codigo = unidade.Tipo == Infra.Servicos.Eol.UnidadeEolTipo.Escola ? unidade.CodigoReferencia : unidade.Codigo;
                 if (!dres.Any(t => t.Dre.Codigo == codigo))
-                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL);
+                    return MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL;
             }
+
+            return string.Empty;
         }
 
         private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDTO inscricaoCursistaDTO ) 

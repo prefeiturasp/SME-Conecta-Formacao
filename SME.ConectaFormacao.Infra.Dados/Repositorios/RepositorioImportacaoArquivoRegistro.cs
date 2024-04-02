@@ -18,9 +18,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Erro, false);
         }
 
-        public Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro? ignorarSituacao)
+        public Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacaoDiferenteDe(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro? ignorarSituacao)
         {
             return ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, ignorarSituacao, true);
+        }
+        
+        public Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacao)
+        {
+            return ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, situacao, false);
         }
 
         public async Task<bool> TodosRegistroForamProcessadosDoArquivo(long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacaoVerificar)
