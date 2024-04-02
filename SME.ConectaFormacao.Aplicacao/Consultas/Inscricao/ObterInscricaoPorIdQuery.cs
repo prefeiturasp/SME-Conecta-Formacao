@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterInscricaoPorIdQuery : IRequest<PaginacaoResultadoDTO<DadosListagemInscricaoDTO>>
+    public class ObterInscricaoPorIdQuery : IRequest<PaginacaoResultadoComMensagemDTO<DadosListagemInscricaoDTO>>
     {
         public ObterInscricaoPorIdQuery(long propostaId, FiltroListagemInscricaoDTO filtroListagemInscricaoDto, int numeroPagina, int numeroRegistros)
         {
