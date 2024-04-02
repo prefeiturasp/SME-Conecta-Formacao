@@ -5,7 +5,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class Usuario : EntidadeBaseAuditavel
     {
-        public Usuario(string login, string nome, string email, string cpf, TipoUsuario tipo, SituacaoCadastroUsuario situacao, string? codigoEolUnidade, string? emailEducacional)
+        public Usuario(string login, string nome, string email, string cpf, TipoUsuario tipo, SituacaoCadastroUsuario situacao, string? codigoEolUnidade, string? emailEducacional,TipoEmail tipoEmail)
         {
             Login = login;
             Nome = nome;
@@ -15,6 +15,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             Situacao = situacao;
             CodigoEolUnidade = codigoEolUnidade;
             EmailEducacional = emailEducacional;
+            TipoEmail = tipoEmail;
         }
 
         public Usuario() { }

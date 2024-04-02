@@ -50,7 +50,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 tipo,
                 situacaoCadastroUsuario,
                 usuarioExternoDto.CodigoUnidade,
-                usuarioExternoDto.EmailEducacional
+                usuarioExternoDto.EmailEducacional,
+                usuarioExternoDto.TipoEmail
             )));
 
             if (confirmarEmail)
