@@ -1,8 +1,9 @@
-﻿namespace SME.ConectaFormacao.Infra;
-
-public class CargoFuncaoDTO
+﻿namespace SME.ConectaFormacao.Infra
 {
-    public string CargoFuncaoCodigo { get; set; }
-    public string CargoFuncaoNome { get; set; }
-    public int? TipoVinculo { get; set; }
+    public class CargoFuncaoDTO
+    {
+        public string CargoFuncaoCodigo { get; set; }
+        public string CargoFuncaoNome { get; set; }
+        public int? TipoVinculo { get; set; }
+    }
 }
