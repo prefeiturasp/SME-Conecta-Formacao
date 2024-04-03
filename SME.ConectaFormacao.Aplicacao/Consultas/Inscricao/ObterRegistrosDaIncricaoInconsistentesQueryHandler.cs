@@ -8,7 +8,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterRegistrosDaIncricaoInconsistentesQueryHandler : IRequestHandler<ObterRegistrosDaIncricaoInconsistentesQuery, PaginacaoResultadoDTO<RegistroDaInscricaoInsconsistenteDTO>>
+    public class ObterRegistrosDaIncricaoInconsistentesQueryHandler : IRequestHandler<ObterRegistrosDaIncricaoInconsistentesQuery, PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDTO>>
     {
         private readonly IRepositorioImportacaoArquivoRegistro _repositorioImportacao;
 
@@ -17,10 +17,11 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioImportacao = repositorioImportacao ?? throw new ArgumentNullException(nameof(repositorioImportacao));
         }
 
-        public async Task<PaginacaoResultadoDTO<RegistroDaInscricaoInsconsistenteDTO>> Handle(ObterRegistrosDaIncricaoInconsistentesQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDTO>> Handle(ObterRegistrosDaIncricaoInconsistentesQuery request, CancellationToken cancellationToken)
         {
             var registros = new List<RegistroDaInscricaoInsconsistenteDTO>();
             var registrosComErro = await _repositorioImportacao.ObterRegistrosComErro(request.QuantidadeRegistrosIgnorados, request.NumeroRegistros, request.ArquivoId);
+            var temRegistrosValidados = (await _repositorioImportacao.ObterRegistroPorSituacao(request.QuantidadeRegistrosIgnorados, request.NumeroRegistros, request.ArquivoId, SituacaoImportacaoArquivoRegistro.Validado)).TotalRegistros > 0;
 
             if (registrosComErro.TotalRegistros > 0)
                 foreach (var registroErro in registrosComErro.Registros)
@@ -31,7 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     registros.Add(registro);
                 }
             
-            return new PaginacaoResultadoDTO<RegistroDaInscricaoInsconsistenteDTO>(registros, registrosComErro.TotalRegistros, request.NumeroRegistros);
+            return new PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDTO>(registros, registrosComErro.TotalRegistros, request.NumeroRegistros, temRegistrosValidados);
         }
     }
 }
