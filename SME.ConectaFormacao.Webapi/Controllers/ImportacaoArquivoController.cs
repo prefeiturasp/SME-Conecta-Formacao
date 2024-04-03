@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{arquivoId}/registros-inconsistencia")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<RegistroDaInscricaoInsconsistenteDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_C, Policy = "Bearer")]

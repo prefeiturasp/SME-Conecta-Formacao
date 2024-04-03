@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
 {
     public interface ICasoDeUsoObterRegistrosDaIncricaoInconsistentes
     {
-        Task<PaginacaoResultadoDTO<RegistroDaInscricaoInsconsistenteDTO>> Executar(long arquivoId);
+        Task<PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDTO>> Executar(long arquivoId);
     }
 }
