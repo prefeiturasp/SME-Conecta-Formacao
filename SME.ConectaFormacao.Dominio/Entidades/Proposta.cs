@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using Dommel;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
