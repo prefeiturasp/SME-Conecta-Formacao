@@ -16,5 +16,6 @@
         public string FuncaoDreCodigo { get; set; }
         public string FuncaoUeCodigo { get; set; }
         public bool Associado { get; set; }
+        public int? TipoVinculo { get; set; }
     }
 }
