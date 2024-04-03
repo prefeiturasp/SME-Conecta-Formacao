@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
 {
     public interface ICasoDeUsoObterInscricaoPorId
     {
-        Task<PaginacaoResultadoComMensagemDTO<DadosListagemInscricaoDTO>> Executar(long propostaId, FiltroListagemInscricaoDTO filtroListagemInscricaoDTO);
+        Task<PaginacaoResultadoDTO<DadosListagemInscricaoDTO>> Executar(long propostaId, FiltroListagemInscricaoDTO filtroListagemInscricaoDTO);
     }
 }
