@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 
@@ -69,8 +70,29 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
             }
 
+            await ValidarCargoFuncao(inscricao, cancellationToken);
+
             await _repositorioInscricao.Atualizar(inscricao);
             return true;
+        }
+
+        private async Task ValidarCargoFuncao(Inscricao inscricao, CancellationToken cancellationToken)
+        {
+            var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken);
+            var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaTurma.PropostaId), cancellationToken);
+            var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaTurma.PropostaId), cancellationToken);
+
+            if (cargosProposta.PossuiElementos())
+            {
+                if (inscricao.CargoId.HasValue && !cargosProposta.Any(a => a.CargoFuncaoId == inscricao.CargoId))
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+            }
+
+            if (funcaoAtividadeProposta.PossuiElementos())
+            {
+                if (inscricao.FuncaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == inscricao.FuncaoId))
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+            }
         }
 
         private async Task<IEnumerable<CargoFuncao>> ObterCargosFuncoes(string cargoCodigo, string? funcaoCodigo)
