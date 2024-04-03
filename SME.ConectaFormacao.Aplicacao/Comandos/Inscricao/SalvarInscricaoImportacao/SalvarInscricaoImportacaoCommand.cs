@@ -1,26 +1,28 @@
 ﻿using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarInscricaoImportacaoCommand : IRequest<bool>
     {
-        public SalvarInscricaoImportacaoCommand(InscricaoCursistaImportacaoDTO inscricaoCursistaImportacaoDTO)
+        public SalvarInscricaoImportacaoCommand(Inscricao inscricao,bool formacaoHomologada)
         {
-            InscricaoCursistaImportacaoDTO = inscricaoCursistaImportacaoDTO;
+            Inscricao = inscricao;
+            FormacaoHomologada = formacaoHomologada;
         }
 
-        public InscricaoCursistaImportacaoDTO InscricaoCursistaImportacaoDTO { get; }
+        public Inscricao Inscricao { get; }
+        public bool FormacaoHomologada { get; }
     }
 
     public class SalvarInscricaoImportacaoCommandValidator : AbstractValidator<SalvarInscricaoImportacaoCommand>
     {
         public SalvarInscricaoImportacaoCommandValidator()
         {
+            RuleFor(x => x.Inscricao)
+                .NotEmpty()
+                .WithMessage("É necessário informar a inscrição para persistência de inscrições");
         }
     }
 }

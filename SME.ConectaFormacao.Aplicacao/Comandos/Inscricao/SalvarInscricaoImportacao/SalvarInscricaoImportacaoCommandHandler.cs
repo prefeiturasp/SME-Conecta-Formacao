@@ -27,18 +27,13 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(SalvarInscricaoImportacaoCommand request, CancellationToken cancellationToken)
         {
-            var inscricao = request.InscricaoCursistaImportacaoDTO.Inscricao;
+            var inscricao = request.Inscricao;
+            var formacaoHomologada = request.FormacaoHomologada;
 
-            var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
-            throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
-
-            var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-
-            return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao, proposta.IntegrarNoSGA);
+            return await PersistirInscricao(formacaoHomologada, inscricao);
         }
 
-        private async Task<bool> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao, bool integrarNoSGA)
+        private async Task<bool> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao)
         {
             var transacao = _transacao.Iniciar();
             try
