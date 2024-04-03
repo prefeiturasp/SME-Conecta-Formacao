@@ -33,7 +33,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             tipo,
                             possui_contrato_externo,
                             situacao_cadastro,
-                            cpf
+                            cpf,
+                            tipo_email
                           from usuario 
                           where login = @login";
 

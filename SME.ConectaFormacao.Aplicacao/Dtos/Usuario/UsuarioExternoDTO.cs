@@ -31,6 +31,9 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
         [Required(ErrorMessage = "É necessário informar confirmar senha.")]
         public string ConfirmarSenha { get; set; }
 
+        [Required(ErrorMessage = "É necessário informar o tipo")]
+        public TipoEmail TipoEmail { get; set; }
+
         public DateTime? CriadoEm { get; set; }
         public string? CriadoPor { get; set; }
         public string? CriadoLogin { get; set; }
