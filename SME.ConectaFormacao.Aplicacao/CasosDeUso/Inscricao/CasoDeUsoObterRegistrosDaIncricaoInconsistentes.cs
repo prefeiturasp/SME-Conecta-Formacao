@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
         }
 
-        public Task<PaginacaoResultadoComMensagemDTO<RegistroDaInscricaoInsconsistenteDTO>> Executar(long arquivoId)
+        public Task<PaginacaoResultadoDTO<RegistroDaInscricaoInsconsistenteDTO>> Executar(long arquivoId)
         {
             return mediator.Send(new ObterRegistrosDaIncricaoInconsistentesQuery(QuantidadeRegistrosIgnorados, NumeroRegistros, arquivoId));
         }

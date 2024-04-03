@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterRegistrosDaIncricaoInconsistentesQuery : IRequest<PaginacaoResultadoComMensagemDTO<RegistroDaInscricaoInsconsistenteDTO>>
+    public class ObterRegistrosDaIncricaoInconsistentesQuery : IRequest<PaginacaoResultadoDTO<RegistroDaInscricaoInsconsistenteDTO>>
     {
         public ObterRegistrosDaIncricaoInconsistentesQuery(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId)
         {

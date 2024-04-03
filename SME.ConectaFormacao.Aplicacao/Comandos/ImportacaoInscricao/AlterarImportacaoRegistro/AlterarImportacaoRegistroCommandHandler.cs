@@ -23,9 +23,6 @@ namespace SME.ConectaFormacao.Aplicacao
             importacaoArquivoRegistro.Situacao = request.Situacao;
             importacaoArquivoRegistro.Conteudo = request.Conteudo;
             
-            if (request.Erro.EstaPreenchido())
-                importacaoArquivoRegistro.Erro = request.Erro;
-
             await _repositorioImportacaoArquivoRegistro.Atualizar(importacaoArquivoRegistro);
 
             return true;
