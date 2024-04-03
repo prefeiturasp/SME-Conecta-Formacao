@@ -19,11 +19,10 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(SalvarUsuarioCommand request, CancellationToken cancellationToken)
         {
+            await AtualizarEmail(request.Usuario);
             if (request.Usuario.Id > 0)
             {
                 await RemoverCache(request.Usuario.Login);
-                await AtualizarEmail(request.Usuario);
-
                 return await _repositorioUsuario.Atualizar(request.Usuario) != null;
             }
             else
