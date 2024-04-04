@@ -15,19 +15,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
     public class CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao : CasoDeUsoAbstrato, ICasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao
     {
         private readonly IConexoesRabbit _conexoesRabbit;
-        private readonly ITransacao _transacao;
-        public CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao(IMediator mediator, IConexoesRabbit conexoesRabbit, ITransacao transacao) : base(mediator)
+        public CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao(IMediator mediator, IConexoesRabbit conexoesRabbit) : base(mediator)
         {
             _conexoesRabbit = conexoesRabbit ?? throw new ArgumentNullException(nameof(conexoesRabbit));
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
             var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>()
                                             ?? throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
-            
-            var transacao = _transacao.Iniciar();
             
             try
             {
@@ -45,18 +41,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 
                 await mediator.Send(new SalvarInscricaoImportacaoCommand(inscricao,proposta.FormacaoHomologada.EstaHomologada()));
                 await mediator.Send(new AlterarSituacaoRegistroImportacaoArquivoCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Processado));
-
-                transacao.Commit();
             }
             catch (Exception e)
             {
-                transacao.Rollback();
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Erro, e.Message));
             }
             finally
             {
                 await AlterarSituacaoArquivo(importacaoArquivoRegistro.ImportacaoArquivoId);
-                transacao.Dispose();
             }
             return true;
         }
