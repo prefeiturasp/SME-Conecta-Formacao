@@ -45,12 +45,12 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             return tamanhoString > limite ? str.Substring(0, limite) : str;
         }
 
-        public static bool EstaPreenchido(this string str)
+        public static bool EstaPreenchido(this string? str)
         {
             return !string.IsNullOrEmpty(str);
         }
 
-        public static bool NaoEstaPreenchido(this string str)
+        public static bool NaoEstaPreenchido(this string? str)
         {
             return string.IsNullOrEmpty(str);
         }

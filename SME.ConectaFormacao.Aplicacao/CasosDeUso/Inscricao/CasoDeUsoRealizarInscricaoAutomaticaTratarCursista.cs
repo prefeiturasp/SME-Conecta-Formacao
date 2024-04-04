@@ -31,7 +31,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                         CargoUeCodigo = cursista.CargoUeCodigo,
                         FuncaoCodigo = cursista.FuncaoCodigo,
                         FuncaoDreCodigo = cursista.FuncaoDreCodigo,
-                        FuncaoUeCodigo = cursista.FuncaoUeCodigo
+                        FuncaoUeCodigo = cursista.FuncaoUeCodigo,
+                        TipoVinculo = cursista.TipoVinculo
                     };
 
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomaticaIncreverCursista, inscricaoAutomaticaDTO));

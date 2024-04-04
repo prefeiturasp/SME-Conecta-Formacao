@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 
                 if(cargosFuncoesEol.Any())
                     await AtualizaCpfUsuario(usuarioLogado, cargosFuncoesEol);
-                retorno = new DadosInscricaoDTO()
+                retorno = new DadosInscricaoDTO
                 {
                     UsuarioNome = usuarioLogado.Nome,
                     UsuarioCpf = cargosFuncoesEol.Any() ? cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"000\.000\.000\-00") :  usuarioLogado.Login.AplicarMascara(@"000\.000\.000\-00"),
@@ -35,19 +35,19 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             }
             else
             {
-                retorno = new DadosInscricaoDTO()
+                retorno = new DadosInscricaoDTO
                 {
                     UsuarioNome = usuarioLogado.Nome,
                     UsuarioCpf = usuarioLogado.Login.AplicarMascara(@"000\.000\.000\-00"),
                     UsuarioEmail = usuarioLogado.Email,
-                    UsuarioRf = usuarioLogado.Login,
+                    UsuarioRf = usuarioLogado.Login
                 };
             }
 
             return retorno;
         }
 
-        private List<DadosInscricaoCargoEol> ObterCargosBaseSobrepostoFuncaoAtividade(IEnumerable<CursistaCargoServicoEol> cargosFuncoesEol)
+        private IEnumerable<DadosInscricaoCargoEol> ObterCargosBaseSobrepostoFuncaoAtividade(IEnumerable<CursistaCargoServicoEol> cargosFuncoesEol)
         {
             var usuarioCargos = new List<DadosInscricaoCargoEol>();
             foreach (var cargoFuncaoEol in cargosFuncoesEol)
@@ -57,7 +57,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                     Codigo = cargoFuncaoEol.CdCargoBase.ToString(),
                     Descricao = cargoFuncaoEol.CargoBase,
                     DreCodigo = cargoFuncaoEol.CdDreCargoBase,
-                    UeCodigo = cargoFuncaoEol.CdUeCargoBase
+                    UeCodigo = cargoFuncaoEol.CdUeCargoBase,
+                    TipoVinculo = cargoFuncaoEol.TipoVinculoCargoBase ?? 0,
+                    DataInicio = cargoFuncaoEol.DataInicioCargoBase
                 };
 
                 if (cargoFuncaoEol.CdFuncaoAtividade.HasValue)
@@ -67,7 +69,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                         Codigo = cargoFuncaoEol.CdFuncaoAtividade.ToString(),
                         Descricao = cargoFuncaoEol.FuncaoAtividade,
                         DreCodigo = cargoFuncaoEol.CdDreFuncaoAtividade,
-                        UeCodigo = cargoFuncaoEol.CdUeFuncaoAtividade
+                        UeCodigo = cargoFuncaoEol.CdUeFuncaoAtividade,
+                        TipoVinculo = cargoFuncaoEol.TipoVinculoFuncaoAtividade ?? 0,
+                        DataInicio = cargoFuncaoEol.DataInicioFuncaoAtividade
                     });
                 }
                 usuarioCargos.Add(item);
@@ -79,7 +83,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                         Codigo = cargoFuncaoEol.CdCargoSobreposto.ToString(),
                         Descricao = cargoFuncaoEol.CargoSobreposto,
                         DreCodigo = cargoFuncaoEol.CdDreCargoSobreposto,
-                        UeCodigo = cargoFuncaoEol.CdUeCargoSobreposto
+                        UeCodigo = cargoFuncaoEol.CdUeCargoSobreposto,
+                        TipoVinculo = cargoFuncaoEol.TipoVinculoCargoSobreposto ?? 0,
+                        DataInicio = cargoFuncaoEol.DataInicioCargoSobreposto
                     });
                 }
             }

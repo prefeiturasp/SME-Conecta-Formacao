@@ -5,7 +5,7 @@ public class MensagemNegocio
     public const string IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA = "Importação arquivo registro não localizada";
     public const string IMPORTACAO_ARQUIVO_NAO_LOCALIZADA = "Importação arquivo não localizada";
     public const string PARAMETRO_X_NAO_ENCONTRADO_PARA_ANO_Y = "Parâmetro '{0}' não encontrado para o ano '{1}'.";
-    public const string A_PLANILHA_DE_INSCRICAO_CURSISTA_NAO_TEM_O_NOME_DA_COLUNA_Y_NA_COLUNA_Z = "A planilha de inscrição de cursistas deveria apresentar o nome '{1}' na coluna '{2}', conforme previsto planilha modelo.";
+    public const string A_PLANILHA_DE_INSCRICAO_CURSISTA_NAO_TEM_O_NOME_DA_COLUNA_Y_NA_COLUNA_Z = "A planilha de inscrição de cursistas deveria apresentar o nome '{0}' na coluna '{1}', conforme previsto planilha modelo.";
     public const string ARQUIVO_IMPORTADO_COM_SUCESSO = "Arquivo importado com sucesso";
     public const string CONTENT_TYPE_EXCEL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     public const string SOMENTE_ARQUIVO_XLSX_SUPORTADO = "Esse arquivo não é um XLSX. Somente arquivos do tipo XLSX são permitidos";
@@ -89,8 +89,9 @@ public class MensagemNegocio
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível inserir sua inscrição.";
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL = "A lotação/local de trabalho do cursista não corresponde com a DRE promotora desta formação. Deseja continuar?";
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_AUTOMATICO = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível inserir sua inscrição. {0}";
-    public const string USUARIO_JA_INSCRITO_NA_PROPOSTA = "Você já está matriculado nesta formação. Confira mais detalhes em \"Minhas inscrições\".";
+    public const string USUARIO_JA_INSCRITO_NA_PROPOSTA = "Este cursista já está matriculado nesta formação. Confira mais detalhes na lista de inscrição dessa formação.";
     public const string USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO = "Cargo/Função selecionado não definido no público alvo da formação, sendo assim, não será possível inserir a sua inscrição.";
+    public const string CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL = "Este cursista não possui cargo compatível com o público alvo da formação, não será possível realizar a sua inscrição.";
     public const string INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição, a turma selecionada não possui mais vagas disponível.";
     public const string INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição automática, a turma selecionada não possui mais vagas disponível. {0}";
     public const string USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
@@ -137,4 +138,11 @@ public class MensagemNegocio
     public const string INSCRICAO_MANUAL_REALIZADA_COM_SUCESSO = "Inscrição manual realizada com sucesso";
 
     public const string SITUACAO_DO_ARQUIVO_DEVE_SER_VALIDADO = "A situação do arquivo deve ser validado";
+    public const string USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS = "O usuário não foi encontrado com o Registro Funcional ou CPF informados";
+    public const string INSCRICAO_FORA_DO_PERIODO_INSCRICAO = "Inscrição fora do período de inscrição";
+    public const string RF_MENOR_QUE_7_DIGITOS = "RF do arquivo foi preenchido com menos de 7 dígitos";
+
+    public const string CARGO_NAO_ENCONTRATO_PARA_ALTERACAO_VINCULO_INSCRICAO = "O cargo não foi encontrado para alteração do vínculo da inscrição";
+    public const string ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA = "Atualização do vínculo da inscrição não localizada";
+    public const string AS_INSCRICOES_PARA_ESTA_PROPOSTA_NAO_ESTAO_ABERTAS = "As inscrições para esta proposta não estão abertas.";
 }

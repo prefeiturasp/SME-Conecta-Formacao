@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Log;
+using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
@@ -45,18 +46,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                     Situacao = SituacaoInscricao.EmAnalise
                 };
 
-                if (usuario.Tipo == TipoUsuario.Interno)
-                {
-                    await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId);
-
-                    await ValidarDreUsuarioInterno(usuario.Login, inscricao);
-                }
-                else
-                {
-                    await ValidarDreUsuarioExterno(inscricao.PropostaTurmaId, usuario.CodigoEolUnidade);
-                }
-
                 await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
+
+                if (usuario.Tipo == TipoUsuario.Interno)
+                    await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId);
 
                 importacaoInscricaoCursista.Inscricao = inscricao;
 
@@ -99,7 +92,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 }
 
                 if (!inscricao.CargoId.HasValue)
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
             }
 
             var funcaoAtividadeProposta = await mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId));
@@ -134,52 +127,28 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 }
 
                 if (!inscricao.FuncaoId.HasValue)
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
-            }
-        }
-
-        private async Task ValidarDreUsuarioInterno(string registroFuncional, Dominio.Entidades.Inscricao inscricao)
-        {
-            var dres = await mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(inscricao.PropostaTurmaId));
-            dres = dres.Where(t => !t.Dre.Todos);
-            if (dres.PossuiElementos())
-            {
-                var dreUeAtribuicoes = await mediator.Send(new ObterDreUeAtribuicaoPorRegistroFuncionalCodigoCargoQuery(registroFuncional, inscricao.CargoCodigo));
-                if (dreUeAtribuicoes.PossuiElementos())
-                {
-                    var dreUeAtribuicao = dreUeAtribuicoes.FirstOrDefault(f => dres.Any(d => d.DreCodigo == f.DreCodigo));
-                    if (dreUeAtribuicao.EhNulo())
-                        dreUeAtribuicao = dreUeAtribuicoes.FirstOrDefault();
-
-                    inscricao.CargoDreCodigo = dreUeAtribuicao.DreCodigo;
-                    inscricao.CargoUeCodigo = dreUeAtribuicao.UeCodigo;
-                }
-
-                if ((inscricao.CargoDreCodigo.EstaPreenchido() && !dres.Any(a => a.Dre.Codigo == inscricao.CargoDreCodigo)) ||
-                    (inscricao.FuncaoDreCodigo.EstaPreenchido() && !dres.Any(a => a.Dre.Codigo == inscricao.FuncaoDreCodigo)))
-                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
-            }
-        }
-
-        private async Task ValidarDreUsuarioExterno(long propostaTurmaId, string codigoEolUnidade)
-        {
-            var dres = await mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(propostaTurmaId));
-            dres = dres.Where(t => !t.Dre.Todos);
-            if (dres.PossuiElementos())
-            {
-                var unidade = await mediator.Send(new ObterUnidadePorCodigoEOLQuery(codigoEolUnidade));
-
-                var codigo = unidade.Tipo == Infra.Servicos.Eol.UnidadeEolTipo.Escola ? unidade.CodigoReferencia : unidade.Codigo;
-                if (!dres.Any(t => t.Dre.Codigo == codigo))
-                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
+                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
             }
         }
 
         private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDTO inscricaoCursistaDTO ) 
         {
             var ehProfissionalRede = inscricaoCursistaDTO.ColaboradorRede.EhColaboradorRede();
-            
             var login = ehProfissionalRede ? inscricaoCursistaDTO.RegistroFuncional : inscricaoCursistaDTO.Cpf;
+
+            if (login.NaoEstaPreenchido())
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS);
+
+            if (ehProfissionalRede)
+            {
+                if (login.Length < 7)
+                    throw new NegocioException(MensagemNegocio.RF_MENOR_QUE_7_DIGITOS);
+            }
+            else
+            {
+                if (!UtilValidacoes.CpfEhValido(login))
+                    throw new NegocioException(MensagemNegocio.CPF_INVALIDO);
+            }
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(login.SomenteNumeros()));
             if (usuario.NaoEhNulo())
@@ -188,7 +157,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             if (ehProfissionalRede)
             {
                 var dadosUsuario = await mediator.Send(new ObterMeusDadosServicoAcessosPorLoginQuery(login));
-                if (dadosUsuario.EhNulo())
+                if (dadosUsuario.EhNulo() || string.IsNullOrEmpty(dadosUsuario.Login))
                     return default;
 
                 usuario = _mapper.Map<Dominio.Entidades.Usuario>(dadosUsuario);

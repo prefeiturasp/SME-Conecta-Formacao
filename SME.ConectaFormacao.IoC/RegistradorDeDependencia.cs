@@ -353,7 +353,9 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTurmasInscricao, CasoDeUsoObterTurmasInscricao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPaginada, CasoDeUsoObterInscricaoPaginada>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosPaginadosComFiltros, CasoDeUsoObterDadosPaginadosComFiltros>();
-
+        _serviceCollection.TryAddScoped<ICasoDeUsoAlterarVinculoInscricao, CasoDeUsoAlterarVinculoInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId, CasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId>();
+        
         _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomatica, CasoDeUsoRealizarInscricaoAutomatica>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratarTurmas, CasoDeUsoRealizarInscricaoAutomaticaTratarTurmas>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista, CasoDeUsoRealizarInscricaoAutomaticaTratarCursista>();
@@ -374,6 +376,9 @@ public class RegistradorDeDependencia
         
         _serviceCollection.TryAddScoped<ICasoDeUsoImportacaoInscricaoCursistaValidar, CasoDeUsoImportacaoInscricaoCursistaValidar>();
         _serviceCollection.TryAddScoped<ICasoDeUsoImportacaoInscricaoCursistaValidarItem, CasoDeUsoImportacaoInscricaoCursistaValidarItem>();
+        
+        _serviceCollection.TryAddScoped<ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista, CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar, CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar>();
     }
 
     protected virtual void RegistrarHttpClients()

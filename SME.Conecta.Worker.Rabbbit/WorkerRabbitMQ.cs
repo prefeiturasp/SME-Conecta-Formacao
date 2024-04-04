@@ -44,6 +44,9 @@ namespace SME.Conecta.Worker
 
             Comandos.Add(RotasRabbit.ProcessarArquivoDeImportacaoInscricao, new ComandoRabbit("Processar arquivo de importação e seus registro validos", typeof(ICasoDeUsoProcessarArquivoDeImportacaoInscricao), true));
             Comandos.Add(RotasRabbit.ProcessarRegistroDoArquivoDeImportacaoInscricao, new ComandoRabbit("Processar registro do arquivo de importação", typeof(ICasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao), true));
+            
+            Comandos.Add(RotasRabbit.AtualizarCargoFuncaoVinculoInscricaoCursista, new ComandoRabbit("Atualizar o cargo, função e vínculo da inscrição do cursista.", typeof(ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista), true));
+            Comandos.Add(RotasRabbit.AtualizarCargoFuncaoVinculoInscricaoCursistaTratar, new ComandoRabbit("Atualizar o cargo, função e vínculo da inscrição do cursista - Tratar por cursista.", typeof(ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar), true));            
         }
     }
 }
