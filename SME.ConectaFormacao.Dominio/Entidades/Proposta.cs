@@ -71,6 +71,18 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             }
         }
         public IEnumerable<PropostaTipoInscricao> TiposInscricao { get; set; }
+        
+        public bool EstaEmPeriodoDeInscricao
+        {
+            get
+            {
+                if (!DataInscricaoInicio.HasValue && !DataInscricaoFim.HasValue)
+                    return false;
+
+                return DataInscricaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date &&
+                       DataInscricaoFim.Value.Date >= DateTimeExtension.HorarioBrasilia().Date;
+            }
+        }
 
     }
 }

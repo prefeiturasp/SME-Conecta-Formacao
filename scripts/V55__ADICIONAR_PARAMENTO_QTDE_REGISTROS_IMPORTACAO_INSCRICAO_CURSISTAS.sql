@@ -1,0 +1,3 @@
+insert into parametro_sistema (nome, tipo, descricao, valor, ano, ativo, criado_em, criado_por, criado_login)
+select 'QtdeRegistrosImportacaoArquivoInscricaoCursista', 6, 'Estabelece a quantidade de registros que podem ser processados por página na validação de importação de arquivo de inscrição cursista','1000', 2024, true, now(), 'Sistema', 'Sistema' 
+where not exists (select id from parametro_sistema where ano = 2024 and tipo = 6);

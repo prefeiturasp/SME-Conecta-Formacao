@@ -9,10 +9,12 @@ namespace SME.ConectaFormacao.Aplicacao
     public class SalvarUsuarioParcialCommandHandler : IRequestHandler<SalvarUsuarioParcialCommand, bool>
     {
         private readonly IRepositorioUsuario _repositorioUsuario;
+        private readonly IMediator _mediator;
 
-        public SalvarUsuarioParcialCommandHandler(IRepositorioUsuario repositorioUsuario)
+        public SalvarUsuarioParcialCommandHandler(IRepositorioUsuario repositorioUsuario, IMediator mediator)
         {
             _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<bool> Handle(SalvarUsuarioParcialCommand request, CancellationToken cancellationToken)
@@ -26,6 +28,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             usuario.Nome = request.Nome;
+
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Usuario.Parametros(usuario.Login)));
 
             return (await _repositorioUsuario.Atualizar(usuario)).Id > 0;
         }
