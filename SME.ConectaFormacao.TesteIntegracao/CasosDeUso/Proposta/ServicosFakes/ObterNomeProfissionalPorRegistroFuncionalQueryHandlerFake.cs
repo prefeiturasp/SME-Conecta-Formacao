@@ -3,16 +3,17 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using System.Net;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes
 {
-    public class ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFake : IRequestHandler<ObterNomeProfissionalPorRegistroFuncionalQuery, string>
+    public class ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFake : IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioDTO>
     {
-        public async Task<string> Handle(ObterNomeProfissionalPorRegistroFuncionalQuery request, CancellationToken cancellationToken)
+        public async Task<RetornoUsuarioDTO> Handle(ObterNomeCpfProfissionalPorRegistroFuncionalQuery request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(request.RegistroFuncional))
                 throw new NegocioException(mensagem: MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO, statusCode: HttpStatusCode.NoContent);
-            return "Nome do Profissional";
+            return new RetornoUsuarioDTO() { Nome = "Nome do Profissional", Cpf = "99999999999" };
         }
     }
 }

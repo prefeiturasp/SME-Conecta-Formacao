@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -28,18 +29,20 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 var formacao = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
                 var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
+
                 var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
-                retornoComTurmas.AddRange(ObterTurmas(turmas, formacao));
+                var tiposInscricao = await _repositorioInscricao.ObterTiposInscricaoPorPropostaIds(codigosFormacao);
+
+                retornoComTurmas.AddRange(MapearTurmasETipoInscricao(formacao, turmas, tiposInscricao));
             }
+
             return new PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas, totalRegistrosFiltro, request.NumeroRegistros);
         }
 
-        private static IEnumerable<DadosListagemFormacaoComTurmaDTO> ObterTurmas(IEnumerable<ListagemFormacaoComTurmaDTO>? turmasFormacao, IEnumerable<DadosListagemFormacaoComTurmaDTO> formacoes)
+        private static IEnumerable<DadosListagemFormacaoComTurmaDTO> MapearTurmasETipoInscricao(IEnumerable<DadosListagemFormacaoComTurmaDTO> formacoes, IEnumerable<ListagemFormacaoComTurmaDTO>? turmasFormacao, IEnumerable<PropostaTipoInscricao> tipoInscricaos)
         {
-            var retorno = formacoes;
             foreach (var proposta in formacoes)
             {
-
                 var inscricao = turmasFormacao?.Where(x => x.PropostaId == proposta.Id);
                 var turmas = inscricao!.Select(i => new DadosListagemFormacaoTurma
                 {
@@ -49,10 +52,12 @@ namespace SME.ConectaFormacao.Aplicacao
                     Data = inscricao!.Where(x => x.NomeTurma == i.NomeTurma).Where(x => x.Datas != null).Any() ?
                            string.Join(", ", inscricao!.Where(x => x.NomeTurma == i.NomeTurma).Select(x => x.Datas)) : string.Empty
                 }).DistinctBy(x => x.NomeTurma);
-                retorno.FirstOrDefault(x => x.Id == proposta.Id)!.Turmas = turmas;
+
+                proposta.Turmas = turmas;
+                proposta.TiposInscricoes = tipoInscricaos.Where(t => t.PropostaId == proposta.Id).Select(s => s.TipoInscricao);
             }
 
-            return retorno;
+            return formacoes;
         }
     }
 }
