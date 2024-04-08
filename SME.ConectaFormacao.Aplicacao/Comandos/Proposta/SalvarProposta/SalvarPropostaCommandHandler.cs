@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await _mediator.Send(new SalvarPropostaDreCommand(request.PropostaId, request.Proposta.Dres), cancellationToken);
 
-            await _mediator.Send(new SalvarPropostaTurmaCommand(request.PropostaId, request.Proposta.Turmas,request.Proposta.Situacao), cancellationToken);
+            await _mediator.Send(new SalvarPropostaTurmaCommand(request.PropostaId, request.Proposta.Turmas, request.Proposta.Situacao), cancellationToken);
 
             await _mediator.Send(new SalvarPropostaTurmaDreCommand(request.Proposta.ObterPropostaTurmasDres), cancellationToken);
 

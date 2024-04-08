@@ -22,6 +22,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 
             Map(c => c.ArquivoId).ToColumn("arquivo_id");
             Map(c => c.Situacao).ToColumn("situacao");
+            Map(c => c.Origem).ToColumn("origem");
             Map(c => c.TipoVinculo).ToColumn("tipo_vinculo");
 
             Map(c => c.PropostaTurma).Ignore();

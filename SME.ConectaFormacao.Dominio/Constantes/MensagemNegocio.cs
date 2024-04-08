@@ -51,12 +51,18 @@ public class MensagemNegocio
     public const string AREA_PROMOTORA_EXISTE_GRUPO_DRE_CADASTRADO = "Já existe uma área promotora cadastrada para o perfil e dre selecionado";
     public const string AREA_PROMOTORA_POSSUI_PROPOSTA = "Área promotora já possui proposta cadastrada";
     public const string EMAIL_INVALIDO = "E-mail {0} é inválido";
+    public const string EMAIL_EDU_INVALIDO = "E-mail @edu é inválido";
+    public const string EMAIL_NAO_ATUALIZADO = "Não foi possível atualizar o e-mail";
+    public const string EMAIL_EDU_INVALIDO_NAO_VALIDO = "E-mail @edu informado não é um e-mail @edu válido";
     public const string CPF_COM_DIGITO_VERIFICADOR_INVALIDO = "CPF {0} é inválido";
     public const string PROPOSTA_NAO_ENCONTRADA = "Proposta não encontrada";
     public const string PROPOSTA_JEIF_COM_OUTROS = "Proposta com os Tipos Inscrição Automática e Automática (JEIF) não podem conter a Função específica outros";
     public const string TOKEN_INVALIDO = "Token inválido";
 
     public const string PROPOSTA_FUNCAO_ESPECIFICA_OUTROS = "É necessário informar função específicas outros da proposta";
+    public const string PROPOSTA_PUBLICO_ALVO_OUTROS = "É necessário informar público alvo outros da proposta";
+    public const string PROPOSTA_PUBLICO_ALVO_OUTROS_NAO_PODE_SER_PROPOSTA_AUTOMATICA = "Não é permitido selecionar público alvo outros em uma formação com inscrição automática";
+    public const string PROPOSTA_PUBLICO_ALVO_OUTROS_NAO_PERMITE_MAIS_CARGO_SELECIONADO = "Ao selecionar o público alvo outros, não é permitido selecionar mais cargos";
     public const string PROPOSTA_CRITERIO_VALIDACAO_INSCRICAO_OUTROS = "É necessário informar critérios de validação das inscrições outros da proposta";
     public const string PROPOSTA_CRITERIO_VALIDACAO_PUBLICO_ALVO_ANO_TURMA_COMPONENTE_CURRICULAR = "É necessário informar Público Alvo ou Função Específica ou Modalidade, Ano da Turma e Componente Curricular da proposta";
     public const string PROPOSTA_PALAVRA_CHAVE = "É necessário informar palavras chaves da proposta";
@@ -111,6 +117,7 @@ public class MensagemNegocio
     public const string A_SENHA_NAO_PODE_CONTER_ESPACOS_EM_BRANCO = "A senhão não pode conter espaço em branco";
     public const string A_SENHA_DEVE_CONTER_SOMENTE = "A senha deve conter pelo menos 1 letra maiúscula, 1 minúscula, 1 número e/ou 1 caractere especial e não pode conter acentuação";
     public const string NAO_FOI_POSSIVEL_CADASTRAR_USUARIO_EXTERNO_NO_CORESSO = "Não foi possível cadastrar usuário externo no CoreSSO";
+    public const string USUARIO_JA_POSSUI_ACESSO_NO_CORRESSO = "Você já possui login no sistema. Acesse informando seu RF ou CPF e senha dos Sistemas da SME.";
     public const string VOCE_JA_POSSUI_LOGIN_CONECTA = "Você já possui login no sistema. Caso tenha esquecido a senha, clique em 'esqueci a senha'";
     public const string VOCE_JA_POSSUI_LOGIN_CORESSO = "Você já possui login no sistema. Acesse informando seu RF ou CPF e senha dos Sistemas da SME";
     public const string USUARIO_NAO_VALIDOU_EMAIL = "Você não validou seu e-mail ainda. Caso não tenha recebido o e-mail clique no botão 'Reenviar'";
@@ -142,4 +149,6 @@ public class MensagemNegocio
     public const string CARGO_NAO_ENCONTRATO_PARA_ALTERACAO_VINCULO_INSCRICAO = "O cargo não foi encontrado para alteração do vínculo da inscrição";
     public const string ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA = "Atualização do vínculo da inscrição não localizada";
     public const string AS_INSCRICOES_PARA_ESTA_PROPOSTA_NAO_ESTAO_ABERTAS = "As inscrições para esta proposta não estão abertas.";
+    public const string FUNCAOESPECIFICA_OU_PUBLICOALVO_NAO_INFORMADO = "Os campos de público alvo e função específica não foram informados, por favor informe Ano/Etapa e componente curricular";
+    public const string INFORMAR_PUBLICO_FUNCAO_MODALIDADE = "É necessário informar o público alvo ou função especifica ou Modalidade com Ano/Etapa com Componente Curricular";
 }

@@ -21,14 +21,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             {
                 // TODO: Buscar cargos EOL somente para usuários rede parceira
                 var cargosFuncoesEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuarioLogado.Login));
-                
-                if(cargosFuncoesEol.Any())
+
+                if (cargosFuncoesEol.Any())
                     await AtualizaCpfUsuario(usuarioLogado, cargosFuncoesEol);
                 retorno = new DadosInscricaoDTO
                 {
                     UsuarioNome = usuarioLogado.Nome,
                     UsuarioCpf = cargosFuncoesEol.Any() ? cargosFuncoesEol.FirstOrDefault().Cpf.AplicarMascara(@"000\.000\.000\-00") :  usuarioLogado.Login.AplicarMascara(@"000\.000\.000\-00"),
-                    UsuarioEmail = usuarioLogado.Email,
+                    UsuarioEmail = usuarioLogado.EmailEducacional  ?? string.Empty,
                     UsuarioRf = usuarioLogado.Login,
                     UsuarioCargos = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoesEol)
                 };
@@ -39,8 +39,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 {
                     UsuarioNome = usuarioLogado.Nome,
                     UsuarioCpf = usuarioLogado.Login.AplicarMascara(@"000\.000\.000\-00"),
-                    UsuarioEmail = usuarioLogado.Email,
-                    UsuarioRf = usuarioLogado.Login
+                    UsuarioEmail = usuarioLogado.EmailEducacional ?? string.Empty,
+                    UsuarioRf = usuarioLogado.Login,
                 };
             }
 

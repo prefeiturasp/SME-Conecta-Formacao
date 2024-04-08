@@ -1809,9 +1809,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             and not ap.excluido;
 
                         select 
-                               cf.nome
+                               case when cf.outros then p.publico_alvo_outros else cf.nome end as nome
                         from proposta_publico_alvo ppa
                         join cargo_funcao cf on cf.id = ppa.cargo_funcao_id
+                        join proposta p on p.id = ppa.proposta_id and not p.excluido
                         where ppa.proposta_id = @propostaId
                           and not ppa.excluido 
                           and not cf.excluido;
@@ -1857,19 +1858,23 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao });
 
-            var formacaoDetalhe = await queryMultiple.ReadFirstAsync<FormacaoDetalhada>();
-            formacaoDetalhe.AreaPromotora = await queryMultiple.ReadFirstAsync<string>();
-            formacaoDetalhe.PublicosAlvo = await queryMultiple.ReadAsync<string>();
-            formacaoDetalhe.PalavrasChaves = await queryMultiple.ReadAsync<string>();
-            formacaoDetalhe.Turmas = await queryMultiple.ReadAsync<FormacaoTurma>();
-            var formacaoDatasTurmas = await queryMultiple.ReadAsync<FormacaoTurmaData>();
-            var arquivos = await queryMultiple.ReadAsync<Arquivo>();
-            formacaoDetalhe.ArquivoImagemDivulgacao = arquivos.Any() ? arquivos.FirstOrDefault() : null;
+            var formacaoDetalhe = await queryMultiple.ReadFirstOrDefaultAsync<FormacaoDetalhada>();
 
-            foreach (var turma in formacaoDetalhe.Turmas)
-                turma.Periodos = formacaoDatasTurmas.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId).OrderBy(o => o.DataInicio);
+            if (formacaoDetalhe.NaoEhNulo())
+            {
+                formacaoDetalhe.AreaPromotora = await queryMultiple.ReadFirstOrDefaultAsync<string>();
+                formacaoDetalhe.PublicosAlvo = await queryMultiple.ReadAsync<string>();
+                formacaoDetalhe.PalavrasChaves = await queryMultiple.ReadAsync<string>();
+                formacaoDetalhe.Turmas = await queryMultiple.ReadAsync<FormacaoTurma>();
+                var formacaoDatasTurmas = await queryMultiple.ReadAsync<FormacaoTurmaData>();
+                var arquivos = await queryMultiple.ReadAsync<Arquivo>();
+                formacaoDetalhe.ArquivoImagemDivulgacao = arquivos.Any() ? arquivos.FirstOrDefault() : null;
 
-            formacaoDetalhe.Turmas = formacaoDetalhe.Turmas.OrderBy(o => o.Periodos.FirstOrDefault().DataInicio);
+                foreach (var turma in formacaoDetalhe.Turmas)
+                    turma.Periodos = formacaoDatasTurmas.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId).OrderBy(o => o.DataInicio);
+
+                formacaoDetalhe.Turmas = formacaoDetalhe.Turmas.OrderBy(o => o.Periodos.FirstOrDefault().DataInicio);
+            }
 
             return formacaoDetalhe;
         }

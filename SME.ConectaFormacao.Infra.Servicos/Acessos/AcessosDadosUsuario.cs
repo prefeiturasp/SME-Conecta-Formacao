@@ -6,6 +6,7 @@
         public string Cpf { get; set; }
         public string Login { get; set; }
         public string Email { get; set; }
+        public string? EmailEducacional { get; set; }
         public string Telefone { get; set; }
         public string Endereco { get; set; }
         public string Numero { get; set; }
@@ -15,5 +16,6 @@
         public string Cidade { get; set; }
         public string Estado { get; set; }
         public int Tipo { get; set; }
+        public string NomeUnidade { get; set; }
     }
 }

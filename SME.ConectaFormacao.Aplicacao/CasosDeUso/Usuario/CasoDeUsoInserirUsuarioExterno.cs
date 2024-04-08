@@ -22,8 +22,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var cpfSemPontos = usuarioExternoDto.Cpf.SomenteNumeros();
             usuarioExternoDto.Login = cpfSemPontos;
             usuarioExternoDto.Cpf = cpfSemPontos;
-
-            ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email);
+            usuarioExternoDto.EmailEducacional = usuarioExternoDto.EmailEducacional.Trim().ToLower();
+            ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email, usuarioExternoDto.EmailEducacional);
             await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login,cpfSemPontos);
 
             var existeNoCoreSSO = await mediator.Send(new UsuarioExisteNoCoreSsoQuery(usuarioExternoDto.Login));
@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 usuarioCriadoCoresso = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
 
             if (!usuarioCriadoCoresso)
-                throw new NegocioException(MensagemNegocio.NAO_FOI_POSSIVEL_CADASTRAR_USUARIO_EXTERNO_NO_CORESSO);
+                throw new NegocioException(MensagemNegocio.USUARIO_JA_POSSUI_ACESSO_NO_CORRESSO);
 
             bool confirmarEmail = await ObterParametroConfirmarEmailUsuarioExterno();
 
@@ -49,7 +49,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 usuarioExternoDto.Cpf,
                 tipo,
                 situacaoCadastroUsuario,
-                usuarioExternoDto.CodigoUnidade
+                usuarioExternoDto.CodigoUnidade,
+                usuarioExternoDto.EmailEducacional,
+                usuarioExternoDto.TipoEmail
             )));
 
             if (confirmarEmail)
@@ -89,7 +91,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             return await mediator.Send(new ObterDominioDeEmailPermitidoQuery());
         }
 
-        private static void ValidacoesPreenchimento(string senhaNova, string confirmarSenha, string cpf, string email)
+        private static void ValidacoesPreenchimento(string senhaNova, string confirmarSenha, string cpf, string email, string emailEdu)
         {
             var erros = new List<string>();
 
@@ -100,6 +102,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var emailValido = UtilValidacoes.EmailEhValido(email);
             if (!emailValido)
                 erros.Add(MensagemNegocio.EMAIL_INVALIDO.Parametros(email));
+
+            if (!string.IsNullOrEmpty(emailEdu))
+            {
+                var emailEduValido = UtilValidacoes.EmailEduEhValido(emailEdu);
+                if (!emailEduValido)
+                    erros.Add(MensagemNegocio.EMAIL_EDU_INVALIDO_NAO_VALIDO);
+            }
+            else
+            {
+                erros.Add(MensagemNegocio.EMAIL_EDU_INVALIDO);
+            }
 
             if (senhaNova.Contains(" "))
                 erros.Add(MensagemNegocio.A_SENHA_NAO_PODE_CONTER_ESPACOS_EM_BRANCO);

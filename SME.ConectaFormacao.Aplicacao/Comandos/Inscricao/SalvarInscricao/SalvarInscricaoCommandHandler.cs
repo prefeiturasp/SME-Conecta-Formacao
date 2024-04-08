@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -30,6 +31,10 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+            
+            var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
+            if (!Regex.IsMatch(request.InscricaoDTO.Email, pattern, RegexOptions.IgnoreCase))
+                throw new NegocioException(MensagemNegocio.EMAIL_EDU_INVALIDO);
 
             if (usuarioLogado.Tipo == TipoUsuario.Interno)
                 if (request.InscricaoDTO.CargoCodigo.EhNulo())
@@ -38,6 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoDTO);
             inscricao.UsuarioId = usuarioLogado.Id;
             inscricao.Situacao = SituacaoInscricao.EmAnalise;
+            inscricao.Origem = OrigemInscricao.Manual;
 
             await MapearCargoFuncao(inscricao, cancellationToken);
 
@@ -103,13 +109,19 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (cargosProposta.PossuiElementos())
             {
-                if (cargoId.HasValue && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
+                var cargoFuncaoOutros = await _mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia(), cancellationToken);
+                var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
+
+                if (cargoId.HasValue &&
+                    !cargoEhOutros &&
+                    !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
             {
-                if (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
+                if (funcaoId.HasValue &&
+                    !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }
         }

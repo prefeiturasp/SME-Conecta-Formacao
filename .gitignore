@@ -396,3 +396,7 @@ FodyWeavers.xsd
 .idea/
 *.sln.iml
 /SME.ConectaFormacao.TesteIntegracao/coveragereport
+.mono/registry/CurrentUser/software/microsoft/csdevkit/telemetry/persistentpropertybag/microsoft.visualstudio.code.servicehost/values.xml
+.mono/registry/CurrentUser/software/microsoft/csdevkit/v1/pids/30279_133565286559602351/values.xml
+.mono/registry/CurrentUser/software/microsoft/csdevkit/telemetry/persistentpropertybag/values.xml
+.mono/registry/CurrentUser/software/microsoft/sqmclient/values.xml
