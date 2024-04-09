@@ -38,4 +38,8 @@
         <None Remove="Consultas\Grupo\**" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Consultas\Funcionario\" />
+    </ItemGroup>
+
 </Project>

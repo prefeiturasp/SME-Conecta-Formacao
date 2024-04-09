@@ -16,6 +16,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Funcionario;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.FuncionarioExterno.ObterFuncionarioExternoPorCpf;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo;
@@ -34,6 +35,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.FuncionarioExterno.ObterFuncionarioExternoPorCpf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
@@ -379,6 +381,8 @@ public class RegistradorDeDependencia
         
         _serviceCollection.TryAddScoped<ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista, CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar, CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar>();
+        
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuariosAdminDf, CasoDeUsoObterUsuariosAdminDf>();
     }
 
     protected virtual void RegistrarHttpClients()
