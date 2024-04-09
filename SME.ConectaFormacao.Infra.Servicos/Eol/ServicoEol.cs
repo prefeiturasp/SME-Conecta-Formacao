@@ -124,6 +124,16 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<DreUeAtribuicaoServicoEol[]>();
         }
+
+        public async Task<IEnumerable<UsuarioPerfilServicoEol>> ObterUsuariosPorPerfis(IEnumerable<Guid> perfis)
+        {
+            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_USUARIOS_POR_PERFIS.Parametros(perfis));
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.ERRO_OBTER_USUARIOS_POR_PERFIS, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<UsuarioPerfilServicoEol[]>();            
+        }
         
     }
 }
