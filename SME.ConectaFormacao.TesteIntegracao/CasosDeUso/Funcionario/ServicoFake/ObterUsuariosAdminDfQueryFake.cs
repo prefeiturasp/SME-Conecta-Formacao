@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Funcionario
     {
         public async Task<IEnumerable<UsuarioAdminDfDTO>> Handle(ObterUsuariosAdminDfQuery request, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(UsuarioAdminDfMock.GerarListaUsuarios());
+            return await Task.FromResult(UsuarioAdminDfMock.GerarListaUsuariosAdminDf());
         }
     }
 }

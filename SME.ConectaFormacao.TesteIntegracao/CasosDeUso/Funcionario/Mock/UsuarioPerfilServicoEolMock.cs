@@ -6,6 +6,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Funcionario
 {
     public static class UsuarioPerfilServicoEolMock
     {
+        public static IEnumerable<UsuarioPerfilServicoEol>? UsuariosPerfis { get; private set; }
+        
         public static IEnumerable<UsuarioPerfilServicoEol> GerarListaUsuariosPerfis()
         {
             var perfis = new[] { Perfis.ADMIN_DF, "19db5e0c-80d4-439a-a2e8-91c23bda45ed" };
@@ -19,8 +21,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Funcionario
                 var perfil = perfis[index];
                 return perfil;
             });
+            UsuariosPerfis = faker.Generate(10);
 
-            return faker.Generate(10);
+            return UsuariosPerfis;
         }
     }
 }
