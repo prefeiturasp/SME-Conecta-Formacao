@@ -43,7 +43,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 {
                     PropostaTurmaId = propostaTurma.Id,
                     UsuarioId = usuario.Id,
-                    Situacao = SituacaoInscricao.EmAnalise
+                    Situacao = SituacaoInscricao.EmAnalise,
+                    Origem = OrigemInscricao.Manual
                 };
 
                 await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
