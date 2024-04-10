@@ -23,5 +23,6 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces
         Task<bool> EnviarEmailValidacaoUsuarioExterno(string login);
         Task<bool> AtualizarUsuarioCoreSSO(string login, string nome, string email, string senha);
         Task<bool> AlterarNome(string login, string nome);
+        Task<AcessosConfiguracaoEmailRetorno> ObterConfiguracaoEmail();
     }
 }
