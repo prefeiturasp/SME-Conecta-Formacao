@@ -175,6 +175,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoAlterarProposta.Executar(id, propostaDTO));
         }
+        
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_A, Policy = "Bearer")]
+        public async Task<IActionResult> DevolverProposta(
+            [FromServices] ICasoDeUsoDevolverProposta casoDeUso,
+            [FromRoute] long id,
+            [FromBody] string justificativa)
+        {
+            return Ok(await casoDeUso.Executar(id, justificativa));
+        }        
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(bool), 200)]

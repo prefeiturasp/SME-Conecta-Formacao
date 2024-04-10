@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -10,19 +9,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
     public class CasoDeUsoDevolverProposta : CasoDeUsoAbstrato, ICasoDeUsoDevolverProposta
     {
-        private readonly IMapper _mapper;
-
-        public CasoDeUsoDevolverProposta(IMediator mediator, IMapper mapper) : base(mediator)
+        public CasoDeUsoDevolverProposta(IMediator mediator) : base(mediator)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<bool> Executar(long propostaId, string justificativa)
         {
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
-
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
+
+            if (string.IsNullOrEmpty(justificativa))
+                throw new NegocioException(MensagemNegocio.JUSTIFICATIVA_NAO_INFORMADA);
 
             await mediator.Send(new AlterarSituacaoDaPropostaCommand(propostaId, SituacaoProposta.Devolvida));
 
