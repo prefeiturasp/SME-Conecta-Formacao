@@ -17,7 +17,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
     {
         private readonly IMapper _mapper;
         private readonly IConexoesRabbit _conexoesRabbit;
-
         public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator, IMapper mapper, IConexoesRabbit conexoesRabbit) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -38,13 +37,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 var usuario = await ObterUsuarioPorLogin(importacaoInscricaoCursista) ??
                               throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-
+                
+                var cargoFuncaoUsuarioEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuario.Login));
+                var tipoVinculo = cargoFuncaoUsuarioEol?.FirstOrDefault().TipoVinculoCargoSobreposto ?? cargoFuncaoUsuarioEol?.FirstOrDefault().TipoVinculoCargoBase;
                 var inscricao = new Dominio.Entidades.Inscricao()
                 {
                     PropostaTurmaId = propostaTurma.Id,
                     UsuarioId = usuario.Id,
                     Situacao = SituacaoInscricao.EmAnalise,
-                    Origem = OrigemInscricao.Manual
+                    Origem = OrigemInscricao.Manual,
+                    TipoVinculo = tipoVinculo,
                 };
 
                 await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
