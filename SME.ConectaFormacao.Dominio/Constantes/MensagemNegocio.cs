@@ -145,4 +145,6 @@ public class MensagemNegocio
     public const string AS_INSCRICOES_PARA_ESTA_PROPOSTA_NAO_ESTAO_ABERTAS = "As inscrições para esta proposta não estão abertas.";
 
     public const string DADOS_ENVIO_EMAIL_NAO_LOCALIZADO = "Os dados para o envio do e-mail não foram localizados.";
+
+    public const string EMAIL_AREA_PROMOTORA_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail da área promotora não foi cadastrado para envio do e-mail.";
 }

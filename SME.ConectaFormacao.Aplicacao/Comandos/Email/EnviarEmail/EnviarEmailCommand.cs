@@ -31,7 +31,9 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(c => c.EmailDestinatario)
                 .NotNull()
                 .NotEmpty()
-                .WithMessage("O e-mail do destinatário deve ser informado para o envio do e-mail.");
+                .WithMessage("O e-mail do destinatário deve ser informado para o envio do e-mail.")
+                .EmailAddress()
+                .WithMessage("O e-mail do destinatário não é válido.");
             
             RuleFor(c => c.Assunto)
                 .NotNull()
