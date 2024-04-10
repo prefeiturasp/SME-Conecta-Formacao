@@ -21,6 +21,6 @@ namespace SME.ConectaFormacao.Infra
         public const string AtualizarCargoFuncaoVinculoInscricaoCursista = "conecta.inscricao.cursista.atualizar.cargo.funcao.vinculo";
         public const string AtualizarCargoFuncaoVinculoInscricaoCursistaTratar = "conecta.inscricao.cursista.atualizar.cargo.funcao.vinculo.tratar";
 
-        public const string EnviarEmail = "conecta.enviar.email";
+        public const string EnviarEmailDevolverProposta = "conecta.enviar.email.devolver.proposta";
     }
 }

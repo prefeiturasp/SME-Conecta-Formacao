@@ -49,7 +49,7 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.AtualizarCargoFuncaoVinculoInscricaoCursista, new ComandoRabbit("Atualizar o cargo, função e vínculo da inscrição do cursista.", typeof(ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista), true));
             Comandos.Add(RotasRabbit.AtualizarCargoFuncaoVinculoInscricaoCursistaTratar, new ComandoRabbit("Atualizar o cargo, função e vínculo da inscrição do cursista - Tratar por cursista.", typeof(ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar), true));
             
-            Comandos.Add(RotasRabbit.EnviarEmail, new ComandoRabbit("Enviar e-mail", typeof(ICasoDeUsoEnviarEmail), true));
+            Comandos.Add(RotasRabbit.EnviarEmailDevolverProposta, new ComandoRabbit("Enviar e-mail ao devolver uma proposta", typeof(ICasoDeUsoEnviarEmailDevolverProposta), true));
         }
     }
 }

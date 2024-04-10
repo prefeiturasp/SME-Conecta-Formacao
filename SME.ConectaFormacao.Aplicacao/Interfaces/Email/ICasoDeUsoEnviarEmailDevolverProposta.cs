@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Email
 {
-    public interface ICasoDeUsoEnviarEmail : IRabbitUseCase
+    public interface ICasoDeUsoEnviarEmailDevolverProposta : IRabbitUseCase
     {
     }
 }
