@@ -105,6 +105,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task ValidarCargoFuncao(long propostaId, long? cargoId, long? funcaoId, CancellationToken cancellationToken)
         {
+            var temErroCargo = false;
+            var temErroFuncao = false;
             var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
             var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
 
@@ -113,19 +115,22 @@ namespace SME.ConectaFormacao.Aplicacao
                 var cargoFuncaoOutros = await _mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia(), cancellationToken);
                 var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
 
-                if ((!cargoId.HasValue || !funcaoId.HasValue))
-                {
-                    if (cargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId) )
-                        throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
-                }
+                if (cargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
+                    temErroCargo = true;
+
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
             {
-                if (funcaoId.HasValue &&
-                    !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                if (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
+                    temErroFuncao = true;
             }
+            
+            if(temErroCargo && temErroFuncao)
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+            
+            if(!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
         }
 
         private async Task ValidarDreUsuarioInterno(string registroFuncional, Inscricao inscricao, CancellationToken cancellationToken)
