@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<UsuarioAdminDfDTO>> Handle(ObterUsuariosAdminDfQuery request, CancellationToken cancellationToken)
         {
-            var perfis = new[] { new Guid(Perfis.ADMIN_DF) };
+            var perfis = new[] { Perfis.ADMIN_DF };
             var usuariosAdminDf = await _mediator.Send(new ObterUsuariosPorPerfisServicoEolQuery(perfis), cancellationToken);
             return !usuariosAdminDf.Any()
                 ? Enumerable.Empty<UsuarioAdminDfDTO>()
