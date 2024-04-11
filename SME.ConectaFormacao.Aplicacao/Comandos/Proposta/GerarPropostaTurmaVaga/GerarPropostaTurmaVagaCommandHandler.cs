@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao
                         await _repositorioProposta.InserirPropostaTurmaVagas(new PropostaTurmaVaga
                         {
                             PropostaTurmaId = turma.Id
-                        }, request.QuantidadeVagasTurma);
+                        }, vagasGerar);
                     }
                 }
 
