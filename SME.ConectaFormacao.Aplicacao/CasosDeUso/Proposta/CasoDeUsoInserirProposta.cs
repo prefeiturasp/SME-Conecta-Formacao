@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             var dres = await mediator.Send(ObterDresUsuarioLogadoQuery.Instancia());
 
             var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorGrupoIdEDresQuery(grupoUsuarioLogadoId, dres)) ??
-                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO, System.Net.HttpStatusCode.NotFound);
+                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO);
 
             var comunicado = await ObterComunicaddoParametroSistema();
             propostaDTO.AcaoFormativaTexto = comunicado.Descricao;

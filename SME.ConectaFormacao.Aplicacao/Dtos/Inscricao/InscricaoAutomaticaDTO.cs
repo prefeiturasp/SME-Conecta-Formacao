@@ -16,5 +16,6 @@
         public string UsuarioRf { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioCpf { get; set; }
+        public int? TipoVinculo { get; set; }
     }
 }

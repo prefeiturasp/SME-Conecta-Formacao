@@ -77,9 +77,8 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 var cargosFuncoes = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol), cancellationToken);
 
-                inscricao.CargoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Cargo)?.Id;
-
-                inscricao.FuncaoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
+                inscricao.CargoId = cargosFuncoes.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Cargo)?.Id;
+                inscricao.FuncaoId = cargosFuncoes.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
             }
         }
 
@@ -98,13 +97,15 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task ValidarExisteInscricaoNaProposta(long propostaId, long usuarioId)
         {
-            var possuiInscricaoNaProposta = await _repositorioInscricao.ExisteInscricaoNaProposta(propostaId, usuarioId);
+            var possuiInscricaoNaProposta = await _repositorioInscricao.UsuarioEstaInscritoNaProposta(propostaId, usuarioId);
             if (possuiInscricaoNaProposta)
                 throw new NegocioException(MensagemNegocio.USUARIO_JA_INSCRITO_NA_PROPOSTA);
         }
 
         private async Task ValidarCargoFuncao(long propostaId, long? cargoId, long? funcaoId, CancellationToken cancellationToken)
         {
+            var temErroCargo = false;
+            var temErroFuncao = false;
             var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
             var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
 
@@ -113,19 +114,22 @@ namespace SME.ConectaFormacao.Aplicacao
                 var cargoFuncaoOutros = await _mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia(), cancellationToken);
                 var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
 
-                if ((!cargoId.HasValue || !funcaoId.HasValue))
-                {
-                    if (cargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId) )
-                        throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
-                }
+                if (cargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
+                    temErroCargo = true;
+
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
             {
-                if (funcaoId.HasValue &&
-                    !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                if (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
+                    temErroFuncao = true;
             }
+            
+            if(temErroCargo && temErroFuncao)
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+            
+            if(!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
         }
 
         private async Task ValidarDreUsuarioInterno(string registroFuncional, Inscricao inscricao, CancellationToken cancellationToken)
