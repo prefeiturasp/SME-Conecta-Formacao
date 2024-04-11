@@ -18,8 +18,7 @@ namespace SME.ConectaFormacao.Infra
         public const string ProcessarArquivoDeImportacaoInscricao = "conecta.inscricao.processar.arquivo.importacao";
         public const string ProcessarRegistroDoArquivoDeImportacaoInscricao = "conecta.inscricao.processar.registro.arquivo.importacao";
 
-        //Dever ser executado somente uma vez em PROD
-        // public const string AtualizarCargoFuncaoVinculoInscricaoCursista = "conecta.inscricao.cursista.atualizar.cargo.funcao.vinculo";
-        // public const string AtualizarCargoFuncaoVinculoInscricaoCursistaTratar = "conecta.inscricao.cursista.atualizar.cargo.funcao.vinculo.tratar";        
+         public const string AtualizarCargoFuncaoVinculoInscricaoCursista = "conecta.inscricao.cursista.atualizar.cargo.funcao.vinculo";
+         public const string AtualizarCargoFuncaoVinculoInscricaoCursistaTratar = "conecta.inscricao.cursista.atualizar.cargo.funcao.vinculo.tratar";        
     }
 }

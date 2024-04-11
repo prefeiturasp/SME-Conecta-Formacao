@@ -18,17 +18,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             if (!inscricoesConfirmadas.Any())
                 return false;
 
-            // Descomentar para subir em prod
-            // foreach (var inscricao in inscricoesConfirmadas)
-            // {
-            //     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.AtualizarCargoFuncaoVinculoInscricaoCursistaTratar,
-            //         new AtualizarCargoFuncaoVinculoInscricaoCursistaTratarDto
-            //         {
-            //             Id = inscricao.Id,
-            //             Login = inscricao.Usuario.Login,
-            //             CargoCodigo = inscricao.CargoCodigo
-            //         }));
-            // }
+            foreach (var inscricao in inscricoesConfirmadas)
+            {
+                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.AtualizarCargoFuncaoVinculoInscricaoCursistaTratar,
+                    new AtualizarCargoFuncaoVinculoInscricaoCursistaTratarDto
+                    {
+                        Id = inscricao.Id,
+                        Login = inscricao.Usuario.Login,
+                        CargoCodigo = inscricao.CargoCodigo
+                    }));
+            }
             
             return true;
         }

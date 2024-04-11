@@ -1473,7 +1473,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_turma
-                        where proposta_id = @propostaId and not excluido";
+                        where proposta_id = @propostaId and not excluido order by nome";
             return await conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
         }
 
@@ -1825,7 +1825,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           and not ppc.excluido 
                           and not pc.excluido;
 
-                        select pt.id,
+                        select distinct pt.id,
                                pt.nome,
                                pe.local,
                                pe.hora_inicio horaInicio,
