@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -15,20 +16,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<bool> Executar(long propostaId, string justificativa)
+        public async Task<bool> Executar(long propostaId, DevolverPropostaDTO devolverPropostaDto)
         {
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            if (string.IsNullOrEmpty(justificativa))
+            if (string.IsNullOrEmpty(devolverPropostaDto.Justificativa))
                 throw new NegocioException(MensagemNegocio.JUSTIFICATIVA_NAO_INFORMADA);
 
             await mediator.Send(new AlterarSituacaoDaPropostaCommand(propostaId, SituacaoProposta.Devolvida));
 
-            await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.Devolvida, justificativa));
+            await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.Devolvida, devolverPropostaDto.Justificativa));
 
-            return await EnviarEmailAreaPromotora(proposta.AreaPromotoraId, proposta.NomeFormacao, justificativa);
+            return await EnviarEmailAreaPromotora(proposta.AreaPromotoraId, proposta.NomeFormacao, devolverPropostaDto.Justificativa);
         }
 
         private async Task<bool> EnviarEmailAreaPromotora(long areaPromotoraId, string nomeFormacao, string justificativa)

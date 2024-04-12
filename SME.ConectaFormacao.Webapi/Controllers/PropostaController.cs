@@ -184,9 +184,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> DevolverProposta(
             [FromServices] ICasoDeUsoDevolverProposta casoDeUso,
             [FromRoute] long id,
-            [FromBody] string justificativa)
+            [FromBody] DevolverPropostaDTO devolverPropostaDto)
         {
-            return Ok(await casoDeUso.Executar(id, justificativa));
+            return Ok(await casoDeUso.Executar(id, devolverPropostaDto));
         }        
 
         [HttpDelete("{id}")]
