@@ -80,7 +80,10 @@ public class Ao_devolver_proposta : TestePropostaBase
         var casoDeUso = ObterCasoDeUso<ICasoDeUsoDevolverProposta>();
         
         // act 
-        var retornoDto = await casoDeUso.Executar(proposta.Id, "Justificativa do teste integrado ao devolver a proposta.");
+        var retornoDto = await casoDeUso.Executar(proposta.Id, new DevolverPropostaDTO
+        {
+            Justificativa = "Justificativa do teste integrado ao devolver a proposta."
+        });
         
         // assert
         retornoDto.ShouldBeTrue();        
@@ -138,7 +141,10 @@ public class Ao_devolver_proposta : TestePropostaBase
         var casoDeUso = ObterCasoDeUso<ICasoDeUsoDevolverProposta>();
         
         // act 
-        var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, ""));
+        var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, new DevolverPropostaDTO
+        {
+            Justificativa = string.Empty
+        }));
         
         // assert
         excecao.ShouldNotBeNull();
