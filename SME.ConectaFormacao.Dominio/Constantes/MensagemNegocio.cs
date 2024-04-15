@@ -147,4 +147,5 @@ public class MensagemNegocio
     public const string DADOS_ENVIO_EMAIL_NAO_LOCALIZADO = "Os dados para o envio do e-mail não foram localizados.";
 
     public const string EMAIL_AREA_PROMOTORA_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail da área promotora não foi cadastrado para envio do e-mail.";
+    public const string RESPONSAVEL_DF_DEVE_SER_INFORMADO = "O responsável DF deve ser informado.";
 }
