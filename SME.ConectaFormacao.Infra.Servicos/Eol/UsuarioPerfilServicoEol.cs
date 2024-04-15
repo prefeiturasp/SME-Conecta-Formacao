@@ -2,8 +2,8 @@
 {
     public class UsuarioPerfilServicoEol
     {
-        public string Login { get; set; } = string.Empty;
+        public long Login { get; set; }
         public string Nome { get; set; } = string.Empty;
-        public string Perfil { get; set; } = string.Empty;
+        public Guid Perfil { get; set; }
     }
 }

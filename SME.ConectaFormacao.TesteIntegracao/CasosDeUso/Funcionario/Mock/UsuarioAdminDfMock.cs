@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Funcionario
                 return Enumerable.Empty<UsuarioAdminDfDTO>();
 
             return usuariosPerfis.Where(c => c.Perfil == Perfis.ADMIN_DF).Select(usuarioPerfil =>
-                new UsuarioAdminDfDTO { Rf = usuarioPerfil.Login, Nome = usuarioPerfil.Nome }).ToList();
+                new UsuarioAdminDfDTO { Rf = usuarioPerfil.Login.ToString().PadLeft(7, '0'), Nome = usuarioPerfil.Nome }).ToList();
         }        
     }
 }
