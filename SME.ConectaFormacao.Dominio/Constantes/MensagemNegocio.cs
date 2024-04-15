@@ -81,6 +81,7 @@ public class MensagemNegocio
     public const string ERRO_OBTER_CARGOS_FUNCIONARIO_EOL = "Não foi possível localizar os cargos do funcionário no EOL";
     public const string ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL = "Não foi possível localizar os funcionário no EOL com base nos critérios de cargo, função, ano, modalidade e componente curricular";
     public const string ERRO_OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_E_CARGO_EOL = "Não foi possível obter as dre com atribuicao do servidor e cargo no EOL";
+    public const string ERRO_OBTER_USUARIOS_POR_PERFIS = "Não foi possível obter os usuários dos perfis informados";
 
     public const string TURMA_NAO_ENCONTRADA = "Turma não encontrada";
     public const string NENHUMA_TURMA_ENCONTRADA = "Nenhuma turma encontrada para a proposta";
@@ -142,4 +143,8 @@ public class MensagemNegocio
     public const string CARGO_NAO_ENCONTRATO_PARA_ALTERACAO_VINCULO_INSCRICAO = "O cargo não foi encontrado para alteração do vínculo da inscrição";
     public const string ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA = "Atualização do vínculo da inscrição não localizada";
     public const string AS_INSCRICOES_PARA_ESTA_PROPOSTA_NAO_ESTAO_ABERTAS = "As inscrições para esta proposta não estão abertas.";
+
+    public const string DADOS_ENVIO_EMAIL_NAO_LOCALIZADO = "Os dados para o envio do e-mail não foram localizados.";
+
+    public const string EMAIL_AREA_PROMOTORA_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail da área promotora não foi cadastrado para envio do e-mail.";
 }

@@ -21,5 +21,6 @@
         public const string URL_USUARIOS_SISTEMAS_X_SENHA = "v1/usuarios/sistemas/{0}/senha";
         public const string URL_GRUPOS_SISTEMA_X = "v1/grupos/sistema/{0}";
         public const string URL_GRUPOS_SISTEMA_X_Y = "v1/grupos/sistema/{0}/{1}";
+        public const string URL_CONFIGURACAO_EMAIL_SISTEMA_X = "v1/configuracao/sistema/{0}";
     }
 }

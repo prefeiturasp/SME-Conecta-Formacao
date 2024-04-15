@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Constante;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 using System.Net;
+using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Eol
 {
@@ -123,6 +124,17 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<DreUeAtribuicaoServicoEol[]>();
+        }
+
+        public async Task<IEnumerable<UsuarioPerfilServicoEol>> ObterUsuariosPorPerfis(IEnumerable<Guid> perfis)
+        {
+            var parametros = perfis.ObjetoParaJson();
+            var resposta = await _httpClient.PostAsync(EndpointsEolConstantes.OBTER_USUARIOS_POR_PERFIS, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.ERRO_OBTER_USUARIOS_POR_PERFIS, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<UsuarioPerfilServicoEol[]>();            
         }
         
     }

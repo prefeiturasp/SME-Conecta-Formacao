@@ -13,12 +13,14 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly IRepositorioArquivo _repositorioArquivo;
+        private readonly IRepositorioPropostaMovimentacao _repositorioPropostaMovimentacao;
 
-        public ObterPropostaCompletaPorIdQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta, IRepositorioArquivo repositorioArquivo)
+        public ObterPropostaCompletaPorIdQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta, IRepositorioArquivo repositorioArquivo, IRepositorioPropostaMovimentacao repositorioPropostaMovimentacao)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _repositorioArquivo = repositorioArquivo ?? throw new ArgumentNullException(nameof(repositorioArquivo));
+            _repositorioPropostaMovimentacao = repositorioPropostaMovimentacao ?? throw new ArgumentNullException(nameof(repositorioPropostaMovimentacao));
         }
 
         public async Task<PropostaCompletoDTO> Handle(ObterPropostaCompletaPorIdQuery request, CancellationToken cancellationToken)
@@ -39,6 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.CriterioCertificacao = await _repositorioProposta.ObterCriterioCertificacaoPorPropostaId(request.Id);
             proposta.Turmas = await _repositorioProposta.ObterTurmasPorId(request.Id);
             proposta.TiposInscricao = await _repositorioProposta.ObterTiposInscricaoPorId(request.Id);
+            proposta.Movimentacao = await _repositorioPropostaMovimentacao.ObterUltimoParecerPropostaId(request.Id);
 
             foreach (var turma in proposta.Turmas)
                 turma.Dres = await _repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(turma.Id);
