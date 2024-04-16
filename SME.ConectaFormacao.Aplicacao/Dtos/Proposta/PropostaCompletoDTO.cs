@@ -52,5 +52,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public bool? IntegrarNoSGA { get; set; }
         public string? RfResponsavelDf { get; set; }
         public PropostaMovimentacaoDTO Movimentacao { get; set; }
+        public PropostaAreaPromotoraDTO AreaPromotora { get; set; }
     }
 }
