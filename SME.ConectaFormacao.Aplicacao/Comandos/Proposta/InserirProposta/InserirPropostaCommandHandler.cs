@@ -37,8 +37,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await _mediator.Send(new ValidarAreaPromotoraCommand(proposta.AreaPromotoraId, proposta.IntegrarNoSGA), cancellationToken);
 
-            await _mediator.Send(new ValidarResponsavelDfCommand(proposta.RfResponsavelDf, proposta.FormacaoHomologada), cancellationToken);
-
+            await _mediator.Send(new ValidarResponsavelDfCommand(proposta.RfResponsavelDf,
+                proposta.FormacaoHomologada, proposta.Situacao), cancellationToken);
 
             var transacao = _transacao.Iniciar();
             try

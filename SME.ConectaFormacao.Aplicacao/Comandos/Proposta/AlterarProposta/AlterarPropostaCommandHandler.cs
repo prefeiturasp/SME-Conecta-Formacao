@@ -42,7 +42,8 @@ namespace SME.ConectaFormacao.Aplicacao
             await _mediator.Send(new ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand(request.PropostaDTO.PublicosAlvo, request.PropostaDTO.FuncoesEspecificas,
                 request.PropostaDTO.Modalidades, request.PropostaDTO.AnosTurmas, request.PropostaDTO.ComponentesCurriculares), cancellationToken);
 
-            await _mediator.Send(new ValidarResponsavelDfCommand(request.PropostaDTO.RfResponsavelDf,request.PropostaDTO.FormacaoHomologada), cancellationToken);
+            await _mediator.Send(new ValidarResponsavelDfCommand(request.PropostaDTO.RfResponsavelDf,
+                request.PropostaDTO.FormacaoHomologada, request.PropostaDTO.Situacao), cancellationToken);
 
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
             propostaDepois.Id = proposta.Id;
