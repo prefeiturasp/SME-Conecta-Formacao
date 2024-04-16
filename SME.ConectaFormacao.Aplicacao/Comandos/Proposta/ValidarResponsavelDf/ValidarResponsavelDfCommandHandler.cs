@@ -18,7 +18,13 @@ public class ValidarResponsavelDfCommandHandler : IRequestHandler<ValidarRespons
     {
         var grupoUsuarioLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery(), cancellationToken);
         var ehFormacaoHomologada = request.FormacaoHomologada == FormacaoHomologada.Sim;
-        if (grupoUsuarioLogado == Perfis.ADMIN_DF && ehFormacaoHomologada && string.IsNullOrEmpty(request.RfResponsavelDf))
+
+        if (grupoUsuarioLogado == Perfis.ADMIN_DF &&
+            ehFormacaoHomologada &&
+            request.SituacaoProposta == SituacaoProposta.AguardandoAnaliseDf &&
+            string.IsNullOrEmpty(request.RfResponsavelDf))
+        {
             throw new NegocioException(MensagemNegocio.RESPONSAVEL_DF_DEVE_SER_INFORMADO);
+        }
     }
 }
