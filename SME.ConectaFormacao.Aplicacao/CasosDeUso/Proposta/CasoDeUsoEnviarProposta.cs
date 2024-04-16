@@ -39,9 +39,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 SituacaoProposta.AguardandoAnaliseDf :
                 SituacaoProposta.Publicada;
 
-            await mediator.Send(new ValidarResponsavelDfCommand(proposta.RfResponsavelDf,
-                proposta.FormacaoHomologada, situacao));
-
             await mediator.Send(new EnviarPropostaCommand(propostaId, situacao));
             await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
 
