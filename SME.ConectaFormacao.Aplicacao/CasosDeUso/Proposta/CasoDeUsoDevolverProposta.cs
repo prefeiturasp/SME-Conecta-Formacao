@@ -25,11 +25,25 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (string.IsNullOrEmpty(devolverPropostaDto.Justificativa))
                 throw new NegocioException(MensagemNegocio.JUSTIFICATIVA_NAO_INFORMADA);
 
-            await mediator.Send(new AlterarSituacaoDaPropostaCommand(propostaId, SituacaoProposta.Devolvida));
+            var retorno = await mediator.Send(new AlterarSituacaoDaPropostaCommand(propostaId, SituacaoProposta.Devolvida));
+            retorno = retorno && await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.Devolvida, devolverPropostaDto.Justificativa));
+            retorno = retorno && await EnviarEmailUsuario(proposta.NomeFormacao, devolverPropostaDto.Justificativa);
+            retorno = retorno && await EnviarEmailAreaPromotora(proposta.AreaPromotoraId, proposta.NomeFormacao, devolverPropostaDto.Justificativa);
 
-            await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.Devolvida, devolverPropostaDto.Justificativa));
+            return retorno;
+        }
 
-            return await EnviarEmailAreaPromotora(proposta.AreaPromotoraId, proposta.NomeFormacao, devolverPropostaDto.Justificativa);
+        private async Task<bool> EnviarEmailUsuario(string nomeFormacao, string justificativa)
+        {
+            var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
+            if (usuarioLogado.EhNulo() || usuarioLogado.Excluido)
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+
+            if (string.IsNullOrEmpty(usuarioLogado.Email))
+                throw new NegocioException(MensagemNegocio.EMAIL_USUARIO_NAO_CADASTRADO_ENVIO_EMAIL);
+            
+            var enviarEmail = MontarEmail(usuarioLogado.Nome, usuarioLogado.Email, nomeFormacao, justificativa);
+            return await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmailDevolverProposta, enviarEmail));            
         }
 
         private async Task<bool> EnviarEmailAreaPromotora(long areaPromotoraId, string nomeFormacao, string justificativa)
@@ -41,19 +55,24 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (string.IsNullOrEmpty(areaPromotora.Email))
                 throw new NegocioException(MensagemNegocio.EMAIL_AREA_PROMOTORA_NAO_CADASTRADO_ENVIO_EMAIL);
 
+            var enviarEmail = MontarEmail(areaPromotora.Nome, areaPromotora.Email, nomeFormacao, justificativa);
+            return await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmailDevolverProposta, enviarEmail));
+        }
+
+        private static EnviarEmailDevolverPropostaDto MontarEmail(string destinatario, string emailDestinatario,
+            string nomeFormacao, string justificativa)
+        {
             var titulo = $"Proposta de {nomeFormacao} foi devolvida.";
             var texto = $"A proposta {nomeFormacao} foi devolvida, realize os ajustes necessários para envia-la novamente.";
 
-            var enviarEmail = new EnviarEmailDevolverPropostaDto
+            return new EnviarEmailDevolverPropostaDto
             {
-                NomeDestinatario = areaPromotora.Nome,
-                EmailDestinatario = areaPromotora.Email,
+                NomeDestinatario = destinatario,
+                EmailDestinatario = emailDestinatario,
                 Titulo = titulo,
                 Texto = texto,
                 Motivo = justificativa 
             };
-
-            return await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmailDevolverProposta, enviarEmail));
         }
     }
 }

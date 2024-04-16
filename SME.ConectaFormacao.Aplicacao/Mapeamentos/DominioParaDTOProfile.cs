@@ -255,9 +255,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<RetornoUsuarioDTO, Usuario>().ReverseMap();
             CreateMap<RetornoUsuarioDTO, CursistaResumidoServicoEol>().ReverseMap();
-
-
+            
             CreateMap<DadosUsuarioDTO, Usuario>();
+
+            CreateMap<AreaPromotora, PropostaAreaPromotoraDTO>();
         }
     }
 }
