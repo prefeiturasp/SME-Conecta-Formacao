@@ -2160,5 +2160,21 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<long>> PropostasConfirmadasQueNaoEncerramAinda()
+        {
+            var dataAtual = DateTimeExtension.HorarioBrasilia();
+
+            var query = @"select id from proposta where not excluido  and data_realizacao_fim >= @dataAtual ";
+
+            return await conexao.Obter().QueryAsync<long>(query, dataAtual);
+        }
+
+        public async Task<IEnumerable<long>> PropostasTurmaIdsPorPropostaId(long propostaId)
+        {
+            var query = "select id from proposta_turma pt where not pt.excluido and pt.proposta_id = @propostaId ";
+            
+            return await conexao.Obter().QueryAsync<long>(query, new{propostaId});
+        }
     }
 }

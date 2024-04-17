@@ -38,6 +38,32 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryFirstOrDefaultAsync<Usuario>(query, new { login });
         }
+        public Task<Usuario> ObterPorId(long id)
+        {
+            var query = @"select 
+                            id, 
+                            login,                             
+                            nome,       
+                            email,
+                            ultimo_login, 
+                            expiracao_recuperacao_senha, 
+                            token_recuperacao_senha,
+                            criado_em, 
+                            criado_por, 
+                            alterado_em, 
+                            alterado_por, 
+                            criado_login, 
+                            alterado_login,
+                            codigo_eol_unidade,
+                            tipo,
+                            possui_contrato_externo,
+                            situacao_cadastro,
+                            cpf
+                          from usuario 
+                          where id = @id ";
+
+            return conexao.Obter().QueryFirstOrDefaultAsync<Usuario>(query, new { id });
+        }
         
         public Task<Usuario> ObterPorCpf(string cpf)
         {

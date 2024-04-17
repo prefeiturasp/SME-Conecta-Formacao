@@ -339,5 +339,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    return inscricao;
                }, new { situacao = (int)SituacaoInscricao.Confirmada }, splitOn: "id, login");
         }
+
+        public async Task<IEnumerable<Inscricao>> ObterInscricoesPorPropostasTurmasId(long propostasTurmasId)
+        {
+            var query = @"select * from inscricao i where not i.excluido  and i.proposta_turma_id = @propostasTurmasId";
+            return await conexao.Obter().QueryAsync<Inscricao>(query, new { propostasTurmasId });
+        }
     }
 }
