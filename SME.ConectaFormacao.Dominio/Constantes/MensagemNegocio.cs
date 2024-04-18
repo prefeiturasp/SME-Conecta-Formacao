@@ -93,7 +93,7 @@ public class MensagemNegocio
     public const string CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL = "Este cursista não possui cargo compatível com o público alvo da formação, não será possível realizar a sua inscrição.";
     public const string INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição, a turma selecionada não possui mais vagas disponível.";
     public const string INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição automática, a turma selecionada não possui mais vagas disponível. {0}";
-    public const string USUARIO_NAO_ENCONTRADO = "Nenhum Usuário não encontrado";
+    public const string USUARIO_NAO_ENCONTRADO = "Nenhum Usuário encontrado";
     public const string NOME_USUARIO_NAO_PREENCHIDO = "Nome do usuário não preenchido";
     public const string CARGO_SOBREPOSTO_FUNCAO_ATIVIDADE_NAO_ENCONTRADO = "Informações de Cargo, CargoSobreposto e Função Atividade no EOL não foram encontradas";
     public const string EMAIL_FORA_DOMINIO_REDE_DIRETA = "É permitido somente e-mails com o domínio @SME ou @EDU.SME";
