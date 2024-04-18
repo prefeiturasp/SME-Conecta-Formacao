@@ -136,6 +136,15 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<UsuarioPerfilServicoEol[]>();            
         }
-        
+
+        public async Task<IEnumerable<string>> VerificarSeUsuarioEstaAtivo(string[] rf)
+        {
+            var parametros = new {codigosRfs = rf }.ObjetoParaJson();
+            var resposta = await _httpClient.PostAsync(EndpointsEolConstantes.VERIFICAR_SE_FUNCIONARIOS_ESTAO_ATIVOS, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.ERRO_A0_VERIFICAR_USUARIO_ATIVO, resposta.StatusCode);
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<IEnumerable<string>>();   
+        }
     }
 }
