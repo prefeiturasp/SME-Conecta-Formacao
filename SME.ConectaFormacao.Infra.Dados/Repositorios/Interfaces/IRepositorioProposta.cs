@@ -106,5 +106,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> ObterTotalTurmasRegentes(long propostaId);
         Task<PropostaTurma> ObterTurmaPorNome(string nome, long propostaId);
         Task<bool> UsuarioEstaInscritoNaProposta(long usuarioId, long propostaId);
+        Task<IEnumerable<long>> PropostasConfirmadasQueNaoEncerramAinda();
+        Task<IEnumerable<long>> PropostasTurmaIdsPorPropostaId(long propostaId);
     }
 }

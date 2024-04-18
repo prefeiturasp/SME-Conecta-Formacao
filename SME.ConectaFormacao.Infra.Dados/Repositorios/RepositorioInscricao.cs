@@ -339,5 +339,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    return inscricao;
                }, new { situacao = (int)SituacaoInscricao.Confirmada }, splitOn: "id, login");
         }
+
+        public async Task<IEnumerable<InscricaoUsuarioInternoDto>> ObterInscricoesPorPropostasTurmasIdUsuariosInternos(long[] propostasTurmasId)
+        {
+            var tipoUsuario = (int)TipoUsuario.Interno;
+            var query = @$"
+                            select i.id as InscricaoId ,u.id as UsuarioId, u.login from inscricao i 
+                            inner join usuario u on i.usuario_id = u.id 
+                            where not i.excluido  and u.tipo = @tipoUsuario
+                            and i.proposta_turma_id = any(@propostasTurmasId)
+                        ";
+            return await conexao.Obter().QueryAsync<InscricaoUsuarioInternoDto>(query, new { propostasTurmasId, tipoUsuario });
+        }
     }
 }
