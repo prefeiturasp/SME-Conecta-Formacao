@@ -25,15 +25,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (string.IsNullOrEmpty(devolverPropostaDto.Justificativa))
                 throw new NegocioException(MensagemNegocio.JUSTIFICATIVA_NAO_INFORMADA);
 
-            var retorno = await mediator.Send(new AlterarSituacaoDaPropostaCommand(propostaId, SituacaoProposta.Devolvida));
-            retorno = retorno && await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, SituacaoProposta.Devolvida, devolverPropostaDto.Justificativa));
-            retorno = retorno && await EnviarEmailUsuario(proposta.NomeFormacao, devolverPropostaDto.Justificativa);
-            retorno = retorno && await EnviarEmailAreaPromotora(proposta.AreaPromotoraId, proposta.NomeFormacao, devolverPropostaDto.Justificativa);
+            var codigoFormacao = proposta.Id.ToString();
+            var nomeFormacao = proposta.NomeFormacao;
+            var justificativa = devolverPropostaDto.Justificativa;
+            const SituacaoProposta situacaoDevolvida = SituacaoProposta.Devolvida;
+
+            var retorno = await mediator.Send(new AlterarSituacaoDaPropostaCommand(propostaId, situacaoDevolvida));
+            retorno = retorno && await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacaoDevolvida, justificativa));
+            retorno = retorno && await EnviarEmailUsuario(codigoFormacao, nomeFormacao, justificativa);
+            retorno = retorno && await EnviarEmailAreaPromotora(proposta.AreaPromotoraId, codigoFormacao, nomeFormacao, justificativa);
 
             return retorno;
         }
 
-        private async Task<bool> EnviarEmailUsuario(string nomeFormacao, string justificativa)
+        private async Task<bool> EnviarEmailUsuario(string codigoFormacao, string nomeFormacao, string justificativa)
         {
             var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
             if (usuarioLogado.EhNulo() || usuarioLogado.Excluido)
@@ -42,11 +47,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (string.IsNullOrEmpty(usuarioLogado.Email))
                 throw new NegocioException(MensagemNegocio.EMAIL_USUARIO_NAO_CADASTRADO_ENVIO_EMAIL);
             
-            var enviarEmail = MontarEmail(usuarioLogado.Nome, usuarioLogado.Email, nomeFormacao, justificativa);
+            var enviarEmail = MontarEmail(usuarioLogado.Nome, usuarioLogado.Email, codigoFormacao, nomeFormacao, justificativa);
             return await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmailDevolverProposta, enviarEmail));            
         }
 
-        private async Task<bool> EnviarEmailAreaPromotora(long areaPromotoraId, string nomeFormacao, string justificativa)
+        private async Task<bool> EnviarEmailAreaPromotora(long areaPromotoraId, string codigoFormacao, string nomeFormacao, string justificativa)
         {
             var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorIdQuery(areaPromotoraId));
             if (areaPromotora.EhNulo() || areaPromotora.Excluido)
@@ -55,15 +60,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (string.IsNullOrEmpty(areaPromotora.Email))
                 throw new NegocioException(MensagemNegocio.EMAIL_AREA_PROMOTORA_NAO_CADASTRADO_ENVIO_EMAIL);
 
-            var enviarEmail = MontarEmail(areaPromotora.Nome, areaPromotora.Email, nomeFormacao, justificativa);
+            var enviarEmail = MontarEmail(areaPromotora.Nome, areaPromotora.Email, codigoFormacao, nomeFormacao, justificativa);
             return await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmailDevolverProposta, enviarEmail));
         }
 
         private static EnviarEmailDevolverPropostaDto MontarEmail(string destinatario, string emailDestinatario,
-            string nomeFormacao, string justificativa)
+            string codigoFormacao, string nomeFormacao, string justificativa)
         {
-            var titulo = $"Proposta de {nomeFormacao} foi devolvida.";
-            var texto = $"A proposta {nomeFormacao} foi devolvida, realize os ajustes necessários para envia-la novamente.";
+            var titulo = $"Proposta de {nomeFormacao} {codigoFormacao} foi devolvida.";
+            var texto = $"A proposta {nomeFormacao} {codigoFormacao} foi devolvida, realize os ajustes necessários para envia-la novamente.";
 
             return new EnviarEmailDevolverPropostaDto
             {
