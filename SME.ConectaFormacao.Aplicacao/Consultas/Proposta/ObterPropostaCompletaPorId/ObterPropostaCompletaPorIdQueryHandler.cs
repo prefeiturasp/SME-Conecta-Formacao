@@ -47,6 +47,7 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.TiposInscricao = await _repositorioProposta.ObterTiposInscricaoPorId(request.Id);
             proposta.Movimentacao = await _repositorioPropostaMovimentacao.ObterUltimoParecerPropostaId(request.Id);
             proposta.AreaPromotora = await _repositorioAreaPromotora.ObterPorId(proposta.AreaPromotoraId);
+            proposta.UltimaJustificativaDevolucao = await _repositorioPropostaMovimentacao.ObterUltimaJustificativaDevolucao(request.Id);
 
             foreach (var turma in proposta.Turmas)
                 turma.Dres = await _repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(turma.Id);

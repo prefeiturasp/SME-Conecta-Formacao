@@ -53,5 +53,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? RfResponsavelDf { get; set; }
         public PropostaMovimentacaoDTO Movimentacao { get; set; }
         public PropostaAreaPromotoraDTO AreaPromotora { get; set; }
+        public string? UltimaJustificativaDevolucao { get; set; }
     }
 }
