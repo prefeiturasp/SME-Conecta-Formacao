@@ -8,6 +8,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<Usuario> ObterPorLogin(string login);
         public Task AtivarCadastroUsuario(long usuarioId);
         Task<Usuario> ObterPorCpf(string cpf);
-        Task<Usuario> ObterPorId(long id);
+        Task<IEnumerable<Usuario>> ObterUsuarioInternoPorId(long[] ids);
     }
 }

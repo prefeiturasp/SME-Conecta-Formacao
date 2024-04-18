@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
             foreach (var id in propostasIds)
             {
-                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EncerrarInscricaoAutomaticamenteTurma, id));
+                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EncerrarInscricaoAutomaticamenteTurma, id,Guid.NewGuid(), new Dominio.Entidades.Usuario("Sistema", "Sistema", string.Empty)));
             }
             
             return true;

@@ -11,6 +11,6 @@
         public const string URL_FUNCIONARIO_EXTERNO_POR_CPF = "funcionarios/funcionario-externo/{0}";
         public const string OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_CARGO = "funcionarios/atribuicao/{0}/cargo/{1}";
         public const string OBTER_USUARIOS_POR_PERFIS = "funcionarios/usuarios/conecta-formacao";
-        public const string VERIFICAR_SE_FUNCIONARO_ESTA_ATIVO = "funcionario-ativo/{registroFuncional}";
+        public const string VERIFICAR_SE_FUNCIONARIOS_ESTAO_ATIVOS = "acessos/buscar-rfs-cargo-ativo";
     }
 }

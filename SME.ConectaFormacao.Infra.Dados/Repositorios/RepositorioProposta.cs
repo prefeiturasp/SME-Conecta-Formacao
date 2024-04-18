@@ -2167,7 +2167,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var query = @"select id from proposta where not excluido  and data_realizacao_fim >= @dataAtual ";
 
-            return await conexao.Obter().QueryAsync<long>(query, dataAtual);
+            return await conexao.Obter().QueryAsync<long>(query, new{dataAtual});
         }
 
         public async Task<IEnumerable<long>> PropostasTurmaIdsPorPropostaId(long propostaId)

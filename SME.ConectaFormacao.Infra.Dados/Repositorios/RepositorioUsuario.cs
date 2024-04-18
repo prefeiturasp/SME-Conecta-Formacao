@@ -38,8 +38,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryFirstOrDefaultAsync<Usuario>(query, new { login });
         }
-        public Task<Usuario> ObterPorId(long id)
+        public async Task<IEnumerable<Usuario>> ObterUsuarioInternoPorId(long[] ids)
         {
+            var tipoUsuario = (int)TipoUsuario.Interno;
             var query = @"select 
                             id, 
                             login,                             
@@ -60,9 +61,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             situacao_cadastro,
                             cpf
                           from usuario 
-                          where id = @id ";
+                          where tipo = @tipoUsuario   AND id = any(@ids) ";
 
-            return conexao.Obter().QueryFirstOrDefaultAsync<Usuario>(query, new { id });
+            return await conexao.Obter().QueryAsync<Usuario>(query, new { ids, tipoUsuario });
         }
         
         public Task<Usuario> ObterPorCpf(string cpf)

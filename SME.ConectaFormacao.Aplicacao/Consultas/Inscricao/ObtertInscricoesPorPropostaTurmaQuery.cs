@@ -1,24 +1,25 @@
 using FluentValidation;
 using MediatR;
-using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Infra;
+
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObtertInscricoesPorPropostaTurmaQuery : IRequest<IEnumerable<Inscricao>>
+    public class ObtertInscricoesPorPropostaTurmaQuery : IRequest<IEnumerable<InscricaoUsuarioInternoDto>>
     {
-        public ObtertInscricoesPorPropostaTurmaQuery(long turmaId)
+        public ObtertInscricoesPorPropostaTurmaQuery(long[] turmasIds)
         {
-            TurmaId = turmaId;
+            TurmasIds = turmasIds;
         }
 
-        public long TurmaId { get; set; }
+        public long[] TurmasIds { get; set; }
     }
 
     public class ObtertInscricoesPorPropostaTurmaQueryValidator : AbstractValidator<ObtertInscricoesPorPropostaTurmaQuery>
     {
         public ObtertInscricoesPorPropostaTurmaQueryValidator()
         {
-            RuleFor(x => x.TurmaId).GreaterThan(0).WithMessage("Informe o Id da Turma para obter as incrições");
+            RuleFor(x => x.TurmasIds).NotEmpty().WithMessage("Informe o Id da Turma para obter as incrições");
         }
     }
 }

@@ -3,14 +3,14 @@ using MediatR;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class VerificarSeUsuarioPossuiCargoAtivoNoEolQuery : IRequest<bool>
+    public class VerificarSeUsuarioPossuiCargoAtivoNoEolQuery : IRequest<IEnumerable<string>>
     {
-        public VerificarSeUsuarioPossuiCargoAtivoNoEolQuery(string login)
+        public VerificarSeUsuarioPossuiCargoAtivoNoEolQuery(string[] login)
         {
             Login = login;
         }
 
-        public string Login { get; set; }
+        public string[] Login { get; set; }
     }
 
     public class
