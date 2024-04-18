@@ -35,6 +35,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? AcaoFormativaLink { get; set; }
         public bool IntegrarNoSGA { get; set; }
         public string? RfResponsavelDf { get; set; }
+        public string? UltimaJustificativaDevolucao { get; set; }
 
         public AreaPromotora AreaPromotora { get; set; }
         public Arquivo ArquivoImagemDivulgacao { get; set; }
