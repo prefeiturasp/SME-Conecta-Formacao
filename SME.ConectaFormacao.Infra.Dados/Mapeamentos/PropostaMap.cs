@@ -59,6 +59,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.Movimentacao).Ignore();
             Map(t => t.ObterPropostaTurmasDres).Ignore();
             Map(t => t.EstaEmPeriodoDeInscricao).Ignore();
+            Map(t => t.UltimaJustificativaDevolucao).Ignore();
         }
     }
 }
