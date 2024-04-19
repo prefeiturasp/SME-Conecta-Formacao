@@ -30,9 +30,9 @@ namespace SME.ConectaFormacao.Aplicacao
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
             if (usuarioLogado.Tipo == TipoUsuario.Externo)
             {
-                var unidade = await  _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade));
+                var unidade = !string.IsNullOrEmpty(usuarioLogado.CodigoEolUnidade) ? await  _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade)) : null;
                 acessoDadosUsuario.Tipo = (int)TipoUsuario.Externo;
-                acessoDadosUsuario.NomeUnidade = unidade.NomeUnidade;
+                acessoDadosUsuario.NomeUnidade = unidade?.NomeUnidade!;
             }
             acessoDadosUsuario.EmailEducacional = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
             
