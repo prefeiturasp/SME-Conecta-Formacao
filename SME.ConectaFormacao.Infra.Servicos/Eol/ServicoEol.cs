@@ -142,7 +142,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var parametros = new {codigosRfs = rf }.ObjetoParaJson();
             var resposta = await _httpClient.PostAsync(EndpointsEolConstantes.VERIFICAR_SE_FUNCIONARIOS_ESTAO_ATIVOS, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
             if (!resposta.IsSuccessStatusCode)
-                throw new NegocioException(MensagemNegocio.ERRO_A0_VERIFICAR_USUARIO_ATIVO, resposta.StatusCode);
+                throw new NegocioException($"{MensagemNegocio.ERRO_A0_VERIFICAR_USUARIO_ATIVO} - {resposta.StatusCode}", resposta.StatusCode);
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<IEnumerable<string>>();   
         }
