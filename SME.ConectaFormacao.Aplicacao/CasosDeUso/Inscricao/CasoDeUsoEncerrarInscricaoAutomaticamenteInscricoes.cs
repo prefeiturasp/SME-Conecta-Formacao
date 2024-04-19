@@ -14,8 +14,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var turmaIds = param.ObterObjetoMensagem<TurmasIdParaCancelamentoDTO>();
-            var inscricoes = await mediator.Send(new ObtertInscricoesPorPropostaTurmaQuery(turmaIds.TurmasIds));
+            var turmaIds = JsonConvert.DeserializeObject<long>(param.Mensagem.ToString());
+            var inscricoes = await mediator.Send(new ObtertInscricoesPorPropostaTurmaQuery(new long[turmaIds]));
             if (inscricoes.Any())
             {
                 await mediator.Send(
