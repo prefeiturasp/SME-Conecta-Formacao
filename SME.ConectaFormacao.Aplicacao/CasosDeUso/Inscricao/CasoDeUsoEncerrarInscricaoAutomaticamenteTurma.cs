@@ -14,12 +14,10 @@ public class CasoDeUsoEncerrarInscricaoAutomaticamenteTurma : CasoDeUsoAbstrato 
     {
         var propostaId = JsonConvert.DeserializeObject<long>(param.Mensagem.ToString()!);
         var turmas = await mediator.Send(new ObterPropostasTurmasPorPropostaIdQuery(propostaId));
-        if (turmas.Any())
+        foreach (var turma in turmas)
         {
-            var dto = new TurmasIdParaCancelamentoDTO(turmas.ToArray());
-
-                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EncerrarInscricaoAutomaticamenteInscricoes,
-                    dto,Guid.NewGuid(), new Dominio.Entidades.Usuario("Sistema", "Sistema", string.Empty)));
+            await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EncerrarInscricaoAutomaticamenteInscricoes,
+                turma,Guid.NewGuid(), new Dominio.Entidades.Usuario("Sistema", "Sistema", string.Empty)));
         }
         return true;
     }
