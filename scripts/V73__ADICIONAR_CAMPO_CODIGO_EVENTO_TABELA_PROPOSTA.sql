@@ -1,0 +1,1 @@
+ALTER TABLE public.proposta ADD IF NOT EXISTS codigo_evento_sigpec int8 NULL;
