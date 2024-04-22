@@ -1,3 +1,4 @@
+using Bogus;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
@@ -89,6 +90,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 false, false, formacaoHomologada, integrarNoSga, dataInscricaoForaPeriodo);
 
             proposta.AreaPromotora = areaPromotora;
+
+            if (tipoInscricao == TipoInscricao.Externa)
+                proposta.LinkParaInscricoesExterna = new Faker().Lorem.Sentence(25);
 
             await InserirNaBase(proposta);
 
@@ -293,6 +297,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.CriterioValidacaoInscricaoOutros.ShouldBe(propostaDTO.CriterioValidacaoInscricaoOutros);
 
             proposta.Situacao.ShouldBe(propostaDTO.Situacao);
+
+            if (propostaDTO.TiposInscricao.NaoEhNulo() && 
+                propostaDTO.TiposInscricao.Any(tipo => tipo.TipoInscricao == TipoInscricao.Externa))
+                proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
         }
 
         protected void ValidarPropostaCompletoDTO(PropostaCompletoDTO propostaDTO, long id)
@@ -327,6 +335,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.CriterioValidacaoInscricaoOutros.ShouldBe(propostaDTO.CriterioValidacaoInscricaoOutros);
 
             proposta.Situacao.ShouldBe(propostaDTO.Situacao);
+
+
+            if (propostaDTO.TiposInscricao.NaoEhNulo() &&
+                propostaDTO.TiposInscricao.Any(tipo => tipo.TipoInscricao == TipoInscricao.Externa))
+                proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
         }
 
         protected void ValidarPropostaCriterioValidacaoInscricaoDTO(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> criteriosDTO, long id)
