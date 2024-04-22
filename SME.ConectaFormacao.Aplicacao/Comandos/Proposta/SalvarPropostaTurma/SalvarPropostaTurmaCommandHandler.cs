@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly IMediator _mediator;
 
-        public SalvarPropostaTurmaCommandHandler(IRepositorioProposta repositorioProposta,IMediator mediator)
+        public SalvarPropostaTurmaCommandHandler(IRepositorioProposta repositorioProposta, IMediator mediator)
         {
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _repositorioProposta.InserirTurmas(request.PropostaId, turmasInserir);
 
                 if (request.Situacao.EhAlterando())
-                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, request.PropostaId),cancellationToken); 
+                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, request.PropostaId), cancellationToken);
             }
 
             if (turmasAlterar.Any())

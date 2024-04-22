@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<bool> Executar(MensagemRabbit param)
         {
             var turmaIds = JsonConvert.DeserializeObject<long>(param.Mensagem.ToString());
-            var inscricoes = await mediator.Send(new ObtertInscricoesPorPropostaTurmaQuery(new []{turmaIds}));
+            var inscricoes = await mediator.Send(new ObtertInscricoesPorPropostaTurmaQuery(new[] { turmaIds }));
             if (inscricoes.Any())
             {
                 await mediator.Send(

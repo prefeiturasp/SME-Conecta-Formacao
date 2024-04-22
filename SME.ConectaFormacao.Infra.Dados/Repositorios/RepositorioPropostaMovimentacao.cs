@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                     and p.situacao = @situacao
                                     and (pm.justificativa is not null or pm.justificativa <> '')
                                     order by pm.criado_em desc limit 1";
-            
+
             return await conexao.Obter().QueryFirstOrDefaultAsync<string>(query, new { propostaId, situacao = (int)SituacaoProposta.Devolvida });
         }
     }

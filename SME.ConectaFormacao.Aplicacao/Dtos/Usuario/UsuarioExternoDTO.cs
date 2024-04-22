@@ -1,6 +1,5 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
 using System.ComponentModel.DataAnnotations;
-using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
 {
@@ -27,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
 
         [Required(ErrorMessage = "É necessário informar confirmar senha.")]
         public string ConfirmarSenha { get; set; }
-        
+
         public DateTime? CriadoEm { get; set; }
         public string? CriadoPor { get; set; }
         public string? CriadoLogin { get; set; }

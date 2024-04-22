@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
         public Ao_realizar_importacao_arquivo(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
-        
+
         protected override void RegistrarQueryFakes(IServiceCollection services)
         {
             base.RegistrarQueryFakes(services);
@@ -39,8 +39,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoImportacaoArquivoInscricaoCursista>();
 
             // act
-            var retorno = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(arquivo,1));
-            
+            var retorno = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(arquivo, 1));
+
             // // assert
             retorno.ShouldNotBeNull();
             retorno.Mensagens.Contains(MensagemNegocio.ARQUIVO_VAZIO).ShouldBeTrue();
@@ -77,21 +77,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             await InserirNaBase(componentesCurriculares);
 
             await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves, modalidades, anosTurmas, componentesCurriculares);
-            
+
             var arquivoValido = Mocks.ImportacaoArquivoMock.GerarArquivoValido();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoImportacaoArquivoInscricaoCursista>();
 
             // act
-            var retorno = await casoDeUso.Executar(arquivoValido,1);
+            var retorno = await casoDeUso.Executar(arquivoValido, 1);
 
             // assert
             retorno.ShouldNotBeNull();
             retorno.Mensagem.ShouldBe(MensagemNegocio.ARQUIVO_IMPORTADO_COM_SUCESSO);
             retorno.EntidadeId.ShouldBe(1);
             retorno.Sucesso.ShouldBeTrue();
-                
-            var importacaoArquivos = ObterTodos<Dominio.Entidades.ImportacaoArquivo> ();
+
+            var importacaoArquivos = ObterTodos<Dominio.Entidades.ImportacaoArquivo>();
             importacaoArquivos.Count().ShouldBe(1);
             importacaoArquivos.FirstOrDefault().Id.ShouldBe(1);
             importacaoArquivos.FirstOrDefault().Nome.ShouldNotBeEmpty();

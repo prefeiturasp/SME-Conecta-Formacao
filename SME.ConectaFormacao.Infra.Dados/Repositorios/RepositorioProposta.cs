@@ -2134,7 +2134,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = "select count(1) from proposta_turma_vaga where proposta_turma_id = @propostaTurmaIr and not excluido";
             return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaTurmaIr });
         }
-        
+
         public async Task<PropostaTurma> ObterTurmaPorNome(string nome, long propostaId)
         {
             var query = @"
@@ -2152,7 +2152,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             WHERE not excluido
             AND f_unaccent(lower(nome)) = f_unaccent(@nome) 
             AND proposta_id = @propostaId ";
-            
+
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaTurma>(query, new { nome = nome.ToLower(), propostaId });
         }
 
@@ -2167,14 +2167,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var query = @"select id from proposta where not excluido  and data_realizacao_fim >= @dataAtual ";
 
-            return await conexao.Obter().QueryAsync<long>(query, new{dataAtual});
+            return await conexao.Obter().QueryAsync<long>(query, new { dataAtual });
         }
 
         public async Task<IEnumerable<long>> PropostasTurmaIdsPorPropostaId(long propostaId)
         {
             var query = "select id from proposta_turma pt where not pt.excluido and pt.proposta_id = @propostaId ";
-            
-            return await conexao.Obter().QueryAsync<long>(query, new{propostaId});
+
+            return await conexao.Obter().QueryAsync<long>(query, new { propostaId });
         }
     }
 }

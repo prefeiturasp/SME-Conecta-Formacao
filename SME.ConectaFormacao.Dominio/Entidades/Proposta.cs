@@ -72,7 +72,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             }
         }
         public IEnumerable<PropostaTipoInscricao> TiposInscricao { get; set; }
-        
+
         public bool EstaEmPeriodoDeInscricao
         {
             get

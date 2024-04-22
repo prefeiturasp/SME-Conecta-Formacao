@@ -249,13 +249,13 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
 
             CreateMap<UsuarioExternoDTO, Usuario>().ReverseMap();
-            
-            CreateMap<ImportacaoArquivoDTO,ImportacaoArquivo>().ReverseMap();
-            CreateMap<ImportacaoArquivoRegistroDTO,ImportacaoArquivoRegistro>().ReverseMap();
+
+            CreateMap<ImportacaoArquivoDTO, ImportacaoArquivo>().ReverseMap();
+            CreateMap<ImportacaoArquivoRegistroDTO, ImportacaoArquivoRegistro>().ReverseMap();
 
             CreateMap<RetornoUsuarioDTO, Usuario>().ReverseMap();
             CreateMap<RetornoUsuarioDTO, CursistaResumidoServicoEol>().ReverseMap();
-            
+
             CreateMap<DadosUsuarioDTO, Usuario>();
 
             CreateMap<AreaPromotora, PropostaAreaPromotoraDTO>();
