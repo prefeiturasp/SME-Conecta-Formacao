@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using Minio.DataModel;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using System.ComponentModel.DataAnnotations;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
@@ -36,6 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? AcaoFormativaLink { get; set; }
         public bool? IntegrarNoSGA { get; set; }
         public string? RfResponsavelDf { get; set; }
+        public string? LinkParaInscricoesExterna { get; set; }
 
         public IEnumerable<PropostaDreDTO> Dres { get; set; }
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
