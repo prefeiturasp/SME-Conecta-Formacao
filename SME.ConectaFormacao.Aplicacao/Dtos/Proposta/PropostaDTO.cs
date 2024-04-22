@@ -1,5 +1,4 @@
-﻿using Minio.DataModel;
-using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Dominio.Enumerados;
 using System.ComponentModel.DataAnnotations;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
