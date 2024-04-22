@@ -301,6 +301,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             if (propostaDTO.TiposInscricao.NaoEhNulo() && 
                 propostaDTO.TiposInscricao.Any(tipo => tipo.TipoInscricao == TipoInscricao.Externa))
                 proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
+
+            proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
         }
 
         protected void ValidarPropostaCompletoDTO(PropostaCompletoDTO propostaDTO, long id)
@@ -340,6 +342,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             if (propostaDTO.TiposInscricao.NaoEhNulo() &&
                 propostaDTO.TiposInscricao.Any(tipo => tipo.TipoInscricao == TipoInscricao.Externa))
                 proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
+
+            proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
         }
 
         protected void ValidarPropostaCriterioValidacaoInscricaoDTO(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> criteriosDTO, long id)
