@@ -50,5 +50,9 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaDreDTO> Dres { get; set; }
         public IEnumerable<PropostaTipoInscricaoDTO> TiposInscricao { get; set; }
         public bool? IntegrarNoSGA { get; set; }
+        public string? RfResponsavelDf { get; set; }
+        public PropostaMovimentacaoDTO Movimentacao { get; set; }
+        public PropostaAreaPromotoraDTO AreaPromotora { get; set; }
+        public string? UltimaJustificativaDevolucao { get; set; }
     }
 }

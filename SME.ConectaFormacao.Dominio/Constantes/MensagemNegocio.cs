@@ -74,7 +74,7 @@ public class MensagemNegocio
     public const string UNIDADE_NAO_LOCALIZADA_POR_CODIGO = "Nenhuma Unidade foi localizada com o código informado";
     public const string CONTRATO_EXTERNO_NAO_LOCALIZADO_POR_CPF = "Nenhum contrato externo foi localizado com o cpf informado";
     public const string NENHUMA_DRE_ENCONTRADA_NO_EOL = "Não foi possível localizar as Dres no EOL para a sincronização instituicional";
-    public const string PROPOSTA_NAO_ESTA_COMO_CADASTRADA = "Proposta deve estar com situação de cadastrada para ser enviada para validação";
+    public const string PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA = "Proposta deve estar com situação de cadastrada ou devolvida para ser enviada para validação";
     public const string QUANTIDADE_TURMAS_COM_REGENTE = "A quantidade de turmas informada deve ser a mesma de turmas com regentes";
     public const string NAO_EXISTE_NENHUM_TUTOR = "Não existe nenhum tutor cadastrado na Proposta";
     public const string JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR = "O Tutor {0} já possui a turma {1}";
@@ -83,6 +83,7 @@ public class MensagemNegocio
     public const string ERRO_OBTER_CARGOS_FUNCIONARIO_EOL = "Não foi possível localizar os cargos do funcionário no EOL";
     public const string ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL = "Não foi possível localizar os funcionário no EOL com base nos critérios de cargo, função, ano, modalidade e componente curricular";
     public const string ERRO_OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_E_CARGO_EOL = "Não foi possível obter as dre com atribuicao do servidor e cargo no EOL";
+    public const string ERRO_OBTER_USUARIOS_POR_PERFIS = "Não foi possível obter os usuários dos perfis informados";
 
     public const string TURMA_NAO_ENCONTRADA = "Turma não encontrada";
     public const string NENHUMA_TURMA_ENCONTRADA = "Nenhuma turma encontrada para a proposta";
@@ -94,7 +95,7 @@ public class MensagemNegocio
     public const string CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL = "Este cursista não possui cargo compatível com o público alvo da formação, não será possível realizar a sua inscrição.";
     public const string INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição, a turma selecionada não possui mais vagas disponível.";
     public const string INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição automática, a turma selecionada não possui mais vagas disponível. {0}";
-    public const string USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
+    public const string USUARIO_NAO_ENCONTRADO = "Nenhum Usuário encontrado";
     public const string NOME_USUARIO_NAO_PREENCHIDO = "Nome do usuário não preenchido";
     public const string CARGO_SOBREPOSTO_FUNCAO_ATIVIDADE_NAO_ENCONTRADO = "Informações de Cargo, CargoSobreposto e Função Atividade no EOL não foram encontradas";
     public const string EMAIL_FORA_DOMINIO_REDE_DIRETA = "É permitido somente e-mails com o domínio @SME ou @EDU.SME";
@@ -118,6 +119,7 @@ public class MensagemNegocio
     public const string VOCE_JA_POSSUI_LOGIN_CORESSO = "Você já possui login no sistema. Acesse informando seu RF ou CPF e senha dos Sistemas da SME";
     public const string USUARIO_NAO_VALIDOU_EMAIL = "Você não validou seu e-mail ainda. Caso não tenha recebido o e-mail clique no botão 'Reenviar'";
     public const string EMAIL_FORA_DOMINIO_PERMITIDO_UES_PARCEIRAS = "Endereço de email não está em um domínio permitido";
+    public const string EMAIL_USUARIO_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail do usuário não foi cadastrado para envio do e-mail.";    
 
     public const string CURSISTA_NAO_ENCONTRADO = "Nenhum cursista foi encontrado";
   
@@ -145,4 +147,10 @@ public class MensagemNegocio
     public const string CARGO_NAO_ENCONTRATO_PARA_ALTERACAO_VINCULO_INSCRICAO = "O cargo não foi encontrado para alteração do vínculo da inscrição";
     public const string ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA = "Atualização do vínculo da inscrição não localizada";
     public const string AS_INSCRICOES_PARA_ESTA_PROPOSTA_NAO_ESTAO_ABERTAS = "As inscrições para esta proposta não estão abertas.";
+
+    public const string DADOS_ENVIO_EMAIL_NAO_LOCALIZADO = "Os dados para o envio do e-mail não foram localizados.";
+
+    public const string EMAIL_AREA_PROMOTORA_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail da área promotora não foi cadastrado para envio do e-mail.";
+    public const string RESPONSAVEL_DF_DEVE_SER_INFORMADO = "O responsável DF deve ser informado.";
+    public const string ERRO_A0_VERIFICAR_USUARIO_ATIVO = "Não foi possível verificar se o usuário esta ativo";
 }
