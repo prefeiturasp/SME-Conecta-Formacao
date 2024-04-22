@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             AuditoriaFaker(faker);
             return faker.Generate(quantidade);
         }
-        
+
         public static IEnumerable<ImportacaoArquivoRegistro> GerarImportacaoArquivoCarregamentoInicial(
             long ImportacaoArquivoId,
             int quantidade = 1)

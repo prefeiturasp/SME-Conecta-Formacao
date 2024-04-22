@@ -27,23 +27,23 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("O nome do destinatário deve ser informado para o envio do e-mail.");
-            
+
             RuleFor(c => c.EmailDestinatario)
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("O e-mail do destinatário deve ser informado para o envio do e-mail.")
                 .EmailAddress()
                 .WithMessage("O e-mail do destinatário não é válido.");
-            
+
             RuleFor(c => c.Assunto)
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("O assunto deve ser informado para o envio do e-mail.");
-            
+
             RuleFor(c => c.MensagemHtml)
                 .NotNull()
                 .NotEmpty()
-                .WithMessage("A mensagem deve ser informada para o envio do e-mail.");            
+                .WithMessage("A mensagem deve ser informada para o envio do e-mail.");
         }
     }
 }

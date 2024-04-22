@@ -122,7 +122,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterCpfCursistaInscricao.Executar(registroFuncional, cpf));
         }
-        
+
         [HttpPut("{id}/alterar-vinculo")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -133,8 +133,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromBody] AlterarCargoFuncaoVinculoIncricaoDTO alterarCargoFuncaoVinculoIncricao)
         {
             return Ok(await casoDeUsoAlterarVinculoInscricao.Executar(id, alterarCargoFuncaoVinculoIncricao));
-        }       
-        
+        }
+
         [HttpGet("{propostaId}/abertas")]
         [ProducesResponseType(typeof(PodeInscreverMensagemDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

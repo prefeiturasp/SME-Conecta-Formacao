@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public interface ICasoDeUsoEncerrarInscricaoAutomaticamenteInscricoes : IRabbitUseCase
     {
-    
+
     }
 }

@@ -175,7 +175,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoAlterarProposta.Executar(id, propostaDTO));
         }
-        
+
         [HttpPut("devolver-proposta/{id}")]
         [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -187,7 +187,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromBody] DevolverPropostaDTO devolverPropostaDto)
         {
             return Ok(await casoDeUso.Executar(id, devolverPropostaDto));
-        }        
+        }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(bool), 200)]

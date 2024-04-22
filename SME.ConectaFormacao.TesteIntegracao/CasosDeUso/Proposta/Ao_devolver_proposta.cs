@@ -25,7 +25,7 @@ public class Ao_devolver_proposta : TestePropostaBase
     protected override void RegistrarFakes(IServiceCollection services)
     {
         base.RegistrarFakes(services);
-        services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoUsuarioLogadoQuery, Guid>), typeof(ObterGrupoUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));        
+        services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoUsuarioLogadoQuery, Guid>), typeof(ObterGrupoUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
     }
 
     [Fact(DisplayName = "Proposta - Deve devolver proposta válida")]
@@ -78,17 +78,17 @@ public class Ao_devolver_proposta : TestePropostaBase
         propostaDTO.Turmas.FirstOrDefault().Id = proposta.Turmas.FirstOrDefault().Id;
 
         var casoDeUso = ObterCasoDeUso<ICasoDeUsoDevolverProposta>();
-        
+
         // act 
         var retornoDto = await casoDeUso.Executar(proposta.Id, new DevolverPropostaDTO
         {
             Justificativa = "Justificativa do teste integrado ao devolver a proposta."
         });
-        
+
         // assert
-        retornoDto.ShouldBeTrue();        
+        retornoDto.ShouldBeTrue();
     }
-    
+
     [Fact(DisplayName = "Proposta - Deve validar preenchimento da justificativa da proposta válida")]
     public async Task Deve_validar_preenchimento_justificativa_proposta_valida()
     {
@@ -139,16 +139,16 @@ public class Ao_devolver_proposta : TestePropostaBase
         propostaDTO.Turmas.FirstOrDefault().Id = proposta.Turmas.FirstOrDefault().Id;
 
         var casoDeUso = ObterCasoDeUso<ICasoDeUsoDevolverProposta>();
-        
+
         // act 
         var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, new DevolverPropostaDTO
         {
             Justificativa = string.Empty
         }));
-        
+
         // assert
         excecao.ShouldNotBeNull();
         excecao.StatusCode.ShouldBe(400);
-        excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.JUSTIFICATIVA_NAO_INFORMADA);        
-    }    
+        excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.JUSTIFICATIVA_NAO_INFORMADA);
+    }
 }
