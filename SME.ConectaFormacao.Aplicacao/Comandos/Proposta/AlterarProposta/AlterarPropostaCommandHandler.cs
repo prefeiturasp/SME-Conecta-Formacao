@@ -35,10 +35,12 @@ namespace SME.ConectaFormacao.Aplicacao
             var ehPropostaPublicada = proposta.Situacao.EstaPublicada() || proposta.Situacao.EhAlterando();
 
             var ehPropostaAutomatica = request.PropostaDTO.TiposInscricao.PossuiElementos() && request.PropostaDTO.TiposInscricao.Any(a => a.TipoInscricao.EhAutomaticaOuJEIF());
-            if(((string.IsNullOrEmpty(request.PropostaDTO.PublicoAlvoOutros) && (!request.PropostaDTO.PublicosAlvo.Any())) 
-                && (string.IsNullOrEmpty(request.PropostaDTO.FuncaoEspecificaOutros) && (!request.PropostaDTO.FuncoesEspecificas.Any()))))
+            if (string.IsNullOrEmpty(request.PropostaDTO.PublicoAlvoOutros) &&
+                !request.PropostaDTO.PublicosAlvo.Any() &&
+                string.IsNullOrEmpty(request.PropostaDTO.FuncaoEspecificaOutros) &&
+                !request.PropostaDTO.FuncoesEspecificas.Any())
             {
-                if(!request.PropostaDTO.ComponentesCurriculares.Any() || !request.PropostaDTO.AnosTurmas.Any())
+                if (!request.PropostaDTO.ComponentesCurriculares.Any() || !request.PropostaDTO.AnosTurmas.Any())
                     erros.Add(MensagemNegocio.INFORMAR_PUBLICO_FUNCAO_MODALIDADE);
             }
 
@@ -77,15 +79,11 @@ namespace SME.ConectaFormacao.Aplicacao
             if (possuiTurmaSemDrePreenchida)
                 erros.Add(MensagemNegocio.DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS);
 
-            if (!possuiTurmaSemDrePreenchida)
-            {
-                var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia(), cancellationToken);
-                var possuiTurmaComTodasAsDres = request.PropostaDTO.Turmas.Any(c => c.DresIds.Contains(dreTodos.Id));
-                var possuiTurmaComDreSelecionada = request.PropostaDTO.Turmas.Any(c => !c.DresIds.Contains(dreTodos.Id));
-
-                if (possuiTurmaComTodasAsDres && possuiTurmaComDreSelecionada)
-                    erros.Add(MensagemNegocio.TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS);
-            }
+            var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia(), cancellationToken);
+            var possuiTurmaComTodasAsDres = request.PropostaDTO.Turmas.Any(c => c.DresIds.Contains(dreTodos.Id));
+            var possuiTurmaComDreSelecionada = request.PropostaDTO.Turmas.Any(c => !c.DresIds.Contains(dreTodos.Id));
+            if (!possuiTurmaComTodasAsDres || !possuiTurmaComDreSelecionada)
+                erros.Add(MensagemNegocio.TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS);
 
             var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(propostaDepois.DataInscricaoFim, propostaDepois.DataRealizacaoFim), cancellationToken);
 
