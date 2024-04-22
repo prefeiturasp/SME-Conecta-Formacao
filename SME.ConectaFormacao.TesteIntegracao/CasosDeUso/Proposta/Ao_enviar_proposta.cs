@@ -70,7 +70,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var excecao = await Should.ThrowAsync<NegocioException>(casoUsoEnviarProposta.Executar(proposta.Id));
 
             // assert
-            excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA).ShouldBeTrue();
         }
 
         [Fact(DisplayName = "Proposta - Não Deve Enviar uma Proposta não encontrada")]

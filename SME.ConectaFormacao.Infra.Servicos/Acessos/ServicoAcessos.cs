@@ -242,5 +242,19 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var json = new { login, nome }.ObjetoParaJson();
             return InvocarPutServicoAcessosRetornandoBool(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_NOME, login), json);
         }
+
+        public async Task<AcessosConfiguracaoEmailRetorno> ObterConfiguracaoEmail()
+        {
+            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_CONFIGURACAO_EMAIL_SISTEMA_X, _servicoAcessosOptions.CodigoSistema));
+
+            if (resposta.IsSuccessStatusCode)
+            {
+                var json = await resposta.Content.ReadAsStringAsync();
+                return json.JsonParaObjeto<AcessosConfiguracaoEmailRetorno>();
+            }
+
+            var mensagem = await resposta.Content.ReadAsStringAsync();
+            throw new NegocioException(mensagem.JsonParaObjeto<string>());
+        }
     }
 }
