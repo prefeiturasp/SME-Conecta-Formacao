@@ -82,7 +82,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var dreTodos = await _mediator.Send(ObterDreTodosQuery.Instancia(), cancellationToken);
             var possuiTurmaComTodasAsDres = request.PropostaDTO.Turmas.Any(c => c.DresIds.Contains(dreTodos.Id));
             var possuiTurmaComDreSelecionada = request.PropostaDTO.Turmas.Any(c => !c.DresIds.Contains(dreTodos.Id));
-            if (!possuiTurmaComTodasAsDres || !possuiTurmaComDreSelecionada)
+            if (!(possuiTurmaComTodasAsDres || possuiTurmaComDreSelecionada))
                 erros.Add(MensagemNegocio.TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS);
 
             var validarDatas = await _mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(propostaDepois.DataInscricaoFim, propostaDepois.DataRealizacaoFim), cancellationToken);
