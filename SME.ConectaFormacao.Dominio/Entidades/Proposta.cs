@@ -38,6 +38,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? UltimaJustificativaDevolucao { get; set; }
         public string? LinkParaInscricoesExterna { get; set; }
         public long? CodigoEventoSigpec { get; set; }
+        public long? NumeroHomologacao { get; set; }
 
         public AreaPromotora AreaPromotora { get; set; }
         public Arquivo ArquivoImagemDivulgacao { get; set; }

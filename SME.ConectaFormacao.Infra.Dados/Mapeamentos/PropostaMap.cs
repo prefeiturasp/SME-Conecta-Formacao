@@ -40,6 +40,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.RfResponsavelDf).ToColumn("rf_responsavel_df");
             Map(t => t.LinkParaInscricoesExterna).ToColumn("link_inscricoes_externa");
             Map(t => t.CodigoEventoSigpec).ToColumn("codigo_evento_sigpec");
+            Map(t => t.NumeroHomologacao).ToColumn("numero_homologacao");
 
             Map(t => t.AreaPromotora).Ignore();
             Map(t => t.ArquivoImagemDivulgacao).Ignore();
