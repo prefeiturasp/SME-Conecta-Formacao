@@ -119,10 +119,10 @@ public class MensagemNegocio
     public const string VOCE_JA_POSSUI_LOGIN_CORESSO = "Você já possui login no sistema. Acesse informando seu RF ou CPF e senha dos Sistemas da SME";
     public const string USUARIO_NAO_VALIDOU_EMAIL = "Você não validou seu e-mail ainda. Caso não tenha recebido o e-mail clique no botão 'Reenviar'";
     public const string EMAIL_FORA_DOMINIO_PERMITIDO_UES_PARCEIRAS = "Endereço de email não está em um domínio permitido";
-    public const string EMAIL_USUARIO_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail do usuário não foi cadastrado para envio do e-mail.";    
+    public const string EMAIL_USUARIO_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail do usuário não foi cadastrado para envio do e-mail.";
 
     public const string CURSISTA_NAO_ENCONTRADO = "Nenhum cursista foi encontrado";
-  
+
     public const string PROPOSTA_COM_PUBLICO_ALVO_SEM_DEPARA_CONFIGURADO = "A Proposta {0} possui publico alvo sem o depara com eol configurado";
     public const string PROPOSTA_COM_FUNCAO_ESPECIFICA_SEM_DEPARA_CONFIGURADO = "A Proposta {0} possui função específica sem o depara com eol configurado";
     public const string TUTOR_JA_EXISTE_NA_PROPOSTA = "Já existe um tutor com o CPF informado para {0}";

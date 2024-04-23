@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
 
-public class CasoDeUsoEncerrarInscricaoAutomaticamenteTurma : CasoDeUsoAbstrato , ICasoDeUsoEncerrarInscricaoAutomaticamenteTurma
+public class CasoDeUsoEncerrarInscricaoAutomaticamenteTurma : CasoDeUsoAbstrato, ICasoDeUsoEncerrarInscricaoAutomaticamenteTurma
 {
     public CasoDeUsoEncerrarInscricaoAutomaticamenteTurma(IMediator mediator) : base(mediator)
     {
@@ -17,7 +17,7 @@ public class CasoDeUsoEncerrarInscricaoAutomaticamenteTurma : CasoDeUsoAbstrato 
         foreach (var turma in turmas)
         {
             await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EncerrarInscricaoAutomaticamenteInscricoes,
-                turma,Guid.NewGuid(), new Dominio.Entidades.Usuario("Sistema", "Sistema", string.Empty)));
+                turma, Guid.NewGuid(), new Dominio.Entidades.Usuario("Sistema", "Sistema", string.Empty)));
         }
         return true;
     }

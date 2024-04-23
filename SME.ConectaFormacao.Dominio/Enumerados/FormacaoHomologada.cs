@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             if (valor.EhNulo())
                 return false;
-            
+
             return valor == FormacaoHomologada.Sim;
         }
     }

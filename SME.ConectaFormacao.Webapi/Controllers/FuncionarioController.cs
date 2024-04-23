@@ -17,5 +17,14 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar());
         }
+
+        [HttpGet("obter-parecerista")]
+        [ProducesResponseType(typeof(IEnumerable<UsuarioPareceristaDto>),200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterParecerista([FromQuery] string nome, string rf,[FromServices] ICasoDeUsoObterParecerista useCase)
+        {
+            return Ok(useCase.Executar(nome,rf));
+        }
     }
 }

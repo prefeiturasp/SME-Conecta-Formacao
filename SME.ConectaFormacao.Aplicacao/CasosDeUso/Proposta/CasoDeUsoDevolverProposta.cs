@@ -46,9 +46,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             if (string.IsNullOrEmpty(usuarioLogado.Email))
                 throw new NegocioException(MensagemNegocio.EMAIL_USUARIO_NAO_CADASTRADO_ENVIO_EMAIL);
-            
+
             var enviarEmail = MontarEmail(usuarioLogado.Nome, usuarioLogado.Email, codigoFormacao, nomeFormacao, justificativa);
-            return await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmailDevolverProposta, enviarEmail));            
+            return await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmailDevolverProposta, enviarEmail));
         }
 
         private async Task<bool> EnviarEmailAreaPromotora(long areaPromotoraId, string codigoFormacao, string nomeFormacao, string justificativa)
@@ -76,7 +76,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 EmailDestinatario = emailDestinatario,
                 Titulo = titulo,
                 Texto = texto,
-                Motivo = justificativa 
+                Motivo = justificativa
             };
         }
     }

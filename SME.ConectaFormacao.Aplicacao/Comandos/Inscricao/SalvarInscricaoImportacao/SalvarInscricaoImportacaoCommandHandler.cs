@@ -1,14 +1,10 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SME.ConectaFormacao.Aplicacao
 {

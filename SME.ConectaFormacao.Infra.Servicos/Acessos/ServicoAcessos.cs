@@ -26,12 +26,12 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var parametros = new { login, senha }.ObjetoParaJson();
             var resposta = await _httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_AUTENTICACAO_AUTENTICAR, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
-            if(resposta.StatusCode == HttpStatusCode.InternalServerError || resposta.StatusCode == HttpStatusCode.BadGateway || resposta.StatusCode == HttpStatusCode.ServiceUnavailable || resposta.StatusCode == HttpStatusCode.GatewayTimeout)
+            if (resposta.StatusCode == HttpStatusCode.InternalServerError || resposta.StatusCode == HttpStatusCode.BadGateway || resposta.StatusCode == HttpStatusCode.ServiceUnavailable || resposta.StatusCode == HttpStatusCode.GatewayTimeout)
                 throw new NegocioException(MensagemNegocio.SERVICO_AUTENTICACAO_FORA);
-            
+
             if (!resposta.IsSuccessStatusCode)
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, resposta.StatusCode);
-            
+
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<AcessosUsuarioAutenticacaoRetorno>();
         }
@@ -255,6 +255,24 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
             var mensagem = await resposta.Content.ReadAsStringAsync();
             throw new NegocioException(mensagem.JsonParaObjeto<string>());
+        }
+
+        public async Task<IEnumerable<RetornoUsuriosPareceristas>> ObterUsuariosPerfilPareceristas(string rf, string nome)
+        {
+            var resposta =
+                await _httpClient.GetAsync(
+                    EndpointsServicoAcessosConstantes.URL_OBTER_USUARIOS_PARECERISTAS.Parametros(rf, nome));
+
+            if (resposta.IsSuccessStatusCode)
+            {
+                var json = await resposta.Content.ReadAsStringAsync();
+                return json.JsonParaObjeto<IEnumerable<RetornoUsuriosPareceristas>>();
+            }
+            else
+            {
+                var mensagem = await resposta.Content.ReadAsStringAsync();
+                throw new NegocioException(mensagem.JsonParaObjeto<string>());
+            }
         }
     }
 }

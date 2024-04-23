@@ -52,7 +52,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
             else
             {
-                var possuiErros =  await ValidarSeDreUsuarioExternoPossuiErros(inscricao.PropostaTurmaId, usuario.CodigoEolUnidade, cancellationToken);
+                var possuiErros = await ValidarSeDreUsuarioExternoPossuiErros(inscricao.PropostaTurmaId, usuario.CodigoEolUnidade, cancellationToken);
                 if (!request.InscricaoManualDTO.PodeContinuar && possuiErros)
                     throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL);
             }
@@ -115,7 +115,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                     var cargoFuncao = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(new long[] { codigoCargo }, new long[] { }), cancellationToken);
                     var cargoId = cargoFuncao.FirstOrDefault(t => t.Tipo == CargoFuncaoTipo.Cargo)?.Id;
-                    
+
                     if (cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
                     {
                         inscricao.CargoCodigo = codigoCargo.ToString();
@@ -206,7 +206,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 var codigo = unidade.Tipo == Infra.Servicos.Eol.UnidadeEolTipo.Escola ? unidade.CodigoReferencia : unidade.Codigo;
                 if (!dres.Any(t => t.Dre.Codigo == codigo))
                     return true;
-                    
+
                 return false;
             }
             return true;

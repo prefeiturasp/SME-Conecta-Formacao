@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao
             UsuarioId = usuarioId;
             PropostaId = propostaId;
         }
-        
+
         public long UsuarioId { get; }
         public long PropostaId { get; }
     }
@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(r => r.PropostaId)
                 .NotEmpty()
                 .WithMessage("É necessário informar o identificador da proposta para identificar se usuário já está inscrito na proposta.");
-            
+
             RuleFor(r => r.UsuarioId)
                 .NotEmpty()
                 .WithMessage("É necessário informar o identificador do usuário para identificar se usuário já está inscrito na proposta.");

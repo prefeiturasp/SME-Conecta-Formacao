@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public string? FuncaoCodigo { get; set; }
         public string? FuncaoDreCodigo { get; set; }
         public string? FuncaoUeCodigo { get; set; }
-        
+
         public int? TipoVinculo { get; set; }
     }
 }

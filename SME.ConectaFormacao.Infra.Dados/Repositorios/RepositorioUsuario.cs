@@ -66,7 +66,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().QueryAsync<Usuario>(query, new { ids, tipoUsuario });
         }
-        
+
         public Task<Usuario> ObterPorCpf(string cpf)
         {
             var query = @"select 
