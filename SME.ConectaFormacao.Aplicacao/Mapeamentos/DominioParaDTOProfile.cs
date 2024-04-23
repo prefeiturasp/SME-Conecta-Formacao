@@ -261,6 +261,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<DadosUsuarioDTO, Usuario>();
 
             CreateMap<AreaPromotora, PropostaAreaPromotoraDTO>();
+            CreateMap<PropostaParecerista, PropostaPareceristaDTO>();
         }
     }
 }
