@@ -256,5 +256,23 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var mensagem = await resposta.Content.ReadAsStringAsync();
             throw new NegocioException(mensagem.JsonParaObjeto<string>());
         }
+
+        public async Task<IEnumerable<RetornoUsuriosPareceristas>> ObterUsuariosPerfilPareceristas(string rf, string nome)
+        {
+            var resposta =
+                await _httpClient.GetAsync(
+                    EndpointsServicoAcessosConstantes.URL_OBTER_USUARIOS_PARECERISTAS.Parametros(rf, nome));
+
+            if (resposta.IsSuccessStatusCode)
+            {
+                var json = await resposta.Content.ReadAsStringAsync();
+                return json.JsonParaObjeto<IEnumerable<RetornoUsuriosPareceristas>>();
+            }
+            else
+            {
+                var mensagem = await resposta.Content.ReadAsStringAsync();
+                throw new NegocioException(mensagem.JsonParaObjeto<string>());
+            }
+        }
     }
 }
