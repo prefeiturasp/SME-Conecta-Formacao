@@ -344,6 +344,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
 
             proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
+            proposta.NumeroHomologacao.ShouldBe(propostaDTO.NumeroHomologacao);
         }
 
         protected void ValidarPropostaCriterioValidacaoInscricaoDTO(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> criteriosDTO, long id)

@@ -1267,5 +1267,133 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
         }
+
+        [Fact(DisplayName = "Proposta - Deve alterar proposta aprovada homologada em publicada")]
+        public async Task Deve_alterar_proposta_aprovada_homologada_em_publicada()
+        {
+            //arrange
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
+            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var dres = DreMock.GerarDreValida(5);
+            await InserirNaBase(dres);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Aprovada);
+
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Formato.Presencial,
+                dres.Select(t => new PropostaDreDTO { DreId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
+                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
+                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
+                palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
+                modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t }),
+                anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id }),
+                componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO { ComponenteCurricularId = t.Id }),
+                SituacaoProposta.Aprovada, quantidadeTurmas: proposta.QuantidadeTurmas);
+
+            propostaDTO.FormacaoHomologada = FormacaoHomologada.Sim;
+
+            propostaDTO.NumeroHomologacao =  new Random().NextInt64(100000, 9999999999);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
+
+            // act 
+            var retornoDto = await casoDeUso.Executar(proposta.Id, propostaDTO);
+
+            // assert
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
+
+            var propostaAlterada = ObterPorId<Dominio.Entidades.Proposta, long>(retornoDto.EntidadeId);
+
+            propostaAlterada.Situacao.ShouldBe(SituacaoProposta.Publicada);
+            propostaAlterada.NumeroHomologacao.ShouldBe(propostaDTO.NumeroHomologacao);
+        }
+
+        [Fact(DisplayName = "Proposta - Deve alterar proposta aprovada homologada sem número de homologação")]
+        public async Task Deve_alterar_proposta_aprovada_homologada_sem_numero_homologacao()
+        {
+            //arrange
+            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
+            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var dres = DreMock.GerarDreValida(5);
+            await InserirNaBase(dres);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Aprovada);
+
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Formato.Presencial,
+                dres.Select(t => new PropostaDreDTO { DreId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
+                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
+                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
+                palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
+                modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t }),
+                anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id }),
+                componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO { ComponenteCurricularId = t.Id }),
+                SituacaoProposta.Aprovada, quantidadeTurmas: proposta.QuantidadeTurmas);
+
+            propostaDTO.FormacaoHomologada = FormacaoHomologada.Sim;
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
+
+            // act 
+            var retornoDto = await casoDeUso.Executar(proposta.Id, propostaDTO);
+
+            // assert
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
+
+            var propostaAlterada = ObterPorId<Dominio.Entidades.Proposta, long>(retornoDto.EntidadeId);
+
+            propostaAlterada.Situacao.ShouldBe(SituacaoProposta.Aprovada);
+            propostaAlterada.NumeroHomologacao.ShouldBeNull();
+        }
     }
 }
