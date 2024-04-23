@@ -80,7 +80,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,
             IEnumerable<PalavraChave> palavrasChaves, IEnumerable<Dominio.Enumerados.Modalidade> modalidades, IEnumerable<Dominio.Entidades.AnoTurma> anosTurmas,
             IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares, SituacaoProposta situacao = SituacaoProposta.Cadastrada,
-            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false)
+            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, 
+            bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false, bool numeroHomologacao = false)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
@@ -93,6 +94,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             if (tipoInscricao == TipoInscricao.Externa)
                 proposta.LinkParaInscricoesExterna = new Faker().Lorem.Sentence(25);
+
+            if (numeroHomologacao)
+                proposta.NumeroHomologacao = new Random().NextInt64(100000, 9999999999);
 
             await InserirNaBase(proposta);
 
@@ -237,7 +241,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             for (int i = 0; i < quantidade; i++)
                 lista.Add(await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,
-                    palavrasChaves, modalidades, anosTurmas, componentesCurriculares));
+                    palavrasChaves, modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Cadastrada,
+                    FormacaoHomologada.Sim, TipoInscricao.Automatica, true, false, true));
 
             return lista;
         }

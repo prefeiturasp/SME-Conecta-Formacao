@@ -242,7 +242,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         private static string MontarQueryPaginacao(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
         {
             var query = new StringBuilder();
-            query.AppendLine("select p.id, p.tipo_formacao, p.formato, p.nome_formacao, p.data_realizacao_inicio, p.data_realizacao_fim, p.situacao, p.formacao_homologada, ap.id, ap.nome ");
+            query.AppendLine("select p.id, p.tipo_formacao, p.formato, p.nome_formacao, p.data_realizacao_inicio, p.data_realizacao_fim, p.situacao, p.formacao_homologada, p.numero_homologacao, ap.id, ap.nome ");
             query.AppendLine("from proposta p ");
             query.AppendLine("inner join area_promotora ap on ap.id = p.area_promotora_id and not ap.excluido");
             query.AppendLine("where not p.excluido ");
@@ -279,6 +279,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (formacaoHomologada.HasValue)
                 query.AppendLine(" and p.formacao_homologada = @formacaoHomologada");
+
+            if (numeroHomologacao.HasValue)
+                query.AppendLine(" and p.numero_homologacao = @numeroHomologacao");
 
             return query.ToString();
         }
