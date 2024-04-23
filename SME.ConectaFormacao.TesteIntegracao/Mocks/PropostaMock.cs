@@ -41,6 +41,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.DataRealizacaoFim, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.IntegrarNoSGA, integrarNoSga);
             faker.RuleFor(x => x.CodigoEventoSigpec, f => f.Random.Long(100000, 9999999999));
+            faker.RuleFor(x => x.NumeroHomologacao, f => f.Random.Long(100000, 9999999999));
 
             AuditoriaFaker(faker);
 
