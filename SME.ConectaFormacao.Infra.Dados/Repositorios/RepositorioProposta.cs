@@ -2210,5 +2210,46 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().QueryAsync<long>(query, new { propostaId });
         }
+        
+        public async Task<bool> RemoverPropostaParecer(PropostaParecer parecer)
+        {
+            PreencherAuditoriaAlteracao(parecer);
+
+            var parametros = new
+            {
+                parecer.Id,
+                parecer.AlteradoEm,
+                parecer.AlteradoPor,
+                parecer.AlteradoLogin
+            };
+
+            var query = @"update proposta_parecer 
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@id)";
+
+            return await conexao.Obter().ExecuteAsync(query, parametros) > 0;
+        }
+
+        public async Task<PropostaParecer> ObterParecerPorId(long parecerId)
+        {
+            var query = @$" select
+	                    id,
+	                    proposta_id,
+	                    campo,
+	                    descricao,
+	                    criado_por,
+	                    alterado_em,
+	                    alterado_por,
+	                    criado_login,
+	                    alterado_login,
+	                    excluido
+                            from
+	                    public.proposta_parecer where not excluido  and id=@parecerId ";
+            return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecer>(query, new { parecerId });
+        }
     }
 }
