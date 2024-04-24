@@ -15,6 +15,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(SalvarPropostaCommand request, CancellationToken cancellationToken)
         {
+            await RemoverCaches(request.PropostaId, cancellationToken);
+            
             await _mediator.Send(new SalvarPropostaPublicoAlvoCommand(request.PropostaId, request.Proposta.PublicosAlvo), cancellationToken);
 
             await _mediator.Send(new SalvarPropostaFuncaoEspecificaCommand(request.PropostaId, request.Proposta.FuncoesEspecificas), cancellationToken);
@@ -48,8 +50,6 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (request.ArquivoImagemDivulgacaoId.HasValue)
                     await _mediator.Send(new RemoverArquivoPorIdCommand(request.ArquivoImagemDivulgacaoId.Value), cancellationToken);
             }
-
-            await RemoverCaches(request.PropostaId, cancellationToken);
 
             return true;
         }
