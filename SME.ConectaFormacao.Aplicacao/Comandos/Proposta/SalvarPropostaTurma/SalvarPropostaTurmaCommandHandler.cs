@@ -25,12 +25,10 @@ namespace SME.ConectaFormacao.Aplicacao
             var turmasExcluir = turmasAntes.Where(w => !request.Turmas.Any(a => a.Id == w.Id));
 
             if (turmasInserir.Any())
-            {
                 await _repositorioProposta.InserirTurmas(request.PropostaId, turmasInserir);
-
-                if (request.Situacao.EhAlterando())
-                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, request.PropostaId), cancellationToken);
-            }
+            
+            if (request.Situacao.EstaPublicada())
+                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, request.PropostaId), cancellationToken);
 
             if (turmasAlterar.Any())
             {
