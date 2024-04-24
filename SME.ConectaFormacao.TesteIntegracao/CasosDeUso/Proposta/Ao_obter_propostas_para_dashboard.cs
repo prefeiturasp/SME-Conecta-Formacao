@@ -1,3 +1,4 @@
+using Bogus;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -55,7 +56,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await CriarPropostaValida();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
             var filtro = new PropostaFiltrosDashboardDTO();
-            var situacoes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
 
             var proposta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
 
@@ -67,6 +67,26 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             retorno.ShouldNotBeNull();
             retorno.Count().ShouldBe(1);
+        }
+
+        [Fact(DisplayName = "Proposta - Deve Exibir Todas Situações de Proposta no Dashboard com tipo de inscrição externa")]
+        public async Task Deve_obter_lista_proposta_dashboard_com_tipo_inscricao_externa()
+        {
+            // arrange
+            await CriarPropostaValidaExterna();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
+            var filtro = new PropostaFiltrosDashboardDTO();
+
+            var proposta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
+
+            // act 
+            var retorno = await casoDeUso.Executar(filtro);
+
+            // assert
+            retorno.ShouldNotBeNull();
+            retorno.Count().ShouldBe(1);
+            retorno.FirstOrDefault().Propostas.FirstOrDefault().PodeEnviarInscricao.ShouldBeFalse();
+            retorno.FirstOrDefault().Propostas.FirstOrDefault().LinkParaInscricoesExterna.ShouldBe(proposta.LinkParaInscricoesExterna);
         }
 
         #region Criar Uma Proposta Valida de Cada Situação
@@ -137,6 +157,73 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
                 await casoDeUso.Executar(propostaDTO);
             }
+        }
+
+        private async Task CriarPropostaValidaExterna()
+        {
+            var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
+            await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
+
+            var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
+            await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var dres = DreMock.GerarDreValida(5);
+            await InserirNaBase(dres);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
+
+            var criterios = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5, false);
+            await InserirNaBase(criterios);
+
+            var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
+            var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
+            var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
+            var criteriosDTO = criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id });
+            var vagasRemanecentesDTO = cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id });
+            var palavrasChavesDTO = palavrasChaves.Select(t => new PropostaPalavraChaveDTO() { PalavraChaveId = t.Id });
+            var modalidadesDTO = modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t });
+            var anosTurmasDTO = anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id });
+            var componentesCurricularesDTO = componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO() { ComponenteCurricularId = t.Id });
+
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Formato.Presencial,
+                dreDTO,
+                publicosAlvoDTO,
+                funcoesEspecificaDTO,
+                criteriosDTO,
+                vagasRemanecentesDTO,
+                palavrasChavesDTO,
+                modalidadesDTO,
+                anosTurmasDTO,
+                componentesCurricularesDTO,
+                SituacaoProposta.Aprovada);
+
+            propostaDTO.NumeroHomologacao = new Random().NextInt64(100000, 9999999999);
+            propostaDTO.LinkParaInscricoesExterna = new Faker().Lorem.Sentence(25);
+            propostaDTO.TiposInscricao = new List<PropostaTipoInscricaoDTO>() { new PropostaTipoInscricaoDTO { TipoInscricao = TipoInscricao.Externa } };
+            
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
+            await casoDeUso.Executar(propostaDTO);
+            
         }
         #endregion
 

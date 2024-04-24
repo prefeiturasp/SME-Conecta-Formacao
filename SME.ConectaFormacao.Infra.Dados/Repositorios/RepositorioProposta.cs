@@ -354,7 +354,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        where not pm.excluido and pm.situacao = any(@situacoesProposta)
                         )
 
-                        SELECT p.id, p.situacao
+                        SELECT p.id, p.situacao, p.link_inscricoes_externa
                         FROM proposta p
                         LEFT join movimentacoes pm on p.id = pm.proposta_id and pm.situacao = p.situacao and pm.linha = 1
                         WHERE not p.excluido and p.situacao = any(@situacoesProposta)";
@@ -410,7 +410,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                 situacao,
                 formacaoHomologada,
-                situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray(),
+                situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray()
             };
             return conexao.Obter().QueryAsync<Proposta>(query, parametros);
         }

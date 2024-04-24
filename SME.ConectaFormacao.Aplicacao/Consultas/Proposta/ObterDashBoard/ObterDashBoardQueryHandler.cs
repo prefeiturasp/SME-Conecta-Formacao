@@ -87,7 +87,9 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 Numero = propostaItem.Id,
                 Nome = propostaItem.NomeFormacao,
-                Data = dataFormatada
+                Data = dataFormatada,
+                LinkParaInscricoesExterna = propostaItem.LinkParaInscricoesExterna,
+                PodeEnviarInscricao = string.IsNullOrEmpty(propostaItem.LinkParaInscricoesExterna)
             };
 
             item.Propostas.Add(itemProposta);
