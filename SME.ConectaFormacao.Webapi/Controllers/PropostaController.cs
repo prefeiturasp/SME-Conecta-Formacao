@@ -378,5 +378,27 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUso.Executar(parecerId));
         }
+        
+        [HttpPost("parecer")]
+        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        public async Task<IActionResult> InserirPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaParecer casoDeUsoSalvarPropostaParecer,
+            [FromBody] PropostaParecerDTO propostaParecerDTO)
+        {
+            return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerDTO));
+        }
+        
+        [HttpPut("parecer")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_A, Policy = "Bearer")]
+        public async Task<IActionResult> AlterarPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaParecer casoDeUsoSalvarPropostaParecer,
+            [FromBody] PropostaParecerDTO propostaParecerDTO)
+        {
+            return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerDTO));
+        }
     }
 }
