@@ -1,5 +1,5 @@
 --> Criação da tabela de proposta_parecer
-CREATE TABLE public.proposta_parecer (
+CREATE TABLE if not exists public.proposta_parecer (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	proposta_id int8 NOT NULL,
 	campo int2 NOT NULL,	
