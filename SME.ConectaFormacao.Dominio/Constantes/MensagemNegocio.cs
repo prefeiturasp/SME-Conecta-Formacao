@@ -150,4 +150,6 @@ public class MensagemNegocio
     public const string EMAIL_AREA_PROMOTORA_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail da área promotora não foi cadastrado para envio do e-mail.";
     public const string RESPONSAVEL_DF_DEVE_SER_INFORMADO = "O responsável DF deve ser informado.";
     public const string ERRO_A0_VERIFICAR_USUARIO_ATIVO = "Não foi possível verificar se o usuário esta ativo";
+    public const string RF_INVALIDO = "O RF informado é inválido";
+    public const string PARECER_NAO_ENCONTRADO = "Nenhum parecer foi encontrado";
 }

@@ -257,11 +257,11 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             throw new NegocioException(mensagem.JsonParaObjeto<string>());
         }
 
-        public async Task<IEnumerable<RetornoUsuriosPareceristas>> ObterUsuariosPerfilPareceristas(string rf, string nome)
+        public async Task<IEnumerable<RetornoUsuriosPareceristas>> ObterUsuariosPerfilPareceristas()
         {
             var resposta =
                 await _httpClient.GetAsync(
-                    EndpointsServicoAcessosConstantes.URL_OBTER_USUARIOS_PARECERISTAS.Parametros(rf, nome));
+                    EndpointsServicoAcessosConstantes.URL_OBTER_USUARIOS_PARECERISTAS);
 
             if (resposta.IsSuccessStatusCode)
             {

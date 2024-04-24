@@ -11,9 +11,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Funcionario
         {
         }
 
-        public async Task<IEnumerable<UsuarioPareceristaDto>> Executar(string nome, string rf)
+        public async Task<IEnumerable<UsuarioPareceristaDto>> Executar()
         {
-            var consulta = await mediator.Send(new ObterUsuariosPareceristasQuery(rf,nome));
+            var consulta = await mediator.Send(new ObterUsuariosPareceristasQuery());
 
             if (!consulta.Any())
                 return Enumerable.Empty<UsuarioPareceristaDto>();

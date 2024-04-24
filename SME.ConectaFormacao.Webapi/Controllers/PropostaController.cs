@@ -369,6 +369,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar(filtro));
         }
+
+        [HttpDelete("excluir-parecer/{parecerId}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> RemoverParecer([FromRoute] long parecerId,[FromServices] ICasoDeUsoRemoverParecerDaProposta casoDeUso)
+        {
+            return Ok(await casoDeUso.Executar(parecerId));
+        }
         
         [HttpPost("parecer")]
         [ProducesResponseType(typeof(long), 200)]

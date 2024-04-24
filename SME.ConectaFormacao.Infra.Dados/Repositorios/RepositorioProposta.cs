@@ -481,6 +481,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new { id });
         }
 
+        public async Task<PropostaParecerista> ObterPropostaPareceristaPorId(long id)
+        {
+            var query = $@"
+                        select
+	                    id,
+	                    proposta_id,
+	                    registro_funcional,
+	                    nome_parecerista,
+	                    criado_em,
+	                    criado_por,
+	                    alterado_em,
+	                    alterado_por,
+	                    criado_login,
+	                    alterado_login,
+	                    excluido
+                    from public.proposta_parecerista
+	                    where not excluido and id = @id  ";
+            return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecerista>(query, new { id });
+        }
+
         public async Task<PropostaTutor> ObterPropostaTutorPorId(long id)
         {
             var query = @"select
@@ -1180,6 +1200,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             regente.PropostaId = propostaId;
             regente.Id = (long)await conexao.Obter().InsertAsync(regente);
         }
+        
+        public async Task InserirPropostaParecerista(long propostaId, PropostaParecerista parecerista)
+        {
+            PreencherAuditoriaCriacao(parecerista);
+
+            parecerista.PropostaId = propostaId;
+            parecerista.Id = (long)await conexao.Obter().InsertAsync(parecerista);
+        }
 
         public async Task InserirPropostaRegenteTurma(long propostaRegenteId, IEnumerable<PropostaRegenteTurma> regenteTurma)
         {
@@ -1353,6 +1381,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             PreencherAuditoriaAlteracao(propostaRegente);
             await conexao.Obter().UpdateAsync(propostaRegente);
+        }
+        
+        public async Task AtualizarPropostaParecerista(PropostaParecerista parecerista)
+        {
+            PreencherAuditoriaAlteracao(parecerista);
+            await conexao.Obter().UpdateAsync(parecerista);
         }
 
         public async Task AtualizarPropostaTutor(PropostaTutor propostaTutor)
@@ -2175,6 +2209,47 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = "select id from proposta_turma pt where not pt.excluido and pt.proposta_id = @propostaId ";
 
             return await conexao.Obter().QueryAsync<long>(query, new { propostaId });
+        }
+        
+        public async Task<bool> RemoverPropostaParecer(PropostaParecer parecer)
+        {
+            PreencherAuditoriaAlteracao(parecer);
+
+            var parametros = new
+            {
+                parecer.Id,
+                parecer.AlteradoEm,
+                parecer.AlteradoPor,
+                parecer.AlteradoLogin
+            };
+
+            var query = @"update proposta_parecer 
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@id)";
+
+            return await conexao.Obter().ExecuteAsync(query, parametros) > 0;
+        }
+
+        public async Task<PropostaParecer> ObterParecerPorId(long parecerId)
+        {
+            var query = @$" select
+	                    id,
+	                    proposta_id,
+	                    campo,
+	                    descricao,
+	                    criado_por,
+	                    alterado_em,
+	                    alterado_por,
+	                    criado_login,
+	                    alterado_login,
+	                    excluido
+                            from
+	                    public.proposta_parecer where not excluido  and id=@parecerId ";
+            return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecer>(query, new { parecerId });
         }
     }
 }

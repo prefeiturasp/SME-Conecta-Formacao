@@ -108,5 +108,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<bool> UsuarioEstaInscritoNaProposta(long usuarioId, long propostaId);
         Task<IEnumerable<long>> PropostasConfirmadasQueNaoEncerramAinda();
         Task<IEnumerable<long>> PropostasTurmaIdsPorPropostaId(long propostaId);
+        Task AtualizarPropostaParecerista(PropostaParecerista parecerista);
+        Task InserirPropostaParecerista(long propostaId, PropostaParecerista parecerista);
+        Task<PropostaParecerista> ObterPropostaPareceristaPorId(long id);
+        Task<bool> RemoverPropostaParecer(PropostaParecer parecer);
+        Task<PropostaParecer> ObterParecerPorId(long parecerId);
     }
 }
