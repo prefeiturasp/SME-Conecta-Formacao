@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<RetornoUsuriosPareceristasDTO>> Handle(ObterUsuariosPareceristasQuery request, CancellationToken cancellationToken)
         {
-            var consulta = await _servicoAcessos.ObterUsuariosPerfilPareceristas(request.Rf, request.Nome);
+            var consulta = await _servicoAcessos.ObterUsuariosPerfilPareceristas();
             if(!consulta.Any())
                 return Enumerable.Empty<RetornoUsuriosPareceristasDTO>();
 

@@ -22,9 +22,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(IEnumerable<UsuarioPareceristaDto>),200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterParecerista([FromQuery] string nome, string rf,[FromServices] ICasoDeUsoObterParecerista useCase)
+        public async Task<IActionResult> ObterParecerista([FromServices] ICasoDeUsoObterParecerista useCase)
         {
-            return Ok(useCase.Executar(nome,rf));
+            return Ok(useCase.Executar());
         }
     }
 }
