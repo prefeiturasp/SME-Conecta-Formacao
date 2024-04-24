@@ -111,5 +111,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task AtualizarPropostaParecerista(PropostaParecerista parecerista);
         Task InserirPropostaParecerista(long propostaId, PropostaParecerista parecerista);
         Task<PropostaParecerista> ObterPropostaPareceristaPorId(long id);
+        Task<bool> RemoverPropostaParecer(PropostaParecer parecer);
+        Task<PropostaParecer> ObterParecerPorId(long parecerId);
     }
 }
