@@ -54,5 +54,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public PropostaMovimentacaoDTO Movimentacao { get; set; }
         public PropostaAreaPromotoraDTO AreaPromotora { get; set; }
         public string? UltimaJustificativaDevolucao { get; set; }
+        public string? LinkParaInscricoesExterna { get; set; }
+        public long? CodigoEventoSigpec { get; set; }
+        public long? NumeroHomologacao { get; set; }
     }
 }

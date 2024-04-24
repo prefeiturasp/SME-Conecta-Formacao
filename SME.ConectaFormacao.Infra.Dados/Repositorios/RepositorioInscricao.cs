@@ -2,6 +2,7 @@
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
 
@@ -224,7 +225,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { propostaId, login, cpf, nomeCursista, turmaId });
         }
 
-        public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros)
+        public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros, long? numeroHomologacao)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"  
@@ -244,14 +245,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (codigoDaFormacao != null)
                 query += "  and p.id = @codigoDaFormacao ";
 
+            if (numeroHomologacao.NaoEhNulo())
+                query += "  and p.numero_homologacao = @numeroHomologacao ";
+
             query += " order by p.id desc limit @numeroRegistros offset @registrosIgnorados  ";
 
             var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
-            var parametros = new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta };
+            var parametros = new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta, numeroHomologacao };
             return conexao.Obter().QueryAsync<Proposta>(query.ToString(), parametros);
         }
 
-        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao)
+        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, long? numeroHomologacao)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"	
@@ -269,7 +273,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (codigoDaFormacao != null)
                 query += "  and p.id = @codigoDaFormacao ";
 
-            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta });
+            if (numeroHomologacao.NaoEhNulo())
+                query += " and p.numero_homologacao = @numeroHomologacao ";
+
+            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta, numeroHomologacao });
         }
 
         public Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds)
