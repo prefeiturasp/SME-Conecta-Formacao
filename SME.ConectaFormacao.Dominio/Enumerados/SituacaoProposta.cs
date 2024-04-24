@@ -26,7 +26,13 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Devolvida = 7,
 
         [Display(Name = "Alterando", Prompt = "#297805")]
-        Alterando = 8
+        Alterando = 8,
+            
+        [Display(Name = "Aguardando análise do Parecerista", Prompt = "#297805")]
+        AguardandoAnaliseParecerista = 9,
+        
+        [Display(Name = "Análise do parecer pela área promotora", Prompt = "#297805")]
+        AnaliseParecerAreaPromotora = 10
     }
 
     public static class SituacaoPropostaExtensao
