@@ -392,6 +392,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (formacaoHomologada.HasValue)
                 query += " and p.formacao_homologada = @formacaoHomologada ";
 
+            if (numeroHomologacao.HasValue)
+                query += " and p.numero_homologacao = @numeroHomologacao ";
+
             query += " ORDER BY coalesce(pm.criado_em, p.alterado_em, p.criado_em) DESC ";
 
             var parametros = new
