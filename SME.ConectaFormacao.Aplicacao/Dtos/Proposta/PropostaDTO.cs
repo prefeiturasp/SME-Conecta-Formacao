@@ -36,6 +36,9 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? AcaoFormativaLink { get; set; }
         public bool? IntegrarNoSGA { get; set; }
         public string? RfResponsavelDf { get; set; }
+        public string? LinkParaInscricoesExterna { get; set; }
+        public long? CodigoEventoSigpec { get; set; }
+        public long? NumeroHomologacao { get; set; }
 
         public IEnumerable<PropostaDreDTO> Dres { get; set; }
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
