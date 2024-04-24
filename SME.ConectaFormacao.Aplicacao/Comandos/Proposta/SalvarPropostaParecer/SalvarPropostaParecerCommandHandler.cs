@@ -18,17 +18,20 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(SalvarPropostaParecerCommand request, CancellationToken cancellationToken)
         {
-            var ehAlteracao = request.PropostaParecerDTO.Id > 0;
+            if (request.PropostaParecerDTO.Id > 0)
+            {
+                var alterarPropostaParecer = await _repositorioPropostaParecer.ObterPorId(request.PropostaParecerDTO.Id.Value);
+                
+                alterarPropostaParecer.Descricao = request.PropostaParecerDTO.Descricao;
             
-            var propostaParecer = ehAlteracao ? await _repositorioPropostaParecer.ObterPorId(request.PropostaParecerDTO.Id.Value) : new PropostaParecer();
+                await _repositorioPropostaParecer.Atualizar(alterarPropostaParecer);
+                
+                return alterarPropostaParecer.Id;
+            }
             
-            propostaParecer = _mapper.Map<PropostaParecer>(request.PropostaParecerDTO);
+            var propostaParecer = _mapper.Map<PropostaParecer>(request.PropostaParecerDTO);
 
-            if (!ehAlteracao) 
-                return await _repositorioPropostaParecer.Inserir(propostaParecer);
-            
-            await _repositorioPropostaParecer.Atualizar(propostaParecer);
-            return propostaParecer.Id;
+            return await _repositorioPropostaParecer.Inserir(propostaParecer);
         }
     }
 }

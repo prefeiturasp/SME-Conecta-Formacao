@@ -1,15 +1,8 @@
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
-using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
-using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -21,8 +14,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        [Fact(DisplayName = "Proposta parecer - Não deve cadastrar um parecer sem campo")]
-        public async Task Nao_deve_cadastrar_proposta_parecer_sem_campo()
+        [Fact(DisplayName = "Proposta parecer - Cadastrar um parecer")]
+        public async Task Deve_cadastrar_proposta_parecer()
         {
             // arrange
             var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaParecer>();
@@ -33,10 +26,44 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaParecerDto.PropostaId = proposta.Id;
             
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(useCase.Executar(propostaParecerDto));
+            var retorno = await useCase.Executar(propostaParecerDto);
 
             // assert
-            excecao.ShouldNotBeNull();
+            retorno.ShouldBeGreaterThan(0);
+            var propostaParecer = ObterTodos<PropostaParecer>().FirstOrDefault();
+            propostaParecer.Id.ShouldBe(1);
+            propostaParecer.Campo.ShouldBe(propostaParecerDto.Campo);
+            propostaParecer.Descricao.ShouldBe(propostaParecerDto.Descricao);
+            propostaParecer.PropostaId.ShouldBe(proposta.Id);
+            propostaParecer.Excluido.ShouldBeFalse();
+        }
+        
+        [Fact(DisplayName = "Proposta parecer - Alterar parecer")]
+        public async Task Deve_alterar_proposta_parecer()
+        {
+            // arrange
+            var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaParecer>();
+            
+            var proposta = await InserirNaBaseProposta();
+            
+            var inserirPropostaParecer = PropostaParecerMock.GerarPropostaParecer();
+            inserirPropostaParecer.PropostaId = proposta.Id;
+            await InserirNaBase(inserirPropostaParecer);
+            
+            var alterarPropostaParecer = PropostaSalvarMock.GerarParecer();
+            alterarPropostaParecer.PropostaId = proposta.Id;
+            alterarPropostaParecer.Id = inserirPropostaParecer.Id;
+            
+            // act
+            var retorno = await useCase.Executar(alterarPropostaParecer);
+
+            // assert
+            retorno.ShouldBeGreaterThan(0);
+            var propostaParecer = ObterTodos<PropostaParecer>().FirstOrDefault();
+            propostaParecer.Id.ShouldBe(1);
+            propostaParecer.Descricao.ShouldBe(alterarPropostaParecer.Descricao);
+            propostaParecer.PropostaId.ShouldBe(proposta.Id);
+            propostaParecer.Excluido.ShouldBeFalse();
         }
     }
 }
