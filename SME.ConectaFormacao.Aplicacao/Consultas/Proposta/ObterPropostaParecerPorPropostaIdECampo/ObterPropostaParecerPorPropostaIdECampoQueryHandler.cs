@@ -25,37 +25,62 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<PropostaParecerCompletoDTO> Handle(ObterPropostaParecerPorPropostaIdECampoQuery request, CancellationToken cancellationToken)
         {
-            var propostaPareceres = await _repositorioPropostaParecer.ObterPorPropostaIdECampo(request.PropostaId,request.CampoParecer);
+            var pareceresDaProposta = await _repositorioPropostaParecer.ObterPorPropostaIdECampo(request.PropostaId,request.CampoParecer);
 
             PropostaParecer auditoriaMaisRecente = new ();
 
-            // var podeInserir = false;
+            var pareceresDaPropostaDoPerfil = Enumerable.Empty<PropostaParecerDTO>();
 
-            if (propostaPareceres.Any())
+            var podeInserir = true;
+
+            if (pareceresDaProposta.Any())
             {
-                // podeInserir = true;
-                
                 var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery(), cancellationToken);
+                
                 var perfilLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery(), cancellationToken);
-
+                
+                var ehAreaPromotora = await _mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilLogado), cancellationToken);
+                
                 if (!perfilLogado.EhPerfilAdminDF())
                 {
-                    var propostaPareceresUsuario = propostaPareceres.Where(w => w.CriadoPor.EstaPreenchido() && w.CriadoPor.Equals(usuarioLogado.Login));
+                    var pareceresDaPropostaDoUsuario = pareceresDaProposta.Where(w => w.CriadoPor.EstaPreenchido() && w.CriadoPor.Equals(usuarioLogado.Login));
                     
-                    var propostaParecerAreaPromotora = propostaPareceres.Where(w => w.CriadoPor.EstaPreenchido() && w.CriadoPor.Equals(usuarioLogado.Login));
+                    pareceresDaPropostaDoPerfil = _mapper.Map<IEnumerable<PropostaParecerDTO>>(pareceresDaPropostaDoUsuario);
 
-                    propostaPareceres = propostaPareceresUsuario.Concat(propostaParecerAreaPromotora);
+                    foreach (var propostaParecerFinal in pareceresDaPropostaDoPerfil)
+                    {
+                        propostaParecerFinal.PodeAlterar = true;
+                        propostaParecerFinal.PodeAlterar = true;
+                    }
+                    
+                    podeInserir = !pareceresDaPropostaDoPerfil.Any();
+
+                    if (ehAreaPromotora.NaoEhNulo())
+                    {
+                        var propostaParecerAreaPromotora = pareceresDaProposta.Where(w => w.CriadoPor.EstaPreenchido() && w.CriadoPor.Equals(usuarioLogado.Login));
+
+                        pareceresDaPropostaDoPerfil = pareceresDaPropostaDoPerfil.Concat(_mapper.Map<IEnumerable<PropostaParecerDTO>>(propostaParecerAreaPromotora));
+                    }
+                }
+                else
+                {
+                    podeInserir = false;
+
+                    pareceresDaPropostaDoPerfil = _mapper.Map<IEnumerable<PropostaParecerDTO>>(pareceresDaProposta);
+                    
+                    foreach (var propostaParecerFinal in pareceresDaPropostaDoPerfil)
+                        propostaParecerFinal.PodeAlterar = true;
                 }
 
-                auditoriaMaisRecente = propostaPareceres.MaxBy(o => o.AlteradoEm ?? o.CriadoEm);
+                auditoriaMaisRecente = pareceresDaProposta.MaxBy(o => o.AlteradoEm ?? o.CriadoEm);
             }
                 
             var propostaParecerCompletoDTO = new PropostaParecerCompletoDTO()
             {
                 PropostaId = request.PropostaId,
-                PodeInserir = true,//podeInserir,
+                PodeInserir = podeInserir,
                 Auditoria = _mapper.Map<AuditoriaDTO>(auditoriaMaisRecente),
-                Itens = _mapper.Map<IEnumerable<PropostaParecerDTO>>(propostaPareceres)
+                Itens = pareceresDaPropostaDoPerfil
             };
 
             return propostaParecerCompletoDTO;
