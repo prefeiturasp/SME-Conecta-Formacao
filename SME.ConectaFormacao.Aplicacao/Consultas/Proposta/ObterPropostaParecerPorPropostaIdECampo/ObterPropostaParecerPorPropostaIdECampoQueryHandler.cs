@@ -43,7 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (perfilLogado.EhParecerista())
                 {
-                    var pareceresDaPropostaDoUsuario = pareceresDaProposta.Where(w => w.CriadoPor.EstaPreenchido() && w.CriadoPor.Equals(usuarioLogado.Login));
+                    var pareceresDaPropostaDoUsuario = pareceresDaProposta.Where(w => w.CriadoLogin.EstaPreenchido() && w.CriadoLogin.Equals(usuarioLogado.Login));
                     
                     pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaPropostaDoUsuario);
 

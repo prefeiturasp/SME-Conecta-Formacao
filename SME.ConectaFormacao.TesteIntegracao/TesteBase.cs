@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Dominio;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Contexto;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -93,30 +96,40 @@ namespace SME.ConectaFormacao.TesteIntegracao
             return this.ServiceProvider.GetService<T>() ?? throw new Exception($"Caso de Uso {typeof(T).Name} não registrado!");
         }
         
-        // protected void CriarClaimUsuario(string perfil, string login, string nomeUsuario,
-        //     string numeroPagina = "0", string numeroRegistros = "10", string ordenacao = "1")
-        // {
-        //     var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
-        //     
-        //     contextoAplicacao.AdicionarVariaveis(ObterVariaveisPorPerfil(login, nomeUsuario, perfil,numeroPagina, numeroRegistros, ordenacao));
-        // }
-        //
-        // private Dictionary<string, object> ObterVariaveisPorPerfil(string login = ConstantesTestes.LOGIN_123456789, 
-        //     string nomeUsuario = ConstantesTestes.SISTEMA, string perfil = Dominio.Constantes.Constantes.PERFIL_ADMIN_GERAL_GUID,
-        //     string numeroPagina = "0", string numeroRegistros = "10", string ordenacao = "1")
-        // {
-        //     return new Dictionary<string, object>
-        //     {
-        //         { ConstantesTestes.USUARIO_CHAVE,  nomeUsuario},
-        //         { ConstantesTestes.USUARIO_LOGADO_CHAVE, login },
-        //         { ConstantesTestes.PERFIL_USUARIO, perfil },
-        //         { ConstantesTestes.NUMERO_PAGINA, numeroPagina },
-        //         { ConstantesTestes.NUMERO_REGISTROS, numeroRegistros },
-        //         { ConstantesTestes.ORDENACAO, ordenacao },
-        //         {
-        //             ConstantesTestes.USUARIO_CLAIMS_CHAVE,new Tuple<string, string>(login, ConstantesTestes.USUARIO_CLAIM_TIPO_RF)
-        //         }
-        //     };
-        // }
+        protected void CriarClaimUsuario(string perfil, string login = "1", string nomeUsuario="Sistema", string numeroPagina = "0", string numeroRegistros = "10")
+        {
+            var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
+            
+            contextoAplicacao.AdicionarVariaveis(ObterVariaveisPorPerfil(login, nomeUsuario, perfil,numeroPagina, numeroRegistros));
+        }
+        
+        private Dictionary<string, object> ObterVariaveisPorPerfil(string login,string nomeUsuario, string perfil,string numeroPagina = "0", string numeroRegistros = "10")
+        {
+            return new Dictionary<string, object>
+            {
+                { "RF",  login},
+                { "NomeUsuario",  nomeUsuario},
+                { "UsuarioLogado", login },
+                { "login", login },
+                { "PerfilUsuario", perfil },
+                { "NumeroPagina", numeroPagina },
+                { "NumeroRegistros", numeroRegistros },
+                {
+                    "Claims",new Tuple<string, string>(login, "RF")
+                }
+            };
+        }
+
+        protected async Task InserirUsuario(string login = "1", string nome = "Sistema")
+        {
+            await InserirNaBase(new Dominio.Entidades.Usuario()
+            { 
+                Login = login, 
+                Nome = nome, 
+                CriadoPor = nome, 
+                CriadoEm = DateTimeExtension.HorarioBrasilia(), 
+                CriadoLogin = login 
+            });
+        }
     }
 }
