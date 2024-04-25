@@ -177,7 +177,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<IEnumerable<AreaPromotora>> ObterLista()
         {
-            var query = @"select id, nome from area_promotora where not excluido order by nome";
+            var query = @"select id, nome, grupo_id  from area_promotora where not excluido order by nome";
 
             return conexao.Obter().QueryAsync<AreaPromotora>(query);
         }
