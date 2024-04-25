@@ -92,5 +92,31 @@ namespace SME.ConectaFormacao.TesteIntegracao
         {
             return this.ServiceProvider.GetService<T>() ?? throw new Exception($"Caso de Uso {typeof(T).Name} não registrado!");
         }
+        
+        // protected void CriarClaimUsuario(string perfil, string login, string nomeUsuario,
+        //     string numeroPagina = "0", string numeroRegistros = "10", string ordenacao = "1")
+        // {
+        //     var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
+        //     
+        //     contextoAplicacao.AdicionarVariaveis(ObterVariaveisPorPerfil(login, nomeUsuario, perfil,numeroPagina, numeroRegistros, ordenacao));
+        // }
+        //
+        // private Dictionary<string, object> ObterVariaveisPorPerfil(string login = ConstantesTestes.LOGIN_123456789, 
+        //     string nomeUsuario = ConstantesTestes.SISTEMA, string perfil = Dominio.Constantes.Constantes.PERFIL_ADMIN_GERAL_GUID,
+        //     string numeroPagina = "0", string numeroRegistros = "10", string ordenacao = "1")
+        // {
+        //     return new Dictionary<string, object>
+        //     {
+        //         { ConstantesTestes.USUARIO_CHAVE,  nomeUsuario},
+        //         { ConstantesTestes.USUARIO_LOGADO_CHAVE, login },
+        //         { ConstantesTestes.PERFIL_USUARIO, perfil },
+        //         { ConstantesTestes.NUMERO_PAGINA, numeroPagina },
+        //         { ConstantesTestes.NUMERO_REGISTROS, numeroRegistros },
+        //         { ConstantesTestes.ORDENACAO, ordenacao },
+        //         {
+        //             ConstantesTestes.USUARIO_CLAIMS_CHAVE,new Tuple<string, string>(login, ConstantesTestes.USUARIO_CLAIM_TIPO_RF)
+        //         }
+        //     };
+        // }
     }
 }
