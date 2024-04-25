@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarPropostaParecerCommand : IRequest<long>
+    public class SalvarPropostaParecerCommand : IRequest<RetornoDTO>
     {
         public SalvarPropostaParecerCommand(PropostaParecerCadastroDTO propostaParecerCadastroDto)
         {
@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             RuleFor(x => x.PropostaParecerCadastroDto.Descricao)
                 .NotEmpty()
-                .MinimumLength(1).WithMessage("É necessário informar a descrição para salvar o parecer da proposta");
+                .WithMessage("É necessário informar a descrição para salvar o parecer da proposta");
         }
     }
 }

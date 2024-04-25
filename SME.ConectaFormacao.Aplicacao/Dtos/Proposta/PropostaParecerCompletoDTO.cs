@@ -10,6 +10,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         
         public IEnumerable<PropostaParecerDTO> Itens { get; set; } = Enumerable.Empty<PropostaParecerDTO>();
         
-        public AuditoriaDTO Auditoria { get; set; }
+        public AuditoriaDTO? Auditoria { get; set; }
     }
 }
