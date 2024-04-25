@@ -40,39 +40,29 @@ namespace SME.ConectaFormacao.Aplicacao
                 var perfilLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery(), cancellationToken);
                 
                 var ehAreaPromotora = await _mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilLogado), cancellationToken);
-                
-                if (!perfilLogado.EhPerfilAdminDF())
+
+                if (perfilLogado.EhParecerista())
                 {
                     var pareceresDaPropostaDoUsuario = pareceresDaProposta.Where(w => w.CriadoPor.EstaPreenchido() && w.CriadoPor.Equals(usuarioLogado.Login));
                     
-                    pareceresDaPropostaDoPerfil = _mapper.Map<IEnumerable<PropostaParecerDTO>>(pareceresDaPropostaDoUsuario);
+                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaPropostaDoUsuario);
 
-                    foreach (var propostaParecerFinal in pareceresDaPropostaDoPerfil)
-                    {
-                        propostaParecerFinal.PodeAlterar = true;
-                        propostaParecerFinal.PodeAlterar = true;
-                    }
+                    DefinirPodeAlterar(pareceresDaPropostaDoPerfil);
                     
                     podeInserir = !pareceresDaPropostaDoPerfil.Any();
-
-                    if (ehAreaPromotora.NaoEhNulo())
-                    {
-                        var propostaParecerAreaPromotora = pareceresDaProposta.Where(w => w.CriadoPor.EstaPreenchido() && w.CriadoPor.Equals(usuarioLogado.Login));
-
-                        pareceresDaPropostaDoPerfil = pareceresDaPropostaDoPerfil.Concat(_mapper.Map<IEnumerable<PropostaParecerDTO>>(propostaParecerAreaPromotora));
-                    }
+                    
+                    auditoriaMaisRecente = DefinirAuditoriaMaisRecente(pareceresDaPropostaDoUsuario);
                 }
-                else
+                else if(perfilLogado.EhPerfilAdminDF() || ehAreaPromotora.NaoEhNulo())
                 {
                     podeInserir = false;
 
-                    pareceresDaPropostaDoPerfil = _mapper.Map<IEnumerable<PropostaParecerDTO>>(pareceresDaProposta);
+                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta);
                     
-                    foreach (var propostaParecerFinal in pareceresDaPropostaDoPerfil)
-                        propostaParecerFinal.PodeAlterar = true;
+                    DefinirPodeAlterar(pareceresDaPropostaDoPerfil,perfilLogado.EhPerfilAdminDF());
+                    
+                    auditoriaMaisRecente = DefinirAuditoriaMaisRecente(pareceresDaProposta);
                 }
-
-                auditoriaMaisRecente = pareceresDaProposta.MaxBy(o => o.AlteradoEm ?? o.CriadoEm);
             }
                 
             var propostaParecerCompletoDTO = new PropostaParecerCompletoDTO()
@@ -84,6 +74,22 @@ namespace SME.ConectaFormacao.Aplicacao
             };
 
             return propostaParecerCompletoDTO;
+        }
+
+        private IEnumerable<PropostaParecerDTO> MapearParaDTO(IEnumerable<PropostaParecer> pareceresDaPropostaDoUsuario)
+        {
+            return _mapper.Map<IEnumerable<PropostaParecerDTO>>(pareceresDaPropostaDoUsuario);
+        }
+
+        private PropostaParecer? DefinirAuditoriaMaisRecente(IEnumerable<PropostaParecer> pareceresDaProposta)
+        {
+            return pareceresDaProposta.MaxBy(o => o.AlteradoEm ?? o.CriadoEm);
+        }
+
+        private void DefinirPodeAlterar(IEnumerable<PropostaParecerDTO> pareceresDaPropostaDoPerfil, bool podeAlterar = true)
+        {
+            foreach (var propostaParecerFinal in pareceresDaPropostaDoPerfil)
+                propostaParecerFinal.PodeAlterar = podeAlterar;
         }
     }
 }
