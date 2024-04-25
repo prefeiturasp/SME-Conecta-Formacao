@@ -20,5 +20,7 @@ namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
         public IEnumerable<string> PalavrasChaves { get; set; }
         public IEnumerable<FormacaoTurma> Turmas { get; set; }
         public Arquivo? ArquivoImagemDivulgacao { get; set; }
+        public string? LinkParaInscricoesExterna { get; set; }
+        public bool PodeEnviarInscricao { get; set; }
     }
 }
