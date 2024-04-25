@@ -381,10 +381,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
         
         [HttpPost("parecer")]
-        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        // [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
         public async Task<IActionResult> InserirPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaParecer casoDeUsoSalvarPropostaParecer,
             [FromBody] PropostaParecerCadastroDTO propostaParecerCadastroDto)
         {
@@ -403,10 +403,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
         
         [HttpGet("parecer")]
-        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(PropostaParecerCompletoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        // [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
+        [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
         public async Task<IActionResult> ObterPropostaPareceresPorPropostaIdECampo([FromServices] ICasoDeUsoObterPropostaParecer casoDeUsoSalvarPropostaParecer,
             [FromQuery] PropostaParecerFiltroDTO propostaParecerFiltroDTO)
         {

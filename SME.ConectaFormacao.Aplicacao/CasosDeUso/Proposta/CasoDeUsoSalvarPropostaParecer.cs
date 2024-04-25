@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         public CasoDeUsoSalvarPropostaParecer(IMediator mediator) : base(mediator)
         {}
         
-        public async Task<long> Executar(PropostaParecerCadastroDTO propostaParecerCadastroDto)
+        public async Task<RetornoDTO> Executar(PropostaParecerCadastroDTO propostaParecerCadastroDto)
         {
             return await mediator.Send(new SalvarPropostaParecerCommand(propostaParecerCadastroDto));
         }
