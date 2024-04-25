@@ -1,6 +1,8 @@
 using Shouldly;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -29,7 +31,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var retorno = await useCase.Executar(propostaParecerDto);
 
             // assert
-            retorno.ShouldBeGreaterThan(0);
+            retorno.EntidadeId.ShouldBeGreaterThan(0);
             var propostaParecer = ObterTodos<PropostaParecer>().FirstOrDefault();
             propostaParecer.Id.ShouldBe(1);
             propostaParecer.Campo.ShouldBe(propostaParecerDto.Campo);
@@ -58,12 +60,34 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var retorno = await useCase.Executar(alterarPropostaParecer);
 
             // assert
-            retorno.ShouldBeGreaterThan(0);
+            retorno.EntidadeId.ShouldBeGreaterThan(0);
             var propostaParecer = ObterTodos<PropostaParecer>().FirstOrDefault();
             propostaParecer.Id.ShouldBe(1);
             propostaParecer.Descricao.ShouldBe(alterarPropostaParecer.Descricao);
             propostaParecer.PropostaId.ShouldBe(proposta.Id);
             propostaParecer.Excluido.ShouldBeFalse();
+        }
+        
+        [Fact(DisplayName = "Proposta parecer - Deve permitir ao cursista inserir parecer")]
+        public async Task Deve_permitir_ao_cursista_inserir_parecer()
+        {
+            // arrange
+            // CriarClaimUsuario(Dominio.Constantes.Perfis.PARECERISTA);
+            var useCase = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
+            
+            var proposta = await InserirNaBaseProposta();
+            
+            // act
+            var filtro = new PropostaParecerFiltroDTO()
+            {
+                Campo = CampoParecer.FormacaoHomologada,
+                PropostaId = 1
+            };
+            
+            var retorno = await useCase.Executar(filtro);
+
+            // assert
+            retorno.PodeInserir.ShouldBeTrue();
         }
     }
 }
