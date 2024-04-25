@@ -370,13 +370,47 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await useCase.Executar(filtro));
         }
 
-        [HttpDelete("excluir-parecer/{parecerId}")]
+        [HttpDelete("parecer/{parecerId}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_E, Policy = "Bearer")]
         public async Task<IActionResult> RemoverParecer([FromRoute] long parecerId,[FromServices] ICasoDeUsoRemoverParecerDaProposta casoDeUso)
         {
             return Ok(await casoDeUso.Executar(parecerId));
+        }
+        
+        [HttpPost("parecer")]
+        [ProducesResponseType(typeof(long), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        // [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        public async Task<IActionResult> InserirPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaParecer casoDeUsoSalvarPropostaParecer,
+            [FromBody] PropostaParecerCadastroDTO propostaParecerCadastroDto)
+        {
+            return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerCadastroDto));
+        }
+        
+        [HttpPut("parecer")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_A, Policy = "Bearer")]
+        public async Task<IActionResult> AlterarPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaParecer casoDeUsoSalvarPropostaParecer,
+            [FromBody] PropostaParecerCadastroDTO propostaParecerCadastroDto)
+        {
+            return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerCadastroDto));
+        }
+        
+        [HttpGet("parecer")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        // [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
+        public async Task<IActionResult> ObterPropostaPareceresPorPropostaIdECampo([FromServices] ICasoDeUsoObterPropostaParecer casoDeUsoSalvarPropostaParecer,
+            [FromQuery] PropostaParecerFiltroDTO propostaParecerFiltroDTO)
+        {
+            return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerFiltroDTO));
         }
     }
 }
