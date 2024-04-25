@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
     public interface ICasoDeUsoSalvarPropostaParecer
     {
-        Task<long> Executar(PropostaParecerDTO propostaParecerDTO);
+        Task<long> Executar(PropostaParecerCadastroDTO propostaParecerCadastroDto);
     }
 }

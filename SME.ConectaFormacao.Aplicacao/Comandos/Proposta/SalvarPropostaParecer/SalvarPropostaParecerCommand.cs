@@ -6,26 +6,26 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarPropostaParecerCommand : IRequest<long>
     {
-        public SalvarPropostaParecerCommand(PropostaParecerDTO propostaParecerDTO)
+        public SalvarPropostaParecerCommand(PropostaParecerCadastroDTO propostaParecerCadastroDto)
         {
-            PropostaParecerDTO = propostaParecerDTO;
+            PropostaParecerCadastroDto = propostaParecerCadastroDto;
         }
 
-        public PropostaParecerDTO PropostaParecerDTO { get; }
+        public PropostaParecerCadastroDTO PropostaParecerCadastroDto { get; }
     }
     public class SalvarPropostaParecerCommandValidator : AbstractValidator<SalvarPropostaParecerCommand>
     {
         public SalvarPropostaParecerCommandValidator()
         {
-            RuleFor(x => x.PropostaParecerDTO.PropostaId)
+            RuleFor(x => x.PropostaParecerCadastroDto.PropostaId)
                 .NotEmpty()
                 .WithMessage("É necessário informar o id da proposta para salvar o parecer da proposta");
             
-            RuleFor(x => x.PropostaParecerDTO.Campo)
+            RuleFor(x => x.PropostaParecerCadastroDto.Campo)
                 .NotEmpty()
                 .WithMessage("É necessário informar o campo para salvar o parecer da proposta");
 
-            RuleFor(x => x.PropostaParecerDTO.Descricao)
+            RuleFor(x => x.PropostaParecerCadastroDto.Descricao)
                 .NotEmpty()
                 .MinimumLength(1).WithMessage("É necessário informar a descrição para salvar o parecer da proposta");
         }
