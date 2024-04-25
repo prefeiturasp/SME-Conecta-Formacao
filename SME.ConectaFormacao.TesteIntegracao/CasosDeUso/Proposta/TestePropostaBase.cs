@@ -93,7 +93,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.AreaPromotora = areaPromotora;
 
             if (tipoInscricao == TipoInscricao.Externa)
-                proposta.LinkParaInscricoesExterna = new Faker().Lorem.Sentence(25);
+                proposta.LinkParaInscricoesExterna = new Faker().Lorem.Sentence(20);
 
             if (numeroHomologacao)
                 proposta.NumeroHomologacao = new Random().NextInt64(100000, 9999999999);
