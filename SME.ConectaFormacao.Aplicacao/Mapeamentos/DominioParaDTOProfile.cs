@@ -265,6 +265,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             
             CreateMap<PropostaParecer, PropostaParecerCompletoDTO>().ReverseMap();
             CreateMap<PropostaParecer, PropostaParecerDTO>().ReverseMap();
+            CreateMap<PropostaTotalParecer, PropostaTotalParecerDTO>();
         }
     }
 }
