@@ -11,6 +11,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.PropostaId).ToColumn("proposta_id");
             Map(t => t.Campo).ToColumn("campo");
             Map(t => t.Descricao).ToColumn("descricao");
+            Map(t => t.Situacao).ToColumn("situacao");
         }
     }
 }
