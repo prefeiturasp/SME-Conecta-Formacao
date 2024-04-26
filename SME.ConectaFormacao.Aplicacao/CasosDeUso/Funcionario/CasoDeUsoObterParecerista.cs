@@ -1,5 +1,6 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Consultas.ServicoAcessos.ObterUsuariosPareceristas;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Funcionario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario;
 
@@ -11,14 +12,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Funcionario
         {
         }
 
-        public async Task<IEnumerable<UsuarioPareceristaDto>> Executar()
+        public async Task<IEnumerable<RetornoUsuriosPareceristasDTO>> Executar()
         {
-            var consulta = await mediator.Send(new ObterUsuariosPareceristasQuery());
-
-            if (!consulta.Any())
-                return Enumerable.Empty<UsuarioPareceristaDto>();
-
-            return consulta.Select(x => new UsuarioPareceristaDto() { Nome = x.Nome, Rf = x.Login});
+            return await mediator.Send(new ObterUsuariosPareceristasQuery());
         }
     }
 }

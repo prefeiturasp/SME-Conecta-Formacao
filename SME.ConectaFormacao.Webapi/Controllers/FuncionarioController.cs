@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Dtos.Funcionario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario;
@@ -19,12 +20,12 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("obter-parecerista")]
-        [ProducesResponseType(typeof(IEnumerable<UsuarioPareceristaDto>),200)]
+        [ProducesResponseType(typeof(IEnumerable<RetornoUsuriosPareceristasDTO>),200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterParecerista([FromServices] ICasoDeUsoObterParecerista useCase)
         {
-            return Ok(useCase.Executar());
+            return Ok(await useCase.Executar());
         }
     }
 }
