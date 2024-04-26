@@ -4,6 +4,7 @@ CREATE TABLE if not exists public.proposta_parecer (
 	proposta_id int8 NOT NULL,
 	campo int2 NOT NULL,	
 	descricao varchar(1000) NOT NULL,
+	situacao int2 NULL,	
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
 	alterado_em timestamp NULL,
