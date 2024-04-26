@@ -16,6 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (propostaDTO.Situacao.EhParaSalvarRascunho())
                 return await mediator.Send(new AlterarPropostaRascunhoCommand(id, propostaDTO));
 
+            AlteraSituacaoParaAguardandoParecerista(propostaDTO);
+
             await SalvarMovimentacao(id, propostaDTO.Situacao);
 
             return await mediator.Send(new AlterarPropostaCommand(id, propostaDTO));
@@ -24,6 +26,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         private async Task SalvarMovimentacao(long propostaId, SituacaoProposta situacao)
         {
             await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
+        }
+
+        private void AlteraSituacaoParaAguardandoParecerista(PropostaDTO propostaDTO)
+        {
+            if (propostaDTO.Situacao.EstaAguardandoAnaliseDf() && 
+                propostaDTO.FormacaoHomologada.EstaHomologada())
+                propostaDTO.Situacao = SituacaoProposta.AguardandoAnaliseParecerista;
         }
     }
 }
