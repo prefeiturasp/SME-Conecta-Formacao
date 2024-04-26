@@ -242,7 +242,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         private static string MontarQueryPaginacao(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
         {
             var query = new StringBuilder();
-            query.AppendLine("select p.id, p.tipo_formacao, p.formato, p.nome_formacao, p.data_realizacao_inicio, p.data_realizacao_fim, p.situacao, p.formacao_homologada, ap.id, ap.nome ");
+            query.AppendLine("select p.id, p.tipo_formacao, p.formato, p.nome_formacao, p.data_realizacao_inicio, p.data_realizacao_fim, p.situacao, p.formacao_homologada, p.numero_homologacao, ap.id, ap.nome ");
             query.AppendLine("from proposta p ");
             query.AppendLine("inner join area_promotora ap on ap.id = p.area_promotora_id and not ap.excluido");
             query.AppendLine("where not p.excluido ");
@@ -279,6 +279,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (formacaoHomologada.HasValue)
                 query.AppendLine(" and p.formacao_homologada = @formacaoHomologada");
+
+            if (numeroHomologacao.HasValue)
+                query.AppendLine(" and p.numero_homologacao = @numeroHomologacao");
 
             return query.ToString();
         }
@@ -389,6 +392,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (formacaoHomologada.HasValue)
                 query += " and p.formacao_homologada = @formacaoHomologada ";
 
+            if (numeroHomologacao.HasValue)
+                query += " and p.numero_homologacao = @numeroHomologacao ";
+
             query += " ORDER BY coalesce(pm.criado_em, p.alterado_em, p.criado_em) DESC ";
 
             var parametros = new
@@ -404,7 +410,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                 situacao,
                 formacaoHomologada,
-                situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray(),
+                situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray()
             };
             return conexao.Obter().QueryAsync<Proposta>(query, parametros);
         }
@@ -1672,7 +1678,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task<IEnumerable<long>> ObterListagemFormacoesPorFiltro(long[] publicosAlvosIds, string titulo, long[] areasPromotorasIds,
             DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds)
         {
-            var tipoInscricao = TipoInscricao.Optativa;
+            var tipoInscricao = new int[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
             var situacao = SituacaoProposta.Publicada;
             titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty;
             var dataAtual = DateTimeExtension.HorarioBrasilia().Date;
@@ -1681,7 +1687,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           from proposta p
                           inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id and not pti.excluido
                           where not p.excluido 
-                             and pti.tipo_inscricao = @tipoInscricao 
+                             and pti.tipo_inscricao = any(@tipoInscricao) 
                              and p.situacao = @situacao
                              and @dataAtual between p.data_inscricao_inicio::date and  p.data_inscricao_fim::date";
 
@@ -1780,7 +1786,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId)
         {
-            var tipoInscricao = TipoInscricao.Optativa;
+            var tipoInscricao = new int[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
             var situacao = SituacaoProposta.Publicada;
 
             var query = @"select
@@ -1792,12 +1798,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             p.data_inscricao_inicio dataInscricaoInicio,
                             p.data_inscricao_fim dataInscricaoFim,
                             p.justificativa,
-                            p.formacao_homologada as FormacaoHomologada    
+                            p.formacao_homologada as FormacaoHomologada,
+                            p.link_inscricoes_externa as LinkParaInscricoesExterna,
+                            coalesce((select false from public.proposta_tipo_inscricao pti where pti.proposta_id = p.id and pti.tipo_inscricao = 5), true) as PodeEnviarInscricao
                         from proposta p
                         inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id
                         where p.id = @propostaId 
                             and not p.excluido
-                            and pti.tipo_inscricao = @tipoInscricao 
+                            and pti.tipo_inscricao = any(@tipoInscricao) 
                             and p.situacao = @situacao;
 
                           select

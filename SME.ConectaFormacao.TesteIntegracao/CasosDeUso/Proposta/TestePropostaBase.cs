@@ -1,3 +1,4 @@
+using Bogus;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
@@ -43,7 +44,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada,
             FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool vincularUltimoCargoAoPublicoAlvo = false,
-            bool vincularUltimoFuncaoAoPublicoAlvo = false, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false)
+            bool vincularUltimoFuncaoAoPublicoAlvo = false, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false, bool numeroHomologacao = false)
         {
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -72,14 +73,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() { cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Funcao) };
 
             return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada, tipoInscricao, integrarNoSga, dataInscricaoForaPeriodo);
+                modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada, tipoInscricao, integrarNoSga, dataInscricaoForaPeriodo, numeroHomologacao);
         }
 
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora,
             IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,
             IEnumerable<PalavraChave> palavrasChaves, IEnumerable<Dominio.Enumerados.Modalidade> modalidades, IEnumerable<Dominio.Entidades.AnoTurma> anosTurmas,
             IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares, SituacaoProposta situacao = SituacaoProposta.Cadastrada,
-            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false)
+            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, 
+            bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false, bool numeroHomologacao = false)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
@@ -89,6 +91,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 false, false, formacaoHomologada, integrarNoSga, dataInscricaoForaPeriodo);
 
             proposta.AreaPromotora = areaPromotora;
+
+            if (tipoInscricao == TipoInscricao.Externa)
+                proposta.LinkParaInscricoesExterna = new Faker().Lorem.Sentence(20);
+
+            if (numeroHomologacao)
+                proposta.NumeroHomologacao = new Random().NextInt64(100000, 9999999999);
 
             await InserirNaBase(proposta);
 
@@ -233,7 +241,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             for (int i = 0; i < quantidade; i++)
                 lista.Add(await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,
-                    palavrasChaves, modalidades, anosTurmas, componentesCurriculares));
+                    palavrasChaves, modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Cadastrada,
+                    FormacaoHomologada.Sim, TipoInscricao.Automatica, true, false, true));
 
             return lista;
         }
@@ -293,6 +302,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.CriterioValidacaoInscricaoOutros.ShouldBe(propostaDTO.CriterioValidacaoInscricaoOutros);
 
             proposta.Situacao.ShouldBe(propostaDTO.Situacao);
+
+            if (propostaDTO.TiposInscricao.NaoEhNulo() && 
+                propostaDTO.TiposInscricao.Any(tipo => tipo.TipoInscricao == TipoInscricao.Externa))
+                proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
+
+            proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
         }
 
         protected void ValidarPropostaCompletoDTO(PropostaCompletoDTO propostaDTO, long id)
@@ -327,6 +342,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.CriterioValidacaoInscricaoOutros.ShouldBe(propostaDTO.CriterioValidacaoInscricaoOutros);
 
             proposta.Situacao.ShouldBe(propostaDTO.Situacao);
+
+
+            if (propostaDTO.TiposInscricao.NaoEhNulo() &&
+                propostaDTO.TiposInscricao.Any(tipo => tipo.TipoInscricao == TipoInscricao.Externa))
+                proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
+
+            proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
+            proposta.NumeroHomologacao.ShouldBe(propostaDTO.NumeroHomologacao);
         }
 
         protected void ValidarPropostaCriterioValidacaoInscricaoDTO(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> criteriosDTO, long id)

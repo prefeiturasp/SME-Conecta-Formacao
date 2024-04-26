@@ -27,7 +27,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Devolvida = 7,
 
         [Display(Name = "Alterando", Prompt = "#297805")]
-        Alterando = 8
+        Alterando = 8,
+
+        [Display(Name = "Aprovada", Prompt = "#008000")]
+        Aprovada = 9
     }
 
     public static class SituacaoPropostaExtensao
@@ -75,6 +78,11 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         public static bool EhAlterando(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.Alterando;
+        }
+
+        public static bool EhAprovada(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Aprovada;
         }
     }
 }
