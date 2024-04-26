@@ -3,11 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -30,7 +33,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Enviar_para_df_proposta_cadastrada_homologada()
         {
             // arrange
-            var proposta = await InserirNaBaseProposta();
+            var proposta = await InserirNaBaseProposta(dataInscricaoForaPeriodo: true);
 
             var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
 
@@ -46,7 +49,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Enviar_para_publicada_proposta_cadastrada_nao_homologada()
         {
             // arrange
-            var proposta = await InserirNaBaseProposta(formacaoHomologada: FormacaoHomologada.NaoCursosPorIN);
+            var proposta = await InserirNaBaseProposta(formacaoHomologada: FormacaoHomologada.NaoCursosPorIN, dataInscricaoForaPeriodo: true);
 
             var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
 
@@ -84,6 +87,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA).ShouldBeTrue();
+        }
+
+        [Fact(DisplayName = "Proposta - Deve alterar proposta aguardando df homologada em aguardando parecerista")]
+        public async Task Deve_alterar_proposta_aguardando_df_homologada_em_aguardando_parecerista()
+        {
+            //arrange
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseDf, formacaoHomologada: FormacaoHomologada.Sim, dataInscricaoForaPeriodo: true, quantidadeParecerista: 2);
+
+            var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
+
+            // act
+            await casoUsoEnviarProposta.Executar(proposta.Id);
+
+            // assert
+            var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
+            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AguardandoAnaliseParecerista);
         }
     }
 }
