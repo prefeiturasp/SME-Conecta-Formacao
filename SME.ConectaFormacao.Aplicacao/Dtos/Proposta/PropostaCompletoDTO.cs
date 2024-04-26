@@ -57,5 +57,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? LinkParaInscricoesExterna { get; set; }
         public long? CodigoEventoSigpec { get; set; }
         public long? NumeroHomologacao { get; set; }
+        public IEnumerable<PropostaTotalParecerDTO> TotalDePareceres { get; set; }
+        public IEnumerable<PermissaoTela> PermissaoParecerPerfilLogado { get; set; }
     }
 }
