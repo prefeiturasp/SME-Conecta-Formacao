@@ -12,6 +12,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.Campo).ToColumn("campo");
             Map(t => t.Descricao).ToColumn("descricao");
             Map(t => t.Situacao).ToColumn("situacao");
+            Map(t => t.UsuarioPareceristaId).ToColumn("usuario_id");
         }
     }
 }
