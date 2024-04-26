@@ -43,7 +43,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada,
             FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool vincularUltimoCargoAoPublicoAlvo = false,
-            bool vincularUltimoFuncaoAoPublicoAlvo = false, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false)
+            bool vincularUltimoFuncaoAoPublicoAlvo = false, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false, int quantidadeParecerista = 0)
         {
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -72,14 +72,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() { cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Funcao) };
 
             return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada, tipoInscricao, integrarNoSga, dataInscricaoForaPeriodo);
+                modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada, tipoInscricao, integrarNoSga, dataInscricaoForaPeriodo, quantidadeParecerista);
         }
 
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(Dominio.Entidades.AreaPromotora areaPromotora,
             IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao,
             IEnumerable<PalavraChave> palavrasChaves, IEnumerable<Dominio.Enumerados.Modalidade> modalidades, IEnumerable<Dominio.Entidades.AnoTurma> anosTurmas,
             IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares, SituacaoProposta situacao = SituacaoProposta.Cadastrada,
-            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false)
+            FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false,
+            int quantidadeParecerista = 0)
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
@@ -184,6 +185,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 await InserirNaBase(componentesCurricularesDaProposta);
                 proposta.ComponentesCurriculares = componentesCurricularesDaProposta;
             }
+
+            if (quantidadeParecerista > 0)
+                await InserirNaBase(PropostaMock.GerarPareceristas(proposta.Id, quantidadeParecerista));
 
             var tutores = PropostaMock.GerarTutor(proposta.Id);
             if (tutores != null)

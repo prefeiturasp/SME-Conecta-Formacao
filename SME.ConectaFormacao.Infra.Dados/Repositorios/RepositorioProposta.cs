@@ -2265,5 +2265,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().QueryAsync<PropostaTotalParecer>(query, new { propostaId });
         }
+
+        public Task<bool> ExistePareceristasAdicionadosNaProposta(long propostaId)
+        {
+            var query = @"select count(1) from proposta_parecerista where proposta_id = @propostaId";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId });
+        }
     }
 }

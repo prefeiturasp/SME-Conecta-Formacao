@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Bibliography;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -60,7 +62,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var totalDePareceres = await _repositorioProposta.ObterTotalDoParecerDaProposta(proposta.Id);
             propostaCompletaDTO.TotalDePareceres = _mapper.Map<IEnumerable<PropostaTotalParecerDTO>>(totalDePareceres);
-            propostaCompletaDTO.PermissaoParecerPerfilLogado = await _mediator.Send(new ObterPermissaoParecerPerfilLogadoQuery());
+            propostaCompletaDTO.ExibirParecer = await _mediator.Send(new ObterPermissaoParecerPerfilLogadoQuery());
+            propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta);
+            propostaCompletaDTO.PodeEnviarParecer = await PodeEnviarParecer(proposta);
 
             if (proposta.ArquivoImagemDivulgacaoId.HasValue)
             {
@@ -69,6 +73,19 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             return propostaCompletaDTO;
+        }
+
+        private bool PodeEnviar(Dominio.Entidades.Proposta proposta)
+        {
+            return proposta.Situacao == SituacaoProposta.Cadastrada ||
+                proposta.Situacao == SituacaoProposta.Devolvida ||
+                proposta.Situacao == SituacaoProposta.AguardandoAnaliseDf;
+        }
+
+        private async Task<bool> PodeEnviarParecer(Dominio.Entidades.Proposta proposta)
+        {
+            return proposta.Situacao == SituacaoProposta.AguardandoAnaliseDf &&
+                await _mediator.Send(new ExistePareceristasAdicionadosNaPropostaQuery(proposta.Id));
         }
     }
 }

@@ -398,5 +398,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
             return faker.Generate();
         }
+
+        public static IEnumerable<PropostaParecerista> GerarPareceristas(long propostaId, int quantidade)
+        {
+            for (var contador = 0; contador < quantidade; contador++)
+            {
+                var parecerista = new PropostaParecerista
+                {
+                    PropostaId = propostaId,
+                    NomeParecerista = $"Parecerista {contador}",
+                    RegistroFuncional = contador.ToString()
+
+                };
+
+                Auditoria(parecerista);
+
+                yield return parecerista;
+            }
+        }
     }
 }

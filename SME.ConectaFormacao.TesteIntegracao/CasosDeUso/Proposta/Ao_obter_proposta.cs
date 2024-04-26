@@ -108,13 +108,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var proposta = await InserirNaBaseProposta();
 
-            var pemissoesParecerista = new[] {
-                PermissaoTela.CONSULTA,
-                PermissaoTela.INCLUSAO,
-                PermissaoTela.EXCLUSAO,
-                PermissaoTela.ALTERACAO
-            };
-
             // act 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
             var propostaCompletoDTO = await casoDeUso.Executar(proposta.Id);
@@ -122,10 +115,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert 
             propostaCompletoDTO.ShouldNotBeNull();
 
-            propostaCompletoDTO.PermissaoParecerPerfilLogado.Count().ShouldBe(4);
-
-            foreach (var permissao in propostaCompletoDTO.PermissaoParecerPerfilLogado)
-                pemissoesParecerista.Contains(permissao).ShouldBeTrue();
+            propostaCompletoDTO.ExibirParecer.ShouldBeTrue();
         }
 
 
@@ -137,12 +127,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var proposta = await InserirNaBaseProposta();
 
-            var pemissoesParecerista = new[] {
-                PermissaoTela.CONSULTA,
-                PermissaoTela.EXCLUSAO,
-                PermissaoTela.ALTERACAO
-            };
-
             // act 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
             var propostaCompletoDTO = await casoDeUso.Executar(proposta.Id);
@@ -150,10 +134,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert 
             propostaCompletoDTO.ShouldNotBeNull();
 
-            propostaCompletoDTO.PermissaoParecerPerfilLogado.Count().ShouldBe(3);
-
-            foreach (var permissao in propostaCompletoDTO.PermissaoParecerPerfilLogado)
-                pemissoesParecerista.Contains(permissao).ShouldBeTrue();
+            propostaCompletoDTO.ExibirParecer.ShouldBeTrue();
         }
 
 
@@ -174,8 +155,27 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert 
             propostaCompletoDTO.ShouldNotBeNull();
-            propostaCompletoDTO.PermissaoParecerPerfilLogado.Count().ShouldBe(1);
-            propostaCompletoDTO.PermissaoParecerPerfilLogado.First().ShouldBe(PermissaoTela.CONSULTA);
+            propostaCompletoDTO.ExibirParecer.ShouldBeTrue();
+        }
+
+        [Fact(DisplayName = "Proposta - Deve obter por id válido verificando se pode enviar parecer")]
+        public async Task Deve_obter_por_id_verificado_pode_enviar_parecer()
+        {
+            // arrange
+            var perfil = Guid.NewGuid();
+            AdicionarPerfilUsuarioContextoAplicacao(perfil);
+
+            await InserirNaBase(AreaPromotoraMock.GerarAreaPromotora(perfil));
+
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseDf, quantidadeParecerista: 2);
+
+            // act 
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
+            var propostaCompletoDTO = await casoDeUso.Executar(proposta.Id);
+
+            // assert 
+            propostaCompletoDTO.ShouldNotBeNull();
+            propostaCompletoDTO.PodeEnviarParecer.ShouldBeTrue();
         }
 
         private async Task GerarPropostaParecer(long propostaId, CampoParecer campo)
