@@ -54,5 +54,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public PropostaMovimentacaoDTO Movimentacao { get; set; }
         public PropostaAreaPromotoraDTO AreaPromotora { get; set; }
         public string? UltimaJustificativaDevolucao { get; set; }
+        public IEnumerable<PropostaTotalParecerDTO> TotalDePareceres { get; set; }
+        public IEnumerable<PermissaoTela> PermissaoParecerPerfilLogado { get; set; }
     }
 }

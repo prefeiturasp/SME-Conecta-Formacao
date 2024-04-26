@@ -2251,5 +2251,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                    public.proposta_parecer where not excluido  and id=@parecerId ";
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecer>(query, new { parecerId });
         }
+
+        public async Task<IEnumerable<PropostaTotalParecer>> ObterTotalDoParecerDaProposta(long propostaId)
+        {
+            var query = @$" select
+                            count(1) as Quantidade,
+	                        proposta_id,
+	                        campo
+                            from proposta_parecer 
+                            where not excluido  
+                              and proposta_id = @propostaId 
+                            group by proposta_id, campo";
+
+            return await conexao.Obter().QueryAsync<PropostaTotalParecer>(query, new { propostaId });
+        }
     }
 }
