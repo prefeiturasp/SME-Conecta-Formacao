@@ -2229,7 +2229,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             alterado_em = @AlteradoEm, 
                             alterado_por = @AlteradoPor, 
                             alterado_login = @AlteradoLogin 
-                          where not excluido and id = any(@id)";
+                          where not excluido and id = @id";
 
             return await conexao.Obter().ExecuteAsync(query, parametros) > 0;
         }

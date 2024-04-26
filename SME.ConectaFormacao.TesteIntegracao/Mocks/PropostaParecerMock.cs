@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
     public class PropostaParecerMock : BaseMock
     {
-        private static Faker<PropostaParecer> Gerador(Guid? grupoId = null)
+        private static Faker<PropostaParecer> Gerador()
         {
             var faker = new Faker<PropostaParecer>("pt_BR");
             faker.RuleFor(x => x.Campo, f => (CampoParecer)f.Random.Short(1,28));
@@ -16,9 +16,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker;
         }
 
-        public static PropostaParecer GerarPropostaParecer(Guid? grupoId = null)
+        public static PropostaParecer GerarPropostaParecer()
         {
-            return Gerador(grupoId).Generate();
+            return Gerador().Generate();
+        }
+        
+        public static IEnumerable<PropostaParecer> GerarPropostasPareceres(int quantidade = 10)
+        {
+            return Gerador().Generate(quantidade);
         }
     }
 }
