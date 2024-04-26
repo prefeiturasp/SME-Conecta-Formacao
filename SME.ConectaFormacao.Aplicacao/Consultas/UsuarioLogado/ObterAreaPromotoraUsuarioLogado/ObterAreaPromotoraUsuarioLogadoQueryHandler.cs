@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<Dominio.Entidades.AreaPromotora?> Handle(ObterAreaPromotoraUsuarioLogadoQuery request, CancellationToken cancellationToken)
         {
             var grupoUsuarioLogadoId = await _mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia(), cancellationToken);
-            if (grupoUsuarioLogadoId == Perfis.ADMIN_DF)
+            if (grupoUsuarioLogadoId == Perfis.ADMIN_DF || grupoUsuarioLogadoId == Perfis.PARECERISTA)
                 return default;
 
             var dres = await _mediator.Send(ObterDresUsuarioLogadoQuery.Instancia(), cancellationToken);

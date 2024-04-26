@@ -58,6 +58,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public long? CodigoEventoSigpec { get; set; }
         public long? NumeroHomologacao { get; set; }
         public IEnumerable<PropostaTotalParecerDTO> TotalDePareceres { get; set; }
-        public IEnumerable<PermissaoTela> PermissaoParecerPerfilLogado { get; set; }
+        public bool ExibirParecer { get; set; }
+        public bool PodeEnviar { get; set; }
+        public bool PodeEnviarParecer { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -20,7 +21,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            if (proposta.Situacao != SituacaoProposta.Cadastrada && proposta.Situacao != SituacaoProposta.Devolvida)
+            var situacoes = new SituacaoProposta[] { SituacaoProposta.Cadastrada, SituacaoProposta.Devolvida, SituacaoProposta.AguardandoAnaliseDf };
+
+            if (!situacoes.Contains(proposta.Situacao))
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA);
 
             var existeFuncaoEspecificaOutros = await mediator.Send(new ExisteCargoFuncaoOutrosNaPropostaQuery(proposta.Id));
@@ -35,9 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (!string.IsNullOrEmpty(validarDatas))
                 throw new NegocioException(validarDatas);
 
-            var situacao = proposta.FormacaoHomologada == FormacaoHomologada.Sim ?
-                SituacaoProposta.AguardandoAnaliseDf :
-                SituacaoProposta.Publicada;
+            var situacao = await ObterSituacaoProposta(proposta);
 
             await mediator.Send(new EnviarPropostaCommand(propostaId, situacao));
             await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
@@ -53,6 +54,23 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             }
 
             return true;
+        }
+
+        private async Task<SituacaoProposta> ObterSituacaoProposta(Dominio.Entidades.Proposta proposta)
+        {
+            if (proposta.FormacaoHomologada.EstaHomologada())
+                return await ObterSituacaoHomologada(proposta);
+            
+            return SituacaoProposta.Publicada;
+        }
+
+        private async Task<SituacaoProposta> ObterSituacaoHomologada(Dominio.Entidades.Proposta proposta)
+        {
+            if (proposta.Situacao.EstaAguardandoAnaliseDf()
+                && await mediator.Send(new ExistePareceristasAdicionadosNaPropostaQuery(proposta.Id)))
+                return SituacaoProposta.AguardandoAnaliseParecerista;
+
+            return SituacaoProposta.AguardandoAnaliseDf;
         }
     }
 }

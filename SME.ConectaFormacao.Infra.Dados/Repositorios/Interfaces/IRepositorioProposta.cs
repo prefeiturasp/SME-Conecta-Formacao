@@ -114,5 +114,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<bool> RemoverPropostaParecer(PropostaParecer parecer);
         Task<PropostaParecer> ObterParecerPorId(long parecerId);
         Task<IEnumerable<PropostaTotalParecer>> ObterTotalDoParecerDaProposta(long propostaId);
+        Task<bool> ExistePareceristasAdicionadosNaProposta(long propostaId);
     }
 }
