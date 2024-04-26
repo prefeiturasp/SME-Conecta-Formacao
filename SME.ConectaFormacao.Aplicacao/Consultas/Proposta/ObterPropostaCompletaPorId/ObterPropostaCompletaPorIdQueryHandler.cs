@@ -15,16 +15,18 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioArquivo _repositorioArquivo;
         private readonly IRepositorioPropostaMovimentacao _repositorioPropostaMovimentacao;
         private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
+        private readonly IMediator _mediator;
 
         public ObterPropostaCompletaPorIdQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta,
             IRepositorioArquivo repositorioArquivo, IRepositorioPropostaMovimentacao repositorioPropostaMovimentacao,
-            IRepositorioAreaPromotora repositorioAreaPromotora)
+            IRepositorioAreaPromotora repositorioAreaPromotora, IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _repositorioArquivo = repositorioArquivo ?? throw new ArgumentNullException(nameof(repositorioArquivo));
             _repositorioPropostaMovimentacao = repositorioPropostaMovimentacao ?? throw new ArgumentNullException(nameof(repositorioPropostaMovimentacao));
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<PropostaCompletoDTO> Handle(ObterPropostaCompletaPorIdQuery request, CancellationToken cancellationToken)
@@ -48,13 +50,17 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.Movimentacao = await _repositorioPropostaMovimentacao.ObterUltimoParecerPropostaId(request.Id);
             proposta.AreaPromotora = await _repositorioAreaPromotora.ObterPorId(proposta.AreaPromotoraId);
             proposta.UltimaJustificativaDevolucao = await _repositorioPropostaMovimentacao.ObterUltimaJustificativaDevolucao(request.Id);
-
+  
             foreach (var turma in proposta.Turmas)
                 turma.Dres = await _repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(turma.Id);
 
             var propostaCompletaDTO = _mapper.Map<PropostaCompletoDTO>(proposta);
             propostaCompletaDTO.Auditoria = _mapper.Map<AuditoriaDTO>(proposta);
             propostaCompletaDTO.AreaPromotora = _mapper.Map<PropostaAreaPromotoraDTO>(proposta.AreaPromotora);
+
+            var totalDePareceres = await _repositorioProposta.ObterTotalDoParecerDaProposta(proposta.Id);
+            propostaCompletaDTO.TotalDePareceres = _mapper.Map<IEnumerable<PropostaTotalParecerDTO>>(totalDePareceres);
+            propostaCompletaDTO.PermissaoParecerPerfilLogado = await _mediator.Send(new ObterPermissaoParecerPerfilLogadoQuery());
 
             if (proposta.ArquivoImagemDivulgacaoId.HasValue)
             {
