@@ -60,6 +60,5 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public bool PodeEnviarParecer { get; set; }
         public int QtdeLimitePareceristaProposta  { get; set; }
         public IEnumerable<PropostaPareceristaDTO> Pareceristas { get; set; }
-        public bool ExibirAuditoria { get; set; }
     }
 }

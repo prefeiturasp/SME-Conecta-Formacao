@@ -57,8 +57,9 @@ namespace SME.ConectaFormacao.Aplicacao
                     podeInserir = false;
 
                     DefinirPodeAlterar(pareceresDaPropostaDoPerfil,perfilLogado.EhPerfilAdminDF());
-                    
-                    auditoriaMaisRecente = DefinirAuditoriaMaisRecente(pareceresDaProposta);
+
+                    if (perfilLogado.EhPerfilAdminDF())
+                        auditoriaMaisRecente = DefinirAuditoriaMaisRecente(pareceresDaProposta);
                 }
             }
                 

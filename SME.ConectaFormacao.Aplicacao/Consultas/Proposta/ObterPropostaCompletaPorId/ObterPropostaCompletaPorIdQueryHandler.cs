@@ -66,13 +66,11 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia());
             var propostaPareceres = await _repositorioProposta.ObterPropostaParecerPorId(proposta.Id);
 
-            var ehPerfilAreaPromotora = await EhPerfilAreaPromotora(perfilLogado);
             propostaCompletaDTO.TotalDePareceres = ObterTotalDePareceresPorCampo(propostaPareceres);
             propostaCompletaDTO.ExibirParecer = await PodeExibirParecer(perfilLogado, proposta.Situacao == SituacaoProposta.AguardandoAnaliseParecerista);
             propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta);
             propostaCompletaDTO.PodeEnviarParecer = await PodeEnviarParecer(perfilLogado, propostaPareceres, usuarioLogado.Id);
             propostaCompletaDTO.QtdeLimitePareceristaProposta = await ObterParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta);
-            propostaCompletaDTO.ExibirAuditoria = !ehPerfilAreaPromotora;
 
             if (!proposta.ArquivoImagemDivulgacaoId.HasValue) return propostaCompletaDTO;
             
