@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario
 {
     public interface ICasoDeUsoObterParecerista
     {
-        Task<IEnumerable<RetornoUsuriosPareceristasDTO>> Executar();
+        Task<IEnumerable<RetornoUsuarioLoginNomeDTO>> Executar();
     }
 }

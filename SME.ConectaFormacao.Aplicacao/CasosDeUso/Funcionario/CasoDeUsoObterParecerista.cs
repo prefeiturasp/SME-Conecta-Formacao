@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Funcionario
         {
         }
 
-        public async Task<IEnumerable<RetornoUsuriosPareceristasDTO>> Executar()
+        public async Task<IEnumerable<RetornoUsuarioLoginNomeDTO>> Executar()
         {
             return await mediator.Send(new ObterUsuariosPareceristasQuery());
         }

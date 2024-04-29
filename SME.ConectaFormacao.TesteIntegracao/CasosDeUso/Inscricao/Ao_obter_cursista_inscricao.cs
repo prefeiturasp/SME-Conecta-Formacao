@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
         protected override void RegistrarQueryFakes(IServiceCollection services)
         {
             base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioDTO>), typeof(ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFaker), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioCpfNomeDTO>), typeof(ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Inscrição - Deve obter nome cursista")]

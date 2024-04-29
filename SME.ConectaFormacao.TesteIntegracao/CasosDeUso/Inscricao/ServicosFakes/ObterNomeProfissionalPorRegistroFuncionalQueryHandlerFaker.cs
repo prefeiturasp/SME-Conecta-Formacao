@@ -5,11 +5,11 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes
 {
-    public class ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFaker : IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioDTO>
+    public class ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFaker : IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioCpfNomeDTO>
     {
-        public Task<RetornoUsuarioDTO> Handle(ObterNomeCpfProfissionalPorRegistroFuncionalQuery request, CancellationToken cancellationToken)
+        public Task<RetornoUsuarioCpfNomeDTO> Handle(ObterNomeCpfProfissionalPorRegistroFuncionalQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(new RetornoUsuarioDTO() { Nome = ObterNomeCursistaInscricaoMock.Usuario?.Nome, Cpf = ObterNomeCursistaInscricaoMock.Usuario?.Cpf });
+            return Task.FromResult(new RetornoUsuarioCpfNomeDTO() { Nome = ObterNomeCursistaInscricaoMock.Usuario?.Nome, Cpf = ObterNomeCursistaInscricaoMock.Usuario?.Cpf });
         }
     }
 }

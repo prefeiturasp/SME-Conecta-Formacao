@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     public class FuncionarioController : BaseController
     {
         [HttpGet("obter-usuarios-admin-df")]
-        [ProducesResponseType(typeof(IEnumerable<UsuarioAdminDfDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<RetornoUsuarioLoginNomeDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterUsuariosAdminDf([FromServices] ICasoDeUsoObterUsuariosAdminDf useCase)
@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("obter-parecerista")]
-        [ProducesResponseType(typeof(IEnumerable<RetornoUsuriosPareceristasDTO>),200)]
+        [ProducesResponseType(typeof(IEnumerable<RetornoUsuarioLoginNomeDTO>),200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterParecerista([FromServices] ICasoDeUsoObterParecerista useCase)

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Funcionario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -22,7 +23,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Funcionario
         {
             base.RegistrarFakes(services);
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuariosPorPerfisServicoEolQuery, IEnumerable<UsuarioPerfilServicoEol>>), typeof(ObterUsuariosAdminDfQueryFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuariosAdminDfQuery, IEnumerable<UsuarioAdminDfDTO>>), typeof(ObterUsuariosAdminDfQueryFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuariosAdminDfQuery, IEnumerable<RetornoUsuarioLoginNomeDTO>>), typeof(ObterUsuariosAdminDfQueryFake), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Funcionário - Deve retornar os funcionários Admin DF")]
