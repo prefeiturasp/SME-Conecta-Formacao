@@ -3,6 +3,7 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
@@ -36,9 +37,20 @@ namespace SME.ConectaFormacao.Aplicacao
             
             if (pareceristasDepois.Any(a=> a.NomeParecerista.EhNulo()))
                 throw new NegocioException(string.Format(MensagemNegocio.X_NAO_PREENCHIDO, Constantes.NOME_PARECERISTA));
+
+            var qtdeLimitePareceristaProposta = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.QtdeLimitePareceristaProposta, DateTimeExtension.HorarioBrasilia().Year));
             
+            if(qtdeLimitePareceristaProposta.EhNulo())
+                throw new NegocioException(string.Format(MensagemNegocio.PARAMETRO_X_NAO_ENCONTRADO_PARA_ANO_Y, TipoParametroSistema.QtdeLimitePareceristaProposta, DateTimeExtension.HorarioBrasilia().Year));
+
             var pareceristasInserir = request.Pareceristas.Where(w => !pareceristasAntes.Any(a => a.Id == w.Id));
             var pareceristasExcluir = pareceristasAntes.Where(w => !request.Pareceristas.Any(a => a.Id == w.Id));
+            
+            var qtdePareceristasDaProposta = pareceristasAntes.Count() - pareceristasExcluir.Count() + pareceristasInserir.Count();
+            var limiteMaximoPareceristas = int.Parse(qtdeLimitePareceristaProposta.Valor);
+            
+            if (qtdePareceristasDaProposta > limiteMaximoPareceristas)
+                throw new NegocioException(string.Format(MensagemNegocio.LIMITE_PARECERISTAS_EXCEDIDO_LIMITE_X, limiteMaximoPareceristas));
             
             if (pareceristasInserir.Any())
                 await _repositorioProposta.InserirPareceristas(request.PropostaId, pareceristasInserir);

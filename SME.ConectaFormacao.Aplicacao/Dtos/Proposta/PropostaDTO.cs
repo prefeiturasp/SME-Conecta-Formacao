@@ -51,6 +51,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaAnoTurmaDTO> AnosTurmas { get; set; }
         public IEnumerable<PropostaComponenteCurricularDTO> ComponentesCurriculares { get; set; }
         public IEnumerable<PropostaTipoInscricaoDTO> TiposInscricao { get; set; }
-        public IEnumerable<PropostaPareceristaDTO> Pareceristas { get; set; }
+        public IEnumerable<PropostaPareceristaDTO>? Pareceristas { get; set; }
     }
 }
