@@ -28,17 +28,17 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(SalvarPropostaPareceristaCommand request, CancellationToken cancellationToken)
         {
-            var pareceristaAntes = await _repositorioProposta.ObterPropostaPareceristaPorId(request.PropostaId);
-            var pareceristaDepois = _mapper.Map<IEnumerable<PropostaParecerista>>(request.Pareceristas);
+            var pareceristasAntes = await _repositorioProposta.ObterPropostaPareceristaPorId(request.PropostaId);
+            var pareceristasDepois = _mapper.Map<IEnumerable<PropostaParecerista>>(request.Pareceristas);
             
-            if (pareceristaDepois.Any(a=> a.RegistroFuncional.EhNulo()))
+            if (pareceristasDepois.Any(a=> a.RegistroFuncional.EhNulo()))
                 throw new NegocioException(string.Format(MensagemNegocio.X_NAO_PREENCHIDO, Constantes.RF));
             
-            if (pareceristaDepois.Any(a=> a.NomeParecerista.EhNulo()))
+            if (pareceristasDepois.Any(a=> a.NomeParecerista.EhNulo()))
                 throw new NegocioException(string.Format(MensagemNegocio.X_NAO_PREENCHIDO, Constantes.NOME_PARECERISTA));
             
-            var pareceristasInserir = request.Pareceristas.Where(w => !pareceristaAntes.Any(a => a.Id == w.Id));
-            var pareceristasExcluir = pareceristaAntes.Where(w => !request.Pareceristas.Any(a => a.Id == w.Id));
+            var pareceristasInserir = request.Pareceristas.Where(w => !pareceristasAntes.Any(a => a.Id == w.Id));
+            var pareceristasExcluir = pareceristasAntes.Where(w => !request.Pareceristas.Any(a => a.Id == w.Id));
             
             if (pareceristasInserir.Any())
                 await _repositorioProposta.InserirPareceristas(request.PropostaId, pareceristasInserir);
