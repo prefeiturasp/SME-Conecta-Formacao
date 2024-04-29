@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
             
             PropostaParecer auditoriaMaisRecente = new ();
 
-            var pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta);
+            var pareceresDaPropostaDoPerfil = Enumerable.Empty<PropostaParecerDTO>();
 
             var podeInserir = true;
 
@@ -44,6 +44,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (perfilLogado.EhPerfilParecerista())
                 {
+                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta);
+                    
                     var pareceresDaPropostaDoUsuarioLogado = pareceresDaProposta.Where(w => w.UsuarioPareceristaId == usuarioLogado.Id);
 
                     foreach (var propostaParecerDto in pareceresDaPropostaDoPerfil)
@@ -57,6 +59,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     podeInserir = false;
 
+                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta.Where(w=> w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF()));
+                        
                     DefinirPodeAlterar(pareceresDaPropostaDoPerfil,perfilLogado.EhPerfilAdminDF());
 
                     if (perfilLogado.EhPerfilAdminDF())
