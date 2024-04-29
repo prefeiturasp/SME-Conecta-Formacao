@@ -13,4 +13,22 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Aguardando análise do parecer pela área promotora")]
         AguardandoAnaliseParecerPelaAreaPromotora = 3
     }
+
+    public static class SituacaoParecerExtensao
+    {
+        public static bool EstaPendenteEnvioParecerPeloParecerista(this SituacaoParecer valor)
+        {
+            return valor == SituacaoParecer.PendenteEnvioParecerPeloParecerista;
+        }
+        
+        public static bool EstaAguardandoAnaliseParecerPeloAdminDF(this SituacaoParecer valor)
+        {
+            return valor == SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF;
+        }
+        
+        public static bool EstaAguardandoAnaliseParecerPelaAreaPromotora(this SituacaoParecer valor)
+        {
+            return valor == SituacaoParecer.AguardandoAnaliseParecerPelaAreaPromotora;
+        }
+    }
 }

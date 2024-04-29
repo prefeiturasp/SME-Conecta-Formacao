@@ -484,21 +484,43 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task<IEnumerable<PropostaParecerista>> ObterPropostaPareceristaPorId(long id)
         {
             var query = $@"
-                        select
-	                    id,
-	                    proposta_id,
-	                    registro_funcional,
-	                    nome_parecerista,
-	                    criado_em,
-	                    criado_por,
-	                    alterado_em,
-	                    alterado_por,
-	                    criado_login,
-	                    alterado_login,
-	                    excluido
-                    from public.proposta_parecerista
-	                    where not excluido and proposta_id = @id  ";
+            select id,
+	               proposta_id,
+	               registro_funcional,
+	               nome_parecerista,
+	               criado_em,
+	               criado_por,
+	               alterado_em,
+	               alterado_por,
+	               criado_login,
+	               alterado_login,
+	               excluido
+            from public.proposta_parecerista
+	        where not excluido 
+              and proposta_id = @id  ";
             return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
+        }
+        
+        public async Task<IEnumerable<PropostaParecer>> ObterPropostaParecerPorId(long id)
+        {
+            var query = $@"
+            select id,
+	               proposta_id,
+	               campo,
+	               descricao,
+	               situacao,
+	               usuario_id,
+	               criado_em,
+	               criado_por,
+	               alterado_em,
+	               alterado_por,
+	               criado_login,
+	               alterado_login,
+	               excluido
+            from public.proposta_parecer
+	        where not excluido 
+              and proposta_id = @id  ";
+            return await conexao.Obter().QueryAsync<PropostaParecer>(query, new { id });
         }
 
         public async Task<PropostaTutor> ObterPropostaTutorPorId(long id)
@@ -2290,34 +2312,21 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<PropostaParecer> ObterParecerPorId(long parecerId)
         {
-            var query = @$" select
-	                    id,
-	                    proposta_id,
-	                    campo,
-	                    descricao,
-	                    criado_por,
-	                    alterado_em,
-	                    alterado_por,
-	                    criado_login,
-	                    alterado_login,
-	                    excluido
-                            from
-	                    public.proposta_parecer where not excluido  and id=@parecerId ";
+            var query = @" 
+            select id,
+	               proposta_id,
+	               campo,
+	               descricao,
+	               criado_por,
+	               alterado_em,
+	               alterado_por,
+	               criado_login,
+	               alterado_login,
+	               excluido
+            from public.proposta_parecer 
+            where not excluido  
+              and id=@parecerId ";
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecer>(query, new { parecerId });
-        }
-
-        public async Task<IEnumerable<PropostaTotalParecer>> ObterTotalDoParecerDaProposta(long propostaId)
-        {
-            var query = @$" select
-                            count(1) as Quantidade,
-	                        proposta_id,
-	                        campo
-                            from proposta_parecer 
-                            where not excluido  
-                              and proposta_id = @propostaId 
-                            group by proposta_id, campo";
-
-            return await conexao.Obter().QueryAsync<PropostaTotalParecer>(query, new { propostaId });
         }
 
         public Task<bool> ExistePareceristasAdicionadosNaProposta(long propostaId)

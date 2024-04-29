@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var perfilLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery(), cancellationToken);
 
-            return perfilLogado.EhParecerista() ||
+            return perfilLogado.EhPerfilParecerista() ||
                 perfilLogado.EhPerfilAdminDF() ||
                 (await _mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilLogado), cancellationToken)).NaoEhNulo();
         }

@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 
                 var ehAreaPromotora = await _mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilLogado), cancellationToken);
 
-                if (perfilLogado.EhParecerista())
+                if (perfilLogado.EhPerfilParecerista())
                 {
                     var pareceresDaPropostaDoUsuario = pareceresDaProposta.Where(w => w.CriadoLogin.EstaPreenchido() && w.CriadoLogin.Equals(usuarioLogado.Login));
                     
