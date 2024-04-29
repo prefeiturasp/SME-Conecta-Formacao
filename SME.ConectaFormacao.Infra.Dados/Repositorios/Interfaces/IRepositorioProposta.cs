@@ -110,10 +110,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<long>> PropostasTurmaIdsPorPropostaId(long propostaId);
         Task AtualizarPropostaParecerista(PropostaParecerista parecerista);
         Task InserirPropostaParecerista(long propostaId, PropostaParecerista parecerista);
-        Task<PropostaParecerista> ObterPropostaPareceristaPorId(long id);
+        Task<IEnumerable<PropostaParecerista>> ObterPropostaPareceristaPorId(long id);
         Task<bool> RemoverPropostaParecer(PropostaParecer parecer);
         Task<PropostaParecer> ObterParecerPorId(long parecerId);
         Task<IEnumerable<PropostaTotalParecer>> ObterTotalDoParecerDaProposta(long propostaId);
         Task<bool> ExistePareceristasAdicionadosNaProposta(long propostaId);
+        Task InserirPareceristas(long id, IEnumerable<PropostaParecerista> pareceristas);
+        Task RemoverPareceristas(IEnumerable<PropostaParecerista> pareceristas);
+        Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorId(long id);
     }
 }

@@ -481,7 +481,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new { id });
         }
 
-        public async Task<PropostaParecerista> ObterPropostaPareceristaPorId(long id)
+        public async Task<IEnumerable<PropostaParecerista>> ObterPropostaPareceristaPorId(long id)
         {
             var query = $@"
                         select
@@ -497,8 +497,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                    alterado_login,
 	                    excluido
                     from public.proposta_parecerista
-	                    where not excluido and id = @id  ";
-            return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecerista>(query, new { id });
+	                    where not excluido and proposta_id = @id  ";
+            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
         }
 
         public async Task<PropostaTutor> ObterPropostaTutorPorId(long id)
@@ -932,6 +932,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 palavraChave.Id = (long)await conexao.Obter().InsertAsync(palavraChave);
             }
         }
+        
+        public async Task InserirPareceristas(long id, IEnumerable<PropostaParecerista> pareceristas)
+        {
+            foreach (var parecerista in pareceristas)
+            {
+                PreencherAuditoriaCriacao(parecerista);
+
+                parecerista.PropostaId = id;
+                parecerista.Id = (long)await conexao.Obter().InsertAsync(parecerista);
+            }
+        }
 
         public async Task InserirModalidades(long id, IEnumerable<PropostaModalidade> modalidades)
         {
@@ -993,6 +1004,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         from proposta_palavra_chave 
                         where proposta_id = @id and not excluido ";
             return await conexao.Obter().QueryAsync<PropostaPalavraChave>(query, new { id });
+        }
+        
+        public async Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorId(long id)
+        {
+            var query = @"select 
+                id, 
+                proposta_id, 
+                registro_funcional,
+                nome_parecerista,
+                excluido,
+                criado_em,
+                criado_por,
+                criado_login,
+            	alterado_em,    
+                alterado_por,
+                alterado_login
+            from proposta_parecerista 
+            where proposta_id = @id and not excluido ";
+            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
         }
 
         public async Task<IEnumerable<PropostaModalidade>> ObterModalidadesPorId(long id)
@@ -1081,6 +1111,30 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             };
 
             var query = @"update proposta_palavra_chave
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+        
+        public Task RemoverPareceristas(IEnumerable<PropostaParecerista> pareceristas)
+        {
+            var parecerista = pareceristas.First();
+            PreencherAuditoriaAlteracao(parecerista);
+
+            var parametros = new
+            {
+                ids = pareceristas.Select(t => t.Id).ToArray(),
+                parecerista.AlteradoEm,
+                parecerista.AlteradoPor,
+                parecerista.AlteradoLogin
+            };
+
+            var query = @"update proposta_parecerista
                           set 
                             excluido = true, 
                             alterado_em = @AlteradoEm, 

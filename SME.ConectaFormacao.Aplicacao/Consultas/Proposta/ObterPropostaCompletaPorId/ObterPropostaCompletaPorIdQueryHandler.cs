@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Bibliography;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
@@ -53,6 +52,7 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.Movimentacao = await _repositorioPropostaMovimentacao.ObterUltimoParecerPropostaId(request.Id);
             proposta.AreaPromotora = await _repositorioAreaPromotora.ObterPorId(proposta.AreaPromotoraId);
             proposta.UltimaJustificativaDevolucao = await _repositorioPropostaMovimentacao.ObterUltimaJustificativaDevolucao(request.Id);
+            proposta.Pareceristas = await _repositorioProposta.ObterPareceristasPorId(request.Id);
   
             foreach (var turma in proposta.Turmas)
                 turma.Dres = await _repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(turma.Id);
