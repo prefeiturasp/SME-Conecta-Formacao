@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -29,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
             
             PropostaParecer auditoriaMaisRecente = new ();
 
-            var pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta);//Enumerable.Empty<PropostaParecerDTO>();
+            var pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta);
 
             var podeInserir = true;
 
@@ -46,7 +47,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     var pareceresDaPropostaDoUsuarioLogado = pareceresDaProposta.Where(w => w.UsuarioPareceristaId == usuarioLogado.Id);
 
                     foreach (var propostaParecerDto in pareceresDaPropostaDoPerfil)
-                        propostaParecerDto.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id);
+                        propostaParecerDto.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id && !a.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF());
                     
                     podeInserir = !pareceresDaPropostaDoUsuarioLogado.Any();
                     
