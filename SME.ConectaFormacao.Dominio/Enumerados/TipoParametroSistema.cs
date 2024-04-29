@@ -8,5 +8,6 @@
         DominioPermitidoCadastroUsuarioExterno = 4,
         ConfirmarEmailUsuarioExterno = 5,
         QtdeRegistrosImportacaoArquivoInscricaoCursista = 6,
+        QtdeLimitePareceristaProposta = 7,
     }
 }

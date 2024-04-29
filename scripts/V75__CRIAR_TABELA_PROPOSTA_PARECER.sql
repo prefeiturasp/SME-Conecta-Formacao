@@ -19,3 +19,8 @@ CREATE TABLE if not exists public.proposta_parecer (
 
 --> Criando índice de proposta em proposta_parecer
 CREATE INDEX if not exists proposta_parecer_proposta_idx ON public.proposta_parecer (proposta_id);
+
+--> Parâmetro de QtdeLimitePareceristaProposta
+insert into parametro_sistema (nome, tipo, descricao, valor, ano, ativo, criado_em, criado_por, criado_login)
+select 'QtdeLimitePareceristaProposta', 7, 'Estabelece a quantidade máxima de pareceristas que podem ser inseridos na proposta para dar parecer','3', 2024, true, now(), 'Sistema', 'Sistema' 
+where not exists (select id from parametro_sistema where ano = 2024 and tipo = 7);

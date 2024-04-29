@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -65,6 +66,7 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.ExibirParecer = await _mediator.Send(new ObterPermissaoParecerPerfilLogadoQuery());
             propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta);
             propostaCompletaDTO.PodeEnviarParecer = await PodeEnviarParecer(proposta);
+            propostaCompletaDTO.QtdeLimitePareceristaProposta = await ObterParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta);
 
             if (proposta.ArquivoImagemDivulgacaoId.HasValue)
             {
@@ -73,6 +75,12 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             return propostaCompletaDTO;
+        }
+
+        private async Task<int> ObterParametroSistema(TipoParametroSistema qtdeLimitePareceristaProposta)
+        {
+            var parametro = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(qtdeLimitePareceristaProposta, DateTimeExtension.HorarioBrasilia().Year));
+            return int.Parse(parametro.Valor);
         }
 
         private bool PodeEnviar(Dominio.Entidades.Proposta proposta)
