@@ -26,10 +26,10 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PropostaParecerCompletoDTO> Handle(ObterPropostaParecerPorPropostaIdECampoQuery request, CancellationToken cancellationToken)
         {
             var pareceresDaProposta = await _repositorioPropostaParecer.ObterPorPropostaIdECampo(request.PropostaId,request.CampoParecer);
-
+            
             PropostaParecer auditoriaMaisRecente = new ();
 
-            var pareceresDaPropostaDoPerfil = Enumerable.Empty<PropostaParecerDTO>();
+            var pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta);//Enumerable.Empty<PropostaParecerDTO>();
 
             var podeInserir = true;
 
@@ -43,22 +43,19 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (perfilLogado.EhPerfilParecerista())
                 {
-                    var pareceresDaPropostaDoUsuario = pareceresDaProposta.Where(w => w.CriadoLogin.EstaPreenchido() && w.CriadoLogin.Equals(usuarioLogado.Login));
-                    
-                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaPropostaDoUsuario);
+                    var pareceresDaPropostaDoUsuarioLogado = pareceresDaProposta.Where(w => w.UsuarioPareceristaId == usuarioLogado.Id);
 
-                    DefinirPodeAlterar(pareceresDaPropostaDoPerfil);
+                    foreach (var propostaParecerDto in pareceresDaPropostaDoPerfil)
+                        propostaParecerDto.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id);
                     
-                    podeInserir = !pareceresDaPropostaDoPerfil.Any();
+                    podeInserir = !pareceresDaPropostaDoUsuarioLogado.Any();
                     
-                    auditoriaMaisRecente = DefinirAuditoriaMaisRecente(pareceresDaPropostaDoUsuario);
+                    auditoriaMaisRecente = DefinirAuditoriaMaisRecente(pareceresDaProposta.Where(w=> w.UsuarioPareceristaId == usuarioLogado.Id));
                 }
                 else if(perfilLogado.EhPerfilAdminDF() || ehAreaPromotora.NaoEhNulo())
                 {
                     podeInserir = false;
 
-                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta);
-                    
                     DefinirPodeAlterar(pareceresDaPropostaDoPerfil,perfilLogado.EhPerfilAdminDF());
                     
                     auditoriaMaisRecente = DefinirAuditoriaMaisRecente(pareceresDaProposta);

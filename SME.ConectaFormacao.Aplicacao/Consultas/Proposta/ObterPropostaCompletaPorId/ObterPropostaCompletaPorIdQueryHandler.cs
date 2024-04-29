@@ -62,14 +62,17 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.Auditoria = _mapper.Map<AuditoriaDTO>(proposta);
             propostaCompletaDTO.AreaPromotora = _mapper.Map<PropostaAreaPromotoraDTO>(proposta.AreaPromotora);
 
-            var usuarioLogado = await _mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
+            var perfilLogado = await _mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
+            var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia());
             var propostaPareceres = await _repositorioProposta.ObterPropostaParecerPorId(proposta.Id);
 
+            var ehPerfilAreaPromotora = await EhPerfilAreaPromotora(perfilLogado);
             propostaCompletaDTO.TotalDePareceres = ObterTotalDePareceresPorCampo(propostaPareceres);
-            propostaCompletaDTO.ExibirParecer = await _mediator.Send(new ObterPermissaoParecerPerfilLogadoQuery());
+            propostaCompletaDTO.ExibirParecer = await PodeExibirParecer(perfilLogado, proposta.Situacao == SituacaoProposta.AguardandoAnaliseParecerista);
             propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta);
-            propostaCompletaDTO.PodeEnviarParecer = await PodeEnviarParecer(usuarioLogado, propostaPareceres);
+            propostaCompletaDTO.PodeEnviarParecer = await PodeEnviarParecer(perfilLogado, propostaPareceres, usuarioLogado.Id);
             propostaCompletaDTO.QtdeLimitePareceristaProposta = await ObterParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta);
+            propostaCompletaDTO.ExibirAuditoria = !ehPerfilAreaPromotora;
 
             if (!proposta.ArquivoImagemDivulgacaoId.HasValue) return propostaCompletaDTO;
             
@@ -77,6 +80,18 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.ArquivoImagemDivulgacao = _mapper.Map<PropostaImagemDivulgacaoDTO>(arquivo);
 
             return propostaCompletaDTO;
+        }
+
+        private async Task<bool> PodeExibirParecer(Guid usuarioLogado, bool estaAguardandoAnaliseParecerista)
+        {
+            return usuarioLogado.EhPerfilParecerista() && estaAguardandoAnaliseParecerista
+                   || usuarioLogado.EhPerfilAdminDF() 
+                   || await EhPerfilAreaPromotora(usuarioLogado);
+        }
+
+        private async Task<bool> EhPerfilAreaPromotora(Guid usuarioLogado)
+        {
+            return (await _mediator.Send(new ObterPerfilAreaPromotoraQuery(usuarioLogado))).NaoEhNulo();
         }
 
         private static IEnumerable<PropostaTotalParecerDTO> ObterTotalDePareceresPorCampo(IEnumerable<PropostaParecer> propostaPareceres)
@@ -101,10 +116,10 @@ namespace SME.ConectaFormacao.Aplicacao
                 proposta.Situacao == SituacaoProposta.AguardandoAnaliseDf;
         }
 
-        private async Task<bool> PodeEnviarParecer(Guid usuarioLogado, IEnumerable<PropostaParecer> propostaPareceres)
+        private async Task<bool> PodeEnviarParecer(Guid usuarioLogado, IEnumerable<PropostaParecer> propostaPareceres, long usuarioLogadoId)
         {
             return usuarioLogado.EhPerfilParecerista()
-                ? propostaPareceres.Any(a => a.Situacao.EstaPendenteEnvioParecerPeloParecerista())
+                ? propostaPareceres.Any(a => a.Situacao.EstaPendenteEnvioParecerPeloParecerista() && a.UsuarioPareceristaId == usuarioLogadoId)
                 : usuarioLogado.EhPerfilAdminDF() && propostaPareceres.Any(a => a.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF());
         }
     }

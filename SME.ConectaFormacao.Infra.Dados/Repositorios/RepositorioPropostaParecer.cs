@@ -19,6 +19,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             proposta_id, 
                             campo,
                             descricao,
+                            situacao,
+                            usuario_id,
                             excluido,
                             criado_em,
 	                        criado_por,

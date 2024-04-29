@@ -11,7 +11,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         
         public async Task<RetornoDTO> Executar(PropostaParecerCadastroDTO propostaParecerCadastroDto)
         {
-            return await mediator.Send(new SalvarPropostaParecerCommand(propostaParecerCadastroDto));
+            var usuarioLogado = await mediator.Send(ObterUsuarioLogadoQuery.Instancia());
+            
+            return await mediator.Send(new SalvarPropostaParecerCommand(propostaParecerCadastroDto, usuarioLogado.Id));
         }
     }
 }
