@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
@@ -9,7 +10,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarPropostaPareceristaCommandHandler : IRequestHandler<SalvarPropostaPareceristaCommand, long>
+    public class SalvarPropostaPareceristaCommandHandler : IRequestHandler<SalvarPropostaPareceristaCommand, bool>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
@@ -25,37 +26,27 @@ namespace SME.ConectaFormacao.Aplicacao
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<long> Handle(SalvarPropostaPareceristaCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(SalvarPropostaPareceristaCommand request, CancellationToken cancellationToken)
         {
-            var pareceristaAntes = await _repositorioProposta.ObterPropostaPareceristaPorId(request.Parecerista.Id);
-            var pareceristaDepois = _mapper.Map<PropostaParecerista>(request.Parecerista);
+            var pareceristaAntes = await _repositorioProposta.ObterPropostaPareceristaPorId(request.PropostaId);
+            var pareceristaDepois = _mapper.Map<IEnumerable<PropostaParecerista>>(request.Pareceristas);
             
-            if (pareceristaDepois.RegistroFuncional.EhNulo())
-                throw new NegocioException(MensagemNegocio.RF_INVALIDO);
+            if (pareceristaDepois.Any(a=> a.RegistroFuncional.EhNulo()))
+                throw new NegocioException(string.Format(MensagemNegocio.X_NAO_PREENCHIDO, Constantes.RF));
             
-            var transacao = _transacao.Iniciar();
-            try
-            {
-                if (pareceristaAntes != null)
-                {
-                    pareceristaDepois.PropostaId = request.PropostaId;
-                    pareceristaDepois.ManterCriador(pareceristaAntes);
-                    await _repositorioProposta.AtualizarPropostaParecerista(pareceristaDepois);
-                }
-                else await _repositorioProposta.InserirPropostaParecerista(request.PropostaId, pareceristaDepois);
-                    
-                transacao.Commit();
-                return pareceristaDepois.Id;
-            }
-            catch
-            {
-                transacao.Rollback();
-                throw;
-            }
-            finally
-            {
-                transacao.Dispose();
-            }
+            if (pareceristaDepois.Any(a=> a.NomeParecerista.EhNulo()))
+                throw new NegocioException(string.Format(MensagemNegocio.X_NAO_PREENCHIDO, Constantes.NOME_PARECERISTA));
+            
+            var pareceristasInserir = request.Pareceristas.Where(w => !pareceristaAntes.Any(a => a.Id == w.Id));
+            var pareceristasExcluir = pareceristaAntes.Where(w => !request.Pareceristas.Any(a => a.Id == w.Id));
+            
+            if (pareceristasInserir.Any())
+                await _repositorioProposta.InserirPareceristas(request.PropostaId, pareceristasInserir);
+
+            if (pareceristasExcluir.Any())
+                await _repositorioProposta.RemoverPareceristas(pareceristasExcluir);
+                
+            return true;
         }
     }
 }

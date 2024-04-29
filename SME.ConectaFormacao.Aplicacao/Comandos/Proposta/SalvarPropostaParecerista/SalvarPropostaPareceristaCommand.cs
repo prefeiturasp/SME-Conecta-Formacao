@@ -1,28 +1,33 @@
 using FluentValidation;
 using MediatR;
+using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarPropostaPareceristaCommand : IRequest<long>
+    public class SalvarPropostaPareceristaCommand : IRequest<bool>
     {
-        public SalvarPropostaPareceristaCommand(long propostaId,PropostaPareceristaDTO parecerista)
+        public SalvarPropostaPareceristaCommand(long propostaId,IEnumerable<PropostaParecerista> pareceristas)
         {
             PropostaId = propostaId;
-            Parecerista = parecerista;
+            Pareceristas = pareceristas;
         }
 
         public long PropostaId { get; }
 
-        public PropostaPareceristaDTO Parecerista { get; }
+        public IEnumerable<PropostaParecerista> Pareceristas { get; }
     }
 
     public class SalvarPropostaPareceristaCommandValidator : AbstractValidator<SalvarPropostaPareceristaCommand>
     {
         public SalvarPropostaPareceristaCommandValidator()
         {
-            RuleFor(x => x.PropostaId).GreaterThan(0).WithMessage("Informe o Id da Proposta Para salvar o Parecerista");
-            RuleFor(x => x.Parecerista.RegistroFuncional).NotEmpty().WithMessage("Informe o RF  Para salvar o Parecerista");
-            RuleFor(x => x.Parecerista.NomeParecerista).NotEmpty().WithMessage("Informe o nome Para salvar o Parecerista");
+            RuleFor(x => x.PropostaId)
+                .GreaterThan(0)
+                .WithMessage("Informe o Id da Proposta Para salvar a proposta parecerista");
+            
+            RuleFor(x => x.Pareceristas)
+                .NotEmpty()
+                .WithMessage("Informe os pareceristas para salvar a proposta parecerista");
         }        
     }
 }

@@ -93,6 +93,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaVagaRemanecente, PropostaVagaRemanecenteDTO>().ReverseMap();
             CreateMap<PropostaPublicoAlvo, PropostaPublicoAlvoDTO>().ReverseMap();
             CreateMap<PropostaPalavraChave, PropostaPalavraChaveDTO>().ReverseMap();
+            CreateMap<PropostaParecerista, PropostaPareceristaDTO>().ReverseMap();
             CreateMap<PropostaModalidade, PropostaModalidadeDTO>().ReverseMap();
             CreateMap<PropostaAnoTurma, PropostaAnoTurmaDTO>().ReverseMap();
             CreateMap<PropostaComponenteCurricular, PropostaComponenteCurricularDTO>().ReverseMap();
