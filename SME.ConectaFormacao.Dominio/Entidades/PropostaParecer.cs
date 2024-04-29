@@ -8,6 +8,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public CampoParecer Campo { get; set; }
         public string Descricao { get; set; }
         public SituacaoParecer Situacao { get; set; }
-        public Usuario UsuarioPareceristaId { get; set; }
+        public long UsuarioPareceristaId { get; set; }
     }
 }

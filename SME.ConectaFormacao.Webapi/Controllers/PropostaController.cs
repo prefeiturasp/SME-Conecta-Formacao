@@ -412,5 +412,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerFiltroDTO));
         }
+
+        [HttpPost("{propostaId}/parecer/enviar")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        public async Task<IActionResult> EnviarPropostaParecer([FromServices] ICasoDeUsoEnviarPropostaParecer casoDeUso,
+                                                               [FromRoute] long propostaId)
+        {
+            return Ok(await casoDeUso.Executar(propostaId));
+        }
     }
 }
