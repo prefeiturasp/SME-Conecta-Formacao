@@ -399,7 +399,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker.Generate();
         }
 
-        public static IEnumerable<PropostaParecerista> GerarPareceristas(long propostaId, int quantidade)
+        public static IEnumerable<PropostaParecerista> GerarPareceristas(long propostaId, int quantidade = 1, string rf = "")
         {
             for (var contador = 0; contador < quantidade; contador++)
             {
@@ -407,7 +407,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
                 {
                     PropostaId = propostaId,
                     NomeParecerista = $"Parecerista {contador}",
-                    RegistroFuncional = contador.ToString()
+                    RegistroFuncional = string.IsNullOrEmpty(rf) ? contador.ToString() : rf
 
                 };
 

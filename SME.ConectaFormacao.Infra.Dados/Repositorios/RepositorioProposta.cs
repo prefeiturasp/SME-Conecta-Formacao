@@ -2326,5 +2326,75 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId });
         }
+
+        public Task<bool> ExistePareceristasPendenteDeEnvio(long propostaId, long idUsuarioLogado)
+        {
+            var query = @"select count(1) 
+                          from proposta_parecer
+                          where proposta_id = @propostaId 
+                            and situacao = @situacao
+                            and usuario_id <> @idUsuarioLogado";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, idUsuarioLogado, situacao = (int)SituacaoParecer.PendenteEnvioParecerPeloParecerista });
+        }
+
+        public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloParecerista(long propostaId, long idUsuarioLogado)
+        {
+            var query = @"update proposta_parecer
+                          set 
+                            situacao = @situacaoAdminDF, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido
+                            and proposta_id = @propostaId 
+                            and situacao = @situacaoParecerista 
+                            and usuario_id = @idUsuarioLogado";
+
+            return await conexao.Obter().ExecuteAsync(query, new
+            {
+                propostaId,
+                idUsuarioLogado,
+                situacaoAdminDF = SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF,
+                situacaoParecerista = SituacaoParecer.PendenteEnvioParecerPeloParecerista,
+                AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                AlteradoPor = contexto.NomeUsuario,
+                AlteradoLogin = contexto.UsuarioLogado
+            });
+        }
+
+        public Task<bool> SituacaoPropostaEhAguardandoAnaliseDf(long propostaId)
+        {
+            var query = @"select count(1) 
+                          from proposta
+                          where not excluido
+                            and id = @propostaId 
+                            and situacao = @situacao";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, situacao = (int)SituacaoProposta.AguardandoAnaliseDf });
+        }
+
+        public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloAdminDF(long propostaId)
+        {
+            var query = @"update proposta_parecer
+                          set 
+                            situacao = @situacaoAreaPromotora, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido
+                            and proposta_id = @propostaId 
+                            and situacao = @situacaoAdminDF";
+
+            return await conexao.Obter().ExecuteAsync(query, new
+            {
+                propostaId,
+                situacaoAdminDF = SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF,
+                situacaoAreaPromotora = SituacaoParecer.AguardandoAnaliseParecerPelaAreaPromotora,
+                AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                AlteradoPor = contexto.NomeUsuario,
+                AlteradoLogin = contexto.UsuarioLogado
+            });
+        }
     }
 }
