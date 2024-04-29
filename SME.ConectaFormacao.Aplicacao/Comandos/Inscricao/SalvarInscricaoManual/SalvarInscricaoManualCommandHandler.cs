@@ -188,6 +188,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private async Task<bool> ValidarSeDreUsuarioInternoPossuiErros(string registroFuncional, Inscricao inscricao, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(inscricao.PropostaTurmaId), cancellationToken);
+            var existeTodos = dres.Any(t => t.Dre.Todos);
             dres = dres.Where(t => !t.Dre.Todos);
             if (dres.PossuiElementos())
             {
@@ -209,7 +210,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 return false;
             }
 
-            return true;
+            return !existeTodos;
         }
 
         private async Task<bool> ValidarSeDreUsuarioExternoPossuiErros(long propostaTurmaId, string codigoEolUnidade, CancellationToken cancellationToken)
