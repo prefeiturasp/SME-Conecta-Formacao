@@ -104,5 +104,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<bool> ExisteCargoFuncaoOutrosNaProposta(long propostaId);
         Task<int> ObterTotalVagasTurma(long id);
         Task<int> ObterTotalTurmasRegentes(long propostaId);
+        Task<PropostaTurma> ObterTurmaPorNome(string nome, long propostaId);
+        Task<bool> UsuarioEstaInscritoNaProposta(long usuarioId, long propostaId);
     }
 }

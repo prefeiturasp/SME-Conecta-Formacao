@@ -18,6 +18,8 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.FuncionarioExterno.ObterFuncionarioExternoPorCpf;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
@@ -34,6 +36,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.FuncionarioExterno.ObterFuncionarioExternoPorCpf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
+using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Modalidade;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
@@ -197,6 +200,9 @@ public class RegistradorDeDependencia
             config.AddMap(new AnoTurmaMap());
             config.AddMap(new ComponenteCurricularMap());
             config.AddMap(new InscricaoMap());
+            
+            config.AddMap(new ImportacaoArquivoMap());
+            config.AddMap(new ImportacaoArquivoRegistroMap());
 
             config.ForDommel();
         });
@@ -243,6 +249,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioComponenteCurricular, RepositorioComponenteCurricular>();
         _serviceCollection.TryAddScoped<IRepositorioCargoFuncaoDeparaEol, RepositorioCargoFuncaoDeparaEol>();
         _serviceCollection.TryAddScoped<IRepositorioInscricao, RepositorioInscricao>();
+        _serviceCollection.TryAddScoped<IRepositorioImportacaoArquivo, RepositorioImportacaoArquivo>();
+        _serviceCollection.TryAddScoped<IRepositorioImportacaoArquivoRegistro, RepositorioImportacaoArquivoRegistro>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -348,11 +356,32 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTurmasInscricao, CasoDeUsoObterTurmasInscricao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPaginada, CasoDeUsoObterInscricaoPaginada>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosPaginadosComFiltros, CasoDeUsoObterDadosPaginadosComFiltros>();
-
+        _serviceCollection.TryAddScoped<ICasoDeUsoAlterarVinculoInscricao, CasoDeUsoAlterarVinculoInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId, CasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId>();
+        
         _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomatica, CasoDeUsoRealizarInscricaoAutomatica>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratarTurmas, CasoDeUsoRealizarInscricaoAutomaticaTratarTurmas>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista, CasoDeUsoRealizarInscricaoAutomaticaTratarCursista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaInscreverCursista, CasoDeUsoRealizarInscricaoAutomaticaInscreverCursista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoTipo, CasoDeUsoObterInscricaoTipo>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterNomeCpfCursistaInscricao, CasoDeUsoObterNomeCpfCpfCursistaInscricao>();
+      
+        _serviceCollection.TryAddScoped<ICasoDeUsoImportacaoArquivoInscricaoCursista, CasoDeUsoImportacaoInscricaoCursista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterArquivosInscricaoImportados, CasoDeUsoObterArquivosInscricaoImportados>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterRegistrosDaIncricaoInconsistentes, CasoDeUsoObterRegistrosDaIncricaoInconsistentes>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoInscricaoManualContinuarProcessamento, CasoDeUsoInscricaoManualContinuarProcessamento>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoInscricaoManualCancelarProcessamento, CasoDeUsoInscricaoManualCancelarProcessamento>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoProcessarArquivoDeImportacaoInscricao, CasoDeUsoProcessarArquivoDeImportacaoInscricao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao, CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoSalvarInscricaoManual, CasoDeUsoSalvarInscricaoManual>();
+        
+        _serviceCollection.TryAddScoped<ICasoDeUsoImportacaoInscricaoCursistaValidar, CasoDeUsoImportacaoInscricaoCursistaValidar>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoImportacaoInscricaoCursistaValidarItem, CasoDeUsoImportacaoInscricaoCursistaValidarItem>();
+        
+        _serviceCollection.TryAddScoped<ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista, CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar, CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTiposEmail,CasoDeUsoObterTiposEmail>();
     }
 

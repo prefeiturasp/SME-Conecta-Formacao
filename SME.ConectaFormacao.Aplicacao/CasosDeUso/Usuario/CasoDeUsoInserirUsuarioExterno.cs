@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             usuarioExternoDto.Cpf = cpfSemPontos;
             usuarioExternoDto.EmailEducacional = usuarioExternoDto.EmailEducacional.Trim().ToLower();
             ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email, usuarioExternoDto.EmailEducacional);
-            await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login);
+            await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login,cpfSemPontos);
 
             var existeNoCoreSSO = await mediator.Send(new UsuarioExisteNoCoreSsoQuery(usuarioExternoDto.Login));
 
@@ -75,10 +75,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             return true;
         }
 
-        private async Task UsuarioNaoExisteNoConecta(string login)
+        private async Task UsuarioNaoExisteNoConecta(string login, string cpf)
         {
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(login));
             if (usuario.NaoEhNulo())
+                throw new NegocioException(MensagemNegocio.VOCE_JA_POSSUI_LOGIN_CONECTA);
+
+            var usuarioCpf = await mediator.Send(new ObterUsuarioPorCpfQuery(cpf));
+            if (usuarioCpf.NaoEhNulo())
                 throw new NegocioException(MensagemNegocio.VOCE_JA_POSSUI_LOGIN_CONECTA);
         }
 

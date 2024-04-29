@@ -2,7 +2,7 @@
 {
     public interface IServicoEol
     {
-        Task<string> ObterNomeProfissionalPorRegistroFuncional(string registroFuncional);
+        Task<CursistaResumidoServicoEol> ObterNomeCpfProfissionalPorRegistroFuncional(string registroFuncional);
         Task<IEnumerable<DreServicoEol>> ObterCodigosDres();
         Task<IEnumerable<ComponenteCurricularAnoTurmaServicoEol>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo);
         Task<IEnumerable<CursistaCargoServicoEol>> ObterCargosFuncionadoPorRegistroFuncional(string registroFuncional);

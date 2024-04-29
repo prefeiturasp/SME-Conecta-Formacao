@@ -77,9 +77,8 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 var cargosFuncoes = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol), cancellationToken);
 
-                inscricao.CargoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Cargo)?.Id;
-
-                inscricao.FuncaoId = cargosFuncoes?.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
+                inscricao.CargoId = cargosFuncoes.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Cargo)?.Id;
+                inscricao.FuncaoId = cargosFuncoes.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
             }
         }
 
@@ -98,7 +97,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task ValidarExisteInscricaoNaProposta(long propostaId, long usuarioId)
         {
-            var possuiInscricaoNaProposta = await _repositorioInscricao.ExisteInscricaoNaProposta(propostaId, usuarioId);
+            var possuiInscricaoNaProposta = await _repositorioInscricao.UsuarioEstaInscritoNaProposta(propostaId, usuarioId);
             if (possuiInscricaoNaProposta)
                 throw new NegocioException(MensagemNegocio.USUARIO_JA_INSCRITO_NA_PROPOSTA);
         }

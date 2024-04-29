@@ -1,0 +1,1 @@
+ALTER TABLE public.inscricao ADD IF NOT EXISTS tipo_vinculo int2 NULL;
