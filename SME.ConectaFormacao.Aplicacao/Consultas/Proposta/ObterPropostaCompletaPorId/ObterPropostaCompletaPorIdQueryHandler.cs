@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var propostaPareceres = await _repositorioProposta.ObterPropostaParecerPorId(proposta.Id);
 
             propostaCompletaDTO.TotalDePareceres = ObterTotalDePareceresPorCampo(propostaPareceres, perfilLogado.EhPerfilAdminDF());
-            propostaCompletaDTO.ExibirParecer = await PodeExibirParecer(perfilLogado, proposta.Situacao);
+            propostaCompletaDTO.ExibirParecer = await PodeExibirParecer(perfilLogado, proposta.Id);
             propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta);
             propostaCompletaDTO.PodeEnviarParecer = await PodeEnviarParecer(perfilLogado, propostaPareceres, usuarioLogado.Id);
             propostaCompletaDTO.QtdeLimitePareceristaProposta = await ObterParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta);
@@ -80,8 +80,11 @@ namespace SME.ConectaFormacao.Aplicacao
             return propostaCompletaDTO;
         }
 
-        private async Task<bool> PodeExibirParecer(Guid usuarioLogado, SituacaoProposta situacaoProposta)
+        private async Task<bool> PodeExibirParecer(Guid usuarioLogado, long propostaId)
         {
+            if (!await _mediator.Send(new ExistePareceristasAdicionadosNaPropostaQuery(propostaId)))
+                return false;
+            
             return usuarioLogado.EhPerfilParecerista()
                    || usuarioLogado.EhPerfilAdminDF() 
                    || await EhPerfilAreaPromotora(usuarioLogado);
