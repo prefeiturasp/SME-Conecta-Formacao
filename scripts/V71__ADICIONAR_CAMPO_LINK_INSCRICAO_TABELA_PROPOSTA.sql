@@ -1,0 +1,1 @@
+ALTER TABLE public.proposta ADD IF NOT EXISTS link_inscricoes_externa varchar(200) NULL;

@@ -15,7 +15,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
                 Formato = propostaFiltro.Formato,
                 NomeFormacao = propostaFiltro.NomeFormacao,
                 PublicoAlvoIds = propostaFiltro.PublicosAlvo.Select(t => t.CargoFuncaoId).ToArray(),
-                Situacao = propostaFiltro.Situacao
+                Situacao = propostaFiltro.Situacao,
+                NumeroHomologacao = propostaFiltro.NumeroHomologacao
             };
         }
 

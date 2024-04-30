@@ -1,3 +1,4 @@
+using Bogus;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -5,6 +6,7 @@ using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
@@ -45,6 +47,26 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             foreach (var situacao in situacoes)
                 retorno.Count(x => x.Situacao.Nome() == situacao.Nome()).ShouldBeEquivalentTo(1);
 
+        }
+
+        [Fact(DisplayName = "Proposta - Deve Exibir Todas Situações de Proposta no Dashboard por número de homologação")]
+        public async Task Deve_obter_lista_proposta_dashboard_por_numero_homologacao()
+        {
+            // arrange
+            await CriarPropostaValida();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
+            var filtro = new PropostaFiltrosDashboardDTO();
+
+            var proposta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
+
+            filtro.NumeroHomologacao = proposta.NumeroHomologacao;
+
+            // act 
+            var retorno = await casoDeUso.Executar(filtro);
+
+            // assert
+            retorno.ShouldNotBeNull();
+            retorno.Count().ShouldBe(1);
         }
 
         #region Criar Uma Proposta Valida de Cada Situação
@@ -108,7 +130,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                     modalidadesDTO,
                     anosTurmasDTO,
                     componentesCurricularesDTO,
-                    situacao);
+                situacao);
+
+                propostaDTO.NumeroHomologacao = new Random().NextInt64(100000, 9999999999);
 
                 var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
                 await casoDeUso.Executar(propostaDTO);

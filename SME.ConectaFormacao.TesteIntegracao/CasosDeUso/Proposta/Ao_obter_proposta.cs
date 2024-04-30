@@ -2,6 +2,7 @@
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
@@ -198,6 +199,26 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 };
 
             contextoAplicacao.AdicionarVariaveis(variaveis);
+        }
+
+        [Fact(DisplayName = "Proposta - Deve obter por id válido do tipo inscrição externo")]
+        public async Task Deve_obter_por_id_valido_tipo_inscricao_externo()
+        {
+            // arrange
+            var proposta = await InserirNaBaseProposta(
+                SituacaoProposta.Cadastrada, 
+                FormacaoHomologada.Sim,
+                TipoInscricao.Externa);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
+
+            // act 
+            var propostaCompletoDTO = await casoDeUso.Executar(proposta.Id);
+
+            // assert 
+            propostaCompletoDTO.ShouldNotBeNull();
+            ValidarPropostaCompletoDTO(propostaCompletoDTO, proposta.Id);
+            ValidarPropostaTipoInscricaoDTO(propostaCompletoDTO.TiposInscricao, proposta.Id);
         }
     }
 }
