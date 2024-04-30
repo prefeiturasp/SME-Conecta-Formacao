@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Funcionario;
 using SME.ConectaFormacao.Aplicacao.Dtos.Grupo;
@@ -22,8 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<AcessosGrupo, GrupoDTO>().ReverseMap();
 
-            CreateMap<UsuarioPerfilServicoEol, UsuarioAdminDfDTO>()
-                .ForMember(dest => dest.Rf, opt => opt.MapFrom(x => x.Login));
+            CreateMap<UsuarioPerfilServicoEol, RetornoUsuarioLoginNomeDTO>();
         }
     }
 }

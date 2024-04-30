@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioUsuario _repositorioUsuario;
         private readonly IMediator _mediator;
 
-        public SalvarUsuarioCommandHandler(IRepositorioUsuario repositorioUsuario ,IMediator mediator)
+        public SalvarUsuarioCommandHandler(IRepositorioUsuario repositorioUsuario, IMediator mediator)
         {
             _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));

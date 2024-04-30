@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -64,7 +63,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                 Cpf = usuario.Cpf,
                 RegistroFuncional = usuario.Login,
                 Turma = proposta.Turmas.FirstOrDefault().Nome,
-                Inscricao  = new Dominio.Entidades.Inscricao()
+                Inscricao = new Dominio.Entidades.Inscricao()
                 {
                     PropostaTurmaId = 1,
                     UsuarioId = 1,
@@ -82,7 +81,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
 
             // act
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoProcessarArquivoDeImportacaoInscricao>();
-            
+
             await casoDeUso.Executar(new MensagemRabbit(arquivosValidado.FirstOrDefault().Id));
 
             // assert

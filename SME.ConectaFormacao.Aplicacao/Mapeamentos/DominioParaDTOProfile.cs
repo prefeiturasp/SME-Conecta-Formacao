@@ -72,6 +72,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
             CreateMap<CargoFuncao, CargoFuncaoDTO>();
             CreateMap<PalavraChave, PalavraChaveDTO>();
+            CreateMap<PropostaParecerista, PropostaPareceristaDTO>();
             CreateMap<PropostaCriterioCertificacao, PropostaCriterioCertificacaoDto>();
             CreateMap<CriterioValidacaoInscricao, CriterioValidacaoInscricaoDTO>();
             CreateMap<Proposta, PropostaCompletoDTO>()
@@ -87,12 +88,14 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Modalidades, opt => opt.MapFrom(o => o.Modalidades))
                 .ForMember(dest => dest.AnosTurmas, opt => opt.MapFrom(o => o.AnosTurmas))
                 .ForMember(dest => dest.ComponentesCurriculares, opt => opt.MapFrom(o => o.ComponentesCurriculares))
+                .ForMember(dest => dest.Pareceristas, opt => opt.MapFrom(o => o.Pareceristas))
                 .ReverseMap();
             CreateMap<PropostaCriterioValidacaoInscricao, PropostaCriterioValidacaoInscricaoDTO>().ReverseMap();
             CreateMap<PropostaFuncaoEspecifica, PropostaFuncaoEspecificaDTO>().ReverseMap();
             CreateMap<PropostaVagaRemanecente, PropostaVagaRemanecenteDTO>().ReverseMap();
             CreateMap<PropostaPublicoAlvo, PropostaPublicoAlvoDTO>().ReverseMap();
             CreateMap<PropostaPalavraChave, PropostaPalavraChaveDTO>().ReverseMap();
+            CreateMap<PropostaParecerista, PropostaPareceristaDTO>().ReverseMap();
             CreateMap<PropostaModalidade, PropostaModalidadeDTO>().ReverseMap();
             CreateMap<PropostaAnoTurma, PropostaAnoTurmaDTO>().ReverseMap();
             CreateMap<PropostaComponenteCurricular, PropostaComponenteCurricularDTO>().ReverseMap();
@@ -143,6 +146,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaDre, PropostaDreDTO>().ReverseMap();
 
             CreateMap<PropostaTipoInscricao, PropostaTipoInscricaoDTO>().ReverseMap();
+            
+            CreateMap<PropostaParecer, PropostaParecerCadastroDTO>().ReverseMap();
 
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
@@ -249,16 +254,19 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
 
             CreateMap<UsuarioExternoDTO, Usuario>().ReverseMap();
-            
-            CreateMap<ImportacaoArquivoDTO,ImportacaoArquivo>().ReverseMap();
-            CreateMap<ImportacaoArquivoRegistroDTO,ImportacaoArquivoRegistro>().ReverseMap();
 
-            CreateMap<RetornoUsuarioDTO, Usuario>().ReverseMap();
-            CreateMap<RetornoUsuarioDTO, CursistaResumidoServicoEol>().ReverseMap();
-            
+            CreateMap<ImportacaoArquivoDTO, ImportacaoArquivo>().ReverseMap();
+            CreateMap<ImportacaoArquivoRegistroDTO, ImportacaoArquivoRegistro>().ReverseMap();
+
+            CreateMap<RetornoUsuarioCpfNomeDTO, Usuario>().ReverseMap();
+            CreateMap<RetornoUsuarioCpfNomeDTO, CursistaResumidoServicoEol>().ReverseMap();
+
             CreateMap<DadosUsuarioDTO, Usuario>();
 
             CreateMap<AreaPromotora, PropostaAreaPromotoraDTO>();
+            
+            CreateMap<PropostaParecer, PropostaParecerCompletoDTO>().ReverseMap();
+            CreateMap<PropostaParecer, PropostaParecerDTO>().ReverseMap();
         }
     }
 }

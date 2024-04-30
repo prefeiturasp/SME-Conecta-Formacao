@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostasTurmasPorPropostaIdQueryHandler : IRequestHandler<ObterPropostasTurmasPorPropostaIdQuery,IEnumerable<long>>
+    public class ObterPropostasTurmasPorPropostaIdQueryHandler : IRequestHandler<ObterPropostasTurmasPorPropostaIdQuery, IEnumerable<long>>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 

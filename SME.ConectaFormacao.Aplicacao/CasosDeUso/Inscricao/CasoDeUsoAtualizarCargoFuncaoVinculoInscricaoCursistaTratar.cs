@@ -27,11 +27,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             var dadosInscricao = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoes);
             if (atualizarCargoFuncaoVinculoInscricao.CargoCodigo != null)
                 dadosInscricao = dadosInscricao.Where(c => c.Codigo == atualizarCargoFuncaoVinculoInscricao.CargoCodigo);
-            
+
             await mediator.Send(new AlterarInscricaoParaUltimoCargoFuncaoVinculoCommand(atualizarCargoFuncaoVinculoInscricao.Id, dadosInscricao));
             return true;
         }
-        
+
         private static IEnumerable<DadosInscricaoCargoEol> ObterCargosBaseSobrepostoFuncaoAtividade(IEnumerable<CursistaCargoServicoEol> cargosFuncoesEol)
         {
             var usuarioCargos = new List<DadosInscricaoCargoEol>();

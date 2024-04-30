@@ -487,6 +487,48 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new { id });
         }
 
+        public async Task<IEnumerable<PropostaParecerista>> ObterPropostaPareceristaPorId(long id)
+        {
+            var query = $@"
+            select id,
+	               proposta_id,
+	               registro_funcional,
+	               nome_parecerista,
+	               criado_em,
+	               criado_por,
+	               alterado_em,
+	               alterado_por,
+	               criado_login,
+	               alterado_login,
+	               excluido
+            from public.proposta_parecerista
+	        where not excluido 
+              and proposta_id = @id  ";
+            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
+        }
+        
+        public async Task<IEnumerable<PropostaParecer>> ObterPropostaParecerPorId(long id)
+        {
+            var query = $@"
+            select id,
+	               proposta_id,
+	               campo,
+	               descricao,
+	               situacao,
+	               usuario_id,
+	               criado_em,
+	               criado_por,
+	               alterado_em,
+	               alterado_por,
+	               criado_login,
+	               alterado_login,
+	               excluido
+            from public.proposta_parecer
+	        where not excluido 
+              and proposta_id = @id  ";
+            return await conexao.Obter().QueryAsync<PropostaParecer>(query, new { id });
+        }
+
         public async Task<PropostaTutor> ObterPropostaTutorPorId(long id)
         {
             var query = @"select
@@ -918,6 +960,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 palavraChave.Id = (long)await conexao.Obter().InsertAsync(palavraChave);
             }
         }
+        
+        public async Task InserirPareceristas(long id, IEnumerable<PropostaParecerista> pareceristas)
+        {
+            foreach (var parecerista in pareceristas)
+            {
+                PreencherAuditoriaCriacao(parecerista);
+
+                parecerista.PropostaId = id;
+                parecerista.Id = (long)await conexao.Obter().InsertAsync(parecerista);
+            }
+        }
 
         public async Task InserirModalidades(long id, IEnumerable<PropostaModalidade> modalidades)
         {
@@ -979,6 +1032,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         from proposta_palavra_chave 
                         where proposta_id = @id and not excluido ";
             return await conexao.Obter().QueryAsync<PropostaPalavraChave>(query, new { id });
+        }
+        
+        public async Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorId(long id)
+        {
+            var query = @"select 
+                id, 
+                proposta_id, 
+                registro_funcional,
+                nome_parecerista,
+                excluido,
+                criado_em,
+                criado_por,
+                criado_login,
+            	alterado_em,    
+                alterado_por,
+                alterado_login
+            from proposta_parecerista 
+            where proposta_id = @id and not excluido ";
+            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
         }
 
         public async Task<IEnumerable<PropostaModalidade>> ObterModalidadesPorId(long id)
@@ -1067,6 +1139,30 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             };
 
             var query = @"update proposta_palavra_chave
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = any(@ids)";
+
+            return conexao.Obter().ExecuteAsync(query, parametros);
+        }
+        
+        public Task RemoverPareceristas(IEnumerable<PropostaParecerista> pareceristas)
+        {
+            var parecerista = pareceristas.First();
+            PreencherAuditoriaAlteracao(parecerista);
+
+            var parametros = new
+            {
+                ids = pareceristas.Select(t => t.Id).ToArray(),
+                parecerista.AlteradoEm,
+                parecerista.AlteradoPor,
+                parecerista.AlteradoLogin
+            };
+
+            var query = @"update proposta_parecerista
                           set 
                             excluido = true, 
                             alterado_em = @AlteradoEm, 
@@ -1185,6 +1281,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             regente.PropostaId = propostaId;
             regente.Id = (long)await conexao.Obter().InsertAsync(regente);
+        }
+        
+        public async Task InserirPropostaParecerista(long propostaId, PropostaParecerista parecerista)
+        {
+            PreencherAuditoriaCriacao(parecerista);
+
+            parecerista.PropostaId = propostaId;
+            parecerista.Id = (long)await conexao.Obter().InsertAsync(parecerista);
         }
 
         public async Task InserirPropostaRegenteTurma(long propostaRegenteId, IEnumerable<PropostaRegenteTurma> regenteTurma)
@@ -1359,6 +1463,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             PreencherAuditoriaAlteracao(propostaRegente);
             await conexao.Obter().UpdateAsync(propostaRegente);
+        }
+        
+        public async Task AtualizarPropostaParecerista(PropostaParecerista parecerista)
+        {
+            PreencherAuditoriaAlteracao(parecerista);
+            await conexao.Obter().UpdateAsync(parecerista);
         }
 
         public async Task AtualizarPropostaTutor(PropostaTutor propostaTutor)
@@ -2142,7 +2252,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = "select count(1) from proposta_turma_vaga where proposta_turma_id = @propostaTurmaIr and not excluido";
             return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaTurmaIr });
         }
-        
+
         public async Task<PropostaTurma> ObterTurmaPorNome(string nome, long propostaId)
         {
             var query = @"
@@ -2160,7 +2270,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             WHERE not excluido
             AND f_unaccent(lower(nome)) = f_unaccent(@nome) 
             AND proposta_id = @propostaId ";
-            
+
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaTurma>(query, new { nome = nome.ToLower(), propostaId });
         }
 
@@ -2175,14 +2285,134 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var query = @"select id from proposta where not excluido  and data_realizacao_fim >= @dataAtual ";
 
-            return await conexao.Obter().QueryAsync<long>(query, new{dataAtual});
+            return await conexao.Obter().QueryAsync<long>(query, new { dataAtual });
         }
 
         public async Task<IEnumerable<long>> PropostasTurmaIdsPorPropostaId(long propostaId)
         {
             var query = "select id from proposta_turma pt where not pt.excluido and pt.proposta_id = @propostaId ";
-            
-            return await conexao.Obter().QueryAsync<long>(query, new{propostaId});
+
+            return await conexao.Obter().QueryAsync<long>(query, new { propostaId });
+        }
+        
+        public async Task<bool> RemoverPropostaParecer(PropostaParecer parecer)
+        {
+            PreencherAuditoriaAlteracao(parecer);
+
+            var parametros = new
+            {
+                parecer.Id,
+                parecer.AlteradoEm,
+                parecer.AlteradoPor,
+                parecer.AlteradoLogin
+            };
+
+            var query = @"update proposta_parecer 
+                          set 
+                            excluido = true, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = @id";
+
+            return await conexao.Obter().ExecuteAsync(query, parametros) > 0;
+        }
+
+        public async Task<PropostaParecer> ObterParecerPorId(long parecerId)
+        {
+            var query = @" 
+            select id,
+	               proposta_id,
+	               campo,
+	               descricao,
+	               criado_por,
+	               alterado_em,
+	               alterado_por,
+	               criado_login,
+	               alterado_login,
+	               excluido
+            from public.proposta_parecer 
+            where not excluido  
+              and id=@parecerId ";
+            return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecer>(query, new { parecerId });
+        }
+
+        public Task<bool> ExistePareceristasAdicionadosNaProposta(long propostaId)
+        {
+            var query = @"select count(1) from proposta_parecerista where proposta_id = @propostaId and not excluido";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId });
+        }
+
+        public Task<bool> ExistePareceristasPendenteDeEnvio(long propostaId, long idUsuarioLogado)
+        {
+            var query = @"select count(1) 
+                          from proposta_parecer
+                          where proposta_id = @propostaId 
+                            and situacao = @situacao
+                            and usuario_id <> @idUsuarioLogado
+                            and not excluido";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, idUsuarioLogado, situacao = (int)SituacaoParecer.PendenteEnvioParecerPeloParecerista });
+        }
+
+        public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloParecerista(long propostaId, long idUsuarioLogado)
+        {
+            var query = @"update proposta_parecer
+                          set 
+                            situacao = @situacaoAdminDF, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido
+                            and proposta_id = @propostaId 
+                            and situacao = @situacaoParecerista 
+                            and usuario_id = @idUsuarioLogado";
+
+            return await conexao.Obter().ExecuteAsync(query, new
+            {
+                propostaId,
+                idUsuarioLogado,
+                situacaoAdminDF = SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF,
+                situacaoParecerista = SituacaoParecer.PendenteEnvioParecerPeloParecerista,
+                AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                AlteradoPor = contexto.NomeUsuario,
+                AlteradoLogin = contexto.UsuarioLogado
+            });
+        }
+
+        public Task<bool> SituacaoPropostaEhAguardandoAnaliseDf(long propostaId)
+        {
+            var query = @"select count(1) 
+                          from proposta
+                          where not excluido
+                            and id = @propostaId 
+                            and situacao = @situacao";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, situacao = (int)SituacaoProposta.AguardandoAnaliseDf });
+        }
+
+        public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloAdminDF(long propostaId)
+        {
+            var query = @"update proposta_parecer
+                          set 
+                            situacao = @situacaoAreaPromotora, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido
+                            and proposta_id = @propostaId 
+                            and situacao = @situacaoAdminDF";
+
+            return await conexao.Obter().ExecuteAsync(query, new
+            {
+                propostaId,
+                situacaoAdminDF = SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF,
+                situacaoAreaPromotora = SituacaoParecer.AguardandoAnaliseParecerPelaAreaPromotora,
+                AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                AlteradoPor = contexto.NomeUsuario,
+                AlteradoLogin = contexto.UsuarioLogado
+            });
         }
     }
 }

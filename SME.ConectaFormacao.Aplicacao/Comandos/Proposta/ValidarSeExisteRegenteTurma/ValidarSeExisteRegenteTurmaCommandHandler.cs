@@ -16,10 +16,10 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<string> Handle(ValidarSeExisteRegenteTurmaCommand request, CancellationToken cancellationToken)
         {
             var obterTotalTurmasRegentes = await _repositorioProposta.ObterTotalTurmasRegentes(request.PropostaId);
-            
+
             if (request.QuantidadeTurmas != obterTotalTurmasRegentes)
                 return MensagemNegocio.QUANTIDADE_TURMAS_COM_REGENTE;
-            
+
             return string.Empty;
         }
     }

@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var retorno = await _cacheDistribuido.ObterAsync(chave, () => repositorioParametroSistema.ObterParametroPorTipoEAno(request.TipoParametroSistema, request.Ano));
 
             if (retorno.EhNulo())
-                throw new NegocioException(string.Format(MensagemNegocio.PARAMETRO_X_NAO_ENCONTRADO_PARA_ANO_Y,request.TipoParametroSistema, request.Ano));
+                throw new NegocioException(string.Format(MensagemNegocio.PARAMETRO_X_NAO_ENCONTRADO_PARA_ANO_Y, request.TipoParametroSistema, request.Ano));
 
             return retorno;
         }

@@ -51,6 +51,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; }
         public IEnumerable<PropostaCriterioCertificacao> CriterioCertificacao { get; set; }
         public IEnumerable<PropostaRegente> Regentes { get; set; }
+        public IEnumerable<PropostaParecerista>? Pareceristas { get; set; }
         public IEnumerable<PropostaTutor> Tutores { get; set; }
         public IEnumerable<PropostaTurma> Turmas { get; set; }
         public IEnumerable<PropostaTurmaDre> TurmasDres { get; set; }

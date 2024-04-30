@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Drawing;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -30,7 +29,13 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Alterando = 8,
 
         [Display(Name = "Aprovada", Prompt = "#008000")]
-        Aprovada = 9
+        Aprovada = 9,
+
+        [Display(Name = "Aguardando análise do Parecerista", Prompt = "#000000")]
+        AguardandoAnaliseParecerista = 10,
+
+        [Display(Name = "Análise do parecer pela área promotora", Prompt = "#000000")]
+        AnaliseParecerAreaPromotora = 11
     }
 
     public static class SituacaoPropostaExtensao
@@ -74,7 +79,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoProposta.Rascunho || valor == SituacaoProposta.Alterando;
         }
-        
+
         public static bool EhAlterando(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.Alterando;

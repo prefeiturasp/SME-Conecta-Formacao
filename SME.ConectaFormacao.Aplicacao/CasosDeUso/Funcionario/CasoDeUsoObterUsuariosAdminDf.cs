@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Funcionario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario;
 
@@ -10,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Funcionario
         {
         }
 
-        public async Task<IEnumerable<UsuarioAdminDfDTO>> Executar()
+        public async Task<IEnumerable<RetornoUsuarioLoginNomeDTO>> Executar()
         {
             return await mediator.Send(new ObterUsuariosAdminDfQuery());
         }

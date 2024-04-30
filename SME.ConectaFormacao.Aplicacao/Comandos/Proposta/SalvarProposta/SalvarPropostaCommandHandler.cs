@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await _mediator.Send(new SalvarPropostaDreCommand(request.PropostaId, request.Proposta.Dres), cancellationToken);
 
-            await _mediator.Send(new SalvarPropostaTurmaCommand(request.PropostaId, request.Proposta.Turmas,request.Proposta.Situacao), cancellationToken);
+            await _mediator.Send(new SalvarPropostaTurmaCommand(request.PropostaId, request.Proposta.Turmas, request.Proposta.Situacao), cancellationToken);
 
             await _mediator.Send(new SalvarPropostaTurmaDreCommand(request.Proposta.ObterPropostaTurmasDres), cancellationToken);
 
@@ -48,6 +48,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (request.ArquivoImagemDivulgacaoId.HasValue)
                     await _mediator.Send(new RemoverArquivoPorIdCommand(request.ArquivoImagemDivulgacaoId.Value), cancellationToken);
             }
+
+            if (request.Proposta.Pareceristas.PossuiElementos())
+                await _mediator.Send(new SalvarPropostaPareceristaCommand(request.PropostaId, request.Proposta.Pareceristas), cancellationToken);
 
             await RemoverCaches(request.PropostaId, cancellationToken);
 

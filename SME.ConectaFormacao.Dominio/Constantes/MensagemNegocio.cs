@@ -72,7 +72,7 @@ public class MensagemNegocio
     public const string UNIDADE_NAO_LOCALIZADA_POR_CODIGO = "Nenhuma Unidade foi localizada com o código informado";
     public const string CONTRATO_EXTERNO_NAO_LOCALIZADO_POR_CPF = "Nenhum contrato externo foi localizado com o cpf informado";
     public const string NENHUMA_DRE_ENCONTRADA_NO_EOL = "Não foi possível localizar as Dres no EOL para a sincronização instituicional";
-    public const string PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA = "Proposta deve estar com situação de cadastrada ou devolvida para ser enviada para validação";
+    public const string PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA = "Proposta deve estar com situação de cadastrada, devolvida ou Aguardando análise do DF para ser enviada para validação";
     public const string QUANTIDADE_TURMAS_COM_REGENTE = "A quantidade de turmas informada deve ser a mesma de turmas com regentes";
     public const string NAO_EXISTE_NENHUM_TUTOR = "Não existe nenhum tutor cadastrado na Proposta";
     public const string JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR = "O Tutor {0} já possui a turma {1}";
@@ -116,10 +116,10 @@ public class MensagemNegocio
     public const string VOCE_JA_POSSUI_LOGIN_CORESSO = "Você já possui login no sistema. Acesse informando seu RF ou CPF e senha dos Sistemas da SME";
     public const string USUARIO_NAO_VALIDOU_EMAIL = "Você não validou seu e-mail ainda. Caso não tenha recebido o e-mail clique no botão 'Reenviar'";
     public const string EMAIL_FORA_DOMINIO_PERMITIDO_UES_PARCEIRAS = "Endereço de email não está em um domínio permitido";
-    public const string EMAIL_USUARIO_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail do usuário não foi cadastrado para envio do e-mail.";    
+    public const string EMAIL_USUARIO_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail do usuário não foi cadastrado para envio do e-mail.";
 
     public const string CURSISTA_NAO_ENCONTRADO = "Nenhum cursista foi encontrado";
-  
+
     public const string PROPOSTA_COM_PUBLICO_ALVO_SEM_DEPARA_CONFIGURADO = "A Proposta {0} possui publico alvo sem o depara com eol configurado";
     public const string PROPOSTA_COM_FUNCAO_ESPECIFICA_SEM_DEPARA_CONFIGURADO = "A Proposta {0} possui função específica sem o depara com eol configurado";
     public const string TUTOR_JA_EXISTE_NA_PROPOSTA = "Já existe um tutor com o CPF informado para {0}";
@@ -150,4 +150,8 @@ public class MensagemNegocio
     public const string EMAIL_AREA_PROMOTORA_NAO_CADASTRADO_ENVIO_EMAIL = "O e-mail da área promotora não foi cadastrado para envio do e-mail.";
     public const string RESPONSAVEL_DF_DEVE_SER_INFORMADO = "O responsável DF deve ser informado.";
     public const string ERRO_A0_VERIFICAR_USUARIO_ATIVO = "Não foi possível verificar se o usuário esta ativo";
+    public const string X_NAO_PREENCHIDO = "O '{0}' não está preenchido";
+    public const string PARECER_NAO_ENCONTRADO = "Nenhum parecer foi encontrado";
+    public const string PARECER_X_COM_SUCESSO = "Parecer '{0}' com sucesso";
+    public const string LIMITE_PARECERISTAS_EXCEDIDO_LIMITE_X = "Não é permitido exceder o limite máximo de pareceristas. Limite:'{0}'";
 }
