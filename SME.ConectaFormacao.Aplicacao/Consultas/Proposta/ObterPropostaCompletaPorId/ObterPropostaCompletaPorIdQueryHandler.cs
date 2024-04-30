@@ -95,7 +95,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private static IEnumerable<PropostaTotalParecerDTO> ObterTotalDePareceresPorCampo(IEnumerable<PropostaParecer> propostaPareceres, bool ehPerfilAdminDF)
         {
             if (ehPerfilAdminDF)
-                propostaPareceres = propostaPareceres.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF() && w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora());
+                propostaPareceres = propostaPareceres.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF() || w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora());
            
             return propostaPareceres.GroupBy(g => g.Campo).Select(s => new PropostaTotalParecerDTO()
             {

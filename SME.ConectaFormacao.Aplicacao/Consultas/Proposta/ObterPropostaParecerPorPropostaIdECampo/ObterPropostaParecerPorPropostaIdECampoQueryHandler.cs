@@ -60,12 +60,12 @@ namespace SME.ConectaFormacao.Aplicacao
                     podeInserir = false;
 
                     pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta
-                        .Where(w=> w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF() && w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora())
+                        .Where(w=> w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF() || w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora())
                         .OrderByDescending(o=> o.AlteradoEm).ThenBy(p=> p.CriadoEm));
                         
                     DefinirPodeAlterar(pareceresDaPropostaDoPerfil,perfilLogado.EhPerfilAdminDF());
 
-                    if (perfilLogado.EhPerfilAdminDF())
+                    if (perfilLogado.EhPerfilAdminDF() && pareceresDaPropostaDoPerfil.Any())
                         auditoriaMaisRecente = DefinirAuditoriaMaisRecente(pareceresDaProposta);
                 }
             }
