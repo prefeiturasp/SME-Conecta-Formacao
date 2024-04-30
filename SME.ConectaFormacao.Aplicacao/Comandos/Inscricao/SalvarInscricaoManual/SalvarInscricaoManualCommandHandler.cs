@@ -102,6 +102,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task MapearValidarCargoFuncao(Inscricao inscricao, string login, long propostaId, CancellationToken cancellationToken)
         {
+            var temErroCargo = false;
+            var temErroFuncao = false;
             var cargoFuncaoUsuarioEol = await _mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(login), cancellationToken);
 
             var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
@@ -128,8 +130,14 @@ namespace SME.ConectaFormacao.Aplicacao
                     }
                 }
 
-                if (!inscricao.CargoId.HasValue)
-                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
+                if (cargosProposta.PossuiElementos())
+                {
+                    var cargoFuncaoOutros = await _mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia(), cancellationToken);
+                    var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
+                    if (inscricao.CargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == inscricao.CargoId))
+                        temErroCargo = true;
+                        
+                }
             }
 
             var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
@@ -163,15 +171,24 @@ namespace SME.ConectaFormacao.Aplicacao
                         break;
                     }
                 }
+                if (funcaoAtividadeProposta.PossuiElementos())
+                {
+                    if (inscricao.FuncaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == inscricao.FuncaoId))
+                        temErroFuncao = true;
+                }
 
-                if (!inscricao.FuncaoId.HasValue)
-                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
+                if(temErroCargo && temErroFuncao)
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+            
+                if(!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }
         }
 
         private async Task<bool> ValidarSeDreUsuarioInternoPossuiErros(string registroFuncional, Inscricao inscricao, CancellationToken cancellationToken)
         {
             var dres = await _mediator.Send(new ObterPropostaTurmaDresPorPropostaTurmaIdQuery(inscricao.PropostaTurmaId), cancellationToken);
+            var existeTodos = dres.Any(t => t.Dre.Todos);
             dres = dres.Where(t => !t.Dre.Todos);
             if (dres.PossuiElementos())
             {
@@ -193,7 +210,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 return false;
             }
 
-            return true;
+            return !existeTodos;
         }
 
         private async Task<bool> ValidarSeDreUsuarioExternoPossuiErros(long propostaTurmaId, string codigoEolUnidade, CancellationToken cancellationToken)
