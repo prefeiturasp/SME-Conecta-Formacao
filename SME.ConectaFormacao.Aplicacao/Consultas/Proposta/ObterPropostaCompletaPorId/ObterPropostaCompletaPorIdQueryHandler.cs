@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var propostaPareceres = await _repositorioProposta.ObterPropostaParecerPorId(proposta.Id);
 
             propostaCompletaDTO.TotalDePareceres = ObterTotalDePareceresPorCampo(propostaPareceres, perfilLogado.EhPerfilAdminDF());
-            propostaCompletaDTO.ExibirParecer = await PodeExibirParecer(perfilLogado, proposta.Situacao == SituacaoProposta.AguardandoAnaliseParecerista);
+            propostaCompletaDTO.ExibirParecer = await PodeExibirParecer(perfilLogado, proposta.Situacao);
             propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta);
             propostaCompletaDTO.PodeEnviarParecer = await PodeEnviarParecer(perfilLogado, propostaPareceres, usuarioLogado.Id);
             propostaCompletaDTO.QtdeLimitePareceristaProposta = await ObterParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta);
@@ -80,9 +80,9 @@ namespace SME.ConectaFormacao.Aplicacao
             return propostaCompletaDTO;
         }
 
-        private async Task<bool> PodeExibirParecer(Guid usuarioLogado, bool estaAguardandoAnaliseParecerista)
+        private async Task<bool> PodeExibirParecer(Guid usuarioLogado, SituacaoProposta situacaoProposta)
         {
-            return usuarioLogado.EhPerfilParecerista() && estaAguardandoAnaliseParecerista
+            return usuarioLogado.EhPerfilParecerista()
                    || usuarioLogado.EhPerfilAdminDF() 
                    || await EhPerfilAreaPromotora(usuarioLogado);
         }
@@ -95,7 +95,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private static IEnumerable<PropostaTotalParecerDTO> ObterTotalDePareceresPorCampo(IEnumerable<PropostaParecer> propostaPareceres, bool ehPerfilAdminDF)
         {
             if (ehPerfilAdminDF)
-                propostaPareceres = propostaPareceres.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF());
+                propostaPareceres = propostaPareceres.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF() && w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora());
            
             return propostaPareceres.GroupBy(g => g.Campo).Select(s => new PropostaTotalParecerDTO()
             {

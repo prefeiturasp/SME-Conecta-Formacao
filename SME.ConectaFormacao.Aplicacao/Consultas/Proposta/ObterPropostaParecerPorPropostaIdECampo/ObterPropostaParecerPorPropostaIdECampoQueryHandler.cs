@@ -59,7 +59,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     podeInserir = false;
 
-                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta.Where(w=> w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF()).OrderByDescending(o=> o.AlteradoEm).ThenBy(p=> p.CriadoEm));
+                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta
+                        .Where(w=> w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF() && w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora())
+                        .OrderByDescending(o=> o.AlteradoEm).ThenBy(p=> p.CriadoEm));
                         
                     DefinirPodeAlterar(pareceresDaPropostaDoPerfil,perfilLogado.EhPerfilAdminDF());
 

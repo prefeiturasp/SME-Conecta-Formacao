@@ -2331,7 +2331,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<bool> ExistePareceristasAdicionadosNaProposta(long propostaId)
         {
-            var query = @"select count(1) from proposta_parecerista where proposta_id = @propostaId";
+            var query = @"select count(1) from proposta_parecerista where proposta_id = @propostaId and not excluido";
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId });
         }
@@ -2342,7 +2342,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           from proposta_parecer
                           where proposta_id = @propostaId 
                             and situacao = @situacao
-                            and usuario_id <> @idUsuarioLogado";
+                            and usuario_id <> @idUsuarioLogado
+                            and not excluido";
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, idUsuarioLogado, situacao = (int)SituacaoParecer.PendenteEnvioParecerPeloParecerista });
         }
