@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     var pareceresDaPropostaDoUsuarioLogado = pareceresDaProposta.Where(w => w.UsuarioPareceristaId == usuarioLogado.Id);
 
                     foreach (var propostaParecerDto in pareceresDaPropostaDoPerfil)
-                        propostaParecerDto.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id && !a.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF());
+                        propostaParecerDto.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id && a.Situacao.EstaPendenteEnvioParecerPeloParecerista());
                     
                     podeInserir = !pareceresDaPropostaDoUsuarioLogado.Any();
                     
@@ -59,11 +59,15 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     podeInserir = false;
 
-                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta
-                        .Where(w=> w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF() || w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora())
-                        .OrderByDescending(o=> o.AlteradoEm).ThenBy(p=> p.CriadoEm));
-                        
-                    DefinirPodeAlterar(pareceresDaPropostaDoPerfil,perfilLogado.EhPerfilAdminDF());
+                    pareceresDaProposta = pareceresDaProposta.OrderByDescending(o => o.AlteradoEm).ThenBy(p => p.CriadoEm);
+                    
+                    var pareceresAguardandoDf = MapearParaDTO(pareceresDaProposta.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF()));
+                    
+                    DefinirPodeAlterar(pareceresAguardandoDf,perfilLogado.EhPerfilAdminDF());
+                    
+                    var pareceresAguardandoAP = MapearParaDTO(pareceresDaProposta.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora()));
+                    
+                    pareceresDaPropostaDoPerfil = pareceresAguardandoDf.Concat(pareceresAguardandoAP);
 
                     if (perfilLogado.EhPerfilAdminDF() && pareceresDaPropostaDoPerfil.Any())
                         auditoriaMaisRecente = DefinirAuditoriaMaisRecente(pareceresDaProposta);
