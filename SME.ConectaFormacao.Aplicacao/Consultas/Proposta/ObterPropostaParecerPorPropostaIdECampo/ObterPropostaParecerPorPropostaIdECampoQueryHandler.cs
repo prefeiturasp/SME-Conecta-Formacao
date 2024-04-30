@@ -44,7 +44,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 if (perfilLogado.EhPerfilParecerista())
                 {
-                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta);
+                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta.OrderByDescending(o=> o.AlteradoEm).ThenBy(p=> p.CriadoEm));
                     
                     var pareceresDaPropostaDoUsuarioLogado = pareceresDaProposta.Where(w => w.UsuarioPareceristaId == usuarioLogado.Id);
 
@@ -59,7 +59,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     podeInserir = false;
 
-                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta.Where(w=> w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF()));
+                    pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta.Where(w=> w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF()).OrderByDescending(o=> o.AlteradoEm).ThenBy(p=> p.CriadoEm));
                         
                     DefinirPodeAlterar(pareceresDaPropostaDoPerfil,perfilLogado.EhPerfilAdminDF());
 
