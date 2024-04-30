@@ -89,15 +89,5 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoProposta.Aprovada;
         }
-        
-        public static bool EstaAguardandoAnaliseParecerista(this SituacaoProposta valor)
-        {
-            return valor == SituacaoProposta.AguardandoAnaliseParecerista;
-        }
-        
-        public static bool EstaAguardandoAnaliseDf(this SituacaoProposta valor)
-        {
-            return valor == SituacaoProposta.AguardandoAnaliseDf;
-        }
     }
 }
