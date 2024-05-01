@@ -65,9 +65,12 @@ namespace SME.ConectaFormacao.Aplicacao
             var perfilLogado = await _mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia());
             var propostaPareceres = await _repositorioProposta.ObterPropostaParecerPorId(proposta.Id);
+            var possuiPareceresNaProposta = propostaPareceres.Any();
+            var ehPareceristaDaProposta = perfilLogado.EhPerfilParecerista() && proposta.Pareceristas.Any(a => a.RegistroFuncional.Equals(usuarioLogado.Login));
+            var possuiPareceristasNaProposta = proposta.Pareceristas.Any();
 
             propostaCompletaDTO.TotalDePareceres = ObterTotalDePareceresPorCampo(propostaPareceres, perfilLogado.EhPerfilAdminDF());
-            propostaCompletaDTO.ExibirParecer = await PodeExibirParecer(perfilLogado, proposta.Id);
+            propostaCompletaDTO.ExibirParecer = await PodeExibirParecer(perfilLogado, possuiPareceristasNaProposta, possuiPareceresNaProposta, ehPareceristaDaProposta);
             propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta);
             propostaCompletaDTO.PodeEnviarParecer = await PodeEnviarParecer(perfilLogado, propostaPareceres, usuarioLogado.Id);
             propostaCompletaDTO.QtdeLimitePareceristaProposta = await ObterParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta);
@@ -80,14 +83,15 @@ namespace SME.ConectaFormacao.Aplicacao
             return propostaCompletaDTO;
         }
 
-        private async Task<bool> PodeExibirParecer(Guid usuarioLogado, long propostaId)
+        private async Task<bool> PodeExibirParecer(Guid perfilLogado, bool possuiPareceristasNaProposta, bool possuiPareceres, bool ehPareceristaDaProposta)
         {
-            if (!await _mediator.Send(new ExistePareceristasAdicionadosNaPropostaQuery(propostaId)))
+            if (!possuiPareceristasNaProposta)
                 return false;
-            
-            return usuarioLogado.EhPerfilParecerista()
-                   || usuarioLogado.EhPerfilAdminDF() 
-                   || await EhPerfilAreaPromotora(usuarioLogado);
+
+            if (ehPareceristaDaProposta)
+                return true;
+
+            return (perfilLogado.EhPerfilAdminDF() || await EhPerfilAreaPromotora(perfilLogado)) && possuiPareceres;
         }
 
         private async Task<bool> EhPerfilAreaPromotora(Guid usuarioLogado)
