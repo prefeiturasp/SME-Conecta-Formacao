@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(ExistePareceristasAdicionadosNaPropostaQuery request, CancellationToken cancellationToken)
         {
-            return await _repositorioProposta.ExistePareceristasAdicionadosNaProposta(request.ProspotaId);
+            return await _repositorioProposta.ExistePareceristasAdicionadosNaProposta(request.PropostaId);
         }
     }
 }
