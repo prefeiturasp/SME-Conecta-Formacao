@@ -119,6 +119,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private bool PodeEnviar(Proposta proposta, bool possuiPareceristasNaProposta)
         {
+            if (proposta.Situacao == SituacaoProposta.AguardandoAnaliseDf)
+                return possuiPareceristasNaProposta;
+            
             return proposta.Situacao == SituacaoProposta.Cadastrada ||
                 proposta.Situacao == SituacaoProposta.Devolvida;
         }
