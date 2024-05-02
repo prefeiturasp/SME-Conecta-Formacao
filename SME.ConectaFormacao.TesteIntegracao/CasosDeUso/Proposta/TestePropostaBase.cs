@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         protected TestePropostaBase(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
-        protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade)
+        protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade, int quantidadeParecerista = 0)
         {
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(componentesCurriculares);
 
             return await InserirNaBaseProposta(quantidade, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-            modalidades, anosTurmas, componentesCurriculares);
+            modalidades, anosTurmas, componentesCurriculares, quantidadeParecerista);
         }
 
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada,
@@ -239,14 +239,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes,
             IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao, IEnumerable<PalavraChave> palavrasChaves,
             IEnumerable<Dominio.Enumerados.Modalidade> modalidades, IEnumerable<Dominio.Entidades.AnoTurma> anosTurmas,
-            IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares)
+            IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares, int quantidadeParecerista = 0)
         {
             var lista = new List<Dominio.Entidades.Proposta>();
 
             for (int i = 0; i < quantidade; i++)
                 lista.Add(await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,
                     palavrasChaves, modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Cadastrada,
-                    FormacaoHomologada.Sim, TipoInscricao.Automatica, true, false, true));
+                    FormacaoHomologada.Sim, TipoInscricao.Automatica, true, false, true,quantidadeParecerista));
 
             return lista;
         }
