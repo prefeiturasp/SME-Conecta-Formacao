@@ -71,7 +71,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             propostaCompletaDTO.TotalDePareceres = ObterTotalDePareceresPorCampo(propostaPareceres, perfilLogado.EhPerfilAdminDF());
             propostaCompletaDTO.ExibirParecer = await PodeExibirParecer(perfilLogado, possuiPareceristasNaProposta, estaAguardandoAnaliseParecerDFOuAreaPromotora, ehPareceristaDaProposta);
-            propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta);
+            propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta, possuiPareceristasNaProposta);
             propostaCompletaDTO.PodeEnviarParecer = await PodeEnviarParecer(perfilLogado, propostaPareceres, usuarioLogado.Id);
             propostaCompletaDTO.QtdeLimitePareceristaProposta = await ObterParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta);
 
@@ -117,11 +117,10 @@ namespace SME.ConectaFormacao.Aplicacao
             return int.Parse(parametro.Valor);
         }
 
-        private bool PodeEnviar(Dominio.Entidades.Proposta proposta)
+        private bool PodeEnviar(Proposta proposta, bool possuiPareceristasNaProposta)
         {
             return proposta.Situacao == SituacaoProposta.Cadastrada ||
-                proposta.Situacao == SituacaoProposta.Devolvida ||
-                proposta.Situacao == SituacaoProposta.AguardandoAnaliseDf;
+                proposta.Situacao == SituacaoProposta.Devolvida;
         }
 
         private async Task<bool> PodeEnviarParecer(Guid usuarioLogado, IEnumerable<PropostaParecer> propostaPareceres, long usuarioLogadoId)

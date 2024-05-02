@@ -10,6 +10,8 @@ using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
+using SME.ConectaFormacao.Dominio.Entidades;
+using DiffEngine;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
@@ -23,7 +25,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_por_id_valido()
         {
             // arrange
-            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF);
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
+
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
 
             var proposta = await InserirNaBaseProposta();
 
@@ -68,7 +76,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_por_id_com_total_pareceres()
         {
             // arrange
-            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF);
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
+
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
 
             var proposta = await InserirNaBaseProposta();
 
@@ -105,7 +119,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_por_id_com_permissoes_parecer_perfil_logado_pareceristas()
         {
             // arrange
-            AdicionarPerfilUsuarioContextoAplicacao(Perfis.PARECERISTA);
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.PARECERISTA, usuario.Login);
+
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
 
             var proposta = await InserirNaBaseProposta();
 
@@ -124,7 +144,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_por_id_com_permissoes_parecer_perfil_logado_adm()
         {
             // arrange
-            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF);
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
+
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
 
             var proposta = await InserirNaBaseProposta();
 
@@ -143,8 +169,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_por_id_com_permissoes_parecer_perfil_logado_area_promotora()
         {
             // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
             var perfil = Guid.NewGuid();
-            AdicionarPerfilUsuarioContextoAplicacao(perfil);
+            AdicionarPerfilUsuarioContextoAplicacao(perfil, usuario.Login);
+
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
 
             await InserirNaBase(AreaPromotoraMock.GerarAreaPromotora(perfil));
 
@@ -163,8 +195,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_por_id_verificado_pode_enviar_parecer()
         {
             // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
             var perfil = Guid.NewGuid();
-            AdicionarPerfilUsuarioContextoAplicacao(perfil);
+            AdicionarPerfilUsuarioContextoAplicacao(perfil, usuario.Login);
+
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
 
             await InserirNaBase(AreaPromotoraMock.GerarAreaPromotora(perfil));
 
@@ -179,34 +217,79 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.PodeEnviarParecer.ShouldBeTrue();
         }
 
-        private async Task GerarPropostaParecer(long propostaId, CampoParecer campo)
+
+        [Fact(DisplayName = "Proposta - Deve obter por id válido verificando se pode enviar sem parecerista")]
+        public async Task Deve_obter_por_id_verificado_pode_enviar_sem_parecerista()
         {
-            for (int contador = 0; contador < (int)campo; contador++)
-            {
-                var inserirPropostaParecer = PropostaParecerMock.GerarPropostaParecer();
-                inserirPropostaParecer.PropostaId = propostaId;
-                inserirPropostaParecer.Campo = campo;
-                await InserirNaBase(inserirPropostaParecer);
-            }
+            // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
+
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseDf);
+
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
+            // act 
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
+            var propostaCompletoDTO = await casoDeUso.Executar(proposta.Id);
+
+            // assert 
+            propostaCompletoDTO.ShouldNotBeNull();
+            propostaCompletoDTO.PodeEnviar.ShouldBeFalse();
         }
 
-        private void AdicionarPerfilUsuarioContextoAplicacao(Guid perfil)
+        [Fact(DisplayName = "Proposta - Deve obter por id válido verificando se pode enviar com parecerista")]
+        public async Task Deve_obter_por_id_verificado_pode_enviar_com_parecerista()
         {
-            var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
-            var variaveis = new Dictionary<string, object>
-                {
-                    { "PerfilUsuario", perfil.ToString() }
-                };
+            // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
 
-            contextoAplicacao.AdicionarVariaveis(variaveis);
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
+
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseDf);
+
+            var parecerista = new PropostaParecerista
+            {
+                PropostaId = proposta.Id,
+                NomeParecerista = $"Parecerista {usuario.Nome}",
+                RegistroFuncional = usuario.Login,
+                CriadoPor = proposta.CriadoPor,
+                CriadoEm = proposta.CriadoEm,
+                CriadoLogin = proposta.CriadoLogin
+            };
+
+            await InserirNaBase(parecerista);
+
+            // act 
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
+            var propostaCompletoDTO = await casoDeUso.Executar(proposta.Id);
+
+            // assert 
+            propostaCompletoDTO.ShouldNotBeNull();
+            propostaCompletoDTO.PodeEnviar.ShouldBeTrue();
         }
 
         [Fact(DisplayName = "Proposta - Deve obter por id válido do tipo inscrição externo")]
         public async Task Deve_obter_por_id_valido_tipo_inscricao_externo()
         {
             // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
+
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var proposta = await InserirNaBaseProposta(
-                SituacaoProposta.Cadastrada, 
+                SituacaoProposta.Cadastrada,
                 FormacaoHomologada.Sim,
                 TipoInscricao.Externa);
 
@@ -220,5 +303,30 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaCompletoDTO(propostaCompletoDTO, proposta.Id);
             ValidarPropostaTipoInscricaoDTO(propostaCompletoDTO.TiposInscricao, proposta.Id);
         }
+
+        private async Task GerarPropostaParecer(long propostaId, CampoParecer campo)
+        {
+            for (int contador = 0; contador < (int)campo; contador++)
+            {
+                var inserirPropostaParecer = PropostaParecerMock.GerarPropostaParecer();
+                inserirPropostaParecer.PropostaId = propostaId;
+                inserirPropostaParecer.Campo = campo;
+                await InserirNaBase(inserirPropostaParecer);
+            }
+        }
+
+        private void AdicionarPerfilUsuarioContextoAplicacao(Guid perfil, string login)
+        {
+            var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
+            var variaveis = new Dictionary<string, object>
+                {
+                    { "PerfilUsuario", perfil.ToString() },
+                     { "UsuarioLogado", login }
+                };
+
+            contextoAplicacao.AdicionarVariaveis(variaveis);
+        }
+
+
     }
 }
