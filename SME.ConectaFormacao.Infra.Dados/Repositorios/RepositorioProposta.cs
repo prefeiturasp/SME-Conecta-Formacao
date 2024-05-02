@@ -398,7 +398,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (perfilUsuarioLogado.EhPerfilParecerista())
                 query += @" and p.situacao = @situacaoAguardandoParecerista 
-                            and p.id in (select proposta_id from proposta_parecerista where registro_funcional = @loginUsuarioLogado)";
+                            and p.id in (select proposta_id from proposta_parecerista where not excluido and registro_funcional = @loginUsuarioLogado)";
 
             query += " ORDER BY coalesce(pm.criado_em, p.alterado_em, p.criado_em) DESC ";
 
