@@ -341,7 +341,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<IEnumerable<Proposta>> ObterPropostasIdsDashBoard(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId,
             Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio,
-            DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, IEnumerable<SituacaoProposta> situacoesProposta)
+            DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, IEnumerable<SituacaoProposta> situacoesProposta,
+            string loginUsuarioLogado, Guid perfilUsuarioLogado)
         {
             var query = @" 
                         with movimentacoes as (
@@ -395,6 +396,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (numeroHomologacao.HasValue)
                 query += " and p.numero_homologacao = @numeroHomologacao ";
 
+            if (perfilUsuarioLogado.EhPerfilParecerista())
+                query += @" and p.situacao = @situacaoAguardandoParecerista 
+                            and p.id in (select proposta_id from proposta_parecerista where registro_funcional = @loginUsuarioLogado)";
+
             query += " ORDER BY coalesce(pm.criado_em, p.alterado_em, p.criado_em) DESC ";
 
             var parametros = new
@@ -410,7 +415,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                 situacao,
                 formacaoHomologada,
-                situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray()
+                situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray(),
+                situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnaliseParecerista,
+                loginUsuarioLogado
             };
             return conexao.Obter().QueryAsync<Proposta>(query, parametros);
         }
