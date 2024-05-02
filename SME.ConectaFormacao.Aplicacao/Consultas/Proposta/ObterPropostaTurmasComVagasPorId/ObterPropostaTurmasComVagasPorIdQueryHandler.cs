@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 turmas = await _repositorioProposta.ObterTurmasPorId(proposta.Id);
             else
             {
-                turmas = await _repositorioProposta.ObterTurmasComVagaPorId(request.PropostaId);
+                turmas = await _repositorioProposta.ObterTurmasComVagaPorId(request.PropostaId, request.CodigoDre);
                 if (turmas.NaoPossuiElementos())
                     throw new NegocioException(MensagemNegocio.NENHUMA_TURMA_COM_VAGA_DISPONIVEL, System.Net.HttpStatusCode.NotFound);
             }
