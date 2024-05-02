@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(EnviarParecerAdminDFCommand request, CancellationToken cancellationToken)
         {
-            if (await _repositorioProposta.SituacaoPropostaEhAguardandoAnaliseDf(request.IdProposta))
+            if (await _repositorioProposta.SituacaoPropostaEhAguardandoAnaliseParecerDf(request.IdProposta))
             {
                 await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AnaliseParecerAreaPromotora));
                 await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AnaliseParecerAreaPromotora));

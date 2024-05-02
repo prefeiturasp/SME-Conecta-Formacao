@@ -19,10 +19,15 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var usuario = await _mediator.Send(new ObterUsuarioLogadoQuery());
 
-            if (!(await _repositorioProposta.ExistePareceristasPendenteDeEnvio(request.IdProposta, usuario.Id)))
+            var todosPareceristasTemParecer = await _repositorioProposta.TodosPareceristasPossuemParecer(request.IdProposta);
+
+            if (todosPareceristasTemParecer)
             {
-                await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseDf));
-                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseDf));
+                if (!await _repositorioProposta.ExistePareceristasPendenteDeEnvio(request.IdProposta, usuario.Id))
+                {
+                    await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerDF));
+                    await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerDF));
+                }
             }
 
             await _repositorioProposta.AtualizarSituacaoDoParecerEnviadaPeloParecerista(request.IdProposta, usuario.Id);

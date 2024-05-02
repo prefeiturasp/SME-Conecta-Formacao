@@ -2399,7 +2399,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             });
         }
 
-        public Task<bool> SituacaoPropostaEhAguardandoAnaliseDf(long propostaId)
+        public Task<bool> SituacaoPropostaEhAguardandoAnaliseParecerDf(long propostaId)
         {
             var query = @"select count(1) 
                           from proposta
@@ -2407,7 +2407,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             and id = @propostaId 
                             and situacao = @situacao";
 
-            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, situacao = (int)SituacaoProposta.AguardandoAnaliseDf });
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, situacao = (int)SituacaoProposta.AguardandoAnaliseParecerDF });
         }
 
         public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloAdminDF(long propostaId)
@@ -2431,6 +2431,21 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 AlteradoPor = contexto.NomeUsuario,
                 AlteradoLogin = contexto.UsuarioLogado
             });
+        }
+
+        public Task<bool> TodosPareceristasPossuemParecer(long propostaId)
+        {
+            var query = @"
+            SELECT
+                CASE WHEN 
+                    (SELECT COUNT(id) FROM proposta_parecerista WHERE NOT excluido AND proposta_id = @propostaId) 
+                    = 
+                    (SELECT COUNT(id) FROM proposta_parecer WHERE NOT excluido AND proposta_id = @propostaId) 
+                    THEN TRUE
+                ELSE FALSE
+            END AS todos_possuem_pareceres;";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId });
         }
     }
 }
