@@ -53,7 +53,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     var pareceresDaPropostaDoUsuarioLogado = pareceresDaProposta.Where(w => w.UsuarioPareceristaId == usuarioLogado.Id);
 
                     foreach (var propostaParecerDto in pareceresDaPropostaDoPerfil)
-                        propostaParecerDto.PodeAlterar = proposta.Situacao.EstaAguardandoAnaliseParecerista() && pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id && a.Situacao.EstaPendenteEnvioParecerPeloParecerista());
+                        propostaParecerDto.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id && a.Situacao.EstaPendenteEnvioParecerPeloParecerista());
                     
                     podeInserir = proposta.Situacao.EstaAguardandoAnaliseParecerista() && !pareceresDaPropostaDoUsuarioLogado.Any();
                     
@@ -67,8 +67,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     
                     var pareceresAguardandoDf = MapearParaDTO(pareceresDaProposta.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF()));
 
-                    if (proposta.Situacao.EstaAguardandoAnaliseParecerDF())
-                        DefinirPodeAlterar(pareceresAguardandoDf,perfilLogado.EhPerfilAdminDF());
+                    DefinirPodeAlterar(pareceresAguardandoDf,perfilLogado.EhPerfilAdminDF());
                     
                     var pareceresAguardandoAP = MapearParaDTO(pareceresDaProposta.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora()));
                     
