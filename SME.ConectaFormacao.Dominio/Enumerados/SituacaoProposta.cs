@@ -97,5 +97,15 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoProposta.AguardandoAnaliseParecerDF || valor == SituacaoProposta.AnaliseParecerAreaPromotora;
         }
+        
+        public static bool EstaAguardandoAnaliseParecerista(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnaliseParecerista;
+        }
+        
+        public static bool EstaAguardandoAnaliseParecerDF(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnaliseParecerDF;
+        }
     }
 }

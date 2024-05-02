@@ -14,12 +14,14 @@ namespace SME.ConectaFormacao.Aplicacao
     public class ObterPropostaParecerPorPropostaIdECampoQueryHandler : IRequestHandler<ObterPropostaParecerPorPropostaIdECampoQuery, PropostaParecerCompletoDTO>
     {
         private readonly IRepositorioPropostaParecer _repositorioPropostaParecer;
+        private readonly IRepositorioProposta _repositorioProposta;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public ObterPropostaParecerPorPropostaIdECampoQueryHandler(IRepositorioPropostaParecer repositorioPropostaParecer,IMapper mapper,IMediator mediator)
+        public ObterPropostaParecerPorPropostaIdECampoQueryHandler(IRepositorioPropostaParecer repositorioPropostaParecer,IMapper mapper,IMediator mediator,IRepositorioProposta repositorioProposta)
         {
             _repositorioPropostaParecer = repositorioPropostaParecer ?? throw new ArgumentNullException(nameof(repositorioPropostaParecer));
+            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
@@ -32,7 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var pareceresDaPropostaDoPerfil = Enumerable.Empty<PropostaParecerDTO>();
 
-            var podeInserir = true;
+            var podeInserir = false;
 
             if (pareceresDaProposta.Any())
             {
@@ -42,6 +44,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 
                 var ehAreaPromotora = await _mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilLogado), cancellationToken);
 
+                var proposta = await _repositorioProposta.ObterPorId(request.PropostaId);
+                
                 if (perfilLogado.EhPerfilParecerista())
                 {
                     pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm));
@@ -49,21 +53,22 @@ namespace SME.ConectaFormacao.Aplicacao
                     var pareceresDaPropostaDoUsuarioLogado = pareceresDaProposta.Where(w => w.UsuarioPareceristaId == usuarioLogado.Id);
 
                     foreach (var propostaParecerDto in pareceresDaPropostaDoPerfil)
-                        propostaParecerDto.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id && a.Situacao.EstaPendenteEnvioParecerPeloParecerista());
+                        propostaParecerDto.PodeAlterar = proposta.Situacao.EstaAguardandoAnaliseParecerista() && pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id && a.Situacao.EstaPendenteEnvioParecerPeloParecerista());
                     
-                    podeInserir = !pareceresDaPropostaDoUsuarioLogado.Any();
+                    podeInserir = proposta.Situacao.EstaAguardandoAnaliseParecerista() && !pareceresDaPropostaDoUsuarioLogado.Any();
                     
                     auditoriaMaisRecente = DefinirAuditoriaMaisRecente(pareceresDaProposta.Where(w=> w.UsuarioPareceristaId == usuarioLogado.Id));
                 }
                 else if(perfilLogado.EhPerfilAdminDF() || ehAreaPromotora.NaoEhNulo())
                 {
                     podeInserir = false;
-
+                    
                     pareceresDaProposta = pareceresDaProposta.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm);
                     
                     var pareceresAguardandoDf = MapearParaDTO(pareceresDaProposta.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF()));
-                    
-                    DefinirPodeAlterar(pareceresAguardandoDf,perfilLogado.EhPerfilAdminDF());
+
+                    if (proposta.Situacao.EstaAguardandoAnaliseParecerDF())
+                        DefinirPodeAlterar(pareceresAguardandoDf,perfilLogado.EhPerfilAdminDF());
                     
                     var pareceresAguardandoAP = MapearParaDTO(pareceresDaProposta.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora()));
                     
