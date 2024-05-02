@@ -36,6 +36,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             await CriarPropostaValida();
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+            AdicionarPerfilUsuarioParecerista(Perfis.ADMIN_DF, usuario.Login);
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
             var filtro = new PropostaFiltrosDashboardDTO();
             var situacoes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
@@ -56,6 +59,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_lista_proposta_dashboard_por_numero_homologacao()
         {
             // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+            AdicionarPerfilUsuarioParecerista(Perfis.ADMIN_DF, usuario.Login);
             await CriarPropostaValida();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
             var filtro = new PropostaFiltrosDashboardDTO();
@@ -78,7 +84,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // arrange
             var usuario = UsuarioMock.GerarUsuario();
             await InserirNaBase(usuario);
-            AdicionarPerfilUsuarioParecerista(usuario.Login);
+            AdicionarPerfilUsuarioParecerista(Perfis.PARECERISTA, usuario.Login);
             await CriarPropostaValida();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
 
@@ -107,18 +113,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         }
 
 
-        private void AdicionarPerfilUsuarioParecerista(string login)
+        private void AdicionarPerfilUsuarioParecerista(Guid perfil, string login)
         {
             var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
             var variaveis = new Dictionary<string, object>
                 {
-                    { "PerfilUsuario", Perfis.PARECERISTA },
+                    { "PerfilUsuario", perfil.ToString() },
                     { "UsuarioLogado", login },
                 };
 
             contextoAplicacao.AdicionarVariaveis(variaveis);
 
-            PropostaSalvarMock.GrupoUsuarioLogadoId = Perfis.PARECERISTA;
+            PropostaSalvarMock.GrupoUsuarioLogadoId = perfil;
         }
 
         #region Criar Uma Proposta Valida de Cada Situação
