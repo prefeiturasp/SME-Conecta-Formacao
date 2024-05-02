@@ -11,15 +11,20 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
+        private readonly IMediator _mediator;
 
-        public ObterPropostaPaginadaQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta)
+        public ObterPropostaPaginadaQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta, IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); 
         }
 
         public async Task<PaginacaoResultadoDTO<PropostaPaginadaDTO>> Handle(ObterPropostaPaginadaQuery request, CancellationToken cancellationToken)
         {
+            var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery());
+            var perfilUsuarioLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery());
+
             var totalRegistrosFiltro = await _repositorioProposta.ObterTotalRegistrosPorFiltros(
                 request.AreaPromotoraIdUsuarioLogado,
                 request.PropostaFiltrosDTO.Id,
@@ -31,7 +36,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 request.PropostaFiltrosDTO.PeriodoRealizacaoInicio,
                 request.PropostaFiltrosDTO.PeriodoRealizacaoFim,
                 request.PropostaFiltrosDTO.Situacao,
-                request.PropostaFiltrosDTO.FormacaoHomologada);
+                request.PropostaFiltrosDTO.FormacaoHomologada,
+                usuarioLogado.Login,
+                perfilUsuarioLogado);
 
             IEnumerable<Proposta> propostas = new List<Proposta>();
             if (totalRegistrosFiltro > 0)
@@ -49,7 +56,9 @@ namespace SME.ConectaFormacao.Aplicacao
                     request.PropostaFiltrosDTO.PeriodoRealizacaoInicio,
                     request.PropostaFiltrosDTO.PeriodoRealizacaoFim,
                     request.PropostaFiltrosDTO.Situacao,
-                    request.PropostaFiltrosDTO.FormacaoHomologada);
+                    request.PropostaFiltrosDTO.FormacaoHomologada,
+                    usuarioLogado.Login,
+                    perfilUsuarioLogado);
             }
 
             var items = _mapper.Map<IEnumerable<PropostaPaginadaDTO>>(propostas);

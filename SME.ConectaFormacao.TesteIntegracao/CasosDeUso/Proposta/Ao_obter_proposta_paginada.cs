@@ -4,8 +4,10 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -21,7 +23,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_retornar_registros_com_filtro()
         {
             // arrange
-            AdicionarPerfilUsuarioContextoAplicacao();
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
 
             var propostas = await InserirNaBaseProposta(15);
 
@@ -54,7 +59,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_retornar_registros_sem_filtros()
         {
             // arrange
-            AdicionarPerfilUsuarioContextoAplicacao();
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
 
             await InserirNaBaseProposta(15);
 
@@ -74,7 +82,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Nao_deve_retornar_registros_filtros_invalidos()
         {
             // arrange
-            AdicionarPerfilUsuarioContextoAplicacao();
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
 
             await InserirNaBaseProposta(15);
 
@@ -88,12 +99,45 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             retorno.Items.Any().ShouldBeFalse();
         }
 
-        private void AdicionarPerfilUsuarioContextoAplicacao()
+        [Fact(DisplayName = "Proposta - Deve retornar registros consulta paginada para perfil logado parecerista")]
+        public async Task Deve_retornar_registros_para_perfil_logado_parecerista()
+        {
+            // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.PARECERISTA, usuario.Login);
+
+            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerista);
+
+            var parecerista = new PropostaParecerista
+            {
+                PropostaId = proposta.Id,
+                NomeParecerista = $"Parecerista {usuario.Nome}",
+                RegistroFuncional = usuario.Login,
+                CriadoPor = proposta.CriadoPor,
+                CriadoEm = proposta.CriadoEm,
+                CriadoLogin = proposta.CriadoLogin
+            };
+
+            await InserirNaBase(parecerista);
+
+            // act
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPaginacao>();
+            var retorno = await casoDeUso.Executar(new PropostaFiltrosDTO());
+
+            // assert
+            retorno.TotalRegistros.ShouldBe(1);
+            retorno.Items.FirstOrDefault().Id.ShouldBe(proposta.Id);
+        }
+
+        private void AdicionarPerfilUsuarioContextoAplicacao(Guid perfil, string login)
         {
             var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
             var variaveis = new Dictionary<string, object>
                 {
-                    { "PerfilUsuario", Perfis.ADMIN_DF.ToString() }
+                    { "PerfilUsuario", perfil.ToString() },
+                    { "UsuarioLogado", login },
                 };
 
             contextoAplicacao.AdicionarVariaveis(variaveis);
