@@ -1,4 +1,5 @@
 using Bogus;
+using DiffEngine;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -6,6 +7,8 @@ using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -67,6 +70,55 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             retorno.ShouldNotBeNull();
             retorno.Count().ShouldBe(1);
+        }
+
+        [Fact(DisplayName = "Proposta - Deve proposta no dashboard para usuário logado parecerista")]
+        public async Task Deve_obter_lista_proposta_dashboard_para_usuario_logado_parecerista()
+        {
+            // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+            AdicionarPerfilUsuarioParecerista(usuario.Login);
+            await CriarPropostaValida();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
+
+            var proposta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault(p => p.Situacao == SituacaoProposta.AguardandoAnaliseParecerista);
+
+            var parecerista = new PropostaParecerista
+            {
+                PropostaId = proposta.Id,
+                NomeParecerista = $"Parecerista {usuario.Nome}",
+                RegistroFuncional = usuario.Login, 
+                CriadoPor = proposta.CriadoPor,
+                CriadoEm = proposta.CriadoEm,
+                CriadoLogin = proposta.CriadoLogin
+            };
+
+            await InserirNaBase(parecerista);
+
+            // act 
+            var retorno = await casoDeUso.Executar(new PropostaFiltrosDashboardDTO());
+
+            // assert
+            retorno.ShouldNotBeNull();
+            retorno.Count().ShouldBe(1);
+            retorno.FirstOrDefault().Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseParecerista);
+            retorno.FirstOrDefault().Propostas.Count().ShouldBe(1);
+        }
+
+
+        private void AdicionarPerfilUsuarioParecerista(string login)
+        {
+            var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
+            var variaveis = new Dictionary<string, object>
+                {
+                    { "PerfilUsuario", Perfis.PARECERISTA },
+                    { "UsuarioLogado", login },
+                };
+
+            contextoAplicacao.AdicionarVariaveis(variaveis);
+
+            PropostaSalvarMock.GrupoUsuarioLogadoId = Perfis.PARECERISTA;
         }
 
         #region Criar Uma Proposta Valida de Cada Situação
