@@ -31,12 +31,15 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var pareceristasAntes = await _repositorioProposta.ObterPropostaPareceristaPorId(request.PropostaId);
             var pareceristasDepois = _mapper.Map<IEnumerable<PropostaParecerista>>(request.Pareceristas);
+            var possuiPareceristasDepois = pareceristasDepois.Any();
             
-            if (pareceristasDepois.Any(a=> a.RegistroFuncional.NaoEstaPreenchido()))
-                throw new NegocioException(string.Format(MensagemNegocio.X_NAO_PREENCHIDO, Constantes.RF));
-            
-            if (pareceristasDepois.Any(a=> a.NomeParecerista.NaoEstaPreenchido()))
-                throw new NegocioException(string.Format(MensagemNegocio.X_NAO_PREENCHIDO, Constantes.NOME_PARECERISTA));
+            switch (possuiPareceristasDepois)
+            {
+                case true when pareceristasDepois.Any(a=> a.RegistroFuncional.NaoEstaPreenchido()):
+                    throw new NegocioException(string.Format(MensagemNegocio.X_NAO_PREENCHIDO, Constantes.RF));
+                case true when pareceristasDepois.Any(a=> a.NomeParecerista.NaoEstaPreenchido()):
+                    throw new NegocioException(string.Format(MensagemNegocio.X_NAO_PREENCHIDO, Constantes.NOME_PARECERISTA));
+            }
 
             var qtdeLimitePareceristaProposta = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.QtdeLimitePareceristaProposta, DateTimeExtension.HorarioBrasilia().Year));
             

@@ -24,10 +24,6 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(x => x.PropostaId)
                 .GreaterThan(0)
                 .WithMessage("Informe o Id da Proposta Para salvar a proposta parecerista");
-            
-            RuleFor(x => x.Pareceristas)
-                .NotEmpty()
-                .WithMessage("Informe os pareceristas para salvar a proposta parecerista");
         }        
     }
 }
