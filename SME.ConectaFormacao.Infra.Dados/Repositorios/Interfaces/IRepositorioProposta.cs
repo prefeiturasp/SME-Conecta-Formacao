@@ -120,7 +120,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaParecer>> ObterPropostaParecerPorId(long id);
         Task<bool> ExistePareceristasPendenteDeEnvio(long propostaId, long idUsuarioLogado);
         Task<int> AtualizarSituacaoDoParecerEnviadaPeloParecerista(long propostaId, long idUsuarioLogado);
-        Task<bool> SituacaoPropostaEhAguardandoAnaliseDf(long propostaId);
+        Task<bool> SituacaoPropostaEhAguardandoAnaliseParecerDf(long propostaId);
         Task<int> AtualizarSituacaoDoParecerEnviadaPeloAdminDF(long propostaId);
+        Task<bool> TodosPareceristasPossuemParecer(long propostaId);
     }
 }

@@ -30,5 +30,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoParecer.AguardandoAnaliseParecerPelaAreaPromotora;
         }
+        
+        public static bool EstaAguardandoAnaliseParecerPeloDfOuPelaAreaPromotora(this SituacaoParecer valor)
+        {
+            return valor == SituacaoParecer.AguardandoAnaliseParecerPelaAreaPromotora || valor == SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF;
+        }
     }
 }
