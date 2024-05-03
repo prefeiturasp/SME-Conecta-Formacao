@@ -279,37 +279,72 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.PodeInserir.ShouldBeFalse();
         }
         
+        [Fact(DisplayName = "Proposta parecer - Deve permitir ao Admin DF alterar pareceres que estão em situação aguardando análise do parecer (DF)")]
+        public async Task Deve_permitir_ao_admin_df_alterar_pareceres_que_estao_em_situacao_aguardando_analise_do_parecer_df()
+        {
+            // arrange
+            var perfilLogado = Perfis.ADMIN_DF.ToString();
+            
+            CriarClaimUsuario(perfilLogado, "3", Perfis.ADMIN_DF.ToString());
+
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
+            await InserirUsuario("3", "Admin DF");
+
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
+            
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
+            
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
+
+            var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
+            
+            // act 
+            var propostaCompletoDTO = await casoDeUso.Executar(filtro);
+            
+            // assert 
+            propostaCompletoDTO.ShouldNotBeNull();
+            propostaCompletoDTO.PropostaId.ShouldBe(proposta.Id);
+            propostaCompletoDTO.Itens.Count(a=> a.PodeAlterar).ShouldBe(2);
+            propostaCompletoDTO.Itens.Count(a=> !a.PodeAlterar).ShouldBe(0);
+            propostaCompletoDTO.PodeInserir.ShouldBeFalse();
+        }
         
-        //Admin DF pode alterar pareceres que estão em pendente de DF
-        //AP não pode alterar pareceres que estão em pendente de DF
-        
-        // [Fact(DisplayName = "Proposta parecer - Não deve permitir inserir quando Admin Df, mas deve permitir alterar e excluir pareceresquando tiver parecer inserido pelo parecerista")]
-        // public async Task Nao_deve_permitir_inserir_mas_pode_alterar_quando_tiver_parecer_inserido_pelo_parecerista()
-        // {
-        //     // arrange
-        //     CriarClaimUsuario(Perfis.ADMIN_DF.ToString(), "2", "AdminDf");
-        //
-        //     await InserirUsuario("1", "Parecerista1");
-        //     await InserirUsuario("2", "AdminDf");
-        //
-        //     var proposta = await InserirNaBaseProposta(quantidadeParecerista: 1);
-        //     
-        //     var propostaParecer = PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato);
-        //     
-        //     await InserirNaBase(propostaParecer);
-        //
-        //     var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
-        //     var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
-        //     
-        //     // act 
-        //     var propostaCompletoDTO = await casoDeUso.Executar(filtro);
-        //     
-        //     // assert 
-        //     propostaCompletoDTO.ShouldNotBeNull();
-        //     propostaCompletoDTO.PropostaId.ShouldBe(proposta.Id);
-        //     propostaCompletoDTO.Itens.Count().ShouldBe(1);
-        //     propostaCompletoDTO.Itens.All(a=> a.PodeAlterar).ShouldBeTrue();
-        //     propostaCompletoDTO.PodeInserir.ShouldBeFalse();
-        // }
+        [Fact(DisplayName = "Proposta parecer - Não deve permitir ao perfil Área Promotora alterar pareceres que estão em situação aguardando análise do parecer (DF)")]
+        public async Task Nap_deve_permitir_a_area_promotora_alterar_pareceres_que_estao_em_situacao_aguardando_analise_do_parecer_df()
+        {
+            // arrange
+            var perfilLogado = Perfis.COPED.ToString();
+            
+            CriarClaimUsuario(perfilLogado, "3", Perfis.ADMIN_DF.ToString());
+
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
+            await InserirUsuario("3", "Área Promotora COPED");
+
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
+            
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
+            
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
+
+            var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
+            
+            // act 
+            var propostaCompletoDTO = await casoDeUso.Executar(filtro);
+            
+            // assert 
+            propostaCompletoDTO.ShouldNotBeNull();
+            propostaCompletoDTO.PropostaId.ShouldBe(proposta.Id);
+            propostaCompletoDTO.Itens.Count(a=> a.PodeAlterar).ShouldBe(0);
+            propostaCompletoDTO.Itens.Count(a=> !a.PodeAlterar).ShouldBe(2);
+            propostaCompletoDTO.PodeInserir.ShouldBeFalse();
+        }
     }
 }
