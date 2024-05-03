@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Cadastrada", Prompt = "#6464FF")]
         Cadastrada = 3,
 
-        [Display(Name = "Aguardando análise do DF", Prompt = "#000000")]
+        [Display(Name = "Aguardando análise da DF", Prompt = "#000000")]
         AguardandoAnaliseDf = 4,
 
         [Display(Name = "Aguardando análise da gestão", Prompt = "#000000")]
@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Aguardando análise do Parecerista", Prompt = "#000000")]
         AguardandoAnaliseParecerista = 10,
 
-        [Display(Name = "Aguardando análise do parecer (DF)", Prompt = "#000000")]
+        [Display(Name = "Aguardando análise do parecer da (DF)", Prompt = "#000000")]
         AguardandoAnaliseParecerDF = 11,
             
         [Display(Name = "Análise do parecer pela área promotora", Prompt = "#000000")]

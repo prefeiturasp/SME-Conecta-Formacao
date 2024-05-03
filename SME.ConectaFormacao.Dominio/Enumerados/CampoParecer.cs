@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Tipo de formação")]
         TipoFormacao = 2,
         
-        [Display(Name = "Formato")]
+        [Display(Name = "Modalidade formativa")]
         Formato = 3,
         
         [Display(Name = "Tipo de inscrição")]
@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Função específica")]
         FuncoesEspecificas = 9,
         
-        [Display(Name = "Modalidade")]
+        [Display(Name = "Etapa modalidade")]
         Modalidade = 10,
         
         [Display(Name = "Ano/Etapa")]
@@ -87,5 +87,11 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         
         [Display(Name = "Descrição da atividade obrigatória para certificação")]
         DescricaoDaAtividade = 28,
+        
+        [Display(Name = "Descrição do código dos evento (SIGPEC)")]
+        DescricaoCodigoEventoSigpec = 29,
+        
+        [Display(Name = "Descrição do link para as nscrições")]
+        DescricaolinkParaInscricoesExterna = 30
     }
 }

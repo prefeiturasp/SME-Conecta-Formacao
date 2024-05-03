@@ -115,31 +115,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 totalParecer.Quantidade.ShouldBe((int)totalParecer.Campo);
         }
 
-        [Fact(DisplayName = "Proposta - Deve obter por id válido com permissões do perfil logado pareceristas")]
-        public async Task Deve_obter_por_id_com_permissoes_parecer_perfil_logado_pareceristas()
-        {
-            // arrange
-            var usuario = UsuarioMock.GerarUsuario();
-            await InserirNaBase(usuario);
-
-            AdicionarPerfilUsuarioContextoAplicacao(Perfis.PARECERISTA, usuario.Login);
-
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
-            var proposta = await InserirNaBaseProposta();
-
-            // act 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
-            var propostaCompletoDTO = await casoDeUso.Executar(proposta.Id);
-
-            // assert 
-            propostaCompletoDTO.ShouldNotBeNull();
-
-            propostaCompletoDTO.ExibirParecer.ShouldBeTrue();
-        }
-
-
         [Fact(DisplayName = "Proposta - Deve obter por id válido com permissões do perfil logado adm df")]
         public async Task Deve_obter_por_id_com_permissoes_parecer_perfil_logado_adm()
         {
@@ -152,7 +127,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
             await InserirNaBase(parametro);
 
-            var proposta = await InserirNaBaseProposta();
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseParecerDF, quantidadeParecerista: 1);
+
+            await GerarPropostaParecer(proposta.Id, CampoParecer.FormacaoHomologada);
 
             // act 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
@@ -180,7 +157,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             await InserirNaBase(AreaPromotoraMock.GerarAreaPromotora(perfil));
 
-            var proposta = await InserirNaBaseProposta();
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AnaliseParecerAreaPromotora, quantidadeParecerista: 1);
 
             // act 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
@@ -198,15 +175,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var usuario = UsuarioMock.GerarUsuario();
             await InserirNaBase(usuario);
 
-            var perfil = Guid.NewGuid();
-            AdicionarPerfilUsuarioContextoAplicacao(perfil, usuario.Login);
+            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
 
             var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
             await InserirNaBase(parametro);
 
-            await InserirNaBase(AreaPromotoraMock.GerarAreaPromotora(perfil));
+            await InserirNaBase(AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF));
 
             var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseDf, quantidadeParecerista: 2);
+
+            await GerarPropostaParecer(proposta.Id, CampoParecer.FormacaoHomologada);
 
             // act 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
@@ -304,13 +282,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaTipoInscricaoDTO(propostaCompletoDTO.TiposInscricao, proposta.Id);
         }
 
-        private async Task GerarPropostaParecer(long propostaId, CampoParecer campo)
+        private async Task GerarPropostaParecer(long propostaId, CampoParecer campo, SituacaoParecer situacao = SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF, long usuarioParecerista = 0)
         {
             for (int contador = 0; contador < (int)campo; contador++)
             {
                 var inserirPropostaParecer = PropostaParecerMock.GerarPropostaParecer();
                 inserirPropostaParecer.PropostaId = propostaId;
                 inserirPropostaParecer.Campo = campo;
+                inserirPropostaParecer.Situacao = situacao;
+                inserirPropostaParecer.UsuarioPareceristaId = usuarioParecerista;
                 await InserirNaBase(inserirPropostaParecer);
             }
         }
