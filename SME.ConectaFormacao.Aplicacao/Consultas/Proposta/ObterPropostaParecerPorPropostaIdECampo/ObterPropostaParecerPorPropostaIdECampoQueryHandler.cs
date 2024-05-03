@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var pareceresDaPropostaDoPerfil = Enumerable.Empty<PropostaParecerDTO>();
 
-            var podeInserir = false;
+            var podeInserir = true;
 
             if (pareceresDaProposta.Any())
             {
