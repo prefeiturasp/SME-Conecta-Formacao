@@ -24,11 +24,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_permitir_inserir_quando_nao_tiver_sido_inserido_parecer_pelo_parecerista()
         {
             // arrange
-            CriarClaimUsuario(Perfis.PARECERISTA.ToString(), "1", "Parecerista1");
+
+            var perfilLogado = Perfis.PARECERISTA.ToString();
+                
+            CriarClaimUsuario(perfilLogado, "1", "Parecerista1");
 
             await InserirUsuario("1", "Parecerista1");
 
-            var proposta = await InserirNaBaseProposta(quantidadeParecerista: 1);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerista, quantidadeParecerista: 1);
 
             var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
@@ -47,15 +50,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Nao_deve_permitir_inserir_mas_pode_alterar_quando_tiver_parecer_inserido_pelo_parecerista()
         {
             // arrange
+            var perfilLogado = Perfis.PARECERISTA.ToString();
+            
             CriarClaimUsuario(Perfis.PARECERISTA.ToString(), "1", "Parecerista1");
 
             await InserirUsuario("1", "Parecerista1");
 
-            var proposta = await InserirNaBaseProposta(quantidadeParecerista: 1);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado,situacao: SituacaoProposta.AguardandoAnaliseParecerista, quantidadeParecerista: 1);
             
-            var propostaParecer = PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato);
-            
-            await InserirNaBase(propostaParecer);
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato));
 
             var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
@@ -75,18 +78,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_permitir_inserir_quando_nao_tiver_parecer_inserido_pelo_parecerista_e_ter_por_outro_parecerista()
         {
             // arrange
-            CriarClaimUsuario(Perfis.PARECERISTA.ToString(), "2", "Parecerista2");
+            var perfilLogado = Perfis.PARECERISTA.ToString();
+            CriarClaimUsuario(perfilLogado, "2", "Parecerista2");
 
             await InserirUsuario("1", "Parecerista1");
             await InserirUsuario("2", "Parecerista2");
 
-            var proposta = await InserirNaBaseProposta();
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado,situacao: SituacaoProposta.AguardandoAnaliseParecerista);
             
-            var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2");
-            await InserirNaBase(propostaParecerista);
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
             
-            var propostaParecer = PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato);
-            await InserirNaBase(propostaParecer);
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato));
 
             var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
@@ -106,17 +109,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_permitir_alterar_quando_parecerista_ja_tiver_inserido_parecer_e_nao_deve_permitir_inserir_novos_pareceres()
         {
             // arrange
-            CriarClaimUsuario(Perfis.PARECERISTA.ToString(), "2", "Parecerista2");
+            var perfilLogado = Perfis.PARECERISTA.ToString();
+            CriarClaimUsuario(perfilLogado, "2", "Parecerista2");
 
             await InserirUsuario("1", "Parecerista1");
             await InserirUsuario("2", "Parecerista2");
 
-            var proposta = await InserirNaBaseProposta();
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado,situacao: SituacaoProposta.AguardandoAnaliseParecerista);
             
-            var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1");
-            await InserirNaBase(propostaParecerista);
-            propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2");
-            await InserirNaBase(propostaParecerista);
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
             
             var propostaParecer = PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato);
             await InserirNaBase(propostaParecer);
@@ -138,24 +140,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.Itens.Any(a=> !a.PodeAlterar && a.Id == 1).ShouldBeTrue();
         }
         
-        [Theory(DisplayName = "Proposta parecer - Não deve permitir ao Admin DF e AP ver pareceres que estão em situação pendente com pareceristas")]
-        [InlineData("7EDA4540-A16C-4FE5-8322-9F75B3414E27")] //Perfis.ADMIN_DF
-        [InlineData("3a934680-be27-49be-a12f-cf8765602ebe")] //Perfis.COPED
-        public async Task Nao_deve_admin_df_e_area_promotra_ver_pareceres_que_estao_em_situacao_pendente_com_pareceristas(string perfil)
+        [Fact(DisplayName = "Proposta parecer - Não deve permitir ao Admin DF ver pareceres que estão em situação pendente com pareceristas")]
+        public async Task Nao_deve_admin_df_ver_pareceres_que_estao_em_situacao_pendente_com_pareceristas()
         {
             // arrange
-            CriarClaimUsuario(Perfis.ADMIN_DF.ToString(), "3", perfil);
+            var perfilLogado = Perfis.ADMIN_DF.ToString();
+            
+            CriarClaimUsuario(perfilLogado, "3", perfilLogado);
 
             await InserirUsuario("1", "Parecerista1");
             await InserirUsuario("2", "Parecerista2");
-            await InserirUsuario("3", perfil);
+            await InserirUsuario("3", perfilLogado);
 
-            var proposta = await InserirNaBaseProposta();
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
             
-            var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1");
-            await InserirNaBase(propostaParecerista);
-            propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2");
-            await InserirNaBase(propostaParecerista);
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
             
             var propostaParecer = PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato);
             await InserirNaBase(propostaParecer);
@@ -175,24 +175,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.PodeInserir.ShouldBeFalse();
         }
         
-        [Theory(DisplayName = "Proposta parecer - Deve permitir ao Admin DF e AP ver somente pareceres enviados (pendente de DF) e não ver pareceres que estão em situação pendente com pareceristas")]
-        // [InlineData("7EDA4540-A16C-4FE5-8322-9F75B3414E27")] //Perfis.ADMIN_DF
-        [InlineData("3a934680-be27-49be-a12f-cf8765602ebe")] //Perfis.COPED
-        public async Task Deve_permitir_ao_admin_df_e_area_promotra_ver_somente_pareceres_enviados_e_nao_ver_pareceres_que_estao_em_situacao_pendente_com_pareceristas(string perfil)
+        [Fact(DisplayName = "Proposta parecer - Deve permitir ao Admin DF ver somente pareceres enviados (pendente de DF) e não ver pareceres que estão em situação pendente com pareceristas")]
+        public async Task Deve_permitir_ao_admin_df_ver_somente_pareceres_enviados_e_nao_ver_pareceres_que_estao_em_situacao_pendente_com_pareceristas()
         {
             // arrange
-            CriarClaimUsuario(perfil, "3", perfil);
+            var perfilLogado = Perfis.ADMIN_DF.ToString();
+            
+            CriarClaimUsuario(perfilLogado, "3", perfilLogado);
 
             await InserirUsuario("1", "Parecerista1");
             await InserirUsuario("2", "Parecerista2");
-            await InserirUsuario("3", perfil);
+            await InserirUsuario("3", perfilLogado);
 
-            var proposta = await InserirNaBaseProposta();
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
             
-            var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1");
-            await InserirNaBase(propostaParecerista);
-            propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2");
-            await InserirNaBase(propostaParecerista);
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
             
             var propostaParecer = PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato);
             propostaParecer.Situacao = SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF;
@@ -218,24 +216,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_permitir_ao_perfil_de_area_promotra_ver_somente_pareceres_enviados_e_nao_ver_pareceres_que_estao_em_situacao_pendente_com_pareceristas()
         {
             // arrange
-            CriarClaimUsuario(Perfis.COPED.ToString(), "3", Perfis.COPED.ToString());
+            var perfilLogado = Perfis.COPED.ToString();
+            
+            CriarClaimUsuario(perfilLogado, "3", perfilLogado);
 
             await InserirUsuario("1", "Parecerista1");
             await InserirUsuario("2", "Parecerista2");
-            await InserirUsuario("3", Perfis.COPED.ToString());
+            await InserirUsuario("3", perfilLogado);
 
-            var proposta = await InserirNaBaseProposta();
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
             
-            var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1");
-            await InserirNaBase(propostaParecerista);
-            propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2");
-            await InserirNaBase(propostaParecerista);
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
             
-            var propostaParecer = PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato);
-            propostaParecer.Situacao = SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF;
-            await InserirNaBase(propostaParecer);
-            propostaParecer = PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato);
-            await InserirNaBase(propostaParecer);
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato,SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato));
 
             var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
@@ -251,7 +246,40 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.PodeInserir.ShouldBeFalse();
         }
         
-        // parecerista só pode habilitar inserir quando não tiver pareceres do parecerista e a proposta estiver pendente de parecerista
+        [Fact(DisplayName = "Proposta parecer - Não deve permitir ao parecerista inserir quando não tiver pareceres e a proposta tiver outros pareceres e a proposta está na situação AguardandoAnaliseParecerDF")]
+        public async Task Deve_permitir_ao_parecerista_somente_inserir_quando_nao_tiver_pareceres_do_parecerista_e_a_proposta_estiver_pendente_de_parecerista()
+        {
+            // arrange
+            var perfilLogado = Perfis.PARECERISTA.ToString();
+            
+            CriarClaimUsuario(perfilLogado, "2", "Parecerista2");
+
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
+
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
+            
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
+            
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
+
+            var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
+            
+            // act 
+            var propostaCompletoDTO = await casoDeUso.Executar(filtro);
+            
+            // assert 
+            propostaCompletoDTO.ShouldNotBeNull();
+            propostaCompletoDTO.PropostaId.ShouldBe(proposta.Id);
+            propostaCompletoDTO.Itens.Count(a=> a.PodeAlterar).ShouldBe(0);
+            propostaCompletoDTO.Itens.Count(a=> !a.PodeAlterar).ShouldBe(2);
+            propostaCompletoDTO.PodeInserir.ShouldBeFalse();
+        }
+        
+        
         //Admin DF pode alterar pareceres que estão em pendente de DF
         //AP não pode alterar pareceres que estão em pendente de DF
         
