@@ -410,7 +410,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
                     PropostaId = propostaId,
                     NomeParecerista = $"Parecerista {contador}",
                     RegistroFuncional = string.IsNullOrEmpty(rf) ? contador.ToString() : rf
-
                 };
 
                 Auditoria(parecerista);
