@@ -370,8 +370,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         }
         
         [Theory(DisplayName = "Proposta - Não deve permitir enviar quando a proposta estiver na situação Aguardando Analise Df sem pareceristas")]
-        [InlineData("7EDA4540-A16C-4FE5-8322-9F75B3414E27")] //Admin DF
-        [InlineData("E98E06D1-0556-4156-832A-613DF54E6096")] //Parecrista
+        [InlineData(Constantes.ADMIN_DF)]
+        [InlineData(Constantes.PARECERISTA)]
         public async Task Nao_deve_permitir_enviar_quando_a_proposta_estiver_na_situacao_aguardando_analise_df_sem_parecerista(string perfilLogado)
         {
             // arrange
@@ -463,8 +463,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         }
         
         [Theory(DisplayName = "Proposta - Deve permitir ao Admin DF e Área Promotora exibir parecer quando possuir parecerista na proposta e proposta está aguardando análise do parecer df")]
-        [InlineData("7EDA4540-A16C-4FE5-8322-9F75B3414E27")] //Admin DF
-        [InlineData("3a934680-be27-49be-a12f-cf8765602ebe")] //Área promotora
+        [InlineData(Constantes.ADMIN_DF)]
+        [InlineData(Constantes.AREA_PROMOTORA)]
         public async Task Deve_permitir_ao_admin_df_e_area_promotora_exibir_parecer_quando_possuir_parecerista_na_proposta_e_proposta_esta_aguardando_analise_do_parecer_df(string perfilLogado)
         {
             // arrange
@@ -560,8 +560,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         }
         
         [Theory(DisplayName = "Proposta - Deve permitir ao Admin DF e Área Promotora exibir parecer quando possuir parecerista na proposta e proposta está em análise parecer área promotora")]
-        [InlineData("7EDA4540-A16C-4FE5-8322-9F75B3414E27")] //Admin DF
-        [InlineData("3a934680-be27-49be-a12f-cf8765602ebe")] //Área promotora
+        [InlineData(Constantes.ADMIN_DF)]
+        [InlineData(Constantes.AREA_PROMOTORA)]
         public async Task Deve_permitir_ao_admin_df_e_area_promotora_exibir_parecer_quando_possuir_parecerista_na_proposta_e_proposta_esta_em_analise_parecer_area_promotora(string perfilLogado)
         {
             // arrange
