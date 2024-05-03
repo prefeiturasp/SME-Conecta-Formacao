@@ -214,6 +214,44 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.PodeInserir.ShouldBeFalse();
         }
         
+        [Fact(DisplayName = "Proposta parecer - Deve permitir ao perfil de Área Promotora ver somente pareceres enviados (pendente de DF) e não ver pareceres que estão em situação pendente com pareceristas")]
+        public async Task Deve_permitir_ao_perfil_de_area_promotra_ver_somente_pareceres_enviados_e_nao_ver_pareceres_que_estao_em_situacao_pendente_com_pareceristas()
+        {
+            // arrange
+            CriarClaimUsuario(Perfis.COPED.ToString(), "3", Perfis.COPED.ToString());
+
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
+            await InserirUsuario("3", Perfis.COPED.ToString());
+
+            var proposta = await InserirNaBaseProposta();
+            
+            var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1");
+            await InserirNaBase(propostaParecerista);
+            propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2");
+            await InserirNaBase(propostaParecerista);
+            
+            var propostaParecer = PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato);
+            propostaParecer.Situacao = SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF;
+            await InserirNaBase(propostaParecer);
+            propostaParecer = PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato);
+            await InserirNaBase(propostaParecer);
+
+            var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
+            
+            // act 
+            var propostaCompletoDTO = await casoDeUso.Executar(filtro);
+            
+            // assert 
+            propostaCompletoDTO.ShouldNotBeNull();
+            propostaCompletoDTO.PropostaId.ShouldBe(proposta.Id);
+            propostaCompletoDTO.Itens.Count(a=> a.PodeAlterar).ShouldBe(0);
+            propostaCompletoDTO.Itens.Count(a=> !a.PodeAlterar).ShouldBe(1);
+            propostaCompletoDTO.PodeInserir.ShouldBeFalse();
+        }
+        
+        // parecerista só pode habilitar inserir quando não tiver pareceres do parecerista e a proposta estiver pendente de parecerista
         //Admin DF pode alterar pareceres que estão em pendente de DF
         //AP não pode alterar pareceres que estão em pendente de DF
         
