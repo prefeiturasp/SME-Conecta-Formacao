@@ -92,6 +92,12 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         DescricaoCodigoEventoSigpec = 29,
         
         [Display(Name = "Descrição do link para as nscrições")]
-        DescricaolinkParaInscricoesExterna = 30
+        DescricaoLinkParaInscricoesExterna = 30,
+        
+        [Display(Name = "Descrição das funções específicas (outros)',")]
+        DescricaoFuncoesEspecificasOutros = 31,
+        
+        [Display(Name = "Descrição dos critérios para validação das inscrições (outros)")]
+        DescricaoCriteriosValidacaoInscricaoOutros = 32
     }
 }
