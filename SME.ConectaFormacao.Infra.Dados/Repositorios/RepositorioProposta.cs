@@ -239,7 +239,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
-        private static string MontarQueryPaginacao(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
+        private static string MontarQueryPaginacao(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, ref string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, string loginUsuarioLogado, Guid perfilUsuarioLogado)
         {
             var query = new StringBuilder();
             query.AppendLine("select p.id, p.tipo_formacao, p.formato, p.nome_formacao, p.data_realizacao_inicio, p.data_realizacao_fim, p.situacao, p.formacao_homologada, p.numero_homologacao, ap.id, ap.nome ");
@@ -283,12 +283,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (numeroHomologacao.HasValue)
                 query.AppendLine(" and p.numero_homologacao = @numeroHomologacao");
 
+            if (perfilUsuarioLogado.EhPerfilParecerista())
+                query.AppendLine(@" and p.situacao = @situacaoAguardandoParecerista 
+                                    and p.id in (select proposta_id 
+                                                 from proposta_parecerista 
+                                                 where not excluido 
+                                                   and registro_funcional = @loginUsuarioLogado)");
+
             return query.ToString();
         }
 
-        public async Task<int> ObterTotalRegistrosPorFiltros(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
+        public async Task<int> ObterTotalRegistrosPorFiltros(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, string loginUsuarioLogado, Guid perfilUsuarioLogado)
         {
-            string query = string.Concat("select count(1) from (", MontarQueryPaginacao(areaPromotoraIdUsuarioLogado, propostaId, areaPromotoraId, formato, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada), ") tb");
+            string query = string.Concat("select count(1) from (", MontarQueryPaginacao(areaPromotoraIdUsuarioLogado, propostaId, areaPromotoraId, formato, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, loginUsuarioLogado, perfilUsuarioLogado), ") tb");
             return await conexao.Obter().ExecuteScalarAsync<int>(query, new
             {
                 areaPromotoraIdUsuarioLogado,
@@ -301,16 +308,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
                 periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                 situacao,
-                formacaoHomologada
+                formacaoHomologada,
+                situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnaliseParecerista,
+                loginUsuarioLogado
             });
         }
 
         public async Task<IEnumerable<Proposta>> ObterDadosPaginados(long? areaPromotoraIdUsuarioLogado, int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds,
-            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada)
+            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, string loginUsuarioLogado, Guid perfilUsuarioLogado)
         {
             var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
 
-            string query = MontarQueryPaginacao(areaPromotoraIdUsuarioLogado, propostaId, areaPromotoraId, formato, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada);
+            string query = MontarQueryPaginacao(areaPromotoraIdUsuarioLogado, propostaId, areaPromotoraId, formato, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, loginUsuarioLogado, perfilUsuarioLogado);
 
             query += " order by p.criado_em desc";
             query += " limit @numeroRegistros offset @registrosIgnorados";
@@ -334,14 +343,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
                     periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                     situacao,
-                    formacaoHomologada
+                    formacaoHomologada,
+                    situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnaliseParecerista,
+                    loginUsuarioLogado
                 },
                 splitOn: "id, id");
         }
 
         public Task<IEnumerable<Proposta>> ObterPropostasIdsDashBoard(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId,
             Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio,
-            DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, IEnumerable<SituacaoProposta> situacoesProposta)
+            DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, IEnumerable<SituacaoProposta> situacoesProposta,
+            string loginUsuarioLogado, Guid perfilUsuarioLogado)
         {
             var query = @" 
                         with movimentacoes as (
@@ -395,6 +407,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (numeroHomologacao.HasValue)
                 query += " and p.numero_homologacao = @numeroHomologacao ";
 
+            if (perfilUsuarioLogado.EhPerfilParecerista())
+                query += @" and p.situacao = @situacaoAguardandoParecerista 
+                            and p.id in (select proposta_id from proposta_parecerista where not excluido and registro_funcional = @loginUsuarioLogado)";
+
             query += " ORDER BY coalesce(pm.criado_em, p.alterado_em, p.criado_em) DESC ";
 
             var parametros = new
@@ -410,7 +426,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                 situacao,
                 formacaoHomologada,
-                situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray()
+                situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray(),
+                situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnaliseParecerista,
+                loginUsuarioLogado
             };
             return conexao.Obter().QueryAsync<Proposta>(query, parametros);
         }
@@ -2381,7 +2399,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             });
         }
 
-        public Task<bool> SituacaoPropostaEhAguardandoAnaliseDf(long propostaId)
+        public Task<bool> SituacaoPropostaEhAguardandoAnaliseParecerDf(long propostaId)
         {
             var query = @"select count(1) 
                           from proposta
@@ -2389,7 +2407,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             and id = @propostaId 
                             and situacao = @situacao";
 
-            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, situacao = (int)SituacaoProposta.AguardandoAnaliseDf });
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, situacao = (int)SituacaoProposta.AguardandoAnaliseParecerDF });
         }
 
         public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloAdminDF(long propostaId)
@@ -2413,6 +2431,21 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 AlteradoPor = contexto.NomeUsuario,
                 AlteradoLogin = contexto.UsuarioLogado
             });
+        }
+
+        public Task<bool> TodosPareceristasPossuemParecer(long propostaId)
+        {
+            var query = @"
+            SELECT
+                CASE WHEN 
+                    (SELECT COUNT(id) FROM proposta_parecerista WHERE NOT excluido AND proposta_id = @propostaId) 
+                    = 
+                    (SELECT COUNT(id) FROM proposta_parecer WHERE NOT excluido AND proposta_id = @propostaId) 
+                    THEN TRUE
+                ELSE FALSE
+            END AS todos_possuem_pareceres;";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId });
         }
     }
 }

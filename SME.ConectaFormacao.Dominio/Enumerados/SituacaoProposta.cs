@@ -34,8 +34,11 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Aguardando análise do Parecerista", Prompt = "#000000")]
         AguardandoAnaliseParecerista = 10,
 
+        [Display(Name = "Aguardando análise do parecer (DF)", Prompt = "#000000")]
+        AguardandoAnaliseParecerDF = 11,
+            
         [Display(Name = "Análise do parecer pela área promotora", Prompt = "#000000")]
-        AnaliseParecerAreaPromotora = 11
+        AnaliseParecerAreaPromotora = 12
     }
 
     public static class SituacaoPropostaExtensao
@@ -88,6 +91,21 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         public static bool EhAprovada(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.Aprovada;
+        }
+        
+        public static bool EstaAguardandoAnaliseParecerDFOuAreaPromotora(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnaliseParecerDF || valor == SituacaoProposta.AnaliseParecerAreaPromotora;
+        }
+        
+        public static bool EstaAguardandoAnaliseParecerista(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnaliseParecerista;
+        }
+        
+        public static bool EstaAguardandoAnaliseParecerDF(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnaliseParecerDF;
         }
     }
 }
