@@ -2440,7 +2440,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 CASE WHEN 
                     (SELECT COUNT(id) FROM proposta_parecerista WHERE NOT excluido AND proposta_id = @propostaId) 
                     = 
-                    (SELECT COUNT(id) FROM proposta_parecer WHERE NOT excluido AND proposta_id = @propostaId) 
+                    (SELECT count(distinct usuario_id) FROM proposta_parecer WHERE NOT excluido AND proposta_id = @propostaId) 
                     THEN TRUE
                 ELSE FALSE
             END AS todos_possuem_pareceres;";
