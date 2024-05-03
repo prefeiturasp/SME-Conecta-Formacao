@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var proposta = await InserirNaBaseProposta();
             
-            var propostaParecerDto = PropostaSalvarMock.GerarParecer();
+            var propostaParecerDto = PropostaSalvarMock.GerarParecerCadastro();
             propostaParecerDto.PropostaId = proposta.Id;
             
             // act
@@ -52,7 +52,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var inserirPropostaParecer = PropostaParecerMock.GerarPropostasPareceres(1);
             await InserirPareceresDaProposta(inserirPropostaParecer, "2",proposta.Id);
             
-            var alterarPropostaParecer = PropostaSalvarMock.GerarParecer();
+            var alterarPropostaParecer = PropostaSalvarMock.GerarParecerCadastro();
             alterarPropostaParecer.PropostaId = proposta.Id;
             alterarPropostaParecer.Id = inserirPropostaParecer.FirstOrDefault().Id;
             

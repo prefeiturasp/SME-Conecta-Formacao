@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         protected TestePropostaBase(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
-        protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade)
+        protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade, int quantidadeParecerista = 0)
         {
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -39,13 +39,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(componentesCurriculares);
 
             return await InserirNaBaseProposta(quantidade, areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-            modalidades, anosTurmas, componentesCurriculares);
+            modalidades, anosTurmas, componentesCurriculares, quantidadeParecerista);
         }
 
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada,
             FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool vincularUltimoCargoAoPublicoAlvo = false,
-            bool vincularUltimoFuncaoAoPublicoAlvo = false, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false, bool numeroHomologacao = false, int quantidadeParecerista = 0)
+            bool vincularUltimoFuncaoAoPublicoAlvo = false, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false, bool numeroHomologacao = false, 
+            int quantidadeParecerista = 0, string perfilLogado = "7EDA4540-A16C-4FE5-8322-9F75B3414E27") //Admin DF
         {
+            PropostaSalvarMock.GrupoUsuarioLogadoId = new Guid(perfilLogado);
+            
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -239,14 +242,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.CargoFuncao> cargosFuncoes,
             IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao, IEnumerable<PalavraChave> palavrasChaves,
             IEnumerable<Dominio.Enumerados.Modalidade> modalidades, IEnumerable<Dominio.Entidades.AnoTurma> anosTurmas,
-            IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares)
+            IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares, int quantidadeParecerista = 0)
         {
             var lista = new List<Dominio.Entidades.Proposta>();
 
             for (int i = 0; i < quantidade; i++)
                 lista.Add(await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,
                     palavrasChaves, modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Cadastrada,
-                    FormacaoHomologada.Sim, TipoInscricao.Automatica, true, false, true));
+                    FormacaoHomologada.Sim, TipoInscricao.Automatica, true, false, true,quantidadeParecerista));
 
             return lista;
         }

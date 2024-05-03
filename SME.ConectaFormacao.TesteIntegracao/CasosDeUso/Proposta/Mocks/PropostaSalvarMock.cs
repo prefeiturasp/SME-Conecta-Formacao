@@ -265,7 +265,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
 
         public static Guid GrupoUsuarioLogadoId { get; set; }
 
-        public static Faker<PropostaParecerCadastroDTO> GeradorPropostaParecer(int quantidadeTurmas = 1)
+        public static Faker<PropostaParecerCadastroDTO> GeradorPropostaParecerCadastro(int quantidadeTurmas = 1)
         {
             var faker = new Faker<PropostaParecerCadastroDTO>("pt_BR");
             faker.RuleFor(x => x.Campo, f => (CampoParecer)f.Random.Short(1,28));
@@ -273,9 +273,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return faker;
         }
         
-        public static PropostaParecerCadastroDTO GerarParecer()
+        public static PropostaParecerCadastroDTO GerarParecerCadastro()
         {
-            return GeradorPropostaParecer();
+            return GeradorPropostaParecerCadastro();
+        }
+        
+        public static Faker<PropostaParecerFiltroDTO> GeradorPropostaParecerFiltroDTO(long propostaId, CampoParecer campoParecer)
+        {
+            var faker = new Faker<PropostaParecerFiltroDTO>();
+            faker.RuleFor(x => x.PropostaId, f => propostaId);
+            faker.RuleFor(x => x.Campo, f => campoParecer);
+            return faker;
         }
     }
 }
