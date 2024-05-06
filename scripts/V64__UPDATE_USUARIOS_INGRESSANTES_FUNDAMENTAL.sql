@@ -1,4 +1,6 @@
- update usuario set nome ='Mark Douglas Batista Da Fonseca' , email ='markfonseca.9331441@edu.sme.prefeitura.sp.gov.br' where login ='9331441'; 
+ /*
+ Script exclusivo de PROD
+update usuario set nome ='Mark Douglas Batista Da Fonseca' , email ='markfonseca.9331441@edu.sme.prefeitura.sp.gov.br' where login ='9331441'; 
  update usuario set nome ='Agatha Carvalho De Lima' , email ='agathalima.9331514@edu.sme.prefeitura.sp.gov.br' where login ='9331514'; 
  update usuario set nome ='Joceli Alves De Souza Alcântara' , email ='jocelialcantara.8368431@edu.sme.prefeitura.sp.gov.br' where login ='8368431'; 
  update usuario set nome ='Carlos Alberto Daniel Dos Santos' , email ='carlossantos.8362211@edu.sme.prefeitura.sp.gov.br' where login ='8362211'; 
@@ -3443,3 +3445,4 @@
  update usuario set nome ='Susane Cristine Dos Santos' , email ='susanesantos.9351817@edu.sme.prefeitura.sp.gov.br' where login ='9351817'; 
  update usuario set nome ='Luana Cruz Bispo' , email ='luanabispo.9351825@edu.sme.prefeitura.sp.gov.br' where login ='9351825'; 
  update usuario set nome ='Elen Sabrina Muniz Pires' , email ='elenpires.9351833@edu.sme.prefeitura.sp.gov.br' where login ='9351833'; 
+*/

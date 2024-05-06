@@ -1,4 +1,6 @@
- update usuario set email_educacional ='claudiavalerio.6769021@edu.sme.prefeitura.sp.gov.br' where login ='6769021'; 
+ /*
+ Script exclusivo de PROD
+update usuario set email_educacional ='claudiavalerio.6769021@edu.sme.prefeitura.sp.gov.br' where login ='6769021'; 
  update usuario set email_educacional ='kleberaquino.6823726@edu.sme.prefeitura.sp.gov.br' where login ='6823726'; 
  update usuario set email_educacional ='sheilasantos.6861407@edu.sme.prefeitura.sp.gov.br' where login ='6861407'; 
  update usuario set email_educacional ='edermineiro.7074239@edu.sme.prefeitura.sp.gov.br' where login ='7074239'; 
@@ -3630,3 +3632,4 @@
  update usuario set email_educacional ='luisasilva.9360948@edu.sme.prefeitura.sp.gov.br' where login ='9360948'; 
  update usuario set email_educacional ='milenacastro.9360956@edu.sme.prefeitura.sp.gov.br' where login ='9360956'; 
  update usuario set email_educacional ='lucianoferreira.9360964@edu.sme.prefeitura.sp.gov.br' where login ='9360964'; 
+*/
