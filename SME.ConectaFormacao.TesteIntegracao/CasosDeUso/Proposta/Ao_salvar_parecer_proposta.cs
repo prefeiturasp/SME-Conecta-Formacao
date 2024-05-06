@@ -21,6 +21,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_cadastrar_proposta_parecer()
         {
             // arrange
+            CriarClaimUsuario(Dominio.Constantes.Perfis.COPED.ToString());
+            await InserirUsuario("1", "Área Promotora");
+            
             var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaParecer>();
             
             var proposta = await InserirNaBaseProposta();
@@ -45,12 +48,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_parecer()
         {
             // arrange
+            CriarClaimUsuario(Dominio.Constantes.Perfis.COPED.ToString());
+            await InserirUsuario("1", "Área Promotora");
+            
             var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaParecer>();
             
             var proposta = await InserirNaBaseProposta();
             
             var inserirPropostaParecer = PropostaParecerMock.GerarPropostasPareceres(1);
-            await InserirPareceresDaProposta(inserirPropostaParecer, "2",proposta.Id);
+            await InserirPareceresDaProposta(inserirPropostaParecer, "1",proposta.Id);
             
             var alterarPropostaParecer = PropostaSalvarMock.GerarParecerCadastro();
             alterarPropostaParecer.PropostaId = proposta.Id;
@@ -73,6 +79,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             // arrange
             CriarClaimUsuario(Dominio.Constantes.Perfis.PARECERISTA.ToString());
+            await InserirUsuario("1", "Área Promotora");
+            
             var useCase = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
             
             var proposta = await InserirNaBaseProposta();
