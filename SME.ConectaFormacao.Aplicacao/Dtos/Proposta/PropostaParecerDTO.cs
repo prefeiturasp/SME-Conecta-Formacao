@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
@@ -11,5 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string Descricao { get; set; }
         
         public bool PodeAlterar { get; set; }
+        
+        public AuditoriaDTO? Auditoria { get; set; }
     }
 }
