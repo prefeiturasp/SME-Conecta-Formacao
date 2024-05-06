@@ -1,3 +1,5 @@
+ /*
+ Script exclusivo de PROD
 update inscricao 
 set cargo_ue_codigo = '0'||cargo_ue_codigo  
 where proposta_turma_id in(select id from proposta_turma pt where pt.proposta_id =32) and not excluido 
@@ -19,4 +21,4 @@ update inscricao
 set cargo_ue_codigo = '0000'||cargo_ue_codigo 
 where proposta_turma_id in(select id 
 from proposta_turma pt where pt.proposta_id =32) and not excluido 
-and length(cargo_ue_codigo)  = 2;
+and length(cargo_ue_codigo)  = 2;*/
