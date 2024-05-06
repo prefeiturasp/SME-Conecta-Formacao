@@ -29,6 +29,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
 
             var propostas = await InserirNaBaseProposta(15);
+            await InserirNaBase(propostas);
 
             var filtro = PropostaPaginacaoMock.GerarPropostaFiltrosDTOValido(propostas.FirstOrDefault().AreaPromotora, propostas);
 

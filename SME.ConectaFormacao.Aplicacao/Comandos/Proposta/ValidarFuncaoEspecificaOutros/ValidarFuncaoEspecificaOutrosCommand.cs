@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarFuncaoEspecificaOutrosCommand : IRequest
+    public class ValidarFuncaoEspecificaOutrosCommand : IRequest<List<string>>
     {
         public ValidarFuncaoEspecificaOutrosCommand(IEnumerable<PropostaFuncaoEspecificaDTO> propostaFuncoesEspecificas, string? funcaoEspecificaOutros)
         {

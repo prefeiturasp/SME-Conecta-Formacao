@@ -18,6 +18,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { ids });
         }
 
+        public Task<CargoFuncao> ObterCargoFuncaoOutros()
+        {
+            var query = "select id, nome, tipo, outros from cargo_funcao where outros and not excluido limit 1";
+            return conexao.Obter().QueryFirstOrDefaultAsync<CargoFuncao>(query);
+        }
+
         public async Task<IEnumerable<CargoFuncao>> ObterIgnorandoExcluidosPorTipo(CargoFuncaoTipo? tipo, bool exibirOutros)
         {
             var tipos = new short[] {

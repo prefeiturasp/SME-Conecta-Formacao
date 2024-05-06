@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -18,6 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(SalvarUsuarioCommand request, CancellationToken cancellationToken)
         {
+            await AtualizarEmail(request.Usuario);
             if (request.Usuario.Id > 0)
             {
                 await RemoverCache(request.Usuario.Login);
@@ -25,6 +27,17 @@ namespace SME.ConectaFormacao.Aplicacao
             }
             else
                 return await _repositorioUsuario.Inserir(request.Usuario) > 0;
+        }
+        private async Task AtualizarEmail(Usuario usuario)
+        {
+           if(string.IsNullOrEmpty(usuario.EmailEducacional))
+               usuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario));
+
+           if(string.IsNullOrEmpty(usuario.Email))
+           {
+               usuario.Email = usuario.EmailEducacional;
+               await _mediator.Send(new AlterarEmailServicoAcessosCommand(usuario.Login, usuario.EmailEducacional));
+           }
         }
         private async Task RemoverCache(string login)
         {

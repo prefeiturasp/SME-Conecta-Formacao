@@ -23,13 +23,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             if (propostaInscricaoAutomatica.Situacao != SituacaoProposta.Publicada || !propostaInscricaoAutomatica.EhInscricaoAutomatica)
                 return false;
 
+            await mediator.Send(new GerarPropostaTurmaVagaCommand(propostaId, propostaInscricaoAutomatica.QuantidadeVagasTurmas));
+
             if (propostaInscricaoAutomatica.PublicosAlvos.PossuiElementos() && propostaInscricaoAutomatica.PublicosAlvos.Any(t => !t.HasValue))
                 throw new Exception(MensagemNegocio.PROPOSTA_COM_PUBLICO_ALVO_SEM_DEPARA_CONFIGURADO.Parametros(propostaId));
 
             if (propostaInscricaoAutomatica.FuncoesEspecificas.PossuiElementos() && propostaInscricaoAutomatica.FuncoesEspecificas.Any(t => !t.HasValue))
                 throw new Exception(MensagemNegocio.PROPOSTA_COM_FUNCAO_ESPECIFICA_SEM_DEPARA_CONFIGURADO.Parametros(propostaId));
-
-            await mediator.Send(new GerarPropostaTurmaVagaCommand(propostaId, propostaInscricaoAutomatica.QuantidadeVagasTurmas));
 
             var modalidadesEol = ObterModalidadeEol(propostaInscricaoAutomatica.Modalidades);
 

@@ -126,6 +126,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             return json.JsonParaObjeto<DreUeAtribuicaoServicoEol[]>();
         }
 
+
         public async Task<IEnumerable<UsuarioPerfilServicoEol>> ObterUsuariosPorPerfis(IEnumerable<Guid> perfis)
         {
             var parametros = perfis.ObjetoParaJson();
