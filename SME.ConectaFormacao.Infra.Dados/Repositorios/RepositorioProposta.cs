@@ -2452,5 +2452,24 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId });
         }
+        
+        public async Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorPropostaId(long propostaId)
+        {
+            var query = @" 
+            select id,
+	               proposta_id,
+	               registro_funcional ,
+	               nome_parecerista ,
+	               criado_por,
+	               alterado_em,
+	               alterado_por,
+	               criado_login,
+	               alterado_login,
+	               excluido
+           from public.proposta_parecerista 
+           where not excluido  
+                 and proposta_id = @propostaId ";
+            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { propostaId });
+        }
     }
 }

@@ -30,24 +30,33 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var pareceresDaProposta = await _repositorioPropostaParecer.ObterPorPropostaIdECampo(request.PropostaId,request.CampoParecer);
             
+            var perfilLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery(), cancellationToken);
+            
+            var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery(), cancellationToken);
+            
+            var proposta = await _repositorioProposta.ObterPorId(request.PropostaId);
+            
+            var pareceristaProposta = await _mediator.Send(new ObterPareceristasAdicionadosNaPropostaQuery(proposta.Id), cancellationToken);
+
+            var souPareceristaDaProposta = pareceristaProposta.Any(a => a.RegistroFuncional.Equals(usuarioLogado.Login));
+            
             if (pareceresDaProposta.Any())
             {
-                var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery(), cancellationToken);
-                
-                var perfilLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery(), cancellationToken);
-                
                 var ehAreaPromotora = await _mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilLogado), cancellationToken);
-
-                var proposta = await _repositorioProposta.ObterPorId(request.PropostaId);
                 
                 if (perfilLogado.EhPerfilParecerista())
-                    return ObterPareceresDaPropostaDoPerfilParecerista(pareceresDaProposta, usuarioLogado, proposta);
+                    return ObterPareceresDaPropostaDoPerfilParecerista(pareceresDaProposta, usuarioLogado, proposta, souPareceristaDaProposta);
                 
                 if(perfilLogado.EhPerfilAdminDF() || ehAreaPromotora.NaoEhNulo())
                     return ObterPareceresDaPropostaPorPerfilAdminDFOuAreaPromotora(pareceresDaProposta, perfilLogado.EhPerfilAdminDF(), proposta.Id);
             }
 
-            return default;
+            return new PropostaParecerCompletoDTO()
+            {
+                PropostaId = request.PropostaId,
+                PodeInserir = perfilLogado.EhPerfilParecerista() && proposta.Situacao.EstaAguardandoAnaliseParecerista() && souPareceristaDaProposta,
+                Itens = Enumerable.Empty<PropostaParecerDTO>()
+            };
         }
 
         private PropostaParecerCompletoDTO ObterPareceresDaPropostaPorPerfilAdminDFOuAreaPromotora(IEnumerable<PropostaParecer> pareceresDaProposta, bool ehPerfilAdminDF, long propostaId)
@@ -71,11 +80,12 @@ namespace SME.ConectaFormacao.Aplicacao
             return new PropostaParecerCompletoDTO()
             {
                 PropostaId = propostaId,
+                PodeInserir = false,
                 Itens = pareceresDaPropostaDoPerfil
             };
         }
 
-        private PropostaParecerCompletoDTO ObterPareceresDaPropostaDoPerfilParecerista(IEnumerable<PropostaParecer> pareceresDaProposta, Usuario usuarioLogado, Proposta proposta)
+        private PropostaParecerCompletoDTO ObterPareceresDaPropostaDoPerfilParecerista(IEnumerable<PropostaParecer> pareceresDaProposta, Usuario usuarioLogado, Proposta proposta, bool souPareceristaDaProposta)
         {
             IEnumerable<PropostaParecerDTO> pareceresDaPropostaDoPerfil;
             pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm));
@@ -85,7 +95,7 @@ namespace SME.ConectaFormacao.Aplicacao
             foreach (var propostaParecerDto in pareceresDaPropostaDoPerfil)
                 propostaParecerDto.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id && a.Situacao.EstaPendenteEnvioParecerPeloParecerista());
                     
-            var podeInserir = proposta.Situacao.EstaAguardandoAnaliseParecerista() && !pareceresDaPropostaDoUsuarioLogado.Any();
+            var podeInserir = proposta.Situacao.EstaAguardandoAnaliseParecerista() && !pareceresDaPropostaDoUsuarioLogado.Any() && souPareceristaDaProposta;
             
             return new PropostaParecerCompletoDTO()
             {
