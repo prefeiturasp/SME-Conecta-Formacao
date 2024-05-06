@@ -35,6 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? AcaoFormativaTexto { get; set; }
         public string? AcaoFormativaLink { get; set; }
         public bool? IntegrarNoSGA { get; set; }
+        public string? PublicoAlvoOutros { get; set; }
         public string? RfResponsavelDf { get; set; }
         public string? LinkParaInscricoesExterna { get; set; }
         public long? CodigoEventoSigpec { get; set; }

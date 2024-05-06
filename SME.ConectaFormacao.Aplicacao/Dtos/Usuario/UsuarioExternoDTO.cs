@@ -12,6 +12,10 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
 
         [Required(ErrorMessage = "É necessário informar o e-mail.")]
         public string Email { get; set; }
+        
+        [Required(ErrorMessage = "É necessário informar o e-mail @edu")]
+        public string EmailEducacional { get; set; }
+        
         public TipoUsuario? Tipo { get; set; }
 
         [Required(ErrorMessage = "É necessário informar o nome.")]
@@ -26,6 +30,9 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
 
         [Required(ErrorMessage = "É necessário informar confirmar senha.")]
         public string ConfirmarSenha { get; set; }
+
+        [Required(ErrorMessage = "É necessário informar o tipo")]
+        public TipoEmail TipoEmail { get; set; }
 
         public DateTime? CriadoEm { get; set; }
         public string? CriadoPor { get; set; }

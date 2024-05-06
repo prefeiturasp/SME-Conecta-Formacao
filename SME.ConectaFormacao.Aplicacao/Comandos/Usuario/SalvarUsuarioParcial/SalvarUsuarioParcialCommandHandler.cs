@@ -30,6 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
             usuario.Nome = request.Nome;
 
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Usuario.Parametros(usuario.Login)));
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.UsuarioLogado.Parametros(usuario.Login)));
 
             return (await _repositorioUsuario.Atualizar(usuario)).Id > 0;
         }

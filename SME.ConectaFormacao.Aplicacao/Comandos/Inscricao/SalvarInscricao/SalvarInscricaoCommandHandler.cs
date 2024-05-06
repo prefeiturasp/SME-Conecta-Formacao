@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -30,6 +31,10 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+            
+            var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
+            if (!Regex.IsMatch(request.InscricaoDTO.Email, pattern, RegexOptions.IgnoreCase))
+                throw new NegocioException(MensagemNegocio.EMAIL_EDU_INVALIDO);
 
             if (usuarioLogado.Tipo == TipoUsuario.Interno)
                 if (request.InscricaoDTO.CargoCodigo.EhNulo())
@@ -38,6 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoDTO);
             inscricao.UsuarioId = usuarioLogado.Id;
             inscricao.Situacao = SituacaoInscricao.EmAnalise;
+            inscricao.Origem = OrigemInscricao.Manual;
 
             await MapearCargoFuncao(inscricao, cancellationToken);
 
@@ -98,20 +104,32 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task ValidarCargoFuncao(long propostaId, long? cargoId, long? funcaoId, CancellationToken cancellationToken)
         {
+            var temErroCargo = false;
+            var temErroFuncao = false;
             var cargosProposta = await _mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId), cancellationToken);
             var funcaoAtividadeProposta = await _mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId), cancellationToken);
 
             if (cargosProposta.PossuiElementos())
             {
-                if (cargoId.HasValue && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                var cargoFuncaoOutros = await _mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia(), cancellationToken);
+                var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
+
+                if (cargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
+                    temErroCargo = true;
+
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
             {
                 if (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+                    temErroFuncao = true;
             }
+            
+            if(temErroCargo && temErroFuncao)
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
+            
+            if(!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
         }
 
         private async Task ValidarDreUsuarioInterno(string registroFuncional, Inscricao inscricao, CancellationToken cancellationToken)

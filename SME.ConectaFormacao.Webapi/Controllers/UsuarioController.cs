@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
@@ -87,6 +89,28 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoUsuarioAlterarEmail.Executar(login, emailUsuarioDto.Email));
         }
+        
+        [HttpPut("alterar-email")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> AlterarEmailEReenviarEmailParaValidacao([FromBody] AlterarEmailUsuarioDto emailUsuarioDto, [FromServices] ICasoDeUsoAlterarEmailEReenviarEmailParaValidacao useCase)
+        {
+            return Ok(await useCase.Executar(emailUsuarioDto));
+        }
+
+        
+        [HttpPut("{login}/email-educacional")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> AlterarEmailEducacional([FromRoute] string login, [FromBody] EmailUsuarioDTO emailUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarEmailEducacional useCase)
+        {
+            return Ok(await useCase.Executar(login, emailUsuarioDto.Email));
+        }
+        
 
         [HttpGet("{login}/reenviar-email")]
         [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
@@ -106,6 +130,26 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> AlterarNomeConectaECoreSSO([FromRoute] string login, [FromBody] NomeUsuarioDTO nomeUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarNome casoDeUsoUsuarioAlterarNome)
         {
             return Ok(await casoDeUsoUsuarioAlterarNome.Executar(login, nomeUsuarioDto.Nome));
+        }
+
+        [HttpPut("{login}/unidade-eol")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> AlterarUnidadeEol([FromRoute] string login, [FromBody] UnidadeEolUsuarioDTO unidadeEolUsuarioDTO, [FromServices] ICasoDeUsoUsuarioAlterarUnidadeEol casoDeUsoUsuarioAlterarUnidadeEol)
+        {
+            return Ok(await casoDeUsoUsuarioAlterarUnidadeEol.Executar(login, unidadeEolUsuarioDTO.CodigoEolUnidade));
+        }
+
+        [HttpGet("tipo-email")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ObterListaTipoEmail([FromServices] ICasoDeUsoObterTiposEmail useCase)
+        {
+            return Ok(await useCase.Executar());
         }
     }
 }

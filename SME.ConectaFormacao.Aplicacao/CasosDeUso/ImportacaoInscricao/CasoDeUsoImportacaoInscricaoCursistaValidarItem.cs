@@ -17,7 +17,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
     {
         private readonly IMapper _mapper;
         private readonly IConexoesRabbit _conexoesRabbit;
-
         public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator, IMapper mapper, IConexoesRabbit conexoesRabbit) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -38,12 +37,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 var usuario = await ObterUsuarioPorLogin(importacaoInscricaoCursista) ??
                               throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-
+                
+                var cargoFuncaoUsuarioEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuario.Login));
+                var tipoVinculo = cargoFuncaoUsuarioEol?.FirstOrDefault().TipoVinculoCargoSobreposto ?? cargoFuncaoUsuarioEol?.FirstOrDefault().TipoVinculoCargoBase;
                 var inscricao = new Dominio.Entidades.Inscricao()
                 {
                     PropostaTurmaId = propostaTurma.Id,
                     UsuarioId = usuario.Id,
-                    Situacao = SituacaoInscricao.EmAnalise
+                    Situacao = SituacaoInscricao.EmAnalise,
+                    Origem = OrigemInscricao.Manual,
+                    TipoVinculo = tipoVinculo,
                 };
 
                 await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
@@ -67,6 +70,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
         private async Task MapearValidarCargoFuncao(Dominio.Entidades.Inscricao inscricao, string login, long propostaId)
         {
+            var temErroCargo = false;
+            var temErroFuncao = false;
             var cargoFuncaoUsuarioEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(login));
 
             var cargosProposta = await mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId));
@@ -90,9 +95,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                         break;
                     }
                 }
+                if (cargosProposta.PossuiElementos())
+                {
+                    var cargoFuncaoOutros = await mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia());
+                    var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
+                    if (inscricao.CargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == inscricao.CargoId))
+                        temErroCargo = true;
+                        
+                }
 
-                if (!inscricao.CargoId.HasValue)
-                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
             }
 
             var funcaoAtividadeProposta = await mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId));
@@ -125,8 +136,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                         break;
                     }
                 }
-
-                if (!inscricao.FuncaoId.HasValue)
+                
+                if (funcaoAtividadeProposta.PossuiElementos())
+                {
+                    if (inscricao.FuncaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == inscricao.FuncaoId))
+                        temErroFuncao = true;
+                }
+                if(temErroCargo && temErroFuncao)
+                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
+            
+                if(!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
                     throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
             }
         }

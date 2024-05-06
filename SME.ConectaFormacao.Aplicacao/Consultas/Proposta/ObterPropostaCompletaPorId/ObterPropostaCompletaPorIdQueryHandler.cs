@@ -57,7 +57,7 @@ namespace SME.ConectaFormacao.Aplicacao
   
             foreach (var turma in proposta.Turmas)
                 turma.Dres = await _repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(turma.Id);
-
+            
             var propostaCompletaDTO = _mapper.Map<PropostaCompletoDTO>(proposta);
             propostaCompletaDTO.Auditoria = _mapper.Map<AuditoriaDTO>(proposta);
             propostaCompletaDTO.AreaPromotora = _mapper.Map<PropostaAreaPromotoraDTO>(proposta.AreaPromotora);
@@ -80,6 +80,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var arquivo = await _repositorioArquivo.ObterPorId(proposta.ArquivoImagemDivulgacaoId.Value);
             propostaCompletaDTO.ArquivoImagemDivulgacao = _mapper.Map<PropostaImagemDivulgacaoDTO>(arquivo);
 
+            propostaCompletaDTO.DesativarAnoEhComponente = ((!string.IsNullOrEmpty(proposta.PublicoAlvoOutros) || (proposta.PublicosAlvo.Any())) && (!string.IsNullOrEmpty(proposta.FuncaoEspecificaOutros) || (proposta.FuncoesEspecificas.Any())));
             return propostaCompletaDTO;
         }
 

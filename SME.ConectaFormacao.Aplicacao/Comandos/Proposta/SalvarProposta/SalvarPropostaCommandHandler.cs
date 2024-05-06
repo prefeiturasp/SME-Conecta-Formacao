@@ -15,6 +15,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(SalvarPropostaCommand request, CancellationToken cancellationToken)
         {
+            await RemoverCaches(request.PropostaId, cancellationToken);
+            
             await _mediator.Send(new SalvarPropostaPublicoAlvoCommand(request.PropostaId, request.Proposta.PublicosAlvo), cancellationToken);
 
             await _mediator.Send(new SalvarPropostaFuncaoEspecificaCommand(request.PropostaId, request.Proposta.FuncoesEspecificas), cancellationToken);

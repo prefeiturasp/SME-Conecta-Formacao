@@ -28,6 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaVagaRemanecenteDTO> VagasRemanecentes { get; set; }
         public IEnumerable<PropostaCriterioValidacaoInscricaoDTO> CriteriosValidacaoInscricao { get; set; }
         public string CriterioValidacaoInscricaoOutros { get; set; }
+        public string? PublicoAlvoOutros { get; set; }
         public SituacaoProposta Situacao { get; set; }
         public string NomeSituacao { get; set; }
         public PropostaImagemDivulgacaoDTO? ArquivoImagemDivulgacao { get; set; }
@@ -50,6 +51,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaDreDTO> Dres { get; set; }
         public IEnumerable<PropostaTipoInscricaoDTO> TiposInscricao { get; set; }
         public bool? IntegrarNoSGA { get; set; }
+        public bool DesativarAnoEhComponente { get; set; }
         public string? RfResponsavelDf { get; set; }
         public PropostaMovimentacaoDTO Movimentacao { get; set; }
         public PropostaAreaPromotoraDTO AreaPromotora { get; set; }

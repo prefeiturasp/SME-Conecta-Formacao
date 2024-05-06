@@ -1,0 +1,1 @@
+update usuario set codigo_eol_unidade = null where codigo_eol_unidade ='[object Object]';
