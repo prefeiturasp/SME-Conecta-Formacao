@@ -93,7 +93,15 @@ namespace SME.ConectaFormacao.Aplicacao
             var pareceresDaPropostaDoUsuarioLogado = pareceresDaProposta.Where(w => w.UsuarioPareceristaId == usuarioLogado.Id);
 
             foreach (var propostaParecerDto in pareceresDaPropostaDoPerfil)
+            {
                 propostaParecerDto.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id && a.Situacao.EstaPendenteEnvioParecerPeloParecerista());
+                
+                if (!pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id))
+                {
+                    propostaParecerDto.Auditoria = null;
+                    propostaParecerDto.PodeAlterar = false;
+                }
+            }
                     
             var podeInserir = proposta.Situacao.EstaAguardandoAnaliseParecerista() && !pareceresDaPropostaDoUsuarioLogado.Any() && souPareceristaDaProposta;
             

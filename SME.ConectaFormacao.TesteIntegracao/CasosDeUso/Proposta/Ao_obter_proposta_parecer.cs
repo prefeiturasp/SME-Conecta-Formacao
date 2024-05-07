@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -30,9 +31,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             CriarClaimUsuario(perfilLogado, "1", "Parecerista1");
 
             await InserirUsuario("1", "Parecerista1");
-
+            
             var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerista, quantidadeParecerista: 1);
 
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            
             var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
             
@@ -340,6 +343,77 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.PropostaId.ShouldBe(proposta.Id);
             propostaCompletoDTO.Itens.Count(a=> a.PodeAlterar).ShouldBe(0);
             propostaCompletoDTO.Itens.Count(a=> !a.PodeAlterar).ShouldBe(2);
+            propostaCompletoDTO.PodeInserir.ShouldBeFalse();
+        }
+        
+        [Fact(DisplayName = "Proposta parecer - Deve permitir ao parecerista sem parecer, inserir novos e ver os outros pareceres sem auditoria")]
+        public async Task Deve_permitir_ao_parecerista_sem_parecer_inserir_novos_e_ver_os_outros_pareceres_sem_auditoria()
+        {
+            // arrange
+            var perfilLogado = Perfis.PARECERISTA.ToString();
+            
+            CriarClaimUsuario(perfilLogado, "3", perfilLogado);
+
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
+            await InserirUsuario("3", "Parecerista3");
+
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "3","Parecerista3"));
+            
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato));
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato));
+
+            var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
+            
+            // act 
+            var propostaCompletoDTO = await casoDeUso.Executar(filtro);
+            
+            // assert 
+            propostaCompletoDTO.ShouldNotBeNull();
+            propostaCompletoDTO.PropostaId.ShouldBe(proposta.Id);
+            propostaCompletoDTO.Itens.Count(a=> a.PodeAlterar).ShouldBe(0);
+            propostaCompletoDTO.Itens.Count(a=> !a.PodeAlterar).ShouldBe(2);
+            propostaCompletoDTO.Itens.All(a=> a.Auditoria.EhNulo()).ShouldBeTrue();
+            propostaCompletoDTO.PodeInserir.ShouldBeTrue();
+        }
+        
+        [Fact(DisplayName = "Proposta parecer - Deve permitir ao parecerista com parecer ver auditoria")]
+        public async Task Deve_permitir_ao_parecerista_com_parecer_ver_auditoria()
+        {
+            // arrange
+            var perfilLogado = Perfis.PARECERISTA.ToString();
+            
+            CriarClaimUsuario(perfilLogado, "1", perfilLogado);
+
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
+
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
+            
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato));
+            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato));
+
+            var filtro = PropostaSalvarMock.GeradorPropostaParecerFiltroDTO(proposta.Id, CampoParecer.Formato);
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
+            
+            // act 
+            var propostaCompletoDTO = await casoDeUso.Executar(filtro);
+            
+            // assert 
+            propostaCompletoDTO.ShouldNotBeNull();
+            propostaCompletoDTO.PropostaId.ShouldBe(proposta.Id);
+            propostaCompletoDTO.Itens.Count(a=> a.PodeAlterar).ShouldBe(1);
+            propostaCompletoDTO.Itens.Count(a=> !a.PodeAlterar).ShouldBe(1);
+            propostaCompletoDTO.Itens.Count(a=> a.Auditoria.NaoEhNulo()).ShouldBe(1);
+            propostaCompletoDTO.Itens.Count(a=> a.Auditoria.EhNulo()).ShouldBe(1);
             propostaCompletoDTO.PodeInserir.ShouldBeFalse();
         }
     }
