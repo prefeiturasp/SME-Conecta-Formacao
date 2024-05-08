@@ -986,6 +986,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PreencherAuditoriaCriacao(parecerista);
 
                 parecerista.PropostaId = id;
+                parecerista.Situacao = SituacaoParecerista.AguardandoValidacao;
                 parecerista.Id = (long)await conexao.Obter().InsertAsync(parecerista);
             }
         }

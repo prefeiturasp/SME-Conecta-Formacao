@@ -8,38 +8,35 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarPropostaParecerCommandHandler : IRequestHandler<SalvarPropostaParecerCommand, RetornoDTO>
+    public class SalvarPropostaPareceristaConsideracaoCommandHandler : IRequestHandler<SalvarPropostaPareceristaConsideracaoCommand, RetornoDTO>
     {
         private readonly IRepositorioPropostaParecerConsideracao _repositorioPropostaParecerConsideracao;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public SalvarPropostaParecerCommandHandler(IMapper mapper, IRepositorioPropostaParecerConsideracao repositorioPropostaParecerConsideracao,IMediator _mediator)
+        public SalvarPropostaPareceristaConsideracaoCommandHandler(IMapper mapper, IRepositorioPropostaParecerConsideracao repositorioPropostaParecerConsideracao,IMediator _mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioPropostaParecerConsideracao = repositorioPropostaParecerConsideracao ?? throw new ArgumentNullException(nameof(repositorioPropostaParecerConsideracao));
         }
 
-        public async Task<RetornoDTO> Handle(SalvarPropostaParecerCommand request, CancellationToken cancellationToken)
+        public async Task<RetornoDTO> Handle(SalvarPropostaPareceristaConsideracaoCommand request, CancellationToken cancellationToken)
         {
-            if (request.PropostaParecerCadastroDto.Id > 0)
+            if (request.PropostaPareceristaConsideracaoCadastroDto.Id > 0)
             {
-                var alterarPropostaParecer = await _repositorioPropostaParecerConsideracao.ObterPorId(request.PropostaParecerCadastroDto.Id.Value);
+                var alterarPropostaParecer = await _repositorioPropostaParecerConsideracao.ObterPorId(request.PropostaPareceristaConsideracaoCadastroDto.Id.Value);
                 
-                alterarPropostaParecer.Descricao = request.PropostaParecerCadastroDto.Descricao;
+                alterarPropostaParecer.Descricao = request.PropostaPareceristaConsideracaoCadastroDto.Descricao;
             
                 await _repositorioPropostaParecerConsideracao.Atualizar(alterarPropostaParecer);
 
                 return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PARECER_X_COM_SUCESSO, "alterado"), alterarPropostaParecer.Id);
             }
             
-            var propostaParecer = _mapper.Map<PropostaPareceristaConsideracao>(request.PropostaParecerCadastroDto);
+            var propostaPareceristaConsideracao = _mapper.Map<PropostaPareceristaConsideracao>(request.PropostaPareceristaConsideracaoCadastroDto);
+            propostaPareceristaConsideracao.PropostaPareceristaId = request.PropostaPareceristaConsideracaoCadastroDto.PropostaPareceristaId;
             
-            //TODO
-            // propostaParecer.Situacao = SituacaoParecerista.PendenteEnvioParecerPeloParecerista;
-            // propostaParecer.UsuarioPareceristaId = request.UsuarioLogadoId;
-            
-            var id = await _repositorioPropostaParecerConsideracao.Inserir(propostaParecer);
+            var id = await _repositorioPropostaParecerConsideracao.Inserir(propostaPareceristaConsideracao);
             
             return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PARECER_X_COM_SUCESSO, "inserido"), id);
         }
