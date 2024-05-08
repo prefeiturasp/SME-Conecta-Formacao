@@ -38,7 +38,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         AguardandoAnaliseParecerDF = 11,
             
         [Display(Name = "Análise do parecer pela área promotora", Prompt = "#000000")]
-        AnaliseParecerAreaPromotora = 12
+        AnaliseParecerAreaPromotora = 12,
+
+        [Display(Name = "Recusada", Prompt = "#008000")]
+        Recusada = 13
     }
 
     public static class SituacaoPropostaExtensao

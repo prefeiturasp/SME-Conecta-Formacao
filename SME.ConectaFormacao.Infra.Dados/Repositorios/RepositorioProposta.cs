@@ -1072,6 +1072,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
         }
 
+        public async Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id, SituacaoParecerista situacao)
+        {
+            var query = @"select 
+                id, 
+                justificativa
+            from proposta_parecerista 
+            where proposta_id = @id and not excluido and situacao = @situacao ";
+            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id, situacao });
+        }
+
         public async Task<IEnumerable<PropostaModalidade>> ObterModalidadesPorId(long id)
         {
             var query = @"select 
