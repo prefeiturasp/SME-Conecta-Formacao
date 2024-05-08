@@ -21,11 +21,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return Gerador().Generate();
         }
         
-        public static PropostaPareceristaConsideracao GerarPropostaPareceristaConsideracao(long propostaPareceristaId, CampoParecer campoParecer)
+        public static PropostaPareceristaConsideracao GerarPropostaPareceristaConsideracao(long propostaPareceristaId, CampoParecer campoParecer, string criadoLogin = "1")
         {
             var propostaParecer = GerarPropostaPareceristaConsideracao();
             propostaParecer.PropostaPareceristaId = propostaPareceristaId;
             propostaParecer.Campo = campoParecer;
+            propostaParecer.CriadoLogin = criadoLogin;
             return propostaParecer;
         }
         

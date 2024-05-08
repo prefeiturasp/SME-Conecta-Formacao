@@ -8,24 +8,24 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostaParecerPorPropostaIdECampoQueryHandler : IRequestHandler<ObterPropostaParecerPorPropostaIdECampoQuery, PropostaParecerCompletoDTO>
+    public class ObterPropostaParecerPorPropostaIdECampoQueryHandler : IRequestHandler<ObterPropostaParecerPorPropostaIdECampoQuery, PropostaPareceristaConsideracaoCompletoDTO>
     {
-        private readonly IRepositorioPropostaParecerConsideracao _repositorioPropostaParecerConsideracao;
+        private readonly IRepositorioPropostaPareceristaConsideracao _repositorioPropostaPareceristaConsideracao;
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public ObterPropostaParecerPorPropostaIdECampoQueryHandler(IRepositorioPropostaParecerConsideracao repositorioPropostaParecerConsideracao,IMapper mapper,IMediator mediator,IRepositorioProposta repositorioProposta)
+        public ObterPropostaParecerPorPropostaIdECampoQueryHandler(IRepositorioPropostaPareceristaConsideracao repositorioPropostaPareceristaConsideracao,IMapper mapper,IMediator mediator,IRepositorioProposta repositorioProposta)
         {
-            _repositorioPropostaParecerConsideracao = repositorioPropostaParecerConsideracao ?? throw new ArgumentNullException(nameof(repositorioPropostaParecerConsideracao));
+            _repositorioPropostaPareceristaConsideracao = repositorioPropostaPareceristaConsideracao ?? throw new ArgumentNullException(nameof(repositorioPropostaPareceristaConsideracao));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<PropostaParecerCompletoDTO> Handle(ObterPropostaParecerPorPropostaIdECampoQuery request, CancellationToken cancellationToken)
+        public async Task<PropostaPareceristaConsideracaoCompletoDTO> Handle(ObterPropostaParecerPorPropostaIdECampoQuery request, CancellationToken cancellationToken)
         {
-            var pareceresDaProposta = await _repositorioPropostaParecerConsideracao.ObterPorPropostaIdECampo(request.PropostaId,request.CampoParecer);
+            var consideracoesDosPareceristas = await _repositorioPropostaPareceristaConsideracao.ObterPorPropostaIdECampo(request.PropostaId,request.CampoParecer);
             
             var perfilLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery(), cancellationToken);
             
@@ -33,40 +33,43 @@ namespace SME.ConectaFormacao.Aplicacao
             
             var proposta = await _repositorioProposta.ObterPorId(request.PropostaId);
             
-            var pareceristaProposta = await _mediator.Send(new ObterPareceristasAdicionadosNaPropostaQuery(proposta.Id), cancellationToken);
+            var pareceristasDaProposta = await _mediator.Send(new ObterPareceristasAdicionadosNaPropostaQuery(proposta.Id), cancellationToken);
 
-            var souPareceristaDaProposta = pareceristaProposta.Any(a => a.RegistroFuncional.Equals(usuarioLogado.Login));
+            var souPareceristaDaProposta = pareceristasDaProposta.Any(a => a.RegistroFuncional.Equals(usuarioLogado.Login));
             
-            if (pareceresDaProposta.Any())
+            if (consideracoesDosPareceristas.Any())
             {
                 var ehAreaPromotora = await _mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilLogado), cancellationToken);
-                
+
                 if (perfilLogado.EhPerfilParecerista())
-                    return ObterPareceresDaPropostaDoPerfilParecerista(pareceresDaProposta, usuarioLogado, proposta, souPareceristaDaProposta);
+                {
+                    var situacaoDoParecerista = pareceristasDaProposta.FirstOrDefault(a => a.RegistroFuncional.Equals(usuarioLogado.Login)).Situacao;
+                    return ObterConsideracoesDoPerfilParecerista(consideracoesDosPareceristas, usuarioLogado, proposta, souPareceristaDaProposta, situacaoDoParecerista);
+                }
                 
                 if(perfilLogado.EhPerfilAdminDF() || ehAreaPromotora.NaoEhNulo())
-                    return ObterPareceresDaPropostaPorPerfilAdminDFOuAreaPromotora(pareceresDaProposta, perfilLogado.EhPerfilAdminDF(), proposta.Id);
+                    return ObterConsideracoesPorPerfilAdminDFOuAreaPromotora(consideracoesDosPareceristas, perfilLogado.EhPerfilAdminDF(), proposta.Id, pareceristasDaProposta);
             }
 
-            return new PropostaParecerCompletoDTO()
+            return new PropostaPareceristaConsideracaoCompletoDTO()
             {
                 PropostaId = request.PropostaId,
                 PodeInserir = perfilLogado.EhPerfilParecerista() && proposta.Situacao.EstaAguardandoAnaliseParecerista() && souPareceristaDaProposta,
-                Itens = Enumerable.Empty<PropostaParecerDTO>()
+                Itens = Enumerable.Empty<PropostaPareceristaConsideracaoDTO>()
             };
         }
 
-        private PropostaParecerCompletoDTO ObterPareceresDaPropostaPorPerfilAdminDFOuAreaPromotora(IEnumerable<PropostaPareceristaConsideracao> pareceresDaProposta, bool ehPerfilAdminDF, long propostaId)
+        private PropostaPareceristaConsideracaoCompletoDTO ObterConsideracoesPorPerfilAdminDFOuAreaPromotora(IEnumerable<PropostaPareceristaConsideracao> consideracoesDosPareceristas,
+            bool ehPerfilAdminDF, long propostaId, IEnumerable<PropostaParecerista> pareceristasDaProposta)
         {
-            pareceresDaProposta = pareceresDaProposta.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm);
+            consideracoesDosPareceristas = consideracoesDosPareceristas.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm);
 
-            var pareceresAguardandoDf = MapearParaDTO(pareceresDaProposta);//TODO .Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF()));
+            var consideracoesPareceristasEnviadas = ObterConsideracoesEnviadasPelosPareceristas(consideracoesDosPareceristas, pareceristasDaProposta);
+            DefinirPodeAlterar(consideracoesPareceristasEnviadas,ehPerfilAdminDF);
+                    
+            var consideracoesAguardandoRevalidacao = ObterConsideracoesAguardandoRevalidacao(consideracoesDosPareceristas, pareceristasDaProposta);
 
-            DefinirPodeAlterar(pareceresAguardandoDf,ehPerfilAdminDF);
-                    
-            var pareceresAguardandoAP = MapearParaDTO(pareceresDaProposta); //TODO .Where(w => w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora()));
-                    
-            var pareceresDaPropostaDoPerfil = pareceresAguardandoDf.Concat(pareceresAguardandoAP);
+            var pareceresDaPropostaDoPerfil = consideracoesPareceristasEnviadas.Concat(consideracoesAguardandoRevalidacao);
 
             if (!ehPerfilAdminDF && pareceresDaPropostaDoPerfil.Any())
             {
@@ -74,7 +77,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     propostaParecerDto.Auditoria = null;
             }
             
-            return new PropostaParecerCompletoDTO()
+            return new PropostaPareceristaConsideracaoCompletoDTO()
             {
                 PropostaId = propostaId,
                 PodeInserir = false,
@@ -82,40 +85,55 @@ namespace SME.ConectaFormacao.Aplicacao
             };
         }
 
-        private PropostaParecerCompletoDTO ObterPareceresDaPropostaDoPerfilParecerista(IEnumerable<PropostaPareceristaConsideracao> pareceresDaProposta, Usuario usuarioLogado, Proposta proposta, bool souPareceristaDaProposta)
+        private IEnumerable<PropostaPareceristaConsideracaoDTO> ObterConsideracoesAguardandoRevalidacao(IEnumerable<PropostaPareceristaConsideracao> consideracoesDosPareceristas, IEnumerable<PropostaParecerista> pareceristasDaProposta)
         {
-            IEnumerable<PropostaParecerDTO> pareceresDaPropostaDoPerfil;
-            pareceresDaPropostaDoPerfil = MapearParaDTO(pareceresDaProposta.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm));
-                    
-            var pareceresDaPropostaDoUsuarioLogado = pareceresDaProposta;//TODO.Where(w => w.UsuarioPareceristaId == usuarioLogado.Id);
+            var pareceristasIDsAguardandoRevalidacao = pareceristasDaProposta.Where(w=> w.Situacao.EstaAguardandoRevalidacao()).Select(s => s.Id);
+            
+            return MapearParaDTO(consideracoesDosPareceristas.Where(w=> pareceristasIDsAguardandoRevalidacao.Contains(w.PropostaPareceristaId)));
+        }
 
-            foreach (var propostaParecerDto in pareceresDaPropostaDoPerfil)
+        private IEnumerable<PropostaPareceristaConsideracaoDTO> ObterConsideracoesEnviadasPelosPareceristas(IEnumerable<PropostaPareceristaConsideracao> consideracoesDosPareceristas, IEnumerable<PropostaParecerista> pareceristasDaProposta)
+        {
+            var pareceristasIDsEnviadas = pareceristasDaProposta.Where(w=> w.Situacao.EstaEnviada()).Select(s => s.Id);
+            
+            return MapearParaDTO(consideracoesDosPareceristas.Where(w=> pareceristasIDsEnviadas.Contains(w.PropostaPareceristaId)));
+        }
+
+        private PropostaPareceristaConsideracaoCompletoDTO ObterConsideracoesDoPerfilParecerista(IEnumerable<PropostaPareceristaConsideracao> consideracoesDosPareceristas, 
+            Usuario usuarioLogado, Proposta proposta, bool souPareceristaDaProposta, SituacaoParecerista situacaoParecerista)
+        {
+            IEnumerable<PropostaPareceristaConsideracaoDTO> consideracoesDoPerfilParecerista;
+            consideracoesDoPerfilParecerista = MapearParaDTO(consideracoesDosPareceristas.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm));
+                    
+            var pareceresDaPropostaDoUsuarioLogado = consideracoesDosPareceristas.Where(w => w.CriadoLogin.Equals(usuarioLogado.Login));
+
+            foreach (var consideracaoDoParecista in consideracoesDoPerfilParecerista)
             {
-                propostaParecerDto.PodeAlterar = true; //TODO pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id && a.Situacao.EstaPendenteEnvioParecerPeloParecerista());
+                consideracaoDoParecista.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == consideracaoDoParecista.Id) && situacaoParecerista.EstaAguardandoValidacao();
                 
-                if (!pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == propostaParecerDto.Id))
+                if (!pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == consideracaoDoParecista.Id))
                 {
-                    propostaParecerDto.Auditoria = null;
-                    propostaParecerDto.PodeAlterar = false;
+                    consideracaoDoParecista.Auditoria = null;
+                    consideracaoDoParecista.PodeAlterar = false;
                 }
             }
                     
             var podeInserir = proposta.Situacao.EstaAguardandoAnaliseParecerista() && !pareceresDaPropostaDoUsuarioLogado.Any() && souPareceristaDaProposta;
             
-            return new PropostaParecerCompletoDTO()
+            return new PropostaPareceristaConsideracaoCompletoDTO()
             {
                 PropostaId = proposta.Id,
                 PodeInserir = podeInserir,
-                Itens = pareceresDaPropostaDoPerfil
+                Itens = consideracoesDoPerfilParecerista
             };
         }
 
-        private IEnumerable<PropostaParecerDTO> MapearParaDTO(IEnumerable<PropostaPareceristaConsideracao> pareceresDaPropostaDoUsuario)
+        private IEnumerable<PropostaPareceristaConsideracaoDTO> MapearParaDTO(IEnumerable<PropostaPareceristaConsideracao> pareceresDaPropostaDoUsuario)
         {
-            return _mapper.Map<IEnumerable<PropostaParecerDTO>>(pareceresDaPropostaDoUsuario);
+            return _mapper.Map<IEnumerable<PropostaPareceristaConsideracaoDTO>>(pareceresDaPropostaDoUsuario);
         }
 
-        private void DefinirPodeAlterar(IEnumerable<PropostaParecerDTO> pareceresDaPropostaDoPerfil, bool podeAlterar = true)
+        private void DefinirPodeAlterar(IEnumerable<PropostaPareceristaConsideracaoDTO> pareceresDaPropostaDoPerfil, bool podeAlterar = true)
         {
             foreach (var propostaParecerFinal in pareceresDaPropostaDoPerfil)
                 propostaParecerFinal.PodeAlterar = podeAlterar;

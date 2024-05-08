@@ -2459,8 +2459,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @" 
             select id,
 	               proposta_id,
-	               registro_funcional ,
-	               nome_parecerista ,
+	               registro_funcional,
+	               nome_parecerista,
+	               situacao,
+	               justificativa,
 	               criado_por,
 	               alterado_em,
 	               alterado_por,

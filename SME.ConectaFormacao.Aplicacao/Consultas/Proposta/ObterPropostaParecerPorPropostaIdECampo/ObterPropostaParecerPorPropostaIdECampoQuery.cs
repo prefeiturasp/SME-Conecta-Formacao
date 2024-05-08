@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostaParecerPorPropostaIdECampoQuery : IRequest<PropostaParecerCompletoDTO>
+    public class ObterPropostaParecerPorPropostaIdECampoQuery : IRequest<PropostaPareceristaConsideracaoCompletoDTO>
     {
         public ObterPropostaParecerPorPropostaIdECampoQuery(long propostaId, CampoParecer campoParecer)
         {
