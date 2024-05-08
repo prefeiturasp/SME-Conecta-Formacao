@@ -13,12 +13,12 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterPropostaParecerPorPropostaIdECampoQueryHandler : IRequestHandler<ObterPropostaParecerPorPropostaIdECampoQuery, PropostaParecerCompletoDTO>
     {
-        private readonly IRepositorioPropostaParecerConsideracao _repositorioPropostaParecerConsideracao;
+        private readonly IRepositorioPropostaPareceristaConsideracao _repositorioPropostaParecerConsideracao;
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public ObterPropostaParecerPorPropostaIdECampoQueryHandler(IRepositorioPropostaParecerConsideracao repositorioPropostaParecerConsideracao,IMapper mapper,IMediator mediator,IRepositorioProposta repositorioProposta)
+        public ObterPropostaParecerPorPropostaIdECampoQueryHandler(IRepositorioPropostaPareceristaConsideracao repositorioPropostaParecerConsideracao,IMapper mapper,IMediator mediator,IRepositorioProposta repositorioProposta)
         {
             _repositorioPropostaParecerConsideracao = repositorioPropostaParecerConsideracao ?? throw new ArgumentNullException(nameof(repositorioPropostaParecerConsideracao));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));

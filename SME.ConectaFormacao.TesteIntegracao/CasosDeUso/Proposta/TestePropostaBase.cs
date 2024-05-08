@@ -198,7 +198,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             }
 
             if (quantidadeParecerista > 0)
-                await InserirNaBase(PropostaMock.GerarPareceristas(proposta.Id, quantidadeParecerista));
+            {
+                var usuario = UsuarioMock.GerarUsuario();
+                await InserirNaBase(usuario);
+                await InserirNaBase(PropostaMock.GerarPareceristas(proposta.Id, usuario, quantidadeParecerista));
+            }
 
             var tutores = PropostaMock.GerarTutor(proposta.Id);
             if (tutores != null)

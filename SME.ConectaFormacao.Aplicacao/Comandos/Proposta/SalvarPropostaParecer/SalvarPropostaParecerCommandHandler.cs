@@ -10,11 +10,11 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarPropostaParecerCommandHandler : IRequestHandler<SalvarPropostaParecerCommand, RetornoDTO>
     {
-        private readonly IRepositorioPropostaParecerConsideracao _repositorioPropostaParecerConsideracao;
+        private readonly IRepositorioPropostaPareceristaConsideracao _repositorioPropostaParecerConsideracao;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public SalvarPropostaParecerCommandHandler(IMapper mapper, IRepositorioPropostaParecerConsideracao repositorioPropostaParecerConsideracao,IMediator _mediator)
+        public SalvarPropostaParecerCommandHandler(IMapper mapper, IRepositorioPropostaPareceristaConsideracao repositorioPropostaParecerConsideracao,IMediator _mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioPropostaParecerConsideracao = repositorioPropostaParecerConsideracao ?? throw new ArgumentNullException(nameof(repositorioPropostaParecerConsideracao));

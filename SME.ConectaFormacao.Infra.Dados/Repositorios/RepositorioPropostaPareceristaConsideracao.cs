@@ -6,9 +6,9 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioPropostaParecerConsideracaoConsideracao : RepositorioBaseAuditavel<PropostaPareceristaConsideracao>, IRepositorioPropostaParecerConsideracao
+    public class RepositorioPropostaPareceristaConsideracao : RepositorioBaseAuditavel<PropostaPareceristaConsideracao>, IRepositorioPropostaPareceristaConsideracao
     {
-        public RepositorioPropostaParecerConsideracaoConsideracao(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
+        public RepositorioPropostaPareceristaConsideracao(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
 
