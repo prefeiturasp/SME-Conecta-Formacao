@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseParecerista);
 
-            var usuarioParecer = PropostaParecerMock.GerarPropostaParecer();
+            var usuarioParecer = PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao();
             //TODO
             // usuarioParecer.UsuarioPareceristaId = usuario.Id;
             // usuarioParecer.Situacao = SituacaoParecerista.PendenteEnvioParecerPeloParecerista;
@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseParecerista);
 
-            var usuarioParecer = PropostaParecerMock.GerarPropostaParecer();
+            var usuarioParecer = PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao();
             //TODO
             // usuarioParecer.UsuarioPareceristaId = usuario1.Id;
             // usuarioParecer.Situacao = SituacaoParecerista.PendenteEnvioParecerPeloParecerista;
@@ -84,7 +84,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var usuario2 = UsuarioMock.GerarUsuario();
             await InserirNaBase(usuario2);
 
-            var usuarioParecer2 = PropostaParecerMock.GerarPropostaParecer();
+            var usuarioParecer2 = PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao();
             //TODO            
             // usuarioParecer2.UsuarioPareceristaId = usuario2.Id;
             // usuarioParecer2.Situacao = SituacaoParecerista.PendenteEnvioParecerPeloParecerista;
@@ -119,7 +119,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseDf);
 
-            var usuarioParecer = PropostaParecerMock.GerarPropostaParecer();
+            var usuarioParecer = PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao();
             //TODO
             // usuarioParecer.UsuarioPareceristaId = usuario.Id;
             // usuarioParecer.Situacao = SituacaoParecerista.AguardandoAnaliseParecerPeloAdminDF;

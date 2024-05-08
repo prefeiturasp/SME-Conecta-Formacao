@@ -265,15 +265,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
 
         public static Guid GrupoUsuarioLogadoId { get; set; }
 
-        public static Faker<PropostaParecerCadastroDTO> GeradorPropostaParecerCadastro(int quantidadeTurmas = 1)
+        public static Faker<PropostaPareceristaConsideracaoCadastroDTO> GeradorPropostaParecerCadastro(int quantidadeTurmas = 1)
         {
-            var faker = new Faker<PropostaParecerCadastroDTO>("pt_BR");
+            var faker = new Faker<PropostaPareceristaConsideracaoCadastroDTO>("pt_BR");
             faker.RuleFor(x => x.Campo, f => (CampoParecer)f.Random.Short(1,28));
             faker.RuleFor(dest => dest.Descricao, f => f.Lorem.Sentence(100));
             return faker;
         }
         
-        public static PropostaParecerCadastroDTO GerarParecerCadastro()
+        public static PropostaPareceristaConsideracaoCadastroDTO GerarPareceristaConsideracaoCadastro()
         {
             return GeradorPropostaParecerCadastro();
         }

@@ -15,15 +15,15 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
-        private readonly ITransacao _transacao;
+        private readonly IRepositorioUsuario _repositorioUsuario;
         private readonly IMediator _mediator;
 
         public SalvarPropostaPareceristaCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta,
-            ITransacao transacao, IMediator mediator)
+            IRepositorioUsuario repositorioUsuario, IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
+            _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.Aplicacao
             
             if (qtdePareceristasDaProposta > limiteMaximoPareceristas)
                 throw new NegocioException(string.Format(MensagemNegocio.LIMITE_PARECERISTAS_EXCEDIDO_LIMITE_X, limiteMaximoPareceristas));
-            
+
             if (pareceristasInserir.Any())
                 await _repositorioProposta.InserirPareceristas(request.PropostaId, pareceristasInserir);
 
