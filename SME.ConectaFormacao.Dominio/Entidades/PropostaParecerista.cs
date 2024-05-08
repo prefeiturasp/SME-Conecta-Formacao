@@ -1,4 +1,6 @@
 ﻿
+using SME.ConectaFormacao.Dominio.Enumerados;
+
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class PropostaParecerista : EntidadeBaseAuditavel
@@ -7,5 +9,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public long PropostaId { get; set; }
         public string? RegistroFuncional { get; set; }
         public string? NomeParecerista { get; set; }
+        public SituacaoParecerista Situacao { get; set; }
+        public long UsuarioPareceristaId { get; set; }
     }
 }

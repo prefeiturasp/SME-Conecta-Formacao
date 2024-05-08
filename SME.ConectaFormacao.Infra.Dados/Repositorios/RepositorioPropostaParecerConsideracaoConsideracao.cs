@@ -6,13 +6,13 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioPropostaParecer : RepositorioBaseAuditavel<PropostaParecer>, IRepositorioPropostaParecer
+    public class RepositorioPropostaParecerConsideracaoConsideracao : RepositorioBaseAuditavel<PropostaPareceristaConsideracao>, IRepositorioPropostaParecerConsideracao
     {
-        public RepositorioPropostaParecer(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
+        public RepositorioPropostaParecerConsideracaoConsideracao(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
 
-        public async Task<IEnumerable<PropostaParecer>> ObterPorPropostaIdECampo(long propostaId, CampoParecer campoParecer)
+        public async Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPorPropostaIdECampo(long propostaId, CampoParecer campoParecer)
         {
             var query = @"select 
                             id, 
@@ -28,12 +28,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         	alterado_em,    
 	                        alterado_por,
 	                        alterado_login
-                        from proposta_parecer 
+                        from proposta_parecerista_consideracao 
                         where proposta_id = @propostaId 
                               and not excluido
                               and campo = @campoParecer";
             
-            return await conexao.Obter().QueryAsync<PropostaParecer>(query, new { propostaId, campoParecer });
+            return await conexao.Obter().QueryAsync<PropostaPareceristaConsideracao>(query, new { propostaId, campoParecer });
         }
     }
 }

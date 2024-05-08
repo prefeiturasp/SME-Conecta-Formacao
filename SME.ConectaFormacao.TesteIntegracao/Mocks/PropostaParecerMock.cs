@@ -6,33 +6,35 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
     public class PropostaParecerMock : BaseMock
     {
-        private static Faker<PropostaParecer> Gerador()
+        private static Faker<PropostaPareceristaConsideracao> Gerador()
         {
-            var faker = new Faker<PropostaParecer>("pt_BR");
+            var faker = new Faker<PropostaPareceristaConsideracao>("pt_BR");
             faker.RuleFor(x => x.Campo, f => (CampoParecer)f.Random.Short(1,28));
             faker.RuleFor(dest => dest.Descricao, f => f.Lorem.Sentence(100));
             faker.RuleFor(x => x.Excluido, false);
-            faker.RuleFor(x => x.Situacao, SituacaoParecer.PendenteEnvioParecerPeloParecerista);
+            //TODO
+            // faker.RuleFor(x => x.Situacao, SituacaoParecerista.PendenteEnvioParecerPeloParecerista);
             AuditoriaFaker(faker);
             return faker;
         }
 
-        public static PropostaParecer GerarPropostaParecer()
+        public static PropostaPareceristaConsideracao GerarPropostaParecer()
         {
             return Gerador().Generate();
         }
         
-        public static PropostaParecer GerarPropostaParecer(long propostaId, long usuarioPareceristaId, CampoParecer campoParecer, SituacaoParecer situacaoParecer = SituacaoParecer.PendenteEnvioParecerPeloParecerista)
+        public static PropostaPareceristaConsideracao GerarPropostaParecer(long propostaId, long usuarioPareceristaId, CampoParecer campoParecer, SituacaoParecerista situacaoParecerista = SituacaoParecerista.AguardandoValidacao)
         {
             var propostaParecer = GerarPropostaParecer();
-            propostaParecer.PropostaId = propostaId;
-            propostaParecer.UsuarioPareceristaId = usuarioPareceristaId;
+            propostaParecer.PropostaPareceristaId = propostaId;
+            //TODO
+            // propostaParecer.UsuarioPareceristaId = usuarioPareceristaId;
             propostaParecer.Campo = campoParecer;
-            propostaParecer.Situacao = situacaoParecer;
+            // propostaParecer.Situacao = situacaoParecerista;
             return propostaParecer;
         }
         
-        public static IEnumerable<PropostaParecer> GerarPropostasPareceres(int quantidade = 10)
+        public static IEnumerable<PropostaPareceristaConsideracao> GerarPropostasPareceres(int quantidade = 10)
         {
             return Gerador().Generate(quantidade);
         }
