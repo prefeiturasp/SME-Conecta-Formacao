@@ -403,7 +403,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("parecer")]
-        [ProducesResponseType(typeof(PropostaParecerCompletoDTO), 200)]
+        [ProducesResponseType(typeof(PropostaPareceristaConsideracaoCompletoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Policy = "Bearer")]

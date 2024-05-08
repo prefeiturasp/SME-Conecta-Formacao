@@ -15,23 +15,23 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPorPropostaIdECampo(long propostaId, CampoParecer campoParecer)
         {
             var query = @"select 
-                            id, 
-                            proposta_id, 
-                            campo,
-                            descricao,
-                            situacao,
-                            usuario_id,
-                            excluido,
-                            criado_em,
-	                        criado_por,
-                            criado_login,
-                        	alterado_em,    
-	                        alterado_por,
-	                        alterado_login
-                        from proposta_parecerista_consideracao 
-                        where proposta_id = @propostaId 
-                              and not excluido
-                              and campo = @campoParecer";
+                            ppc.id, 
+                            ppc.proposta_parecerista_id, 
+                            ppc.campo,
+                            ppc.descricao,
+                            ppc.excluido,
+                            ppc.criado_em,
+	                        ppc.criado_por,
+                            ppc.criado_login,
+                        	ppc.alterado_em,    
+	                        ppc.alterado_por,
+	                        ppc.alterado_login
+                        from proposta_parecerista_consideracao ppc
+                          join proposta_parecerista pp on pp.id = ppc.proposta_parecerista_id
+                        where pp.proposta_id = @propostaId 
+                              and not ppc.excluido
+                              and not pp.excluido
+                              and ppc.campo = @campoParecer";
             
             return await conexao.Obter().QueryAsync<PropostaPareceristaConsideracao>(query, new { propostaId, campoParecer });
         }
