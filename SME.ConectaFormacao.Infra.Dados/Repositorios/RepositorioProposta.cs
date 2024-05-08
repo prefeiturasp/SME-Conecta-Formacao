@@ -2431,7 +2431,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             {
                 propostaId,
                 situacaoAdminDF = SituacaoParecerista.Enviada,
-                situacaoAreaPromotora = SituacaoParecerista.AguardandoRevalidacao,
+                situacaoAreaPromotora = SituacaoParecerista.AguardandoRevalidacao, //TODO creio que esquecemos a situação quando está na AP
                 AlteradoEm = DateTimeExtension.HorarioBrasilia(),
                 AlteradoPor = contexto.NomeUsuario,
                 AlteradoLogin = contexto.UsuarioLogado
