@@ -401,7 +401,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker.Generate();
         }
 
-        public static IEnumerable<PropostaParecerista> GerarPareceristas(long propostaId, Usuario usuario, int quantidade = 1, string rf = "")
+        public static IEnumerable<PropostaParecerista> GerarPareceristas(long propostaId, int quantidade = 1, string rf = "")
         {
             var faker = new Faker<PropostaParecerista>();
             faker.RuleFor(x => x.PropostaId, propostaId);
@@ -409,7 +409,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.Situacao, f => f.PickRandom<SituacaoParecerista>());
             faker.RuleFor(x => x.RegistroFuncional, f => string.IsNullOrEmpty(rf) ? f.Random.Number(10000, 99999).ToString() : rf);
             faker.RuleFor(x => x.Justificativa, f => f.Lorem.Word());
-            faker.RuleFor(x => x.UsuarioPareceristaId, usuario.Id);
 
             AuditoriaFaker(faker);
 
