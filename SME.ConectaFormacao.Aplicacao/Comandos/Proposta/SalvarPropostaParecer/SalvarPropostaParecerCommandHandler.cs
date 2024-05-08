@@ -33,10 +33,11 @@ namespace SME.ConectaFormacao.Aplicacao
                 return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PARECER_X_COM_SUCESSO, "alterado"), alterarPropostaParecer.Id);
             }
             
-            var propostaParecer = _mapper.Map<PropostaParecer>(request.PropostaParecerCadastroDto);
+            var propostaParecer = _mapper.Map<PropostaPareceristaConsideracao>(request.PropostaParecerCadastroDto);
             
-            propostaParecer.Situacao = SituacaoParecer.PendenteEnvioParecerPeloParecerista;
-            propostaParecer.UsuarioPareceristaId = request.UsuarioLogadoId;
+            //TODO
+            // propostaParecer.Situacao = SituacaoParecerista.PendenteEnvioParecerPeloParecerista;
+            // propostaParecer.UsuarioPareceristaId = request.UsuarioLogadoId;
             
             var id = await _repositorioPropostaParecer.Inserir(propostaParecer);
             

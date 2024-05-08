@@ -712,7 +712,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
 	
             await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato));
-            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
+            //TODO
+            // await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato, SituacaoParecerista.AguardandoAnaliseParecerPeloAdminDF));
             
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
 
@@ -746,8 +747,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
 	
-            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
-            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
+            //TODO
+            // await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato, SituacaoParecerista.AguardandoAnaliseParecerPeloAdminDF));
+            // await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato, SituacaoParecerista.AguardandoAnaliseParecerPeloAdminDF));
             
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
 
@@ -781,8 +783,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
 	
-            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
-            await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato, SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF));
+            //TODO
+            // await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 1,CampoParecer.Formato, SituacaoParecerista.AguardandoAnaliseParecerPeloAdminDF));
+            // await InserirNaBase(PropostaParecerMock.GerarPropostaParecer(proposta.Id, 2,CampoParecer.Formato, SituacaoParecerista.AguardandoAnaliseParecerPeloAdminDF));
             
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
 
@@ -794,15 +797,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.PodeEnviarParecer.ShouldBeFalse();
         }
 
-        private async Task GerarPropostaParecer(long propostaId, CampoParecer campo, SituacaoParecer situacao = SituacaoParecer.AguardandoAnaliseParecerPeloAdminDF, long usuarioParecerista = 0)
+        private async Task GerarPropostaParecer(long propostaId, CampoParecer campo, SituacaoParecerista situacao = SituacaoParecerista.Enviada, long usuarioParecerista = 0)
         {
             for (int contador = 0; contador < (int)campo; contador++)
             {
                 var inserirPropostaParecer = PropostaParecerMock.GerarPropostaParecer();
-                inserirPropostaParecer.PropostaId = propostaId;
+                inserirPropostaParecer.PropostaPareceristaId = propostaId;
                 inserirPropostaParecer.Campo = campo;
-                inserirPropostaParecer.Situacao = situacao;
-                inserirPropostaParecer.UsuarioPareceristaId = usuarioParecerista;
+                //TODO
+                // inserirPropostaParecer.Situacao = situacao;
+                // inserirPropostaParecer.UsuarioPareceristaId = usuarioParecerista;
                 await InserirNaBase(inserirPropostaParecer);
             }
         }

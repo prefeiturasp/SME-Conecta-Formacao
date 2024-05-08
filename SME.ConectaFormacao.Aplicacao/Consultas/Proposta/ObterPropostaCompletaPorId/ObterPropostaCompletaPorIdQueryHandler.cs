@@ -100,10 +100,11 @@ namespace SME.ConectaFormacao.Aplicacao
             return (await _mediator.Send(new ObterPerfilAreaPromotoraQuery(usuarioLogado))).NaoEhNulo();
         }
 
-        private static IEnumerable<PropostaTotalParecerDTO> ObterTotalDePareceresPorCampo(IEnumerable<PropostaParecer> propostaPareceres, bool ehPerfilAdminDF)
+        private static IEnumerable<PropostaTotalParecerDTO> ObterTotalDePareceresPorCampo(IEnumerable<PropostaPareceristaConsideracao> propostaPareceres, bool ehPerfilAdminDF)
         {
-            if (ehPerfilAdminDF)
-                propostaPareceres = propostaPareceres.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF() || w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora());
+            //TODO
+            // if (ehPerfilAdminDF)
+            //     propostaPareceres = propostaPareceres.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF() || w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora());
            
             return propostaPareceres.GroupBy(g => g.Campo).Select(s => new PropostaTotalParecerDTO()
             {
@@ -127,11 +128,13 @@ namespace SME.ConectaFormacao.Aplicacao
                 proposta.Situacao == SituacaoProposta.Devolvida;
         }
 
-        private async Task<bool> PodeEnviarParecer(Guid usuarioLogado, IEnumerable<PropostaParecer> propostaPareceres, long usuarioLogadoId)
+        private async Task<bool> PodeEnviarParecer(Guid usuarioLogado, IEnumerable<PropostaPareceristaConsideracao> propostaPareceres, long usuarioLogadoId)
         {
-            return usuarioLogado.EhPerfilParecerista()
-                ? propostaPareceres.Any(a => a.Situacao.EstaPendenteEnvioParecerPeloParecerista() && a.UsuarioPareceristaId == usuarioLogadoId)
-                : usuarioLogado.EhPerfilAdminDF() && propostaPareceres.Any(a => a.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF());
+            return true;
+            //TODO
+            // usuarioLogado.EhPerfilParecerista()
+            //     ? propostaPareceres.Any(a => a.Situacao.EstaPendenteEnvioParecerPeloParecerista() && a.UsuarioPareceristaId == usuarioLogadoId)
+            //     : usuarioLogado.EhPerfilAdminDF() && propostaPareceres.Any(a => a.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF());
         }
     }
 }

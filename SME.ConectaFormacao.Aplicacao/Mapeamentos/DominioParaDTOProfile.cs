@@ -147,7 +147,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<PropostaTipoInscricao, PropostaTipoInscricaoDTO>().ReverseMap();
             
-            CreateMap<PropostaParecer, PropostaParecerCadastroDTO>().ReverseMap();
+            CreateMap<PropostaPareceristaConsideracao, PropostaParecerCadastroDTO>().ReverseMap();
 
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
@@ -272,9 +272,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<AreaPromotora, PropostaAreaPromotoraDTO>();
             
-            CreateMap<PropostaParecer, PropostaParecerCompletoDTO>().ReverseMap();
-            CreateMap<PropostaParecer, AuditoriaDTO>().ReverseMap();
-            CreateMap<PropostaParecer, PropostaParecerDTO>()
+            CreateMap<PropostaPareceristaConsideracao, PropostaParecerCompletoDTO>().ReverseMap();
+            CreateMap<PropostaPareceristaConsideracao, AuditoriaDTO>().ReverseMap();
+            CreateMap<PropostaPareceristaConsideracao, PropostaParecerDTO>()
                 .ForMember(dest => dest.Auditoria, opt => opt.MapFrom(o => o))
                 .ReverseMap();
         }

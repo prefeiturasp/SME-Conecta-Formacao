@@ -6,13 +6,13 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioPropostaParecer : RepositorioBaseAuditavel<PropostaParecer>, IRepositorioPropostaParecer
+    public class RepositorioPropostaParecer : RepositorioBaseAuditavel<PropostaPareceristaConsideracao>, IRepositorioPropostaParecer
     {
         public RepositorioPropostaParecer(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
 
-        public async Task<IEnumerable<PropostaParecer>> ObterPorPropostaIdECampo(long propostaId, CampoParecer campoParecer)
+        public async Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPorPropostaIdECampo(long propostaId, CampoParecer campoParecer)
         {
             var query = @"select 
                             id, 
@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                               and not excluido
                               and campo = @campoParecer";
             
-            return await conexao.Obter().QueryAsync<PropostaParecer>(query, new { propostaId, campoParecer });
+            return await conexao.Obter().QueryAsync<PropostaPareceristaConsideracao>(query, new { propostaId, campoParecer });
         }
     }
 }
