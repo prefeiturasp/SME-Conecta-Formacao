@@ -29,20 +29,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerista);
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             
-            var propostaParecerDto = PropostaSalvarMock.GerarPareceristaConsideracaoCadastro();
-            propostaParecerDto.PropostaPareceristaId = 1;
+            var propostaPareceristaConsideracaoCadastroDto = PropostaSalvarMock.GerarPareceristaConsideracaoCadastro();
+            propostaPareceristaConsideracaoCadastroDto.PropostaPareceristaId = 1;
             
             // act
-            var retorno = await useCase.Executar(propostaParecerDto);
+            var retorno = await useCase.Executar(propostaPareceristaConsideracaoCadastroDto);
 
             // assert
             retorno.EntidadeId.ShouldBeGreaterThan(0);
-            var propostaParecer = ObterTodos<PropostaPareceristaConsideracao>().FirstOrDefault();
-            propostaParecer.Id.ShouldBe(1);
-            propostaParecer.Campo.ShouldBe(propostaParecerDto.Campo);
-            propostaParecer.Descricao.ShouldBe(propostaParecerDto.Descricao);
-            propostaParecer.PropostaPareceristaId.ShouldBe(1);
-            propostaParecer.Excluido.ShouldBeFalse();
+            var consideracaoParecista = ObterTodos<PropostaPareceristaConsideracao>().FirstOrDefault();
+            consideracaoParecista.Id.ShouldBe(1);
+            consideracaoParecista.Campo.ShouldBe(propostaPareceristaConsideracaoCadastroDto.Campo);
+            consideracaoParecista.Descricao.ShouldBe(propostaPareceristaConsideracaoCadastroDto.Descricao);
+            consideracaoParecista.PropostaPareceristaId.ShouldBe(1);
+            consideracaoParecista.Excluido.ShouldBeFalse();
         }
         
         [Fact(DisplayName = "Proposta parecer - Alterar parecer")]
@@ -57,23 +57,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerista);
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             
-            var inserirPropostaParecer = PropostaPareceristaConsideracaoMock.GerarPropostasPareceristasConsideracoes(1);
-            await InserirConsideracoesDosPareceristas(inserirPropostaParecer, "1",proposta.Id);
+            var inserirConsideracaoDoParecista = PropostaPareceristaConsideracaoMock.GerarPropostasPareceristasConsideracoes(1);
+            await InserirConsideracoesDosPareceristas(inserirConsideracaoDoParecista, "1",proposta.Id);
             
-            var alterarPropostaParecer = PropostaSalvarMock.GerarPareceristaConsideracaoCadastro();
-            alterarPropostaParecer.PropostaPareceristaId = proposta.Id;
-            alterarPropostaParecer.Id = inserirPropostaParecer.FirstOrDefault().Id;
+            var alterarConsideracaoDoParecista = PropostaSalvarMock.GerarPareceristaConsideracaoCadastro();
+            alterarConsideracaoDoParecista.PropostaPareceristaId = proposta.Id;
+            alterarConsideracaoDoParecista.Id = inserirConsideracaoDoParecista.FirstOrDefault().Id;
             
             // act
-            var retorno = await useCase.Executar(alterarPropostaParecer);
+            var retorno = await useCase.Executar(alterarConsideracaoDoParecista);
 
             // assert
             retorno.EntidadeId.ShouldBeGreaterThan(0);
-            var propostaParecer = ObterTodos<PropostaPareceristaConsideracao>().FirstOrDefault();
-            propostaParecer.Id.ShouldBe(1);
-            propostaParecer.Descricao.ShouldBe(alterarPropostaParecer.Descricao);
-            propostaParecer.PropostaPareceristaId.ShouldBe(1);
-            propostaParecer.Excluido.ShouldBeFalse();
+            var pareceristaConsideracao = ObterTodos<PropostaPareceristaConsideracao>().FirstOrDefault();
+            pareceristaConsideracao.Id.ShouldBe(1);
+            pareceristaConsideracao.Descricao.ShouldBe(alterarConsideracaoDoParecista.Descricao);
+            pareceristaConsideracao.PropostaPareceristaId.ShouldBe(1);
+            pareceristaConsideracao.Excluido.ShouldBeFalse();
         }
 
         private async Task InserirConsideracoesDosPareceristas(IEnumerable<PropostaPareceristaConsideracao> inserirConsideracoesDosParecistas, string login, long propostaId, CampoParecer campoParecer = CampoParecer.FormacaoHomologada)

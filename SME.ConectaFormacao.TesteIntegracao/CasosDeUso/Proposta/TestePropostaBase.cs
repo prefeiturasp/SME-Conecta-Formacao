@@ -554,5 +554,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 tiposInscricaoDto.FirstOrDefault(t => t.TipoInscricao == tipoInscricao.TipoInscricao).ShouldNotBeNull();
             }
         }
+
+        protected async Task InserirParametrosProposta()
+        {
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3"));
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950"));
+        }
     }
 }
