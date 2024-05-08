@@ -79,6 +79,7 @@ public class MensagemNegocio
     public const string CONTRATO_EXTERNO_NAO_LOCALIZADO_POR_CPF = "Nenhum contrato externo foi localizado com o cpf informado";
     public const string NENHUMA_DRE_ENCONTRADA_NO_EOL = "Não foi possível localizar as Dres no EOL para a sincronização instituicional";
     public const string PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA = "Proposta deve estar com situação de cadastrada, devolvida ou Aguardando análise do DF para ser enviada para validação";
+    public const string PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECER_DF = "Proposta deve estar com situação Aguardando parecer do DF para ser aprovada";
     public const string QUANTIDADE_TURMAS_COM_REGENTE = "A quantidade de turmas informada deve ser a mesma de turmas com regentes";
     public const string NAO_EXISTE_NENHUM_TUTOR = "Não existe nenhum tutor cadastrado na Proposta";
     public const string JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR = "O Tutor {0} já possui a turma {1}";

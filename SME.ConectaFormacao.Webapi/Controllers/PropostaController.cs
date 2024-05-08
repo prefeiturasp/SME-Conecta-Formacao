@@ -375,11 +375,11 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> RemoverParecer([FromRoute] long parecerId,[FromServices] ICasoDeUsoRemoverParecerDaProposta casoDeUso)
+        public async Task<IActionResult> RemoverParecer([FromRoute] long parecerId, [FromServices] ICasoDeUsoRemoverParecerDaProposta casoDeUso)
         {
             return Ok(await casoDeUso.Executar(parecerId));
         }
-        
+
         [HttpPost("parecer")]
         [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -390,7 +390,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoSalvarPropostaPareceristaConsideracao.Executar(propostaPareceristaConsideracaoCadastroDto));
         }
-        
+
         [HttpPut("parecer")]
         [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -401,7 +401,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoSalvarPropostaPareceristaConsideracao.Executar(propostaPareceristaConsideracaoCadastroDto));
         }
-        
+
         [HttpGet("parecer")]
         [ProducesResponseType(typeof(PropostaParecerCompletoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -428,7 +428,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpPost("{propostaId}/parecer/enviar")]
-        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
@@ -439,5 +439,30 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUso.Executar(propostaId));
         }
 
+        [HttpPost("{propostaId}/aprovar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        public async Task<IActionResult> AprovarProposta(
+            [FromServices] ICasoDeUsoAprovarProposta casoDeUso,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaJustificativaDTO propostaJustificativaDTO)
+        {
+            return Ok(await casoDeUso.Executar(propostaId, propostaJustificativaDTO));
+        }
+
+        [HttpPost("{propostaId}/recusar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        public async Task<IActionResult> RecusarProposta(
+            [FromServices] ICasoDeUsoRecusarProposta casoDeUso,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaJustificativaDTO propostaJustificativaDTO)
+        {
+            return Ok(await casoDeUso.Executar(propostaId, propostaJustificativaDTO));
+        }
     }
 }
