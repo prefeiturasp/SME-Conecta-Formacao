@@ -13,14 +13,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterPropostaParecerPorPropostaIdECampoQueryHandler : IRequestHandler<ObterPropostaParecerPorPropostaIdECampoQuery, PropostaParecerCompletoDTO>
     {
-        private readonly IRepositorioPropostaParecer _repositorioPropostaParecer;
+        private readonly IRepositorioPropostaParecerConsideracao _repositorioPropostaParecerConsideracao;
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public ObterPropostaParecerPorPropostaIdECampoQueryHandler(IRepositorioPropostaParecer repositorioPropostaParecer,IMapper mapper,IMediator mediator,IRepositorioProposta repositorioProposta)
+        public ObterPropostaParecerPorPropostaIdECampoQueryHandler(IRepositorioPropostaParecerConsideracao repositorioPropostaParecerConsideracao,IMapper mapper,IMediator mediator,IRepositorioProposta repositorioProposta)
         {
-            _repositorioPropostaParecer = repositorioPropostaParecer ?? throw new ArgumentNullException(nameof(repositorioPropostaParecer));
+            _repositorioPropostaParecerConsideracao = repositorioPropostaParecerConsideracao ?? throw new ArgumentNullException(nameof(repositorioPropostaParecerConsideracao));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<PropostaParecerCompletoDTO> Handle(ObterPropostaParecerPorPropostaIdECampoQuery request, CancellationToken cancellationToken)
         {
-            var pareceresDaProposta = await _repositorioPropostaParecer.ObterPorPropostaIdECampo(request.PropostaId,request.CampoParecer);
+            var pareceresDaProposta = await _repositorioPropostaParecerConsideracao.ObterPorPropostaIdECampo(request.PropostaId,request.CampoParecer);
             
             var perfilLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery(), cancellationToken);
             

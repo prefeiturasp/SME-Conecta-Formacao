@@ -541,7 +541,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	               criado_login,
 	               alterado_login,
 	               excluido
-            from public.proposta_parecer
+            from public.proposta_parecerista_consideracao
 	        where not excluido 
               and proposta_id = @id  ";
             return await conexao.Obter().QueryAsync<PropostaPareceristaConsideracao>(query, new { id });
@@ -2330,7 +2330,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 pareceristaConsideracao.AlteradoLogin
             };
 
-            var query = @"update proposta_parecer 
+            var query = @"update proposta_parecerista_consideracao 
                           set 
                             excluido = true, 
                             alterado_em = @AlteradoEm, 
@@ -2354,7 +2354,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	               criado_login,
 	               alterado_login,
 	               excluido
-            from public.proposta_parecer 
+            from public.proposta_parecerista_consideracao 
             where not excluido  
               and id=@parecerId ";
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaPareceristaConsideracao>(query, new { parecerId });
@@ -2370,7 +2370,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public Task<bool> ExistePareceristasPendenteDeEnvio(long propostaId, long idUsuarioLogado)
         {
             var query = @"select count(1) 
-                          from proposta_parecer
+                          from proposta_parecerista_consideracao
                           where proposta_id = @propostaId 
                             and situacao = @situacao
                             and usuario_id <> @idUsuarioLogado
@@ -2381,7 +2381,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloParecerista(long propostaId, long idUsuarioLogado)
         {
-            var query = @"update proposta_parecer
+            var query = @"update proposta_parecerista_consideracao
                           set 
                             situacao = @situacaoAdminDF, 
                             alterado_em = @AlteradoEm, 
@@ -2417,7 +2417,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloAdminDF(long propostaId)
         {
-            var query = @"update proposta_parecer
+            var query = @"update proposta_parecerista_consideracao
                           set 
                             situacao = @situacaoAreaPromotora, 
                             alterado_em = @AlteradoEm, 
@@ -2445,7 +2445,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 CASE WHEN 
                     (SELECT COUNT(id) FROM proposta_parecerista WHERE NOT excluido AND proposta_id = @propostaId) 
                     = 
-                    (SELECT count(distinct usuario_id) FROM proposta_parecer WHERE NOT excluido AND proposta_id = @propostaId) 
+                    (SELECT count(distinct usuario_id) FROM proposta_parecerista_consideracao WHERE NOT excluido AND proposta_id = @propostaId) 
                     THEN TRUE
                 ELSE FALSE
             END AS todos_possuem_pareceres;";

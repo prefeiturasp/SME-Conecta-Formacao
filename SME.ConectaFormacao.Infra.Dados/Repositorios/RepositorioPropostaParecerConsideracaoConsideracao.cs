@@ -6,9 +6,9 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioPropostaParecer : RepositorioBaseAuditavel<PropostaPareceristaConsideracao>, IRepositorioPropostaParecer
+    public class RepositorioPropostaParecerConsideracaoConsideracao : RepositorioBaseAuditavel<PropostaPareceristaConsideracao>, IRepositorioPropostaParecerConsideracao
     {
-        public RepositorioPropostaParecer(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
+        public RepositorioPropostaParecerConsideracaoConsideracao(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
 
@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         	alterado_em,    
 	                        alterado_por,
 	                        alterado_login
-                        from proposta_parecer 
+                        from proposta_parecerista_consideracao 
                         where proposta_id = @propostaId 
                               and not excluido
                               and campo = @campoParecer";

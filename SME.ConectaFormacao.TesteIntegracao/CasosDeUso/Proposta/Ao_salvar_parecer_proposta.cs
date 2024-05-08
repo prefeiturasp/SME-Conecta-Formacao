@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         }
 
         [Fact(DisplayName = "Proposta parecer - Cadastrar um parecer")]
-        public async Task Deve_cadastrar_proposta_parecer()
+        public async Task Deve_cadastrar_proposta_parecerista_consideracao()
         {
             // arrange
             CriarClaimUsuario(Dominio.Constantes.Perfis.PARECERISTA.ToString());
@@ -45,7 +45,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         }
         
         [Fact(DisplayName = "Proposta parecer - Alterar parecer")]
-        public async Task Deve_alterar_proposta_parecer()
+        public async Task Deve_alterar_proposta_parecerista_consideracao()
         {
             // arrange
             CriarClaimUsuario(Dominio.Constantes.Perfis.PARECERISTA.ToString());

@@ -10,25 +10,25 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarPropostaParecerCommandHandler : IRequestHandler<SalvarPropostaParecerCommand, RetornoDTO>
     {
-        private readonly IRepositorioPropostaParecer _repositorioPropostaParecer;
+        private readonly IRepositorioPropostaParecerConsideracao _repositorioPropostaParecerConsideracao;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public SalvarPropostaParecerCommandHandler(IMapper mapper, IRepositorioPropostaParecer repositorioPropostaParecer,IMediator _mediator)
+        public SalvarPropostaParecerCommandHandler(IMapper mapper, IRepositorioPropostaParecerConsideracao repositorioPropostaParecerConsideracao,IMediator _mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _repositorioPropostaParecer = repositorioPropostaParecer ?? throw new ArgumentNullException(nameof(repositorioPropostaParecer));
+            _repositorioPropostaParecerConsideracao = repositorioPropostaParecerConsideracao ?? throw new ArgumentNullException(nameof(repositorioPropostaParecerConsideracao));
         }
 
         public async Task<RetornoDTO> Handle(SalvarPropostaParecerCommand request, CancellationToken cancellationToken)
         {
             if (request.PropostaParecerCadastroDto.Id > 0)
             {
-                var alterarPropostaParecer = await _repositorioPropostaParecer.ObterPorId(request.PropostaParecerCadastroDto.Id.Value);
+                var alterarPropostaParecer = await _repositorioPropostaParecerConsideracao.ObterPorId(request.PropostaParecerCadastroDto.Id.Value);
                 
                 alterarPropostaParecer.Descricao = request.PropostaParecerCadastroDto.Descricao;
             
-                await _repositorioPropostaParecer.Atualizar(alterarPropostaParecer);
+                await _repositorioPropostaParecerConsideracao.Atualizar(alterarPropostaParecer);
 
                 return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PARECER_X_COM_SUCESSO, "alterado"), alterarPropostaParecer.Id);
             }
@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao
             // propostaParecer.Situacao = SituacaoParecerista.PendenteEnvioParecerPeloParecerista;
             // propostaParecer.UsuarioPareceristaId = request.UsuarioLogadoId;
             
-            var id = await _repositorioPropostaParecer.Inserir(propostaParecer);
+            var id = await _repositorioPropostaParecerConsideracao.Inserir(propostaParecer);
             
             return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PARECER_X_COM_SUCESSO, "inserido"), id);
         }

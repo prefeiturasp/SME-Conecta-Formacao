@@ -15,9 +15,9 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 {
-    public class Ao_obter_proposta_parecer : TestePropostaBase
+    public class Ao_obter_proposta_parecerista_consideracao : TestePropostaBase
     {
-        public Ao_obter_proposta_parecer(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_obter_proposta_parecerista_consideracao(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
 
