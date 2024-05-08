@@ -15,7 +15,6 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
-        private readonly IRepositorioUsuario _repositorioUsuario;
         private readonly IMediator _mediator;
 
         public SalvarPropostaPareceristaCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta,
@@ -23,7 +22,6 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-            _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
