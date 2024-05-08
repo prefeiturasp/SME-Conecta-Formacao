@@ -439,13 +439,26 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUso.Executar(propostaId));
         }
 
-        [HttpPost("{propostaId}/parecer/aprovar")]
+        [HttpPost("{propostaId}/aprovar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
         public async Task<IActionResult> AprovarProposta(
             [FromServices] ICasoDeUsoAprovarProposta casoDeUso,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaJustificativaDTO propostaJustificativaDTO)
+        {
+            return Ok(await casoDeUso.Executar(propostaId, propostaJustificativaDTO));
+        }
+
+        [HttpPost("{propostaId}/recusar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        public async Task<IActionResult> RecusarProposta(
+            [FromServices] ICasoDeUsoRecusarProposta casoDeUso,
             [FromRoute] long propostaId,
             [FromBody] PropostaJustificativaDTO propostaJustificativaDTO)
         {
