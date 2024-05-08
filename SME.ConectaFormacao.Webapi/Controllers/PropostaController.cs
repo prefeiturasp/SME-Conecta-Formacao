@@ -385,10 +385,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
-        public async Task<IActionResult> InserirPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaParecer casoDeUsoSalvarPropostaParecer,
-            [FromBody] PropostaParecerCadastroDTO propostaParecerCadastroDto)
+        public async Task<IActionResult> InserirPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaPareceristaConsideracao casoDeUsoSalvarPropostaPareceristaConsideracao,
+            [FromBody] PropostaPareceristaConsideracaoCadastroDTO propostaPareceristaConsideracaoCadastroDto)
         {
-            return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerCadastroDto));
+            return Ok(await casoDeUsoSalvarPropostaPareceristaConsideracao.Executar(propostaPareceristaConsideracaoCadastroDto));
         }
         
         [HttpPut("parecer")]
@@ -396,10 +396,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_A, Policy = "Bearer")]
-        public async Task<IActionResult> AlterarPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaParecer casoDeUsoSalvarPropostaParecer,
-            [FromBody] PropostaParecerCadastroDTO propostaParecerCadastroDto)
+        public async Task<IActionResult> AlterarPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaPareceristaConsideracao casoDeUsoSalvarPropostaPareceristaConsideracao,
+            [FromBody] PropostaPareceristaConsideracaoCadastroDTO propostaPareceristaConsideracaoCadastroDto)
         {
-            return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerCadastroDto));
+            return Ok(await casoDeUsoSalvarPropostaPareceristaConsideracao.Executar(propostaPareceristaConsideracaoCadastroDto));
         }
         
         [HttpGet("parecer")]

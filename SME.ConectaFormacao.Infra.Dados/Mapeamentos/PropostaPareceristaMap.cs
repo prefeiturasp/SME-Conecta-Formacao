@@ -11,7 +11,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.RegistroFuncional).ToColumn("registro_funcional");
             Map(t => t.NomeParecerista).ToColumn("nome_parecerista");
             Map(t => t.Situacao).ToColumn("situacao");
-            Map(t => t.UsuarioPareceristaId).ToColumn("usuario_id");
             Map(t => t.Justificativa).ToColumn("justificativa");
         }
     }

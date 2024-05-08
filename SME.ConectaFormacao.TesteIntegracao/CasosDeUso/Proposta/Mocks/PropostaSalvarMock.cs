@@ -109,7 +109,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             bool gerarFuncaoEspecificaOutros,
             bool gerarCriterioValidacaoInscricaoOutros,
             long? arquivoImagemDivulgacaoId,
-            short? quantidadeTurmas)
+            short? quantidadeTurmas,
+            int quantidadePareceristas = 0)
         {
 
             quantidadeTurmas = (short?)(quantidadeTurmas ?? new Random().Next(1, 99));
@@ -158,6 +159,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
 
             faker.RuleFor(x => x.Situacao, situacao);
 
+            if (quantidadePareceristas > 0)
+                faker.RuleFor(x => x.Pareceristas, f => GerarPropostaPareceristaDTO(quantidadePareceristas));
+            
             return faker;
         }
 
@@ -247,13 +251,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             IEnumerable<PropostaAnoTurmaDTO> propostaAnosTurmas,
             IEnumerable<PropostaComponenteCurricularDTO> propostaComponentesCurriculares,
             SituacaoProposta situacao, bool gerarFuncaoEspecificaOutros = false, bool gerarCriterioValidacaoInscricaoOutros = false,
-            long? arquivoImagemDivulgacaoId = null, short? quantidadeTurmas = null)
+            long? arquivoImagemDivulgacaoId = null, short? quantidadeTurmas = null, int quantidadePareceristas = 0)
         {
             var propostaDTO = Gerador(tipoFormacao, formato, dres, propostaPublicoAlvos, propostaFuncaoEspecificas,
                 propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, propostaPalavrasChaves,
                 propostaModalidades, propostaAnosTurmas, propostaComponentesCurriculares,
                 situacao, gerarFuncaoEspecificaOutros,
-                gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId, quantidadeTurmas).Generate();
+                gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId, quantidadeTurmas, quantidadePareceristas).Generate();
 
             return propostaDTO;
         }
@@ -265,15 +269,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
 
         public static Guid GrupoUsuarioLogadoId { get; set; }
 
-        public static Faker<PropostaParecerCadastroDTO> GeradorPropostaParecerCadastro(int quantidadeTurmas = 1)
+        public static Faker<PropostaPareceristaConsideracaoCadastroDTO> GeradorPropostaParecerCadastro(int quantidadeTurmas = 1)
         {
-            var faker = new Faker<PropostaParecerCadastroDTO>("pt_BR");
+            var faker = new Faker<PropostaPareceristaConsideracaoCadastroDTO>("pt_BR");
             faker.RuleFor(x => x.Campo, f => (CampoParecer)f.Random.Short(1,28));
             faker.RuleFor(dest => dest.Descricao, f => f.Lorem.Sentence(100));
             return faker;
         }
         
-        public static PropostaParecerCadastroDTO GerarParecerCadastro()
+        public static PropostaPareceristaConsideracaoCadastroDTO GerarPareceristaConsideracaoCadastro()
         {
             return GeradorPropostaParecerCadastro();
         }
@@ -284,6 +288,29 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.PropostaId, f => propostaId);
             faker.RuleFor(x => x.Campo, f => campoParecer);
             return faker;
+        }
+        
+        private static Faker<PropostaPareceristaDTO> GeradorDTO(string registroFuncional, string nomeParecerista)
+        {
+            var faker = new Faker<PropostaPareceristaDTO>("pt_BR");
+            faker.RuleFor(x => x.RegistroFuncional, registroFuncional);
+            faker.RuleFor(x => x.NomeParecerista, nomeParecerista);
+            return faker;
+        }
+        
+        public static PropostaPareceristaDTO GerarPropostaPareceristaDTO(string registroFuncional, string nomeParecerista)
+        {
+            return GeradorDTO(registroFuncional, nomeParecerista).Generate();
+        }
+        
+        public static List<PropostaPareceristaDTO> GerarPropostaPareceristaDTO(int quantidade = 1)
+        {
+            var pareceristas = new List<PropostaPareceristaDTO>();
+
+            for (int i = 1; i <= quantidade; i++)
+                pareceristas.Add(GeradorDTO(i.ToString(),string.Format("Parecerista{0}",i)).Generate());
+            
+            return pareceristas;
         }
     }
 }

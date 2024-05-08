@@ -9,7 +9,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? RegistroFuncional { get; set; }
         public string? NomeParecerista { get; set; }
         public SituacaoParecerista Situacao { get; set; }
-        public long UsuarioPareceristaId { get; set; }
         public string Justificativa { get; set; }
     }
 }
