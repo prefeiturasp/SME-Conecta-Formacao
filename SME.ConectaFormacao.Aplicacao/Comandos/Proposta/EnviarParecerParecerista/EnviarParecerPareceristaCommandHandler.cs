@@ -1,5 +1,10 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using MediatR;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -17,17 +22,33 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(EnviarParecerPareceristaCommand request, CancellationToken cancellationToken)
         {
-            var usuario = await _mediator.Send(new ObterUsuarioLogadoQuery());
+            var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(request.PropostaId), cancellationToken);
+            if (proposta.EhNulo() || proposta.Excluido)
+                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            var pareceristas = await _repositorioProposta.ObterPareceristasPorPropostaId(request.IdProposta);
-            
-            if (!pareceristas.Any(a=> !a.RegistroFuncional.Equals(usuario.Login) && a.Situacao.EstaAguardandoValidacao()))
+            var situacoes = new[] { SituacaoProposta.AguardandoAnalisePeloParecerista, SituacaoProposta.AguardandoReanalisePeloParecerista };
+            if (!situacoes.Contains(proposta.Situacao))
+                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECERISTA);
+
+            var parecerista = await _mediator.Send(new ObterPropostaPareceristaPorPropostaIdRegistroFuncionalQuery(request.PropostaId, request.RegistroFuncional), cancellationToken) ??
+                throw new NegocioException(MensagemNegocio.USUARIO_LOGADO_NAO_E_PARECERISTA_DA_PROPOSTA);
+
+            parecerista.Situacao = request.Situacao;
+            parecerista.Justificativa = request.Justificativa;
+
+            await _repositorioProposta.AtualizarSituacaoParecerista(parecerista.Id, parecerista.RegistroFuncional, parecerista.Situacao, request.Justificativa);
+
+            var pareceristas = await _repositorioProposta.ObterPareceristasPorId(proposta.Id);
+            if(proposta.Situacao == SituacaoProposta.AguardandoAnalisePeloParecerista && !pareceristas.Any(a => a.Situacao == SituacaoParecerista.AguardandoValidacao))
             {
-                await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerPelaDF));
-                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerPelaDF));
+                await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
+                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
             }
-
-            await _repositorioProposta.AtualizarSituacaoDoPareceristaParaEnviada(pareceristas.FirstOrDefault(a=> a.RegistroFuncional.Equals(usuario.Login)).Id);
+            else if(proposta.Situacao == SituacaoProposta.AguardandoReanalisePeloParecerista && !pareceristas.Any(a => a.Situacao == SituacaoParecerista.Enviada))
+            {
+                await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF), cancellationToken);
+                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF), cancellationToken);
+            }
 
             return true;
         }
