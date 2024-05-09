@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_aprovar_proposta_sucesso_com_justificativa()
         {
             // arrange
-            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerPelaDF);
 
             var propostaJustificativaDto = PropostaJustificativaMock.GerarPropostaJustificativaDTO();
 
@@ -44,7 +44,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_aprovar_proposta_sucesso_sem_justificativa()
         {
             // arrange
-            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerPelaDF);
 
             var propostaJustificativaDto = new Aplicacao.Dtos.Proposta.PropostaJustificativaDTO();
 

@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_recusar_proposta_sucesso()
         {
             // arrange
-            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerPelaDF);
 
             var propostaJustificativaDto = PropostaJustificativaMock.GerarPropostaJustificativaDTO();
 

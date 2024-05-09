@@ -309,7 +309,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                 situacao,
                 formacaoHomologada,
-                situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnaliseParecerista,
+                situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnalisePeloParecerista,
                 loginUsuarioLogado
             });
         }
@@ -344,7 +344,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
                     situacao,
                     formacaoHomologada,
-                    situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnaliseParecerista,
+                    situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnalisePeloParecerista,
                     loginUsuarioLogado
                 },
                 splitOn: "id, id");
@@ -427,7 +427,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 situacao,
                 formacaoHomologada,
                 situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray(),
-                situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnaliseParecerista,
+                situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnalisePeloParecerista,
                 loginUsuarioLogado
             };
             return conexao.Obter().QueryAsync<Proposta>(query, parametros);
@@ -525,25 +525,27 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
         }
         
-        public async Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPropostaParecerPorId(long id)
+        public async Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPropostaPareceristaConsideracaoPorId(long id)
         {
             var query = $@"
-            select id,
-	               proposta_id,
-	               campo,
-	               descricao,
-	               situacao,
-	               usuario_id,
-	               criado_em,
-	               criado_por,
-	               alterado_em,
-	               alterado_por,
-	               criado_login,
-	               alterado_login,
-	               excluido
-            from public.proposta_parecerista_consideracao
-	        where not excluido 
-              and proposta_id = @id  ";
+            select 
+              ppc.id, 
+              ppc.proposta_parecerista_id, 
+              ppc.campo,
+              ppc.descricao,
+              ppc.excluido,
+              ppc.criado_em,
+              ppc.criado_por,
+              ppc.criado_login,
+              ppc.alterado_em,    
+              ppc.alterado_por,
+              ppc.alterado_login
+            from proposta_parecerista_consideracao ppc
+              join proposta_parecerista pp on pp.id = ppc.proposta_parecerista_id
+            where not ppc.excluido                                                     
+              and not pp.excluido
+              and pp.proposta_id = @id  ";
+            
             return await conexao.Obter().QueryAsync<PropostaPareceristaConsideracao>(query, new { id });
         }
 
@@ -1060,6 +1062,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 proposta_id, 
                 registro_funcional,
                 nome_parecerista,
+                situacao,
+                justificativa,
                 excluido,
                 criado_em,
                 criado_por,
@@ -2423,7 +2427,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             and id = @propostaId 
                             and situacao = @situacao";
 
-            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, situacao = (int)SituacaoProposta.AguardandoAnaliseParecerDF });
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, situacao = (int)SituacaoProposta.AguardandoAnaliseParecerPelaDF });
         }
 
         public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloAdminDF(long propostaId)

@@ -102,7 +102,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
-            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AguardandoAnaliseParecerista);
+            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AguardandoAnalisePeloParecerista);
         }
     }
 }

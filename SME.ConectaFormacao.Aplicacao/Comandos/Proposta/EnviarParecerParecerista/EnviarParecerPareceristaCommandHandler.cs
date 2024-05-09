@@ -25,8 +25,8 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 if (!await _repositorioProposta.ExistePareceristasPendenteDeEnvio(request.IdProposta, usuario.Id))
                 {
-                    await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerDF));
-                    await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerDF));
+                    await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerPelaDF));
+                    await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerPelaDF));
                 }
             }
 
