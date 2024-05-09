@@ -88,7 +88,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await CriarPropostaValida();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
 
-            var proposta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault(p => p.Situacao == SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault(p => p.Situacao == SituacaoProposta.AguardandoAnalisePeloParecerista);
 
             var parecerista = new PropostaParecerista
             {
@@ -108,7 +108,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             retorno.ShouldNotBeNull();
             retorno.Count().ShouldBe(1);
-            retorno.FirstOrDefault().Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseParecerista);
+            retorno.FirstOrDefault().Situacao.ShouldBe(SituacaoProposta.AguardandoAnalisePeloParecerista);
             retorno.FirstOrDefault().Propostas.Count().ShouldBe(1);
         }
 

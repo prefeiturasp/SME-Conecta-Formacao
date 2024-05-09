@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaPareceristaConsideracao>();
             
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnalisePeloParecerista);
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             
             var propostaPareceristaConsideracaoCadastroDto = PropostaSalvarMock.GerarPareceristaConsideracaoCadastro();
@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaPareceristaConsideracao>();
             
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnalisePeloParecerista);
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             
             var inserirConsideracaoDoParecista = PropostaPareceristaConsideracaoMock.GerarPropostasPareceristasConsideracoes(1);

@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            if (proposta.Situacao != SituacaoProposta.AguardandoAnaliseParecerDF)
+            if (proposta.Situacao != SituacaoProposta.AguardandoAnaliseParecerPelaDF)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECER_DF);
 
             if(propostaJustificativa.Justificativa.NaoEstaPreenchido())

@@ -45,7 +45,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada,
             FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool vincularUltimoCargoAoPublicoAlvo = false,
             bool vincularUltimoFuncaoAoPublicoAlvo = false, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false, bool numeroHomologacao = false, 
-            int quantidadeParecerista = 0, string perfilLogado = "7EDA4540-A16C-4FE5-8322-9F75B3414E27") //Admin DF
+            int quantidadeParecerista = 0, string perfilLogado = "3a934680-be27-49be-a12f-cf8765602ebe") //COPED
         {
             PropostaSalvarMock.GrupoUsuarioLogadoId = new Guid(perfilLogado);
             

@@ -32,7 +32,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             await InserirUsuario("1", "Parecerista1");
             
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerista, quantidadeParecerista: 1);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnalisePeloParecerista, quantidadeParecerista: 1);
 
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             
@@ -59,7 +59,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             await InserirUsuario("1", "Parecerista1");
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado,situacao: SituacaoProposta.AguardandoAnaliseParecerista, quantidadeParecerista: 1);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado,situacao: SituacaoProposta.AguardandoAnalisePeloParecerista, quantidadeParecerista: 1);
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.Formato));
@@ -88,7 +88,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirUsuario("1", "Parecerista1");
             await InserirUsuario("2", "Parecerista2");
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado,situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado,situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
@@ -119,7 +119,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirUsuario("1", "Parecerista1");
             await InserirUsuario("2", "Parecerista2");
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado,situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado,situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
@@ -154,7 +154,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirUsuario("2", "Parecerista2");
             await InserirUsuario("3", perfilLogado);
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerPelaDF);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
@@ -187,7 +187,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirUsuario("2", "Parecerista2");
             await InserirUsuario("3", perfilLogado);
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerPelaDF);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.AguardandoValidacao));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.Enviada));
@@ -221,7 +221,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirUsuario("2", "Parecerista2");
             await InserirUsuario("3", perfilLogado);
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerPelaDF);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1",SituacaoParecerista.AguardandoValidacao));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2",SituacaoParecerista.Enviada));
@@ -254,7 +254,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirUsuario("1", "Parecerista1");
             await InserirUsuario("2", "Parecerista2");
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerPelaDF);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.Enviada));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.Enviada));
@@ -288,7 +288,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirUsuario("2", "Parecerista2");
             await InserirUsuario("3", "Admin DF");
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerPelaDF);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.Enviada));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.Enviada));
@@ -322,7 +322,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirUsuario("2", "Parecerista2");
             await InserirUsuario("3", "Área Promotora COPED");
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerPelaDF);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.Enviada));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.Enviada));
@@ -356,7 +356,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirUsuario("2", "Parecerista2");
             await InserirUsuario("3", "Parecerista3");
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
@@ -391,7 +391,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirUsuario("1", "Parecerista1");
             await InserirUsuario("2", "Parecerista2");
 
-            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(perfilLogado: perfilLogado, situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
@@ -426,7 +426,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var useCase = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
             
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnalisePeloParecerista);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             
@@ -453,7 +453,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var useCase = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
             
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnalisePeloParecerista);
 
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             
@@ -493,7 +493,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var useCase = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
             
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnalisePeloParecerista);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2"));
@@ -527,7 +527,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var useCase = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
             
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerPelaDF);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.Enviada));
 
@@ -570,7 +570,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var useCase = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
             
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerPelaDF);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.Enviada));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.Enviada));
@@ -609,7 +609,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var useCase = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
             
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerDF);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerPelaDF);
             
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Dominio.Constantes.Perfis.SINPEEM);
             await InserirNaBase(areaPromotora);
@@ -651,7 +651,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             
             var useCase = ObterCasoDeUso<ICasoDeUsoObterPropostaParecer>();
             
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnalisePeloParecerista);
             
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.AguardandoValidacao));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.AguardandoValidacao));

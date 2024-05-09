@@ -32,20 +32,20 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Aprovada = 9,
 
         [Display(Name = "Aguardando análise do Parecerista", Prompt = "#000000")]
-        AguardandoAnaliseParecerista = 10,
+        AguardandoAnalisePeloParecerista = 10,
 
         [Display(Name = "Aguardando análise do parecer pela DF", Prompt = "#000000")]
-        AguardandoAnaliseParecerDF = 11,
+        AguardandoAnaliseParecerPelaDF = 11,
             
         [Display(Name = "Análise do parecer pela área promotora", Prompt = "#000000")]
-        AnaliseParecerAreaPromotora = 12,
+        AnaliseParecerPelaAreaPromotora = 12,
 
         [Display(Name = "Recusada", Prompt = "#008000")]
         Recusada = 13,
-
+        
         [Display(Name = "Aguardando reanálise do Parecerista", Prompt = "#000000")]
-        AguardandoReanaliseParecerista = 14,
-
+        AguardandoReanalisePeloParecerista = 14,
+        
         [Display(Name = "Aguardando análise do parecer final pela DF", Prompt = "#000000")]
         AguardandoAnaliseParecerFinalPelaDF = 15
     }
@@ -102,19 +102,41 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
             return valor == SituacaoProposta.Aprovada;
         }
         
-        public static bool EstaAguardandoAnaliseParecerDFOuAreaPromotora(this SituacaoProposta valor)
+        public static bool EstaAguardandoAnaliseParecerPelaDFOuAreaPromotoraOuAnaliseFinalPelaDF(this SituacaoProposta valor)
         {
-            return valor == SituacaoProposta.AguardandoAnaliseParecerDF || valor == SituacaoProposta.AnaliseParecerAreaPromotora;
+            return valor == SituacaoProposta.AguardandoAnaliseParecerPelaDF 
+                   || valor == SituacaoProposta.AnaliseParecerPelaAreaPromotora
+                   || valor == SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF;
         }
         
         public static bool EstaAguardandoAnaliseParecerista(this SituacaoProposta valor)
         {
-            return valor == SituacaoProposta.AguardandoAnaliseParecerista;
+            return valor == SituacaoProposta.AguardandoAnalisePeloParecerista;
         }
         
-        public static bool EstaAguardandoAnaliseParecerDF(this SituacaoProposta valor)
+        public static bool EstaAguardandoAnaliseParecerPelaDF(this SituacaoProposta valor)
         {
-            return valor == SituacaoProposta.AguardandoAnaliseParecerDF;
+            return valor == SituacaoProposta.AguardandoAnaliseParecerPelaDF;
+        }
+        
+        public static bool EstaAguardandoAnaliseParecerFinalPelaDF(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF;
+        }
+        
+        public static bool EstaAguardandoReanaliseParecerista(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoReanalisePeloParecerista;
+        }
+        
+        public static bool EstaAnaliseParecerPelaAreaPromotora(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AnaliseParecerPelaAreaPromotora;
+        }
+        
+        public static bool EstaAguardandoReanalisePeloParecerista(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoReanalisePeloParecerista;
         }
     }
 }
