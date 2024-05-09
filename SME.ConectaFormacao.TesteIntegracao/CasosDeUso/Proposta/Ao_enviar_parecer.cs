@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             AdicionarPerfilUsuarioContextoAplicacao(Perfis.PARECERISTA, usuario.Login);
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
 
             var usuarioParecer = PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao();
             //TODO
@@ -71,7 +71,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             AdicionarPerfilUsuarioContextoAplicacao(Perfis.PARECERISTA, usuario1.Login);
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
 
             var usuarioParecer = PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao();
             //TODO
@@ -105,7 +105,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaConsulta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
 
-            propostaConsulta.Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseParecerista);
+            propostaConsulta.Situacao.ShouldBe(SituacaoProposta.AguardandoAnalisePeloParecerista);
         }
 
         [Fact(DisplayName = "Proposta - Deve enviar o parecer do admin DF")]
@@ -140,7 +140,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaConsulta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
 
-            propostaConsulta.Situacao.ShouldBe(SituacaoProposta.AnaliseParecerAreaPromotora);
+            propostaConsulta.Situacao.ShouldBe(SituacaoProposta.AnaliseParecerPelaAreaPromotora);
         }
 
 

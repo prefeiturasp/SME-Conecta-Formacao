@@ -19,8 +19,8 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             if (await _repositorioProposta.SituacaoPropostaEhAguardandoAnaliseParecerDf(request.IdProposta))
             {
-                await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AnaliseParecerAreaPromotora));
-                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AnaliseParecerAreaPromotora));
+                await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AnaliseParecerPelaAreaPromotora));
+                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AnaliseParecerPelaAreaPromotora));
 
                 await _repositorioProposta.AtualizarSituacaoDoParecerEnviadaPeloAdminDF(request.IdProposta);
 

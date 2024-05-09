@@ -109,7 +109,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             AdicionarPerfilUsuarioContextoAplicacao(Perfis.PARECERISTA, usuario.Login);
 
-            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnalisePeloParecerista);
 
             var parecerista = new PropostaParecerista
             {

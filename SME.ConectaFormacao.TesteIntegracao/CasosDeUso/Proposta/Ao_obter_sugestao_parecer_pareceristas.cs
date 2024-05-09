@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_Sugestoes_Parecer_Pareceristas_por_situacao()
         {
             // arrange 
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerDF, quantidadeParecerista: 100);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerPelaDF, quantidadeParecerista: 100);
 
             var situacao = new Faker().PickRandom<SituacaoParecerista>();
 

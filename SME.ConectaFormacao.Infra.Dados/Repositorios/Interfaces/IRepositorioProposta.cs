@@ -117,7 +117,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task InserirPareceristas(long id, IEnumerable<PropostaParecerista> pareceristas);
         Task RemoverPareceristas(IEnumerable<PropostaParecerista> pareceristas);
         Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorId(long id);
-        Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPropostaParecerPorId(long id);
+        Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPropostaPareceristaConsideracaoPorId(long id);
         Task<bool> ExistePareceristasPendenteDeEnvio(long propostaId, long idUsuarioLogado);
         Task<int> AtualizarSituacaoDoParecerEnviadaPeloParecerista(long propostaId, long idUsuarioLogado);
         Task<bool> SituacaoPropostaEhAguardandoAnaliseParecerDf(long propostaId);

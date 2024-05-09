@@ -5,6 +5,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
     public class PropostaCompletoDTO
     {
+        public bool EhAdminDF;
         public FormacaoHomologada? FormacaoHomologada { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
         public Formato? Formato { get; set; }
@@ -59,11 +60,17 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? LinkParaInscricoesExterna { get; set; }
         public long? CodigoEventoSigpec { get; set; }
         public long? NumeroHomologacao { get; set; }
-        public IEnumerable<PropostaTotalParecerDTO> TotalDePareceres { get; set; }
-        public bool ExibirParecer { get; set; }
+        public IEnumerable<PropostaTotalConsideracaoDTO> TotalDeConsideracoes { get; set; }
+        public bool ExibirConsideracoes { get; set; }
         public bool PodeEnviar { get; set; }
-        public bool PodeEnviarParecer { get; set; }
+        public bool PodeEnviarConsideracoes { get; set; }
         public int QtdeLimitePareceristaProposta  { get; set; }
         public IEnumerable<PropostaPareceristaDTO> Pareceristas { get; set; }
+        public string LabelRecusar { get; set; }
+        public string LabelAprovar { get; set; }
+        public bool PodeAprovar { get; set; }
+        public bool PodeRecusar { get; set; }
+        public bool EhParecerista { get; set; }
+        public bool EhAreaPromotora { get; set; }
     }
 }
