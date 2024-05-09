@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
@@ -16,26 +17,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             _propostaId = propostaId;
 
             var perfilLogado = await mediator.Send(new ObterGrupoUsuarioLogadoQuery());
-            var funcaoPerfil = new Dictionary<Guid, Func<Task>>()
-            {
-                { Perfis.PARECERISTA, EnviaParecerPareceristas },
-                { Perfis.ADMIN_DF, EnviaParecerAdminDF },
-            };
 
-            if (funcaoPerfil.ContainsKey(perfilLogado))
-                await funcaoPerfil[perfilLogado]();
+            if (perfilLogado.EhPerfilParecerista())
+                await mediator.Send(new EnviarParecerPareceristaCommand(_propostaId));
+            
+            if (perfilLogado.EhPerfilAdminDF())
+                await mediator.Send(new EnviarParecerAdminDFCommand(_propostaId));
+                
+            if ((await mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilLogado))).NaoEhNulo())
+                await mediator.Send(new EnviarParecerAreaPromotoraCommand(_propostaId));
 
             return true;
-        }
-
-        private Task EnviaParecerPareceristas()
-        {
-            return mediator.Send(new EnviarParecerPareceristaCommand(_propostaId));
-        }
-
-        private Task EnviaParecerAdminDF() 
-        {
-            return mediator.Send(new EnviarParecerAdminDFCommand(_propostaId));
         }
     }
 }

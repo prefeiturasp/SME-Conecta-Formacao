@@ -2381,91 +2381,39 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId });
         }
-
-        public Task<bool> ExistePareceristasPendenteDeEnvio(long propostaId, long idUsuarioLogado)
+        
+        public async Task<int> AtualizarSituacaoDoPareceristaParaEnviada(long propostaPareceristaId)
         {
-            var query = @"select count(1) 
-                          from proposta_parecerista_consideracao
-                          where proposta_id = @propostaId 
-                            and situacao = @situacao
-                            and usuario_id <> @idUsuarioLogado
-                            and not excluido";
-
-            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, idUsuarioLogado, situacao = (int)SituacaoParecerista.AguardandoValidacao });
-        }
-
-        public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloParecerista(long propostaId, long idUsuarioLogado)
-        {
-            var query = @"update proposta_parecerista_consideracao
+            var query = @"update proposta_parecerista
                           set 
-                            situacao = @situacaoAdminDF, 
+                            situacao = @situacaoEnviada, 
                             alterado_em = @AlteradoEm, 
                             alterado_por = @AlteradoPor, 
                             alterado_login = @AlteradoLogin 
-                          where not excluido
-                            and proposta_id = @propostaId 
-                            and situacao = @situacaoParecerista 
-                            and usuario_id = @idUsuarioLogado";
+                          where not excluido                            
+                            and id = @propostaPareceristaId
+                            and situacao = @situacaoAguardandoValidacao ";
 
             return await conexao.Obter().ExecuteAsync(query, new
             {
-                propostaId,
-                idUsuarioLogado,
-                situacaoAdminDF = SituacaoParecerista.Enviada,
-                situacaoParecerista = SituacaoParecerista.AguardandoValidacao,
+                propostaPareceristaId,
+                situacaoEnviada = SituacaoParecerista.Enviada,
+                situacaoAguardandoValidacao = SituacaoParecerista.AguardandoValidacao,
                 AlteradoEm = DateTimeExtension.HorarioBrasilia(),
                 AlteradoPor = contexto.NomeUsuario,
                 AlteradoLogin = contexto.UsuarioLogado
             });
         }
 
-        public Task<bool> SituacaoPropostaEhAguardandoAnaliseParecerDf(long propostaId)
+        public Task<bool> AvaliarSituacaoPropostaPorIdSituacao(long propostaId, SituacaoProposta situacaoProposta)
         {
             var query = @"select count(1) 
                           from proposta
                           where not excluido
                             and id = @propostaId 
-                            and situacao = @situacao";
+                            and situacao = @situacaoProposta";
 
-            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, situacao = (int)SituacaoProposta.AguardandoAnaliseParecerPelaDF });
-        }
-
-        public async Task<int> AtualizarSituacaoDoParecerEnviadaPeloAdminDF(long propostaId)
-        {
-            var query = @"update proposta_parecerista_consideracao
-                          set 
-                            situacao = @situacaoAreaPromotora, 
-                            alterado_em = @AlteradoEm, 
-                            alterado_por = @AlteradoPor, 
-                            alterado_login = @AlteradoLogin 
-                          where not excluido
-                            and proposta_id = @propostaId 
-                            and situacao = @situacaoAdminDF";
-
-            return await conexao.Obter().ExecuteAsync(query, new
-            {
-                propostaId,
-                situacaoAdminDF = SituacaoParecerista.Enviada,
-                situacaoAreaPromotora = SituacaoParecerista.AguardandoRevalidacao, //TODO creio que esquecemos a situação quando está na AP
-                AlteradoEm = DateTimeExtension.HorarioBrasilia(),
-                AlteradoPor = contexto.NomeUsuario,
-                AlteradoLogin = contexto.UsuarioLogado
-            });
-        }
-
-        public Task<bool> TodosPareceristasPossuemParecer(long propostaId)
-        {
-            var query = @"
-            SELECT
-                CASE WHEN 
-                    (SELECT COUNT(id) FROM proposta_parecerista WHERE NOT excluido AND proposta_id = @propostaId) 
-                    = 
-                    (SELECT count(distinct usuario_id) FROM proposta_parecerista_consideracao WHERE NOT excluido AND proposta_id = @propostaId) 
-                    THEN TRUE
-                ELSE FALSE
-            END AS todos_possuem_pareceres;";
-
-            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId });
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, situacaoProposta = (int)situacaoProposta });
         }
         
         public async Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorPropostaId(long propostaId)

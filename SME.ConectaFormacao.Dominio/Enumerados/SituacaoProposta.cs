@@ -114,7 +114,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
             return valor == SituacaoProposta.AguardandoAnalisePeloParecerista;
         }
         
-        public static bool EstaAguardandoAnaliseParecerDF(this SituacaoProposta valor)
+        public static bool EstaAguardandoAnaliseParecerPelaDF(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.AguardandoAnaliseParecerPelaDF;
         }
@@ -132,6 +132,11 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         public static bool EstaAnaliseParecerPelaAreaPromotora(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.AnaliseParecerPelaAreaPromotora;
+        }
+        
+        public static bool EstaAguardandoReanalisePeloParecerista(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoReanalisePeloParecerista;
         }
     }
 }

@@ -169,7 +169,7 @@ namespace SME.ConectaFormacao.Aplicacao
                        && proposta.Pareceristas.Any(a => a.RegistroFuncional.Equals(usuarioLogin) && a.Situacao.EstaAguardandoValidacao());
             
             return usuarioLogado.EhPerfilAdminDF() 
-                   && proposta.Situacao.EstaAguardandoAnaliseParecerDF()
+                   && proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF()
                    && proposta.Pareceristas.All(a => a.Situacao.EstaEnviada());
         }
     }
