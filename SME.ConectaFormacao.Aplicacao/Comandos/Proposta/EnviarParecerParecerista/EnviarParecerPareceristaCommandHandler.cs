@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            var situacoes = new[] { SituacaoProposta.AguardandoAnaliseParecerista, SituacaoProposta.AguardandoReanaliseParecerista };
+            var situacoes = new[] { SituacaoProposta.AguardandoAnalisePeloParecerista, SituacaoProposta.AguardandoReanaliseParecerista };
             if (!situacoes.Contains(proposta.Situacao))
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECERISTA);
 
@@ -39,10 +39,10 @@ namespace SME.ConectaFormacao.Aplicacao
             await _repositorioProposta.AtualizarSituacaoParecerista(parecerista.Id, parecerista.RegistroFuncional, parecerista.Situacao, request.Justificativa);
 
             var pareceristas = await _repositorioProposta.ObterPareceristasPorId(proposta.Id);
-            if(proposta.Situacao == SituacaoProposta.AguardandoAnaliseParecerista && !pareceristas.Any(a => a.Situacao == SituacaoParecerista.AguardandoValidacao))
+            if(proposta.Situacao == SituacaoProposta.AguardandoAnalisePeloParecerista && !pareceristas.Any(a => a.Situacao == SituacaoParecerista.AguardandoValidacao))
             {
-                await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerDF), cancellationToken);
-                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerDF), cancellationToken);
+                await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
+                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
             }
             else if(proposta.Situacao == SituacaoProposta.AguardandoReanaliseParecerista && !pareceristas.Any(a => a.Situacao == SituacaoParecerista.Enviada))
             {
