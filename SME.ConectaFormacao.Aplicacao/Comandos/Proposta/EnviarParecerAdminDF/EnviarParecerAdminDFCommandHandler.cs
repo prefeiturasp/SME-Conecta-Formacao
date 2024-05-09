@@ -17,12 +17,10 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(EnviarParecerAdminDFCommand request, CancellationToken cancellationToken)
         {
-            if (await _repositorioProposta.SituacaoPropostaEhAguardandoAnaliseParecerDf(request.IdProposta))
+            if (await _repositorioProposta.AvaliarSituacaoPropostaPorIdSituacao(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerPelaDF))
             {
                 await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AnaliseParecerPelaAreaPromotora));
                 await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AnaliseParecerPelaAreaPromotora));
-
-                await _repositorioProposta.AtualizarSituacaoDoParecerEnviadaPeloAdminDF(request.IdProposta);
 
                 return true;
             }

@@ -1,22 +1,10 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Shouldly;
-using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
@@ -27,24 +15,35 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        [Fact(DisplayName = "Proposta - Deve enviar o parecer do parecerista")]
-        public async Task Ao_enviar_parecer_parecerista()
+        [Fact(DisplayName = "Proposta - O Parecerista deve enviar as suas considerações e a proposta deve ter a situação alterada para Aguardando Análise de Parecer pela DF")]
+        public async Task O_parecerista_deve_enviar_as_suas_consideracoes_e_a_proposta_deve_ter_a_situacao_alterada_para_aguardando_analise_de_parecer_pela_df()
         {
             // arrange
-            var usuario = UsuarioMock.GerarUsuario();
-            await InserirNaBase(usuario);
+            var perfilLogado = Perfis.PARECERISTA.ToString();
+            CriarClaimUsuario(perfilLogado, "1", "Parecerista1");
 
-            AdicionarPerfilUsuarioContextoAplicacao(Perfis.PARECERISTA, usuario.Login);
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
+            await InserirParametrosProposta();
 
-            var usuarioParecer = PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao();
-            //TODO
-            // usuarioParecer.UsuarioPareceristaId = usuario.Id;
-            // usuarioParecer.Situacao = SituacaoParecerista.PendenteEnvioParecerPeloParecerista;
-            usuarioParecer.PropostaPareceristaId = proposta.Id;
+            var proposta = await InserirNaBaseProposta(
+                SituacaoProposta.AguardandoAnalisePeloParecerista,
+                FormacaoHomologada.Sim,
+                TipoInscricao.Externa);
+            
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.AguardandoValidacao));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.Enviada));
 
-            await InserirNaBase(usuarioParecer);
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.Formato, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.FormacaoHomologada, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.TipoFormacao, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.TiposInscricao, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.IntegrarNoSGA, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.Dres, "1"));
+            
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.NomeFormacao, "2"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.PublicosAlvo, "2"));
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecer>();
 
@@ -52,45 +51,42 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await casoDeUso.Executar(proposta.Id);
 
             // assert
-            var pareceres = ObterTodos<PropostaPareceristaConsideracao>();
+            var pareceristas = ObterTodos<PropostaParecerista>();
+            pareceristas.All(a=> a.Situacao == SituacaoParecerista.Enviada).ShouldBeTrue();
 
-            //TODO
-            //pareceres.Any(parecer => parecer.Situacao == SituacaoParecerista.AguardandoAnaliseParecerPeloAdminDF).ShouldBeTrue();
-
-            var propostaConsulta = ObterTodos< Dominio.Entidades.Proposta>().FirstOrDefault();
-
-            propostaConsulta.Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseDf);
+            var propostas = ObterTodos<Dominio.Entidades.Proposta>();
+            propostas.All(a=> a.Situacao.EstaAguardandoAnaliseParecerPelaDF()).ShouldBeTrue();
         }
-
-        [Fact(DisplayName = "Proposta - Deve enviar o parecer do parecerista com parecerista pendente")]
-        public async Task Ao_enviar_parecer_parecerista_com_parecerista_pendente()
+        
+        [Fact(DisplayName = "Proposta - O Parecerista deve enviar as suas considerações e a proposta deve ter a situação alterada para Aguardando Análise pelo Parecerista")]
+        public async Task O_parecerista_deve_enviar_as_suas_consideracoes_e_a_proposta_deve_ter_a_situacao_alterada_para_aguardando_analise_pelo_parecerista()
         {
             // arrange
-            var usuario1 = UsuarioMock.GerarUsuario();
-            await InserirNaBase(usuario1);
+            var perfilLogado = Perfis.PARECERISTA.ToString();
+            CriarClaimUsuario(perfilLogado, "1", "Parecerista1");
 
-            AdicionarPerfilUsuarioContextoAplicacao(Perfis.PARECERISTA, usuario1.Login);
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
+            await InserirParametrosProposta();
 
-            var usuarioParecer = PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao();
-            //TODO
-            // usuarioParecer.UsuarioPareceristaId = usuario1.Id;
-            // usuarioParecer.Situacao = SituacaoParecerista.PendenteEnvioParecerPeloParecerista;
-            usuarioParecer.PropostaPareceristaId = proposta.Id;
+            var proposta = await InserirNaBaseProposta(
+                SituacaoProposta.AguardandoAnalisePeloParecerista,
+                FormacaoHomologada.Sim,
+                TipoInscricao.Externa);
+            
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.AguardandoValidacao));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.AguardandoValidacao));
 
-            await InserirNaBase(usuarioParecer);
-
-            var usuario2 = UsuarioMock.GerarUsuario();
-            await InserirNaBase(usuario2);
-
-            var usuarioParecer2 = PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao();
-            //TODO            
-            // usuarioParecer2.UsuarioPareceristaId = usuario2.Id;
-            // usuarioParecer2.Situacao = SituacaoParecerista.PendenteEnvioParecerPeloParecerista;
-            usuarioParecer2.PropostaPareceristaId = proposta.Id;
-
-            await InserirNaBase(usuarioParecer2);
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.Formato, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.FormacaoHomologada, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.TipoFormacao, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.TiposInscricao, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.IntegrarNoSGA, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.Dres, "1"));
+            
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoParecer.NomeFormacao, "2"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoParecer.PublicosAlvo, "2"));
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecer>();
 
@@ -98,34 +94,47 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await casoDeUso.Executar(proposta.Id);
 
             // assert
-            var pareceres = ObterTodos<PropostaPareceristaConsideracao>();
+            var pareceristas = ObterTodos<PropostaParecerista>();
+            pareceristas.Any(a=> a.Situacao.EstaEnviada()).ShouldBeTrue();
+            pareceristas.Any(a=> a.Situacao.EstaAguardandoValidacao()).ShouldBeTrue();
 
-            //TODO
-            //pareceres.Any(parecer => parecer.Situacao == SituacaoParecerista.AguardandoAnaliseParecerPeloAdminDF).ShouldBeTrue();
-
-            var propostaConsulta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
-
-            propostaConsulta.Situacao.ShouldBe(SituacaoProposta.AguardandoAnalisePeloParecerista);
+            var propostas = ObterTodos<Dominio.Entidades.Proposta>();
+            propostas.All(a=> a.Situacao.EstaAguardandoAnaliseParecerista()).ShouldBeTrue();
         }
-
-        [Fact(DisplayName = "Proposta - Deve enviar o parecer do admin DF")]
-        public async Task Ao_enviar_parecer_admin_DF()
+        
+        [Fact(DisplayName = "Proposta - O perfil Admin DF deve permitir enviar parecer e a situação da proposta deve ser alterada para aguardando análise da área promotora")]
+        public async Task O_perfil_admin_df_deve_enviar_parecer_e_a_situacao_da_proposta_deve_ser_alterada_para_aguardando_analise_da_area_promotora()
         {
-            // arrange
-            var usuario = UsuarioMock.GerarUsuario();
-            await InserirNaBase(usuario);
+           // arrange
+			var perfilLogado = Perfis.ADMIN_DF.ToString();
+			CriarClaimUsuario(perfilLogado, "4", "Admin DF");
 
-            AdicionarPerfilUsuarioContextoAplicacao(Perfis.ADMIN_DF, usuario.Login);
+			await InserirUsuario("1", "Parecerista1");
+			await InserirUsuario("2", "Parecerista2");
+			await InserirUsuario("3", "Parecerista3");
+			await InserirUsuario("4", "Admin DF");
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseDf);
+			await InserirParametrosProposta();
 
-            var usuarioParecer = PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao();
-            //TODO
-            // usuarioParecer.UsuarioPareceristaId = usuario.Id;
-            // usuarioParecer.Situacao = SituacaoParecerista.AguardandoAnaliseParecerPeloAdminDF;
-            usuarioParecer.PropostaPareceristaId = proposta.Id;
+			var proposta = await InserirNaBaseProposta(
+				SituacaoProposta.AguardandoAnaliseParecerPelaDF,
+				FormacaoHomologada.Sim,
+				TipoInscricao.Externa);
+			
+			await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.Enviada));
+			await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.Enviada));
+			await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "3","Parecerista3", SituacaoParecerista.Enviada));
 
-            await InserirNaBase(usuarioParecer);
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.Formato, "1"));
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.FormacaoHomologada, "1"));
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.TipoFormacao, "1"));
+			
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoParecer.TiposInscricao, "2"));
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoParecer.IntegrarNoSGA, "2"));
+			
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoParecer.Dres, "3"));
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoParecer.NomeFormacao, "3"));
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoParecer.PublicosAlvo, "3"));
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecer>();
 
@@ -133,29 +142,58 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await casoDeUso.Executar(proposta.Id);
 
             // assert
-            var pareceres = ObterTodos<PropostaPareceristaConsideracao>();
+            var pareceristas = ObterTodos<PropostaParecerista>();
+            pareceristas.All(a=> a.Situacao.EstaEnviada()).ShouldBeTrue();
 
-            //TODO
-            //pareceres.Any(parecer => parecer.Situacao == SituacaoParecerista.AguardandoAnaliseParecerPelaAreaPromotora).ShouldBeTrue();
-
-            var propostaConsulta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
-
-            propostaConsulta.Situacao.ShouldBe(SituacaoProposta.AnaliseParecerPelaAreaPromotora);
+            var propostas = ObterTodos<Dominio.Entidades.Proposta>();
+            propostas.All(a=> a.Situacao.EstaAnaliseParecerPelaAreaPromotora()).ShouldBeTrue();
         }
-
-
-        private void AdicionarPerfilUsuarioContextoAplicacao(Guid perfil, string login)
+        
+         [Fact(DisplayName = "Proposta - A Área Promotora deve enviar parecer e a situação da proposta deve ser alterada para aguardando a reanálise do parecerista")]
+        public async Task A_area_promotora_deve_enviar_parecer_e_a_situacao_da_proposta_deve_ser_alterada_para_aguardando_a_reanalise_do_parecerista()
         {
-            var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
-            var variaveis = new Dictionary<string, object>
-                {
-                    { "PerfilUsuario", perfil.ToString() },
-                    { "UsuarioLogado",  login }
-                };
+           // arrange
+			var perfilLogado = Perfis.COPED.ToString();
+			CriarClaimUsuario(perfilLogado, "4", "Área Promotora");
 
-            contextoAplicacao.AdicionarVariaveis(variaveis);
+			await InserirUsuario("1", "Parecerista1");
+			await InserirUsuario("2", "Parecerista2");
+			await InserirUsuario("3", "Parecerista3");
+			await InserirUsuario("4", "Área Promotora");
+
+			await InserirParametrosProposta();
+
+			var proposta = await InserirNaBaseProposta(
+				SituacaoProposta.AnaliseParecerPelaAreaPromotora,
+				FormacaoHomologada.Sim,
+				TipoInscricao.Externa);
+			
+			await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.Enviada));
+			await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.Enviada));
+			await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "3","Parecerista3", SituacaoParecerista.Enviada));
+
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.Formato, "1"));
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.FormacaoHomologada, "1"));
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoParecer.TipoFormacao, "1"));
+			
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoParecer.TiposInscricao, "2"));
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoParecer.IntegrarNoSGA, "2"));
+			
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoParecer.Dres, "3"));
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoParecer.NomeFormacao, "3"));
+			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoParecer.PublicosAlvo, "3"));
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecer>();
+
+            // act 
+            await casoDeUso.Executar(proposta.Id);
+
+            // assert
+            var pareceristas = ObterTodos<PropostaParecerista>();
+            pareceristas.All(a=> a.Situacao.EstaEnviada()).ShouldBeTrue();
+
+            var propostas = ObterTodos<Dominio.Entidades.Proposta>();
+            propostas.All(a=> a.Situacao.EstaAguardandoReanalisePeloParecerista()).ShouldBeTrue();
         }
     }
-
-
 }
