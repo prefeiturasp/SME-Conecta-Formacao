@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            var situacoes = new[] { SituacaoProposta.AguardandoAnalisePeloParecerista, SituacaoProposta.AguardandoReanaliseParecerista };
+            var situacoes = new[] { SituacaoProposta.AguardandoAnalisePeloParecerista, SituacaoProposta.AguardandoReanalisePeloParecerista };
             if (!situacoes.Contains(proposta.Situacao))
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECERISTA);
 
@@ -44,7 +44,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
                 await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
             }
-            else if(proposta.Situacao == SituacaoProposta.AguardandoReanaliseParecerista && !pareceristas.Any(a => a.Situacao == SituacaoParecerista.Enviada))
+            else if(proposta.Situacao == SituacaoProposta.AguardandoReanalisePeloParecerista && !pareceristas.Any(a => a.Situacao == SituacaoParecerista.Enviada))
             {
                 await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF), cancellationToken);
                 await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF), cancellationToken);

@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(usuario);
             PropostaEnviarPareceristaMock.UsuarioLogado = usuario;
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
 
             var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, usuario.Login, usuario.Nome);
             await InserirNaBase(propostaParecerista);
@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             pareceristaBanco.Situacao.ShouldBe(SituacaoParecerista.Recusada);
 
             var propostaBanco = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
-            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseParecerDF);
+            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseParecerPelaDF);
         }
 
         [Fact(DisplayName = "Proposta - Deve recusar o parecer do parecerista com parecerista pendente sem alterar situação da proposta")]
@@ -65,7 +65,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(usuario);
             PropostaEnviarPareceristaMock.UsuarioLogado = usuario;
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
 
             var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, usuario.Login, usuario.Nome);
             await InserirNaBase(propostaParecerista);
@@ -87,7 +87,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             pareceristaBanco.Situacao.ShouldBe(SituacaoParecerista.Recusada);
 
             var propostaBanco = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
-            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseParecerista);
+            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoAnalisePeloParecerista);
         }
 
         [Fact(DisplayName = "Proposta - Deve recusar o parecer do parecerista reanalise sem parecerista pendente alterando situação da proposta para AguardandoAnaliseParecerFinalDF")]
@@ -98,7 +98,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(usuario);
             PropostaEnviarPareceristaMock.UsuarioLogado = usuario;
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoReanaliseParecerista);
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoReanalisePeloParecerista);
 
             var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, usuario.Login, usuario.Nome, SituacaoParecerista.Enviada);
             await InserirNaBase(propostaParecerista);
@@ -126,7 +126,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(usuario);
             PropostaEnviarPareceristaMock.UsuarioLogado = usuario;
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoReanaliseParecerista);
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoReanalisePeloParecerista);
 
             var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, usuario.Login, usuario.Nome, SituacaoParecerista.Enviada);
             await InserirNaBase(propostaParecerista);
@@ -148,7 +148,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             pareceristaBanco.Situacao.ShouldBe(SituacaoParecerista.Recusada);
 
             var propostaBanco = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
-            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoReanaliseParecerista);
+            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoReanalisePeloParecerista);
         }
 
         [Fact(DisplayName = "Proposta - Deve retornar exceção ao recusar o parecer do parecerista sem justificativa")]
@@ -159,7 +159,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(usuario);
             PropostaEnviarPareceristaMock.UsuarioLogado = usuario;
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoReanaliseParecerista);
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoReanalisePeloParecerista);
 
             var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, usuario.Login, usuario.Nome, SituacaoParecerista.Enviada);
             await InserirNaBase(propostaParecerista);

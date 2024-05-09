@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(usuario);
             PropostaEnviarPareceristaMock.UsuarioLogado = usuario;
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
 
             var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, usuario.Login, usuario.Nome);
             await InserirNaBase(propostaParecerista);
@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             pareceristaBanco.Situacao.ShouldBe(SituacaoParecerista.Enviada);
 
             var propostaBanco = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
-            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseParecerDF);
+            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseParecerPelaDF);
         }
 
         [Fact(DisplayName = "Proposta - Deve enviar o parecer do parecerista com parecerista pendente sem alterar situação da proposta")]
@@ -60,7 +60,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(usuario);
             PropostaEnviarPareceristaMock.UsuarioLogado = usuario;
 
-            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnaliseParecerista);
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.AguardandoAnalisePeloParecerista);
 
             var propostaParecerista = PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, usuario.Login, usuario.Nome);
             await InserirNaBase(propostaParecerista);
@@ -80,7 +80,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             pareceristaBanco.Situacao.ShouldBe(SituacaoParecerista.Enviada);
 
             var propostaBanco = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
-            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseParecerista);
+            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoAnalisePeloParecerista);
         }
     }
 }

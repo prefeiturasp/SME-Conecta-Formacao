@@ -109,7 +109,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_aguardando_parecer_df_homologada_em_aguardando_analise_area_promotora()
         {
             //arrange
-            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerDF, formacaoHomologada: FormacaoHomologada.Sim, dataInscricaoForaPeriodo: true, quantidadeParecerista: 2);
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerPelaDF, formacaoHomologada: FormacaoHomologada.Sim, dataInscricaoForaPeriodo: true, quantidadeParecerista: 2);
 
             var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
 
@@ -118,7 +118,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
-            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AnaliseParecerAreaPromotora);
+            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AnaliseParecerPelaAreaPromotora);
         }
     }
 }
