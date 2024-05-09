@@ -35,10 +35,10 @@ namespace SME.ConectaFormacao.Aplicacao
             var ehPropostaPublicada = proposta.Situacao.EstaPublicada() || proposta.Situacao.EhAlterando();
 
             var ehPropostaAutomatica = request.PropostaDTO.TiposInscricao.PossuiElementos() && request.PropostaDTO.TiposInscricao.Any(a => a.TipoInscricao.EhAutomaticaOuJEIF());
-            if (string.IsNullOrEmpty(request.PropostaDTO.PublicoAlvoOutros) &&
-                !request.PropostaDTO.PublicosAlvo.Any() &&
-                string.IsNullOrEmpty(request.PropostaDTO.FuncaoEspecificaOutros) &&
-                !request.PropostaDTO.FuncoesEspecificas.Any())
+            if (request.PropostaDTO.PublicoAlvoOutros.EstaPreenchido() &&
+                !request.PropostaDTO.PublicosAlvo.PossuiElementos() &&
+                request.PropostaDTO.FuncaoEspecificaOutros.EstaPreenchido() &&
+                !request.PropostaDTO.FuncoesEspecificas.PossuiElementos())
             {
                 if (!request.PropostaDTO.ComponentesCurriculares.Any() || !request.PropostaDTO.AnosTurmas.Any())
                     erros.Add(MensagemNegocio.INFORMAR_PUBLICO_FUNCAO_MODALIDADE);

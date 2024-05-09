@@ -68,7 +68,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
             if (proposta.Situacao.EstaAguardandoAnaliseDf()
                 && await mediator.Send(new ExistePareceristasAdicionadosNaPropostaQuery(proposta.Id)))
-                return SituacaoProposta.AguardandoAnaliseParecerista;
+                return SituacaoProposta.AguardandoAnalisePeloParecerista;
 
             return SituacaoProposta.AguardandoAnaliseDf;
         }

@@ -111,18 +111,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task AtualizarPropostaParecerista(PropostaParecerista parecerista);
         Task InserirPropostaParecerista(long propostaId, PropostaParecerista parecerista);
         Task<IEnumerable<PropostaParecerista>> ObterPropostaPareceristaPorId(long id);
-        Task<bool> RemoverPropostaParecer(PropostaParecer parecer);
-        Task<PropostaParecer> ObterParecerPorId(long parecerId);
+        Task<bool> RemoverPropostaParecer(PropostaPareceristaConsideracao pareceristaConsideracao);
+        Task<PropostaPareceristaConsideracao> ObterParecerPorId(long parecerId);
         Task<bool> ExistePareceristasAdicionadosNaProposta(long propostaId);
         Task InserirPareceristas(long id, IEnumerable<PropostaParecerista> pareceristas);
         Task RemoverPareceristas(IEnumerable<PropostaParecerista> pareceristas);
         Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorId(long id);
-        Task<IEnumerable<PropostaParecer>> ObterPropostaParecerPorId(long id);
-        Task<bool> ExistePareceristasPendenteDeEnvio(long propostaId, long idUsuarioLogado);
-        Task<int> AtualizarSituacaoDoParecerEnviadaPeloParecerista(long propostaId, long idUsuarioLogado);
-        Task<bool> SituacaoPropostaEhAguardandoAnaliseParecerDf(long propostaId);
-        Task<int> AtualizarSituacaoDoParecerEnviadaPeloAdminDF(long propostaId);
-        Task<bool> TodosPareceristasPossuemParecer(long propostaId);
+        Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPropostaPareceristaConsideracaoPorId(long id);
+        Task<int> AtualizarSituacaoDoPareceristaParaEnviada(long propostaPareceristaId);
+        Task<bool> AvaliarSituacaoPropostaPorIdSituacao(long propostaId, SituacaoProposta situacaoProposta);
         Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorPropostaId(long propostaId);
+        Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id, SituacaoParecerista situacao);
     }
 }

@@ -19,18 +19,15 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var usuario = await _mediator.Send(new ObterUsuarioLogadoQuery());
 
-            var todosPareceristasTemParecer = await _repositorioProposta.TodosPareceristasPossuemParecer(request.IdProposta);
-
-            if (todosPareceristasTemParecer)
+            var pareceristas = await _repositorioProposta.ObterPareceristasPorPropostaId(request.IdProposta);
+            
+            if (!pareceristas.Any(a=> !a.RegistroFuncional.Equals(usuario.Login) && a.Situacao.EstaAguardandoValidacao()))
             {
-                if (!await _repositorioProposta.ExistePareceristasPendenteDeEnvio(request.IdProposta, usuario.Id))
-                {
-                    await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerDF));
-                    await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerDF));
-                }
+                await _mediator.Send(new EnviarPropostaCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerPelaDF));
+                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(request.IdProposta, SituacaoProposta.AguardandoAnaliseParecerPelaDF));
             }
 
-            await _repositorioProposta.AtualizarSituacaoDoParecerEnviadaPeloParecerista(request.IdProposta, usuario.Id);
+            await _repositorioProposta.AtualizarSituacaoDoPareceristaParaEnviada(pareceristas.FirstOrDefault(a=> a.RegistroFuncional.Equals(usuario.Login)).Id);
 
             return true;
         }
