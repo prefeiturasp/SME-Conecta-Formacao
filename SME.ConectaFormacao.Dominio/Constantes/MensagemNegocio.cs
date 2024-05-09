@@ -79,7 +79,8 @@ public class MensagemNegocio
     public const string CONTRATO_EXTERNO_NAO_LOCALIZADO_POR_CPF = "Nenhum contrato externo foi localizado com o cpf informado";
     public const string NENHUMA_DRE_ENCONTRADA_NO_EOL = "Não foi possível localizar as Dres no EOL para a sincronização instituicional";
     public const string PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA = "Proposta deve estar com situação de cadastrada, devolvida ou Aguardando análise do DF para ser enviada para validação";
-    public const string PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECER_DF = "Proposta deve estar com situação Aguardando parecer do DF para ser aprovada";
+    public const string PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECER_DF = "Proposta deve estar com situação Aguardando parecer do DF";
+    public const string PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECERISTA = "Proposta deve estar com situação Aguardando Análise/Reanalise do Parecerista";
     public const string QUANTIDADE_TURMAS_COM_REGENTE = "A quantidade de turmas informada deve ser a mesma de turmas com regentes";
     public const string NAO_EXISTE_NENHUM_TUTOR = "Não existe nenhum tutor cadastrado na Proposta";
     public const string JA_EXISTE_ESSA_TURMA_PARA_ESSE_TURTOR = "O Tutor {0} já possui a turma {1}";
@@ -89,6 +90,7 @@ public class MensagemNegocio
     public const string ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL = "Não foi possível localizar os funcionário no EOL com base nos critérios de cargo, função, ano, modalidade e componente curricular";
     public const string ERRO_OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_E_CARGO_EOL = "Não foi possível obter as dre com atribuicao do servidor e cargo no EOL";
     public const string ERRO_OBTER_USUARIOS_POR_PERFIS = "Não foi possível obter os usuários dos perfis informados";
+    public const string USUARIO_LOGADO_NAO_E_PARECERISTA_DA_PROPOSTA = "O usuário logado não está configurado como Parecerista da proposta";
 
     public const string TURMA_NAO_ENCONTRADA = "Turma não encontrada";
     public const string NENHUMA_TURMA_ENCONTRADA = "Nenhuma turma encontrada para a proposta";

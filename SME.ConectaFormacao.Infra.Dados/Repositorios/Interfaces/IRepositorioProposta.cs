@@ -124,6 +124,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> AtualizarSituacaoDoParecerEnviadaPeloAdminDF(long propostaId);
         Task<bool> TodosPareceristasPossuemParecer(long propostaId);
         Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorPropostaId(long propostaId);
+        Task AtualizarSituacaoParecerista(long propostaId, string registroFuncional, SituacaoParecerista situacao, string justificativa);
+        Task<PropostaParecerista> ObterPareceristaPorPropostaIdRegistroFuncional(long propostaId, string registroFuncional);
         Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id, SituacaoParecerista situacao);
     }
 }
