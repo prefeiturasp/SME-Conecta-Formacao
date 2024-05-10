@@ -414,7 +414,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerFiltroDTO));
         }
 
-        [HttpPost("{propostaId}/parecer/sugestao/{situacao}")]
+        [HttpGet("{propostaId}/parecer/sugestao/{situacao}")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
