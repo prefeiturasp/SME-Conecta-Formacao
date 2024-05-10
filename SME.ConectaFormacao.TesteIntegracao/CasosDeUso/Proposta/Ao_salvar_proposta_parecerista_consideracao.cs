@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
             
             var propostaPareceristaConsideracaoCadastroDto = PropostaSalvarMock.GerarPareceristaConsideracaoCadastro();
-            propostaPareceristaConsideracaoCadastroDto.PropostaPareceristaId = 1;
+            propostaPareceristaConsideracaoCadastroDto.PropostaId = 1;
             
             // act
             var retorno = await useCase.Executar(propostaPareceristaConsideracaoCadastroDto);
@@ -61,7 +61,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirConsideracoesDosPareceristas(inserirConsideracaoDoParecista, "1",proposta.Id);
             
             var alterarConsideracaoDoParecista = PropostaSalvarMock.GerarPareceristaConsideracaoCadastro();
-            alterarConsideracaoDoParecista.PropostaPareceristaId = proposta.Id;
+            alterarConsideracaoDoParecista.PropostaId = proposta.Id;
             alterarConsideracaoDoParecista.Id = inserirConsideracaoDoParecista.FirstOrDefault().Id;
             
             // act
@@ -76,13 +76,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             pareceristaConsideracao.Excluido.ShouldBeFalse();
         }
 
-        private async Task InserirConsideracoesDosPareceristas(IEnumerable<PropostaPareceristaConsideracao> inserirConsideracoesDosParecistas, string login, long propostaId, CampoParecer campoParecer = CampoParecer.FormacaoHomologada)
+        private async Task InserirConsideracoesDosPareceristas(IEnumerable<PropostaPareceristaConsideracao> inserirConsideracoesDosParecistas, string login, long propostaId, CampoConsideracao campoConsideracao = CampoConsideracao.FormacaoHomologada)
         {
             foreach (var consideracaoParecista in inserirConsideracoesDosParecistas)
             {
                 consideracaoParecista.PropostaPareceristaId = propostaId;
                 consideracaoParecista.CriadoLogin = login;
-                consideracaoParecista.Campo = campoParecer;
+                consideracaoParecista.Campo = campoConsideracao;
                 await InserirNaBase(consideracaoParecista);
             }
         }
