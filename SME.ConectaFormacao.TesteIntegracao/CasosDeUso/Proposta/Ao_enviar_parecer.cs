@@ -45,7 +45,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.NomeFormacao, "2"));
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.PublicosAlvo, "2"));
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecer>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecerista>();
 
             // act 
             await casoDeUso.Executar(proposta.Id);
@@ -88,7 +88,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.NomeFormacao, "2"));
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.PublicosAlvo, "2"));
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecer>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecerista>();
 
             // act 
             await casoDeUso.Executar(proposta.Id);
@@ -136,7 +136,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.NomeFormacao, "3"));
 			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.PublicosAlvo, "3"));
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecer>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecerista>();
 
             // act 
             await casoDeUso.Executar(proposta.Id);
@@ -183,7 +183,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.NomeFormacao, "3"));
 			await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.PublicosAlvo, "3"));
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecer>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecerista>();
 
             // act 
             await casoDeUso.Executar(proposta.Id);
