@@ -105,24 +105,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> ObterTotalVagasTurma(long id);
         Task<int> ObterTotalTurmasRegentes(long propostaId);
         Task<PropostaTurma> ObterTurmaPorNome(string nome, long propostaId);
-        Task<bool> UsuarioEstaInscritoNaProposta(long usuarioId, long propostaId);
         Task<IEnumerable<long>> PropostasConfirmadasQueNaoEncerramAinda();
         Task<IEnumerable<long>> PropostasTurmaIdsPorPropostaId(long propostaId);
-        Task AtualizarPropostaParecerista(PropostaParecerista parecerista);
-        Task InserirPropostaParecerista(long propostaId, PropostaParecerista parecerista);
         Task<IEnumerable<PropostaParecerista>> ObterPropostaPareceristaPorId(long id);
         Task<bool> RemoverPropostaParecer(PropostaPareceristaConsideracao pareceristaConsideracao);
         Task<PropostaPareceristaConsideracao> ObterParecerPorId(long parecerId);
         Task<bool> ExistePareceristasAdicionadosNaProposta(long propostaId);
-        Task InserirPareceristas(long id, IEnumerable<PropostaParecerista> pareceristas);
-        Task RemoverPareceristas(IEnumerable<PropostaParecerista> pareceristas);
+        Task InserirPareceristas(long id, IEnumerable<PropostaParecerista> pareceristas, SituacaoParecerista situacaoParecerista);
         Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorId(long id);
         Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPropostaPareceristaConsideracaoPorId(long id);
-        Task<int> AtualizarSituacaoDoPareceristaParaEnviada(long propostaPareceristaId);
         Task<bool> AvaliarSituacaoPropostaPorIdSituacao(long propostaId, SituacaoProposta situacaoProposta);
         Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorPropostaId(long propostaId);
-        Task AtualizarSituacaoParecerista(long propostaId, string registroFuncional, SituacaoParecerista situacao, string justificativa);
+        Task AtualizarSituacaoParecerista(long propostaPareceristaId, string registroFuncional, SituacaoParecerista situacao, string justificativa);
         Task<PropostaParecerista> ObterPareceristaPorPropostaIdRegistroFuncional(long propostaId, string registroFuncional);
         Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id, SituacaoParecerista situacao);
+        Task RemoverParecerista(PropostaParecerista parecerista);
     }
 }

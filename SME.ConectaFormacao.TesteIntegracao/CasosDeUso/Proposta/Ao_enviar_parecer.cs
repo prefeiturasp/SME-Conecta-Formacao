@@ -99,7 +99,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             pareceristas.Any(a=> a.Situacao.EstaAguardandoValidacao()).ShouldBeTrue();
 
             var propostas = ObterTodos<Dominio.Entidades.Proposta>();
-            propostas.All(a=> a.Situacao.EstaAguardandoAnaliseParecerista()).ShouldBeTrue();
+            propostas.All(a=> a.Situacao.EstaAguardandoAnalisePeloParecerista()).ShouldBeTrue();
         }
         
         [Fact(DisplayName = "Proposta - O perfil Admin DF deve permitir enviar parecer e a situação da proposta deve ser alterada para aguardando análise da área promotora")]

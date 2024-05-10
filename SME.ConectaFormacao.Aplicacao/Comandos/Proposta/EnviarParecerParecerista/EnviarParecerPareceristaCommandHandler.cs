@@ -34,17 +34,24 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.USUARIO_LOGADO_NAO_E_PARECERISTA_DA_PROPOSTA);
 
             parecerista.Situacao = request.Situacao;
-            parecerista.Justificativa = request.Justificativa;
+
+            if (request.Justificativa.PossuiElementos())
+                parecerista.Justificativa = request.Justificativa;
 
             await _repositorioProposta.AtualizarSituacaoParecerista(parecerista.Id, parecerista.RegistroFuncional, parecerista.Situacao, request.Justificativa);
 
             var pareceristas = await _repositorioProposta.ObterPareceristasPorId(proposta.Id);
-            if(proposta.Situacao == SituacaoProposta.AguardandoAnalisePeloParecerista && !pareceristas.Any(a => a.Situacao == SituacaoParecerista.AguardandoValidacao))
+
+            var naoPossuiPreceristasAguardandoValidacao = !pareceristas.Any(a => a.Situacao.EstaAguardandoValidacao());
+
+            var naoPossuiPareceristasAguardandoParecerFinal = !pareceristas.Any(a => a.Situacao.EstaEnviada() || a.Situacao.EstaAguardandoRevalidacao());
+            
+            if(proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && naoPossuiPreceristasAguardandoValidacao)
             {
                 await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
                 await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
             }
-            else if(proposta.Situacao == SituacaoProposta.AguardandoReanalisePeloParecerista && !pareceristas.Any(a => a.Situacao == SituacaoParecerista.Enviada))
+            else if(proposta.Situacao.EstaAguardandoReanalisePeloParecerista() && naoPossuiPareceristasAguardandoParecerFinal)
             {
                 await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF), cancellationToken);
                 await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF), cancellationToken);

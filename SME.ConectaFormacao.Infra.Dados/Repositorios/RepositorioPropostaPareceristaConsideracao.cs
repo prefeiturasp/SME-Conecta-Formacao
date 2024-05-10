@@ -35,5 +35,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             
             return await conexao.Obter().QueryAsync<PropostaPareceristaConsideracao>(query, new { propostaId, campoParecer = campoConsideracao });
         }
+        
+        public async Task<bool> ExistemConsideracoesPorParaceristaId(long pareceristaId)
+        {
+            var query = @"select count(1) 
+                            from proposta_parecerista_consideracao 
+                          where proposta_parecerista_id = @pareceristaId 
+                            and not excluido limit 1";
+            
+            return await conexao.Obter().ExecuteScalarAsync<bool>(query, new { pareceristaId });
+        }
     }
 }
