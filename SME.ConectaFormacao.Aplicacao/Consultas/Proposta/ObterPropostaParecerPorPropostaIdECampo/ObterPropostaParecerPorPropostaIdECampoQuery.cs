@@ -7,14 +7,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterPropostaParecerPorPropostaIdECampoQuery : IRequest<PropostaPareceristaConsideracaoCompletoDTO>
     {
-        public ObterPropostaParecerPorPropostaIdECampoQuery(long propostaId, CampoParecer campoParecer)
+        public ObterPropostaParecerPorPropostaIdECampoQuery(long propostaId, CampoConsideracao campoConsideracao)
         {
             PropostaId = propostaId;
-            CampoParecer = campoParecer;
+            CampoConsideracao = campoConsideracao;
         }
 
         public long PropostaId { get; set; }
-        public CampoParecer CampoParecer { get; set; }
+        public CampoConsideracao CampoConsideracao { get; set; }
     }
     public class ObterPropostaParecerPorPropostaIdECampoQueryValidator : AbstractValidator<ObterPropostaParecerPorPropostaIdECampoQuery>
     {

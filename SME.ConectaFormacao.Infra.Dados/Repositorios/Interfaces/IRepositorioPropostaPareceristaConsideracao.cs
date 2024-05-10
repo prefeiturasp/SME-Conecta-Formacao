@@ -6,6 +6,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
     public interface IRepositorioPropostaPareceristaConsideracao : IRepositorioBaseAuditavel<PropostaPareceristaConsideracao>
     {
-        Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPorPropostaIdECampo(long propostaId, CampoParecer campoParecer);
+        Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPorPropostaIdECampo(long propostaId, CampoConsideracao campoConsideracao);
     }
 }

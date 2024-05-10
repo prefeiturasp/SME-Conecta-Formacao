@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public async Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPorPropostaIdECampo(long propostaId, CampoParecer campoParecer)
+        public async Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPorPropostaIdECampo(long propostaId, CampoConsideracao campoConsideracao)
         {
             var query = @"select 
                             ppc.id, 
@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                               and not pp.excluido
                               and ppc.campo = @campoParecer";
             
-            return await conexao.Obter().QueryAsync<PropostaPareceristaConsideracao>(query, new { propostaId, campoParecer });
+            return await conexao.Obter().QueryAsync<PropostaPareceristaConsideracao>(query, new { propostaId, campoParecer = campoConsideracao });
         }
     }
 }

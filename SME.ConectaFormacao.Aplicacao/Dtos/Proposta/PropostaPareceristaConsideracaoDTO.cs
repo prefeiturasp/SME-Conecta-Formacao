@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
     {
         public long Id { get; set; }
         
-        public CampoParecer Campo { get; set; }
+        public CampoConsideracao Campo { get; set; }
         
         public string Descricao { get; set; }
         
