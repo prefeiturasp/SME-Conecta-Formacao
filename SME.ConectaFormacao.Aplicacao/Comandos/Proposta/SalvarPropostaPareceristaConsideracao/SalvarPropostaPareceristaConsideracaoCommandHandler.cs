@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -36,9 +37,10 @@ namespace SME.ConectaFormacao.Aplicacao
             
             var propostaPareceristaConsideracao = _mapper.Map<PropostaPareceristaConsideracao>(request.PropostaPareceristaConsideracaoCadastroDto);
             
-            var pareceristas = await _repositorioProposta.ObterPareceristasPorId(request.PropostaPareceristaConsideracaoCadastroDto.PropostaId);
+            var parecerista = await _repositorioProposta.ObterPareceristaPorPropostaIdRegistroFuncional(request.PropostaPareceristaConsideracaoCadastroDto.PropostaId, request.Login) ??
+                               throw new NegocioException(MensagemNegocio.USUARIO_LOGADO_NAO_E_PARECERISTA_DA_PROPOSTA);
 
-            propostaPareceristaConsideracao.PropostaPareceristaId = pareceristas.FirstOrDefault(f => f.RegistroFuncional.Equals(request.Login)).Id;
+            propostaPareceristaConsideracao.PropostaPareceristaId = parecerista.Id;
             
             var id = await _repositorioPropostaPareceristaConsideracao.Inserir(propostaPareceristaConsideracao);
             
