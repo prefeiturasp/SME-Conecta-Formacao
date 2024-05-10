@@ -54,5 +54,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoParecerista.Desativado;
         }
+        
+        public static bool EstaAguardandoValidacaoOuEnviado(this SituacaoParecerista valor)
+        {
+            return valor == SituacaoParecerista.AguardandoValidacao || valor == SituacaoParecerista.Enviada;
+        }
     }
 }
