@@ -414,20 +414,31 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerFiltroDTO));
         }
 
-        [HttpGet("{propostaId}/parecer/sugestao/{situacao}")]
+        [HttpGet("{propostaId}/parecerista/sugestao/aprovada")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Permissao.Proposta_A, Policy = "Bearer")]
-        public async Task<IActionResult> ObterSugestoesParecerista(
+        public async Task<IActionResult> ObterSugestoesPareceristaAprovada(
             [FromServices] ICasoDeUsoObterSugestaoParecerPareceristas casoDeUso,
-            [FromRoute] long propostaId,
-            [FromRoute] SituacaoParecerista situacaoParecerista)
+            [FromRoute] long propostaId)
         {
-            return Ok(await casoDeUso.Executar(propostaId, situacaoParecerista));
+            return Ok(await casoDeUso.Executar(propostaId, SituacaoParecerista.Aprovada));
         }
 
-        [HttpPost("{propostaId}/parecer/enviar")]
+        [HttpGet("{propostaId}/parecerista/sugestao/recusada")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Permissao.Proposta_A, Policy = "Bearer")]
+        public async Task<IActionResult> ObterSugestoesPareceristaRecusada(
+            [FromServices] ICasoDeUsoObterSugestaoParecerPareceristas casoDeUso,
+            [FromRoute] long propostaId)
+        {
+            return Ok(await casoDeUso.Executar(propostaId, SituacaoParecerista.Recusada));
+        }
+
+        [HttpPost("{propostaId}/parecerista/enviar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
@@ -439,7 +450,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUso.Executar(propostaId));
         }
 
-        [HttpPost("{propostaId}/parecer/aprovar")]
+        [HttpPost("{propostaId}/parecerista/aprovar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
@@ -452,7 +463,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUso.Executar(propostaId, propostaJustificativaDTO));
         }
 
-        [HttpPost("{propostaId}/parecer/recusar")]
+        [HttpPost("{propostaId}/parecerista/recusar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
