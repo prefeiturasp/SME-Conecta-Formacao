@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            var situacoes = new SituacaoProposta[] { SituacaoProposta.Cadastrada, SituacaoProposta.Devolvida, SituacaoProposta.AguardandoAnaliseDf };
+            var situacoes = new SituacaoProposta[] { SituacaoProposta.Cadastrada, SituacaoProposta.Devolvida, SituacaoProposta.AguardandoAnaliseDf, SituacaoProposta.AguardandoAnaliseParecerPelaDF };
 
             if (!situacoes.Contains(proposta.Situacao))
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA);
@@ -69,6 +69,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.Situacao.EstaAguardandoAnaliseDf()
                 && await mediator.Send(new ExistePareceristasAdicionadosNaPropostaQuery(proposta.Id)))
                 return SituacaoProposta.AguardandoAnalisePeloParecerista;
+
+            if (proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF())
+                return SituacaoProposta.AnaliseParecerPelaAreaPromotora;
 
             return SituacaoProposta.AguardandoAnaliseDf;
         }

@@ -11,13 +11,14 @@ namespace SME.ConectaFormacao.Aplicacao
     public class SalvarPropostaPareceristaConsideracaoCommandHandler : IRequestHandler<SalvarPropostaPareceristaConsideracaoCommand, RetornoDTO>
     {
         private readonly IRepositorioPropostaPareceristaConsideracao _repositorioPropostaPareceristaConsideracao;
+        private readonly IRepositorioProposta _repositorioProposta;
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
 
-        public SalvarPropostaPareceristaConsideracaoCommandHandler(IMapper mapper, IRepositorioPropostaPareceristaConsideracao repositorioPropostaPareceristaConsideracao,IMediator _mediator)
+        public SalvarPropostaPareceristaConsideracaoCommandHandler(IMapper mapper, IRepositorioPropostaPareceristaConsideracao repositorioPropostaPareceristaConsideracao,IRepositorioProposta repositorioProposta)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioPropostaPareceristaConsideracao = repositorioPropostaPareceristaConsideracao ?? throw new ArgumentNullException(nameof(repositorioPropostaPareceristaConsideracao));
+            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
         public async Task<RetornoDTO> Handle(SalvarPropostaPareceristaConsideracaoCommand request, CancellationToken cancellationToken)
@@ -34,7 +35,10 @@ namespace SME.ConectaFormacao.Aplicacao
             }
             
             var propostaPareceristaConsideracao = _mapper.Map<PropostaPareceristaConsideracao>(request.PropostaPareceristaConsideracaoCadastroDto);
-            propostaPareceristaConsideracao.PropostaPareceristaId = request.PropostaPareceristaConsideracaoCadastroDto.PropostaPareceristaId;
+            
+            var pareceristas = await _repositorioProposta.ObterPareceristasPorId(request.PropostaPareceristaConsideracaoCadastroDto.PropostaId);
+
+            propostaPareceristaConsideracao.PropostaPareceristaId = pareceristas.FirstOrDefault(f => f.RegistroFuncional.Equals(request.Login)).Id;
             
             var id = await _repositorioPropostaPareceristaConsideracao.Inserir(propostaPareceristaConsideracao);
             

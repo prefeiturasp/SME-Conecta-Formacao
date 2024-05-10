@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
         private static Faker<PropostaPareceristaConsideracao> Gerador()
         {
             var faker = new Faker<PropostaPareceristaConsideracao>("pt_BR");
-            faker.RuleFor(x => x.Campo, f => (CampoParecer)f.Random.Short(1,28));
+            faker.RuleFor(x => x.Campo, f => (CampoConsideracao)f.Random.Short(1,28));
             faker.RuleFor(dest => dest.Descricao, f => f.Lorem.Sentence(100));
             faker.RuleFor(x => x.Excluido, false);
             AuditoriaFaker(faker);
@@ -21,11 +21,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return Gerador().Generate();
         }
         
-        public static PropostaPareceristaConsideracao GerarPropostaPareceristaConsideracao(long propostaPareceristaId, CampoParecer campoParecer, string criadoLogin = "1")
+        public static PropostaPareceristaConsideracao GerarPropostaPareceristaConsideracao(long propostaPareceristaId, CampoConsideracao campoConsideracao, string criadoLogin = "1")
         {
             var propostaParecer = GerarPropostaPareceristaConsideracao();
             propostaParecer.PropostaPareceristaId = propostaPareceristaId;
-            propostaParecer.Campo = campoParecer;
+            propostaParecer.Campo = campoConsideracao;
             propostaParecer.CriadoLogin = criadoLogin;
             return propostaParecer;
         }

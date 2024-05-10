@@ -1,6 +1,6 @@
 ﻿namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
-    public interface ICasoDeUsoEnviarPropostaParecer
+    public interface ICasoDeUsoEnviarPropostaParecerista
     {
         Task<bool> Executar(long propostaId);
     }

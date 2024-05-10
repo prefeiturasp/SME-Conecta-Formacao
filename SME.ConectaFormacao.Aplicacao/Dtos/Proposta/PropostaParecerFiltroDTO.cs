@@ -9,6 +9,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public long PropostaId { get; set; }
         
         [Required(ErrorMessage = "É necessário informar o campo do parecer da proposta")]
-        public CampoParecer Campo { get; set; }
+        public CampoConsideracao Campo { get; set; }
     }
 }

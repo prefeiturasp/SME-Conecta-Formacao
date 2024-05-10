@@ -404,7 +404,9 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoEncerrarInscricaoAutomaticamenteUsuarios, CasoDeUsoEncerrarInscricaoAutomaticamenteUsuarios>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerista, CasoDeUsoObterParecerista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverParecerDaProposta, CasoDeUsoRemoverParecerDaProposta>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParecer, CasoDeUsoEnviarPropostaParecer>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParecerista, CasoDeUsoEnviarPropostaParecerista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAprovarPropostaParecerista, CasoDeUsoAprovarPropostaParecerista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRecusarPropostaParecerista, CasoDeUsoRecusarPropostaParecerista>();
     }
 
     protected virtual void RegistrarHttpClients()

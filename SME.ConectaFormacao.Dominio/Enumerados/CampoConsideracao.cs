@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
-    public enum CampoParecer
+    public enum CampoConsideracao
     {
         [Display(Name = "Formação homologada por SME/COPED/DF")]
         FormacaoHomologada = 1,
@@ -99,5 +99,13 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         
         [Display(Name = "Descrição dos critérios para validação das inscrições (outros)")]
         DescricaoCriteriosValidacaoInscricaoOutros = 32
+    }
+
+    public static class CampoParecerExtensao
+    {
+        public static bool EhCampoFormacaoHomologada(this CampoConsideracao valor)
+        {
+            return valor == CampoConsideracao.FormacaoHomologada;
+        }
     }
 }

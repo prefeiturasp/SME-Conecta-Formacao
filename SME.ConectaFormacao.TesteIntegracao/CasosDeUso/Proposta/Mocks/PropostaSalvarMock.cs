@@ -272,7 +272,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
         public static Faker<PropostaPareceristaConsideracaoCadastroDTO> GeradorPropostaParecerCadastro(int quantidadeTurmas = 1)
         {
             var faker = new Faker<PropostaPareceristaConsideracaoCadastroDTO>("pt_BR");
-            faker.RuleFor(x => x.Campo, f => (CampoParecer)f.Random.Short(1,28));
+            faker.RuleFor(x => x.Campo, f => (CampoConsideracao)f.Random.Short(1,28));
             faker.RuleFor(dest => dest.Descricao, f => f.Lorem.Sentence(100));
             return faker;
         }
@@ -282,11 +282,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             return GeradorPropostaParecerCadastro();
         }
         
-        public static Faker<PropostaParecerFiltroDTO> GeradorPropostaParecerFiltroDTO(long propostaId, CampoParecer campoParecer)
+        public static Faker<PropostaParecerFiltroDTO> GeradorPropostaParecerFiltroDTO(long propostaId, CampoConsideracao campoConsideracao)
         {
             var faker = new Faker<PropostaParecerFiltroDTO>();
             faker.RuleFor(x => x.PropostaId, f => propostaId);
-            faker.RuleFor(x => x.Campo, f => campoParecer);
+            faker.RuleFor(x => x.Campo, f => campoConsideracao);
             return faker;
         }
         

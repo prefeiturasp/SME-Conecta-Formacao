@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<PropostaPareceristaConsideracaoCompletoDTO> Handle(ObterPropostaParecerPorPropostaIdECampoQuery request, CancellationToken cancellationToken)
         {
-            var consideracoesDosPareceristas = await _repositorioPropostaPareceristaConsideracao.ObterPorPropostaIdECampo(request.PropostaId,request.CampoParecer);
+            var consideracoesDosPareceristas = await _repositorioPropostaPareceristaConsideracao.ObterPorPropostaIdECampo(request.PropostaId,request.CampoConsideracao);
             
             var perfilLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery(), cancellationToken);
             
@@ -105,20 +105,20 @@ namespace SME.ConectaFormacao.Aplicacao
             IEnumerable<PropostaPareceristaConsideracaoDTO> consideracoesDoPerfilParecerista;
             consideracoesDoPerfilParecerista = MapearParaDTO(consideracoesDosPareceristas.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm));
                     
-            var pareceresDaPropostaDoUsuarioLogado = consideracoesDosPareceristas.Where(w => w.CriadoLogin.Equals(usuarioLogado.Login));
+            var consideracoesDoPareceristaLogado = consideracoesDosPareceristas.Where(w => w.CriadoLogin.Equals(usuarioLogado.Login));
 
             foreach (var consideracaoDoParecista in consideracoesDoPerfilParecerista)
             {
-                consideracaoDoParecista.PodeAlterar = pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == consideracaoDoParecista.Id) && situacaoParecerista.EstaAguardandoValidacao();
+                consideracaoDoParecista.PodeAlterar = consideracoesDoPareceristaLogado.Any(a => a.Id == consideracaoDoParecista.Id) && situacaoParecerista.EstaAguardandoValidacao();
                 
-                if (!pareceresDaPropostaDoUsuarioLogado.Any(a => a.Id == consideracaoDoParecista.Id))
+                if (!consideracoesDoPareceristaLogado.Any(a => a.Id == consideracaoDoParecista.Id))
                 {
                     consideracaoDoParecista.Auditoria = null;
                     consideracaoDoParecista.PodeAlterar = false;
                 }
             }
                     
-            var podeInserir = proposta.Situacao.EstaAguardandoAnaliseParecerista() && !pareceresDaPropostaDoUsuarioLogado.Any() && souPareceristaDaProposta;
+            var podeInserir = proposta.Situacao.EstaAguardandoAnaliseParecerista() && !consideracoesDoPareceristaLogado.Any() && souPareceristaDaProposta && situacaoParecerista.EstaAguardandoValidacao();
             
             return new PropostaPareceristaConsideracaoCompletoDTO()
             {
