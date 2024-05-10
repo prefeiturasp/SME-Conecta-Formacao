@@ -108,7 +108,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (ehParecerista)
                 return !consideracoes.Any(a => a.CriadoLogin.Equals(usuarioLogado.Login))
                        && proposta.Pareceristas.Any(a => a.RegistroFuncional.Equals(usuarioLogado.Login) && a.Situacao.EstaAguardandoValidacao())
-                       || proposta.Situacao.EstaAguardandoReanaliseParecerista();
+                       || proposta.Situacao.EstaAguardandoReanalisePeloParecerista();
             
             return ehAdminDF && (proposta.Situacao.EstaAguardandoAnaliseParecerFinalPelaDF() || !consideracoes.Any());
         }
@@ -164,7 +164,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private async Task<bool> PodeEnviarParecer(Guid usuarioLogado, IEnumerable<PropostaPareceristaConsideracao> consideracoes, string usuarioLogin, Proposta proposta)
         {
             if (usuarioLogado.EhPerfilParecerista())
-                return proposta.Situacao.EstaAguardandoAnaliseParecerista()
+                return proposta.Situacao.EstaAguardandoAnalisePeloParecerista()
                        && consideracoes.Any(a => a.CriadoLogin.Equals(usuarioLogin))
                        && proposta.Pareceristas.Any(a => a.RegistroFuncional.Equals(usuarioLogin) && a.Situacao.EstaAguardandoValidacao());
             

@@ -21,10 +21,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            var situacoes = new SituacaoProposta[] { SituacaoProposta.Cadastrada, SituacaoProposta.Devolvida, SituacaoProposta.AguardandoAnaliseDf, SituacaoProposta.AguardandoAnaliseParecerPelaDF };
+            var situacoes = new [] { 
+                SituacaoProposta.Cadastrada, 
+                SituacaoProposta.Devolvida, 
+                SituacaoProposta.AguardandoAnaliseDf, 
+                SituacaoProposta.AguardandoAnaliseParecerPelaDF };
 
             if (!situacoes.Contains(proposta.Situacao))
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA);
+                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_PODE_SER_ENVIADA);
 
             var existeFuncaoEspecificaOutros = await mediator.Send(new ExisteCargoFuncaoOutrosNaPropostaQuery(proposta.Id));
             var propostasTipoInscricao = await mediator.Send(new ObterPropostaTipoInscricaoPorIdQuery(proposta.Id));
