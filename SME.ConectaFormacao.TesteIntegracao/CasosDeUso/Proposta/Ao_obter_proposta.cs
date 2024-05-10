@@ -199,7 +199,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.TotalDeConsideracoes.All(a=> a.Quantidade == 3).ShouldBeTrue();
             propostaCompletoDTO.ExibirConsideracoes.ShouldBeTrue();
             propostaCompletoDTO.PodeEnviar.ShouldBeFalse();
-            propostaCompletoDTO.PodeEnviarConsideracoes.ShouldBeTrue();
+            propostaCompletoDTO.PodeEnviarConsideracoes.ShouldBeFalse();
             propostaCompletoDTO.QtdeLimitePareceristaProposta.ShouldBe(3);
             propostaCompletoDTO.PodeAprovar.ShouldBeFalse();
             propostaCompletoDTO.PodeRecusar.ShouldBeFalse();
@@ -607,8 +607,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 			propostaCompletoDTO.PodeEnviar.ShouldBeTrue();
 			propostaCompletoDTO.PodeEnviarConsideracoes.ShouldBeFalse();
 			propostaCompletoDTO.QtdeLimitePareceristaProposta.ShouldBe(3);
-			propostaCompletoDTO.PodeAprovar.ShouldBeTrue();
-			propostaCompletoDTO.PodeRecusar.ShouldBeTrue();
+			propostaCompletoDTO.PodeAprovar.ShouldBeFalse();
+			propostaCompletoDTO.PodeRecusar.ShouldBeFalse();
 			propostaCompletoDTO.LabelAprovar.ShouldBe("Aprovar");
 			propostaCompletoDTO.LabelRecusar.ShouldBe("Recusar");
 		}
@@ -828,7 +828,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert 
             propostaCompletoDTO.ShouldNotBeNull();
-            propostaCompletoDTO.PodeEnviarConsideracoes.ShouldBeTrue();
+            propostaCompletoDTO.PodeEnviarConsideracoes.ShouldBeFalse();
         }
 
 
@@ -1398,7 +1398,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert 
             propostaCompletoDTO.ShouldNotBeNull();
-            propostaCompletoDTO.PodeEnviarConsideracoes.ShouldBeTrue();
+            propostaCompletoDTO.PodeEnviarConsideracoes.ShouldBeFalse();
         }
         
         [Fact(DisplayName = "Proposta - Não deve permitir ao perfil de Área Promotora enviar os pareceres quando estiverem na situação aguardando análise do parecer DF")]

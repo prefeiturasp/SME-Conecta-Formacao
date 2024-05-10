@@ -342,7 +342,6 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarProposta, CasoDeUsoEnviarProposta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerProposta, CasoDeUsoObterParecerProposta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoHomologada, CasoDeUsoObterFormacaoHomologada>();
 
