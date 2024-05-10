@@ -983,14 +983,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
-        public async Task InserirPareceristas(long id, IEnumerable<PropostaParecerista> pareceristas)
+        public async Task InserirPareceristas(long id, IEnumerable<PropostaParecerista> pareceristas, SituacaoParecerista situacaoParecerista)
         {
             foreach (var parecerista in pareceristas)
             {
                 PreencherAuditoriaCriacao(parecerista);
 
                 parecerista.PropostaId = id;
-                parecerista.Situacao = SituacaoParecerista.AguardandoValidacao;
+                parecerista.Situacao = situacaoParecerista;
                 parecerista.Id = (long)await conexao.Obter().InsertAsync(parecerista);
             }
         }
@@ -1184,14 +1184,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
 
-        public Task RemoverPareceristas(IEnumerable<PropostaParecerista> pareceristas)
+        public Task RemoverParecerista(PropostaParecerista parecerista)
         {
-            var parecerista = pareceristas.First();
             PreencherAuditoriaAlteracao(parecerista);
 
             var parametros = new
             {
-                ids = pareceristas.Select(t => t.Id).ToArray(),
+                id = parecerista.Id,
                 parecerista.AlteradoEm,
                 parecerista.AlteradoPor,
                 parecerista.AlteradoLogin
@@ -1203,7 +1202,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             alterado_em = @AlteradoEm, 
                             alterado_por = @AlteradoPor, 
                             alterado_login = @AlteradoLogin 
-                          where not excluido and id = any(@ids)";
+                          where not excluido and id = @id";
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
@@ -1316,14 +1315,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             regente.PropostaId = propostaId;
             regente.Id = (long)await conexao.Obter().InsertAsync(regente);
-        }
-
-        public async Task InserirPropostaParecerista(long propostaId, PropostaParecerista parecerista)
-        {
-            PreencherAuditoriaCriacao(parecerista);
-
-            parecerista.PropostaId = propostaId;
-            parecerista.Id = (long)await conexao.Obter().InsertAsync(parecerista);
         }
 
         public async Task InserirPropostaRegenteTurma(long propostaRegenteId, IEnumerable<PropostaRegenteTurma> regenteTurma)
@@ -1498,12 +1489,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             PreencherAuditoriaAlteracao(propostaRegente);
             await conexao.Obter().UpdateAsync(propostaRegente);
-        }
-
-        public async Task AtualizarPropostaParecerista(PropostaParecerista parecerista)
-        {
-            PreencherAuditoriaAlteracao(parecerista);
-            await conexao.Obter().UpdateAsync(parecerista);
         }
 
         public async Task AtualizarPropostaTutor(PropostaTutor propostaTutor)
@@ -2314,11 +2299,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaTurma>(query, new { nome = nome.ToLower(), propostaId });
         }
 
-        public Task<bool> UsuarioEstaInscritoNaProposta(long usuarioId, long propostaId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<long>> PropostasConfirmadasQueNaoEncerramAinda()
         {
             var dataAtual = DateTimeExtension.HorarioBrasilia();
@@ -2383,29 +2363,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId });
         }
-        
-        public async Task<int> AtualizarSituacaoDoPareceristaParaEnviada(long propostaPareceristaId)
-        {
-            var query = @"update proposta_parecerista
-                          set 
-                            situacao = @situacaoEnviada, 
-                            alterado_em = @AlteradoEm, 
-                            alterado_por = @AlteradoPor, 
-                            alterado_login = @AlteradoLogin 
-                          where not excluido                            
-                            and id = @propostaPareceristaId
-                            and situacao = @situacaoAguardandoValidacao ";
-
-            return await conexao.Obter().ExecuteAsync(query, new
-            {
-                propostaPareceristaId,
-                situacaoEnviada = SituacaoParecerista.Enviada,
-                situacaoAguardandoValidacao = SituacaoParecerista.AguardandoValidacao,
-                AlteradoEm = DateTimeExtension.HorarioBrasilia(),
-                AlteradoPor = contexto.NomeUsuario,
-                AlteradoLogin = contexto.UsuarioLogado
-            });
-        }
 
         public Task<bool> AvaliarSituacaoPropostaPorIdSituacao(long propostaId, SituacaoProposta situacaoProposta)
         {
@@ -2439,17 +2396,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { propostaId });
         }
 
-        public Task AtualizarSituacaoParecerista(long propostaId, string registroFuncional, SituacaoParecerista situacao, string justificativa)
+        public Task AtualizarSituacaoParecerista(long propostaPareceristaId, string registroFuncional, SituacaoParecerista situacao, string justificativa)
         {
             var query = @"update proposta_parecerista
                           set 
                             situacao = @situacao, 
                             justificativa = @justificativa
                           where not excluido
-                            and proposta_id = @propostaId 
+                            and id = @propostaPareceristaId 
                             and registro_funcional = @registroFuncional";
 
-            return conexao.Obter().ExecuteAsync(query, new { propostaId, registroFuncional, situacao, justificativa });
+            return conexao.Obter().ExecuteAsync(query, new { propostaPareceristaId, registroFuncional, situacao, justificativa });
         }
 
         public Task<PropostaParecerista> ObterPareceristaPorPropostaIdRegistroFuncional(long propostaId, string registroFuncional)

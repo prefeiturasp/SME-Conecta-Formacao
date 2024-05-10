@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.Aplicacao
             return new PropostaPareceristaConsideracaoCompletoDTO()
             {
                 PropostaId = request.PropostaId,
-                PodeInserir = perfilLogado.EhPerfilParecerista() && proposta.Situacao.EstaAguardandoAnaliseParecerista() && souPareceristaDaProposta,
+                PodeInserir = perfilLogado.EhPerfilParecerista() && proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && souPareceristaDaProposta,
                 Itens = Enumerable.Empty<PropostaPareceristaConsideracaoDTO>()
             };
         }
@@ -118,7 +118,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
             }
                     
-            var podeInserir = proposta.Situacao.EstaAguardandoAnaliseParecerista() && !consideracoesDoPareceristaLogado.Any() && souPareceristaDaProposta && situacaoParecerista.EstaAguardandoValidacao();
+            var podeInserir = proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && !consideracoesDoPareceristaLogado.Any() && souPareceristaDaProposta && situacaoParecerista.EstaAguardandoValidacao();
             
             return new PropostaPareceristaConsideracaoCompletoDTO()
             {
