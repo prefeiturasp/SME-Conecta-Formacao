@@ -90,15 +90,15 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.PodeRecusar = podeAprovarRecusar;
             propostaCompletaDTO.LabelAprovar = ehParecerista ? "Sugerir aprovação" : "Aprovar";
             propostaCompletaDTO.LabelRecusar = ehParecerista ? "Sugerir recusa" : "Recusar";
-            
+
+            propostaCompletaDTO.DesativarAnoEhComponente = DesativarAnoEhComponente(proposta);
+
+            propostaCompletaDTO.UltimaJustificativa = ehPareceristaDaProposta ? parecerista.Justificativa : proposta.Movimentacao.Justificativa;
+
             if (!proposta.ArquivoImagemDivulgacaoId.HasValue) return propostaCompletaDTO;
             
             var arquivo = await _repositorioArquivo.ObterPorId(proposta.ArquivoImagemDivulgacaoId.Value);
             propostaCompletaDTO.ArquivoImagemDivulgacao = _mapper.Map<PropostaImagemDivulgacaoDTO>(arquivo);
-
-            propostaCompletaDTO.DesativarAnoEhComponente = DesativarAnoEhComponente(proposta);
-
-            propostaCompletaDTO.UltimaJustificativa = ehPareceristaDaProposta ? parecerista.Justificativa : proposta.Movimentacao.Justificativa; 
 
             return propostaCompletaDTO;
         }
