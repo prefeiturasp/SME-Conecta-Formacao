@@ -169,8 +169,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private static bool PodeEnviar(Proposta proposta, bool possuiPareceristasNaProposta, bool ehAdminDF, bool ehAreaPromotora)
         {
-            if (ehAdminDF && proposta.Situacao.EstaAguardandoAnaliseDf() 
-                || ehAreaPromotora && proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora())
+            if ((ehAdminDF && (proposta.Situacao.EstaAguardandoAnaliseDf() || proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF())) 
+                || (ehAreaPromotora && proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora()))
                 return possuiPareceristasNaProposta;
             
             return proposta.Situacao.EstaCadastrada() || proposta.Situacao.EstaDevolvida();
