@@ -16,9 +16,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<string> Executar(long propostaId, SituacaoParecerista situacaoParecerista)
+        public async Task<string> Executar(long propostaId)
         {
-            return await mediator.Send(new ObterSugestoesPareceristasQuery(propostaId, situacaoParecerista));
+            return await mediator.Send(new ObterSugestoesPareceristasQuery(propostaId));
         }
     }
 }

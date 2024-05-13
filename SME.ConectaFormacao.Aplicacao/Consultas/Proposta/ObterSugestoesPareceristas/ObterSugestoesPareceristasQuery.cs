@@ -6,14 +6,12 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterSugestoesParecer
 {
     public class ObterSugestoesPareceristasQuery : IRequest<string>
     {
-        public ObterSugestoesPareceristasQuery(long propostaId, SituacaoParecerista situacao)
+        public ObterSugestoesPareceristasQuery(long propostaId)
         {
             PropostaId = propostaId;
-            Situacao = situacao;
         }
 
         public long PropostaId { get; }
-        public SituacaoParecerista Situacao { get; }
     }
 
     public class ObterSugestoesPareceristasQueryValidator : AbstractValidator<ObterSugestoesPareceristasQuery>

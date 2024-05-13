@@ -25,11 +25,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterSugestaoParecerPareceristas>();
 
             // act 
-            var retorno = await casoDeUso.Executar(proposta.Id, situacao);
+            var retorno = await casoDeUso.Executar(proposta.Id);
 
             // assert
             var pareceristas = ObterTodos<PropostaParecerista>();
-            var aprovadas = pareceristas.Where(w => w.PropostaId == proposta.Id && w.Situacao == situacao).OrderBy(o => o.Id).Select(t => t.Justificativa);
+            var aprovadas = pareceristas.Where(w => w.PropostaId == proposta.Id).OrderBy(o => o.Id).Select(t => t.Justificativa);
             var justificativas = string.Join('\n', aprovadas);
 
             retorno.ShouldBe(justificativas);

@@ -14,14 +14,11 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterSugestoesParecer
 
         public async Task<string> Handle(ObterSugestoesPareceristasQuery request, CancellationToken cancellationToken)
         {
-            var sugestoes = await _repositorioProposta.ObterSugestaoParecerPareceristas(request.PropostaId, request.Situacao);
+            var sugestoes = await _repositorioProposta.ObterSugestaoParecerPareceristas(request.PropostaId);
 
-            if (sugestoes.Any())
-            {
-                return string.Join('\n', sugestoes.OrderBy(o => o.Id).Select(s => s.Justificativa));
-            }
-
-            return string.Empty;
+            return sugestoes.Any() 
+                ? string.Join('\n', sugestoes.OrderBy(o => o.Id).Select(s => s.Justificativa)) 
+                : string.Empty;
         }
     }
 }

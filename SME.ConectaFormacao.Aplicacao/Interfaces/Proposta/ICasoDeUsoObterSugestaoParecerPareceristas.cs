@@ -9,6 +9,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
     public interface ICasoDeUsoObterSugestaoParecerPareceristas
     {
-        Task<string> Executar(long propostaId, SituacaoParecerista situacaoParecerista);
+        Task<string> Executar(long propostaId);
     }
 }
