@@ -20,6 +20,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             base.RegistrarQueryFakes(services);
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterRelatorioProspostaLaudaPublicacaoQuery, string>), typeof(ObterRelatorioProspostaLaudaPublicacaoHandlerFaker), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterRelatorioProspostaLaudaCompletaQuery, string>), typeof(ObterRelatorioProspostaLaudaCompletoHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Proposta - Deve obter relatório de lauda de publicação")]
@@ -33,6 +34,19 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert
             retorno.ShouldNotBeNull();
             retorno.ShouldBe("url relatorio");
+        }
+
+        [Fact(DisplayName = "Proposta - Deve obter relatório de lauda de completo")]
+        public async Task Deve_obter_relatório_lauda_completo()
+        {
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterRelatorioPropostaLaudaCompleta>();
+
+            // act 
+            var retorno = await casoDeUso.Executar(1);
+
+            // assert
+            retorno.ShouldNotBeNull();
+            retorno.ShouldBe("url relatorio lauda completo");
         }
     }
 }
