@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
@@ -16,9 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<string> Executar(long propostaId, SituacaoParecerista situacaoParecerista)
+        public async Task<IEnumerable<PropostaPareceristaSugestaoDTO>> Executar(long propostaId)
         {
-            return await mediator.Send(new ObterSugestoesPareceristasQuery(propostaId, situacaoParecerista));
+            return await mediator.Send(new ObterSugestoesPareceristasQuery(propostaId));
         }
     }
 }

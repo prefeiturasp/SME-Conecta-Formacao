@@ -36,36 +36,44 @@ namespace SME.ConectaFormacao.Aplicacao
             var pareceristasDaProposta = await _mediator.Send(new ObterPareceristasAdicionadosNaPropostaQuery(proposta.Id), cancellationToken);
 
             var souPareceristaDaProposta = pareceristasDaProposta.Any(a => a.RegistroFuncional.Equals(usuarioLogado.Login));
-            
+
+            var pareceristaEstaAguardandoValidacao = PareceristaEstaAguardandoValidacao(pareceristasDaProposta, usuarioLogado.Login);
+           
             if (consideracoesDosPareceristas.Any())
             {
                 var ehAreaPromotora = await _mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilLogado), cancellationToken);
 
                 if (perfilLogado.EhPerfilParecerista())
-                {
-                    var situacaoDoParecerista = pareceristasDaProposta.FirstOrDefault(a => a.RegistroFuncional.Equals(usuarioLogado.Login)).Situacao;
-                    return ObterConsideracoesDoPerfilParecerista(consideracoesDosPareceristas, usuarioLogado, proposta, souPareceristaDaProposta, situacaoDoParecerista);
-                }
+                    return ObterConsideracoesDoPerfilParecerista(consideracoesDosPareceristas, usuarioLogado, proposta, souPareceristaDaProposta, pareceristaEstaAguardandoValidacao);
                 
                 if(perfilLogado.EhPerfilAdminDF() || ehAreaPromotora.NaoEhNulo())
-                    return ObterConsideracoesPorPerfilAdminDFOuAreaPromotora(consideracoesDosPareceristas, perfilLogado.EhPerfilAdminDF(), proposta.Id, pareceristasDaProposta);
+                    return ObterConsideracoesPorPerfilAdminDFOuAreaPromotora(consideracoesDosPareceristas, perfilLogado.EhPerfilAdminDF(), proposta, pareceristasDaProposta);
             }
 
             return new PropostaPareceristaConsideracaoCompletoDTO()
             {
                 PropostaId = request.PropostaId,
-                PodeInserir = perfilLogado.EhPerfilParecerista() && proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && souPareceristaDaProposta,
+                PodeInserir = perfilLogado.EhPerfilParecerista() && proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && souPareceristaDaProposta && pareceristaEstaAguardandoValidacao,
                 Itens = Enumerable.Empty<PropostaPareceristaConsideracaoDTO>()
             };
         }
 
+        private bool PareceristaEstaAguardandoValidacao(IEnumerable<PropostaParecerista> pareceristasDaProposta, string usuarioLogado)
+        {
+            var situacaoDoParecerista = pareceristasDaProposta.FirstOrDefault(a => a.RegistroFuncional.Equals(usuarioLogado))?.Situacao;
+                
+            return situacaoDoParecerista.HasValue && situacaoDoParecerista.Value.EstaAguardandoValidacao();
+        }
+
         private PropostaPareceristaConsideracaoCompletoDTO ObterConsideracoesPorPerfilAdminDFOuAreaPromotora(IEnumerable<PropostaPareceristaConsideracao> consideracoesDosPareceristas,
-            bool ehPerfilAdminDF, long propostaId, IEnumerable<PropostaParecerista> pareceristasDaProposta)
+            bool ehPerfilAdminDF, Proposta proposta, IEnumerable<PropostaParecerista> pareceristasDaProposta)
         {
             consideracoesDosPareceristas = consideracoesDosPareceristas.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm);
 
             var consideracoesPareceristasEnviadas = ObterConsideracoesEnviadasPelosPareceristas(consideracoesDosPareceristas, pareceristasDaProposta);
-            DefinirPodeAlterar(consideracoesPareceristasEnviadas,ehPerfilAdminDF);
+            
+            if (proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF())
+                DefinirPodeAlterar(consideracoesPareceristasEnviadas,ehPerfilAdminDF);
                     
             var consideracoesAguardandoRevalidacao = ObterConsideracoesAguardandoRevalidacao(consideracoesDosPareceristas, pareceristasDaProposta);
 
@@ -79,7 +87,7 @@ namespace SME.ConectaFormacao.Aplicacao
             
             return new PropostaPareceristaConsideracaoCompletoDTO()
             {
-                PropostaId = propostaId,
+                PropostaId = proposta.Id,
                 PodeInserir = false,
                 Itens = pareceresDaPropostaDoPerfil
             };
@@ -100,7 +108,7 @@ namespace SME.ConectaFormacao.Aplicacao
         }
 
         private PropostaPareceristaConsideracaoCompletoDTO ObterConsideracoesDoPerfilParecerista(IEnumerable<PropostaPareceristaConsideracao> consideracoesDosPareceristas, 
-            Usuario usuarioLogado, Proposta proposta, bool souPareceristaDaProposta, SituacaoParecerista situacaoParecerista)
+            Usuario usuarioLogado, Proposta proposta, bool souPareceristaDaProposta, bool pareceristaEstaAguardandoValidacao)
         {
             IEnumerable<PropostaPareceristaConsideracaoDTO> consideracoesDoPerfilParecerista;
             consideracoesDoPerfilParecerista = MapearParaDTO(consideracoesDosPareceristas.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm));
@@ -109,7 +117,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             foreach (var consideracaoDoParecista in consideracoesDoPerfilParecerista)
             {
-                consideracaoDoParecista.PodeAlterar = consideracoesDoPareceristaLogado.Any(a => a.Id == consideracaoDoParecista.Id) && situacaoParecerista.EstaAguardandoValidacao();
+                consideracaoDoParecista.PodeAlterar = consideracoesDoPareceristaLogado.Any(a => a.Id == consideracaoDoParecista.Id) && pareceristaEstaAguardandoValidacao;
                 
                 if (!consideracoesDoPareceristaLogado.Any(a => a.Id == consideracaoDoParecista.Id))
                 {
@@ -118,7 +126,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
             }
                     
-            var podeInserir = proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && !consideracoesDoPareceristaLogado.Any() && souPareceristaDaProposta && situacaoParecerista.EstaAguardandoValidacao();
+            var podeInserir = proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && !consideracoesDoPareceristaLogado.Any() && souPareceristaDaProposta && pareceristaEstaAguardandoValidacao;
             
             return new PropostaPareceristaConsideracaoCompletoDTO()
             {

@@ -1,19 +1,18 @@
 ﻿using FluentValidation;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterSugestoesPareceristas
 {
-    public class ObterSugestoesPareceristasQuery : IRequest<string>
+    public class ObterSugestoesPareceristasQuery : IRequest<IEnumerable<PropostaPareceristaSugestaoDTO>>
     {
-        public ObterSugestoesPareceristasQuery(long propostaId, SituacaoParecerista situacao)
+        public ObterSugestoesPareceristasQuery(long propostaId)
         {
             PropostaId = propostaId;
-            Situacao = situacao;
         }
 
         public long PropostaId { get; }
-        public SituacaoParecerista Situacao { get; }
     }
 
     public class ObterSugestoesPareceristasQueryValidator : AbstractValidator<ObterSugestoesPareceristasQuery>

@@ -408,7 +408,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query += " and p.numero_homologacao = @numeroHomologacao ";
 
             if (perfilUsuarioLogado.EhPerfilParecerista())
-                query += @" and p.situacao = @situacaoAguardandoParecerista 
+                query += @" and p.situacao = ANY(@situacaoAguardandoParecerista) 
                             and p.id in (select proposta_id from proposta_parecerista where not excluido and registro_funcional = @loginUsuarioLogado)";
 
             query += " ORDER BY coalesce(pm.criado_em, p.alterado_em, p.criado_em) DESC ";
@@ -427,7 +427,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 situacao,
                 formacaoHomologada,
                 situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray(),
-                situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnalisePeloParecerista,
+                situacaoAguardandoParecerista = new []{ (int)SituacaoProposta.AguardandoAnalisePeloParecerista,(int)SituacaoProposta.AguardandoReanalisePeloParecerista},
                 loginUsuarioLogado
             };
             return conexao.Obter().QueryAsync<Proposta>(query, parametros);
@@ -1078,14 +1078,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
         }
 
-        public async Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id, SituacaoParecerista situacao)
+        public async Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id)
         {
             var query = @"select 
-                id, 
+                id,
+                nome_parecerista,
+                situacao,
                 justificativa
             from proposta_parecerista 
-            where proposta_id = @id and not excluido and situacao = @situacao ";
-            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id, situacao });
+            where proposta_id = @id and not excluido ";
+            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
         }
 
         public async Task<IEnumerable<PropostaModalidade>> ObterModalidadesPorId(long id)

@@ -414,8 +414,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerFiltroDTO));
         }
 
-        [HttpGet("{propostaId}/parecerista/sugestao/aprovada")]
-        [ProducesResponseType(typeof(string), 200)]
+        [HttpGet("{propostaId}/parecerista/sugestao")]
+        [ProducesResponseType(typeof(IEnumerable<PropostaPareceristaSugestaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Permissao.Proposta_A, Policy = "Bearer")]
@@ -423,19 +423,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoObterSugestaoParecerPareceristas casoDeUso,
             [FromRoute] long propostaId)
         {
-            return Ok(await casoDeUso.Executar(propostaId, SituacaoParecerista.Aprovada));
-        }
-
-        [HttpGet("{propostaId}/parecerista/sugestao/recusada")]
-        [ProducesResponseType(typeof(string), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_I, Permissao.Proposta_A, Policy = "Bearer")]
-        public async Task<IActionResult> ObterSugestoesPareceristaRecusada(
-            [FromServices] ICasoDeUsoObterSugestaoParecerPareceristas casoDeUso,
-            [FromRoute] long propostaId)
-        {
-            return Ok(await casoDeUso.Executar(propostaId, SituacaoParecerista.Recusada));
+            return Ok(await casoDeUso.Executar(propostaId));
         }
 
         [HttpPost("{propostaId}/parecerista/enviar")]
