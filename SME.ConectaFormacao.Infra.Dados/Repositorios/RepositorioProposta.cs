@@ -2341,19 +2341,21 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task<PropostaPareceristaConsideracao> ObterParecerPorId(long parecerId)
         {
             var query = @" 
-            select id,
-	               proposta_id,
-	               campo,
-	               descricao,
-	               criado_por,
-	               alterado_em,
-	               alterado_por,
-	               criado_login,
-	               alterado_login,
-	               excluido
+            select 
+              id, 
+              proposta_parecerista_id, 
+              campo,
+              descricao,
+              excluido,
+              criado_em,
+              criado_por,
+              criado_login,
+              alterado_em,    
+              alterado_por,
+              alterado_login             
             from public.proposta_parecerista_consideracao 
             where not excluido  
-              and id=@parecerId ";
+              and id = @parecerId ";
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaPareceristaConsideracao>(query, new { parecerId });
         }
 
