@@ -1081,7 +1081,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id)
         {
             var query = @"select 
-                id, 
+                id,
+                nome_parecerista,
+                situacao,
                 justificativa
             from proposta_parecerista 
             where proposta_id = @id and not excluido ";

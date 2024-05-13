@@ -20,8 +20,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // arrange 
             var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerPelaDF, quantidadeParecerista: 100);
 
-            var situacao = new Faker().PickRandom<SituacaoParecerista>();
-
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterSugestaoParecerPareceristas>();
 
             // act 
@@ -29,10 +27,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             var pareceristas = ObterTodos<PropostaParecerista>();
-            var aprovadas = pareceristas.Where(w => w.PropostaId == proposta.Id).OrderBy(o => o.Id).Select(t => t.Justificativa);
-            var justificativas = string.Join('\n', aprovadas);
-
-            retorno.ShouldBe(justificativas);
+            pareceristas.Count.ShouldBe(retorno.Count());
         }
     }
 }

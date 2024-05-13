@@ -149,6 +149,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             
             CreateMap<PropostaPareceristaConsideracao, PropostaPareceristaConsideracaoCadastroDTO>().ReverseMap();
 
+            CreateMap<PropostaParecerista, PropostaPareceristaSugestaoDTO>()
+                .ForMember(dest => dest.Parecerista, opt => opt.MapFrom(o => o.NomeParecerista))
+                .ForMember(dest => dest.Sugestao, opt => opt.MapFrom(o => o.Situacao.Nome()));
+
             // -> Arquivo
             CreateMap<Arquivo, ArquivoDTO>().ReverseMap();
 

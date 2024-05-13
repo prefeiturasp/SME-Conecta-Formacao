@@ -415,7 +415,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{propostaId}/parecerista/sugestao")]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(IEnumerable<PropostaPareceristaSugestaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Permissao.Proposta_A, Policy = "Bearer")]
