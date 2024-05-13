@@ -117,8 +117,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (parecerista == null)
                     return false;
 
-                return (proposta.Situacao.EstaAguardandoAnaliseParecerista() && !consideracoes.Any(a => a.PropostaPareceristaId == parecerista.Id)) ||
-                    proposta.Situacao.EstaAguardandoReanaliseParecerista();
+                return (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && !consideracoes.Any(a => a.PropostaPareceristaId == parecerista.Id)) ||
+                    proposta.Situacao.EstaAguardandoAnalisePeloParecerista();
             }
             else if(ehAdminDF)
             {
@@ -185,7 +185,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (parecerista == null)
                     return false;
 
-                return (proposta.Situacao.EstaAguardandoAnaliseParecerista() && parecerista.Situacao.EstaAguardandoValidacao() && consideracoes.Any(a => a.PropostaPareceristaId == parecerista.Id));
+                return (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && parecerista.Situacao.EstaAguardandoValidacao() && consideracoes.Any(a => a.PropostaPareceristaId == parecerista.Id));
             }
 
             return false;
