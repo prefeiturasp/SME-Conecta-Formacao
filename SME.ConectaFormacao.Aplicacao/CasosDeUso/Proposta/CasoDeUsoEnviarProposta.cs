@@ -21,10 +21,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            var situacoes = new SituacaoProposta[] { SituacaoProposta.Cadastrada, SituacaoProposta.Devolvida, SituacaoProposta.AguardandoAnaliseDf };
+            var situacoes = new [] { 
+                SituacaoProposta.Cadastrada, 
+                SituacaoProposta.Devolvida, 
+                SituacaoProposta.AguardandoAnaliseDf, 
+                SituacaoProposta.AguardandoAnaliseParecerPelaDF,
+                SituacaoProposta.AnaliseParecerPelaAreaPromotora };
 
             if (!situacoes.Contains(proposta.Situacao))
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA);
+                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_PODE_SER_ENVIADA);
 
             var existeFuncaoEspecificaOutros = await mediator.Send(new ExisteCargoFuncaoOutrosNaPropostaQuery(proposta.Id));
             var propostasTipoInscricao = await mediator.Send(new ObterPropostaTipoInscricaoPorIdQuery(proposta.Id));
@@ -66,9 +71,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         private async Task<SituacaoProposta> ObterSituacaoHomologada(Dominio.Entidades.Proposta proposta)
         {
-            if (proposta.Situacao.EstaAguardandoAnaliseDf()
+            if (proposta.Situacao.EstaAguardandoAnaliseDf() 
                 && await mediator.Send(new ExistePareceristasAdicionadosNaPropostaQuery(proposta.Id)))
-                return SituacaoProposta.AguardandoAnaliseParecerista;
+                return SituacaoProposta.AguardandoAnalisePeloParecerista;
+
+            if (proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF())
+                return SituacaoProposta.AnaliseParecerPelaAreaPromotora;
+            
+            if (proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora())
+                return SituacaoProposta.AguardandoReanalisePeloParecerista;
 
             return SituacaoProposta.AguardandoAnaliseDf;
         }

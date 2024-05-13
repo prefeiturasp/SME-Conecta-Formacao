@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
     public interface ICasoDeUsoObterPropostaParecer
     {
-        Task<PropostaParecerCompletoDTO> Executar(PropostaParecerFiltroDTO propostaParecerFiltroDto);
+        Task<PropostaPareceristaConsideracaoCompletoDTO> Executar(PropostaParecerFiltroDTO propostaParecerFiltroDto);
     }
 }

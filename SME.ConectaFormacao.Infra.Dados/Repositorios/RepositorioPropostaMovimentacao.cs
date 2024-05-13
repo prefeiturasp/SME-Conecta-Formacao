@@ -12,16 +12,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public async Task<PropostaMovimentacao> ObterUltimoParecerPropostaId(long propostaId)
+        public async Task<PropostaMovimentacao> ObterUltimoParecerPropostaId(long propostaId, SituacaoProposta situacao)
         {
             var query = @"select p.id as proposta_id,
                                  p.situacao, 
 	                             pm.justificativa 
                           from proposta p 
                           left join proposta_movimentacao pm on pm.proposta_id = p.id and pm.situacao = p.situacao 
-                          where p.id = @propostaId
+                          where p.id = @propostaId and p.situacao = @situacao
                           order by pm.criado_em desc limit 1";
-            return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaMovimentacao>(query, new { propostaId });
+            return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaMovimentacao>(query, new { propostaId, situacao });
         }
 
         public async Task<string> ObterUltimaJustificativaDevolucao(long propostaId)
