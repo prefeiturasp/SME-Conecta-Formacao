@@ -47,7 +47,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     return ObterConsideracoesDoPerfilParecerista(consideracoesDosPareceristas, usuarioLogado, proposta, souPareceristaDaProposta, pareceristaEstaAguardandoValidacao);
                 
                 if(perfilLogado.EhPerfilAdminDF() || ehAreaPromotora.NaoEhNulo())
-                    return ObterConsideracoesPorPerfilAdminDFOuAreaPromotora(consideracoesDosPareceristas, perfilLogado.EhPerfilAdminDF(), proposta.Id, pareceristasDaProposta);
+                    return ObterConsideracoesPorPerfilAdminDFOuAreaPromotora(consideracoesDosPareceristas, perfilLogado.EhPerfilAdminDF(), proposta, pareceristasDaProposta);
             }
 
             return new PropostaPareceristaConsideracaoCompletoDTO()
@@ -66,12 +66,14 @@ namespace SME.ConectaFormacao.Aplicacao
         }
 
         private PropostaPareceristaConsideracaoCompletoDTO ObterConsideracoesPorPerfilAdminDFOuAreaPromotora(IEnumerable<PropostaPareceristaConsideracao> consideracoesDosPareceristas,
-            bool ehPerfilAdminDF, long propostaId, IEnumerable<PropostaParecerista> pareceristasDaProposta)
+            bool ehPerfilAdminDF, Proposta proposta, IEnumerable<PropostaParecerista> pareceristasDaProposta)
         {
             consideracoesDosPareceristas = consideracoesDosPareceristas.OrderByDescending(o=> o.AlteradoEm ?? o.CriadoEm);
 
             var consideracoesPareceristasEnviadas = ObterConsideracoesEnviadasPelosPareceristas(consideracoesDosPareceristas, pareceristasDaProposta);
-            DefinirPodeAlterar(consideracoesPareceristasEnviadas,ehPerfilAdminDF);
+            
+            if (proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF())
+                DefinirPodeAlterar(consideracoesPareceristasEnviadas,ehPerfilAdminDF);
                     
             var consideracoesAguardandoRevalidacao = ObterConsideracoesAguardandoRevalidacao(consideracoesDosPareceristas, pareceristasDaProposta);
 
@@ -85,7 +87,7 @@ namespace SME.ConectaFormacao.Aplicacao
             
             return new PropostaPareceristaConsideracaoCompletoDTO()
             {
-                PropostaId = propostaId,
+                PropostaId = proposta.Id,
                 PodeInserir = false,
                 Itens = pareceresDaPropostaDoPerfil
             };
