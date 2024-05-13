@@ -76,7 +76,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUsoInserir = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            await casoDeUsoInserir.InserirUsuarioExterno(usuarioExterno);
+            await casoDeUsoInserir.Executar(usuarioExterno);
             var retorno = await casoDeUso.Executar(usuarioExterno.Cpf, emailValido);
 
             // assert

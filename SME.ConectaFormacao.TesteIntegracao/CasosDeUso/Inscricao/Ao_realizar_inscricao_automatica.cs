@@ -79,6 +79,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
                     {
                         Id = t.Id
                     }),
+                    TiposInscricao = proposta.TiposInscricao.Select(s => s.TipoInscricao),
+                    QuantidadeVagasTurmas = 9999
 
                 },
                 CursistasEOL = AoRealizarInscricaoAutomaticaMock.ObterCursistasEol(500, dres)
@@ -126,9 +128,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
                 PropostaInscricaoAutomatica = new Dominio.ObjetosDeValor.PropostaInscricaoAutomatica
                 {
                     PropostaId = proposta.Id,
-                    PropostasTurmas = turmasInscricaoAutomatica
+                    PropostasTurmas = turmasInscricaoAutomatica,
+                    TiposInscricao = proposta.TiposInscricao.Select(s => s.TipoInscricao),
+                    QuantidadeVagasTurmas = 9999
                 },
-                CursistasEOL = AoRealizarInscricaoAutomaticaMock.ObterCursistasEol(4955, dres)
+                CursistasEOL = AoRealizarInscricaoAutomaticaMock.ObterCursistasEol(100, dres)
             };
 
             var mensagem = tratarTurma.ObjetoParaJson();

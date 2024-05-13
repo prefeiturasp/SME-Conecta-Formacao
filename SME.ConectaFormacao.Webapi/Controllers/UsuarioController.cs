@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
         public async Task<IActionResult> Inserir(UsuarioExternoDTO usuarioExternoDto, [FromServices] ICasoDeUsoInserirUsuarioExterno usoInserirUsuario)
         {
-            return Ok(await usoInserirUsuario.InserirUsuarioExterno(usuarioExternoDto));
+            return Ok(await usoInserirUsuario.Executar(usuarioExternoDto));
         }
 
         [HttpPost("{login}/solicitar-recuperacao-senha")]

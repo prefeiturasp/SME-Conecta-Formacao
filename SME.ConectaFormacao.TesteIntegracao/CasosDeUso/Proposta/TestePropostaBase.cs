@@ -52,6 +52,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
+            var cargoFuncaoOutros = CargoFuncaoMock.GerarCargoFuncao(1, true);
+            await InserirNaBase(cargoFuncaoOutros);
+
             var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
             await InserirNaBase(cargosFuncoes);
 
@@ -236,6 +239,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaTiposInscricao = PropostaMock.GerarTiposInscricao(proposta.Id, tipoInscricao);
             await InserirNaBase(propostaTiposInscricao);
+            proposta.TiposInscricao = new List<PropostaTipoInscricao>() { propostaTiposInscricao };
 
             return proposta;
         }

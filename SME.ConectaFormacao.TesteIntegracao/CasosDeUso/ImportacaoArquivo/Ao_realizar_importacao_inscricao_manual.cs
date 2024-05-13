@@ -222,11 +222,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             importacaoArquivoRegistroDto.PropostaId = proposta.Id;
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(() => casoDeUso.Executar(new Infra.MensagemRabbit(importacaoArquivoRegistroDto.ObjetoParaJson())));
+            var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(importacaoArquivoRegistroDto.ObjetoParaJson()));
 
             // assert
-            excecao.ShouldNotBeNull();
-            excecao.Mensagens.Contains(MensagemNegocio.TURMA_NAO_ENCONTRADA).ShouldBeTrue();
+            retorno.ShouldBeTrue();
 
             importacaoArquivosRegistros = ObterTodos<Dominio.Entidades.ImportacaoArquivoRegistro>();
             importacaoArquivosRegistros.Any(f => f.Id == 1 && f.Situacao == SituacaoImportacaoArquivoRegistro.Erro).ShouldBeTrue();
