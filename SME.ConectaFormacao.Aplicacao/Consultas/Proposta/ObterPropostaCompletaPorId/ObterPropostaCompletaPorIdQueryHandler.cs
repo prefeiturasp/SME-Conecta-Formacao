@@ -118,7 +118,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     return false;
 
                 return (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && !consideracoes.Any(a => a.PropostaPareceristaId == parecerista.Id)) ||
-                    proposta.Situacao.EstaAguardandoAnalisePeloParecerista();
+                    proposta.Situacao.EstaAguardandoReanalisePeloParecerista();
             }
             else if(ehAdminDF)
             {
