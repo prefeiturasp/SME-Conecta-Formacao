@@ -74,7 +74,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf = proposta.Situacao.EstaAguardandoAnaliseParecerPelaDFOuAreaPromotoraOuAnaliseFinalPelaDF();
             
-            var podeAprovarRecusar = PodeAprovarRecusar(ehParecerista, ehAdminDF, proposta, usuarioLogado, consideracoes);
+            var podeAprovarRecusar = PodeAprovarRecusar(ehParecerista, ehAdminDF, proposta, usuarioLogado, consideracoes, parecerista);
             var ehAreaPromotora = await EhPerfilAreaPromotora(perfilLogado);
             var totalDeConsideracoes = ObterTotalDePareceresPorCampo(consideracoes, ehAdminDF, proposta.Pareceristas, ehAreaPromotora);
             
@@ -109,23 +109,18 @@ namespace SME.ConectaFormacao.Aplicacao
                    && (proposta.FuncaoEspecificaOutros.PossuiElementos() || proposta.FuncoesEspecificas.Any());
         }
 
-        private static bool PodeAprovarRecusar(bool ehParecerista, bool ehAdminDF, Proposta proposta, Usuario usuarioLogado, IEnumerable<PropostaPareceristaConsideracao> consideracoes)
+        private static bool PodeAprovarRecusar(bool ehParecerista, bool ehAdminDF, Proposta proposta, Usuario usuarioLogado, IEnumerable<PropostaPareceristaConsideracao> consideracoes, PropostaParecerista parecerista)
         {
-            if (ehParecerista)
+            if (ehParecerista && parecerista.NaoEhNulo())
             {
-                var parecerista = proposta.Pareceristas.FirstOrDefault(a => a.RegistroFuncional == usuarioLogado.Login);
-                if (parecerista == null)
+                if (parecerista.Situacao.EstaAprovadaOuRecusada())
                     return false;
 
-                return (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && !consideracoes.Any(a => a.PropostaPareceristaId == parecerista.Id)) ||
-                    proposta.Situacao.EstaAguardandoReanalisePeloParecerista();
+                return (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && !consideracoes.Any(a => a.PropostaPareceristaId == parecerista.Id)) 
+                       || proposta.Situacao.EstaAguardandoReanalisePeloParecerista();
             }
-            else if(ehAdminDF)
-            {
-                return proposta.Situacao.EstaAguardandoAnaliseParecerFinalPelaDF();
-            }
-
-            return false;
+            
+            return ehAdminDF && proposta.Situacao.EstaAguardandoAnaliseParecerFinalPelaDF();
         }
 
         private static bool PodeExibirParecer(bool ehAdminDF, bool possuiPareceristasNaProposta, bool estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf, 
