@@ -17,9 +17,9 @@
         Inscricao_E = 295,
         Inscricao_A = 296,
 
-        RedeParceria_C = 0,
-        RedeParceria_I = 0,
-        RedeParceria_E = 0,
-        RedeParceria_A = 0,
+        RedeParceria_C = 303,
+        RedeParceria_I = 304,
+        RedeParceria_E = 305,
+        RedeParceria_A = 306,
     }
 }
