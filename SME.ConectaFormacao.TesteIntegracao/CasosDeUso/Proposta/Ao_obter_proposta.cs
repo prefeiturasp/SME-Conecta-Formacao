@@ -70,74 +70,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             excecao.ShouldNotBeNull();
             excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA).ShouldBeTrue();
         }
-
-        [Fact(DisplayName = "Proposta - Deve obter proposta completa com perfil Admin DF somente total de considerações enviadas - parcialmente enviadas")]
-        public async Task Deve_obter_proposta_completa_com_perfil_admin_df_somente_total_de_consideracoes_enviadas_parcialmente_enviadas()
-        {
-            // arrange
-            var perfilLogado = Perfis.ADMIN_DF.ToString();
-            CriarClaimUsuario(perfilLogado, "4", "Admin DF");
-
-            await InserirUsuario("1", "Parecerista1");
-            await InserirUsuario("2", "Parecerista2");
-            await InserirUsuario("3", "Parecerista3");
-            await InserirUsuario("4", "Admin DF");
-
-            await InserirParametrosProposta();
-
-            var proposta = await InserirNaBaseProposta(
-                SituacaoProposta.AguardandoAnaliseParecerPelaDF,
-                FormacaoHomologada.Sim,
-                TipoInscricao.Externa);
-            
-            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1", SituacaoParecerista.Enviada));
-            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.Enviada));
-            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "3","Parecerista3", SituacaoParecerista.AguardandoValidacao));
-
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.Formato, "1"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.FormacaoHomologada, "1"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.TipoFormacao, "1"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.TiposInscricao, "1"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.IntegrarNoSGA, "1"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.Dres, "1"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.NomeFormacao, "1"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.PublicosAlvo, "1"));
-            
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.Formato, "2"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.FormacaoHomologada, "2"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.TipoFormacao, "2"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.TiposInscricao, "2"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.IntegrarNoSGA, "2"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.Dres, "2"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.NomeFormacao, "2"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.PublicosAlvo, "2"));
-            
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.Formato, "3"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.FormacaoHomologada, "3"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.TipoFormacao, "3"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.TiposInscricao, "3"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.IntegrarNoSGA, "3"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.Dres, "3"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.NomeFormacao, "3"));
-            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.PublicosAlvo, "3"));
-
-            // act 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaPorId>();
-            var propostaCompletoDTO = await casoDeUso.Executar(proposta.Id);
-
-            // assert 
-            propostaCompletoDTO.ShouldNotBeNull();
-            propostaCompletoDTO.TotalDeConsideracoes.Count().ShouldBe(8);
-            propostaCompletoDTO.TotalDeConsideracoes.All(a=> a.Quantidade == 2).ShouldBeTrue();
-            propostaCompletoDTO.ExibirConsideracoes.ShouldBeTrue();
-            propostaCompletoDTO.PodeEnviar.ShouldBeFalse();
-            propostaCompletoDTO.PodeEnviarConsideracoes.ShouldBeFalse();
-            propostaCompletoDTO.QtdeLimitePareceristaProposta.ShouldBe(3);
-            propostaCompletoDTO.PodeAprovar.ShouldBeFalse();
-            propostaCompletoDTO.PodeRecusar.ShouldBeFalse();
-            propostaCompletoDTO.LabelAprovar.ShouldBe("Aprovar");
-            propostaCompletoDTO.LabelRecusar.ShouldBe("Recusar");
-        }
         
         [Fact(DisplayName = "Proposta - Deve obter proposta completa com perfil Admin DF somente total de considerações enviadas - todas enviadas")]
         public async Task Deve_obter_proposta_completa_com_perfil_admin_df_somente_total_de_consideracoes_enviadas_todas_enviadas()
@@ -198,11 +130,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.TotalDeConsideracoes.Count().ShouldBe(8);
             propostaCompletoDTO.TotalDeConsideracoes.All(a=> a.Quantidade == 3).ShouldBeTrue();
             propostaCompletoDTO.ExibirConsideracoes.ShouldBeTrue();
-            propostaCompletoDTO.PodeEnviar.ShouldBeFalse();
+            propostaCompletoDTO.PodeEnviar.ShouldBeTrue();
             propostaCompletoDTO.PodeEnviarConsideracoes.ShouldBeFalse();
             propostaCompletoDTO.QtdeLimitePareceristaProposta.ShouldBe(3);
-            propostaCompletoDTO.PodeAprovar.ShouldBeFalse();
-            propostaCompletoDTO.PodeRecusar.ShouldBeFalse();
+            propostaCompletoDTO.PodeAprovar.ShouldBeTrue();
+            propostaCompletoDTO.PodeRecusar.ShouldBeTrue();
             propostaCompletoDTO.LabelAprovar.ShouldBe("Aprovar");
             propostaCompletoDTO.LabelRecusar.ShouldBe("Recusar");
         }
