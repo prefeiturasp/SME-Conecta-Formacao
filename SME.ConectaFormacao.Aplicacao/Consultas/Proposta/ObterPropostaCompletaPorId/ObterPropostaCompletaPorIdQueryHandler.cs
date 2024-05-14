@@ -74,7 +74,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf = proposta.Situacao.EstaAguardandoAnaliseParecerPelaDFOuAreaPromotoraOuAnaliseFinalPelaDF();
             
-            var podeAprovarRecusar = PodeAprovarRecusar(ehParecerista, ehAdminDF, proposta, usuarioLogado, consideracoes, parecerista);
+            var podeAprovarRecusar = PodeAprovarRecusar(ehParecerista, ehAdminDF, proposta, consideracoes, parecerista);
             var ehAreaPromotora = await EhPerfilAreaPromotora(perfilLogado);
             var totalDeConsideracoes = ObterTotalDePareceresPorCampo(consideracoes, ehAdminDF, proposta.Pareceristas, ehAreaPromotora);
             
@@ -109,7 +109,7 @@ namespace SME.ConectaFormacao.Aplicacao
                    && (proposta.FuncaoEspecificaOutros.PossuiElementos() || proposta.FuncoesEspecificas.Any());
         }
 
-        private static bool PodeAprovarRecusar(bool ehParecerista, bool ehAdminDF, Proposta proposta, Usuario usuarioLogado, IEnumerable<PropostaPareceristaConsideracao> consideracoes, PropostaParecerista parecerista)
+        private static bool PodeAprovarRecusar(bool ehParecerista, bool ehAdminDF, Proposta proposta, IEnumerable<PropostaPareceristaConsideracao> consideracoes, PropostaParecerista parecerista)
         {
             if (ehParecerista && parecerista.NaoEhNulo())
             {
@@ -120,7 +120,7 @@ namespace SME.ConectaFormacao.Aplicacao
                        || proposta.Situacao.EstaAguardandoReanalisePeloParecerista();
             }
             
-            return ehAdminDF && proposta.Situacao.EstaAguardandoAnaliseParecerFinalPelaDF();
+            return ehAdminDF && (proposta.Situacao.EstaAguardandoAnaliseParecerFinalPelaDF() || proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF());
         }
 
         private static bool PodeExibirParecer(bool ehAdminDF, bool possuiPareceristasNaProposta, bool estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf, 
