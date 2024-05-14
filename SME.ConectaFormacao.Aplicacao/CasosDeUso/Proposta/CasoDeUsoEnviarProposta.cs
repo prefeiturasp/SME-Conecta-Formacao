@@ -27,6 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 SituacaoProposta.AguardandoAnaliseDf, 
                 SituacaoProposta.AguardandoAnaliseParecerPelaDF,
                 SituacaoProposta.AguardandoAnalisePeloParecerista,
+                SituacaoProposta.AguardandoReanalisePeloParecerista,
                 SituacaoProposta.AnaliseParecerPelaAreaPromotora };
 
             if (!situacoes.Contains(proposta.Situacao))
@@ -86,8 +87,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora())
                 return SituacaoProposta.AguardandoReanalisePeloParecerista;
             
-            return proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && existemPareceristasAguardandoValidacao 
-                ? SituacaoProposta.AguardandoAnalisePeloParecerista 
+            if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && existemPareceristasAguardandoValidacao) 
+                return SituacaoProposta.AguardandoAnalisePeloParecerista;
+            
+            return proposta.Situacao.EstaAguardandoReanalisePeloParecerista() 
+                ? SituacaoProposta.AguardandoReanalisePeloParecerista
                 : SituacaoProposta.AguardandoAnaliseDf;
         }
     }
