@@ -33,12 +33,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         public async Task Deve_Cadastrar_Usuario_Externo_aguardando_validar_email()
         {
             //arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(Dominio.Enumerados.TipoParametroSistema.ConfirmarEmailUsuarioExterno, "true");
+            await InserirNaBase(parametro);
 
             var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            var retorno = await casoDeUso.InserirUsuarioExterno(usuarioExterno);
+            var retorno = await casoDeUso.Executar(usuarioExterno);
 
             // assert
             retorno.Mensagem.ShouldBe(MensagemNegocio.VALIDAR_EMAIL_USUARIO_EXTERNO);
@@ -60,7 +62,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            var retorno = await casoDeUso.InserirUsuarioExterno(usuarioExterno);
+            var retorno = await casoDeUso.Executar(usuarioExterno);
 
             // assert
             retorno.Mensagem.ShouldBe(MensagemNegocio.USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO);
@@ -79,7 +81,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(usuarioExterno));
 
             // assert
             excecao.ShouldNotBeNull();
@@ -96,7 +98,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(usuarioExterno));
 
             // assert
             excecao.ShouldNotBeNull();
@@ -114,7 +116,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(usuarioExterno));
 
             // assert
             excecao.ShouldNotBeNull();
@@ -132,7 +134,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(usuarioExterno));
 
             // assert
             excecao.ShouldNotBeNull();
@@ -149,7 +151,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(usuarioExterno));
 
             // assert
             excecao.ShouldNotBeNull();
@@ -166,12 +168,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(usuarioExterno));
 
             // assert
             excecao.ShouldNotBeNull();
             excecao.StatusCode.ShouldBe(400);
-            excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.EMAIL_EDU_INVALIDO.Parametros(usuarioExterno.EmailEducacional));
+            excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.EMAIL_EDU_INVALIDO_NAO_VALIDO.Parametros(usuarioExterno.EmailEducacional));
         }
         [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo sem informar o E-mail Edu")]
         public async Task Deve_Cadastrar_Usuario_Externo_sem_informar_email_edu()
@@ -182,7 +184,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(usuarioExterno));
 
             // assert
             excecao.ShouldNotBeNull();
@@ -198,7 +200,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.InserirUsuarioExterno(usuarioExterno));
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(usuarioExterno));
 
             // assert
             excecao.ShouldNotBeNull();

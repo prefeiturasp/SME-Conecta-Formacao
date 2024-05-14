@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 var existeOpcaoOutros = await _repositorioCargoFuncao.ExisteCargoFuncaoOutros(ids);
 
                 if (existeOpcaoOutros && string.IsNullOrEmpty(request.FuncaoEspecificaOutros))
-                    erros.Add(MensagemNegocio.PROPOSTA_FUNCAO_ESPECIFICA_OUTROS);
+                    throw new NegocioException(MensagemNegocio.PROPOSTA_FUNCAO_ESPECIFICA_OUTROS);
             }
             return erros;
         }

@@ -57,7 +57,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             excecao.ShouldNotBeNull();
-            excecao.Mensagens.Contains(string.Format(MensagemNegocio.JA_EXISTE_ESSA_TURMA_PARA_ESSE_REGENTE, regente.NomeRegente, regente.Turmas.FirstOrDefault().TurmaId)).ShouldBeTrue();
+            var mensagem = string.Format(MensagemNegocio.JA_EXISTE_ESSA_TURMA_PARA_ESSE_REGENTE, regente.NomeRegente.ToUpper(), proposta.Turmas.FirstOrDefault().Nome);
+            excecao.Mensagens.Contains(mensagem).ShouldBeTrue();
         }
         [Fact(DisplayName = "Proposta - Deve Atualizar um Regente Existente")]
         public async Task Deve_atualizar_regente_existente()

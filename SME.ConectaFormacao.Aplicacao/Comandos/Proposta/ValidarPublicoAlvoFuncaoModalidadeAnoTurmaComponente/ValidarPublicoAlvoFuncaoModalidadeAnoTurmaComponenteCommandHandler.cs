@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao
                                                                         && request.ComponentesCurricularesDaProposta.PossuiElementos();
 
             if (!preenchidoPublicoAlvo && !preenchidoFuncoesEspecificas && !preenchidoModalidadesAnosTurmaComponentesCurriculares)
-                erros.Add(MensagemNegocio.PROPOSTA_CRITERIO_VALIDACAO_PUBLICO_ALVO_ANO_TURMA_COMPONENTE_CURRICULAR);
+                throw new NegocioException(MensagemNegocio.PROPOSTA_CRITERIO_VALIDACAO_PUBLICO_ALVO_ANO_TURMA_COMPONENTE_CURRICULAR);
 
             return erros;
         }
