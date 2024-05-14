@@ -41,6 +41,10 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public SituacaoUsuario Situacao { get; set; }
         public string? EmailEducacional { get; set; }
         public TipoEmail? TipoEmail { get; set; }
+        public long? AreaPromotoraId { get; set; }
+        public string? Telefone { get; set; }
+
+        public AreaPromotora AreaPromotora { get; set; }
 
         public void Atualizar(string email, DateTime? dataHora, string? cpf)
         {
