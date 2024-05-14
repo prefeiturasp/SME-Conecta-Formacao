@@ -628,7 +628,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 			await InserirParametrosProposta();
 
 			var proposta = await InserirNaBaseProposta(
-				SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF,
+				SituacaoProposta.AguardandoValidacaoFinalPelaDF,
 				FormacaoHomologada.Sim,
 				TipoInscricao.Externa);
 			

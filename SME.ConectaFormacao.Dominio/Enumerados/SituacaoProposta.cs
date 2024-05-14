@@ -47,7 +47,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         AguardandoReanalisePeloParecerista = 14,
         
         [Display(Name = "Aguardando validação final pela DF", Prompt = "#000000")]
-        AguardandoAnaliseParecerFinalPelaDF = 15
+        AguardandoValidacaoFinalPelaDF = 15
     }
 
     public static class SituacaoPropostaExtensao
@@ -106,7 +106,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoProposta.AguardandoAnaliseParecerPelaDF 
                    || valor == SituacaoProposta.AnaliseParecerPelaAreaPromotora
-                   || valor == SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF;
+                   || valor == SituacaoProposta.AguardandoValidacaoFinalPelaDF;
         }
         
         public static bool EstaAguardandoAnalisePeloParecerista(this SituacaoProposta valor)
@@ -121,7 +121,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         
         public static bool EstaAguardandoAnaliseParecerFinalPelaDF(this SituacaoProposta valor)
         {
-            return valor == SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF;
+            return valor == SituacaoProposta.AguardandoValidacaoFinalPelaDF;
         }
         
         public static bool EstaAnaliseParecerPelaAreaPromotora(this SituacaoProposta valor)
