@@ -53,8 +53,8 @@ namespace SME.ConectaFormacao.Aplicacao
             }
             else if(proposta.Situacao.EstaAguardandoReanalisePeloParecerista() && naoPossuiPareceristasAguardandoParecerFinal)
             {
-                await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF), cancellationToken);
-                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF), cancellationToken);
+                await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoValidacaoFinalPelaDF), cancellationToken);
+                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoValidacaoFinalPelaDF), cancellationToken);
             }
 
             return true;
