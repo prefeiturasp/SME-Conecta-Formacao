@@ -229,7 +229,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.UsuarioCpf, opt => opt.MapFrom(o => o.Cpf))
                 .ReverseMap()
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(o => TipoUsuario.Interno))
-                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => SituacaoCadastroUsuario.Ativo));
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => SituacaoUsuario.Ativo));
 
             CreateMap<Inscricao, InscricaoPaginadaDTO>()
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.Id))
