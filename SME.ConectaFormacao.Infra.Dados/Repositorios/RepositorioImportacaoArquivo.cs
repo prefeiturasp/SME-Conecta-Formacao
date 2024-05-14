@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 		                       end
 	                       ) as TotalProcessados
                     from importacao_arquivo ia
-                    inner join importacao_arquivo_registro iar on iar.importacao_arquivo_id = ia.id and not iar.excluido
+                    left join importacao_arquivo_registro iar on iar.importacao_arquivo_id = ia.id and not iar.excluido
                     where ia.proposta_id = @propostaId
                       and not ia.excluido
                     group by ia.id, ia.nome, ia.situacao, ia.criado_em

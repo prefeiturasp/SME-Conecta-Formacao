@@ -33,6 +33,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_proposta_rascunho_sem_informacao_preenchida()
         {
             // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -59,6 +62,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_proposta_valida()
         {
             //arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -175,6 +181,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_proposta_tipo_formacao_evento_e_formato_hibrido_valido()
         {
             // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -320,6 +329,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_retornar_excecao_funcoes_especificas_outros_habilitado_vazio()
         {
             // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -391,6 +403,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_proposta_funcao_especifica_outros_valido()
         {
             // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -540,6 +555,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_proposta_criterio_validacao_inscricao_outros_valido()
         {
             // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -618,6 +636,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Nao_deve_inserir_proposta_criterio_validacao_publico_alvo_funcoes_especificas_modalidade_ano_turma_componente_curricular_forem_omitidos()
         {
             // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -668,6 +689,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Nao_deve_inserir_quando_os_campos_modalidade_ano_turma_e_componente_estiverem_parcialmente_preenchidos()
         {
             // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -733,6 +757,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_quando_for_preenchido_somente_publico_alvo_e_os_campos_fucoes_especificas_modalidade_ano_da_turma_e_componente_curricular_omitidos()
         {
             // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -811,6 +838,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_quando_for_preenchido_somente_funcoes_especificas_e_os_campos_publico_alvo_modalidade_ano_da_turma_e_componente_curricular_omitidos()
         {
             // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -889,6 +919,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_quando_for_preenchido_somente_modalidade_ano_da_turma_e_componente_curricular_e_os_campos_publico_alvo_e_funcoes_especificas_omitidos()
         {
             // arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -1034,11 +1067,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             excecao.Mensagens.Contains("É necessário informar o link para inscrições  para inserir a proposta").ShouldBeTrue();
         }
 
-
         [Fact(DisplayName = "Proposta - Deve inserir proposta válida do tipo inscrição externo")]
         public async Task Deve_inserir_proposta_valida_tipo_inscricao_externo()
         {
             //arrange
+            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
+            await InserirNaBase(parametro);
+
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 

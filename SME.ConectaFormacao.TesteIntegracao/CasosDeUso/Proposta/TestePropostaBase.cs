@@ -45,12 +45,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         protected async Task<Dominio.Entidades.Proposta> InserirNaBaseProposta(SituacaoProposta situacao = SituacaoProposta.Cadastrada,
             FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica, bool vincularUltimoCargoAoPublicoAlvo = false,
             bool vincularUltimoFuncaoAoPublicoAlvo = false, bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false, bool numeroHomologacao = false, 
-            int quantidadeParecerista = 0, string perfilLogado = "7EDA4540-A16C-4FE5-8322-9F75B3414E27") //Admin DF
+            int quantidadeParecerista = 0, string perfilLogado = "3a934680-be27-49be-a12f-cf8765602ebe") //COPED
         {
             PropostaSalvarMock.GrupoUsuarioLogadoId = new Guid(perfilLogado);
             
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
+
+            var cargoFuncaoOutros = CargoFuncaoMock.GerarCargoFuncao(1, true);
+            await InserirNaBase(cargoFuncaoOutros);
 
             var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
             await InserirNaBase(cargosFuncoes);
@@ -198,7 +201,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             }
 
             if (quantidadeParecerista > 0)
+            { 
                 await InserirNaBase(PropostaMock.GerarPareceristas(proposta.Id, quantidadeParecerista));
+            }
 
             var tutores = PropostaMock.GerarTutor(proposta.Id);
             if (tutores != null)
@@ -234,6 +239,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaTiposInscricao = PropostaMock.GerarTiposInscricao(proposta.Id, tipoInscricao);
             await InserirNaBase(propostaTiposInscricao);
+            proposta.TiposInscricao = new List<PropostaTipoInscricao>() { propostaTiposInscricao };
 
             return proposta;
         }
@@ -553,6 +559,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 tipoInscricao.PropostaId.ShouldBe(id);
                 tiposInscricaoDto.FirstOrDefault(t => t.TipoInscricao == tipoInscricao.TipoInscricao).ShouldNotBeNull();
             }
+        }
+
+        protected async Task InserirParametrosProposta()
+        {
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3"));
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950"));
         }
     }
 }
