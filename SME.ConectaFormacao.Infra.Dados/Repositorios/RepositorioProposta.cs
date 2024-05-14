@@ -409,7 +409,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (perfilUsuarioLogado.EhPerfilParecerista())
                 query += @" and p.situacao = ANY(@situacaoAguardandoParecerista) 
-                            and p.id in (select proposta_id from proposta_parecerista where not excluido and registro_funcional = @loginUsuarioLogado)";
+                            and p.id in (select proposta_id from proposta_parecerista where not excluido and registro_funcional = @loginUsuarioLogado and situacao <> @situacaoDesativado)";
 
             query += " ORDER BY coalesce(pm.criado_em, p.alterado_em, p.criado_em) DESC ";
 
@@ -428,7 +428,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 formacaoHomologada,
                 situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray(),
                 situacaoAguardandoParecerista = new []{ (int)SituacaoProposta.AguardandoAnalisePeloParecerista,(int)SituacaoProposta.AguardandoReanalisePeloParecerista},
-                loginUsuarioLogado
+                loginUsuarioLogado,
+                situacaoDesativado = SituacaoParecerista.Desativado
             };
             return conexao.Obter().QueryAsync<Proposta>(query, parametros);
         }
