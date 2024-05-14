@@ -1075,8 +1075,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 alterado_por,
                 alterado_login
             from proposta_parecerista 
-            where proposta_id = @id and not excluido ";
-            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
+            where proposta_id = @id and not excluido and situacao <> @situacaoDesativado";
+            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id, situacaoDesativado = SituacaoParecerista.Desativado });
         }
 
         public async Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id)
