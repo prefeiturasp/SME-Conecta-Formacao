@@ -26,6 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 SituacaoProposta.Devolvida, 
                 SituacaoProposta.AguardandoAnaliseDf, 
                 SituacaoProposta.AguardandoAnaliseParecerPelaDF,
+                SituacaoProposta.AguardandoAnalisePeloParecerista,
                 SituacaoProposta.AnaliseParecerPelaAreaPromotora };
 
             if (!situacoes.Contains(proposta.Situacao))
@@ -42,15 +43,19 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             var validarDatas = await mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim));
             if (!string.IsNullOrEmpty(validarDatas))
                 throw new NegocioException(validarDatas);
+            
+            var pareceristasDaProposta = await mediator.Send(new ObterPareceristasAdicionadosNaPropostaQuery(proposta.Id));
 
-            var situacao = await ObterSituacaoProposta(proposta);
+            var existemPareceristasAguardandoValidacao = pareceristasDaProposta.Where(w=> !w.Situacao.EstaDesativado()).Any(a => a.Situacao.EstaAguardandoValidacao());
+
+            var situacao = await ObterSituacaoProposta(proposta,existemPareceristasAguardandoValidacao);
 
             await mediator.Send(new EnviarPropostaCommand(propostaId, situacao));
             await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
 
             proposta.TiposInscricao = await mediator.Send(new ObterPropostaTipoInscricaoPorIdQuery(propostaId));
 
-            if (situacao == SituacaoProposta.Publicada && proposta.FormacaoHomologada != FormacaoHomologada.Sim)
+            if (situacao.EstaPublicada() && proposta.FormacaoHomologada.NaoEstaHomologada())
             {
                 if (proposta.TiposInscricao.Any(a => a.TipoInscricao == TipoInscricao.Automatica || a.TipoInscricao == TipoInscricao.AutomaticaJEIF))
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomatica, propostaId));
@@ -61,15 +66,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             return true;
         }
 
-        private async Task<SituacaoProposta> ObterSituacaoProposta(Dominio.Entidades.Proposta proposta)
+        private async Task<SituacaoProposta> ObterSituacaoProposta(Dominio.Entidades.Proposta proposta, bool existemPareceristasAguardandoValidacao)
         {
             if (proposta.FormacaoHomologada.EstaHomologada())
-                return await ObterSituacaoHomologada(proposta);
+                return await ObterSituacaoHomologada(proposta,existemPareceristasAguardandoValidacao);
             
             return SituacaoProposta.Publicada;
         }
 
-        private async Task<SituacaoProposta> ObterSituacaoHomologada(Dominio.Entidades.Proposta proposta)
+        private async Task<SituacaoProposta> ObterSituacaoHomologada(Dominio.Entidades.Proposta proposta, bool existemPareceristasAguardandoValidacao)
         {
             if (proposta.Situacao.EstaAguardandoAnaliseDf() 
                 && await mediator.Send(new ExistePareceristasAdicionadosNaPropostaQuery(proposta.Id)))
@@ -80,8 +85,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             
             if (proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora())
                 return SituacaoProposta.AguardandoReanalisePeloParecerista;
-
-            return SituacaoProposta.AguardandoAnaliseDf;
+            
+            return proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && existemPareceristasAguardandoValidacao 
+                ? SituacaoProposta.AguardandoAnalisePeloParecerista 
+                : SituacaoProposta.AguardandoAnaliseDf;
         }
     }
 }
