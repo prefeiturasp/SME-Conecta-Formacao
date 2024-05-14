@@ -71,6 +71,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var parecerista = ehParecerista ? proposta.Pareceristas.FirstOrDefault(a => a.RegistroFuncional.Equals(usuarioLogado.Login)) : null;
             var ehPareceristaDaProposta = parecerista.NaoEhNulo();
             var possuiPareceristasNaProposta = proposta.Pareceristas.Any();
+            var possuiPareceristasEnviados = proposta.Pareceristas.Any(a => a.Situacao.EstaEnviada());
 
             var estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf = proposta.Situacao.EstaAguardandoAnaliseParecerPelaDFOuAreaPromotoraOuAnaliseFinalPelaDF();
             
@@ -83,7 +84,7 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.EhAreaPromotora = ehAreaPromotora;
             propostaCompletaDTO.TotalDeConsideracoes = totalDeConsideracoes;
             propostaCompletaDTO.ExibirConsideracoes = PodeExibirParecer(ehAdminDF, possuiPareceristasNaProposta, estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf, ehPareceristaDaProposta, ehAreaPromotora,totalDeConsideracoes.Count());
-            propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta, possuiPareceristasNaProposta, ehAdminDF, ehAreaPromotora);
+            propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta, possuiPareceristasNaProposta, ehAdminDF, ehAreaPromotora, possuiPareceristasEnviados);
             propostaCompletaDTO.PodeEnviarConsideracoes = PodeEnviarParecer(ehParecerista, proposta, usuarioLogado, consideracoes);
             propostaCompletaDTO.QtdeLimitePareceristaProposta = await ObterParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta);
             propostaCompletaDTO.PodeAprovar = podeAprovarRecusar;
@@ -162,9 +163,9 @@ namespace SME.ConectaFormacao.Aplicacao
             return int.Parse(parametro.Valor);
         }
 
-        private static bool PodeEnviar(Proposta proposta, bool possuiPareceristasNaProposta, bool ehAdminDF, bool ehAreaPromotora)
+        private static bool PodeEnviar(Proposta proposta, bool possuiPareceristasNaProposta, bool ehAdminDF, bool ehAreaPromotora, bool possuiPareceristasEnviados)
         {
-            if ((ehAdminDF && (proposta.Situacao.EstaAguardandoAnaliseDf() || proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF())) 
+            if ((ehAdminDF && (proposta.Situacao.EstaAguardandoAnaliseDf() || (proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF() && possuiPareceristasEnviados))) 
                 || (ehAreaPromotora && proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora()))
                 return possuiPareceristasNaProposta;
             
