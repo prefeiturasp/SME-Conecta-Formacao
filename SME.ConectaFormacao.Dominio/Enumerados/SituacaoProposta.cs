@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Aguardando reanálise do Parecerista", Prompt = "#000000")]
         AguardandoReanalisePeloParecerista = 14,
         
-        [Display(Name = "Aguardando análise do parecer final pela DF", Prompt = "#000000")]
+        [Display(Name = "Aguardando validação final pela DF", Prompt = "#000000")]
         AguardandoAnaliseParecerFinalPelaDF = 15
     }
 
