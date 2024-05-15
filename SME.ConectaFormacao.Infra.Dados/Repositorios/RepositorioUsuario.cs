@@ -162,7 +162,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             var tipo = TipoUsuario.RedeParceria;
             var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
-            
+
             var query = new StringBuilder();
             query.Append(" SELECT u.id, u.nome, u.cpf, u.email, u.telefone, u.situacao_cadastro, u.area_promotora_id, a.nome ");
             query.Append(" FROM usuario u ");
@@ -203,6 +203,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 },
                 new { tipo, areaPromotoraIds, nome, cpf, situacao, registrosIgnorados, numeroRegistros },
                 splitOn: "id, area_promotora_id");
+        }
+
+        public Task<bool> UsuarioPossuiPropostaCadastrada(string login)
+        {
+            var query = "SELECT COUNT(1) FROM proposta where not excluido and criado_login = @login limit 1";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { login });
         }
 
         #endregion

@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.UsuarioRedeParceria.ObterUsuarioRedeParceiraPaginada
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterUsuarioRedeParceiraPaginadaQueryHandler : IRequestHandler<ObterUsuarioRedeParceiraPaginadaQuery, PaginacaoResultadoDTO<UsuarioRedeParceriaPaginadoDTO>>
     {
