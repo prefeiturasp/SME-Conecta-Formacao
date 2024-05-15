@@ -95,6 +95,8 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.DesativarAnoEhComponente = DesativarAnoEhComponente(proposta);
 
             propostaCompletaDTO.UltimaJustificativa = ehPareceristaDaProposta ? parecerista.Justificativa : proposta.Movimentacao.Justificativa;
+            propostaCompletaDTO.CargaHorariaTotal = proposta.CargaHorariaTotal;
+            propostaCompletaDTO.CargaHorariaNaoPresencial = proposta.CargaHorariaNaoPresencial;
 
             if (!proposta.ArquivoImagemDivulgacaoId.HasValue) return propostaCompletaDTO;
             
