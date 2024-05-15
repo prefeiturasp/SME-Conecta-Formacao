@@ -1,10 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Usuario.UsuarioPossuiProposta
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class UsuarioPossuiPropostaQueryHandler : IRequestHandler<UsuarioPossuiPropostaQuery, bool>
     {

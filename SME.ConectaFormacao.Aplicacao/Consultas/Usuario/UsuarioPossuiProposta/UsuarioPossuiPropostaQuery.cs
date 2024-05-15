@@ -1,9 +1,7 @@
-﻿using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using FluentValidation;
+using MediatR;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Usuario.UsuarioPossuiProposta
+namespace SME.ConectaFormacao.Aplicacao
 {
     public class UsuarioPossuiPropostaQuery : IRequest<bool>
     {
@@ -13,5 +11,15 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Usuario.UsuarioPossuiProposta
         }
 
         public string Login { get; }
+    }
+
+    public class UsuarioPossuiPropostaQueryValidator : AbstractValidator<UsuarioPossuiPropostaQuery>
+    {
+        public UsuarioPossuiPropostaQueryValidator()
+        {
+            RuleFor(f => f.Login)
+                .NotEmpty()
+                .WithMessage("Informe o login para verificar se possui proposta");
+        }
     }
 }
