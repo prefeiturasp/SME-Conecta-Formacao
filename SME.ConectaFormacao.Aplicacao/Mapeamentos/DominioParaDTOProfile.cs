@@ -12,6 +12,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
+using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -146,7 +147,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaDre, PropostaDreDTO>().ReverseMap();
 
             CreateMap<PropostaTipoInscricao, PropostaTipoInscricaoDTO>().ReverseMap();
-            
+
             CreateMap<PropostaParecer, PropostaParecerCadastroDTO>().ReverseMap();
 
             // -> Arquivo
@@ -271,9 +272,17 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<DadosUsuarioDTO, Usuario>();
 
             CreateMap<AreaPromotora, PropostaAreaPromotoraDTO>();
-            
+
             CreateMap<PropostaParecer, PropostaParecerCompletoDTO>().ReverseMap();
             CreateMap<PropostaParecer, PropostaParecerDTO>().ReverseMap();
+
+            CreateMap<Usuario, UsuarioRedeParceriaPaginadoDTO>()
+                .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(o => o.AreaPromotora.Nome))
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Nome))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(o => o.Email))
+                .ForMember(dest => dest.Telefone, opt => opt.MapFrom(o => o.Telefone.EstaPreenchido() ? o.Telefone.AplicarMascara(@"\(00\) 00000\-0000") : string.Empty))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()));
         }
     }
 }
