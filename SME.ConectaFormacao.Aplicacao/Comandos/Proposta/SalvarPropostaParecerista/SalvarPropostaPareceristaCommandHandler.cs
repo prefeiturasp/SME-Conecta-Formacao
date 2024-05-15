@@ -15,20 +15,21 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
-        private readonly ITransacao _transacao;
+        private readonly IRepositorioPropostaPareceristaConsideracao _repositorioPropostaPareceristaConsideracao;
         private readonly IMediator _mediator;
 
         public SalvarPropostaPareceristaCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta,
-            ITransacao transacao, IMediator mediator)
+            IRepositorioPropostaPareceristaConsideracao repositorioPropostaPareceristaConsideracao, IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _repositorioPropostaPareceristaConsideracao = repositorioPropostaPareceristaConsideracao ?? throw new ArgumentNullException(nameof(repositorioPropostaPareceristaConsideracao));
         }
 
         public async Task<bool> Handle(SalvarPropostaPareceristaCommand request, CancellationToken cancellationToken)
         {
+            var proposta = await _repositorioProposta.ObterPorId(request.PropostaId);
             var pareceristasAntes = await _repositorioProposta.ObterPropostaPareceristaPorId(request.PropostaId);
             var pareceristasDepois = _mapper.Map<IEnumerable<PropostaParecerista>>(request.Pareceristas);
             var possuiPareceristasDepois = pareceristasDepois.Any();
@@ -54,12 +55,25 @@ namespace SME.ConectaFormacao.Aplicacao
             
             if (qtdePareceristasDaProposta > limiteMaximoPareceristas)
                 throw new NegocioException(string.Format(MensagemNegocio.LIMITE_PARECERISTAS_EXCEDIDO_LIMITE_X, limiteMaximoPareceristas));
-            
-            if (pareceristasInserir.Any())
-                await _repositorioProposta.InserirPareceristas(request.PropostaId, pareceristasInserir);
 
-            if (pareceristasExcluir.Any())
-                await _repositorioProposta.RemoverPareceristas(pareceristasExcluir);
+            if (pareceristasInserir.Any())
+            {
+                var situacaoParecerista = proposta.Situacao.EstaAguardandoReanalisePeloParecerista()
+                    ? SituacaoParecerista.AguardandoRevalidacao
+                    : SituacaoParecerista.AguardandoValidacao;
+                
+                await _repositorioProposta.InserirPareceristas(request.PropostaId, pareceristasInserir, situacaoParecerista);    
+            }
+
+            foreach (var parecerista in pareceristasExcluir)
+            {
+                await _mediator.Send(new EnviarParecerPareceristaCommand(request.PropostaId, parecerista.RegistroFuncional, SituacaoParecerista.Desativado, string.Empty));
+
+                var existemConsideracoes = await _repositorioPropostaPareceristaConsideracao.ExistemConsideracoesPorParaceristaId(parecerista.Id);
+                
+                if (!existemConsideracoes)
+                    await _repositorioProposta.RemoverParecerista(parecerista);
+            }
                 
             return true;
         }

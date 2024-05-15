@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-using Shouldly;
+﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -37,9 +37,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         public async Task Deve_alterar_o_nome_do_usuario()
         {
             // arrange
-            var mapper = ObterCasoDeUso<IMapper>();
-            var usuario = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
-            await InserirNaBase(mapper.Map<Dominio.Entidades.Usuario>(usuario));
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
 
             var login = usuario.Login;
             var nome = UsuarioAlterarNomeMock.NomeValido;
@@ -52,11 +51,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             // assert
             retorno.ShouldBeTrue();
 
-            var usuarioAlterado = ObterTodos<Dominio.Entidades.Usuario>();
+            var usuarioAlterado = ObterPorId<Dominio.Entidades.Usuario, long>(usuario.Id);
             usuarioAlterado.ShouldNotBeNull();
-            usuarioAlterado.FirstOrDefault().Login.ShouldBe(login);
-            usuarioAlterado.FirstOrDefault().Nome.ShouldBe(nome);
-            usuarioAlterado.FirstOrDefault().Excluido.ShouldBeFalse();
+            usuarioAlterado.Login.ShouldBe(login);
+            usuarioAlterado.Nome.ShouldBe(nome);
+            usuarioAlterado.Excluido.ShouldBeFalse();
         }
     }
 }

@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio
 
         private string ObterUrl(string nomeArquivo)
         {
-            return $"{_relatorioOptions.UrlApiServidorRelatorios}v1/downloads/conecta/doc/{nomeArquivo}";
+            return $"{_relatorioOptions.UrlApiServidorRelatorios.Trim()}v1/downloads/conecta/doc/{nomeArquivo}";
         }
     }
 }

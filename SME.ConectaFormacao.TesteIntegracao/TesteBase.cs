@@ -47,6 +47,7 @@ namespace SME.ConectaFormacao.TesteIntegracao
 
         protected virtual void RegistrarQueryFakes(IServiceCollection services)
         {
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterTotalRegistroFilaQuery, uint>), typeof(ObterTotalRegistroFilaQueryHandlerFaker), ServiceLifetime.Scoped));            
         }
 
         public Task InserirNaBase<T>(IEnumerable<T> objetos) where T : EntidadeBase, new()

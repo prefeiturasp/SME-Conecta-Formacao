@@ -50,7 +50,7 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.CriterioCertificacao = await _repositorioProposta.ObterCriterioCertificacaoPorPropostaId(request.Id);
             proposta.Turmas = await _repositorioProposta.ObterTurmasPorId(request.Id);
             proposta.TiposInscricao = await _repositorioProposta.ObterTiposInscricaoPorId(request.Id);
-            proposta.Movimentacao = await _repositorioPropostaMovimentacao.ObterUltimoParecerPropostaId(request.Id);
+            proposta.Movimentacao = await _repositorioPropostaMovimentacao.ObterUltimoParecerPropostaId(request.Id, proposta.Situacao);
             proposta.AreaPromotora = await _repositorioAreaPromotora.ObterPorId(proposta.AreaPromotoraId);
             proposta.UltimaJustificativaDevolucao = await _repositorioPropostaMovimentacao.ObterUltimaJustificativaDevolucao(request.Id);
             proposta.Pareceristas = await _repositorioProposta.ObterPareceristasPorId(request.Id);
@@ -62,29 +62,70 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.Auditoria = _mapper.Map<AuditoriaDTO>(proposta);
             propostaCompletaDTO.AreaPromotora = _mapper.Map<PropostaAreaPromotoraDTO>(proposta.AreaPromotora);
 
-            var perfilLogado = await _mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
-            var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia());
-            var propostaPareceres = await _repositorioProposta.ObterPropostaParecerPorId(proposta.Id);
-            var estaAguardandoAnaliseParecerDFOuAreaPromotora = proposta.Situacao.EstaAguardandoAnaliseParecerDFOuAreaPromotora();
-            var ehPareceristaDaProposta = perfilLogado.EhPerfilParecerista() && proposta.Pareceristas.Any(a => a.RegistroFuncional.Equals(usuarioLogado.Login));
-            var possuiPareceristasNaProposta = proposta.Pareceristas.Any();
+            var perfilLogado = await _mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia(), cancellationToken);
+            var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken);
+            var consideracoes = await _repositorioProposta.ObterPropostaPareceristaConsideracaoPorId(proposta.Id);
 
-            propostaCompletaDTO.TotalDePareceres = ObterTotalDePareceresPorCampo(propostaPareceres, perfilLogado.EhPerfilAdminDF());
-            propostaCompletaDTO.ExibirParecer = await PodeExibirParecer(perfilLogado, possuiPareceristasNaProposta, estaAguardandoAnaliseParecerDFOuAreaPromotora, ehPareceristaDaProposta);
-            propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta, possuiPareceristasNaProposta);
-            propostaCompletaDTO.PodeEnviarParecer = await PodeEnviarParecer(perfilLogado, propostaPareceres, usuarioLogado.Id);
+            var ehAdminDF = perfilLogado.EhPerfilAdminDF();
+            var ehParecerista = perfilLogado.EhPerfilParecerista();
+            var parecerista = ehParecerista ? proposta.Pareceristas.FirstOrDefault(a => a.RegistroFuncional.Equals(usuarioLogado.Login)) : null;
+            var ehPareceristaDaProposta = parecerista.NaoEhNulo();
+            var possuiPareceristasNaProposta = proposta.Pareceristas.Any();
+            var possuiPareceristasEnviados = proposta.Pareceristas.Any(a => a.Situacao.EstaEnviada());
+
+            var estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf = proposta.Situacao.EstaAguardandoAnaliseParecerPelaDFOuAreaPromotoraOuAnaliseFinalPelaDF();
+            
+            var podeAprovarRecusar = PodeAprovarRecusar(ehParecerista, ehAdminDF, proposta, consideracoes, parecerista);
+            var ehAreaPromotora = await EhPerfilAreaPromotora(perfilLogado);
+            var totalDeConsideracoes = ObterTotalDePareceresPorCampo(consideracoes, ehAdminDF, proposta.Pareceristas, ehAreaPromotora);
+            
+            propostaCompletaDTO.EhParecerista = ehParecerista;
+            propostaCompletaDTO.EhAdminDF = ehAdminDF;
+            propostaCompletaDTO.EhAreaPromotora = ehAreaPromotora;
+            propostaCompletaDTO.TotalDeConsideracoes = totalDeConsideracoes;
+            propostaCompletaDTO.ExibirConsideracoes = PodeExibirParecer(ehAdminDF, possuiPareceristasNaProposta, estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf, ehPareceristaDaProposta, ehAreaPromotora,totalDeConsideracoes.Count());
+            propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta, possuiPareceristasNaProposta, ehAdminDF, ehAreaPromotora, possuiPareceristasEnviados);
+            propostaCompletaDTO.PodeEnviarConsideracoes = PodeEnviarParecer(ehParecerista, proposta, usuarioLogado, consideracoes);
             propostaCompletaDTO.QtdeLimitePareceristaProposta = await ObterParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta);
+            propostaCompletaDTO.PodeAprovar = podeAprovarRecusar;
+            propostaCompletaDTO.PodeRecusar = podeAprovarRecusar;
+            propostaCompletaDTO.LabelAprovar = ehParecerista ? "Sugerir aprovação" : "Aprovar";
+            propostaCompletaDTO.LabelRecusar = ehParecerista ? "Sugerir recusa" : "Recusar";
+
+            propostaCompletaDTO.DesativarAnoEhComponente = DesativarAnoEhComponente(proposta);
+
+            propostaCompletaDTO.UltimaJustificativa = ehPareceristaDaProposta ? parecerista.Justificativa : proposta.Movimentacao.Justificativa;
 
             if (!proposta.ArquivoImagemDivulgacaoId.HasValue) return propostaCompletaDTO;
             
             var arquivo = await _repositorioArquivo.ObterPorId(proposta.ArquivoImagemDivulgacaoId.Value);
             propostaCompletaDTO.ArquivoImagemDivulgacao = _mapper.Map<PropostaImagemDivulgacaoDTO>(arquivo);
 
-            propostaCompletaDTO.DesativarAnoEhComponente = ((!string.IsNullOrEmpty(proposta.PublicoAlvoOutros) || (proposta.PublicosAlvo.Any())) && (!string.IsNullOrEmpty(proposta.FuncaoEspecificaOutros) || (proposta.FuncoesEspecificas.Any())));
             return propostaCompletaDTO;
         }
 
-        private async Task<bool> PodeExibirParecer(Guid perfilLogado, bool possuiPareceristasNaProposta, bool estaAguardandoAnaliseParecerDFOuAreaPromotora, bool ehPareceristaDaProposta)
+        private static bool DesativarAnoEhComponente(Proposta proposta)
+        {
+            return (proposta.PublicoAlvoOutros.PossuiElementos() || proposta.PublicosAlvo.Any()) 
+                   && (proposta.FuncaoEspecificaOutros.PossuiElementos() || proposta.FuncoesEspecificas.Any());
+        }
+
+        private static bool PodeAprovarRecusar(bool ehParecerista, bool ehAdminDF, Proposta proposta, IEnumerable<PropostaPareceristaConsideracao> consideracoes, PropostaParecerista parecerista)
+        {
+            if (ehParecerista && parecerista.NaoEhNulo())
+            {
+                if (parecerista.Situacao.EstaAprovadaOuRecusada())
+                    return false;
+
+                return (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && !consideracoes.Any(a => a.PropostaPareceristaId == parecerista.Id)) 
+                       || proposta.Situacao.EstaAguardandoReanalisePeloParecerista();
+            }
+            
+            return ehAdminDF && (proposta.Situacao.EstaAguardandoAnaliseParecerFinalPelaDF() || proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF());
+        }
+
+        private static bool PodeExibirParecer(bool ehAdminDF, bool possuiPareceristasNaProposta, bool estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf, 
+            bool ehPareceristaDaProposta, bool ehAreaPromotora, int totalDeConsideracoes)
         {
             if (!possuiPareceristasNaProposta)
                 return false;
@@ -92,7 +133,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (ehPareceristaDaProposta)
                 return true;
 
-            return (perfilLogado.EhPerfilAdminDF() || await EhPerfilAreaPromotora(perfilLogado)) && estaAguardandoAnaliseParecerDFOuAreaPromotora;
+            return (ehAdminDF || ehAreaPromotora) && estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf && totalDeConsideracoes > 0;
         }
 
         private async Task<bool> EhPerfilAreaPromotora(Guid usuarioLogado)
@@ -100,12 +141,16 @@ namespace SME.ConectaFormacao.Aplicacao
             return (await _mediator.Send(new ObterPerfilAreaPromotoraQuery(usuarioLogado))).NaoEhNulo();
         }
 
-        private static IEnumerable<PropostaTotalParecerDTO> ObterTotalDePareceresPorCampo(IEnumerable<PropostaParecer> propostaPareceres, bool ehPerfilAdminDF)
+        private static IEnumerable<PropostaTotalConsideracaoDTO> ObterTotalDePareceresPorCampo(IEnumerable<PropostaPareceristaConsideracao> propostaPareceres, bool ehPerfilAdminDF
+            , IEnumerable<PropostaParecerista> pareceristas, bool ehAreaPromotora)
         {
-            if (ehPerfilAdminDF)
-                propostaPareceres = propostaPareceres.Where(w => w.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF() || w.Situacao.EstaAguardandoAnaliseParecerPelaAreaPromotora());
+            if (ehPerfilAdminDF || ehAreaPromotora)
+            {
+                var pareceristasEnviados = pareceristas.Where(w => w.Situacao.EstaEnviada()).Select(s => s.Id);
+                propostaPareceres = propostaPareceres.Where(w => pareceristasEnviados.Contains(w.PropostaPareceristaId));
+            }
            
-            return propostaPareceres.GroupBy(g => g.Campo).Select(s => new PropostaTotalParecerDTO()
+            return propostaPareceres.GroupBy(g => g.Campo).Select(s => new PropostaTotalConsideracaoDTO()
             {
                 Campo = s.Key,
                 Quantidade = s.Count()
@@ -118,20 +163,28 @@ namespace SME.ConectaFormacao.Aplicacao
             return int.Parse(parametro.Valor);
         }
 
-        private bool PodeEnviar(Proposta proposta, bool possuiPareceristasNaProposta)
+        private static bool PodeEnviar(Proposta proposta, bool possuiPareceristasNaProposta, bool ehAdminDF, bool ehAreaPromotora, bool possuiPareceristasEnviados)
         {
-            if (proposta.Situacao == SituacaoProposta.AguardandoAnaliseDf)
+            if ((ehAdminDF && (proposta.Situacao.EstaAguardandoAnaliseDf() || (proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF() && possuiPareceristasEnviados))) 
+                || (ehAreaPromotora && proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora()))
                 return possuiPareceristasNaProposta;
             
-            return proposta.Situacao == SituacaoProposta.Cadastrada ||
-                proposta.Situacao == SituacaoProposta.Devolvida;
+            return proposta.Situacao.EstaCadastrada() || proposta.Situacao.EstaDevolvida();
         }
 
-        private async Task<bool> PodeEnviarParecer(Guid usuarioLogado, IEnumerable<PropostaParecer> propostaPareceres, long usuarioLogadoId)
+
+        private static bool PodeEnviarParecer(bool ehParecerista, Proposta proposta, Usuario usuarioLogado, IEnumerable<PropostaPareceristaConsideracao> consideracoes)
         {
-            return usuarioLogado.EhPerfilParecerista()
-                ? propostaPareceres.Any(a => a.Situacao.EstaPendenteEnvioParecerPeloParecerista() && a.UsuarioPareceristaId == usuarioLogadoId)
-                : usuarioLogado.EhPerfilAdminDF() && propostaPareceres.Any(a => a.Situacao.EstaAguardandoAnaliseParecerPeloAdminDF());
+            if (ehParecerista)
+            {
+                var parecerista = proposta.Pareceristas.FirstOrDefault(a => a.RegistroFuncional == usuarioLogado.Login);
+                if (parecerista == null)
+                    return false;
+
+                return (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && parecerista.Situacao.EstaAguardandoValidacao() && consideracoes.Any(a => a.PropostaPareceristaId == parecerista.Id));
+            }
+
+            return false;
         }
     }
 }

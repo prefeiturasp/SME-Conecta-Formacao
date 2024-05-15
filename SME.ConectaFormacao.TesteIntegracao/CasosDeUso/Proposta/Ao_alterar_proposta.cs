@@ -7,8 +7,10 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
@@ -33,6 +35,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_rascunho_sem_informacao_preenchida()
         {
             // arrange
+            await InserirParametrosProposta();
+            
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
 
@@ -109,8 +113,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_valida()
         {
             //arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -179,8 +182,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_publicada_valida_sem_inscricao_automatica()
         {
             //arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -252,8 +254,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_publicada_valida_com_inscricao_automatica()
         {
             //arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -352,8 +353,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_tipo_formacao_evento_e_formato_hibrido_valido()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -562,8 +562,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_funcao_especifica_outros_valido()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -709,8 +708,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_criterio_validacao_inscricao_outros_valido()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -914,8 +912,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_quando_for_preenchido_somente_publico_alvo_e_os_campos_fucoes_especificas_modalidade_ano_da_turma_e_componente_curricular_omitidos()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -993,8 +990,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_quando_for_preenchido_somente_funcoes_especificas_e_os_campos_publico_alvo_modalidade_ano_da_turma_e_componente_curricular_omitidos()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -1072,8 +1068,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_quando_for_preenchido_somente_modalidade_ano_da_turma_e_componente_curricular_e_os_campos_publico_alvo_e_funcoes_especificas_omitidos()
         {
             // arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -1151,8 +1146,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_retornar_excecao_campo_obrigatorio_tipo_externo()
         {
             //arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -1210,8 +1204,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_valida_tipo_inscricao_externo()
         {
             //arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -1272,8 +1265,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_aprovada_homologada_em_publicada()
         {
             //arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -1337,8 +1329,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_alterar_proposta_aprovada_homologada_sem_numero_homologacao()
         {
             //arrange
-            var parametroQtdeCursistasSuportadosPorTurma = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950");
-            await InserirNaBase(parametroQtdeCursistasSuportadosPorTurma);
+            await InserirParametrosProposta();
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -1394,6 +1385,371 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             propostaAlterada.Situacao.ShouldBe(SituacaoProposta.Aprovada);
             propostaAlterada.NumeroHomologacao.ShouldBeNull();
+        }
+        
+        [Fact(DisplayName = "Proposta - Deve alterar proposta quando adicionado parecistas")]
+        public async Task Deve_alterar_proposta_quando_adicionado_parecistas()
+        {
+            //arrange
+            await InserirParametrosProposta();
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var dres = DreMock.GerarDreValida(5);
+            await InserirNaBase(dres);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Aprovada);
+
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Formato.Presencial,
+                dres.Select(t => new PropostaDreDTO { DreId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
+                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
+                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
+                palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
+                modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t }),
+                anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id }),
+                componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO { ComponenteCurricularId = t.Id }),
+                SituacaoProposta.AguardandoAnaliseDf, quantidadeTurmas: proposta.QuantidadeTurmas, quantidadePareceristas:3);
+
+            propostaDTO.FormacaoHomologada = FormacaoHomologada.Sim;
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
+
+            // act 
+            var retornoDto = await casoDeUso.Executar(proposta.Id, propostaDTO);
+
+            // assert
+            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
+
+            var propostaAlterada = ObterPorId<Dominio.Entidades.Proposta, long>(retornoDto.EntidadeId);
+            propostaAlterada.Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseDf);
+            
+            var pareceristasInseridos = ObterTodos<PropostaParecerista>();
+            pareceristasInseridos.All(a=> a.NomeParecerista.EstaPreenchido()).ShouldBeTrue();
+            pareceristasInseridos.All(a=> a.Situacao.EstaAguardandoValidacao()).ShouldBeTrue();
+            pareceristasInseridos.All(a=> a.Justificativa.NaoEstaPreenchido()).ShouldBeTrue();
+            pareceristasInseridos.All(a=> a.RegistroFuncional.EstaPreenchido()).ShouldBeTrue();
+            pareceristasInseridos.All(a=> a.NomeParecerista.EstaPreenchido()).ShouldBeTrue();
+            pareceristasInseridos.All(a=> a.PropostaId == 1).ShouldBeTrue();
+            pareceristasInseridos.Count().ShouldBe(3);
+        }
+        
+        [Fact(DisplayName = "Proposta - Não deve alterar proposta quando adicionado mais pareceristas que o permitido conforme parâmetro")]
+        public async Task Deve_alterar_proposta_quando_adicionado_mais_parecistas_que_o_permitido_conforme_parametro()
+        {
+            //arrange
+            await InserirParametrosProposta();
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var dres = DreMock.GerarDreValida(5);
+            await InserirNaBase(dres);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Aprovada);
+
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Formato.Presencial,
+                dres.Select(t => new PropostaDreDTO { DreId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
+                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
+                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
+                palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
+                modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t }),
+                anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id }),
+                componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO { ComponenteCurricularId = t.Id }),
+                SituacaoProposta.Aprovada, quantidadeTurmas: proposta.QuantidadeTurmas,quantidadePareceristas:4);
+            
+            propostaDTO.FormacaoHomologada = FormacaoHomologada.Sim;
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
+
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(proposta.Id, propostaDTO));
+
+            // assert
+            excecao.Mensagens.Contains(string.Format(MensagemNegocio.LIMITE_PARECERISTAS_EXCEDIDO_LIMITE_X, 3)).ShouldBeTrue();
+        }
+        
+        [Fact(DisplayName = "Proposta - Deve desativar parecerista que foram excluídos e que possuem considerações quando a situação da proposta está aguardando análise do parecerista")]
+        public async Task Deve_desativar_parecerista_que_foram_excluidos_e_que_possuem_consideracoes_quando_a_situacao_da_proposta_esta_aguardando_analise_do_parecerista()
+        {
+            //arrange
+            await InserirParametrosProposta();
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var dres = DreMock.GerarDreValida(5);
+            await InserirNaBase(dres);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
+            
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
+            await InserirUsuario("3", "Parecerista3");
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoAnalisePeloParecerista);
+
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1", SituacaoParecerista.AguardandoValidacao));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.AguardandoValidacao));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "3","Parecerista3", SituacaoParecerista.AguardandoValidacao));
+
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.Formato, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.FormacaoHomologada, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.TipoFormacao, "1"));
+
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.TiposInscricao, "2"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.IntegrarNoSGA, "2"));
+
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.Dres, "3"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.NomeFormacao, "3"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.PublicosAlvo, "3"));
+            
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Formato.Presencial,
+                dres.Select(t => new PropostaDreDTO { DreId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
+                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
+                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
+                palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
+                modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t }),
+                anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id }),
+                componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO { ComponenteCurricularId = t.Id }),
+                SituacaoProposta.AguardandoAnalisePeloParecerista, quantidadeTurmas: proposta.QuantidadeTurmas);
+
+            propostaDTO.Pareceristas = new List<PropostaPareceristaDTO>() { new () { Id = 1, RegistroFuncional = "1", NomeParecerista = "Parecerista1" } };
+            
+            propostaDTO.FormacaoHomologada = FormacaoHomologada.Sim;
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
+
+            // act
+            var retorno = await casoDeUso.Executar(proposta.Id, propostaDTO);
+
+            // assert
+            retorno.ShouldNotBeNull();
+
+            var pareceristas = ObterTodos<PropostaParecerista>();
+            pareceristas.Count(a=> a.Situacao.EstaDesativado()).ShouldBe(2);
+            pareceristas.Count(a=> a.Situacao.EstaAguardandoValidacao()).ShouldBe(1);
+        }
+        
+        [Fact(DisplayName = "Proposta - Deve desativar e excluir pareceristas que foram excluídos e que não possuem considerações quando a situação da proposta está aguardando análise do parecerista")]
+        public async Task Deve_desativar_e_excluir_pareceristas_que_foram_excluidos_e_que_nao_possuem_consideracoes_quando_a_situacao_da_proposta_esta_aguardando_analise_do_parecerista()
+        {
+            //arrange
+            await InserirParametrosProposta();
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var dres = DreMock.GerarDreValida(5);
+            await InserirNaBase(dres);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
+            
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
+            await InserirUsuario("3", "Parecerista3");
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoAnalisePeloParecerista);
+
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1", SituacaoParecerista.AguardandoValidacao));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.AguardandoValidacao));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "3","Parecerista3", SituacaoParecerista.AguardandoValidacao));
+            
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Formato.Presencial,
+                dres.Select(t => new PropostaDreDTO { DreId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
+                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
+                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
+                palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
+                modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t }),
+                anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id }),
+                componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO { ComponenteCurricularId = t.Id }),
+                SituacaoProposta.AguardandoAnalisePeloParecerista, quantidadeTurmas: proposta.QuantidadeTurmas);
+
+            propostaDTO.Pareceristas = new List<PropostaPareceristaDTO>() { new () { Id = 1, RegistroFuncional = "1", NomeParecerista = "Parecerista1" } };
+            
+            propostaDTO.FormacaoHomologada = FormacaoHomologada.Sim;
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
+
+            // act
+            var retorno = await casoDeUso.Executar(proposta.Id, propostaDTO);
+
+            // assert
+            retorno.ShouldNotBeNull();
+            var pareceristas = ObterTodos<PropostaParecerista>();
+            pareceristas.Count(a=> a.Situacao.EstaDesativado() && a.Excluido).ShouldBe(2);
+            pareceristas.Count(a=> a.Situacao.EstaAguardandoValidacao()).ShouldBe(1);
+        }
+        
+        [Fact(DisplayName = "Proposta - Deve remover e desativar pareceristas que possuem considerações, adicionar novo parecerista como reavalidação e parecerista está aguardando revalidação")]
+        public async Task Deve_remover_e_desativar_pareceristas_que_possuem_consideracoes_adicionar_novo_parecerista_como_reavalidacao_e_parecerista_esta_aguardando_revalidacao()
+        {
+            //arrange
+            await InserirParametrosProposta();
+
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
+
+            var dres = DreMock.GerarDreValida(5);
+            await InserirNaBase(dres);
+
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
+
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
+
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
+
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
+
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
+
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
+            
+            await InserirUsuario("1", "Parecerista1");
+            await InserirUsuario("2", "Parecerista2");
+            await InserirUsuario("3", "Parecerista3");
+            await InserirUsuario("4", "Parecerista4");
+
+            var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoReanalisePeloParecerista);
+
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1", SituacaoParecerista.Enviada));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2","Parecerista2", SituacaoParecerista.Enviada));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "3","Parecerista3", SituacaoParecerista.Enviada));
+            
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.Formato, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.FormacaoHomologada, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1,CampoConsideracao.TipoFormacao, "1"));
+
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.TiposInscricao, "2"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2,CampoConsideracao.IntegrarNoSGA, "2"));
+
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.Dres, "3"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.NomeFormacao, "3"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3,CampoConsideracao.PublicosAlvo, "3"));
+            
+            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                TipoFormacao.Curso,
+                Formato.Presencial,
+                dres.Select(t => new PropostaDreDTO { DreId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
+                cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
+                criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
+                cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
+                palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
+                modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t }),
+                anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id }),
+                componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO { ComponenteCurricularId = t.Id }),
+                SituacaoProposta.AguardandoReanalisePeloParecerista, quantidadeTurmas: proposta.QuantidadeTurmas);
+
+            propostaDTO.Pareceristas = new List<PropostaPareceristaDTO>()
+            {
+                new () { Id = 1, RegistroFuncional = "1", NomeParecerista = "Parecerista1" },
+                new () { RegistroFuncional = "4", NomeParecerista = "Parecerista4" }
+            };
+            
+            propostaDTO.FormacaoHomologada = FormacaoHomologada.Sim;
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
+
+            // act
+            var retorno = await casoDeUso.Executar(proposta.Id, propostaDTO);
+
+            // assert
+            retorno.ShouldNotBeNull();
+            var pareceristas = ObterTodos<PropostaParecerista>();
+            pareceristas.Count(a=> a.Situacao.EstaDesativado()).ShouldBe(2);
+            pareceristas.Count(a=> a.Situacao.EstaAguardandoRevalidacao()).ShouldBe(1);
+            pareceristas.Count(a=> a.Situacao.EstaEnviada()).ShouldBe(1);
         }
     }
 }

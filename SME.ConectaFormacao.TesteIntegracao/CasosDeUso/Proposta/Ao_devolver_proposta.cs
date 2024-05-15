@@ -20,12 +20,14 @@ public class Ao_devolver_proposta : TestePropostaBase
 {
     public Ao_devolver_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
     {
+        PropostaInformacoesCadastranteMock.Montar();
     }
 
     protected override void RegistrarFakes(IServiceCollection services)
     {
         base.RegistrarFakes(services);
         services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoUsuarioLogadoQuery, Guid>), typeof(ObterGrupoUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
+        services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuarioLogadoQuery, Dominio.Entidades.Usuario>), typeof(ObterUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
     }
 
     [Fact(DisplayName = "Proposta - Deve devolver proposta válida")]
@@ -60,22 +62,6 @@ public class Ao_devolver_proposta : TestePropostaBase
 
         var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,
             palavrasChaves, modalidades, anosTurmas, componentesCurriculares);
-
-        var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
-            TipoFormacao.Curso,
-            Formato.Presencial,
-            dres.Select(t => new PropostaDreDTO { DreId = t.Id }),
-            cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
-            cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
-            criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
-            cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
-            palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
-            modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t }),
-            anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id }),
-            componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO { ComponenteCurricularId = t.Id }),
-            SituacaoProposta.Cadastrada, quantidadeTurmas: proposta.QuantidadeTurmas);
-
-        propostaDTO.Turmas.FirstOrDefault().Id = proposta.Turmas.FirstOrDefault().Id;
 
         var casoDeUso = ObterCasoDeUso<ICasoDeUsoDevolverProposta>();
 
@@ -121,22 +107,6 @@ public class Ao_devolver_proposta : TestePropostaBase
 
         var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao,
             palavrasChaves, modalidades, anosTurmas, componentesCurriculares);
-
-        var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
-            TipoFormacao.Curso,
-            Formato.Presencial,
-            dres.Select(t => new PropostaDreDTO { DreId = t.Id }),
-            cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id }),
-            cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id }),
-            criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id }),
-            cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id }),
-            palavrasChaves.Select(t => new PropostaPalavraChaveDTO { PalavraChaveId = t.Id }),
-            modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t }),
-            anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id }),
-            componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO { ComponenteCurricularId = t.Id }),
-            SituacaoProposta.Cadastrada, quantidadeTurmas: proposta.QuantidadeTurmas);
-
-        propostaDTO.Turmas.FirstOrDefault().Id = proposta.Turmas.FirstOrDefault().Id;
 
         var casoDeUso = ObterCasoDeUso<ICasoDeUsoDevolverProposta>();
 
