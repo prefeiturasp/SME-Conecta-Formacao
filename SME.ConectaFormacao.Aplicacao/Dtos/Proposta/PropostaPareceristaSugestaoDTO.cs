@@ -3,7 +3,7 @@
     public class PropostaPareceristaSugestaoDTO
     {
         public  string? Parecerista { get; set; }
-        public  string? Sugestao { get; set; }
+        public  int SituacaoParecerista { get; set; }
         public  string? Justificativa { get; set; }
     }
 }
