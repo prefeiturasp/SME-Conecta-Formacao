@@ -2,15 +2,9 @@
 using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
 {
@@ -25,6 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             ValidarPreenchimento(usuarioRedeParceriaDTO);
 
             usuarioRedeParceriaDTO.Cpf = usuarioRedeParceriaDTO.Cpf.SomenteNumeros();
+            usuarioRedeParceriaDTO.Telefone = usuarioRedeParceriaDTO.Telefone.SomenteNumeros();
 
             var usuario = await mediator.Send(new ObterUsuarioPorIdQuery(id)) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);

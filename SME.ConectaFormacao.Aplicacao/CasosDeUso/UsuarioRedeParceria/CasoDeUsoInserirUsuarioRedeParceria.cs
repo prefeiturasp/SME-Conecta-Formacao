@@ -19,6 +19,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             ValidarPreenchimento(usuarioRedeParceriaDTO);
 
             usuarioRedeParceriaDTO.Cpf = usuarioRedeParceriaDTO.Cpf.SomenteNumeros();
+            usuarioRedeParceriaDTO.Telefone = usuarioRedeParceriaDTO.Telefone.SomenteNumeros();
+
             var usuario = new Dominio.Entidades.Usuario(
                 usuarioRedeParceriaDTO.Cpf,
                 usuarioRedeParceriaDTO.Nome,
@@ -38,12 +40,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
 
         private static void ValidarPreenchimento(UsuarioRedeParceriaDTO usuarioRedeParceriaDTO)
         {
+            var erros = new List<string>();
             if (!UtilValidacoes.CpfEhValido(usuarioRedeParceriaDTO.Cpf))
-                throw new NegocioException(MensagemNegocio.CPF_COM_DIGITO_VERIFICADOR_INVALIDO.Parametros(usuarioRedeParceriaDTO.Cpf));
+                erros.Add(MensagemNegocio.CPF_COM_DIGITO_VERIFICADOR_INVALIDO.Parametros(usuarioRedeParceriaDTO.Cpf));
             if (!UtilValidacoes.NomeComSobrenome(usuarioRedeParceriaDTO.Nome))
-                throw new NegocioException(MensagemNegocio.NOME_DEVE_TER_SOBRENOME);
+                erros.Add(MensagemNegocio.NOME_DEVE_TER_SOBRENOME);
             if (!UtilValidacoes.EmailEhValido(usuarioRedeParceriaDTO.Email))
-                throw new NegocioException(MensagemNegocio.EMAIL_INVALIDO);
+                erros.Add(MensagemNegocio.EMAIL_INVALIDO);
+
+            if (erros.PossuiElementos())
+                throw new NegocioException(erros);
         }
     }
 }
