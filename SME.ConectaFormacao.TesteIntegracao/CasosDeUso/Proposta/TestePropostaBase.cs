@@ -321,6 +321,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
 
             proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
+            
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaTotal))
+                proposta.CargaHorariaTotal.ShouldBe(propostaDTO.CargaHorariaTotal);
+            
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaNaoPresencial))
+                proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);            
         }
 
         protected void ValidarPropostaCompletoDTO(PropostaCompletoDTO propostaDTO, long id)
@@ -356,13 +362,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             proposta.Situacao.ShouldBe(propostaDTO.Situacao);
 
-
             if (propostaDTO.TiposInscricao.NaoEhNulo() &&
                 propostaDTO.TiposInscricao.Any(tipo => tipo.TipoInscricao == TipoInscricao.Externa))
                 proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
 
             proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
             proposta.NumeroHomologacao.ShouldBe(propostaDTO.NumeroHomologacao);
+            
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaTotal))
+                proposta.CargaHorariaTotal.ShouldBe(propostaDTO.CargaHorariaTotal);            
+            
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaNaoPresencial))
+                proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);            
         }
 
         protected void ValidarPropostaCriterioValidacaoInscricaoDTO(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> criteriosDTO, long id)

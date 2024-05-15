@@ -136,7 +136,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3, CampoConsideracao.NomeFormacao, "3"));
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3, CampoConsideracao.PublicosAlvo, "3"));
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecerista>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
 
             // act 
             await casoDeUso.Executar(proposta.Id);
@@ -183,7 +183,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3, CampoConsideracao.NomeFormacao, "3"));
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3, CampoConsideracao.PublicosAlvo, "3"));
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarPropostaParecerista>();
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
 
             // act 
             await casoDeUso.Executar(proposta.Id);

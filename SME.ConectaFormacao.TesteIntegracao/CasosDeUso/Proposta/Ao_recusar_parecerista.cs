@@ -115,7 +115,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             pareceristaBanco.Situacao.ShouldBe(SituacaoParecerista.Recusada);
 
             var propostaBanco = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
-            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoAnaliseParecerFinalPelaDF);
+            propostaBanco.Situacao.ShouldBe(SituacaoProposta.AguardandoValidacaoFinalPelaDF);
         }
 
         [Fact(DisplayName = "Proposta - Deve aprovar o parecer do parecerista reanalise com parecerista pendente sem alterar situação da proposta")]
