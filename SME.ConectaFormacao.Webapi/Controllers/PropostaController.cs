@@ -500,5 +500,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUso.Executar(propostaId, propostaJustificativaDTO));
         }
+
+        [HttpGet("{propostaId}/relatorio/lauda-completa")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
+        public async Task<IActionResult> ObterRelatorioLaudaCompleta([FromServices] ICasoDeUsoObterRelatorioPropostaLaudaCompleta casoDeUso,
+                                                                     [FromRoute] long propostaId)
+        {
+            return Ok(await casoDeUso.Executar(propostaId));
+        }
     }
 }

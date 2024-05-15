@@ -20,9 +20,19 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio
             _relatorioOptions = relatorioOptions ?? throw new ArgumentNullException(nameof(relatorioOptions));
         }
 
-        public async Task<string> ObterRelatorioPropostaLaudaDePublicacao(long propostaId)
+        public Task<string> ObterRelatorioPropostaLaudaCompleta(long propostaId)
         {
-            var resposta = await _httpClient.GetAsync(EndpointRelatoriosConstants.RELATORIO_LAUDA_PUBLICACAO.Parametros(propostaId));
+            return ObterRelatorio(EndpointRelatoriosConstants.RELATORIO_LAUDA_COMPLETA.Parametros(propostaId));
+        }
+
+        public Task<string> ObterRelatorioPropostaLaudaDePublicacao(long propostaId)
+        {
+            return ObterRelatorio(EndpointRelatoriosConstants.RELATORIO_LAUDA_PUBLICACAO.Parametros(propostaId));
+        }
+
+        private async Task<string> ObterRelatorio(string endPoint)
+        {
+            var resposta = await _httpClient.GetAsync(endPoint);
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.ARQUIVO_NAO_ENCONTRADO, resposta.StatusCode);
