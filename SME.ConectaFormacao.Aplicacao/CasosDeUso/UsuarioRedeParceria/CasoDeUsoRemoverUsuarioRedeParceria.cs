@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Usuario.UsuarioPossuiProposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;

@@ -20,9 +20,19 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio
             _relatorioOptions = relatorioOptions ?? throw new ArgumentNullException(nameof(relatorioOptions));
         }
 
-        public async Task<string> ObterRelatorioPropostaLaudaDePublicacao(long propostaId)
+        public Task<string> ObterRelatorioPropostaLaudaCompleta(long propostaId)
         {
-            var resposta = await _httpClient.GetAsync(EndpointRelatoriosConstants.RELATORIO_LAUDA_PUBLICACAO.Parametros(propostaId));
+            return ObterRelatorio(EndpointRelatoriosConstants.RELATORIO_LAUDA_COMPLETA.Parametros(propostaId), "pdf");
+        }
+
+        public Task<string> ObterRelatorioPropostaLaudaDePublicacao(long propostaId)
+        {
+            return ObterRelatorio(EndpointRelatoriosConstants.RELATORIO_LAUDA_PUBLICACAO.Parametros(propostaId), "doc");
+        }
+
+        private async Task<string> ObterRelatorio(string endPoint, string extensao)
+        {
+            var resposta = await _httpClient.GetAsync(endPoint);
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.ARQUIVO_NAO_ENCONTRADO, resposta.StatusCode);
@@ -31,12 +41,12 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio
 
             var nomeArquivo = JsonConvert.DeserializeObject<string>(json);
 
-            return ObterUrl(nomeArquivo);
+            return ObterUrl(nomeArquivo, extensao);
         }
 
-        private string ObterUrl(string nomeArquivo)
+        private string ObterUrl(string nomeArquivo, string extensao)
         {
-            return $"{_relatorioOptions.UrlApiServidorRelatorios}v1/downloads/conecta/doc/{nomeArquivo}";
+            return $"{_relatorioOptions.UrlApiServidorRelatorios.Trim()}v1/downloads/conecta/{extensao}/{nomeArquivo}";
         }
     }
 }

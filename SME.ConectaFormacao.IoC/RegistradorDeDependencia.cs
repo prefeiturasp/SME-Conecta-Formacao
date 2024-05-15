@@ -194,7 +194,7 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaComponenteCurricularMap());
             config.AddMap(new PropostaDreMap());
             config.AddMap(new PropostaTipoInscricaoMap());
-            config.AddMap(new PropostaParecerMap());
+            config.AddMap(new PropostaPareceristaConsideracaoMap());
 
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
@@ -259,7 +259,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioInscricao, RepositorioInscricao>();
         _serviceCollection.TryAddScoped<IRepositorioImportacaoArquivo, RepositorioImportacaoArquivo>();
         _serviceCollection.TryAddScoped<IRepositorioImportacaoArquivoRegistro, RepositorioImportacaoArquivoRegistro>();
-        _serviceCollection.TryAddScoped<IRepositorioPropostaParecer, RepositorioPropostaParecer>();
+        _serviceCollection.TryAddScoped<IRepositorioPropostaPareceristaConsideracao, RepositorioPropostaPareceristaConsideracao>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -326,9 +326,13 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterUnidadePorCodigoEol, CasoDeUsoObterUnidadePorCodigoEol>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFuncionarioExternoPorCpf, CasoDeUsoObterFuncionarioExternoPorCpf>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostasDashboard, CasoDeUsoObterPropostasDashboard>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaParecer, CasoDeUsoSalvarPropostaParecer>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaPareceristaConsideracao, CasoDeUsoSalvarPropostaPareceristaConsideracao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaParecer, CasoDeUsoObterPropostaParecer>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterRelatorioPropostaLaudaPublicacao, CasoDeUsoObterRelatorioPropostaLaudaPublicacao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterSugestaoParecerPareceristas, CasoDeUsoObterSugestaoParecerPareceristas>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAprovarProposta, CasoDeUsoAprovarProposta>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRecusarProposta, CasoDeUsoRecusarProposta>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterRelatorioPropostaLaudaCompleta, CasoDeUsoObterRelatorioPropostaLaudaCompleta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverPropostaEncontro, CasoDeUsoRemoverPropostaEncontro>();
@@ -342,7 +346,6 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarProposta, CasoDeUsoEnviarProposta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerProposta, CasoDeUsoObterParecerProposta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoHomologada, CasoDeUsoObterFormacaoHomologada>();
 
@@ -404,7 +407,9 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoEncerrarInscricaoAutomaticamenteUsuarios, CasoDeUsoEncerrarInscricaoAutomaticamenteUsuarios>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerista, CasoDeUsoObterParecerista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverParecerDaProposta, CasoDeUsoRemoverParecerDaProposta>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParecer, CasoDeUsoEnviarPropostaParecer>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParecerista, CasoDeUsoEnviarPropostaParecerista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAprovarPropostaParecerista, CasoDeUsoAprovarPropostaParecerista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRecusarPropostaParecerista, CasoDeUsoRecusarPropostaParecerista>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterSituacaoUsuarioRedeParceria, CasoDeUsoObterSituacaoUsuarioRedeParceria>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuarioRedeParceriaPaginada, CasoDeUsoObterUsuarioRedeParceriaPaginada>();

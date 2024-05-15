@@ -17,12 +17,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         {
         }
 
-        public async Task<InserirUsuarioRetornoDTO> InserirUsuarioExterno(UsuarioExternoDTO usuarioExternoDto)
+        public async Task<InserirUsuarioRetornoDTO> Executar(UsuarioExternoDTO usuarioExternoDto)
         {
             var cpfSemPontos = usuarioExternoDto.Cpf.SomenteNumeros();
             usuarioExternoDto.Login = cpfSemPontos;
             usuarioExternoDto.Cpf = cpfSemPontos;
-            usuarioExternoDto.EmailEducacional = usuarioExternoDto.EmailEducacional.Trim().ToLower();
+            usuarioExternoDto.EmailEducacional = usuarioExternoDto.EmailEducacional?.Trim().ToLower();
             ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email, usuarioExternoDto.EmailEducacional);
             await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login,cpfSemPontos);
 

@@ -1,5 +1,10 @@
-﻿using Shouldly;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Shouldly;
+using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -10,6 +15,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AreaPromotora
     {
         public Ao_obter_lista_area_promotora(CollectionFixture collectionFixture) : base(collectionFixture)
         {
+        }
+
+        protected override void RegistrarQueryFakes(IServiceCollection services)
+        {
+            base.RegistrarQueryFakes(services);
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterGrupoUsuarioLogadoQuery, Guid>), typeof(ObterGrupoUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Área promotora - Deve obter lista")]

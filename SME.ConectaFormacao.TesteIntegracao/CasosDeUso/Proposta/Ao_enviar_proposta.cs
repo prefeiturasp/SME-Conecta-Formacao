@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var excecao = await Should.ThrowAsync<NegocioException>(casoUsoEnviarProposta.Executar(proposta.Id));
 
             // assert
-            excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA_NEM_DEVOLVIDA).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_PODE_SER_ENVIADA).ShouldBeTrue();
         }
 
         [Fact(DisplayName = "Proposta - Não Deve Enviar uma Proposta não encontrada")]
@@ -102,7 +102,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
-            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AguardandoAnaliseParecerista);
+            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AguardandoAnalisePeloParecerista);
+        }
+
+        [Fact(DisplayName = "Proposta - Deve alterar proposta aguardando análise parecer df homologada em aguardando análise área promotora")]
+        public async Task Deve_alterar_proposta_aguardando_parecer_df_homologada_em_aguardando_analise_area_promotora()
+        {
+            //arrange
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerPelaDF, formacaoHomologada: FormacaoHomologada.Sim, dataInscricaoForaPeriodo: true, quantidadeParecerista: 2);
+
+            var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
+
+            // act
+            await casoUsoEnviarProposta.Executar(proposta.Id);
+
+            // assert
+            var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
+            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AnaliseParecerPelaAreaPromotora);
         }
     }
 }

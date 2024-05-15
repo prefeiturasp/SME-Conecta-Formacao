@@ -22,5 +22,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 
             return valor == FormacaoHomologada.Sim;
         }
+        
+        public static bool NaoEstaHomologada(this FormacaoHomologada? valor)
+        {
+            return !EstaHomologada(valor);
+        }
     }
 }

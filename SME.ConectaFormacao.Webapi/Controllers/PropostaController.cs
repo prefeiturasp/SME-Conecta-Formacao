@@ -375,51 +375,65 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_E, Policy = "Bearer")]
-        public async Task<IActionResult> RemoverParecer([FromRoute] long parecerId,[FromServices] ICasoDeUsoRemoverParecerDaProposta casoDeUso)
+        public async Task<IActionResult> RemoverParecer([FromRoute] long parecerId, [FromServices] ICasoDeUsoRemoverParecerDaProposta casoDeUso)
         {
             return Ok(await casoDeUso.Executar(parecerId));
         }
-        
+
         [HttpPost("parecer")]
         [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
-        public async Task<IActionResult> InserirPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaParecer casoDeUsoSalvarPropostaParecer,
-            [FromBody] PropostaParecerCadastroDTO propostaParecerCadastroDto)
+        public async Task<IActionResult> InserirPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaPareceristaConsideracao casoDeUsoSalvarPropostaPareceristaConsideracao,
+            [FromBody] PropostaPareceristaConsideracaoCadastroDTO propostaPareceristaConsideracaoCadastroDto)
         {
-            return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerCadastroDto));
+            return Ok(await casoDeUsoSalvarPropostaPareceristaConsideracao.Executar(propostaPareceristaConsideracaoCadastroDto));
         }
-        
+
         [HttpPut("parecer")]
         [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_A, Policy = "Bearer")]
-        public async Task<IActionResult> AlterarPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaParecer casoDeUsoSalvarPropostaParecer,
-            [FromBody] PropostaParecerCadastroDTO propostaParecerCadastroDto)
+        public async Task<IActionResult> AlterarPropostaParecer([FromServices] ICasoDeUsoSalvarPropostaPareceristaConsideracao casoDeUsoSalvarPropostaPareceristaConsideracao,
+            [FromBody] PropostaPareceristaConsideracaoCadastroDTO propostaPareceristaConsideracaoCadastroDto)
         {
-            return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerCadastroDto));
+            return Ok(await casoDeUsoSalvarPropostaPareceristaConsideracao.Executar(propostaPareceristaConsideracaoCadastroDto));
         }
-        
+
         [HttpGet("parecer")]
-        [ProducesResponseType(typeof(PropostaParecerCompletoDTO), 200)]
+        [ProducesResponseType(typeof(PropostaPareceristaConsideracaoCompletoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
-        public async Task<IActionResult> ObterPropostaPareceresPorPropostaIdECampo([FromServices] ICasoDeUsoObterPropostaParecer casoDeUsoSalvarPropostaParecer,
+        public async Task<IActionResult> ObterPropostaPareceresPorPropostaIdECampo(
+            [FromServices] ICasoDeUsoObterPropostaParecer casoDeUsoSalvarPropostaParecer,
             [FromQuery] PropostaParecerFiltroDTO propostaParecerFiltroDTO)
         {
             return Ok(await casoDeUsoSalvarPropostaParecer.Executar(propostaParecerFiltroDTO));
         }
 
-        [HttpPost("{propostaId}/parecer/enviar")]
-        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [HttpGet("{propostaId}/parecerista/sugestao")]
+        [ProducesResponseType(typeof(IEnumerable<PropostaPareceristaSugestaoDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Permissao.Proposta_A, Policy = "Bearer")]
+        public async Task<IActionResult> ObterSugestoesPareceristaAprovada(
+            [FromServices] ICasoDeUsoObterSugestaoParecerPareceristas casoDeUso,
+            [FromRoute] long propostaId)
+        {
+            return Ok(await casoDeUso.Executar(propostaId));
+        }
+
+        [HttpPost("{propostaId}/parecerista/enviar")]
+        [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
-        public async Task<IActionResult> EnviarPropostaParecer([FromServices] ICasoDeUsoEnviarPropostaParecer casoDeUso,
-                                                               [FromRoute] long propostaId)
+        public async Task<IActionResult> EnviarPropostaParecerista(
+            [FromServices] ICasoDeUsoEnviarPropostaParecerista casoDeUso,
+            [FromRoute] long propostaId)
         {
             return Ok(await casoDeUso.Executar(propostaId));
         }
@@ -431,6 +445,69 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
         public async Task<IActionResult> ObterRelatorioLaudaDePublicacao([FromServices] ICasoDeUsoObterRelatorioPropostaLaudaPublicacao casoDeUso,
                                                                          [FromRoute] long propostaId)
+        {
+            return Ok(await casoDeUso.Executar(propostaId));
+        }
+
+        [HttpPost("{propostaId}/parecerista/aprovar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        public async Task<IActionResult> AprovarPropostaParecerista(
+            [FromServices] ICasoDeUsoAprovarPropostaParecerista casoDeUso,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaJustificativaDTO propostaJustificativaDTO)
+        {
+            return Ok(await casoDeUso.Executar(propostaId, propostaJustificativaDTO));
+        }
+
+        [HttpPost("{propostaId}/parecerista/recusar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        public async Task<IActionResult> RecusarPropostaParecerista(
+            [FromServices] ICasoDeUsoRecusarPropostaParecerista casoDeUso,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaJustificativaDTO propostaJustificativaDTO)
+        {
+            return Ok(await casoDeUso.Executar(propostaId, propostaJustificativaDTO));
+        }
+
+        [HttpPost("{propostaId}/aprovar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        public async Task<IActionResult> AprovarProposta(
+            [FromServices] ICasoDeUsoAprovarProposta casoDeUso,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaJustificativaDTO propostaJustificativaDTO)
+        {
+            return Ok(await casoDeUso.Executar(propostaId, propostaJustificativaDTO));
+        }
+
+        [HttpPost("{propostaId}/recusar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_I, Policy = "Bearer")]
+        public async Task<IActionResult> RecusarProposta(
+            [FromServices] ICasoDeUsoRecusarProposta casoDeUso,
+            [FromRoute] long propostaId,
+            [FromBody] PropostaJustificativaDTO propostaJustificativaDTO)
+        {
+            return Ok(await casoDeUso.Executar(propostaId, propostaJustificativaDTO));
+        }
+
+        [HttpGet("{propostaId}/relatorio/lauda-completa")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
+        public async Task<IActionResult> ObterRelatorioLaudaCompleta([FromServices] ICasoDeUsoObterRelatorioPropostaLaudaCompleta casoDeUso,
+                                                                     [FromRoute] long propostaId)
         {
             return Ok(await casoDeUso.Executar(propostaId));
         }
