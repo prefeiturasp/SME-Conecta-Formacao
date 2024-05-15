@@ -283,6 +283,13 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(o => o.Email))
                 .ForMember(dest => dest.Telefone, opt => opt.MapFrom(o => o.Telefone.EstaPreenchido() ? o.Telefone.AplicarMascara(@"\(00\) 00000\-0000") : string.Empty))
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()));
+
+            CreateMap<Usuario, UsuarioRedeParceriaDTO>()
+                .ForMember(dest => dest.AreaPromotoraId, opt => opt.MapFrom(o => o.AreaPromotoraId))
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Nome))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(o => o.Email))
+                .ForMember(dest => dest.Telefone, opt => opt.MapFrom(o => o.Telefone));
         }
     }
 }
