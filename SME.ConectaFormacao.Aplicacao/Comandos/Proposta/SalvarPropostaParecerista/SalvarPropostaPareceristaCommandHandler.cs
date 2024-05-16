@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<bool> Handle(SalvarPropostaPareceristaCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.PropostaId);
-            var pareceristasAntes = await _repositorioProposta.ObterPropostaPareceristaPorId(request.PropostaId);
+            var pareceristasAntes = await _repositorioProposta.ObterPareceristasPorId(request.PropostaId);
             var pareceristasDepois = _mapper.Map<IEnumerable<PropostaParecerista>>(request.Pareceristas);
             var possuiPareceristasDepois = pareceristasDepois.Any();
             
