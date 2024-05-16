@@ -9,4 +9,17 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Rede Parceria")]
         RedeParceria = 2
     }
+
+    public static class AreaPromotoraTipoExtensao
+    {
+        public static bool EhRedeDireta(this AreaPromotoraTipo tipo)
+        {
+            return tipo == AreaPromotoraTipo.RedeDireta;
+        }
+
+        public static bool EhRedeParceria(this AreaPromotoraTipo tipo)
+        {
+            return tipo == AreaPromotoraTipo.RedeParceria;
+        }
+    }
 }
