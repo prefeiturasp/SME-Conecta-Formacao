@@ -41,7 +41,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public long? CodigoEventoSigpec { get; set; }
         public long? NumeroHomologacao { get; set; }
         public string? CargaHorariaTotal { get; set; }
-        public string? CargaHorariaNaoPresencial { get; set; }        
+        public string? CargaHorariaNaoPresencial { get; set; }
+        public string? OutrosCriterios { get; set; }
 
         public IEnumerable<PropostaDreDTO> Dres { get; set; }
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
