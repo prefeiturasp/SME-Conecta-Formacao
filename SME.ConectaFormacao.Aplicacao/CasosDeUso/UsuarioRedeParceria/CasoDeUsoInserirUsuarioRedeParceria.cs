@@ -37,6 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
                 usuario = new Dominio.Entidades.Usuario();
 
             usuario.Tipo = TipoUsuario.RedeParceria;
+            usuario.Login = usuarioRedeParceriaDTO.Cpf;
             usuario.Nome = usuarioRedeParceriaDTO.Nome;
             usuario.Cpf = usuarioRedeParceriaDTO.Cpf;
             usuario.AreaPromotoraId = usuarioRedeParceriaDTO.AreaPromotoraId;
