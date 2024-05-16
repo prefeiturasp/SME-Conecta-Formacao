@@ -14,9 +14,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public long[] UsuariosId { get; set; }
     }
 
-    public class ObterUsuarioPorIdQueryValidator : AbstractValidator<ObterUsuariosInternosPorIdsQuery>
+    public class ObterUsuariosInternosPorIdsQueryValidator : AbstractValidator<ObterUsuariosInternosPorIdsQuery>
     {
-        public ObterUsuarioPorIdQueryValidator()
+        public ObterUsuariosInternosPorIdsQueryValidator()
         {
             RuleFor(x => x.UsuariosId).NotEmpty().WithMessage("Informe o Id do Usuario para realizar a consulta");
         }
