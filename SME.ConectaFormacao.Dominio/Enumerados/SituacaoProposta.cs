@@ -138,5 +138,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor != SituacaoProposta.AguardandoReanalisePeloParecerista;
         }
+        
+        public static bool EstaAprovadaOuRecusada(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Aprovada || valor == SituacaoProposta.Recusada;
+        }
     }
 }
