@@ -192,7 +192,6 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<FormacaoDetalhada, RetornoFormacaoDetalhadaDTO>()
                 .ForMember(dest => dest.Titulo, opt => opt.MapFrom(x => x.NomeFormacao))
-                .ForMember(dest => dest.Justificativa, opt => opt.MapFrom(x => x.Justificativa.RemoverTagsHtml()))
                 .ForMember(dest => dest.TipoFormacaoDescricao,
                     opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
                 .ForMember(dest => dest.FormatoDescricao,
