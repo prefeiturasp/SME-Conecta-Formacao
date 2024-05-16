@@ -74,6 +74,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public bool EhAreaPromotora { get; set; }
         public string? UltimaJustificativa { get; set; }
         public string? CargaHorariaTotal { get; set; }
-        public string? CargaHorariaNaoPresencial { get; set; }        
+        public string? CargaHorariaNaoPresencial { get; set; }
+        public string? OutrosCriterios { get; set; }
     }
 }
