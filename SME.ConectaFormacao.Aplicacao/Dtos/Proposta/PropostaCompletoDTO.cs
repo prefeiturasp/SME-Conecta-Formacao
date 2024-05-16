@@ -72,6 +72,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public bool PodeRecusar { get; set; }
         public bool EhParecerista { get; set; }
         public bool EhAreaPromotora { get; set; }
-        public string? UltimaJustificativa { get; set; }
+        public string? UltimaJustificativaAprovacaoRecusa { get; set; }
     }
 }
