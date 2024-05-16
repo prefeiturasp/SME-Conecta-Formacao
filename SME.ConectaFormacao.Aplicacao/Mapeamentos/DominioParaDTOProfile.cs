@@ -12,6 +12,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
+using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -232,7 +233,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.UsuarioCpf, opt => opt.MapFrom(o => o.Cpf))
                 .ReverseMap()
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(o => TipoUsuario.Interno))
-                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => SituacaoCadastroUsuario.Ativo));
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => SituacaoUsuario.Ativo));
 
             CreateMap<Inscricao, InscricaoPaginadaDTO>()
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.Id))
@@ -280,6 +281,21 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaPareceristaConsideracao, PropostaPareceristaConsideracaoDTO>()
                 .ForMember(dest => dest.Auditoria, opt => opt.MapFrom(o => o))
                 .ReverseMap();
+
+            CreateMap<Usuario, UsuarioRedeParceriaPaginadoDTO>()
+                .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(o => o.AreaPromotora.Nome))
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Nome))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(o => o.Email))
+                .ForMember(dest => dest.Telefone, opt => opt.MapFrom(o => o.Telefone.EstaPreenchido() ? o.Telefone.AplicarMascara(@"\(00\) 00000\-0000") : string.Empty))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()));
+
+            CreateMap<Usuario, UsuarioRedeParceriaDTO>()
+                .ForMember(dest => dest.AreaPromotoraId, opt => opt.MapFrom(o => o.AreaPromotoraId))
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Nome))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(o => o.Email))
+                .ForMember(dest => dest.Telefone, opt => opt.MapFrom(o => o.Telefone));
         }
     }
 }

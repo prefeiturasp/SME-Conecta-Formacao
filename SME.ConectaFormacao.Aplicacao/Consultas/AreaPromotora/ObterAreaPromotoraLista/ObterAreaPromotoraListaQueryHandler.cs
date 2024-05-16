@@ -2,6 +2,8 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
 
@@ -26,6 +28,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (request.AreaPromotoraIdUsuarioLogado.GetValueOrDefault() > 0)
                 areasPromotoras = areasPromotoras.Where(t => t.Id == request.AreaPromotoraIdUsuarioLogado.Value);
+
+            if (request.Tipo.NaoEhNulo())
+                areasPromotoras = areasPromotoras.Where(t => t.Tipo.EhRedeParceria());
 
             return _mapper.Map<IEnumerable<RetornoListagemDTO>>(areasPromotoras);
         }
