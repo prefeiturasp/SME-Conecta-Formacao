@@ -53,7 +53,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [Permissao(Permissao.RedeParceria_I, Policy = "Bearer")]
         public async Task<IActionResult> InserirUsuarioRedeParceria(
             [FromServices] ICasoDeUsoInserirUsuarioRedeParceria casoDeUso,
-            UsuarioRedeParceriaDTO usuarioRedeParceriaDTO)
+            [FromBody] UsuarioRedeParceriaDTO usuarioRedeParceriaDTO)
         {
             return Ok(await casoDeUso.Executar(usuarioRedeParceriaDTO));
         }
@@ -66,7 +66,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> AlterarUsuarioRedeParceria(
             [FromServices] ICasoDeUsoAlterarUsuarioRedeParceria casoDeUso,
             [FromRoute] long id,
-            [FromQuery] UsuarioRedeParceriaDTO usuarioRedeParceriaDTO)
+            [FromBody] UsuarioRedeParceriaDTO usuarioRedeParceriaDTO)
         {
             return Ok(await casoDeUso.Executar(id, usuarioRedeParceriaDTO));
         }
