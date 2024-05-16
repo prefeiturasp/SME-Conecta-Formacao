@@ -23,12 +23,12 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             if (usuario.TipoEmail == TipoEmail.Estagiario)
             {
-                return    !string.IsNullOrEmpty(ultimoNome)
+                return ultimoNome.EstaPreenchido()
                     ? $"{primeiroNome}{ultimoNome}.e{cpfOuRf}{DOMINIO_EMAIL}"
                     : $"{primeiroNome}.e{cpfOuRf}{DOMINIO_EMAIL}";
             }
             
-            return !string.IsNullOrEmpty(ultimoNome)
+            return ultimoNome.EstaPreenchido()
                 ? $"{primeiroNome}{ultimoNome}.{cpfOuRf}{DOMINIO_EMAIL}"
                 : $"{primeiroNome}.{cpfOuRf}{DOMINIO_EMAIL}";
         }
