@@ -25,6 +25,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces
         Task<bool> AlterarNome(string login, string nome);
         Task<AcessosConfiguracaoEmailRetorno> ObterConfiguracaoEmail();
         Task<IEnumerable<RetornoUsuriosPareceristas>> ObterUsuariosPerfilPareceristas();
-
+        Task<bool> DesvincularPerfilExternoCoreSSO(string login, Guid perfilId);
+        Task<bool> InativarUsuario(string login);
     }
 }
