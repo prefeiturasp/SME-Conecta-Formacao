@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             bool confirmarEmail = await ObterParametroConfirmarEmailUsuarioExterno();
 
             var tipo = usuarioExternoDto.Tipo ?? TipoUsuario.Externo;
-            var situacaoCadastroUsuario = confirmarEmail ? SituacaoCadastroUsuario.AguardandoValidacaoEmail : SituacaoCadastroUsuario.Ativo;
+            var situacaoCadastroUsuario = confirmarEmail ? SituacaoUsuario.AguardandoValidacaoEmail : SituacaoUsuario.Ativo;
 
             await mediator.Send(new SalvarUsuarioCommand(new Dominio.Entidades.Usuario(
                 usuarioExternoDto.Login,

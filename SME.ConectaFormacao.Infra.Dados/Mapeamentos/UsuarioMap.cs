@@ -20,6 +20,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.Situacao).ToColumn("situacao_cadastro");
             Map(c => c.EmailEducacional).ToColumn("email_educacional");
             Map(c => c.TipoEmail).ToColumn("tipo_email");
+            Map(c => c.AreaPromotoraId).ToColumn("area_promotora_id");
+            Map(c => c.Telefone).ToColumn("telefone");
         }
     }
 }

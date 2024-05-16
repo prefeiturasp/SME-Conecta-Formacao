@@ -47,7 +47,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
 
             var usuario = ObterTodos<Dominio.Entidades.Usuario>();
 
-            usuario.FirstOrDefault().Situacao.ShouldBe(Dominio.Enumerados.SituacaoCadastroUsuario.AguardandoValidacaoEmail);
+            usuario.FirstOrDefault().Situacao.ShouldBe(Dominio.Enumerados.SituacaoUsuario.AguardandoValidacaoEmail);
 
         }
 
@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
 
             var usuario = ObterTodos<Dominio.Entidades.Usuario>();
 
-            usuario.FirstOrDefault().Situacao.ShouldBe(Dominio.Enumerados.SituacaoCadastroUsuario.Ativo);
+            usuario.FirstOrDefault().Situacao.ShouldBe(Dominio.Enumerados.SituacaoUsuario.Ativo);
         }
 
         [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo com a Confirmação de Senha Diferente da Senha")]

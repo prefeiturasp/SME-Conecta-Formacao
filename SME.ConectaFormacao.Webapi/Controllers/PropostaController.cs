@@ -438,17 +438,6 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUso.Executar(propostaId));
         }
 
-        [HttpGet("{propostaId}/relatorio/lauda-publicacao")]
-        [ProducesResponseType(typeof(string), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
-        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
-        public async Task<IActionResult> ObterRelatorioLaudaDePublicacao([FromServices] ICasoDeUsoObterRelatorioPropostaLaudaPublicacao casoDeUso,
-                                                                         [FromRoute] long propostaId)
-        {
-            return Ok(await casoDeUso.Executar(propostaId));
-        }
-
         [HttpPost("{propostaId}/parecerista/aprovar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -506,8 +495,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
-        public async Task<IActionResult> ObterRelatorioLaudaDePublicacao([FromServices] ICasoDeUsoObterRelatorioPropostaLaudaPublicacao casoDeUso,
-                                                                         [FromRoute] long propostaId)
+        public async Task<IActionResult> ObterRelatorioLaudaDePublicacao(
+            [FromServices] ICasoDeUsoObterRelatorioPropostaLaudaPublicacao casoDeUso,
+            [FromRoute] long propostaId)
         {
             return Ok(await casoDeUso.Executar(propostaId));
         }
@@ -517,8 +507,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
-        public async Task<IActionResult> ObterRelatorioLaudaCompleta([FromServices] ICasoDeUsoObterRelatorioPropostaLaudaCompleta casoDeUso,
-                                                                     [FromRoute] long propostaId)
+        public async Task<IActionResult> ObterRelatorioLaudaCompleta(
+            [FromServices] ICasoDeUsoObterRelatorioPropostaLaudaCompleta casoDeUso,
+            [FromRoute] long propostaId)
         {
             return Ok(await casoDeUso.Executar(propostaId));
         }
