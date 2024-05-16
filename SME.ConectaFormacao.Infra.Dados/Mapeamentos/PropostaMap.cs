@@ -44,6 +44,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.NumeroHomologacao).ToColumn("numero_homologacao");
             Map(t => t.CargaHorariaTotal).ToColumn("carga_horaria_total");
             Map(t => t.CargaHorariaNaoPresencial).ToColumn("carga_horaria_nao_presencial");
+            Map(t => t.OutrosCriterios).ToColumn("outros_criterios");
 
             Map(t => t.AreaPromotora).Ignore();
             Map(t => t.ArquivoImagemDivulgacao).Ignore();

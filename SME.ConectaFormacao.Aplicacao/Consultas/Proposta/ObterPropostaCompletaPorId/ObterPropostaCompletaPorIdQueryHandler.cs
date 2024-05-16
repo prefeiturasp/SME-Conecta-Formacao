@@ -97,6 +97,7 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.UltimaJustificativa = ehPareceristaDaProposta ? parecerista.Justificativa : proposta.Movimentacao.Justificativa;
             propostaCompletaDTO.CargaHorariaTotal = proposta.CargaHorariaTotal;
             propostaCompletaDTO.CargaHorariaNaoPresencial = proposta.CargaHorariaNaoPresencial;
+            propostaCompletaDTO.OutrosCriterios = proposta.OutrosCriterios;
 
             if (!proposta.ArquivoImagemDivulgacaoId.HasValue) return propostaCompletaDTO;
             
