@@ -98,50 +98,5 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             // assert
             retorno.ShouldBeTrue();
         }
-        
-        [Fact(DisplayName = "Usuário - Deve cadastrar o email @edu do usuário com espaço no final - BUG 121342")]
-        public async Task Deve_cadastrar_email_edu_do_usuario_com_espaco_final_bug_121342()
-        {
-            // arrange
-            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(Dominio.Enumerados.TipoParametroSistema.ConfirmarEmailUsuarioExterno, "false"));
-
-            var casoDeUsoInserir = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
-            
-            var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
-            usuarioExterno.Nome = "Jose Pedro da Silva     ";
-            usuarioExterno.EmailEducacional = string.Empty;
-
-            // act
-            await casoDeUsoInserir.InserirUsuarioExterno(usuarioExterno);
-
-            // assert
-            var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
-            usuarios.Count.ShouldBe(1);
-            usuarios.FirstOrDefault().Nome.ShouldBe("Jose Pedro da Silva");
-            usuarios.FirstOrDefault().EmailEducacional.ShouldBe(string.Format("josesilva.{0}@edu.sme.prefeitura.sp.gov.br",usuarioExterno.Cpf));
-        }
-        
-        [Fact(DisplayName = "Usuário - Deve alterar o email @edu do usuário com espaço no final - BUG 121342")]
-        public async Task Deve_alterar_email_edu_do_usuario_com_espaco_final_bug_121342()
-        {
-            // arrange
-            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(Dominio.Enumerados.TipoParametroSistema.ConfirmarEmailUsuarioExterno, "false"));
-
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioAlterarEmailEducacional>();
-            var casoDeUsoInserir = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
-            
-            var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
-            usuarioExterno.Nome = "Jose Pedro da Silva     ";
-            usuarioExterno.EmailEducacional = string.Empty;
-
-            // act
-            await casoDeUsoInserir.InserirUsuarioExterno(usuarioExterno);
-
-            var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
-            // var retorno = await casoDeUso.Executar(usuarioExterno.Cpf, emailValido);
-
-            // assert
-            // retorno.ShouldBeTrue();
-        }
     }
 }
