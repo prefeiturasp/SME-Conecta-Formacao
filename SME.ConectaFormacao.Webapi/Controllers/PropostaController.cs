@@ -513,5 +513,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUso.Executar(propostaId));
         }
+        
+        [HttpGet("horas-totais-proposta")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ObterHorasTotaisProposta([FromServices] ICasoDeUsoObterHorasTotaisProposta useCase)
+        {
+            return Ok(await useCase.Executar());
+        }        
     }
 }
