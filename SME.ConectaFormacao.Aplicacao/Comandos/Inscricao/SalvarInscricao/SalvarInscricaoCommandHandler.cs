@@ -31,10 +31,6 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-            
-            var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
-            if (!Regex.IsMatch(request.InscricaoDTO.Email, pattern, RegexOptions.IgnoreCase))
-                throw new NegocioException(MensagemNegocio.EMAIL_EDU_INVALIDO);
 
             if (usuarioLogado.Tipo == TipoUsuario.Interno)
                 if (request.InscricaoDTO.CargoCodigo.EhNulo())
@@ -61,8 +57,6 @@ namespace SME.ConectaFormacao.Aplicacao
             else
                 await ValidarDreUsuarioExterno(inscricao.PropostaTurmaId, usuarioLogado.CodigoEolUnidade, cancellationToken);
 
-            await ValidarEmail(usuarioLogado.Login, usuarioLogado.Email, request.InscricaoDTO.Email, cancellationToken);
-
             var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
@@ -79,19 +73,6 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 inscricao.CargoId = cargosFuncoes.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Cargo)?.Id;
                 inscricao.FuncaoId = cargosFuncoes.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Funcao)?.Id;
-            }
-        }
-
-        private async Task ValidarEmail(string login, string emailUsuario, string novoEmail, CancellationToken cancellationToken)
-        {
-            if (emailUsuario != novoEmail)
-            {
-                var emailValidar = novoEmail.ToLower().Trim();
-
-                if (!emailValidar.EmailEhValido())
-                    throw new NegocioException(string.Format(MensagemNegocio.EMAIL_INVALIDO, emailValidar));
-
-                await _mediator.Send(new AlterarEmailServicoAcessosCommand(login, emailValidar), cancellationToken);
             }
         }
 
