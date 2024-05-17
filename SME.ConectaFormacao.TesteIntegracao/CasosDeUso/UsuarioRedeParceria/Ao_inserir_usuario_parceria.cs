@@ -1,10 +1,14 @@
-﻿using Shouldly;
-using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Shouldly;
+using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria.Mock;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -15,6 +19,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
     {
         public Ao_inserir_usuario_parceria(CollectionFixture collectionFixture, bool limparBanco = true) : base(collectionFixture, limparBanco)
         {
+        }
+
+        protected override void RegistrarQueryFakes(IServiceCollection services)
+        {
+            base.RegistrarQueryFakes(services);
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<UsuarioExisteNoCoreSsoQuery, bool>), typeof(UsuarioExisteNoCoreSsoQueryHandlerFaker), ServiceLifetime.Scoped));
+        }
+
+        protected override void RegistrarCommandFakes(IServiceCollection services)
+        {
+            base.RegistrarCommandFakes(services);
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<AtualizarUsuarioServicoAcessoCommand, bool>), typeof(AtualizarUsuarioServicoAcessoCommandHandlerFaker), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<CadastrarUsuarioServicoAcessoCommand, bool>), typeof(CadastrarUsuarioServicoAcessoCommandHandlerFaker), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<VincularPerfilExternoCoreSSOServicoAcessosCommand, bool>), typeof(VincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Usuário Rede Parceria - deve inserir usuario parceria com sucesso")]

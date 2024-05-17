@@ -17,11 +17,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             var usuario = await mediator.Send(new ObterUsuarioPorIdQuery(id)) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            if(!usuario.Tipo.EhRedeParceria())
+            if (!usuario.Tipo.EhRedeParceria())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            var usuarioPossuiProposta = await mediator.Send(new UsuarioPossuiPropostaQuery(usuario.Login));
+            var inativadoCoreSSO = await mediator.Send(new InativarUsuarioCoreSSOServicoAcessosCommand(usuario.Login));
+            if (!inativadoCoreSSO)
+                throw new NegocioException(MensagemNegocio.ERRO_AO_CRIAR_ATUALIZAR_USUARIO_NO_CORESSO);
 
+            var usuarioPossuiProposta = await mediator.Send(new UsuarioPossuiPropostaQuery(usuario.Login));
             if (usuarioPossuiProposta)
             {
                 usuario.Situacao = SituacaoUsuario.Inativo;
@@ -31,8 +34,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             {
                 await mediator.Send(new RemoverUsuarioCommand(id));
             }
-
-            // TODO: Remover no coresso.
 
             return true;
         }

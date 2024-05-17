@@ -1,9 +1,13 @@
-﻿using Shouldly;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Shouldly;
+using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -14,6 +18,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
     {
         public Ao_remover_usuario_parceria(CollectionFixture collectionFixture) : base(collectionFixture)
         {
+        }
+
+        protected override void RegistrarCommandFakes(IServiceCollection services)
+        {
+            base.RegistrarCommandFakes(services);
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<InativarUsuarioCoreSSOServicoAcessosCommand, bool>), typeof(InativarUsuarioCoreSSOServicoAcessosCommandHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Usuário Rede Parceria - deve retornar excecao usuario nao encontrado")]

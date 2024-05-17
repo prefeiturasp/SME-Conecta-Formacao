@@ -274,5 +274,25 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
                 throw new NegocioException(mensagem.JsonParaObjeto<string>());
             }
         }
+
+        public async Task<bool> DesvincularPerfilExternoCoreSSO(string login, Guid perfilId)
+        {
+            var resposta = await _httpClient.PostAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_DESVINCULAR_PERFIL_Y, login, perfilId), null);
+
+            if (!resposta.IsSuccessStatusCode) return false;
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<bool>();
+        }
+
+        public async Task<bool> InativarUsuario(string login)
+        {
+            var resposta = await _httpClient.PutAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_INATIVAR, login), null);
+
+            if (!resposta.IsSuccessStatusCode) return false;
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<bool>();
+        }
     }
 }
