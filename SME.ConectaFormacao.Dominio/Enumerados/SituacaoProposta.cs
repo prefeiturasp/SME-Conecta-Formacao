@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 
         public static bool EhParaSalvarRascunho(this SituacaoProposta valor)
         {
-            return valor == SituacaoProposta.Rascunho || valor == SituacaoProposta.Alterando;
+            return valor == SituacaoProposta.Rascunho || valor == SituacaoProposta.Alterando; 
         }
 
         public static bool EhAlterando(this SituacaoProposta valor)
