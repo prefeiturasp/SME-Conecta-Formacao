@@ -28,6 +28,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ano;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
@@ -47,6 +48,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ue;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
+using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Aplicacao.Pipelines;
 using SME.ConectaFormacao.Infra.Dados;
@@ -296,6 +298,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverAreaPromotora, CasoDeUsoRemoverAreaPromotora>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraLista, CasoDeUsoObterAreaPromotoraLista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraListaAreaPublica, CasoDeUsoObterAreaPromotoraListaAreaPublica>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraListaRedeParceria, CasoDeUsoObterAreaPromotoraListaRedeParceria>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoFormacao, CasoDeUsoObterTipoFormacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoInscricao, CasoDeUsoObterTipoInscricao>();
@@ -408,6 +411,13 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParecerista, CasoDeUsoEnviarPropostaParecerista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAprovarPropostaParecerista, CasoDeUsoAprovarPropostaParecerista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRecusarPropostaParecerista, CasoDeUsoRecusarPropostaParecerista>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterSituacaoUsuarioRedeParceria, CasoDeUsoObterSituacaoUsuarioRedeParceria>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuarioRedeParceriaPaginada, CasoDeUsoObterUsuarioRedeParceriaPaginada>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuarioRedeParceriaPorId, CasoDeUsoObterUsuarioRedeParceriaPorId>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoInserirUsuarioRedeParceria, CasoDeUsoInserirUsuarioRedeParceria>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoAlterarUsuarioRedeParceria, CasoDeUsoAlterarUsuarioRedeParceria>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoRemoverUsuarioRedeParceria, CasoDeUsoRemoverUsuarioRedeParceria>();
     }
 
     protected virtual void RegistrarHttpClients()

@@ -166,4 +166,7 @@ public class MensagemNegocio
     public const string PARECER_NAO_ENCONTRADO = "Nenhum parecer foi encontrado";
     public const string PARECER_X_COM_SUCESSO = "Parecer '{0}' com sucesso";
     public const string LIMITE_PARECERISTAS_EXCEDIDO_LIMITE_X = "Não é permitido exceder o limite máximo de pareceristas. Limite:'{0}'";
+    public const string NOME_DEVE_TER_SOBRENOME = "O Nome deve conter o nome e sobrenome";
+    public const string USUARIO_JA_POSSUI_CADASTRO_COMO_REDE_PARCERIA = "Usuário já possui cadastro no Conecta como rede parceria";
+    public const string ERRO_AO_CRIAR_ATUALIZAR_USUARIO_NO_CORESSO = "Ocorreu um erro ao criar/atualizar o usuário no CORESSO";
 }
