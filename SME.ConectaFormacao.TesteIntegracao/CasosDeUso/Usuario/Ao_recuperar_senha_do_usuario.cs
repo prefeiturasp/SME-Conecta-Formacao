@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
@@ -102,6 +103,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         public async Task Deve_retornar_token_quando_recuperacao_de_senha_for_realizada_com_sucesso()
         {
             // arrange
+            var mapper = ObterCasoDeUso<IMapper>();
+            var usuario = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
+            usuario.Login = UsuarioRecuperarSenhaMock.LoginValido;
+            await InserirNaBase(mapper.Map<Dominio.Entidades.Usuario>(usuario));
+            
             var recuperacaoSenhaDto = UsuarioRecuperarSenhaMock.RecuperacaoSenhaDto;
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioRecuperarSenha>();
 
@@ -115,9 +121,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
             usuarios.Any().ShouldBeTrue();
 
-            var usuario = usuarios.FirstOrDefault();
-            usuario.Nome.ShouldNotBeNull(retorno.UsuarioNome);
-            usuario.Login.ShouldNotBeNull(retorno.UsuarioLogin);
+            var usuarioLogin = usuarios.FirstOrDefault(f=> f.Login.Equals(usuario.Login));
+            usuarioLogin.Nome.ShouldNotBeNull(retorno.UsuarioNome);
         }
     }
 }

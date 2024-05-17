@@ -254,7 +254,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.NomeFormacao))
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
 
-            CreateMap<UsuarioExternoDTO, Usuario>().ReverseMap();
+            CreateMap<UsuarioExternoDTO, Usuario>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Nome.Trim()))
+                .ReverseMap();
             
             CreateMap<ImportacaoArquivoDTO,ImportacaoArquivo>().ReverseMap();
             CreateMap<ImportacaoArquivoRegistroDTO,ImportacaoArquivoRegistro>().ReverseMap();
@@ -263,7 +265,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<RetornoUsuarioDTO, CursistaResumidoServicoEol>().ReverseMap();
 
 
-            CreateMap<DadosUsuarioDTO, Usuario>();
+            CreateMap<DadosUsuarioDTO, Usuario>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Nome.Trim()));
         }
     }
 }

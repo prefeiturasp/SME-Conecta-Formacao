@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var cpfOuRf = request.Usuario.Tipo == TipoUsuario.Externo ? request.Usuario.Cpf : request.Usuario.Login;
             var partesNome = request.Usuario.Nome.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var primeiroNome = partesNome.FirstOrDefault();
-            var ultimoNome = partesNome.LastOrDefault();
+            var ultimoNome = partesNome.Length > 1 ? partesNome.LastOrDefault() : String.Empty;
             var emailEdu = CriarEmailPorTipo(request.Usuario,cpfOuRf, primeiroNome, ultimoNome);
             
             return emailEdu.RemoverAcentosECaracteresEspeciais().ToLower();
@@ -23,12 +23,12 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             if (usuario.TipoEmail == TipoEmail.Estagiario)
             {
-                return    !string.IsNullOrEmpty(ultimoNome)
+                return ultimoNome.EstaPreenchido()
                     ? $"{primeiroNome}{ultimoNome}.e{cpfOuRf}{DOMINIO_EMAIL}"
                     : $"{primeiroNome}.e{cpfOuRf}{DOMINIO_EMAIL}";
             }
             
-            return !string.IsNullOrEmpty(ultimoNome)
+            return ultimoNome.EstaPreenchido()
                 ? $"{primeiroNome}{ultimoNome}.{cpfOuRf}{DOMINIO_EMAIL}"
                 : $"{primeiroNome}.{cpfOuRf}{DOMINIO_EMAIL}";
         }
