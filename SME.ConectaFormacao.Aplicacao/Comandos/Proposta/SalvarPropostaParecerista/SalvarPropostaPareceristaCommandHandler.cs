@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             foreach (var parecerista in pareceristasExcluir)
             {
-                await _mediator.Send(new EnviarParecerPareceristaCommand(request.PropostaId, parecerista.RegistroFuncional, SituacaoParecerista.Desativado, string.Empty));
+                await _repositorioProposta.AtualizarSituacaoParecerista(parecerista.Id, parecerista.RegistroFuncional, SituacaoParecerista.Desativado, string.Empty);
 
                 var existemConsideracoes = await _repositorioPropostaPareceristaConsideracao.ExistemConsideracoesPorParaceristaId(parecerista.Id);
                 

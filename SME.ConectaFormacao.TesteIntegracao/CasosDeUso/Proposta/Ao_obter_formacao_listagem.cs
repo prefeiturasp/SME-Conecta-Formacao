@@ -90,7 +90,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var paginacao = await casoDeUso.Executar(filtro);
 
             // assert 
-            paginacao.Items.Count().ShouldBe(1);
+            var publicosAlvos = ObterTodos<Dominio.Entidades.PropostaPublicoAlvo>();
+            var publicosAlvosFiltro = publicosAlvos.Where(s=> filtro.PublicosAlvosIds.Contains(s.CargoFuncaoId)).DistinctBy(p=> p.PropostaId);
+            paginacao.Items.Count().ShouldBe(publicosAlvosFiltro.Count());
             ValidarPaginacaoFormacao(paginacao);
         }
 
