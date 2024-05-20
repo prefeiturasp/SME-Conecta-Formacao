@@ -6,5 +6,5 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
     {
         public CampoConsideracao Campo { get; set; }
         public int Quantidade { get; set; }
-}
+    }
 }

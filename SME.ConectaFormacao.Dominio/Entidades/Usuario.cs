@@ -1,11 +1,10 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class Usuario : EntidadeBaseAuditavel
     {
-        public Usuario(string login, string nome, string email, string cpf, TipoUsuario tipo, SituacaoUsuario situacao, string? codigoEolUnidade, string? emailEducacional,TipoEmail tipoEmail)
+        public Usuario(string login, string nome, string email, string cpf, TipoUsuario tipo, SituacaoUsuario situacao, string? codigoEolUnidade, string? emailEducacional, TipoEmail tipoEmail)
         {
             Login = login;
             Nome = nome;

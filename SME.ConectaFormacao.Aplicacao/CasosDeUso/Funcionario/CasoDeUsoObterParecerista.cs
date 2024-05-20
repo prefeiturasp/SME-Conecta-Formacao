@@ -1,7 +1,6 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Consultas.ServicoAcessos.ObterUsuariosPareceristas;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Funcionario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Funcionario

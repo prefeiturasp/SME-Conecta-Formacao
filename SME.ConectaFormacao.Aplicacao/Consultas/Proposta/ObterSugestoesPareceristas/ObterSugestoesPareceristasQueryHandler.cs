@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterSugestoesParecer
         private readonly IRepositorioProposta _repositorioProposta;
         private readonly IMapper _mapper;
 
-        public ObterSugestoesPareceristasQueryHandler(IRepositorioProposta repositorioProposta,IMapper mapper)
+        public ObterSugestoesPareceristasQueryHandler(IRepositorioProposta repositorioProposta, IMapper mapper)
         {
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

@@ -1,4 +1,3 @@
-using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 
@@ -6,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.ServicoAcessos.ObterUsuariosPa
 {
     public class ObterUsuariosPareceristasQuery : IRequest<IEnumerable<RetornoUsuarioLoginNomeDTO>>
     {
-        
+
     }
 }

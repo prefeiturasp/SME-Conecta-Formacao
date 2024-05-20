@@ -84,8 +84,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             AoObterDadosUsuarioInscricaoMock.Usuario = usuario;
 
             var proposta = await InserirNaBaseProposta(
-                SituacaoProposta.Publicada, 
-                FormacaoHomologada.NaoCursosPorIN, 
+                SituacaoProposta.Publicada,
+                FormacaoHomologada.NaoCursosPorIN,
                 TipoInscricao.Automatica, false, false, true, false, true);
 
             var propostaTurma = proposta.Turmas.FirstOrDefault();

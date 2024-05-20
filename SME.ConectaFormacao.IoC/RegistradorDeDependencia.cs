@@ -397,7 +397,7 @@ public class RegistradorDeDependencia
 
         _serviceCollection.TryAddScoped<ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista, CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar, CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterTiposEmail,CasoDeUsoObterTiposEmail>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTiposEmail, CasoDeUsoObterTiposEmail>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuariosAdminDf, CasoDeUsoObterUsuariosAdminDf>();
 

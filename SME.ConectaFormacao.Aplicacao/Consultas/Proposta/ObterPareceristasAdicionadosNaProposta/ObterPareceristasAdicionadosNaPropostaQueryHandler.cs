@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPareceristasAdicionadosNaPropostaQueryHandler : IRequestHandler<ObterPareceristasAdicionadosNaPropostaQuery, IEnumerable<PropostaParecerista>> 
+    public class ObterPareceristasAdicionadosNaPropostaQueryHandler : IRequestHandler<ObterPareceristasAdicionadosNaPropostaQuery, IEnumerable<PropostaParecerista>>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 

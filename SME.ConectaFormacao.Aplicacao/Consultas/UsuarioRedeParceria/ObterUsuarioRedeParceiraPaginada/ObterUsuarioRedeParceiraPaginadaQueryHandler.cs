@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var totalRegistrosFiltro = await _repositorioUsuario.ObterTotalUsuarioRedeParceria(request.Filtros.AreaPromotoraIds, request.Filtros.Nome, request.Filtros.Cpf, request.Filtros.Situacao);
 
             var usuarios = Enumerable.Empty<Usuario>();
-            if(totalRegistrosFiltro > 0)
+            if (totalRegistrosFiltro > 0)
             {
                 usuarios = await _repositorioUsuario.ObterUsuarioRedeParceria(request.Filtros.AreaPromotoraIds, request.Filtros.Nome, request.Filtros.Cpf, request.Filtros.Situacao, request.NumeroPagina, request.NumeroRegistros);
             }

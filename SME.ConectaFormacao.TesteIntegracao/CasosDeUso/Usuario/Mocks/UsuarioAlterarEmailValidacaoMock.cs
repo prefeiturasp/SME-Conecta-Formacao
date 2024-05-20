@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks
         public static string Login { get; set; }
         public static string Senha { get; set; }
         public static string Email { get; set; }
-        
+
         public static void Montar()
         {
             var pessoa = new Person("pt_BR");

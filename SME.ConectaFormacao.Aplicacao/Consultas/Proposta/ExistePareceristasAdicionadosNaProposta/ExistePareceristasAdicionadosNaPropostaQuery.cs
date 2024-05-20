@@ -3,7 +3,7 @@ using MediatR;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ExistePareceristasAdicionadosNaPropostaQuery : IRequest<bool> 
+    public class ExistePareceristasAdicionadosNaPropostaQuery : IRequest<bool>
     {
         public ExistePareceristasAdicionadosNaPropostaQuery(long propostaId)
         {

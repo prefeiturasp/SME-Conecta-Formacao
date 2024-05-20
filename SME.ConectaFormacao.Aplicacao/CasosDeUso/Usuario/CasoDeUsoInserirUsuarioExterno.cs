@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             usuarioExternoDto.Cpf = cpfSemPontos;
             usuarioExternoDto.EmailEducacional = usuarioExternoDto.EmailEducacional?.Trim().ToLower();
             ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email, usuarioExternoDto.EmailEducacional);
-            await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login,cpfSemPontos);
+            await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login, cpfSemPontos);
 
             var existeNoCoreSSO = await mediator.Send(new UsuarioExisteNoCoreSsoQuery(usuarioExternoDto.Login));
 

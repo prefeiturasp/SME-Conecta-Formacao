@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         }
 
         public async Task<bool> Executar(long propostaId, PropostaJustificativaDTO propostaJustificativaDTO)
-        { 
+        {
             var usuarioLogado = await mediator.Send(ObterUsuarioLogadoQuery.Instancia());
             return await mediator.Send(new EnviarParecerPareceristaCommand(propostaId, usuarioLogado.Login, SituacaoParecerista.Aprovada, propostaJustificativaDTO.Justificativa));
         }

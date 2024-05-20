@@ -1,5 +1,3 @@
-using Bogus;
-using DiffEngine;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -37,16 +35,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // arrange
             var situacoes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
 
-            foreach(var situacao in situacoes)
+            foreach (var situacao in situacoes)
                 await InserirNaBaseProposta(situacao);
 
             var usuario = UsuarioMock.GerarUsuario();
             await InserirNaBase(usuario);
             AdicionarPerfilUsuarioParecerista(Perfis.ADMIN_DF, usuario.Login);
-            
+
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
             var filtro = new PropostaFiltrosDashboardDTO();
-            
+
 
             // act 
             var retorno = await casoDeUso.Executar(filtro);
@@ -109,7 +107,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             {
                 PropostaId = proposta.Id,
                 NomeParecerista = $"Parecerista {usuario.Nome}",
-                RegistroFuncional = usuario.Login, 
+                RegistroFuncional = usuario.Login,
                 CriadoPor = proposta.CriadoPor,
                 CriadoEm = proposta.CriadoEm,
                 CriadoLogin = proposta.CriadoLogin

@@ -1,7 +1,5 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using MediatR;
+﻿using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -45,13 +43,13 @@ namespace SME.ConectaFormacao.Aplicacao
             var naoPossuiPreceristasAguardandoValidacao = !pareceristas.Any(a => a.Situacao.EstaAguardandoValidacao());
 
             var naoPossuiPareceristasAguardandoParecerFinal = !pareceristas.Any(a => a.Situacao.EstaEnviada() || a.Situacao.EstaAguardandoRevalidacao());
-            
-            if(proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && naoPossuiPreceristasAguardandoValidacao)
+
+            if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && naoPossuiPreceristasAguardandoValidacao)
             {
                 await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
                 await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
             }
-            else if(proposta.Situacao.EstaAguardandoReanalisePeloParecerista() && naoPossuiPareceristasAguardandoParecerFinal)
+            else if (proposta.Situacao.EstaAguardandoReanalisePeloParecerista() && naoPossuiPareceristasAguardandoParecerFinal)
             {
                 await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoValidacaoFinalPelaDF), cancellationToken);
                 await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoValidacaoFinalPelaDF), cancellationToken);
