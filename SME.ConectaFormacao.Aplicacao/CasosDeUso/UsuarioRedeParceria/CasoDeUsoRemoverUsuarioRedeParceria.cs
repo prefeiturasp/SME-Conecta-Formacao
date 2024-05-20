@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
 {
@@ -34,6 +35,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             {
                 await mediator.Send(new RemoverUsuarioCommand(id));
             }
+
+            var nomeChave = CacheDistribuidoNomes.Usuario.Parametros(usuario.Login);
+            await mediator.Send(new RemoverCacheCommand(nomeChave));
 
             return true;
         }

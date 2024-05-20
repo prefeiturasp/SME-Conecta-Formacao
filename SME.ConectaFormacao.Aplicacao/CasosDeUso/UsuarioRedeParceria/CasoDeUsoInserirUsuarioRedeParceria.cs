@@ -51,6 +51,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
 
             await mediator.Send(new SalvarUsuarioCommand(usuario));
 
+            var nomeChave = CacheDistribuidoNomes.Usuario.Parametros(usuario.Login);
+            await mediator.Send(new RemoverCacheCommand(nomeChave));
+
             return true;
         }
 

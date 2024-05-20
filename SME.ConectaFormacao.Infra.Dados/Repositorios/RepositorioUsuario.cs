@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             telefone,
                             area_promotora_id
                           from usuario 
-                          where login = @login";
+                          where login = @login and not excluido";
 
             return conexao.Obter().QueryFirstOrDefaultAsync<Usuario>(query, new { login });
         }

@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             var usuario = await mediator.Send(new ObterUsuarioPorIdQuery(id)) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            if (!usuario.Tipo.EhRedeParceria())
+            if (usuario.Tipo.NaoEhRedeParceria())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorIdQuery(usuarioRedeParceriaDTO.AreaPromotoraId)) ??
@@ -45,6 +45,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
                 throw new NegocioException(MensagemNegocio.ERRO_AO_CRIAR_ATUALIZAR_USUARIO_NO_CORESSO);
 
             await mediator.Send(new SalvarUsuarioCommand(usuario));
+
+            var nomeChave = CacheDistribuidoNomes.Usuario.Parametros(usuario.Login);
+            await mediator.Send(new RemoverCacheCommand(nomeChave));
 
             return true;
         }
