@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
@@ -47,7 +48,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.RedeParceria_I, Policy = "Bearer")]
@@ -59,7 +60,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.RedeParceria_A, Policy = "Bearer")]
@@ -72,7 +73,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.RedeParceria_E, Policy = "Bearer")]
