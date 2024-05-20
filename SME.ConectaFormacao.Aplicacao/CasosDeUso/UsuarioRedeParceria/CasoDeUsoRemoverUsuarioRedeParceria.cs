@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -13,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
         {
         }
 
-        public async Task<bool> Executar(long id)
+        public async Task<RetornoDTO> Executar(long id)
         {
             var usuario = await mediator.Send(new ObterUsuarioPorIdQuery(id)) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
@@ -25,11 +26,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             if (!inativadoCoreSSO)
                 throw new NegocioException(MensagemNegocio.ERRO_AO_CRIAR_ATUALIZAR_USUARIO_NO_CORESSO);
 
+            var mensagem = MensagemNegocio.USUARIO_EXCLUIDO_COM_SUCESSO;
             var usuarioPossuiProposta = await mediator.Send(new UsuarioPossuiPropostaQuery(usuario.Login));
             if (usuarioPossuiProposta)
             {
                 usuario.Situacao = SituacaoUsuario.Inativo;
                 await mediator.Send(new SalvarUsuarioCommand(usuario));
+                mensagem = MensagemNegocio.USUARIO_FOI_INATIVO_POR_POSSUIR_PROPOSTA_CADASTRADA;
             }
             else
             {
@@ -39,7 +42,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             var nomeChave = CacheDistribuidoNomes.Usuario.Parametros(usuario.Login);
             await mediator.Send(new RemoverCacheCommand(nomeChave));
 
-            return true;
+            return RetornoDTO.RetornarSucesso(mensagem, usuario.Id);
         }
     }
 }

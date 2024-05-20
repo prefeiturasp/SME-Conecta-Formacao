@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
@@ -18,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
         {
         }
 
-        public async Task<bool> Executar(UsuarioRedeParceriaDTO usuarioRedeParceriaDTO)
+        public async Task<RetornoDTO> Executar(UsuarioRedeParceriaDTO usuarioRedeParceriaDTO)
         {
             ValidarPreenchimento(usuarioRedeParceriaDTO);
 
@@ -54,7 +55,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             var nomeChave = CacheDistribuidoNomes.Usuario.Parametros(usuario.Login);
             await mediator.Send(new RemoverCacheCommand(nomeChave));
 
-            return true;
+            return RetornoDTO.RetornarSucesso(MensagemNegocio.USUARIO_SALVO_COM_SUCESSO, usuario.Id);
         }
 
         private async Task<bool> CadastrarUsuarioNoCoreSSO(Dominio.Entidades.Usuario usuario, Dominio.Entidades.AreaPromotora areaPromotora, bool existeNoConecta)

@@ -68,7 +68,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
             var retorno = await casoDeUso.Executar(usuario.Id);
 
             // assert
-            retorno.ShouldBeTrue();
+            retorno.Sucesso.ShouldBeTrue();
             var usuarioBanco = ObterPorId<Dominio.Entidades.Usuario, long>(usuario.Id);
 
             usuarioBanco.Excluido.ShouldBeTrue();
@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
             var retorno = await casoDeUso.Executar(usuario.Id);
 
             // assert
-            retorno.ShouldBeTrue();
+            retorno.Sucesso.ShouldBeTrue();
             var usuarioBanco = ObterPorId<Dominio.Entidades.Usuario, long>(usuario.Id);
 
             usuarioBanco.Situacao.ShouldBe(Dominio.Enumerados.SituacaoUsuario.Inativo);

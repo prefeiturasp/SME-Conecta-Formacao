@@ -50,7 +50,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
             var retorno = await casoDeUso.Executar(dto);
 
             // assert
-            retorno.ShouldBeTrue();
+            retorno.Sucesso.ShouldBeTrue();
 
             var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
 

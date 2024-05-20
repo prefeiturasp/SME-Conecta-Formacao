@@ -1,9 +1,10 @@
-﻿using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria
 {
     public interface ICasoDeUsoAlterarUsuarioRedeParceria
     {
-        Task<bool> Executar(long id, UsuarioRedeParceriaDTO usuarioRedeParceriaDTO);
+        Task<RetornoDTO> Executar(long id, UsuarioRedeParceriaDTO usuarioRedeParceriaDTO);
     }
 }
