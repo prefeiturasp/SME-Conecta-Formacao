@@ -1,7 +1,9 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+
+namespace SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria
 {
     public interface ICasoDeUsoRemoverUsuarioRedeParceria
     {
-        Task<bool> Executar(long id);
+        Task<RetornoDTO> Executar(long id);
     }
 }
