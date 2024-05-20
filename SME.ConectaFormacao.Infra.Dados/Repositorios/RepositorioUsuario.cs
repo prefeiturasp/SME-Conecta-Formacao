@@ -38,9 +38,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             cpf,
                             tipo_email,
                             telefone,
-                            area_promotora_id
+                            area_promotora_id,
+                            excluido
                           from usuario 
-                          where login = @login and not excluido";
+                          where login = @login";
 
             return conexao.Obter().QueryFirstOrDefaultAsync<Usuario>(query, new { login });
         }

@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             usuarioRedeParceriaDTO.Telefone = usuarioRedeParceriaDTO.Telefone.SomenteNumeros();
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(usuarioRedeParceriaDTO.Cpf));
-            if (usuario.NaoEhNulo() && usuario.Tipo.EhRedeParceria())
+            if (usuario.NaoEhNulo() && !usuario.Excluido && usuario.Tipo.EhRedeParceria())
                 throw new NegocioException(MensagemNegocio.USUARIO_JA_POSSUI_CADASTRO_COMO_REDE_PARCERIA);
 
             var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorIdQuery(usuarioRedeParceriaDTO.AreaPromotoraId)) ??
@@ -43,6 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             usuario.Telefone = usuarioRedeParceriaDTO.Telefone;
             usuario.Email = usuarioRedeParceriaDTO.Email;
             usuario.Situacao = usuarioRedeParceriaDTO.Situacao;
+            usuario.Excluido = false;
 
             var criadoCoresso = await CadastrarUsuarioNoCoreSSO(usuario, areaPromotora, existeNoConecta);
             if (!criadoCoresso)
