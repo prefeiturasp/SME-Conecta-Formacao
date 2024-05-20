@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using System.Net;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -20,27 +21,28 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<UsuarioPerfisRetornoDTO> Handle(ObterTokenAcessoQuery request, CancellationToken cancellationToken)
         {
-            var nomeUsuarioEOL = await mediator.Send(new ObterNomeServidorPorRfEolQuery(request.Login), cancellationToken);
-            
             var usuarioPerfisRetornoDto = await mediator.Send(new ObterPerfisUsuarioServicoAcessosPorLoginQuery(request.Login, request.PerfilUsuarioId), cancellationToken)
                                           ?? throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, HttpStatusCode.Unauthorized);
 
-            if (nomeUsuarioEOL.EstaPreenchido())
-                usuarioPerfisRetornoDto.UsuarioNome = nomeUsuarioEOL;
-            
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(request.Login), cancellationToken);
 
-            if (usuario == null && request.Login.Trim().Length > TAMANHO_RF)
+            if (usuario.EhNulo() && request.Login.Trim().Length > TAMANHO_RF)
                 throw new NegocioException(MensagemNegocio.REALIZE_SEU_CADASTRO_NO_SISTEMA, HttpStatusCode.Unauthorized);
 
-            if (usuario == null)
+            if (usuario.EhNulo())
                 usuario = new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email);
-
+            
             usuarioPerfisRetornoDto = await ValidarPerfisAutomaticos(request, usuarioPerfisRetornoDto, cancellationToken);
 
-            if (usuario.Tipo == Dominio.Enumerados.TipoUsuario.Externo && usuario.EstaAguardandoValidacaoEmail())
+            if (usuario.Tipo == TipoUsuario.Externo && usuario.EstaAguardandoValidacaoEmail())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_VALIDOU_EMAIL, HttpStatusCode.Unauthorized);
 
+            if (usuario.Tipo.EhInterno())
+            {
+                var nomeUsuarioEOL = await mediator.Send(new ObterNomeServidorPorRfEolQuery(request.Login), cancellationToken);
+                usuarioPerfisRetornoDto.UsuarioNome = nomeUsuarioEOL.EstaPreenchido() ? nomeUsuarioEOL : usuarioPerfisRetornoDto.UsuarioNome;
+            }
+            
             usuario.Atualizar(usuarioPerfisRetornoDto.Email, DateTimeExtension.HorarioBrasilia(), usuarioPerfisRetornoDto.Cpf, usuarioPerfisRetornoDto.UsuarioNome);
             await mediator.Send(new SalvarUsuarioCommand(usuario), cancellationToken);
 
