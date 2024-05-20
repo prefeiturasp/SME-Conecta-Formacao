@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao
             
             usuarioPerfisRetornoDto = await ValidarPerfisAutomaticos(request, usuarioPerfisRetornoDto, cancellationToken);
 
-            if (usuario.Tipo == TipoUsuario.Externo && usuario.EstaAguardandoValidacaoEmail())
+            if (usuario.Tipo.EhExterno() && usuario.EstaAguardandoValidacaoEmail())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_VALIDOU_EMAIL, HttpStatusCode.Unauthorized);
 
             if (usuario.Tipo.EhInterno())
