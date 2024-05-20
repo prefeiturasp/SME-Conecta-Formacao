@@ -25,20 +25,23 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuarioPerfisRetornoDto = await mediator.Send(new ObterPerfisUsuarioServicoAcessosPorLoginQuery(request.Login, request.PerfilUsuarioId), cancellationToken)
                                           ?? throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, HttpStatusCode.Unauthorized);
 
+            if (nomeUsuarioEOL.EstaPreenchido())
+                usuarioPerfisRetornoDto.UsuarioNome = nomeUsuarioEOL;
+            
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(request.Login), cancellationToken);
 
             if (usuario == null && request.Login.Trim().Length > TAMANHO_RF)
                 throw new NegocioException(MensagemNegocio.REALIZE_SEU_CADASTRO_NO_SISTEMA, HttpStatusCode.Unauthorized);
 
             if (usuario == null)
-                usuario = new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, nomeUsuarioEOL, usuarioPerfisRetornoDto.Email);
+                usuario = new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email);
 
             usuarioPerfisRetornoDto = await ValidarPerfisAutomaticos(request, usuarioPerfisRetornoDto, cancellationToken);
 
             if (usuario.Tipo == Dominio.Enumerados.TipoUsuario.Externo && usuario.EstaAguardandoValidacaoEmail())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_VALIDOU_EMAIL, HttpStatusCode.Unauthorized);
 
-            usuario.Atualizar(usuarioPerfisRetornoDto.Email, DateTimeExtension.HorarioBrasilia(), usuarioPerfisRetornoDto.Cpf, nomeUsuarioEOL);
+            usuario.Atualizar(usuarioPerfisRetornoDto.Email, DateTimeExtension.HorarioBrasilia(), usuarioPerfisRetornoDto.Cpf, usuarioPerfisRetornoDto.UsuarioNome);
             await mediator.Send(new SalvarUsuarioCommand(usuario), cancellationToken);
 
             return usuarioPerfisRetornoDto;
