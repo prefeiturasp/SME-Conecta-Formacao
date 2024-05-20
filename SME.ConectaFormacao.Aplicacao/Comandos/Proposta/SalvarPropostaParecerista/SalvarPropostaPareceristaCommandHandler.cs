@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<bool> Handle(SalvarPropostaPareceristaCommand request, CancellationToken cancellationToken)
         {
             var proposta = await _repositorioProposta.ObterPorId(request.PropostaId);
-            var pareceristasAntes = await _repositorioProposta.ObterPropostaPareceristaPorId(request.PropostaId);
+            var pareceristasAntes = await _repositorioProposta.ObterPareceristasPorId(request.PropostaId);
             var pareceristasDepois = _mapper.Map<IEnumerable<PropostaParecerista>>(request.Pareceristas);
             var possuiPareceristasDepois = pareceristasDepois.Any();
             
@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             foreach (var parecerista in pareceristasExcluir)
             {
-                await _mediator.Send(new EnviarParecerPareceristaCommand(request.PropostaId, parecerista.RegistroFuncional, SituacaoParecerista.Desativado, string.Empty));
+                await _repositorioProposta.AtualizarSituacaoParecerista(parecerista.Id, parecerista.RegistroFuncional, SituacaoParecerista.Desativado, string.Empty);
 
                 var existemConsideracoes = await _repositorioPropostaPareceristaConsideracao.ExistemConsideracoesPorParaceristaId(parecerista.Id);
                 

@@ -36,7 +36,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             possui_contrato_externo,
                             situacao_cadastro,
                             cpf,
-                            tipo_email
+                            tipo_email,
+                            telefone,
+                            area_promotora_id
                           from usuario 
                           where login = @login";
 
@@ -90,7 +92,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             tipo,
                             possui_contrato_externo,
                             situacao_cadastro,
-                            cpf
+                            cpf,
+                            tipo_email,
+                            telefone,
+                            area_promotora_id
                           from usuario 
                           where cpf = @cpf";
 

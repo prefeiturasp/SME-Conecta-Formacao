@@ -107,7 +107,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<PropostaTurma> ObterTurmaPorNome(string nome, long propostaId);
         Task<IEnumerable<long>> PropostasConfirmadasQueNaoEncerramAinda();
         Task<IEnumerable<long>> PropostasTurmaIdsPorPropostaId(long propostaId);
-        Task<IEnumerable<PropostaParecerista>> ObterPropostaPareceristaPorId(long id);
         Task<bool> RemoverPropostaParecer(PropostaPareceristaConsideracao pareceristaConsideracao);
         Task<PropostaPareceristaConsideracao> ObterParecerPorId(long parecerId);
         Task<bool> ExistePareceristasAdicionadosNaProposta(long propostaId);

@@ -505,28 +505,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        where not excluido and id = @id;";
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new { id });
         }
-
-        public async Task<IEnumerable<PropostaParecerista>> ObterPropostaPareceristaPorId(long id)
-        {
-            var query = $@"
-            select id,
-	               proposta_id,
-	               registro_funcional,
-	               nome_parecerista,
-                   situacao,
-                   justificativa,
-	               criado_em,
-	               criado_por,
-	               alterado_em,
-	               alterado_por,
-	               criado_login,
-	               alterado_login,
-	               excluido
-            from public.proposta_parecerista
-	        where not excluido 
-              and proposta_id = @id  ";
-            return await conexao.Obter().QueryAsync<PropostaParecerista>(query, new { id });
-        }
         
         public async Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPropostaPareceristaConsideracaoPorId(long id)
         {

@@ -35,10 +35,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.ConteudoProgramatico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(200));
-            faker.RuleFor(x => x.DataInscricaoInicio, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-1) : DateTimeExtension.HorarioBrasilia().AddMonths(1));
-            faker.RuleFor(x => x.DataInscricaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-1) : DateTimeExtension.HorarioBrasilia().AddMonths(1));
-            faker.RuleFor(x => x.DataRealizacaoInicio, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-1) : DateTimeExtension.HorarioBrasilia().AddMonths(1));
-            faker.RuleFor(x => x.DataRealizacaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-1) : DateTimeExtension.HorarioBrasilia().AddMonths(1));
+            faker.RuleFor(x => x.DataInscricaoInicio, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataInscricaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataRealizacaoInicio, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataRealizacaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.IntegrarNoSGA, integrarNoSga);
             faker.RuleFor(x => x.CodigoEventoSigpec, f => f.Random.Long(100000, 9999999999));
             faker.RuleFor(x => x.NumeroHomologacao, f => f.Random.Long(100000, 9999999999));

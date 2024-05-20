@@ -169,4 +169,8 @@ public class MensagemNegocio
     public const string NOME_DEVE_TER_SOBRENOME = "O Nome deve conter o nome e sobrenome";
     public const string USUARIO_JA_POSSUI_CADASTRO_COMO_REDE_PARCERIA = "Usuário já possui cadastro no Conecta como rede parceria";
     public const string ERRO_AO_CRIAR_ATUALIZAR_USUARIO_NO_CORESSO = "Ocorreu um erro ao criar/atualizar o usuário no CORESSO";
+    public const string USUARIO_SALVO_COM_SUCESSO = "Usuário salvo com sucesso!";
+    public const string USUARIO_ALTERADO_COM_SUCESSO = "Usuário alterado com sucesso!";
+    public const string USUARIO_EXCLUIDO_COM_SUCESSO = "Usuário excluído com sucesso!";
+    public const string USUARIO_FOI_INATIVO_POR_POSSUIR_PROPOSTA_CADASTRADA = "Usuário foi inativado porque possui proposta cadastrada!";
 }

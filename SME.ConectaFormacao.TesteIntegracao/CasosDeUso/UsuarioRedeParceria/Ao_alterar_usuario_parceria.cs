@@ -47,7 +47,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
             var retorno = await casoDeUso.Executar(usuario.Id, dto);
 
             // assert
-            retorno.ShouldBeTrue();
+            retorno.Sucesso.ShouldBeTrue();
 
             var usuarioBanco = ObterPorId<Dominio.Entidades.Usuario, long>(usuario.Id);
 

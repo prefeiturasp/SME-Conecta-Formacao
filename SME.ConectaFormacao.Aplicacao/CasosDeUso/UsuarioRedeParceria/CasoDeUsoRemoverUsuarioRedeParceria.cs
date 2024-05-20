@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -12,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
         {
         }
 
-        public async Task<bool> Executar(long id)
+        public async Task<RetornoDTO> Executar(long id)
         {
             var usuario = await mediator.Send(new ObterUsuarioPorIdQuery(id)) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
@@ -29,13 +30,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             {
                 usuario.Situacao = SituacaoUsuario.Inativo;
                 await mediator.Send(new SalvarUsuarioCommand(usuario));
+                return RetornoDTO.RetornarSucesso(MensagemNegocio.USUARIO_FOI_INATIVO_POR_POSSUIR_PROPOSTA_CADASTRADA, usuario.Id);
             }
             else
             {
                 await mediator.Send(new RemoverUsuarioCommand(id));
+                return RetornoDTO.RetornarSucesso(MensagemNegocio.USUARIO_EXCLUIDO_COM_SUCESSO, usuario.Id);
             }
-
-            return true;
         }
     }
 }
