@@ -333,6 +333,9 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterSugestaoParecerPareceristas, CasoDeUsoObterSugestaoParecerPareceristas>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAprovarProposta, CasoDeUsoAprovarProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRecusarProposta, CasoDeUsoRecusarProposta>();
+      
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterRelatorioPropostaLaudaPublicacao, CasoDeUsoObterRelatorioPropostaLaudaPublicacao>();
+
         _serviceCollection.TryAddScoped<ICasoDeUsoObterRelatorioPropostaLaudaCompleta, CasoDeUsoObterRelatorioPropostaLaudaCompleta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
@@ -410,8 +413,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverParecerDaProposta, CasoDeUsoRemoverParecerDaProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParecerista, CasoDeUsoEnviarPropostaParecerista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAprovarPropostaParecerista, CasoDeUsoAprovarPropostaParecerista>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoRecusarPropostaParecerista, CasoDeUsoRecusarPropostaParecerista>();
-
+        _serviceCollection.TryAddScoped<ICasoDeUsoRecusarPropostaParecerista, CasoDeUsoRecusarPropostaParecerista>();       
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterHorasTotaisProposta, CasoDeUsoObterHorasTotaisProposta>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterSituacaoUsuarioRedeParceria, CasoDeUsoObterSituacaoUsuarioRedeParceria>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuarioRedeParceriaPaginada, CasoDeUsoObterUsuarioRedeParceriaPaginada>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuarioRedeParceriaPorId, CasoDeUsoObterUsuarioRedeParceriaPorId>();

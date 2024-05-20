@@ -40,6 +40,9 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? LinkParaInscricoesExterna { get; set; }
         public long? CodigoEventoSigpec { get; set; }
         public long? NumeroHomologacao { get; set; }
+        public string? CargaHorariaTotal { get; set; }
+        public string? CargaHorariaNaoPresencial { get; set; }
+        public string? OutrosCriterios { get; set; }
 
         public AreaPromotora AreaPromotora { get; set; }
         public Arquivo ArquivoImagemDivulgacao { get; set; }
