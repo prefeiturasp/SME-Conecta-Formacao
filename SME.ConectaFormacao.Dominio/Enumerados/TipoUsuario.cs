@@ -23,5 +23,9 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return tipo == TipoUsuario.RedeParceria;
         }
+        public static bool NaoEhRedeParceria(this TipoUsuario tipo)
+        {
+            return !tipo.EhRedeParceria();
+        }
     }
 }
