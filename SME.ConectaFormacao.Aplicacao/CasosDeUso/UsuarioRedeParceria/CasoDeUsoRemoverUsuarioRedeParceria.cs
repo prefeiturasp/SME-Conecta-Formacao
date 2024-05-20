@@ -22,8 +22,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             if (!usuario.Tipo.EhRedeParceria())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
+            var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorIdQuery(usuario.AreaPromotoraId.GetValueOrDefault()));
+
+            var desvinculadoPerfilCoresso = await mediator.Send(new DesvincularPerfilExternoCoreSSOServicoAcessosCommand(usuario.Login, areaPromotora.GrupoId));
             var inativadoCoreSSO = await mediator.Send(new InativarUsuarioCoreSSOServicoAcessosCommand(usuario.Login));
-            if (!inativadoCoreSSO)
+            if (!inativadoCoreSSO || !desvinculadoPerfilCoresso)
                 throw new NegocioException(MensagemNegocio.ERRO_AO_CRIAR_ATUALIZAR_USUARIO_NO_CORESSO);
 
             var mensagem = MensagemNegocio.USUARIO_EXCLUIDO_COM_SUCESSO;
