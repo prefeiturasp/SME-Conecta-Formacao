@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ExcluirParecerCommandHandler : IRequestHandler<ExcluirParecerCommand,bool>
+    public class ExcluirParecerCommandHandler : IRequestHandler<ExcluirParecerCommand, bool>
     {
         private readonly IRepositorioProposta _repositorioProposta;
 

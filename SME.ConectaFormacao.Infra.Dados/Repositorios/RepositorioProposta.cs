@@ -427,7 +427,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 situacao,
                 formacaoHomologada,
                 situacoesProposta = situacoesProposta.Select(t => (int)t).ToArray(),
-                situacaoAguardandoParecerista = new []{ (int)SituacaoProposta.AguardandoAnalisePeloParecerista,(int)SituacaoProposta.AguardandoReanalisePeloParecerista},
+                situacaoAguardandoParecerista = new[] { (int)SituacaoProposta.AguardandoAnalisePeloParecerista, (int)SituacaoProposta.AguardandoReanalisePeloParecerista },
                 loginUsuarioLogado,
                 situacaoDesativado = SituacaoParecerista.Desativado
             };
@@ -505,7 +505,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        where not excluido and id = @id;";
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaRegente>(query, new { id });
         }
-        
+
         public async Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPropostaPareceristaConsideracaoPorId(long id)
         {
             var query = $@"
@@ -526,7 +526,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             where not ppc.excluido                                                     
               and not pp.excluido
               and pp.proposta_id = @id  ";
-            
+
             return await conexao.Obter().QueryAsync<PropostaPareceristaConsideracao>(query, new { id });
         }
 

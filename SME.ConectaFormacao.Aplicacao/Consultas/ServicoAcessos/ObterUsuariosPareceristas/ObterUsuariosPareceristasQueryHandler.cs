@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Consultas.ServicoAcessos.ObterUsuariosPareceristas;
 using SME.ConectaFormacao.Aplicacao.Dtos;
@@ -6,7 +5,7 @@ using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUsuariosPareceristasQueryHandler : IRequestHandler<ObterUsuariosPareceristasQuery,IEnumerable<RetornoUsuarioLoginNomeDTO>>
+    public class ObterUsuariosPareceristasQueryHandler : IRequestHandler<ObterUsuariosPareceristasQuery, IEnumerable<RetornoUsuarioLoginNomeDTO>>
     {
         private readonly IServicoAcessos _servicoAcessos;
 
@@ -18,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<IEnumerable<RetornoUsuarioLoginNomeDTO>> Handle(ObterUsuariosPareceristasQuery request, CancellationToken cancellationToken)
         {
             var consulta = await _servicoAcessos.ObterUsuariosPerfilPareceristas();
-            if(!consulta.Any())
+            if (!consulta.Any())
                 return Enumerable.Empty<RetornoUsuarioLoginNomeDTO>();
 
             return consulta.Select(x => new RetornoUsuarioLoginNomeDTO() { Login = x.Login, Nome = x.Nome });

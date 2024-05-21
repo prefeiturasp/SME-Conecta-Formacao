@@ -2,6 +2,6 @@
 {
     public class PropostaJustificativaDTO
     {
-        public  string? Justificativa { get; set; }
+        public string? Justificativa { get; set; }
     }
 }

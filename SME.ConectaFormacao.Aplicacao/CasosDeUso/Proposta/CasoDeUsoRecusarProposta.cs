@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (!situacoes.Contains(proposta.Situacao))
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECER_DF);
 
-            if(propostaJustificativa.Justificativa.NaoEstaPreenchido())
+            if (propostaJustificativa.Justificativa.NaoEstaPreenchido())
                 throw new NegocioException(MensagemNegocio.JUSTIFICATIVA_NAO_INFORMADA);
 
             var situacao = SituacaoProposta.Recusada;

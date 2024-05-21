@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using SME.ConectaFormacao.Dominio.Extensoes;
+﻿using SME.ConectaFormacao.Dominio.Extensoes;
+using System.ComponentModel.DataAnnotations;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 
             return valor == FormacaoHomologada.Sim;
         }
-        
+
         public static bool NaoEstaHomologada(this FormacaoHomologada? valor)
         {
             return !EstaHomologada(valor);

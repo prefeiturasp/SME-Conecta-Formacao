@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); 
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<PaginacaoResultadoDTO<PropostaPaginadaDTO>> Handle(ObterPropostaPaginadaQuery request, CancellationToken cancellationToken)

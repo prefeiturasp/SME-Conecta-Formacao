@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -21,10 +20,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            var situacoes = new [] { 
-                SituacaoProposta.Cadastrada, 
-                SituacaoProposta.Devolvida, 
-                SituacaoProposta.AguardandoAnaliseDf, 
+            var situacoes = new[] {
+                SituacaoProposta.Cadastrada,
+                SituacaoProposta.Devolvida,
+                SituacaoProposta.AguardandoAnaliseDf,
                 SituacaoProposta.AguardandoAnaliseParecerPelaDF,
                 SituacaoProposta.AguardandoAnalisePeloParecerista,
                 SituacaoProposta.AguardandoReanalisePeloParecerista,
@@ -44,12 +43,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             var validarDatas = await mediator.Send(new ValidarSeDataInscricaoEhMaiorQueDataRealizacaoCommand(proposta.DataInscricaoFim, proposta.DataRealizacaoFim));
             if (!string.IsNullOrEmpty(validarDatas))
                 throw new NegocioException(validarDatas);
-            
+
             var pareceristasDaProposta = await mediator.Send(new ObterPareceristasAdicionadosNaPropostaQuery(proposta.Id));
 
-            var existemPareceristasAguardandoValidacao = pareceristasDaProposta.Where(w=> !w.Situacao.EstaDesativado()).Any(a => a.Situacao.EstaAguardandoValidacao());
+            var existemPareceristasAguardandoValidacao = pareceristasDaProposta.Where(w => !w.Situacao.EstaDesativado()).Any(a => a.Situacao.EstaAguardandoValidacao());
 
-            var situacao = await ObterSituacaoProposta(proposta,existemPareceristasAguardandoValidacao);
+            var situacao = await ObterSituacaoProposta(proposta, existemPareceristasAguardandoValidacao);
 
             await mediator.Send(new EnviarPropostaCommand(propostaId, situacao));
             await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
@@ -70,27 +69,27 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         private async Task<SituacaoProposta> ObterSituacaoProposta(Dominio.Entidades.Proposta proposta, bool existemPareceristasAguardandoValidacao)
         {
             if (proposta.FormacaoHomologada.EstaHomologada())
-                return await ObterSituacaoHomologada(proposta,existemPareceristasAguardandoValidacao);
-            
+                return await ObterSituacaoHomologada(proposta, existemPareceristasAguardandoValidacao);
+
             return SituacaoProposta.Publicada;
         }
 
         private async Task<SituacaoProposta> ObterSituacaoHomologada(Dominio.Entidades.Proposta proposta, bool existemPareceristasAguardandoValidacao)
         {
-            if (proposta.Situacao.EstaAguardandoAnaliseDf() 
+            if (proposta.Situacao.EstaAguardandoAnaliseDf()
                 && await mediator.Send(new ExistePareceristasAdicionadosNaPropostaQuery(proposta.Id)))
                 return SituacaoProposta.AguardandoAnalisePeloParecerista;
 
             if (proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF())
                 return SituacaoProposta.AnaliseParecerPelaAreaPromotora;
-            
+
             if (proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora())
                 return SituacaoProposta.AguardandoReanalisePeloParecerista;
-            
-            if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && existemPareceristasAguardandoValidacao) 
+
+            if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && existemPareceristasAguardandoValidacao)
                 return SituacaoProposta.AguardandoAnalisePeloParecerista;
-            
-            return proposta.Situacao.EstaAguardandoReanalisePeloParecerista() 
+
+            return proposta.Situacao.EstaAguardandoReanalisePeloParecerista()
                 ? SituacaoProposta.AguardandoReanalisePeloParecerista
                 : SituacaoProposta.AguardandoAnaliseDf;
         }

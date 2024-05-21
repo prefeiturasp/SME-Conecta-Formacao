@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarPropostaPareceristaCommand : IRequest<bool>
     {
-        public SalvarPropostaPareceristaCommand(long propostaId,IEnumerable<PropostaParecerista> pareceristas)
+        public SalvarPropostaPareceristaCommand(long propostaId, IEnumerable<PropostaParecerista> pareceristas)
         {
             PropostaId = propostaId;
             Pareceristas = pareceristas;
@@ -24,6 +24,6 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(x => x.PropostaId)
                 .GreaterThan(0)
                 .WithMessage("Informe o Id da Proposta Para salvar a proposta parecerista");
-        }        
+        }
     }
 }

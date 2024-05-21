@@ -16,7 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var lista = Enum.GetValues(typeof(TipoEmail))
                             .Cast<TipoEmail>()
-                            .Select(t => new RetornoListagemDTO{
+                            .Select(t => new RetornoListagemDTO
+                            {
                                 Id = (short)t,
                                 Descricao = t.Nome()
                             });

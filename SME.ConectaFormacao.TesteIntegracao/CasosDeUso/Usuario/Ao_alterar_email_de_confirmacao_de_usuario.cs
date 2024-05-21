@@ -26,17 +26,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuarioServicoAcessosPorLoginSenhaQuery, UsuarioAutenticacaoRetornoDTO>), typeof(ObterUsuarioServicoAcessosPorLoginSenhaQueryHandlerFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand, bool>), typeof(EnviarEmailValidacaoUsuarioExternoServicoAcessoCommandFake), ServiceLifetime.Scoped));
         }
-        
+
         [Fact(DisplayName = "Usuario - Deve retornar sucesso na alteração de e-mail")]
         public async Task Deve_retornar_sucesso_ao_alterar_email()
         {
             // arrange
-            var dto = new AlterarEmailUsuarioDto {Email = UsuarioAlterarEmailValidacaoMock.Email, Senha = UsuarioAlterarEmailValidacaoMock.Senha, Login = UsuarioAlterarEmailValidacaoMock.Login};
+            var dto = new AlterarEmailUsuarioDto { Email = UsuarioAlterarEmailValidacaoMock.Email, Senha = UsuarioAlterarEmailValidacaoMock.Senha, Login = UsuarioAlterarEmailValidacaoMock.Login };
             var cadoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarEmailEReenviarEmailParaValidacao>();
-            
+
             // act
             var retorno = await cadoDeUso.Executar(dto);
-            
+
             // assert
             retorno.ShouldBeTrue();
         }
@@ -44,12 +44,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         public async Task Deve_retornar_erro_401_com_login_ou_senha_invalido()
         {
             // arrange
-            var dto = new AlterarEmailUsuarioDto {Email = UsuarioAlterarEmailValidacaoMock.Email, Senha = "3342342", Login = UsuarioAlterarEmailValidacaoMock.Login};
+            var dto = new AlterarEmailUsuarioDto { Email = UsuarioAlterarEmailValidacaoMock.Email, Senha = "3342342", Login = UsuarioAlterarEmailValidacaoMock.Login };
             var cadoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarEmailEReenviarEmailParaValidacao>();
-            
+
             // act
             var exception = await Should.ThrowAsync<NegocioException>(cadoDeUso.Executar(dto));
-            
+
             // assert
             exception.ShouldNotBeNull();
             exception.StatusCode.ShouldBe(401);

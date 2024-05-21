@@ -24,6 +24,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
         {
             base.RegistrarCommandFakes(services);
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<InativarUsuarioCoreSSOServicoAcessosCommand, bool>), typeof(InativarUsuarioCoreSSOServicoAcessosCommandHandlerFaker), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<DesvincularPerfilExternoCoreSSOServicoAcessosCommand, bool>), typeof(DesvincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFaker), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Usuário Rede Parceria - deve retornar excecao usuario nao encontrado")]
@@ -59,8 +60,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
         public async Task Deve_remover_com_sucesso()
         {
             // arrange
-            var usuario = UsuarioMock.GerarUsuario(Dominio.Enumerados.TipoUsuario.RedeParceria);
-            await InserirNaBase(usuario);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
+            await InserirNaBase(areaPromotora);
+
+            var usuarios = UsuarioMock.GerarUsuario(areaPromotora, Dominio.Enumerados.TipoUsuario.RedeParceria);
+            await InserirNaBase(usuarios);
+
+            var usuario = usuarios.FirstOrDefault();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoRemoverUsuarioRedeParceria>();
 
@@ -78,8 +84,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
         public async Task Deve_remover_inativar_com_sucesso()
         {
             // arrange
-            var usuario = UsuarioMock.GerarUsuario(Dominio.Enumerados.TipoUsuario.RedeParceria);
-            await InserirNaBase(usuario);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
+            await InserirNaBase(areaPromotora);
+
+            var usuarios = UsuarioMock.GerarUsuario(areaPromotora, Dominio.Enumerados.TipoUsuario.RedeParceria);
+            await InserirNaBase(usuarios);
+
+            var usuario = usuarios.FirstOrDefault();
 
             await InserirNaBaseProposta(criado_login: usuario.Login);
 

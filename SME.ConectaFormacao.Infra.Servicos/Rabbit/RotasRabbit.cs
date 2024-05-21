@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Infra
         public const string ProcessarRegistroDoArquivoDeImportacaoInscricao = "conecta.inscricao.processar.registro.arquivo.importacao";
 
         public const string AtualizarCargoFuncaoVinculoInscricaoCursista = "conecta.inscricao.cursista.atualizar.cargo.funcao.vinculo";
-        public const string AtualizarCargoFuncaoVinculoInscricaoCursistaTratar = "conecta.inscricao.cursista.atualizar.cargo.funcao.vinculo.tratar";        
+        public const string AtualizarCargoFuncaoVinculoInscricaoCursistaTratar = "conecta.inscricao.cursista.atualizar.cargo.funcao.vinculo.tratar";
 
         public const string EnviarEmailDevolverProposta = "conecta.enviar.email.devolver.proposta";
         public const string EncerrarInscricaoAutomaticamente = "conecta.inscricao.encerrar.cursista.inativo";

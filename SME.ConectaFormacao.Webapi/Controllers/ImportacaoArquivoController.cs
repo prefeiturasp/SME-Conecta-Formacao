@@ -5,9 +5,9 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {

@@ -13,4 +13,12 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Inativo")]
         Inativo = 3
     }
+
+    public static class SituacaoUsuarioExtensao
+    {
+        public static bool EhInativo(this SituacaoUsuario situacaoUsuario)
+        {
+            return situacaoUsuario == SituacaoUsuario.Inativo;
+        }
+    }
 }

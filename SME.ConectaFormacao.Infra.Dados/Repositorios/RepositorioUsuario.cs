@@ -38,7 +38,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             cpf,
                             tipo_email,
                             telefone,
-                            area_promotora_id
+                            area_promotora_id,
+                            excluido
                           from usuario 
                           where login = @login";
 
@@ -196,7 +197,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query.Append(" AND u.situacao_cadastro = @situacao");
             }
 
-            query.Append(" order by a.nome desc");
+            query.Append(" order by a.nome, u.nome ");
             query.Append(" limit @numeroRegistros offset @registrosIgnorados");
 
             return conexao.Obter().QueryAsync<Usuario, AreaPromotora, Usuario>(

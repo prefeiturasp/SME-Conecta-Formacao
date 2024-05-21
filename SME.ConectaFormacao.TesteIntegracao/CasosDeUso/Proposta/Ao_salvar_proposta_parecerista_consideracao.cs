@@ -21,15 +21,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // arrange
             CriarClaimUsuario(Dominio.Constantes.Perfis.PARECERISTA.ToString());
             await InserirUsuario("1", "Parecerista1");
-            
+
             var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaPareceristaConsideracao>();
-            
+
             var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnalisePeloParecerista);
-            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
-            
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1"));
+
             var propostaPareceristaConsideracaoCadastroDto = PropostaSalvarMock.GerarPareceristaConsideracaoCadastro();
             propostaPareceristaConsideracaoCadastroDto.PropostaId = 1;
-            
+
             // act
             var retorno = await useCase.Executar(propostaPareceristaConsideracaoCadastroDto);
 
@@ -42,26 +42,26 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             consideracaoParecista.PropostaPareceristaId.ShouldBe(1);
             consideracaoParecista.Excluido.ShouldBeFalse();
         }
-        
+
         [Fact(DisplayName = "Proposta parecer - Alterar parecer")]
         public async Task Deve_alterar_proposta_parecerista_consideracao()
         {
             // arrange
             CriarClaimUsuario(Dominio.Constantes.Perfis.PARECERISTA.ToString());
             await InserirUsuario("1", "Parecerista1");
-            
+
             var useCase = ObterCasoDeUso<ICasoDeUsoSalvarPropostaPareceristaConsideracao>();
-            
+
             var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnalisePeloParecerista);
-            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1","Parecerista1"));
-            
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1"));
+
             var inserirConsideracaoDoParecista = PropostaPareceristaConsideracaoMock.GerarPropostasPareceristasConsideracoes(1);
-            await InserirConsideracoesDosPareceristas(inserirConsideracaoDoParecista, "1",proposta.Id);
-            
+            await InserirConsideracoesDosPareceristas(inserirConsideracaoDoParecista, "1", proposta.Id);
+
             var alterarConsideracaoDoParecista = PropostaSalvarMock.GerarPareceristaConsideracaoCadastro();
             alterarConsideracaoDoParecista.PropostaId = proposta.Id;
             alterarConsideracaoDoParecista.Id = inserirConsideracaoDoParecista.FirstOrDefault().Id;
-            
+
             // act
             var retorno = await useCase.Executar(alterarConsideracaoDoParecista);
 

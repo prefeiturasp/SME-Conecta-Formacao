@@ -1,15 +1,9 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
@@ -20,7 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        [Fact(DisplayName ="Proposta - Deve recusar proposta com sucesso")]
+        [Fact(DisplayName = "Proposta - Deve recusar proposta com sucesso")]
         public async Task Deve_recusar_proposta_sucesso()
         {
             // arrange
@@ -36,7 +30,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             // assert 
             retorno.ShouldBeTrue();
 
-            var propostaBanco =  ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
+            var propostaBanco = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
             propostaBanco.Situacao.ShouldBe(Dominio.Enumerados.SituacaoProposta.Recusada);
         }
 

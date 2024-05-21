@@ -23,6 +23,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
         protected override void RegistrarCommandFakes(IServiceCollection services)
         {
             base.RegistrarCommandFakes(services);
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<InativarUsuarioCoreSSOServicoAcessosCommand, bool>), typeof(InativarUsuarioCoreSSOServicoAcessosCommandHandlerFaker), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<AtualizarUsuarioServicoAcessoCommand, bool>), typeof(AtualizarUsuarioServicoAcessoCommandHandlerFaker), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<VincularPerfilExternoCoreSSOServicoAcessosCommand, bool>), typeof(VincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFaker), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<DesvincularPerfilExternoCoreSSOServicoAcessosCommand, bool>), typeof(DesvincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFaker), ServiceLifetime.Scoped));
