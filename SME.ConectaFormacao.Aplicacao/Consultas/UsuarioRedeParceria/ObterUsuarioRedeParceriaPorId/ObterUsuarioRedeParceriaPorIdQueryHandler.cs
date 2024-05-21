@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuario = await _repositorioUsuario.ObterPorId(request.Id) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            if(!usuario.Tipo.EhRedeParceria())
+            if (!usuario.Tipo.EhRedeParceria())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             return _mapper.Map<UsuarioRedeParceriaDTO>(usuario);

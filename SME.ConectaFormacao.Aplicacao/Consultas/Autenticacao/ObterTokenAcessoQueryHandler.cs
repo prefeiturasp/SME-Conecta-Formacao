@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.REALIZE_SEU_CADASTRO_NO_SISTEMA, HttpStatusCode.Unauthorized);
 
             usuario ??= new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email);
-            
+
             usuarioPerfisRetornoDto = await ValidarPerfisAutomaticos(request, usuarioPerfisRetornoDto, usuario, cancellationToken);
 
             if (usuario.Tipo.EhExterno() && usuario.EstaAguardandoValidacaoEmail())
@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var perfilCursista = new Guid(PerfilAutomatico.PERFIL_CURSISTA_GUID);
 
-            var vincularPerfilCursistaUsuario = !usuario.Tipo.EhRedeParceria() && 
+            var vincularPerfilCursistaUsuario = !usuario.Tipo.EhRedeParceria() &&
                 (usuarioPerfisRetornoDto.PerfilUsuario.EhNulo() || !usuarioPerfisRetornoDto.PerfilUsuario.Any(t => t.Perfil == perfilCursista));
 
             if (vincularPerfilCursistaUsuario)

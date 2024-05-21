@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
 {
@@ -21,22 +22,30 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             if (!usuario.Tipo.EhRedeParceria())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
+            var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorIdQuery(usuario.AreaPromotoraId.GetValueOrDefault()));
+
+            var desvinculadoPerfilCoresso = await mediator.Send(new DesvincularPerfilExternoCoreSSOServicoAcessosCommand(usuario.Login, areaPromotora.GrupoId));
             var inativadoCoreSSO = await mediator.Send(new InativarUsuarioCoreSSOServicoAcessosCommand(usuario.Login));
-            if (!inativadoCoreSSO)
+            if (!inativadoCoreSSO || !desvinculadoPerfilCoresso)
                 throw new NegocioException(MensagemNegocio.ERRO_AO_CRIAR_ATUALIZAR_USUARIO_NO_CORESSO);
 
+            var mensagem = MensagemNegocio.USUARIO_EXCLUIDO_COM_SUCESSO;
             var usuarioPossuiProposta = await mediator.Send(new UsuarioPossuiPropostaQuery(usuario.Login));
             if (usuarioPossuiProposta)
             {
                 usuario.Situacao = SituacaoUsuario.Inativo;
                 await mediator.Send(new SalvarUsuarioCommand(usuario));
-                return RetornoDTO.RetornarSucesso(MensagemNegocio.USUARIO_FOI_INATIVO_POR_POSSUIR_PROPOSTA_CADASTRADA, usuario.Id);
+                mensagem = MensagemNegocio.USUARIO_FOI_INATIVO_POR_POSSUIR_PROPOSTA_CADASTRADA;
             }
             else
             {
                 await mediator.Send(new RemoverUsuarioCommand(id));
-                return RetornoDTO.RetornarSucesso(MensagemNegocio.USUARIO_EXCLUIDO_COM_SUCESSO, usuario.Id);
             }
+
+            var nomeChave = CacheDistribuidoNomes.Usuario.Parametros(usuario.Login);
+            await mediator.Send(new RemoverCacheCommand(nomeChave));
+
+            return RetornoDTO.RetornarSucesso(mensagem, usuario.Id);
         }
     }
 }

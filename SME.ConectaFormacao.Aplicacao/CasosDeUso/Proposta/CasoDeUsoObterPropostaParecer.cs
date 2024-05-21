@@ -7,8 +7,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
     public class CasoDeUsoObterPropostaParecer : CasoDeUsoAbstrato, ICasoDeUsoObterPropostaParecer
     {
         public CasoDeUsoObterPropostaParecer(IMediator mediator) : base(mediator)
-        {}
-        
+        { }
+
         public async Task<PropostaPareceristaConsideracaoCompletoDTO> Executar(PropostaParecerFiltroDTO propostaParecerFiltroDto)
         {
             return await mediator.Send(new ObterPropostaParecerPorPropostaIdECampoQuery(propostaParecerFiltroDto.PropostaId, propostaParecerFiltroDto.Campo));

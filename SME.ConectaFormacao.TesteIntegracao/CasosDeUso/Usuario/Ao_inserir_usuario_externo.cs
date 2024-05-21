@@ -158,7 +158,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             excecao.StatusCode.ShouldBe(400);
             excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.A_SENHA_DEVE_CONTER_SOMENTE);
         }
-        
+
         [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo com E-mail Edu Invalido")]
         public async Task Deve_Cadastrar_Usuario_Externo_Com_Email_Edu_Invalido()
         {

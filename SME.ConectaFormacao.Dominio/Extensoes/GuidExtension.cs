@@ -9,7 +9,7 @@ public static class GuidExtension
     {
         return guid == Perfis.ADMIN_DF;
     }
-    
+
     public static bool EhPerfilParecerista(this Guid guid)
     {
         return guid == Perfis.PARECERISTA;

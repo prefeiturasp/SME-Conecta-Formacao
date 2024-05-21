@@ -40,12 +40,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
             foreach (var turma in turmas)
                 turma.Nome += await ObterPeríodoEncontrosTurma(turma.Id);
-            
+
             var lista = _mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
             lista = lista.OrderBy(x => x.Descricao);
             return lista;
         }
-        
+
 
         private async Task<string> ObterPeríodoEncontrosTurma(long turmaId)
         {

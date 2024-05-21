@@ -3,7 +3,6 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -27,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
             var usuario = await mediator.Send(new ObterUsuarioPorIdQuery(id)) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            if (!usuario.Tipo.EhRedeParceria())
+            if (usuario.Tipo.NaoEhRedeParceria())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             var areaPromotora = await mediator.Send(new ObterAreaPromotoraPorIdQuery(usuarioRedeParceriaDTO.AreaPromotoraId)) ??
@@ -47,6 +46,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
 
             await mediator.Send(new SalvarUsuarioCommand(usuario));
 
+            var nomeChave = CacheDistribuidoNomes.Usuario.Parametros(usuario.Login);
+            await mediator.Send(new RemoverCacheCommand(nomeChave));
+
             return RetornoDTO.RetornarSucesso(MensagemNegocio.USUARIO_ALTERADO_COM_SUCESSO, usuario.Id);
         }
 
@@ -54,7 +56,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
         {
             bool usuarioAtualizadoCoresso = await mediator.Send(new AtualizarUsuarioServicoAcessoCommand(usuario.Login, usuario.Nome, usuario.Email, string.Empty));
 
-            bool vinculadoAoGrupoAreaPromotora = true, desvinculadoAoGrupoAreaPromotoraAntiga = true;
+            bool vinculadoAoGrupoAreaPromotora = true, desvinculadoAoGrupoAreaPromotoraAntiga = true, inativarUsuarioCoresso = true;
             if (areaPromotoraIdAntes != areaPromotora.Id)
             {
                 var areaPromotoraAntes = await mediator.Send(new ObterAreaPromotoraPorIdQuery(areaPromotoraIdAntes));
@@ -63,7 +65,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
                 vinculadoAoGrupoAreaPromotora = await mediator.Send(new VincularPerfilExternoCoreSSOServicoAcessosCommand(usuario.Login, areaPromotora.GrupoId));
             }
 
-            return usuarioAtualizadoCoresso && vinculadoAoGrupoAreaPromotora && desvinculadoAoGrupoAreaPromotoraAntiga;
+            if (usuario.Situacao.EhInativo())
+            {
+                inativarUsuarioCoresso = await mediator.Send(new InativarUsuarioCoreSSOServicoAcessosCommand(usuario.Login));
+            }
+
+            return usuarioAtualizadoCoresso && vinculadoAoGrupoAreaPromotora && desvinculadoAoGrupoAreaPromotoraAntiga && inativarUsuarioCoresso;
         }
 
         private static void ValidarPreenchimento(UsuarioRedeParceriaDTO usuarioRedeParceriaDTO)

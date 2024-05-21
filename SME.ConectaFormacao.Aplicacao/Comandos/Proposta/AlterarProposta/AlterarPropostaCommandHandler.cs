@@ -45,24 +45,24 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             var validarPublicoAlvoOutrosCommand = await _mediator.Send(new ValidarPublicoAlvoOutrosCommand(ehPropostaAutomatica, request.PropostaDTO.PublicosAlvo, request.PropostaDTO.PublicoAlvoOutros), cancellationToken);
-            
-            if(validarPublicoAlvoOutrosCommand.Any())
+
+            if (validarPublicoAlvoOutrosCommand.Any())
                 erros.AddRange(validarPublicoAlvoOutrosCommand);
 
             var validarFuncaoEspecificaOutrosCommand = await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
-            if(validarFuncaoEspecificaOutrosCommand.Any())
+            if (validarFuncaoEspecificaOutrosCommand.Any())
                 erros.AddRange(validarFuncaoEspecificaOutrosCommand);
 
-            var validarCriterioValidacaoInscricaoOutrosCommand =  await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
-            if(validarCriterioValidacaoInscricaoOutrosCommand.Any())
+            var validarCriterioValidacaoInscricaoOutrosCommand = await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
+            if (validarCriterioValidacaoInscricaoOutrosCommand.Any())
                 erros.AddRange(validarCriterioValidacaoInscricaoOutrosCommand);
-            
+
             var validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand = await _mediator.Send(new ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand(request.PropostaDTO.PublicosAlvo, request.PropostaDTO.FuncoesEspecificas,
                 request.PropostaDTO.Modalidades, request.PropostaDTO.AnosTurmas, request.PropostaDTO.ComponentesCurriculares), cancellationToken);
-            
-            if(validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand.Any())
+
+            if (validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand.Any())
                 erros.AddRange(validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand);
-            
+
             if (erros.Any())
                 throw new NegocioException(erros);
 
@@ -112,7 +112,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var errosCritériosCertificacao = await _mediator.Send(new ValidarCertificacaoPropostaCommand(request.PropostaDTO), cancellationToken);
             if (errosCritériosCertificacao.Any())
                 erros.AddRange(errosCritériosCertificacao);
-            
+
 
             if (erros.Any())
                 throw new NegocioException(erros);

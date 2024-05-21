@@ -136,7 +136,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
                     if (inscricao.CargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == inscricao.CargoId))
                         temErroCargo = true;
-                        
+
                 }
             }
 
@@ -177,10 +177,10 @@ namespace SME.ConectaFormacao.Aplicacao
                         temErroFuncao = true;
                 }
 
-                if(temErroCargo && temErroFuncao)
+                if (temErroCargo && temErroFuncao)
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
-            
-                if(!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
+
+                if (!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }
         }

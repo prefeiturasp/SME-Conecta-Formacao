@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             texto = RegexEspacosEmBranco.Replace(texto, " ").Trim();
             return texto.Trim();
         }
-        
+
         public static string RemoverAcentosECaracteresEspeciais(this string str)
         {
             var strResultado = str;
@@ -98,7 +98,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             return strResultado;
         }
 
-        
+
         public static string RemoverEspacoEmBranco(this string texto)
         {
             if (texto.NaoEstaPreenchido())

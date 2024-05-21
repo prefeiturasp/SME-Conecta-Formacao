@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks
             faker.RuleFor(r => r.CargoCodigo, f => f.PickRandom(cargos));
             faker.RuleFor(r => r.FuncaoCodigo, f => f.PickRandom(funcoes));
 
-            if(dresCodigo.Any())
+            if (dresCodigo.Any())
                 faker.RuleFor(r => r.CargoDreCodigo, f => f.PickRandom(dresCodigo));
 
             return faker.Generate(quantidade);

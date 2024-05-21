@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Funcionario;
 using SME.ConectaFormacao.Dominio.Constantes;
 
 namespace SME.ConectaFormacao.Aplicacao
