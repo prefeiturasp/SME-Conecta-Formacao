@@ -30,8 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
         }
         private async Task AtualizarEmail(Usuario usuario)
         {
-           if(usuario.EmailEducacional.NaoEstaPreenchido())
-               usuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario));
+           usuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario));
 
            if(usuario.Email.NaoEstaPreenchido())
            {
