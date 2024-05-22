@@ -17,7 +17,7 @@ public class AlterarEmailEduAoAlterarNomeCommandHandler : IRequestHandler<Altera
         
         usuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario));
         
-        await _mediator.Send(new SalvarUsuarioCommand(usuario));
+        await _mediator.Send(new SalvarUsuarioCommand(usuario, true));
         
         return true;
     }
