@@ -326,19 +326,19 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
             
-            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaTotal))
+            if (propostaDTO.CargaHorariaTotal.NaoEstaPreenchido())
                 proposta.CargaHorariaTotal.ShouldBe(propostaDTO.CargaHorariaTotal);
             
-            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaNaoPresencial))
+            if (propostaDTO.CargaHorariaNaoPresencial.NaoEstaPreenchido())
                 proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);            
             
-            if (!string.IsNullOrEmpty(propostaDTO.OutrosCriterios))
+            if (propostaDTO.OutrosCriterios.NaoEstaPreenchido())
                 proposta.OutrosCriterios.ShouldBe(propostaDTO.OutrosCriterios);
             
             if (propostaDTO.HorasTotais.HasValue)
                 proposta.HorasTotais.ShouldBe(propostaDTO.HorasTotais);
             
-            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaTotalOutra))
+            if (propostaDTO.CargaHorariaTotalOutra.NaoEstaPreenchido())
                 proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);            
         }
 
@@ -382,19 +382,19 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
             proposta.NumeroHomologacao.ShouldBe(propostaDTO.NumeroHomologacao);
             
-            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaTotal))
+            if (propostaDTO.CargaHorariaTotal.NaoEstaPreenchido())
                 proposta.CargaHorariaTotal.ShouldBe(propostaDTO.CargaHorariaTotal);            
             
-            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaNaoPresencial))
+            if (propostaDTO.CargaHorariaNaoPresencial.NaoEstaPreenchido())
                 proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);            
             
-            if (!string.IsNullOrEmpty(propostaDTO.OutrosCriterios))
+            if (propostaDTO.OutrosCriterios.NaoEstaPreenchido())
                 proposta.OutrosCriterios.ShouldBe(propostaDTO.OutrosCriterios);
             
             if (propostaDTO.HorasTotais.HasValue)
                 proposta.HorasTotais.ShouldBe(propostaDTO.HorasTotais);
             
-            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaTotalOutra))
+            if (propostaDTO.CargaHorariaTotalOutra.NaoEstaPreenchido())
                 proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);            
         }
 
