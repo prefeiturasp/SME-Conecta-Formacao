@@ -333,7 +333,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);            
             
             if (!string.IsNullOrEmpty(propostaDTO.OutrosCriterios))
-                proposta.OutrosCriterios.ShouldBe(propostaDTO.OutrosCriterios);            
+                proposta.OutrosCriterios.ShouldBe(propostaDTO.OutrosCriterios);
+            
+            if (propostaDTO.HorasTotais.HasValue)
+                proposta.HorasTotais.ShouldBe(propostaDTO.HorasTotais);
+            
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaTotalOutra))
+                proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);            
         }
 
         protected void ValidarPropostaCompletoDTO(PropostaCompletoDTO propostaDTO, long id)
@@ -383,7 +389,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);            
             
             if (!string.IsNullOrEmpty(propostaDTO.OutrosCriterios))
-                proposta.OutrosCriterios.ShouldBe(propostaDTO.OutrosCriterios);            
+                proposta.OutrosCriterios.ShouldBe(propostaDTO.OutrosCriterios);
+            
+            if (propostaDTO.HorasTotais.HasValue)
+                proposta.HorasTotais.ShouldBe(propostaDTO.HorasTotais);
+            
+            if (!string.IsNullOrEmpty(propostaDTO.CargaHorariaTotalOutra))
+                proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);            
         }
 
         protected void ValidarPropostaCriterioValidacaoInscricaoDTO(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> criteriosDTO, long id)

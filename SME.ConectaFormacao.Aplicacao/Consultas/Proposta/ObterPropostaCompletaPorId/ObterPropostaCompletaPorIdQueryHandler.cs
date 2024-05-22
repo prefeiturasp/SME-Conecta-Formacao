@@ -99,6 +99,8 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.CargaHorariaTotal = proposta.CargaHorariaTotal;
             propostaCompletaDTO.CargaHorariaNaoPresencial = proposta.CargaHorariaNaoPresencial;
             propostaCompletaDTO.OutrosCriterios = proposta.OutrosCriterios;
+            propostaCompletaDTO.HorasTotais = proposta.HorasTotais;
+            propostaCompletaDTO.CargaHorariaTotalOutra = proposta.CargaHorariaTotalOutra;
 
             if (!proposta.ArquivoImagemDivulgacaoId.HasValue) return propostaCompletaDTO;
 
