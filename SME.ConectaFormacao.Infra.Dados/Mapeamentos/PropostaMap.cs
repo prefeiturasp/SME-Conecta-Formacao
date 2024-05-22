@@ -42,6 +42,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.LinkParaInscricoesExterna).ToColumn("link_inscricoes_externa");
             Map(t => t.CodigoEventoSigpec).ToColumn("codigo_evento_sigpec");
             Map(t => t.NumeroHomologacao).ToColumn("numero_homologacao");
+            Map(t => t.CargaHorariaTotal).ToColumn("carga_horaria_total");
+            Map(t => t.CargaHorariaNaoPresencial).ToColumn("carga_horaria_nao_presencial");
+            Map(t => t.OutrosCriterios).ToColumn("outros_criterios");
+            Map(t => t.HorasTotais).ToColumn("horas_totais");
+            Map(t => t.CargaHorariaTotalOutra).ToColumn("carga_horaria_total_outra");
 
             Map(t => t.AreaPromotora).Ignore();
             Map(t => t.ArquivoImagemDivulgacao).Ignore();

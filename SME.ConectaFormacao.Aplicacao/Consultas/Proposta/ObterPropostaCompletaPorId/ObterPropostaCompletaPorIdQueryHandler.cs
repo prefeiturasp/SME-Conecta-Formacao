@@ -96,6 +96,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
             propostaCompletaDTO.UltimaJustificativaAprovacaoRecusa = ehPareceristaDaProposta ? parecerista.Justificativa : proposta.Situacao.EstaAprovadaOuRecusada() ? proposta.Movimentacao.Justificativa : string.Empty;
 
+            propostaCompletaDTO.CargaHorariaTotal = proposta.CargaHorariaTotal;
+            propostaCompletaDTO.CargaHorariaNaoPresencial = proposta.CargaHorariaNaoPresencial;
+            propostaCompletaDTO.OutrosCriterios = proposta.OutrosCriterios;
+            propostaCompletaDTO.HorasTotais = proposta.HorasTotais;
+            propostaCompletaDTO.CargaHorariaTotalOutra = proposta.CargaHorariaTotalOutra;
+
             if (!proposta.ArquivoImagemDivulgacaoId.HasValue) return propostaCompletaDTO;
 
             var arquivo = await _repositorioArquivo.ObterPorId(proposta.ArquivoImagemDivulgacaoId.Value);
