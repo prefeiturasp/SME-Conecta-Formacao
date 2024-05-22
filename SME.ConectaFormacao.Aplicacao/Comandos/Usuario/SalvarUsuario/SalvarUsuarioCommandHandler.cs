@@ -19,7 +19,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(SalvarUsuarioCommand request, CancellationToken cancellationToken)
         {
-            await AtualizarEmail(request.Usuario);
+            if (request.AlterouNome)
+                await AtualizarEmail(request.Usuario);
+            
             if (request.Usuario.Id > 0)
             {
                 await RemoverCache(request.Usuario.Login);

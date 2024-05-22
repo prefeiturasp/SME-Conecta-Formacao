@@ -25,13 +25,15 @@ namespace SME.ConectaFormacao.Aplicacao
                                           ?? throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, HttpStatusCode.Unauthorized);
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(request.Login), cancellationToken);
-
+            
             if (usuario.EhNulo() && request.Login.Trim().Length > TAMANHO_RF)
                 throw new NegocioException(MensagemNegocio.REALIZE_SEU_CADASTRO_NO_SISTEMA, HttpStatusCode.Unauthorized);
 
             if (usuario.EhNulo())
                 usuario = new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email);
-            
+
+            var alterouNomeUsuario = !usuarioPerfisRetornoDto.UsuarioNome.Equals(usuario.Nome);
+                
             usuarioPerfisRetornoDto = await ValidarPerfisAutomaticos(request, usuarioPerfisRetornoDto, cancellationToken);
 
             if (usuario.Tipo.EhExterno() && usuario.EstaAguardandoValidacaoEmail())
@@ -44,7 +46,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
             
             usuario.Atualizar(usuarioPerfisRetornoDto.Email, DateTimeExtension.HorarioBrasilia(), usuarioPerfisRetornoDto.Cpf, usuarioPerfisRetornoDto.UsuarioNome);
-            await mediator.Send(new SalvarUsuarioCommand(usuario), cancellationToken);
+            await mediator.Send(new SalvarUsuarioCommand(usuario,alterouNomeUsuario), cancellationToken);
 
             return usuarioPerfisRetornoDto;
         }
