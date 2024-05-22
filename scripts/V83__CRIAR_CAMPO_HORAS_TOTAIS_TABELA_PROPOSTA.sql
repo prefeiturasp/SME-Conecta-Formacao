@@ -1,0 +1,1 @@
+﻿ALTER TABLE public.proposta ADD COLUMN IF NOT EXISTS horas_totais int2 NULL;

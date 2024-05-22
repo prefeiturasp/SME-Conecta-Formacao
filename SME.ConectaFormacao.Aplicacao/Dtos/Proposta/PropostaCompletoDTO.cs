@@ -76,5 +76,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? CargaHorariaTotal { get; set; }
         public string? CargaHorariaNaoPresencial { get; set; }
         public string? OutrosCriterios { get; set; }
+        public int? HorasTotais { get; set; }
+        public string? CargaHorariaTotalOutra { get; set; }
     }
 }
