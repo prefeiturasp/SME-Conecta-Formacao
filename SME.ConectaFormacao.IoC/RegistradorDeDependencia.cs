@@ -211,6 +211,9 @@ public class RegistradorDeDependencia
             config.AddMap(new ImportacaoArquivoMap());
             config.AddMap(new ImportacaoArquivoRegistroMap());
             config.AddMap(new PropostaPareceristaMap());
+            
+            config.AddMap(new NotificacaoMap());
+            config.AddMap(new NotificacaoUsuarioMap());
 
             config.ForDommel();
         });
@@ -260,6 +263,9 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioImportacaoArquivo, RepositorioImportacaoArquivo>();
         _serviceCollection.TryAddScoped<IRepositorioImportacaoArquivoRegistro, RepositorioImportacaoArquivoRegistro>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaPareceristaConsideracao, RepositorioPropostaPareceristaConsideracao>();
+        
+        _serviceCollection.TryAddScoped<IRepositorioNotificacao, RepositorioNotificacao>();
+        _serviceCollection.TryAddScoped<IRepositorioNotificacaoUsuario, RepositorioNotificacaoUsuario>();
     }
 
     protected virtual void RegistrarCasosDeUso()
