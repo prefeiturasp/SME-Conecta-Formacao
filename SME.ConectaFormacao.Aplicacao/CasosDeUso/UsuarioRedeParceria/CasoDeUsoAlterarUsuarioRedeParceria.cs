@@ -56,15 +56,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
         {
             bool usuarioAtualizadoCoresso = await mediator.Send(new AtualizarUsuarioServicoAcessoCommand(usuario.Login, usuario.Nome, usuario.Email, string.Empty));
 
-            bool vinculadoAoGrupoAreaPromotora = true, desvinculadoAoGrupoAreaPromotoraAntiga = true, inativarUsuarioCoresso = true;
+            bool desvinculadoAoGrupoAreaPromotoraAntiga = true;
             if (areaPromotoraIdAntes != areaPromotora.Id)
             {
                 var areaPromotoraAntes = await mediator.Send(new ObterAreaPromotoraPorIdQuery(areaPromotoraIdAntes));
-
                 desvinculadoAoGrupoAreaPromotoraAntiga = await mediator.Send(new DesvincularPerfilExternoCoreSSOServicoAcessosCommand(usuario.Login, areaPromotoraAntes.GrupoId));
-                vinculadoAoGrupoAreaPromotora = await mediator.Send(new VincularPerfilExternoCoreSSOServicoAcessosCommand(usuario.Login, areaPromotora.GrupoId));
             }
 
+            var vinculadoAoGrupoAreaPromotora = await mediator.Send(new VincularPerfilExternoCoreSSOServicoAcessosCommand(usuario.Login, areaPromotora.GrupoId));
+
+            bool inativarUsuarioCoresso = true;
             if (usuario.Situacao.EhInativo())
             {
                 inativarUsuarioCoresso = await mediator.Send(new InativarUsuarioCoreSSOServicoAcessosCommand(usuario.Login));
