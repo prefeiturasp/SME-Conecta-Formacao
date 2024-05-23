@@ -29,5 +29,7 @@ namespace SME.ConectaFormacao.Infra
         
         public const string NotificarProposta = "conecta.notificar.proposta";
         public const string NotificarPropostaUsuario = "conecta.notificar.proposta.usuario";
+        public const string NotificarPropostaUsuarioEmail = "conecta.notificar.proposta.usuario.email";
+        public const string NotificarPropostaUsuarioSignalR = "conecta.notificar.proposta.usuario.signalR";
     }
 }

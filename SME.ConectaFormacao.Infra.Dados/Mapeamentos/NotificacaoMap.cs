@@ -12,6 +12,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.Categoria).ToColumn("categoria");
             Map(c => c.Tipo).ToColumn("tipo");
             Map(c => c.Parametros).ToColumn("parametros");
+           
+            Map(c => c.TipoEnvio).Ignore();
+            Map(c => c.Usuarios).Ignore();
         }
     }
 }

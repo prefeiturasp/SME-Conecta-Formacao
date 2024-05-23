@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public long NotificacaoId { get; set; }
         
         public Usuario Usuario { get; set; }
-        public long UsuarioId { get; set; }
+        public string RegistroFuncional { get; set; }
         
         public NotificacaoStatus Status { get; set; }
     }
