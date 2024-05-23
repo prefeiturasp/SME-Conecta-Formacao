@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
+using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -124,6 +125,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
                 transacao.Commit();
+
+                if (propostaDepois.Situacao.EstaAguardandoAnaliseDfOuPareceristaOuParecerPelaDFOuAreaPromotoraOuAnaliseFinalPelaDF())
+                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarProposta, request.Id));
 
                 var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
 

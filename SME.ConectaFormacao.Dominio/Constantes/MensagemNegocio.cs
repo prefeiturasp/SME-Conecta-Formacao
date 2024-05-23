@@ -173,4 +173,5 @@ public class MensagemNegocio
     public const string USUARIO_ALTERADO_COM_SUCESSO = "Usuário alterado com sucesso!";
     public const string USUARIO_EXCLUIDO_COM_SUCESSO = "Usuário excluído com sucesso!";
     public const string USUARIO_FOI_INATIVO_POR_POSSUIR_PROPOSTA_CADASTRADA = "Usuário foi inativado porque possui proposta cadastrada!";
+    public const string PARAMETRO_INVALIDO = "Parâmetro inválido";
 }
