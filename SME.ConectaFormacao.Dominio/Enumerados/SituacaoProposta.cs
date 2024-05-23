@@ -143,5 +143,14 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoProposta.Aprovada || valor == SituacaoProposta.Recusada;
         }
+        
+        public static bool EstaAguardandoAnaliseDfOuPareceristaOuParecerPelaDFOuAreaPromotoraOuAnaliseFinalPelaDF(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnaliseDf
+                   || valor == SituacaoProposta.AguardandoAnalisePeloParecerista
+                   || valor == SituacaoProposta.AguardandoAnaliseParecerPelaDF
+                   || valor == SituacaoProposta.AnaliseParecerPelaAreaPromotora
+                   || valor == SituacaoProposta.AguardandoValidacaoFinalPelaDF;
+        }
     }
 }
