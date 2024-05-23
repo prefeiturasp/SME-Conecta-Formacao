@@ -5,13 +5,13 @@ CREATE TABLE IF NOT EXISTS public.notificacao (
 	categoria int2 NOT NULL,
 	tipo int2 NOT NULL,
 	parametros jsonb NOT NULL,
-	excluido bool NOT NULL,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
 	alterado_em timestamp NULL,
 	alterado_por varchar(200) NULL,
-	criado_rf varchar(200) NOT NULL,
-	alterado_rf varchar(200) NULL,
+	criado_login varchar(200) NOT NULL,
+	alterado_login varchar(200) NULL,
+	excluido bool NOT NULL,
 	CONSTRAINT notificacao_pk PRIMARY KEY (id)
 );
 CREATE INDEX idx_notificacao_id ON public.notificacao USING btree (id);
@@ -21,13 +21,13 @@ CREATE TABLE IF NOT EXISTS public.notificacao_usuario (
 	notificacao_id int8 not null,
 	usuario_id int8 not null,
 	status int2 NOT NULL,
-	excluido bool NOT NULL,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
 	alterado_em timestamp NULL,
 	alterado_por varchar(200) NULL,
-	criado_rf varchar(200) NOT NULL,
-	alterado_rf varchar(200) NULL,
+	criado_login varchar(200) NOT NULL,
+	alterado_login varchar(200) NULL,
+	excluido bool NOT NULL,
 	CONSTRAINT nnotificacao_usuario_pk PRIMARY KEY (id),
 	CONSTRAINT notificacao_usuario_usuario_fk FOREIGN KEY (usuario_id) REFERENCES public.usuario(id),
 	CONSTRAINT notificacao_usuario_notificacao_fk FOREIGN KEY (notificacao_id) REFERENCES public.notificacao(id)
