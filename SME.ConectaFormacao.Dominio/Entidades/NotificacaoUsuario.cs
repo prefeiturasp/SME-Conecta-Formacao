@@ -12,8 +12,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public Notificacao Notificacao { get; set; }
         public long NotificacaoId { get; set; }
         
-        public Usuario Usuario { get; set; }
-        public string RegistroFuncional { get; set; }
+        public string Login { get; set; }
+        public string Nome { get; set; }
         
         public NotificacaoStatus Status { get; set; }
     }
