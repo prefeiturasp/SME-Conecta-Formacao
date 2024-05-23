@@ -26,5 +26,8 @@ namespace SME.ConectaFormacao.Infra
         public const string EncerrarInscricaoAutomaticamenteTurma = "conecta.inscricao.encerrar.cursista.inativo.turma";
         public const string EncerrarInscricaoAutomaticamenteInscricoes = "conecta.inscricao.encerrar.cursista.inativo.inscricoes";
         public const string EncerrarInscricaoAutomaticamenteUsuarios = "conecta.inscricao.encerrar.cursista.inativo.usuarios";
+        
+        public const string NotificarProposta = "conecta.notificar.proposta";
+        public const string NotificarPropostaUsuario = "conecta.notificar.proposta.usuario";
     }
 }
