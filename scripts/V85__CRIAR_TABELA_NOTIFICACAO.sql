@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS public.notificacao (
 	mensagem varchar NOT NULL,	
 	categoria int2 NOT NULL,
 	tipo int2 NOT NULL,
-	parametros text NOT NULL,
+	parametros jsonb NOT NULL,
 	excluida bool NOT NULL,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
