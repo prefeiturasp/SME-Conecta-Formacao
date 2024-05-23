@@ -83,7 +83,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 Titulo = string.Format("Proposta '{0}' - '{1}'", proposta.Id, proposta.NomeFormacao),
                 Mensagem = string.Format("A proposta '{0}' - '{1}' foi atribuída a você. Acesse aqui o cadastro da proposta e registre seu parecer."),
                 Parametros = JsonConvert.SerializeObject(proposta),
-                Usuarios =  pareceristas.Select(s=> new NotificacaoUsuario() { RegistroFuncional = s.RegistroFuncional})
+                Usuarios =  pareceristas.Select(s=> new NotificacaoUsuario() { Login = s.RegistroFuncional})
             };
         }
 
