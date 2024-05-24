@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterUsuariosPorPerfilQuery : IRequest<IEnumerable<RetornoUsuarioLoginNomeDTO>>
     {
-        public ObterUsuariosPorPerfilQuery(Guid[] perfis)
+        public ObterUsuariosPorPerfilQuery(params Guid[] perfis)
         {
             Perfis = perfis;
         }

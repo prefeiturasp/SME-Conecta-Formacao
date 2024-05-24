@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Funcionario
 
         public async Task<IEnumerable<RetornoUsuarioLoginNomeDTO>> Executar()
         {
-            return await mediator.Send(new ObterUsuariosPorPerfilQuery(new []{ Perfis.ADMIN_DF}));
+            return await mediator.Send(new ObterUsuariosPorPerfilQuery(Perfis.ADMIN_DF));
         }
     }
 }
