@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarInscricaoImportacaoCommand : IRequest<bool>
     {
-        public SalvarInscricaoImportacaoCommand(Inscricao inscricao, bool formacaoHomologada)
+        public SalvarInscricaoImportacaoCommand(Inscricao inscricao,bool formacaoHomologada)
         {
             Inscricao = inscricao;
             FormacaoHomologada = formacaoHomologada;

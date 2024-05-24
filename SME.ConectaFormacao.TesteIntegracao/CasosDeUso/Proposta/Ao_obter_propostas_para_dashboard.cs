@@ -5,9 +5,6 @@ using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
-using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Contexto;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
@@ -33,18 +30,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_lista_de_cada_situacao_para_exibir_no_dashboard()
         {
             // arrange
-            var situacoes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
-
-            foreach (var situacao in situacoes)
-                await InserirNaBaseProposta(situacao);
-
-            var usuario = UsuarioMock.GerarUsuario();
-            await InserirNaBase(usuario);
-            AdicionarPerfilUsuarioParecerista(Perfis.ADMIN_DF, usuario.Login);
-
+            await CriarPropostaValida();
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
             var filtro = new PropostaFiltrosDashboardDTO();
-
+            var situacoes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
 
             // act 
             var retorno = await casoDeUso.Executar(filtro);
@@ -58,85 +47,74 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
         }
 
-        [Fact(DisplayName = "Proposta - Deve Exibir Todas Situações de Proposta no Dashboard por número de homologação")]
-        public async Task Deve_obter_lista_proposta_dashboard_por_numero_homologacao()
+        #region Criar Uma Proposta Valida de Cada Situação
+        private async Task CriarPropostaValida()
         {
-            // arrange
-            var situacoes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
+            var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
+            await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
-            foreach (var situacao in situacoes)
-                await InserirNaBaseProposta(situacao);
+            var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
+            await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var usuario = UsuarioMock.GerarUsuario();
-            await InserirNaBase(usuario);
-            AdicionarPerfilUsuarioParecerista(Perfis.ADMIN_DF, usuario.Login);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            await InserirNaBase(areaPromotora);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
-            var filtro = new PropostaFiltrosDashboardDTO();
+            var dres = DreMock.GerarDreValida(5);
+            await InserirNaBase(dres);
 
-            var proposta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault();
+            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(cargosFuncoes);
 
-            filtro.NumeroHomologacao = proposta.NumeroHomologacao;
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            await InserirNaBase(criteriosValidacaoInscricao);
 
-            // act 
-            var retorno = await casoDeUso.Executar(filtro);
+            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
+            await InserirNaBase(palavrasChaves);
 
-            // assert
-            retorno.ShouldNotBeNull();
-            retorno.Count().ShouldBe(1);
-        }
+            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
 
-        [Fact(DisplayName = "Proposta - Deve proposta no dashboard para usuário logado parecerista")]
-        public async Task Deve_obter_lista_proposta_dashboard_para_usuario_logado_parecerista()
-        {
-            // arrange
-            var situacoes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
+            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
+            await InserirNaBase(anosTurmas);
 
-            foreach (var situacao in situacoes)
-                await InserirNaBaseProposta(situacao);
+            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
+            await InserirNaBase(componentesCurriculares);
 
-            var usuario = UsuarioMock.GerarUsuario();
-            await InserirNaBase(usuario);
-            AdicionarPerfilUsuarioParecerista(Perfis.PARECERISTA, usuario.Login);
+            var criterios = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5, false);
+            await InserirNaBase(criterios);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostasDashboard>();
+            var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
+            var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
+            var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
+            var criteriosDTO = criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id });
+            var vagasRemanecentesDTO = cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id });
+            var palavrasChavesDTO = palavrasChaves.Select(t => new PropostaPalavraChaveDTO() { PalavraChaveId = t.Id });
+            var modalidadesDTO = modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t });
+            var anosTurmasDTO = anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id });
+            var componentesCurricularesDTO = componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO() { ComponenteCurricularId = t.Id });
 
-            var proposta = ObterTodos<Dominio.Entidades.Proposta>().FirstOrDefault(p => p.Situacao == SituacaoProposta.AguardandoAnalisePeloParecerista);
+            var listaDeSituacoesExistentes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
 
-            var parecerista = new PropostaParecerista
+            foreach (var situacao in listaDeSituacoesExistentes)
             {
-                PropostaId = proposta.Id,
-                NomeParecerista = $"Parecerista {usuario.Nome}",
-                RegistroFuncional = usuario.Login,
-                CriadoPor = proposta.CriadoPor,
-                CriadoEm = proposta.CriadoEm,
-                CriadoLogin = proposta.CriadoLogin
-            };
+                var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
+                    TipoFormacao.Curso,
+                    Formato.Presencial,
+                    dreDTO,
+                    publicosAlvoDTO,
+                    funcoesEspecificaDTO,
+                    criteriosDTO,
+                    vagasRemanecentesDTO,
+                    palavrasChavesDTO,
+                    modalidadesDTO,
+                    anosTurmasDTO,
+                    componentesCurricularesDTO,
+                    situacao);
 
-            await InserirNaBase(parecerista);
-
-            // act 
-            var retorno = await casoDeUso.Executar(new PropostaFiltrosDashboardDTO());
-
-            // assert
-            retorno.ShouldNotBeNull();
-            retorno.Count().ShouldBe(1);
-            retorno.FirstOrDefault().Situacao.ShouldBe(SituacaoProposta.AguardandoAnalisePeloParecerista);
-            retorno.FirstOrDefault().Propostas.Count().ShouldBe(1);
+                var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
+                await casoDeUso.Executar(propostaDTO);
+            }
         }
+        #endregion
 
-        private void AdicionarPerfilUsuarioParecerista(Guid perfil, string login)
-        {
-            var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
-            var variaveis = new Dictionary<string, object>
-                {
-                    { "PerfilUsuario", perfil.ToString() },
-                    { "UsuarioLogado", login },
-                };
-
-            contextoAplicacao.AdicionarVariaveis(variaveis);
-
-            PropostaSalvarMock.GrupoUsuarioLogadoId = perfil;
-        }
     }
 }

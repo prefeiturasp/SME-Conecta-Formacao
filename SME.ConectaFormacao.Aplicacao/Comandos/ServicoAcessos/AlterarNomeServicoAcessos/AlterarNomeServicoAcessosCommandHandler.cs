@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<bool> Handle(AlterarNomeServicoAcessosCommand request, CancellationToken cancellationToken)
         {
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.CargosFuncoesDresEolFuncionario.Parametros(request.Login)));
-
+            
             return await _servicoAcessos.AlterarNome(request.Login, request.Nome);
         }
     }

@@ -242,57 +242,5 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             var json = new { login, nome }.ObjetoParaJson();
             return InvocarPutServicoAcessosRetornandoBool(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_NOME, login), json);
         }
-
-        public async Task<AcessosConfiguracaoEmailRetorno> ObterConfiguracaoEmail()
-        {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_CONFIGURACAO_EMAIL_SISTEMA_X, _servicoAcessosOptions.CodigoSistema));
-
-            if (resposta.IsSuccessStatusCode)
-            {
-                var json = await resposta.Content.ReadAsStringAsync();
-                return json.JsonParaObjeto<AcessosConfiguracaoEmailRetorno>();
-            }
-
-            var mensagem = await resposta.Content.ReadAsStringAsync();
-            throw new NegocioException(mensagem.JsonParaObjeto<string>());
-        }
-
-        public async Task<IEnumerable<RetornoUsuriosPareceristas>> ObterUsuariosPerfilPareceristas()
-        {
-            var resposta =
-                await _httpClient.GetAsync(
-                    EndpointsServicoAcessosConstantes.URL_OBTER_USUARIOS_PARECERISTAS);
-
-            if (resposta.IsSuccessStatusCode)
-            {
-                var json = await resposta.Content.ReadAsStringAsync();
-                return json.JsonParaObjeto<IEnumerable<RetornoUsuriosPareceristas>>();
-            }
-            else
-            {
-                var mensagem = await resposta.Content.ReadAsStringAsync();
-                throw new NegocioException(mensagem.JsonParaObjeto<string>());
-            }
-        }
-
-        public async Task<bool> DesvincularPerfilExternoCoreSSO(string login, Guid perfilId)
-        {
-            var resposta = await _httpClient.PostAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_DESVINCULAR_PERFIL_Y, login, perfilId), null);
-
-            if (!resposta.IsSuccessStatusCode) return false;
-
-            var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<bool>();
-        }
-
-        public async Task<bool> InativarUsuario(string login)
-        {
-            var resposta = await _httpClient.PutAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_INATIVAR, login), null);
-
-            if (!resposta.IsSuccessStatusCode) return false;
-
-            var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<bool>();
-        }
     }
 }

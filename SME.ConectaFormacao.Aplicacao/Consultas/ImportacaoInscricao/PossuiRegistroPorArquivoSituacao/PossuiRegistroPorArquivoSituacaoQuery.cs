@@ -12,8 +12,8 @@ namespace SME.ConectaFormacao.Aplicacao
             SituacaoVerificar = situacaoVerificar;
         }
 
-        public long ImportacaoArquivoId { get; }
-        public SituacaoImportacaoArquivoRegistro SituacaoVerificar { get; }
+        public long ImportacaoArquivoId { get;  }
+        public SituacaoImportacaoArquivoRegistro SituacaoVerificar { get;  }
     }
 
     public class PossuiRegistroPorArquivoSituacaoQueryValidator : AbstractValidator<PossuiRegistroPorArquivoSituacaoQuery>

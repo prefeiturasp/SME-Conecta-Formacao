@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                         CargoCodigo = inscricao.CargoCodigo
                     }));
             }
-
+            
             return true;
         }
     }

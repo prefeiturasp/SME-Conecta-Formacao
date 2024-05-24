@@ -109,8 +109,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             bool gerarFuncaoEspecificaOutros,
             bool gerarCriterioValidacaoInscricaoOutros,
             long? arquivoImagemDivulgacaoId,
-            short? quantidadeTurmas,
-            int quantidadePareceristas = 0)
+            short? quantidadeTurmas)
         {
 
             quantidadeTurmas = (short?)(quantidadeTurmas ?? new Random().Next(1, 99));
@@ -119,7 +118,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.FormacaoHomologada, f => f.PickRandom<FormacaoHomologada>());
             faker.RuleFor(x => x.TipoFormacao, tipoFormacao);
             faker.RuleFor(x => x.Formato, formato);
-            faker.RuleFor(x => x.TiposInscricao, f => new List<PropostaTipoInscricaoDTO>() { new PropostaTipoInscricaoDTO { TipoInscricao = f.PickRandomWithout<TipoInscricao>(TipoInscricao.Externa) } });
+            faker.RuleFor(x => x.TiposInscricao, f => new List<PropostaTipoInscricaoDTO>() { new PropostaTipoInscricaoDTO { TipoInscricao = f.PickRandom<TipoInscricao>() } });
             faker.RuleFor(x => x.NomeFormacao, f => f.Lorem.Sentence(3));
             faker.RuleFor(x => x.Dres, f => new[] { f.PickRandom(dres) });
             faker.RuleFor(x => x.PublicosAlvo, f => propostaPublicoAlvos.Any() ? new PropostaPublicoAlvoDTO[] { f.PickRandom(propostaPublicoAlvos) } : default);
@@ -144,7 +143,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.AcaoInformativa, true);
             faker.RuleFor(x => x.CargaHorariaPresencial, DateTimeExtension.HorarioBrasilia().ToString("HH:mm"));
             faker.RuleFor(x => x.IntegrarNoSGA, true);
-            faker.RuleFor(x => x.CodigoEventoSigpec, f => f.Random.Long(100000, 9999999999));
 
             if (gerarFuncaoEspecificaOutros)
                 faker.RuleFor(x => x.FuncaoEspecificaOutros, f => f.Lorem.Sentence(3));
@@ -158,9 +156,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             faker.RuleFor(x => x.Turmas, GerarPropostaTurmaDTO(quantidadeTurmas.GetValueOrDefault(), dres));
 
             faker.RuleFor(x => x.Situacao, situacao);
-
-            if (quantidadePareceristas > 0)
-                faker.RuleFor(x => x.Pareceristas, f => GerarPropostaPareceristaDTO(quantidadePareceristas));
 
             return faker;
         }
@@ -251,13 +246,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
             IEnumerable<PropostaAnoTurmaDTO> propostaAnosTurmas,
             IEnumerable<PropostaComponenteCurricularDTO> propostaComponentesCurriculares,
             SituacaoProposta situacao, bool gerarFuncaoEspecificaOutros = false, bool gerarCriterioValidacaoInscricaoOutros = false,
-            long? arquivoImagemDivulgacaoId = null, short? quantidadeTurmas = null, int quantidadePareceristas = 0)
+            long? arquivoImagemDivulgacaoId = null, short? quantidadeTurmas = null)
         {
             var propostaDTO = Gerador(tipoFormacao, formato, dres, propostaPublicoAlvos, propostaFuncaoEspecificas,
                 propostaCriterioValidacaoInscricaos, propostaVagaRemanecentes, propostaPalavrasChaves,
                 propostaModalidades, propostaAnosTurmas, propostaComponentesCurriculares,
                 situacao, gerarFuncaoEspecificaOutros,
-                gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId, quantidadeTurmas, quantidadePareceristas).Generate();
+                gerarCriterioValidacaoInscricaoOutros, arquivoImagemDivulgacaoId, quantidadeTurmas).Generate();
 
             return propostaDTO;
         }
@@ -269,48 +264,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
 
         public static Guid GrupoUsuarioLogadoId { get; set; }
 
-        public static Faker<PropostaPareceristaConsideracaoCadastroDTO> GeradorPropostaParecerCadastro(int quantidadeTurmas = 1)
-        {
-            var faker = new Faker<PropostaPareceristaConsideracaoCadastroDTO>("pt_BR");
-            faker.RuleFor(x => x.Campo, f => (CampoConsideracao)f.Random.Short(1, 28));
-            faker.RuleFor(dest => dest.Descricao, f => f.Lorem.Sentence(100));
-            return faker;
-        }
 
-        public static PropostaPareceristaConsideracaoCadastroDTO GerarPareceristaConsideracaoCadastro()
-        {
-            return GeradorPropostaParecerCadastro();
-        }
-
-        public static Faker<PropostaParecerFiltroDTO> GeradorPropostaParecerFiltroDTO(long propostaId, CampoConsideracao campoConsideracao)
-        {
-            var faker = new Faker<PropostaParecerFiltroDTO>();
-            faker.RuleFor(x => x.PropostaId, f => propostaId);
-            faker.RuleFor(x => x.Campo, f => campoConsideracao);
-            return faker;
-        }
-
-        private static Faker<PropostaPareceristaDTO> GeradorDTO(string registroFuncional, string nomeParecerista)
-        {
-            var faker = new Faker<PropostaPareceristaDTO>("pt_BR");
-            faker.RuleFor(x => x.RegistroFuncional, registroFuncional);
-            faker.RuleFor(x => x.NomeParecerista, nomeParecerista);
-            return faker;
-        }
-
-        public static PropostaPareceristaDTO GerarPropostaPareceristaDTO(string registroFuncional, string nomeParecerista)
-        {
-            return GeradorDTO(registroFuncional, nomeParecerista).Generate();
-        }
-
-        public static List<PropostaPareceristaDTO> GerarPropostaPareceristaDTO(int quantidade = 1)
-        {
-            var pareceristas = new List<PropostaPareceristaDTO>();
-
-            for (int i = 1; i <= quantidade; i++)
-                pareceristas.Add(GeradorDTO(i.ToString(), string.Format("Parecerista{0}", i)).Generate());
-
-            return pareceristas;
-        }
     }
 }

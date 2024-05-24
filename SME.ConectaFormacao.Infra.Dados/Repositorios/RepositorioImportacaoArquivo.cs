@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -30,7 +31,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 		                       end
 	                       ) as TotalProcessados
                     from importacao_arquivo ia
-                    left join importacao_arquivo_registro iar on iar.importacao_arquivo_id = ia.id and not iar.excluido
+                    inner join importacao_arquivo_registro iar on iar.importacao_arquivo_id = ia.id and not iar.excluido
                     where ia.proposta_id = @propostaId
                       and not ia.excluido
                     group by ia.id, ia.nome, ia.situacao, ia.criado_em

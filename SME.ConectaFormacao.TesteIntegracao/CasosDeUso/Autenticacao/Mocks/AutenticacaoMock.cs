@@ -30,20 +30,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.Mocks
 
             AutenticacaoUsuarioDTOValido = new()
             {
-                Login = faker.Random.Number(1000000, 9999999).ToString(),
+                Login = faker.Person.FirstName,
                 Senha = faker.Random.AlphaNumeric(10)
             };
 
             UsuarioAutenticacaoRetornoDTOValido = new()
             {
-                Login = AutenticacaoUsuarioDTOValido.Login,
+                Login = faker.Person.FirstName,
                 Nome = faker.Person.FullName,
                 Email = faker.Person.Email
             };
 
             UsuarioPerfisRetornoDTOValido = new()
             {
-                UsuarioLogin = AutenticacaoUsuarioDTOValido.Login,
+                UsuarioLogin = faker.Person.FirstName,
                 UsuarioNome = faker.Person.FullName,
                 Email = faker.Person.Email,
                 Token = faker.Random.AlphaNumeric(100),
@@ -57,7 +57,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.Mocks
 
             AutenticacaoUsuarioDTOInvalido = new()
             {
-                Login = faker.Random.Number(1000000, 9999999).ToString(),
+                Login = faker.Person.FirstName,
                 Senha = new Faker().Random.AlphaNumeric(10)
             };
         }
@@ -66,7 +66,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.Mocks
         {
             var faker = new Faker<Dominio.Entidades.Usuario>("pt_BR");
 
-            faker.RuleFor(x => x.Login, f => f.Random.Number(1000000, 9999999).ToString());
+            faker.RuleFor(x => x.Login, f => f.Person.FirstName);
             faker.RuleFor(x => x.Nome, f => f.Person.FullName);
             faker.RuleFor(x => x.Email, f => f.Person.Email);
 

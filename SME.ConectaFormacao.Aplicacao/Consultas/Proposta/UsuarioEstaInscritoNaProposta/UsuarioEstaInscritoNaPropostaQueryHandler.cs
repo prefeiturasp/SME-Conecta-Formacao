@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<bool> Handle(UsuarioEstaInscritoNaPropostaQuery request, CancellationToken cancellationToken)
         {
             var possuiInscricaoNaProposta = await _repositorioInscricao.UsuarioEstaInscritoNaProposta(request.UsuarioId, request.PropostaId);
-
+            
             if (possuiInscricaoNaProposta)
                 throw new NegocioException(MensagemNegocio.USUARIO_JA_INSCRITO_NA_PROPOSTA);
 

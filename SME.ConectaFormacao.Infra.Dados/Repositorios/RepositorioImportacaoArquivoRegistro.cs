@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             return ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, ignorarSituacao, true);
         }
-
+        
         public Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacao)
         {
             return ObterRegistroPorSituacao(quantidadeRegistroIgnorados, numeroRegistros, importacaoArquivoId, situacao, false);

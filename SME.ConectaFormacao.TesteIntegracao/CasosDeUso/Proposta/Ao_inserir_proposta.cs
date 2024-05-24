@@ -1,5 +1,4 @@
-﻿using Bogus;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
@@ -33,9 +32,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_proposta_rascunho_sem_informacao_preenchida()
         {
             // arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -62,9 +58,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_proposta_valida()
         {
             //arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -181,9 +174,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_proposta_tipo_formacao_evento_e_formato_hibrido_valido()
         {
             // arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -329,9 +319,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_retornar_excecao_funcoes_especificas_outros_habilitado_vazio()
         {
             // arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -403,9 +390,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_proposta_funcao_especifica_outros_valido()
         {
             // arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -555,9 +539,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_proposta_criterio_validacao_inscricao_outros_valido()
         {
             // arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -636,9 +617,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Nao_deve_inserir_proposta_criterio_validacao_publico_alvo_funcoes_especificas_modalidade_ano_turma_componente_curricular_forem_omitidos()
         {
             // arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -689,9 +667,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Nao_deve_inserir_quando_os_campos_modalidade_ano_turma_e_componente_estiverem_parcialmente_preenchidos()
         {
             // arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -757,9 +732,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_quando_for_preenchido_somente_publico_alvo_e_os_campos_fucoes_especificas_modalidade_ano_da_turma_e_componente_curricular_omitidos()
         {
             // arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -838,9 +810,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_quando_for_preenchido_somente_funcoes_especificas_e_os_campos_publico_alvo_modalidade_ano_da_turma_e_componente_curricular_omitidos()
         {
             // arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -919,9 +888,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_inserir_quando_for_preenchido_somente_modalidade_ano_da_turma_e_componente_curricular_e_os_campos_publico_alvo_e_funcoes_especificas_omitidos()
         {
             // arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
             var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
             await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
 
@@ -994,154 +960,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPropostaAnosTurmasDTO(propostaDTO.AnosTurmas, retornoDto.EntidadeId);
             ValidarPropostaComponentesCurricularesDTO(propostaDTO.ComponentesCurriculares, retornoDto.EntidadeId);
             ValidarPropostaTipoInscricaoDTO(propostaDTO.TiposInscricao, retornoDto.EntidadeId);
-        }
-
-        [Fact(DisplayName = "Proposta - Deve retornar exceção para campo obrigatório tipo externo")]
-        public async Task Deve_retornar_excecao_campo_obrigatorio_tipo_externo()
-        {
-            //arrange
-            var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
-            await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
-
-            var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
-            await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
-
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
-
-            var dres = DreMock.GerarDreValida(5);
-            await InserirNaBase(dres);
-
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-
-            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
-
-            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
-            await InserirNaBase(anosTurmas);
-
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
-            await InserirNaBase(componentesCurriculares);
-
-            var criterios = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5, false);
-            await InserirNaBase(criterios);
-
-            var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
-            var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
-            var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
-            var criteriosDTO = criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id });
-            var vagasRemanecentesDTO = cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id });
-            var palavrasChavesDTO = palavrasChaves.Select(t => new PropostaPalavraChaveDTO() { PalavraChaveId = t.Id });
-            var modalidadesDTO = modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t });
-            var anosTurmasDTO = anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id });
-            var componentesCurricularesDTO = componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO() { ComponenteCurricularId = t.Id });
-
-            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
-                TipoFormacao.Curso,
-                Formato.Presencial,
-                dreDTO,
-                publicosAlvoDTO,
-                funcoesEspecificaDTO,
-                criteriosDTO,
-                vagasRemanecentesDTO,
-                palavrasChavesDTO,
-                modalidadesDTO,
-                anosTurmasDTO,
-                componentesCurricularesDTO,
-                SituacaoProposta.Cadastrada);
-
-            propostaDTO.TiposInscricao = new List<PropostaTipoInscricaoDTO>() { new PropostaTipoInscricaoDTO { TipoInscricao = TipoInscricao.Externa } };
-
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
-
-            // act
-            var excecao = await Should.ThrowAsync<NegocioException>(casoDeUso.Executar(propostaDTO));
-
-            // assert
-            excecao.Mensagens.Contains("É necessário informar o link para inscrições  para inserir a proposta").ShouldBeTrue();
-        }
-
-        [Fact(DisplayName = "Proposta - Deve inserir proposta válida do tipo inscrição externo")]
-        public async Task Deve_inserir_proposta_valida_tipo_inscricao_externo()
-        {
-            //arrange
-            var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3");
-            await InserirNaBase(parametro);
-
-            var parametroComunicadoAcaoFormativaDescricao = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaDescricao);
-            await InserirNaBase(parametroComunicadoAcaoFormativaDescricao);
-
-            var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
-            await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
-
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
-            await InserirNaBase(areaPromotora);
-
-            var dres = DreMock.GerarDreValida(5);
-            await InserirNaBase(dres);
-
-            var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
-            await InserirNaBase(cargosFuncoes);
-
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
-            await InserirNaBase(criteriosValidacaoInscricao);
-
-            var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
-            await InserirNaBase(palavrasChaves);
-
-            var modalidades = Enum.GetValues(typeof(Dominio.Enumerados.Modalidade)).Cast<Dominio.Enumerados.Modalidade>();
-
-            var anosTurmas = AnoTurmaMock.GerarAnoTurma(1);
-            await InserirNaBase(anosTurmas);
-
-            var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
-            await InserirNaBase(componentesCurriculares);
-
-            var criterios = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5, false);
-            await InserirNaBase(criterios);
-
-            var dreDTO = dres.Select(t => new PropostaDreDTO { DreId = t.Id });
-            var publicosAlvoDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Cargo).Select(t => new PropostaPublicoAlvoDTO { CargoFuncaoId = t.Id });
-            var funcoesEspecificaDTO = cargosFuncoes.Where(t => t.Tipo == CargoFuncaoTipo.Funcao).Select(t => new PropostaFuncaoEspecificaDTO { CargoFuncaoId = t.Id });
-            var criteriosDTO = criteriosValidacaoInscricao.Select(t => new PropostaCriterioValidacaoInscricaoDTO { CriterioValidacaoInscricaoId = t.Id });
-            var vagasRemanecentesDTO = cargosFuncoes.Select(t => new PropostaVagaRemanecenteDTO { CargoFuncaoId = t.Id });
-            var palavrasChavesDTO = palavrasChaves.Select(t => new PropostaPalavraChaveDTO() { PalavraChaveId = t.Id });
-            var modalidadesDTO = modalidades.Select(t => new PropostaModalidadeDTO { Modalidade = t });
-            var anosTurmasDTO = anosTurmas.Select(t => new PropostaAnoTurmaDTO { AnoTurmaId = t.Id });
-            var componentesCurricularesDTO = componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO() { ComponenteCurricularId = t.Id });
-
-            var propostaDTO = PropostaSalvarMock.GerarPropostaDTOValida(
-                TipoFormacao.Curso,
-                Formato.Presencial,
-                dreDTO,
-                publicosAlvoDTO,
-                funcoesEspecificaDTO,
-                criteriosDTO,
-                vagasRemanecentesDTO,
-                palavrasChavesDTO,
-                modalidadesDTO,
-                anosTurmasDTO,
-                componentesCurricularesDTO,
-                SituacaoProposta.Cadastrada);
-
-            propostaDTO.TiposInscricao = new List<PropostaTipoInscricaoDTO>() { new PropostaTipoInscricaoDTO { TipoInscricao = TipoInscricao.Externa } };
-
-            propostaDTO.LinkParaInscricoesExterna = new Faker().Lorem.Sentence(25);
-
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
-
-            // act 
-            var retornoDto = await casoDeUso.Executar(propostaDTO);
-
-            // assert
-            retornoDto.EntidadeId.ShouldBeGreaterThan(0);
-            ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
         }
     }
 }

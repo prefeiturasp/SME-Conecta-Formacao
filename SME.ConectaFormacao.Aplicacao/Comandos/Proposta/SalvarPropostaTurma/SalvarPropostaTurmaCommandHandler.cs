@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (turmasInserir.Any())
                 await _repositorioProposta.InserirTurmas(request.PropostaId, turmasInserir);
-
+            
             if (request.Situacao.EstaPublicada())
                 await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, request.PropostaId), cancellationToken);
 

@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long ImportacaoArquivoId { get; set; }
         public SituacaoImportacaoArquivoRegistro? IgnorarSituacao { get; set; }
     }
-
+    
     public class ObterRegistrosImportacaoArquivoInscricaoCursistasPaginadosQueryValidator : AbstractValidator<ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery>
     {
         public ObterRegistrosImportacaoArquivoInscricaoCursistasPaginadosQueryValidator()

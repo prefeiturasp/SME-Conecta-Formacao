@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -23,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
 
             importacaoArquivoRegistro.DefinirSituacaoErro(request.Situacao, request.Erro);
-
+            
             await _repositorioImportacaoArquivoRegistro.Atualizar(importacaoArquivoRegistro);
 
             return true;

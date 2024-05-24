@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Usuario
 {
     public interface ICasoDeUsoInserirUsuarioExterno
     {
-        Task<InserirUsuarioRetornoDTO> Executar(UsuarioExternoDTO usuarioExternoDto);
+        Task<InserirUsuarioRetornoDTO> InserirUsuarioExterno(UsuarioExternoDTO usuarioExternoDto);
     }
 }

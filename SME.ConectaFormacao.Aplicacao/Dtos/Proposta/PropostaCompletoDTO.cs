@@ -5,7 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
     public class PropostaCompletoDTO
     {
-        public bool EhAdminDF;
         public FormacaoHomologada? FormacaoHomologada { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
         public Formato? Formato { get; set; }
@@ -53,25 +52,5 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaTipoInscricaoDTO> TiposInscricao { get; set; }
         public bool? IntegrarNoSGA { get; set; }
         public bool DesativarAnoEhComponente { get; set; }
-        public string? RfResponsavelDf { get; set; }
-        public PropostaMovimentacaoDTO Movimentacao { get; set; }
-        public PropostaAreaPromotoraDTO AreaPromotora { get; set; }
-        public string? UltimaJustificativaDevolucao { get; set; }
-        public string? LinkParaInscricoesExterna { get; set; }
-        public long? CodigoEventoSigpec { get; set; }
-        public long? NumeroHomologacao { get; set; }
-        public IEnumerable<PropostaTotalConsideracaoDTO> TotalDeConsideracoes { get; set; }
-        public bool ExibirConsideracoes { get; set; }
-        public bool PodeEnviar { get; set; }
-        public bool PodeEnviarConsideracoes { get; set; }
-        public int QtdeLimitePareceristaProposta { get; set; }
-        public IEnumerable<PropostaPareceristaDTO> Pareceristas { get; set; }
-        public string LabelRecusar { get; set; }
-        public string LabelAprovar { get; set; }
-        public bool PodeAprovar { get; set; }
-        public bool PodeRecusar { get; set; }
-        public bool EhParecerista { get; set; }
-        public bool EhAreaPromotora { get; set; }
-        public string? UltimaJustificativaAprovacaoRecusa { get; set; }
     }
 }

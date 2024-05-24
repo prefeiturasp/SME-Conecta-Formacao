@@ -1,1 +1,0 @@
-ALTER TABLE public.proposta ADD IF NOT EXISTS rf_responsavel_df varchar(7) NULL;

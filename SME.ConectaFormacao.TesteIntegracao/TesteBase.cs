@@ -3,8 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Dominio;
-using SME.ConectaFormacao.Dominio.Contexto;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -46,7 +44,6 @@ namespace SME.ConectaFormacao.TesteIntegracao
 
         protected virtual void RegistrarQueryFakes(IServiceCollection services)
         {
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterTotalRegistroFilaQuery, uint>), typeof(ObterTotalRegistroFilaQueryHandlerFaker), ServiceLifetime.Scoped));
         }
 
         public Task InserirNaBase<T>(IEnumerable<T> objetos) where T : EntidadeBase, new()
@@ -94,42 +91,6 @@ namespace SME.ConectaFormacao.TesteIntegracao
         public T ObterCasoDeUso<T>()
         {
             return this.ServiceProvider.GetService<T>() ?? throw new Exception($"Caso de Uso {typeof(T).Name} não registrado!");
-        }
-
-        protected void CriarClaimUsuario(string perfil, string login = "1", string nomeUsuario = "Sistema", string numeroPagina = "0", string numeroRegistros = "10")
-        {
-            var contextoAplicacao = ServiceProvider.GetService<IContextoAplicacao>();
-
-            contextoAplicacao.AdicionarVariaveis(ObterVariaveisPorPerfil(login, nomeUsuario, perfil, numeroPagina, numeroRegistros));
-        }
-
-        private Dictionary<string, object> ObterVariaveisPorPerfil(string login, string nomeUsuario, string perfil, string numeroPagina = "0", string numeroRegistros = "10")
-        {
-            return new Dictionary<string, object>
-            {
-                { "RF",  login},
-                { "NomeUsuario",  nomeUsuario},
-                { "UsuarioLogado", login },
-                { "login", login },
-                { "PerfilUsuario", perfil },
-                { "NumeroPagina", numeroPagina },
-                { "NumeroRegistros", numeroRegistros },
-                {
-                    "Claims",new Tuple<string, string>(login, "RF")
-                }
-            };
-        }
-
-        protected async Task InserirUsuario(string login = "1", string nome = "Sistema")
-        {
-            await InserirNaBase(new Dominio.Entidades.Usuario()
-            {
-                Login = login,
-                Nome = nome,
-                CriadoPor = nome,
-                CriadoEm = DateTimeExtension.HorarioBrasilia(),
-                CriadoLogin = login
-            });
         }
     }
 }

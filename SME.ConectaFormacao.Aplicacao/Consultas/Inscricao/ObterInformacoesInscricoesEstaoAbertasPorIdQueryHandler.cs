@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IRepositorioProposta _repositorioProposta;
 
-        public ObterInformacoesInscricoesEstaoAbertasPorIdQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta)
+        public ObterInformacoesInscricoesEstaoAbertasPorIdQueryHandler(IMapper mapper,IRepositorioProposta repositorioProposta)
         {
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (proposta.EhNulo())
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-
+            
             var estaEmPeriodoDeInscricao = proposta.EstaEmPeriodoDeInscricao;
 
             return new PodeInscreverMensagemDTO

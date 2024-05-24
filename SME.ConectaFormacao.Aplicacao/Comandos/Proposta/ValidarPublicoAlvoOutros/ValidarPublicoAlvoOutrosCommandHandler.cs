@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -31,7 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (existeOpcaoOutros && request.EhPropostaAutomatica)
                     erros.Add(MensagemNegocio.PROPOSTA_PUBLICO_ALVO_OUTROS_NAO_PODE_SER_PROPOSTA_AUTOMATICA);
             }
-            return erros;
+            return erros; 
         }
     }
 }

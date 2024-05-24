@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         protected override void RegistrarQueryFakes(IServiceCollection services)
         {
             base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioCpfNomeDTO>), typeof(ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioDTO>), typeof(ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFake), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Proposta - Deve Obter Nome do Regente/Tutor com RF Válido")]

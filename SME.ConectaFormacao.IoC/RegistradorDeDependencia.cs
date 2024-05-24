@@ -15,21 +15,17 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Email;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Funcionario;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.FuncionarioExterno.ObterFuncionarioExternoPorCpf;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ano;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
@@ -37,20 +33,16 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.FuncionarioExterno.ObterFuncionarioExternoPorCpf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Modalidade;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ue;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
-using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Aplicacao.Pipelines;
 using SME.ConectaFormacao.Infra.Dados;
@@ -196,7 +188,6 @@ public class RegistradorDeDependencia
             config.AddMap(new PropostaComponenteCurricularMap());
             config.AddMap(new PropostaDreMap());
             config.AddMap(new PropostaTipoInscricaoMap());
-            config.AddMap(new PropostaPareceristaConsideracaoMap());
 
             config.AddMap(new AreaPromotoraMap());
             config.AddMap(new AreaPromotoraTelefoneMap());
@@ -209,13 +200,9 @@ public class RegistradorDeDependencia
             config.AddMap(new AnoTurmaMap());
             config.AddMap(new ComponenteCurricularMap());
             config.AddMap(new InscricaoMap());
-
+            
             config.AddMap(new ImportacaoArquivoMap());
             config.AddMap(new ImportacaoArquivoRegistroMap());
-            config.AddMap(new PropostaPareceristaMap());
-            
-            config.AddMap(new NotificacaoMap());
-            config.AddMap(new NotificacaoUsuarioMap());
 
             config.ForDommel();
         });
@@ -264,10 +251,6 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioInscricao, RepositorioInscricao>();
         _serviceCollection.TryAddScoped<IRepositorioImportacaoArquivo, RepositorioImportacaoArquivo>();
         _serviceCollection.TryAddScoped<IRepositorioImportacaoArquivoRegistro, RepositorioImportacaoArquivoRegistro>();
-        _serviceCollection.TryAddScoped<IRepositorioPropostaPareceristaConsideracao, RepositorioPropostaPareceristaConsideracao>();
-        
-        _serviceCollection.TryAddScoped<IRepositorioNotificacao, RepositorioNotificacao>();
-        _serviceCollection.TryAddScoped<IRepositorioNotificacaoUsuario, RepositorioNotificacaoUsuario>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -306,7 +289,6 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverAreaPromotora, CasoDeUsoRemoverAreaPromotora>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraLista, CasoDeUsoObterAreaPromotoraLista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraListaAreaPublica, CasoDeUsoObterAreaPromotoraListaAreaPublica>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraListaRedeParceria, CasoDeUsoObterAreaPromotoraListaRedeParceria>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoFormacao, CasoDeUsoObterTipoFormacao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoInscricao, CasoDeUsoObterTipoInscricao>();
@@ -335,13 +317,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterUnidadePorCodigoEol, CasoDeUsoObterUnidadePorCodigoEol>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFuncionarioExternoPorCpf, CasoDeUsoObterFuncionarioExternoPorCpf>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostasDashboard, CasoDeUsoObterPropostasDashboard>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaPareceristaConsideracao, CasoDeUsoSalvarPropostaPareceristaConsideracao>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterPropostaParecer, CasoDeUsoObterPropostaParecer>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterRelatorioPropostaLaudaPublicacao, CasoDeUsoObterRelatorioPropostaLaudaPublicacao>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterSugestaoParecerPareceristas, CasoDeUsoObterSugestaoParecerPareceristas>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoAprovarProposta, CasoDeUsoAprovarProposta>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoRecusarProposta, CasoDeUsoRecusarProposta>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterRelatorioPropostaLaudaCompleta, CasoDeUsoObterRelatorioPropostaLaudaCompleta>();
+
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverPropostaEncontro, CasoDeUsoRemoverPropostaEncontro>();
@@ -355,6 +331,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarProposta, CasoDeUsoEnviarProposta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerProposta, CasoDeUsoObterParecerProposta>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoHomologada, CasoDeUsoObterFormacaoHomologada>();
 
@@ -381,7 +358,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosPaginadosComFiltros, CasoDeUsoObterDadosPaginadosComFiltros>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAlterarVinculoInscricao, CasoDeUsoAlterarVinculoInscricao>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId, CasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId>();
-
+        
         _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomatica, CasoDeUsoRealizarInscricaoAutomatica>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratarTurmas, CasoDeUsoRealizarInscricaoAutomaticaTratarTurmas>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista, CasoDeUsoRealizarInscricaoAutomaticaTratarCursista>();
@@ -389,7 +366,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoTipo, CasoDeUsoObterInscricaoTipo>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterNomeCpfCursistaInscricao, CasoDeUsoObterNomeCpfCpfCursistaInscricao>();
-
+      
         _serviceCollection.TryAddScoped<ICasoDeUsoImportacaoArquivoInscricaoCursista, CasoDeUsoImportacaoInscricaoCursista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterArquivosInscricaoImportados, CasoDeUsoObterArquivosInscricaoImportados>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterRegistrosDaIncricaoInconsistentes, CasoDeUsoObterRegistrosDaIncricaoInconsistentes>();
@@ -399,39 +376,13 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao, CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarInscricaoManual, CasoDeUsoSalvarInscricaoManual>();
-
+        
         _serviceCollection.TryAddScoped<ICasoDeUsoImportacaoInscricaoCursistaValidar, CasoDeUsoImportacaoInscricaoCursistaValidar>();
         _serviceCollection.TryAddScoped<ICasoDeUsoImportacaoInscricaoCursistaValidarItem, CasoDeUsoImportacaoInscricaoCursistaValidarItem>();
-
+        
         _serviceCollection.TryAddScoped<ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista, CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar, CasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterTiposEmail, CasoDeUsoObterTiposEmail>();
-
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuariosAdminDf, CasoDeUsoObterUsuariosAdminDf>();
-
-        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarEmailDevolverProposta, CasoDeUsoEnviarEmailDevolverProposta>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoEncerrarInscricaoCursistaInativoSemCargo, CasoDeUsoEncerrarInscricaoCursistaInativoSemCargo>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoEncerrarInscricaoAutomaticamenteTurma, CasoDeUsoEncerrarInscricaoAutomaticamenteTurma>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoEncerrarInscricaoAutomaticamenteInscricoes, CasoDeUsoEncerrarInscricaoAutomaticamenteInscricoes>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoEncerrarInscricaoAutomaticamenteUsuarios, CasoDeUsoEncerrarInscricaoAutomaticamenteUsuarios>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterParecerista, CasoDeUsoObterParecerista>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoRemoverParecerDaProposta, CasoDeUsoRemoverParecerDaProposta>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarPropostaParecerista, CasoDeUsoEnviarPropostaParecerista>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoAprovarPropostaParecerista, CasoDeUsoAprovarPropostaParecerista>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoRecusarPropostaParecerista, CasoDeUsoRecusarPropostaParecerista>();
-
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterSituacaoUsuarioRedeParceria, CasoDeUsoObterSituacaoUsuarioRedeParceria>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuarioRedeParceriaPaginada, CasoDeUsoObterUsuarioRedeParceriaPaginada>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuarioRedeParceriaPorId, CasoDeUsoObterUsuarioRedeParceriaPorId>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoInserirUsuarioRedeParceria, CasoDeUsoInserirUsuarioRedeParceria>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoAlterarUsuarioRedeParceria, CasoDeUsoAlterarUsuarioRedeParceria>();
-        _serviceCollection.TryAddScoped<ICasoDeUsoRemoverUsuarioRedeParceria, CasoDeUsoRemoverUsuarioRedeParceria>();
-
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterTotalNotificacaoNaoLida, CasoDeUsoObterTotalNotificacaoNaoLida>();
-
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterNotificacao, CasoDeUsoObterNotificacao>();
-        
-        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarEmail, CasoDeUsoEnviarEmail>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTiposEmail,CasoDeUsoObterTiposEmail>();
     }
 
     protected virtual void RegistrarHttpClients()

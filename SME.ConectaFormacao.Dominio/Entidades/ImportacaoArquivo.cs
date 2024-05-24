@@ -6,9 +6,9 @@ namespace SME.ConectaFormacao.Dominio.Entidades
     {
         public long PropostaId { get; set; }
         public Proposta Proposta { get; set; }
-
+        
         public string Nome { get; set; }
-
+        
         public TipoImportacaoArquivo Tipo { get; set; }
         public SituacaoImportacaoArquivo Situacao { get; set; }
 
