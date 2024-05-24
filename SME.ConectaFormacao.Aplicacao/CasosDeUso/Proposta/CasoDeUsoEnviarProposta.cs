@@ -71,11 +71,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             
             var perfilUsuarioLogado = await mediator.Send(new ObterGrupoUsuarioLogadoQuery());
 
-            if (situacao.EstaAguardandoAnalisePeloParecerista() && perfilUsuarioLogado.EhPerfilAdminDF())
+            if (perfilUsuarioLogado.EhPerfilAdminDF())
             {
-                var pareceristas = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristasDaProposta);
+                if (situacao.EstaAguardandoAnalisePeloParecerista())
+                {
+                    var pareceristas = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristasDaProposta);
+
+                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarPareceristasSobreAtribuicaoPelaDF,
+                        new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
+                }
                 
-                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarPareceristasSobreAtribuicaoPelaDF, new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
+                if (situacao.EstaAguardandoAnaliseParecerPelaDF())
+                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarAreaPromotoraParaAnaliseParecer, proposta.Id));
             }
 
             return true;

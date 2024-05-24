@@ -434,6 +434,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarEmail, CasoDeUsoEnviarEmail>();
         _serviceCollection.TryAddScoped<ICasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF, CasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF>();
         _serviceCollection.TryAddScoped<ICasoDeUsoNotificarDFPeloEnvioParecerPeloParecerista, CasoDeUsoNotificarDFPeloEnvioParecerPeloParecerista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarAreaPromotoraParaAnaliseParecer, CasoDeUsoNotificarAreaPromotoraParaAnaliseParecer>();
         
     }
 

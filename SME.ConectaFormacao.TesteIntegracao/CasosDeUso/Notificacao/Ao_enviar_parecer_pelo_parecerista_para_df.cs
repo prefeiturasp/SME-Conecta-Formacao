@@ -90,6 +90,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
             
             // assert 
+            retorno.ShouldBeTrue();
+            
             var notificacoes = ObterTodos<Dominio.Entidades.Notificacao>();
             notificacoes.Count().ShouldBe(1);
             var notificacao = notificacoes.FirstOrDefault();
@@ -145,7 +147,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
                 modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoAnaliseDf);
            
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF>();
-            var mapper = ObterCasoDeUso<IMapper>();
 
             var filtro = new NotificacaoPropostaPareceristasDTO(proposta.Id, null);
             
@@ -154,6 +155,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
             
             // assert 
+            retorno.ShouldBeFalse();
+            
             var notificacoes = ObterTodos<Dominio.Entidades.Notificacao>();
             notificacoes.Count().ShouldBe(0);
             

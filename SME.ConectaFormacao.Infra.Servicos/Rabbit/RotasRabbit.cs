@@ -29,7 +29,10 @@ namespace SME.ConectaFormacao.Infra
         
         public const string NotificarPareceristasSobreAtribuicaoPelaDF = "conecta.notificar.pareceristas.sobre.atribuicao.pela.df";
         public const string NotificarDFPeloEnvioParecerPeloParecerista = "conecta.notificar.df.pelo.envio.parecer.pelo.parecerista";
+        public const string NotificarAreaPromotoraParaAnaliseParecer = "conecta.notificar.area.promotora.para.analise.parecer";
+        
         public const string EnviarEmail = "conecta.enviar.email";
         public const string EnviarNotificacao = "conecta.notificar.df.pelo.envio.parecer.pelo.parecerista";
+        
     }
 }

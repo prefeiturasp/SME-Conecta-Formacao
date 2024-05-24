@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
