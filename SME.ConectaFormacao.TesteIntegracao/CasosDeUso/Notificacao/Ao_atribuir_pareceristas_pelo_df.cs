@@ -18,9 +18,9 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
 {
-    public class Ao_atribuir_pareceristas : TestePropostaBase
+    public class Ao_atribuir_pareceristas_pelo_df : TestePropostaBase
     {
-        public Ao_atribuir_pareceristas(CollectionFixture collectionFixture, bool limparBanco = true) : base(collectionFixture)
+        public Ao_atribuir_pareceristas_pelo_df(CollectionFixture collectionFixture, bool limparBanco = true) : base(collectionFixture)
         {
         }
 

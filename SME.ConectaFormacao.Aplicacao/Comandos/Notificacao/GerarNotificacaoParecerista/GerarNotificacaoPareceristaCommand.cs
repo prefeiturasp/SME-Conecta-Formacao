@@ -5,9 +5,9 @@ using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class GerarNotificacaoDFCommand : IRequest<bool>
+    public class GerarNotificacaoPareceristaCommand : IRequest<bool>
     {
-        public GerarNotificacaoDFCommand(Proposta proposta, IEnumerable<PropostaPareceristaResumidoDTO> pareceristas)
+        public GerarNotificacaoPareceristaCommand(Proposta proposta, IEnumerable<PropostaPareceristaResumidoDTO> pareceristas)
         {
             Proposta = proposta;
             Pareceristas = pareceristas;
@@ -17,9 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<PropostaPareceristaResumidoDTO> Pareceristas { get; }
     }
 
-    public class GerarNotificacaoDFCommandValidator : AbstractValidator<GerarNotificacaoDFCommand>
+    public class GerarNotificacaoPareceristaCommandValidator : AbstractValidator<GerarNotificacaoPareceristaCommand>
     {
-        public GerarNotificacaoDFCommandValidator()
+        public GerarNotificacaoPareceristaCommandValidator()
         {
             RuleFor(t => t.Proposta)
                 .NotEmpty()
@@ -31,3 +31,4 @@ namespace SME.ConectaFormacao.Aplicacao
         }
     }
 }
+

@@ -20,9 +20,9 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
 {
-    public class Ao_enviar_parecer_pelo_parecerista : TestePropostaBase
+    public class Ao_enviar_parecer_pelo_parecerista_para_df : TestePropostaBase
     {
-        public Ao_enviar_parecer_pelo_parecerista(CollectionFixture collectionFixture, bool limparBanco = true) : base(collectionFixture)
+        public Ao_enviar_parecer_pelo_parecerista_para_df(CollectionFixture collectionFixture, bool limparBanco = true) : base(collectionFixture)
         {
         }
 
