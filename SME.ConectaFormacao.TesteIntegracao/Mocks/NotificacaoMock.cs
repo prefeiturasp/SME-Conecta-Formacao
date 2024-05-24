@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
     public class NotificacaoMock : BaseMock
     {
 
-        public static IEnumerable<Notificacao> GerarNotificacoes(int quantidade)
+        private static Faker<Notificacao> Gerador()
         {
             var faker = new Faker<Notificacao>();
             faker.RuleFor(dest => dest.Titulo, f => f.Lorem.Sentence());
@@ -18,24 +18,39 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
             AuditoriaFaker(faker);
 
-            return faker.Generate(quantidade);
+            return faker;
         }
 
-        public static IEnumerable<NotificacaoUsuario> GetNotificacaoUsuarios(IEnumerable<Notificacao> notificacaos, string login)
+        public static IEnumerable<Notificacao> GerarNotificacoes(int quantidade)
+        {
+            return Gerador().Generate(quantidade);
+        }
+
+        public static Notificacao GerarNotificacao()
+        {
+            return Gerador().Generate();
+        }
+
+        public static NotificacaoUsuario GerarNotificacaoUsuario(string login, Notificacao notificacao)
+        {
+            var notificacaoUsuario = new NotificacaoUsuario
+            {
+                NotificacaoId = notificacao.Id,
+                Login = login
+            };
+
+            Auditoria(notificacaoUsuario);
+
+            return notificacaoUsuario;
+        }
+
+        public static IEnumerable<NotificacaoUsuario> GerarNotificacaoUsuarios(string login, IEnumerable<Notificacao> notificacaos)
         {
             var usuarios = new List<NotificacaoUsuario>();
 
             foreach (var notificacao in notificacaos)
             {
-                var notificacaoUsuario = new NotificacaoUsuario
-                {
-                    NotificacaoId = notificacao.Id,
-                    Login = login
-                };
-
-                Auditoria(notificacaoUsuario);
-
-                usuarios.Add(notificacaoUsuario);
+                usuarios.Add(GerarNotificacaoUsuario(login, notificacao));
             }
 
             return usuarios;

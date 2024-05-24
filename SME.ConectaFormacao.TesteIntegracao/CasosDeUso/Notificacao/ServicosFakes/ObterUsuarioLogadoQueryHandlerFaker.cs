@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao.ServicosFak
     {
         public Task<Dominio.Entidades.Usuario> Handle(ObterUsuarioLogadoQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(AoObterTotalNotificacaoNaoLidoMock.UsuarioLogado);
+            return Task.FromResult(AoObterTotalNotificacaoMock.UsuarioLogado);
         }
     }
 }

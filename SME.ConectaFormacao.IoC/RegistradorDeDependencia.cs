@@ -45,6 +45,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Modalidade;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ue;
@@ -427,6 +428,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverUsuarioRedeParceria, CasoDeUsoRemoverUsuarioRedeParceria>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTotalNotificacaoNaoLida, CasoDeUsoObterTotalNotificacaoNaoLida>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterNotificacao, CasoDeUsoObterNotificacao>();
     }
 
     protected virtual void RegistrarHttpClients()
