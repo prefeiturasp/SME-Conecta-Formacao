@@ -303,7 +303,12 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(o => o.Tipo.Nome()));
 
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>();
+            CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista))
+                .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional));
+            
             CreateMap<PropostaPareceristaResumidoDTO,NotificacaoUsuario>();
+            CreateMap<RetornoUsuarioLoginNomeDTO,NotificacaoUsuario>();
         }
     }
 }

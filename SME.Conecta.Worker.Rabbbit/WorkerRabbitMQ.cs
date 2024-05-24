@@ -57,7 +57,9 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.EncerrarInscricaoAutomaticamenteInscricoes, new ComandoRabbit("Encerrar Inscrição Quando o servidor ficar inativo no EOL - Inscrições", typeof(ICasoDeUsoEncerrarInscricaoAutomaticamenteInscricoes), true));
             Comandos.Add(RotasRabbit.EncerrarInscricaoAutomaticamenteUsuarios, new ComandoRabbit("Encerrar Inscrição Quando o servidor ficar inativo no EOL -  Usuarios", typeof(ICasoDeUsoEncerrarInscricaoAutomaticamenteUsuarios), true));
             
-            Comandos.Add(RotasRabbit.NotificarProposta, new ComandoRabbit("Notificar proposta", typeof(ICasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF), true));
+            Comandos.Add(RotasRabbit.NotificarPareceristasSobreAtribuicaoPelaDF, new ComandoRabbit("Notificar pareceristas sobre atribuicao pela DF", typeof(ICasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF), true));
+            Comandos.Add(RotasRabbit.NotificarDFPeloEnvioParecerPeloParecerista, new ComandoRabbit("Notificar DF pelo envio parecer pelo parecerista", typeof(ICasoDeUsoNotificarDFPeloEnvioParecerPeloParecerista), true));
+            Comandos.Add(RotasRabbit.EnviarEmail, new ComandoRabbit("Enviar e-mail", typeof(ICasoDeUsoEnviarEmail), true));
         }
     }
 }
