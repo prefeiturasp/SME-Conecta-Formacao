@@ -11,8 +11,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.Login).ToColumn("login");
             Map(c => c.Situacao).ToColumn("situacao");
             
+            Map(c => c.Nome).Ignore();
             Map(c => c.Notificacao).Ignore();
-            Map(c => c.Usuario).Ignore();
         }
     }
 }
