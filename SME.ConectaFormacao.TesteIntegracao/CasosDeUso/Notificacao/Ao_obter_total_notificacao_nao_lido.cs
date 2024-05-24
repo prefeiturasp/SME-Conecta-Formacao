@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao.ServicosFakes;
@@ -32,12 +32,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var usuario = UsuarioMock.GerarUsuario();
             await InserirNaBase(usuario);
 
-            AoObterTotalNotificacaoNaoLidoMock.UsuarioLogado = usuario;
+            AoObterTotalNotificacaoMock.UsuarioLogado = usuario;
 
             var notificacoes = NotificacaoMock.GerarNotificacoes(10);
             await InserirNaBase(notificacoes);
 
-            var notificacoesUsuarios = NotificacaoMock.GetNotificacaoUsuarios(notificacoes, usuario.Login);
+            var notificacoesUsuarios = NotificacaoMock.GerarNotificacaoUsuarios(usuario.Login, notificacoes);
             await InserirNaBase(notificacoesUsuarios);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterTotalNotificacaoNaoLida>();

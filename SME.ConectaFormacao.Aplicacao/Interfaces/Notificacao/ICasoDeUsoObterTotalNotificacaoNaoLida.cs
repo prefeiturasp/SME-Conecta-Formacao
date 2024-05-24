@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
+﻿namespace SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao
 {
     public interface ICasoDeUsoObterTotalNotificacaoNaoLida
     {

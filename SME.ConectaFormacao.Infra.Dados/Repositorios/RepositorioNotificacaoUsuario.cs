@@ -23,5 +23,24 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 await conexao.Obter().InsertAsync(usuario,transacao);
             }
         }
+
+        public Task<NotificacaoUsuario> ObterNotificacaoUsuario(long notificacaoId, string login)
+        {
+            var query = @"select 
+                            id, 
+                            notificacao_id, 
+                            login, 
+                            excluido,
+                            criado_em,
+	                        criado_por,
+                            criado_login,
+                        	alterado_em,    
+	                        alterado_por,
+	                        alterado_login
+                        from notificacao_usuario
+                        where not excluido and notificacao_id = @notificacaoId and login = @login";
+
+            return conexao.Obter().QueryFirstOrDefaultAsync<NotificacaoUsuario>(query, new { notificacaoId, login });
+        }
     }
 }
