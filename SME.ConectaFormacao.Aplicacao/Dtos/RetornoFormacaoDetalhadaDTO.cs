@@ -19,8 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public string ImagemUrl { get; set; }
         public FormacaoHomologada FormacaoHomologada { get; set; }
         public DateTime DataInscricaoFim { get; set; }
-        public string? LinkParaInscricoesExterna { get; set; }
-        public bool PodeEnviarInscricao { get; set; }
+
         public IEnumerable<RetornoTurmaDetalheDTO> Turmas { get; set; }
     }
 }

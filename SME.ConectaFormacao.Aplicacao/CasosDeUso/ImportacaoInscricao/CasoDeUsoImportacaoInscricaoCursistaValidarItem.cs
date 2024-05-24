@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
@@ -15,10 +16,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
     public class CasoDeUsoImportacaoInscricaoCursistaValidarItem : CasoDeUsoAbstrato, ICasoDeUsoImportacaoInscricaoCursistaValidarItem
     {
         private readonly IMapper _mapper;
-
-        public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator, IMapper mapper) : base(mediator)
+        private readonly IConexoesRabbit _conexoesRabbit;
+        public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator, IMapper mapper, IConexoesRabbit conexoesRabbit) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _conexoesRabbit = conexoesRabbit ?? throw new ArgumentNullException(nameof(conexoesRabbit));
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
@@ -35,7 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 var usuario = await ObterUsuarioPorLogin(importacaoInscricaoCursista) ??
                               throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-
+                
                 var cargoFuncaoUsuarioEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuario.Login));
                 var tipoVinculo = cargoFuncaoUsuarioEol?.FirstOrDefault().TipoVinculoCargoSobreposto ?? cargoFuncaoUsuarioEol?.FirstOrDefault().TipoVinculoCargoBase;
                 var inscricao = new Dominio.Entidades.Inscricao()
@@ -65,7 +67,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
             return true;
         }
-
+        
         private async Task MapearValidarCargoFuncao(Dominio.Entidades.Inscricao inscricao, string login, long propostaId)
         {
             var temErroCargo = false;
@@ -99,7 +101,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                     var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
                     if (inscricao.CargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == inscricao.CargoId))
                         temErroCargo = true;
-
+                        
                 }
 
             }
@@ -134,21 +136,21 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                         break;
                     }
                 }
-
+                
                 if (funcaoAtividadeProposta.PossuiElementos())
                 {
                     if (inscricao.FuncaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == inscricao.FuncaoId))
                         temErroFuncao = true;
                 }
-                if (temErroCargo && temErroFuncao)
+                if(temErroCargo && temErroFuncao)
                     throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
-
-                if (!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
+            
+                if(!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
                     throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
             }
         }
 
-        private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDTO inscricaoCursistaDTO)
+        private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDTO inscricaoCursistaDTO ) 
         {
             var ehProfissionalRede = inscricaoCursistaDTO.ColaboradorRede.EhColaboradorRede();
             var login = ehProfissionalRede ? inscricaoCursistaDTO.RegistroFuncional : inscricaoCursistaDTO.Cpf;
@@ -190,7 +192,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         private async Task AlterarSituacaoArquivo(long importacaoArquivoId)
         {
             var possuiRegistroCarregamentoInicial = await mediator.Send(new PossuiRegistroPorArquivoSituacaoQuery(importacaoArquivoId, SituacaoImportacaoArquivoRegistro.CarregamentoInicial));
-            var possuiRegistrosNaFila = await mediator.Send(new ObterTotalRegistroFilaQuery(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem)) > 0;
+            var possuiRegistrosNaFila = _conexoesRabbit.Get().MessageCount(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem) > 0;
 
             if (!possuiRegistroCarregamentoInicial || !possuiRegistrosNaFila)
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoId, SituacaoImportacaoArquivo.Validado));

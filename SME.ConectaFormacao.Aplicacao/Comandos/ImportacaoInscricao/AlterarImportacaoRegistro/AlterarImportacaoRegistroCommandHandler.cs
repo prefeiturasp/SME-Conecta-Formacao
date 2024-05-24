@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -21,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             importacaoArquivoRegistro.Situacao = request.Situacao;
             importacaoArquivoRegistro.Conteudo = request.Conteudo;
-
+            
             await _repositorioImportacaoArquivoRegistro.Atualizar(importacaoArquivoRegistro);
 
             return true;

@@ -2,7 +2,6 @@
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
 
@@ -233,7 +232,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { propostaId, login, cpf, nomeCursista, turmasId });
         }
 
-        public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros, long? numeroHomologacao)
+        public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"  
@@ -253,17 +252,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (codigoDaFormacao != null)
                 query += "  and p.id = @codigoDaFormacao ";
 
-            if (numeroHomologacao.NaoEhNulo())
-                query += "  and p.numero_homologacao = @numeroHomologacao ";
-
             query += " order by p.id desc limit @numeroRegistros offset @registrosIgnorados  ";
 
             var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
-            var parametros = new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta, numeroHomologacao };
+            var parametros = new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta };
             return conexao.Obter().QueryAsync<Proposta>(query.ToString(), parametros);
         }
 
-        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, long? numeroHomologacao)
+        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"	
@@ -281,15 +277,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (codigoDaFormacao != null)
                 query += "  and p.id = @codigoDaFormacao ";
 
-            if (numeroHomologacao.NaoEhNulo())
-                query += " and p.numero_homologacao = @numeroHomologacao ";
-
-            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta, numeroHomologacao });
-        }
-
-        public Task<int> ObterInscricaoPorIdComFiltrosTotalRegistros(long inscricaoId, string? login, string? cpf, string? nomeCursista, double? turmaId)
-        {
-            throw new NotImplementedException();
+            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta });
         }
 
         public Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds)
@@ -358,18 +346,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    inscricao.Usuario = usuario;
                    return inscricao;
                }, new { situacao = (int)SituacaoInscricao.Confirmada }, splitOn: "id, login");
-        }
-
-        public async Task<IEnumerable<InscricaoUsuarioInternoDto>> ObterInscricoesPorPropostasTurmasIdUsuariosInternos(long[] propostasTurmasId)
-        {
-            var tipoUsuario = (int)TipoUsuario.Interno;
-            var query = @$"
-                            select i.id as InscricaoId ,u.id as UsuarioId, u.login from inscricao i 
-                            inner join usuario u on i.usuario_id = u.id 
-                            where not i.excluido  and u.tipo = @tipoUsuario
-                            and i.proposta_turma_id = any(@propostasTurmasId)
-                        ";
-            return await conexao.Obter().QueryAsync<InscricaoUsuarioInternoDto>(query, new { propostasTurmasId, tipoUsuario });
         }
     }
 }

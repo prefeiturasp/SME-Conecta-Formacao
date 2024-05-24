@@ -6,14 +6,13 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterDadosPaginadosComFiltrosQuery : IRequest<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>>
     {
-        public ObterDadosPaginadosComFiltrosQuery(int numeroPagina, int numeroRegistros, long? codigoFormacao, string? nomeFormacao, long? areaPromotoraIdUsuarioLogado, long? numeroHomologacao)
+        public ObterDadosPaginadosComFiltrosQuery(int numeroPagina, int numeroRegistros, long? codigoFormacao, string? nomeFormacao, long? areaPromotoraIdUsuarioLogado)
         {
             NumeroPagina = numeroPagina;
             NumeroRegistros = numeroRegistros;
             CodigoFormacao = codigoFormacao;
             NomeFormacao = nomeFormacao;
             AreaPromotoraIdUsuarioLogado = areaPromotoraIdUsuarioLogado;
-            NumeroHomologacao = numeroHomologacao;
         }
 
         public int NumeroPagina { get; set; }
@@ -21,6 +20,5 @@ namespace SME.ConectaFormacao.Aplicacao
         public long? CodigoFormacao { get; set; }
         public string? NomeFormacao { get; set; }
         public long? AreaPromotoraIdUsuarioLogado { get; set; }
-        public long? NumeroHomologacao { get; set; }
     }
 }

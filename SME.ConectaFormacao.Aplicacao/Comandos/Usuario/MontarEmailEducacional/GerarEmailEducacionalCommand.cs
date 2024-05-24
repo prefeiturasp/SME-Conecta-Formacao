@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao
             Usuario = usuario;
         }
 
-        public Usuario Usuario { get; set; }
+        public Usuario Usuario { get; set; }    
     }
 
     public class MontarEmailEducacionalCommandValidator : AbstractValidator<GerarEmailEducacionalCommand>

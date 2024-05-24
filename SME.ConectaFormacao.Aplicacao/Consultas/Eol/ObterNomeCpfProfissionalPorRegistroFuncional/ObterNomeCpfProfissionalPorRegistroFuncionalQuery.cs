@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterNomeCpfProfissionalPorRegistroFuncionalQuery : IRequest<RetornoUsuarioCpfNomeDTO>
+    public class ObterNomeCpfProfissionalPorRegistroFuncionalQuery : IRequest<RetornoUsuarioDTO>
     {
         public ObterNomeCpfProfissionalPorRegistroFuncionalQuery(string registroFuncional)
         {

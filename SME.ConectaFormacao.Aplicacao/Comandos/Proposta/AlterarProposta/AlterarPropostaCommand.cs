@@ -2,7 +2,6 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -97,11 +96,6 @@ namespace SME.ConectaFormacao.Aplicacao
             //     .NotNull()
             //     .When(y=> y.PropostaDTO.PalavrasChaves.Count() < 6)
             //     .WithMessage("É necessário informar no máximo 5 palavras-chaves para alterar a proposta");
-
-            RuleFor(f => f.PropostaDTO.LinkParaInscricoesExterna)
-                .NotNull()
-                .When(y => y.PropostaDTO.TiposInscricao.NaoEhNulo() && y.PropostaDTO.TiposInscricao.Any(tipo => tipo.TipoInscricao == TipoInscricao.Externa))
-                .WithMessage("É necessário informar o link para inscrições  para inserir a proposta");
         }
     }
 }

@@ -1,9 +1,9 @@
+using System.Net;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using System.Net;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
 {
@@ -18,8 +18,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             var usuarioAutenticadoRetornoDto = await mediator.Send(new ObterUsuarioServicoAcessosPorLoginSenhaQuery(emailUsuarioDto.Login, emailUsuarioDto.Senha));
             if (string.IsNullOrEmpty(usuarioAutenticadoRetornoDto.Login))
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, HttpStatusCode.Unauthorized);
-
-
+            
+            
             await mediator.Send(new AlterarEmailServicoAcessosCommand(emailUsuarioDto.Login, emailUsuarioDto.Email));
             return await mediator.Send(new EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand(emailUsuarioDto.Login));
         }

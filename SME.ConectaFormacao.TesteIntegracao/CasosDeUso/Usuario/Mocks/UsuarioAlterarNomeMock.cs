@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks
             var pessoa = new Person("pt_BR");
 
             Login = pessoa.FirstName;
-            NomeValido = pessoa.FullName.ToUpper();
+            NomeValido = pessoa.FullName;
             NomeInvalido = string.Empty;
         }
     }

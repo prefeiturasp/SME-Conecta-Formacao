@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand : IRequest<List<string>>
+    public class ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand : IRequest< List<string>>
     {
         public ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand(IEnumerable<PropostaPublicoAlvoDTO> publicosAlvoDaProposta, IEnumerable<PropostaFuncaoEspecificaDTO> funcoesEspecificasDaProposta,
             IEnumerable<PropostaModalidadeDTO> modalidadesDaProposta, IEnumerable<PropostaAnoTurmaDTO> anosTurmaDaProposta, IEnumerable<PropostaComponenteCurricularDTO> componentesCurricularesDaProposta)

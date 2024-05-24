@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
@@ -23,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         {
             var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>()
                                             ?? throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
-
+            
             try
             {
                 var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDTO>();
@@ -35,10 +36,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId)) ??
                                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-
+                
                 await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
-
-                await mediator.Send(new SalvarInscricaoImportacaoCommand(inscricao, proposta.FormacaoHomologada.EstaHomologada()));
+                
+                await mediator.Send(new SalvarInscricaoImportacaoCommand(inscricao,proposta.FormacaoHomologada.EstaHomologada()));
                 await mediator.Send(new AlterarSituacaoRegistroImportacaoArquivoCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Processado));
             }
             catch (Exception e)

@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly ICacheDistribuido _cacheDistribuido;
 
-        public ObterUnidadePorCodigoEOLQueryHandler(IServicoEol servicoEol, ICacheDistribuido cacheDistribuido)
+        public ObterUnidadePorCodigoEOLQueryHandler(IServicoEol servicoEol,ICacheDistribuido cacheDistribuido)
         {
             _servicoEol = servicoEol ?? throw new ArgumentNullException(nameof(servicoEol));
             _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IServicoEol _servicoEol;
         public async Task<UnidadeEol> Handle(ObterUnidadePorCodigoEOLQuery request, CancellationToken cancellationToken)
         {
-
+            
             var ue = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.UnidadeEol.Parametros(request.UnidadeCodigo), () => _servicoEol.ObterUnidadePorCodigoEol(request.UnidadeCodigo));
             if (ue.NomeUnidade.EhNulo())
                 throw new NegocioException(MensagemNegocio.UNIDADE_NAO_LOCALIZADA_POR_CODIGO);

@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 601)]
         public async Task<IActionResult> Inserir(UsuarioExternoDTO usuarioExternoDto, [FromServices] ICasoDeUsoInserirUsuarioExterno usoInserirUsuario)
         {
-            return Ok(await usoInserirUsuario.Executar(usuarioExternoDto));
+            return Ok(await usoInserirUsuario.InserirUsuarioExterno(usuarioExternoDto));
         }
 
         [HttpPost("{login}/solicitar-recuperacao-senha")]
@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoUsuarioAlterarEmail.Executar(login, emailUsuarioDto.Email));
         }
-
+        
         [HttpPut("alterar-email")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -100,7 +100,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await useCase.Executar(emailUsuarioDto));
         }
 
-
+        
         [HttpPut("{login}/email-educacional")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -110,7 +110,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar(login, emailUsuarioDto.Email));
         }
-
+        
 
         [HttpGet("{login}/reenviar-email")]
         [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]

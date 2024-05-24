@@ -13,7 +13,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(t => t.UsuarioId, usuarioId);
             faker.RuleFor(t => t.PropostaTurmaId, propostaTurmaId);
             faker.RuleFor(t => t.Situacao, f => f.PickRandom<SituacaoInscricao>());
-            faker.RuleFor(t => t.Origem, f => f.PickRandom<OrigemInscricao>());
 
             AuditoriaFaker(faker);
 

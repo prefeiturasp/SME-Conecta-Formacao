@@ -76,7 +76,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var usuario = UsuarioMock.GerarUsuario();
             await InserirNaBase(usuario);
 
-            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.Publicada, Dominio.Enumerados.FormacaoHomologada.NaoCursosPorIN, Dominio.Enumerados.TipoInscricao.Automatica, false, true, true, true);
+            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.Publicada, Dominio.Enumerados.FormacaoHomologada.NaoCursosPorIN, Dominio.Enumerados.TipoInscricao.Automatica, false, true, true);
 
             var CargosFuncoes = ObterTodos<Dominio.Entidades.CargoFuncao>();
 

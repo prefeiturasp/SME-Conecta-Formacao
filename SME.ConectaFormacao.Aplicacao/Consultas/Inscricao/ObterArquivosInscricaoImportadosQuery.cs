@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao
             QuantidadeRegistrosIgnorados = quantidadeRegistroIgnorados;
             NumeroRegistros = numeroRegistros;
             PropostaId = propostaId;
-
+  
         }
 
         public int QuantidadeRegistrosIgnorados { get; set; }

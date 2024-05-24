@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly IMapper _mapper;
 
-        public ObterInscricaoPorIdQueryHandler(IRepositorioInscricao repositorioInscricao, IMapper mapper)
+        public ObterInscricaoPorIdQueryHandler(IRepositorioInscricao repositorioInscricao, IMapper mapper,IRepositorioProposta repositorioProposta)
         {
             _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -19,15 +19,13 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<PaginacaoResultadoDTO<DadosListagemInscricaoDTO>> Handle(ObterInscricaoPorIdQuery request, CancellationToken cancellationToken)
         {
-            var mapeamento = Enumerable.Empty<DadosListagemInscricaoDTO>();
-
+            var mapeamento = new List<DadosListagemInscricaoDTO>();
             var totalDeRegistros = await _repositorioInscricao.ObterInscricaoPorIdComFiltrosTotalRegistros(request.PropostaId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista, request.filtros.TurmasId);
             if (totalDeRegistros > 0)
             {
                 var inscricoes = await _repositorioInscricao.ObterInscricaoPorIdComFiltros(request.PropostaId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista,
                     request.filtros.TurmasId, request.NumeroPagina, request.NumeroRegistros);
-
-                mapeamento = _mapper.Map<IEnumerable<DadosListagemInscricaoDTO>>(inscricoes);
+                mapeamento.AddRange(_mapper.Map<IEnumerable<DadosListagemInscricaoDTO>>(inscricoes));
             }
 
             return new PaginacaoResultadoDTO<DadosListagemInscricaoDTO>(mapeamento, totalDeRegistros, request.NumeroRegistros);

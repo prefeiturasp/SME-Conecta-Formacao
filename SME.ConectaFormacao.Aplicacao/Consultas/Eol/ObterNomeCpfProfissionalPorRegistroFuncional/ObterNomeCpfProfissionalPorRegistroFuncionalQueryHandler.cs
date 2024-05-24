@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterNomeCpfProfissionalPorRegistroFuncionalQueryHandler : IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioCpfNomeDTO>
+    public class ObterNomeCpfProfissionalPorRegistroFuncionalQueryHandler : IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioDTO>
     {
         private readonly IServicoEol _servicoEol;
         private readonly IMapper _mapper;
@@ -16,9 +16,9 @@ namespace SME.ConectaFormacao.Aplicacao
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<RetornoUsuarioCpfNomeDTO> Handle(ObterNomeCpfProfissionalPorRegistroFuncionalQuery request, CancellationToken cancellationToken)
+        public async Task<RetornoUsuarioDTO> Handle(ObterNomeCpfProfissionalPorRegistroFuncionalQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<RetornoUsuarioCpfNomeDTO>(await _servicoEol.ObterNomeCpfProfissionalPorRegistroFuncional(request.RegistroFuncional));
+            return _mapper.Map<RetornoUsuarioDTO>(await _servicoEol.ObterNomeCpfProfissionalPorRegistroFuncional(request.RegistroFuncional));
         }
     }
 }

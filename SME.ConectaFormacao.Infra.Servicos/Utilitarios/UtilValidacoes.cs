@@ -57,10 +57,5 @@ namespace SME.ConectaFormacao.Infra.Servicos.Utilitarios
             digito += resto.ToString();
             return cpf.EndsWith(digito);
         }
-
-        public static bool NomeComSobrenome(string nome)
-        {
-            return nome.Split(' ').Length > 1;
-        }
     }
 }

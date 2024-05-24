@@ -9,7 +9,6 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
-using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -36,39 +35,36 @@ namespace SME.ConectaFormacao.Aplicacao
             var ehPropostaPublicada = proposta.Situacao.EstaPublicada() || proposta.Situacao.EhAlterando();
 
             var ehPropostaAutomatica = request.PropostaDTO.TiposInscricao.PossuiElementos() && request.PropostaDTO.TiposInscricao.Any(a => a.TipoInscricao.EhAutomaticaOuJEIF());
-            if (request.PropostaDTO.PublicoAlvoOutros.EstaPreenchido() &&
-                !request.PropostaDTO.PublicosAlvo.PossuiElementos() &&
-                request.PropostaDTO.FuncaoEspecificaOutros.EstaPreenchido() &&
-                !request.PropostaDTO.FuncoesEspecificas.PossuiElementos())
+            if (string.IsNullOrEmpty(request.PropostaDTO.PublicoAlvoOutros) &&
+                !request.PropostaDTO.PublicosAlvo.Any() &&
+                string.IsNullOrEmpty(request.PropostaDTO.FuncaoEspecificaOutros) &&
+                !request.PropostaDTO.FuncoesEspecificas.Any())
             {
                 if (!request.PropostaDTO.ComponentesCurriculares.Any() || !request.PropostaDTO.AnosTurmas.Any())
                     erros.Add(MensagemNegocio.INFORMAR_PUBLICO_FUNCAO_MODALIDADE);
             }
 
             var validarPublicoAlvoOutrosCommand = await _mediator.Send(new ValidarPublicoAlvoOutrosCommand(ehPropostaAutomatica, request.PropostaDTO.PublicosAlvo, request.PropostaDTO.PublicoAlvoOutros), cancellationToken);
-
-            if (validarPublicoAlvoOutrosCommand.Any())
+            
+            if(validarPublicoAlvoOutrosCommand.Any())
                 erros.AddRange(validarPublicoAlvoOutrosCommand);
 
             var validarFuncaoEspecificaOutrosCommand = await _mediator.Send(new ValidarFuncaoEspecificaOutrosCommand(request.PropostaDTO.FuncoesEspecificas, request.PropostaDTO.FuncaoEspecificaOutros), cancellationToken);
-            if (validarFuncaoEspecificaOutrosCommand.Any())
+            if(validarFuncaoEspecificaOutrosCommand.Any())
                 erros.AddRange(validarFuncaoEspecificaOutrosCommand);
 
-            var validarCriterioValidacaoInscricaoOutrosCommand = await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
-            if (validarCriterioValidacaoInscricaoOutrosCommand.Any())
+            var validarCriterioValidacaoInscricaoOutrosCommand =  await _mediator.Send(new ValidarCriterioValidacaoInscricaoOutrosCommand(request.PropostaDTO.CriteriosValidacaoInscricao, request.PropostaDTO.CriterioValidacaoInscricaoOutros), cancellationToken);
+            if(validarCriterioValidacaoInscricaoOutrosCommand.Any())
                 erros.AddRange(validarCriterioValidacaoInscricaoOutrosCommand);
-
+            
             var validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand = await _mediator.Send(new ValidarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand(request.PropostaDTO.PublicosAlvo, request.PropostaDTO.FuncoesEspecificas,
                 request.PropostaDTO.Modalidades, request.PropostaDTO.AnosTurmas, request.PropostaDTO.ComponentesCurriculares), cancellationToken);
-
-            if (validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand.Any())
+            
+            if(validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand.Any())
                 erros.AddRange(validarPublicoAlvoFuncaoModalidadeAnoTurmaComponenteCommand);
-
+            
             if (erros.Any())
                 throw new NegocioException(erros);
-
-            await _mediator.Send(new ValidarResponsavelDfCommand(request.PropostaDTO.RfResponsavelDf,
-                request.PropostaDTO.FormacaoHomologada, request.PropostaDTO.Situacao), cancellationToken);
 
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
             propostaDepois.Id = proposta.Id;
@@ -113,7 +109,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var errosCritériosCertificacao = await _mediator.Send(new ValidarCertificacaoPropostaCommand(request.PropostaDTO), cancellationToken);
             if (errosCritériosCertificacao.Any())
                 erros.AddRange(errosCritériosCertificacao);
-
+            
 
             if (erros.Any())
                 throw new NegocioException(erros);
@@ -125,9 +121,6 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
                 transacao.Commit();
-
-                if (propostaDepois.Situacao.EstaAguardandoAnaliseDfOuPareceristaOuParecerPelaDFOuAreaPromotoraOuAnaliseFinalPelaDF())
-                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarProposta, request.Id));
 
                 var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
 

@@ -23,13 +23,13 @@ namespace SME.ConectaFormacao.Aplicacao
             var cargoCodigo = ultimoCargo?.Codigo;
             if (cargoCodigo == null || ultimoCargo == null)
                 return false;
-
+            
             var codigosCargosEol = new List<long> { long.Parse(cargoCodigo) };
-
+            
             var codigoFuncoesEol = Enumerable.Empty<long>();
             var ultimaFuncao = ultimoCargo.Funcoes.MaxBy(c => c.DataInicio);
             if (ultimaFuncao is { Codigo: not null }) codigoFuncoesEol = new List<long> { long.Parse(ultimaFuncao.Codigo) };
-
+            
             var tipoVinculo = ultimoCargo.TipoVinculo;
             if (tipoVinculo <= 0)
                 return false;
@@ -43,13 +43,13 @@ namespace SME.ConectaFormacao.Aplicacao
                 var cargosFuncoes = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigoFuncoesEol), cancellationToken);
                 var cargo = cargosFuncoes.FirstOrDefault(c => c.Tipo == CargoFuncaoTipo.Cargo);
                 if (cargo == null)
-                    return false;
-
+                    return false;       
+                
                 inscricao.CargoId = cargo.Id;
                 inscricao.CargoCodigo = cargoCodigo;
                 inscricao.CargoDreCodigo = ultimoCargo.DreCodigo;
-                inscricao.CargoUeCodigo = ultimoCargo.UeCodigo;
-
+                inscricao.CargoUeCodigo = ultimoCargo.UeCodigo; 
+                
                 var funcao = cargosFuncoes.FirstOrDefault(c => c.Tipo == CargoFuncaoTipo.Funcao);
                 if (funcao != null && ultimaFuncao != null)
                 {
@@ -58,9 +58,9 @@ namespace SME.ConectaFormacao.Aplicacao
                     inscricao.FuncaoUeCodigo = ultimaFuncao.UeCodigo;
                     inscricao.FuncaoDreCodigo = ultimaFuncao.DreCodigo;
                     tipoVinculo = ultimaFuncao.TipoVinculo;
-                }
+                }                
             }
-
+            
             inscricao.TipoVinculo = tipoVinculo;
             await _repositorioInscricao.Atualizar(inscricao);
 

@@ -36,12 +36,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.DataInscricaoInicio, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.DataInscricaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.DataRealizacaoInicio, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.DataRealizacaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataInscricaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-1) : DateTimeExtension.HorarioBrasilia().AddMonths(1));
+            faker.RuleFor(x => x.DataRealizacaoInicio, DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataRealizacaoFim, DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.IntegrarNoSGA, integrarNoSga);
-            faker.RuleFor(x => x.CodigoEventoSigpec, f => f.Random.Long(100000, 9999999999));
-            faker.RuleFor(x => x.NumeroHomologacao, f => f.Random.Long(100000, 9999999999));
 
             AuditoriaFaker(faker);
 
@@ -399,20 +397,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             AuditoriaFaker(faker);
 
             return faker.Generate();
-        }
-
-        public static IEnumerable<PropostaParecerista> GerarPareceristas(long propostaId, int quantidade = 1, string rf = "")
-        {
-            var faker = new Faker<PropostaParecerista>();
-            faker.RuleFor(x => x.PropostaId, propostaId);
-            faker.RuleFor(x => x.NomeParecerista, f => f.Person.FullName);
-            faker.RuleFor(x => x.Situacao, f => f.PickRandom<SituacaoParecerista>());
-            faker.RuleFor(x => x.RegistroFuncional, f => string.IsNullOrEmpty(rf) ? f.Random.Number(10000, 99999).ToString() : rf);
-            faker.RuleFor(x => x.Justificativa, f => f.Lorem.Word());
-
-            AuditoriaFaker(faker);
-
-            return faker.Generate(quantidade);
         }
     }
 }

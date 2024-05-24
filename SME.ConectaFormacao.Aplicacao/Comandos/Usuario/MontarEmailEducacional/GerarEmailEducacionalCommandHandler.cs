@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class GerarEmailEducacionalCommandHandler : IRequestHandler<GerarEmailEducacionalCommand, string>
+    public class GerarEmailEducacionalCommandHandler : IRequestHandler<GerarEmailEducacionalCommand , string>
     {
         private const string DOMINIO_EMAIL = "@edu.sme.prefeitura.sp.gov.br";
         public async Task<string> Handle(GerarEmailEducacionalCommand request, CancellationToken cancellationToken)
@@ -14,8 +14,8 @@ namespace SME.ConectaFormacao.Aplicacao
             var partesNome = request.Usuario.Nome.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var primeiroNome = partesNome.FirstOrDefault();
             var ultimoNome = partesNome.LastOrDefault();
-            var emailEdu = CriarEmailPorTipo(request.Usuario, cpfOuRf, primeiroNome, ultimoNome);
-
+            var emailEdu = CriarEmailPorTipo(request.Usuario,cpfOuRf, primeiroNome, ultimoNome);
+            
             return emailEdu.RemoverAcentosECaracteresEspeciais().ToLower();
         }
 
@@ -23,11 +23,11 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             if (usuario.TipoEmail == TipoEmail.Estagiario)
             {
-                return !string.IsNullOrEmpty(ultimoNome)
+                return    !string.IsNullOrEmpty(ultimoNome)
                     ? $"{primeiroNome}{ultimoNome}.e{cpfOuRf}{DOMINIO_EMAIL}"
                     : $"{primeiroNome}.e{cpfOuRf}{DOMINIO_EMAIL}";
             }
-
+            
             return !string.IsNullOrEmpty(ultimoNome)
                 ? $"{primeiroNome}{ultimoNome}.{cpfOuRf}{DOMINIO_EMAIL}"
                 : $"{primeiroNome}.{cpfOuRf}{DOMINIO_EMAIL}";

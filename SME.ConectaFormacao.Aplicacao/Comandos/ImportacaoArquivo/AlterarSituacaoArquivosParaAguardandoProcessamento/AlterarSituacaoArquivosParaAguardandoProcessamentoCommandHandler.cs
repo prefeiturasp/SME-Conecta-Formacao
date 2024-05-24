@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.ARQUIVO_NAO_ENCONTRADO);
 
             if (arquivo.Situacao != SituacaoImportacaoArquivo.Validado)
-                throw new NegocioException(MensagemNegocio.SITUACAO_DO_ARQUIVO_DEVE_SER_VALIDADO);
+                    throw new NegocioException(MensagemNegocio.SITUACAO_DO_ARQUIVO_DEVE_SER_VALIDADO);
 
             arquivo.DefinirSituacao(SituacaoImportacaoArquivo.AguardandoProcessamento);
 

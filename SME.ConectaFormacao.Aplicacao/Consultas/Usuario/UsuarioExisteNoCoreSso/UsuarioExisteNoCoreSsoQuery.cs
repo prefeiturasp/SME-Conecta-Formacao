@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         public UsuarioExisteNoCoreSsoQueryValidator()
         {
-            RuleFor(x => x.Cpf).NotEmpty().WithMessage("Informe o CPF para verificar se o usuário existe no coresso");
+            RuleFor(x => x.Cpf).NotNull().WithMessage("Informe o CPF para verificar se o usuário existe no coresso");
         }
     }
 }

@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(x => x.ImportacaoArquivo)
                 .NotEmpty()
                 .WithMessage("É necessário informar o arquivo para inserir importação de arquivo");
-
+            
             RuleFor(x => x.ImportacaoArquivo.PropostaId)
                 .NotEmpty()
                 .WithMessage("É necessário informar o número da proposta para inserir importação de arquivo");
