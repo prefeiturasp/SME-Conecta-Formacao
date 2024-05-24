@@ -8,11 +8,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
         {
             ToTable("notificacao_usuario");
             Map(c => c.NotificacaoId).ToColumn("notificacao_id");
-            Map(c => c.RegistroFuncional).ToColumn("registro_funcional");
-            Map(c => c.Status).ToColumn("status");
+            Map(c => c.Login).ToColumn("login");
+            Map(c => c.Situacao).ToColumn("situacao");
             
+            Map(c => c.Nome).Ignore();
             Map(c => c.Notificacao).Ignore();
-            Map(c => c.Usuario).Ignore();
         }
     }
 }
