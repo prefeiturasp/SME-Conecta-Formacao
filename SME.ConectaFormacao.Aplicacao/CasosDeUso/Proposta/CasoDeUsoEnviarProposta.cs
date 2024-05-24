@@ -84,6 +84,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 if (situacao.EstaAguardandoAnaliseParecerPelaDF())
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarAreaPromotoraParaAnaliseParecer, proposta.Id));
             }
+            else
+            {
+                var areaPromotora = await mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilUsuarioLogado));
+
+                if (areaPromotora.NaoEhNulo() && areaPromotora.Id == proposta.AreaPromotoraId)
+                {
+                    var pareceristas = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristasDaProposta);
+                    
+                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarPareceristasParaReanalise,
+                        new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
+                }
+            }
 
             return true;
         }

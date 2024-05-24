@@ -68,12 +68,21 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 Categoria = NotificacaoCategoria.Aviso,
                 Tipo = NotificacaoTipo.Proposta,
-                TipoEnvio = NotificacaoTipoEnvio.Email,
-                Titulo = string.Format("Proposta {0} - {1} foi analisada pelo Parecerista", proposta.Id, proposta.NomeFormacao),
-                Mensagem = string.Format("O Parecerista {0} ({1}) Inseriu comentários na proposta {2} - {3}. Acesse <a href=\"{4}\">Aqui</a> o cadastro da proposta.",
-                    parecerista.Login, parecerista.Nome, proposta.Id, proposta.NomeFormacao, linkSistema),
+                TipoEnvio = NotificacaoTipoEnvio.SignalR,
                 Parametros = JsonConvert.SerializeObject(proposta),
-                Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(usuariosDFs)
+                Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(usuariosDFs),
+                    
+                Titulo = string.Format("Proposta {0} - {1} foi analisada pelo Parecerista", 
+                    proposta.Id, 
+                    proposta.NomeFormacao),
+                
+                Mensagem = string.Format("O Parecerista {0} ({1}) Inseriu comentários na proposta {2} - {3}. Acesse <a href=\"{4}\">Aqui</a> o cadastro da proposta.",
+                    parecerista.Login, 
+                    parecerista.Nome, 
+                    proposta.Id, 
+                    proposta.NomeFormacao, 
+                    linkSistema),
+                
             };
         }
     }
