@@ -7,9 +7,9 @@ using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
-    public class CasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF : CasoDeUsoAbstrato, ICasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF
+    public class CasoDeUsoNotificarPareceristasParaReanalise : CasoDeUsoAbstrato, ICasoDeUsoNotificarPareceristasParaReanalise
     {
-        public CasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF(IMediator mediator) : base(mediator)
+        public CasoDeUsoNotificarPareceristasParaReanalise(IMediator mediator) : base(mediator)
         {}
 
         public async Task<bool> Executar(MensagemRabbit param)
@@ -24,8 +24,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo())
                 throw new Exception(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
             
-            if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista())
-                return await mediator.Send(new GerarNotificacaoPareceristaCommand(proposta, notificacaoPropostaPareceristasDto.Pareceristas));
+            if (proposta.Situacao.EstaAguardandoReanalisePeloParecerista())
+                return await mediator.Send(new GerarNotificacaoReanalisePareceristaCommand(proposta, notificacaoPropostaPareceristasDto.Pareceristas));
 
             return false;
         }

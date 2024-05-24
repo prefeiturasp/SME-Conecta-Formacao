@@ -18,9 +18,9 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
 {
-    public class Ao_atribuir_pareceristas_pelo_df : TestePropostaBase
+    public class Ao_enviar_para_reanalise_dos_pareceristas : TestePropostaBase
     {
-        public Ao_atribuir_pareceristas_pelo_df(CollectionFixture collectionFixture, bool limparBanco = true) : base(collectionFixture)
+        public Ao_enviar_para_reanalise_dos_pareceristas(CollectionFixture collectionFixture, bool limparBanco = true) : base(collectionFixture)
         {
         }
 
@@ -30,8 +30,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuarioLogadoQuery, Dominio.Entidades.Usuario>), typeof(ObterUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
         }
 
-        [Fact(DisplayName = "Notificacao - Deve notificar os pareceristas que foram atribuídos pelo DF")]
-        public async Task Deve_notificar_os_pareceristas_que_foram_atribuidos_pelo_df()
+        [Fact(DisplayName = "Notificacao - Deve notificar os pareceristas quanto a reanálise solicitada pela Área Promotora")]
+        public async Task Deve_notificar_os_pareceristas_quanto_a_reanalise_solicitada_pela_area_promotora()
         {
             // arrange
             await InserirParametrosProposta();
@@ -65,13 +65,25 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             await InserirUsuario("3", "Parecerista3");
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoAnalisePeloParecerista);
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoReanalisePeloParecerista);
 
-            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1"));
-            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2", "Parecerista2"));
-            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "3", "Parecerista3"));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1", SituacaoParecerista.Enviada));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2", "Parecerista2", SituacaoParecerista.Enviada));
+            await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "3", "Parecerista3", SituacaoParecerista.Enviada));
+
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1, CampoConsideracao.Formato, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1, CampoConsideracao.FormacaoHomologada, "1"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1, CampoConsideracao.TipoFormacao, "1"));
             
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF>();
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2, CampoConsideracao.Formato, "2"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2, CampoConsideracao.FormacaoHomologada, "2"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2, CampoConsideracao.TipoFormacao, "2"));
+            
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3, CampoConsideracao.Formato, "3"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3, CampoConsideracao.FormacaoHomologada, "3"));
+            await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3, CampoConsideracao.TipoFormacao, "3"));
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoNotificarPareceristasParaReanalise>();
             var mapper = ObterCasoDeUso<IMapper>();
 
             var pareceristas = ObterTodos<PropostaParecerista>();
@@ -88,8 +100,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var notificacoes = ObterTodos<Dominio.Entidades.Notificacao>();
             notificacoes.Count().ShouldBe(1);
             var notificacao = notificacoes.FirstOrDefault();
-            notificacao.Mensagem.ShouldNotBeEmpty();
-            notificacao.Titulo.ShouldNotBeEmpty();
+            notificacao.Mensagem.ShouldBe(string.Format(
+                "A proposta {0} - {1} foi atribuída a você. Acesse <a href=\"{2}\">Aqui</a> o cadastro da proposta e registre seu parecer final.",
+                proposta.Id,
+                proposta.NomeFormacao,
+                "http://conecta"));
+            
+            notificacao.Titulo.ShouldBe(string.Format("Proposta {0} - {1} foi analisada atribuída a você",  
+                proposta.Id, 
+                proposta.NomeFormacao));
+            
             notificacao.Categoria.ShouldBe(NotificacaoCategoria.Aviso);
             notificacao.Tipo.ShouldBe(NotificacaoTipo.Proposta);
             notificacao.Parametros.ShouldNotBeEmpty();
@@ -101,8 +121,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             notificacoesUsuarios.Any(a=> a.Login.Equals("3") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
         }
         
-        [Fact(DisplayName = "Notificacao - Não deve notificar os pareceristas quando estiver na situação aguardando análise pelo DF")]
-        public async Task Nao_deve_notificar_os_pareceristas_quando_estiver_na_situacao_aguardando_analise_pelo_df()
+        [Fact(DisplayName = "Notificacao - Não deve notificar os pareceristas quanto a reanálise solicitada pela Área Promotora")]
+        public async Task Nao_deve_notificar_os_pareceristas_quanto_a_reanalise_solicitada_pela_area_promotora()
         {
             // arrange
             await InserirParametrosProposta();
