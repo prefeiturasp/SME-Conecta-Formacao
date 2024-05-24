@@ -4,7 +4,11 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>a13ce29a-c581-4f0d-9e36-e32fc12ce3ac</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\SME.ConectaFormacao.Infra.Servicos\SME.ConectaFormacao.Infra.Servicos.csproj" />
