@@ -28,10 +28,12 @@ namespace SME.ConectaFormacao.Infra
         public const string EncerrarInscricaoAutomaticamenteUsuarios = "conecta.inscricao.encerrar.cursista.inativo.usuarios";
         
         public const string NotificarPareceristasSobreAtribuicaoPelaDF = "conecta.notificar.pareceristas.sobre.atribuicao.pela.df";
+        public const string NotificarDFPeloEnvioParecerPeloParecerista = "conecta.notificar.df.pelo.envio.parecer.pelo.parecerista";
+        public const string NotificarAreaPromotoraParaAnaliseParecer = "conecta.notificar.area.promotora.para.analise.parecer";
+        public const string NotificarPareceristasParaReanalise = "conecta.notificar.pareceristas.para.reanalise";
+        public const string NotificarResponsavelDFSobreReanaliseDoParecerista = "conecta.notificar.responsavel.df.sobre.reanalise.do.parecerista";
         
-        public const string NotificarProposta = "conecta.notificar.proposta";
-        public const string NotificarPropostaUsuario = "conecta.notificar.proposta.usuario";
-        public const string NotificarPropostaUsuarioEmail = "conecta.notificar.proposta.usuario.email";
-        public const string NotificarPropostaUsuarioSignalR = "conecta.notificar.proposta.usuario.signalR";
+        public const string EnviarEmail = "conecta.enviar.email";
+        public const string EnviarNotificacao = "conecta.notificar.df.pelo.envio.parecer.pelo.parecerista";
     }
 }

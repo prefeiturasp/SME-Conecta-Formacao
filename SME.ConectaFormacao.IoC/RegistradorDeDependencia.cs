@@ -431,10 +431,18 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverUsuarioRedeParceria, CasoDeUsoRemoverUsuarioRedeParceria>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoObterTotalNotificacaoNaoLida, CasoDeUsoObterTotalNotificacaoNaoLida>();
-
         _serviceCollection.TryAddScoped<ICasoDeUsoObterNotificacao, CasoDeUsoObterNotificacao>();
-        
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterNotificacaoPaginada, CasoDeUsoObterNotificacaoPaginada>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterCategoriaNotificacao, CasoDeUsoObterCategoriaNotificacao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoNotificacao, CasoDeUsoObterTipoNotificacao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterSituacaoNotificacao, CasoDeUsoObterSituacaoNotificacao>();
+
         _serviceCollection.TryAddScoped<ICasoDeUsoEnviarEmail, CasoDeUsoEnviarEmail>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF, CasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarDFPeloEnvioParecerPeloParecerista, CasoDeUsoNotificarDFPeloEnvioParecerPeloParecerista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarAreaPromotoraParaAnaliseParecer, CasoDeUsoNotificarAreaPromotoraParaAnaliseParecer>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarPareceristasParaReanalise, CasoDeUsoNotificarPareceristasParaReanalise>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarResponsavelDFSobreReanaliseDoParecerista, CasoDeUsoNotificarResponsavelDFSobreReanaliseDoParecerista>();
     }
 
     protected virtual void RegistrarHttpClients()

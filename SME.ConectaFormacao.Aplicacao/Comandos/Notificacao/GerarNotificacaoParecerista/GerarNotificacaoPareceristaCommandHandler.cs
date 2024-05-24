@@ -44,7 +44,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 
                 transacao.Commit();
 
-                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmailDevolverProposta, notificacao));
+                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, notificacao));
             }
             catch
             {
@@ -66,10 +66,17 @@ namespace SME.ConectaFormacao.Aplicacao
                 Categoria = NotificacaoCategoria.Aviso,
                 Tipo = NotificacaoTipo.Proposta,
                 TipoEnvio = NotificacaoTipoEnvio.Email,
-                Titulo = string.Format("Proposta '{0}' - '{1}' foi atribuída a você", proposta.Id, proposta.NomeFormacao),
-                Mensagem = string.Format("A proposta '{0}' - '{1}' foi atribuída a você. Acesse <a href=\"{2}\">Aqui</a> o cadastro da proposta e registre seu parecer.",proposta.Id, proposta.NomeFormacao, linkSistema),
                 Parametros = JsonConvert.SerializeObject(proposta),
-                Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(pareceristas)
+                Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(pareceristas),
+                    
+                Titulo = string.Format("Proposta {0} - {1} foi atribuída a você", 
+                proposta.Id, 
+                proposta.NomeFormacao),
+                
+                Mensagem = string.Format("A proposta {0} - {1} foi atribuída a você. Acesse <a href=\"{2}\">Aqui</a> o cadastro da proposta e registre seu parecer.",
+                    proposta.Id, 
+                    proposta.NomeFormacao, 
+                    linkSistema)
             };
         }
     }

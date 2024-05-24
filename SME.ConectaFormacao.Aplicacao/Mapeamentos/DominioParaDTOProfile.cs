@@ -302,8 +302,22 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.CategoriaDescricao, opt => opt.MapFrom(o => o.Categoria.Nome()))
                 .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(o => o.Tipo.Nome()));
 
+            CreateMap<Notificacao, NotificacaoPaginadoDTO>()
+                .ForMember(dest => dest.CategoriaDescricao, opt => opt.MapFrom(o => o.Categoria.Nome()))
+                .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(o => o.Tipo.Nome()))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Usuarios.FirstOrDefault().Situacao))
+                .ForMember(dest => dest.SituacaoDescricao, opt => opt.MapFrom(o => o.Usuarios.FirstOrDefault().Situacao.Nome()));
+
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>();
+            CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista))
+                .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional));
+            
             CreateMap<PropostaPareceristaResumidoDTO,NotificacaoUsuario>();
+            CreateMap<RetornoUsuarioLoginNomeDTO,NotificacaoUsuario>();
+            CreateMap<Usuario,NotificacaoUsuario>()
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => NotificacaoUsuarioSituacao.NaoLida));
+            CreateMap<PropostaParecerista,PropostaPareceristaResumidoDTO>();
         }
     }
 }
