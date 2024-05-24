@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS public.notificacao (
 	excluido bool NOT NULL,
 	CONSTRAINT notificacao_pk PRIMARY KEY (id)
 );
-CREATE INDEX idx_notificacao_id ON public.notificacao USING btree (id);
+CREATE INDEX not exists idx_notificacao_id ON public.notificacao USING btree (id);
 
 --> Adicionando tabela de notificações do usuário
 CREATE TABLE IF NOT EXISTS public.notificacao_usuario (
