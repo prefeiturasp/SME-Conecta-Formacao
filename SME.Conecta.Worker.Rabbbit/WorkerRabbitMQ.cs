@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
@@ -38,16 +39,25 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaTratarTurmas, new ComandoRabbit("Realizar Inscrições Automáticas - Tratar as turmas - incluir novas conforme a quantidade de cursistas", typeof(ICasoDeUsoRealizarInscricaoAutomaticaTratarTurmas), true));
             Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaTratarCursistas, new ComandoRabbit("Realizar Inscrições Automáticas - Iterar sobre os cursistas e enviar para fila de inscrição", typeof(ICasoDeUsoRealizarInscricaoAutomaticaTratarCursista), true));
             Comandos.Add(RotasRabbit.RealizarInscricaoAutomaticaIncreverCursista, new ComandoRabbit("Realizar Inscrições Automáticas - Coletar usuário e inscrever cursista", typeof(ICasoDeUsoRealizarInscricaoAutomaticaInscreverCursista), true));
-            
+
             Comandos.Add(RotasRabbit.RealizarImportacaoInscricaoCursistaValidar, new ComandoRabbit("Realizar a busca dos itens da importação das inscrições de cursistas de forma paginada para processar a validação dos itens", typeof(ICasoDeUsoImportacaoInscricaoCursistaValidar), true));
             Comandos.Add(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem, new ComandoRabbit("Realiza a validação de cada linha da importação da inscrição do cursista", typeof(ICasoDeUsoImportacaoInscricaoCursistaValidarItem), true));
 
             Comandos.Add(RotasRabbit.ProcessarArquivoDeImportacaoInscricao, new ComandoRabbit("Processar arquivo de importação e seus registro validos", typeof(ICasoDeUsoProcessarArquivoDeImportacaoInscricao), true));
             Comandos.Add(RotasRabbit.ProcessarRegistroDoArquivoDeImportacaoInscricao, new ComandoRabbit("Processar registro do arquivo de importação", typeof(ICasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao), true));
-   
-            
+
+
             Comandos.Add(RotasRabbit.AtualizarCargoFuncaoVinculoInscricaoCursista, new ComandoRabbit("Atualizar o cargo, função e vínculo da inscrição do cursista.", typeof(ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista), true));
-            Comandos.Add(RotasRabbit.AtualizarCargoFuncaoVinculoInscricaoCursistaTratar, new ComandoRabbit("Atualizar o cargo, função e vínculo da inscrição do cursista - Tratar por cursista.", typeof(ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar), true));            
+            Comandos.Add(RotasRabbit.AtualizarCargoFuncaoVinculoInscricaoCursistaTratar, new ComandoRabbit("Atualizar o cargo, função e vínculo da inscrição do cursista - Tratar por cursista.", typeof(ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursistaTratar), true));
+
+            Comandos.Add(RotasRabbit.EnviarEmailDevolverProposta, new ComandoRabbit("Enviar e-mail ao devolver uma proposta", typeof(ICasoDeUsoEnviarEmailDevolverProposta), true));
+
+            Comandos.Add(RotasRabbit.EncerrarInscricaoAutomaticamente, new ComandoRabbit("Encerrar Inscrição Quando o servidor ficar inativo no EOL", typeof(ICasoDeUsoEncerrarInscricaoCursistaInativoSemCargo), true));
+            Comandos.Add(RotasRabbit.EncerrarInscricaoAutomaticamenteTurma, new ComandoRabbit("Encerrar Inscrição Quando o servidor ficar inativo no EOL - Turma", typeof(ICasoDeUsoEncerrarInscricaoAutomaticamenteTurma), true));
+            Comandos.Add(RotasRabbit.EncerrarInscricaoAutomaticamenteInscricoes, new ComandoRabbit("Encerrar Inscrição Quando o servidor ficar inativo no EOL - Inscrições", typeof(ICasoDeUsoEncerrarInscricaoAutomaticamenteInscricoes), true));
+            Comandos.Add(RotasRabbit.EncerrarInscricaoAutomaticamenteUsuarios, new ComandoRabbit("Encerrar Inscrição Quando o servidor ficar inativo no EOL -  Usuarios", typeof(ICasoDeUsoEncerrarInscricaoAutomaticamenteUsuarios), true));
+            
+            Comandos.Add(RotasRabbit.NotificarProposta, new ComandoRabbit("Notificar proposta", typeof(ICasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF), true));
         }
     }
 }

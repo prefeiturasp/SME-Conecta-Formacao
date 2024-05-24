@@ -38,6 +38,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.FormacaoHomologada).ToColumn("formacao_homologada");
             Map(t => t.IntegrarNoSGA).ToColumn("integrar_no_sga");
             Map(t => t.PublicoAlvoOutros).ToColumn("publico_alvo_outros");
+            Map(t => t.RfResponsavelDf).ToColumn("rf_responsavel_df");
+            Map(t => t.LinkParaInscricoesExterna).ToColumn("link_inscricoes_externa");
+            Map(t => t.CodigoEventoSigpec).ToColumn("codigo_evento_sigpec");
+            Map(t => t.NumeroHomologacao).ToColumn("numero_homologacao");
 
             Map(t => t.AreaPromotora).Ignore();
             Map(t => t.ArquivoImagemDivulgacao).Ignore();
@@ -59,6 +63,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(t => t.Movimentacao).Ignore();
             Map(t => t.ObterPropostaTurmasDres).Ignore();
             Map(t => t.EstaEmPeriodoDeInscricao).Ignore();
+            Map(t => t.UltimaJustificativaDevolucao).Ignore();
         }
     }
 }

@@ -53,7 +53,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
             else
             {
-                var possuiErros =  await ValidarSeDreUsuarioExternoPossuiErros(inscricao.PropostaTurmaId, usuario.CodigoEolUnidade, cancellationToken);
+                var possuiErros = await ValidarSeDreUsuarioExternoPossuiErros(inscricao.PropostaTurmaId, usuario.CodigoEolUnidade, cancellationToken);
                 if (!request.InscricaoManualDTO.PodeContinuar && possuiErros)
                     throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL);
             }
@@ -118,7 +118,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                     var cargoFuncao = await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(new long[] { codigoCargo }, new long[] { }), cancellationToken);
                     var cargoId = cargoFuncao.FirstOrDefault(t => t.Tipo == CargoFuncaoTipo.Cargo)?.Id;
-                    
+
                     if (cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
                     {
                         inscricao.CargoCodigo = codigoCargo.ToString();
@@ -136,7 +136,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
                     if (inscricao.CargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == inscricao.CargoId))
                         temErroCargo = true;
-                        
+
                 }
             }
 
@@ -177,10 +177,10 @@ namespace SME.ConectaFormacao.Aplicacao
                         temErroFuncao = true;
                 }
 
-                if(temErroCargo && temErroFuncao)
+                if (temErroCargo && temErroFuncao)
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
-            
-                if(!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
+
+                if (!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
             }
         }
@@ -224,7 +224,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 var codigo = unidade.Tipo == Infra.Servicos.Eol.UnidadeEolTipo.Escola ? unidade.CodigoReferencia : unidade.Codigo;
                 if (!dres.Any(t => t.Dre.Codigo == codigo))
                     return true;
-                    
+
                 return false;
             }
             return true;

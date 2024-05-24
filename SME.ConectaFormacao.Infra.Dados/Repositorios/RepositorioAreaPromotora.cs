@@ -177,7 +177,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public Task<IEnumerable<AreaPromotora>> ObterLista()
         {
-            var query = @"select id, nome from area_promotora where not excluido order by nome";
+            var query = @"select id, nome, grupo_id, tipo from area_promotora where not excluido order by nome";
 
             return conexao.Obter().QueryAsync<AreaPromotora>(query);
         }
@@ -186,6 +186,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             var query = @"select 1 from proposta where not excluido and area_promotora_id = @id limit 1 ";
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { id });
+        }
+        
+        public Task<AreaPromotora> ObterAreaPromotoraPorPropostaId(long propostaId)
+        {
+            var query = @" 
+            select 
+               id,
+               nome,
+               tipo,
+               email,
+               grupo_id,
+               excluido,
+               criado_em,
+               criado_por,
+               alterado_em,
+               alterado_por,
+               criado_login,
+               alterado_login,
+               dreid
+            from area_promotora ap
+            where not excluido and exists(select 1 from proposta p where not p.excluido and ap.id = p.area_promotora_id and p.id = @propostaId)";
+
+            return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { propostaId });
         }
     }
 }

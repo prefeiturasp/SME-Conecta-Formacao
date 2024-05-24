@@ -1,0 +1,1 @@
+ALTER TABLE public.proposta ADD IF NOT EXISTS numero_homologacao int8 NULL;

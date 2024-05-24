@@ -1,11 +1,10 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class Usuario : EntidadeBaseAuditavel
     {
-        public Usuario(string login, string nome, string email, string cpf, TipoUsuario tipo, SituacaoCadastroUsuario situacao, string? codigoEolUnidade, string? emailEducacional,TipoEmail tipoEmail)
+        public Usuario(string login, string nome, string email, string cpf, TipoUsuario tipo, SituacaoUsuario situacao, string? codigoEolUnidade, string? emailEducacional, TipoEmail tipoEmail)
         {
             Login = login;
             Nome = nome;
@@ -25,7 +24,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             Nome = nome;
             Email = email;
             Tipo = TipoUsuario.Interno;
-            Situacao = SituacaoCadastroUsuario.Ativo;
+            Situacao = SituacaoUsuario.Ativo;
         }
 
         public string Login { get; set; }
@@ -38,9 +37,13 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? CodigoEolUnidade { get; set; }
         public TipoUsuario Tipo { get; set; }
         public bool PossuiContratoExterno { get; set; }
-        public SituacaoCadastroUsuario Situacao { get; set; }
+        public SituacaoUsuario Situacao { get; set; }
         public string? EmailEducacional { get; set; }
         public TipoEmail? TipoEmail { get; set; }
+        public long? AreaPromotoraId { get; set; }
+        public string? Telefone { get; set; }
+
+        public AreaPromotora AreaPromotora { get; set; }
 
         public void Atualizar(string email, DateTime? dataHora, string? cpf)
         {
@@ -56,12 +59,12 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public void Ativar()
         {
-            Situacao = SituacaoCadastroUsuario.Ativo;
+            Situacao = SituacaoUsuario.Ativo;
         }
 
         public bool EstaAguardandoValidacaoEmail()
         {
-            return Situacao == SituacaoCadastroUsuario.AguardandoValidacaoEmail;
+            return Situacao == SituacaoUsuario.AguardandoValidacaoEmail;
         }
     }
 }

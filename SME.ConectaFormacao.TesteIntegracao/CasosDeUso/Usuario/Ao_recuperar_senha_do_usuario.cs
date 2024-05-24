@@ -10,6 +10,7 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -102,7 +103,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         public async Task Deve_retornar_token_quando_recuperacao_de_senha_for_realizada_com_sucesso()
         {
             // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
             var recuperacaoSenhaDto = UsuarioRecuperarSenhaMock.RecuperacaoSenhaDto;
+
+            UsuarioRecuperarSenhaMock.UsuarioPerfisRetornoDTOValido.UsuarioLogin = usuario.Login;
+            UsuarioRecuperarSenhaMock.LoginValido = usuario.Login;
+
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioRecuperarSenha>();
 
             // act
@@ -115,9 +123,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
             usuarios.Any().ShouldBeTrue();
 
-            var usuario = usuarios.FirstOrDefault();
-            usuario.Nome.ShouldNotBeNull(retorno.UsuarioNome);
-            usuario.Login.ShouldNotBeNull(retorno.UsuarioLogin);
+            var usuarioBanco = usuarios.FirstOrDefault();
+            usuarioBanco.Nome.ShouldNotBeNull(retorno.UsuarioNome);
+            usuarioBanco.Login.ShouldNotBeNull(retorno.UsuarioLogin);
         }
     }
 }

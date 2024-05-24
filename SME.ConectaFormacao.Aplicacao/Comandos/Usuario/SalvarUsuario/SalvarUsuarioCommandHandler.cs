@@ -30,14 +30,14 @@ namespace SME.ConectaFormacao.Aplicacao
         }
         private async Task AtualizarEmail(Usuario usuario)
         {
-           if(string.IsNullOrEmpty(usuario.EmailEducacional))
-               usuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario));
+            if (string.IsNullOrEmpty(usuario.EmailEducacional))
+                usuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario));
 
-           if(string.IsNullOrEmpty(usuario.Email))
-           {
-               usuario.Email = usuario.EmailEducacional;
-               await _mediator.Send(new AlterarEmailServicoAcessosCommand(usuario.Login, usuario.EmailEducacional));
-           }
+            if (string.IsNullOrEmpty(usuario.Email))
+            {
+                usuario.Email = usuario.EmailEducacional;
+                await _mediator.Send(new AlterarEmailServicoAcessosCommand(usuario.Login, usuario.EmailEducacional));
+            }
         }
         private async Task RemoverCache(string login)
         {

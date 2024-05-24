@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>> Handle(ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery request, CancellationToken cancellationToken)
         {
             var registrosPaginados = await _repositorioInscricaoImportacaoArquivoRegistro.ObterRegistroPorSituacaoDiferenteDe(
-                request.NumeroPagina,request.NumeroRegistros, request.ImportacaoArquivoId, null);
+                request.NumeroPagina, request.NumeroRegistros, request.ImportacaoArquivoId, null);
 
             return new PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>(_mapper.Map<IEnumerable<ImportacaoArquivoRegistroDTO>>(
                 registrosPaginados.Registros), registrosPaginados.TotalRegistros, request.NumeroRegistros);

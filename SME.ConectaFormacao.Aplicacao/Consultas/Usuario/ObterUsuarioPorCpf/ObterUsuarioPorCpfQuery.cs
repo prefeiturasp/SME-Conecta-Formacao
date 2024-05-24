@@ -21,5 +21,5 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(x => x.Cpf).NotEmpty().NotNull().WithMessage("É necessário informar o cpf para obter o usuário");
         }
     }
-    
+
 }

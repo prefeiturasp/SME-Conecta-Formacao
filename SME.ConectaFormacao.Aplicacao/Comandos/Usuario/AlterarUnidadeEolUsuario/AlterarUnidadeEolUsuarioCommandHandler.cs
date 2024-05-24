@@ -9,9 +9,9 @@ namespace SME.ConectaFormacao.Aplicacao
     public class AlterarUnidadeEolUsuarioCommandHandler : IRequestHandler<AlterarUnidadeEolUsuarioCommand, bool>
     {
         private readonly IRepositorioUsuario _repositorioUsuario;
-        private readonly IMediator _mediator; 
+        private readonly IMediator _mediator;
 
-        public AlterarUnidadeEolUsuarioCommandHandler(IRepositorioUsuario repositorioUsuario,IMediator mediator)
+        public AlterarUnidadeEolUsuarioCommandHandler(IRepositorioUsuario repositorioUsuario, IMediator mediator)
         {
             _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));

@@ -35,6 +35,11 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? AcaoFormativaLink { get; set; }
         public bool IntegrarNoSGA { get; set; }
         public string? PublicoAlvoOutros { get; set; }
+        public string? RfResponsavelDf { get; set; }
+        public string? UltimaJustificativaDevolucao { get; set; }
+        public string? LinkParaInscricoesExterna { get; set; }
+        public long? CodigoEventoSigpec { get; set; }
+        public long? NumeroHomologacao { get; set; }
 
         public AreaPromotora AreaPromotora { get; set; }
         public Arquivo ArquivoImagemDivulgacao { get; set; }
@@ -47,6 +52,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; }
         public IEnumerable<PropostaCriterioCertificacao> CriterioCertificacao { get; set; }
         public IEnumerable<PropostaRegente> Regentes { get; set; }
+        public IEnumerable<PropostaParecerista>? Pareceristas { get; set; }
         public IEnumerable<PropostaTutor> Tutores { get; set; }
         public IEnumerable<PropostaTurma> Turmas { get; set; }
         public IEnumerable<PropostaTurmaDre> TurmasDres { get; set; }
@@ -71,7 +77,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             }
         }
         public IEnumerable<PropostaTipoInscricao> TiposInscricao { get; set; }
-        
+
         public bool EstaEmPeriodoDeInscricao
         {
             get

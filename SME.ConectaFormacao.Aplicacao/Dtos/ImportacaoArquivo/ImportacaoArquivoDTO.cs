@@ -11,12 +11,12 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo
             Tipo = tipo;
             Situacao = situacao;
         }
-        
+
         public long Id { get; set; }
         public long PropostaId { get; set; }
-        
+
         public string Nome { get; set; }
-        
+
         public TipoImportacaoArquivo Tipo { get; set; }
         public SituacaoImportacaoArquivo Situacao { get; set; }
     }

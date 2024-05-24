@@ -19,9 +19,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaVagaRemanecente>> ObterVagasRemacenentesPorId(long propostaId);
         Task RemoverFuncoesEspecificas(IEnumerable<PropostaFuncaoEspecifica> funcoesEspecificas);
         Task RemoverPublicosAlvo(IEnumerable<PropostaPublicoAlvo> publicoAlvo);
-        Task<int> ObterTotalRegistrosPorFiltros(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada);
+        Task<int> ObterTotalRegistrosPorFiltros(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, string loginUsuarioLogado, Guid perfilUsuarioLogado);
         Task<IEnumerable<Proposta>> ObterDadosPaginados(long? areaPromotoraIdUsuarioLogado, int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds,
-            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada);
+            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, string loginUsuarioLogado, Guid perfilUsuarioLogado);
         Task<PropostaEncontro> ObterEncontroPorId(long encontroId);
         Task InserirEncontro(long propostaId, PropostaEncontro encontro);
         Task InserirEncontroTurmas(long propostaId, IEnumerable<PropostaEncontroTurma> turmaIds);
@@ -99,12 +99,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task InserirTiposInscricao(long propostaId, IEnumerable<PropostaTipoInscricao> tiposInscricao);
         Task RemoverTiposInscricao(IEnumerable<PropostaTipoInscricao> tiposInscrocao);
         Task RemoverPropostaMovimentacao(long propostaId);
-        Task<IEnumerable<Proposta>> ObterPropostasIdsDashBoard(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, IEnumerable<SituacaoProposta> situacoesProposta);
+        Task<IEnumerable<Proposta>> ObterPropostasIdsDashBoard(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[]? publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, IEnumerable<SituacaoProposta> situacoesProposta, string loginUsuarioLogado, Guid perfilUsuarioLogado);
         Task<IEnumerable<Proposta>> ObterPropostasDashBoard(long[] propostasIds);
         Task<bool> ExisteCargoFuncaoOutrosNaProposta(long propostaId);
         Task<int> ObterTotalVagasTurma(long id);
         Task<int> ObterTotalTurmasRegentes(long propostaId);
         Task<PropostaTurma> ObterTurmaPorNome(string nome, long propostaId);
-        Task<bool> UsuarioEstaInscritoNaProposta(long usuarioId, long propostaId);
+        Task<IEnumerable<long>> PropostasConfirmadasQueNaoEncerramAinda();
+        Task<IEnumerable<long>> PropostasTurmaIdsPorPropostaId(long propostaId);
+        Task<bool> RemoverPropostaParecer(PropostaPareceristaConsideracao pareceristaConsideracao);
+        Task<PropostaPareceristaConsideracao> ObterParecerPorId(long parecerId);
+        Task<bool> ExistePareceristasAdicionadosNaProposta(long propostaId);
+        Task InserirPareceristas(long id, IEnumerable<PropostaParecerista> pareceristas, SituacaoParecerista situacaoParecerista);
+        Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorId(long id);
+        Task<IEnumerable<PropostaPareceristaConsideracao>> ObterPropostaPareceristaConsideracaoPorId(long id);
+        Task<bool> AvaliarSituacaoPropostaPorIdSituacao(long propostaId, SituacaoProposta situacaoProposta);
+        Task<IEnumerable<PropostaParecerista>> ObterPareceristasPorPropostaId(long propostaId);
+        Task AtualizarSituacaoParecerista(long propostaPareceristaId, string registroFuncional, SituacaoParecerista situacao, string justificativa);
+        Task<PropostaParecerista> ObterPareceristaPorPropostaIdRegistroFuncional(long propostaId, string registroFuncional);
+        Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id);
+        Task RemoverParecerista(PropostaParecerista parecerista);
     }
 }
