@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares, SituacaoProposta situacao = SituacaoProposta.Cadastrada,
             FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica,
             bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false, bool numeroHomologacao = false,
-            int quantidadeParecerista = 0, string criado_login = "")
+            int quantidadeParecerista = 0, string criado_login = "", string responsavelDF = "")
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
@@ -99,6 +99,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 false, false, formacaoHomologada, integrarNoSga, dataInscricaoForaPeriodo);
 
             proposta.AreaPromotora = areaPromotora;
+            proposta.RfResponsavelDf = responsavelDF;
 
             if (tipoInscricao == TipoInscricao.Externa)
                 proposta.LinkParaInscricoesExterna = new Faker().Lorem.Sentence(20);

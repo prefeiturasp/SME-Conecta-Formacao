@@ -13,6 +13,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             
             Map(c => c.Nome).Ignore();
             Map(c => c.Notificacao).Ignore();
+            Map(c => c.Email).Ignore();
         }
     }
 }

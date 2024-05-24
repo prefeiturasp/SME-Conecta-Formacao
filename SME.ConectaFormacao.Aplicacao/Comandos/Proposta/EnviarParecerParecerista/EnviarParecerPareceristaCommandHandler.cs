@@ -50,20 +50,31 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var naoPossuiPareceristasAguardandoParecerFinal = !pareceristas.Any(a => a.Situacao.EstaEnviada() || a.Situacao.EstaAguardandoRevalidacao());
 
-            if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && naoPossuiPreceristasAguardandoValidacao)
+            if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista())
             {
-                await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
-                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
+                if (naoPossuiPreceristasAguardandoValidacao)
+                {
+                    await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
+                    await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
+                }
+                
+                var pareceristaResumido = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristas.Where(w=> w.RegistroFuncional.Equals(parecerista.RegistroFuncional)));
+                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarDFPeloEnvioParecerPeloParecerista, new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristaResumido)));
+                return true;
             }
-            else if (proposta.Situacao.EstaAguardandoReanalisePeloParecerista() && naoPossuiPareceristasAguardandoParecerFinal)
+            
+            if (proposta.Situacao.EstaAguardandoReanalisePeloParecerista())
             {
-                await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoValidacaoFinalPelaDF), cancellationToken);
-                await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoValidacaoFinalPelaDF), cancellationToken);
+                if (naoPossuiPareceristasAguardandoParecerFinal)
+                {
+                    await _mediator.Send(new EnviarPropostaCommand(proposta.Id, SituacaoProposta.AguardandoValidacaoFinalPelaDF), cancellationToken);
+                    await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoValidacaoFinalPelaDF), cancellationToken);
+                }
+                
+                var pareceristaResumido = _mapper.Map<PropostaPareceristaResumidoDTO>(pareceristas.FirstOrDefault(w=> w.RegistroFuncional.Equals(parecerista.RegistroFuncional)));
+                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarResponsavelDFSobreReanaliseDoParecerista, new NotificacaoPropostaPareceristaDTO(proposta.Id, pareceristaResumido)));
+                return true;
             }
-
-            var pareceristaResumido = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristas.Where(w=> w.RegistroFuncional.Equals(parecerista.RegistroFuncional)));
-
-            await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarDFPeloEnvioParecerPeloParecerista, new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristaResumido)));
 
             return true;
         }
