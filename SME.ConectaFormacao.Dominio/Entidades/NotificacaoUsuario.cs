@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         
         public string Login { get; set; }
         public string Nome { get; set; }
+        public string Email { get; set; }
         
         public NotificacaoUsuarioSituacao Situacao { get; set; }
     }

@@ -31,6 +31,7 @@ namespace SME.ConectaFormacao.Infra
         public const string NotificarDFPeloEnvioParecerPeloParecerista = "conecta.notificar.df.pelo.envio.parecer.pelo.parecerista";
         public const string NotificarAreaPromotoraParaAnaliseParecer = "conecta.notificar.area.promotora.para.analise.parecer";
         public const string NotificarPareceristasParaReanalise = "conecta.notificar.pareceristas.para.reanalise";
+        public const string NotificarResponsavelDFSobreReanaliseDoParecerista = "conecta.notificar.responsavel.df.sobre.reanalise.do.parecerista";
         
         public const string EnviarEmail = "conecta.enviar.email";
         public const string EnviarNotificacao = "conecta.notificar.df.pelo.envio.parecer.pelo.parecerista";

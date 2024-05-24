@@ -4,5 +4,11 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
     {
         public string Login { get; set; }
         public string Nome { get; set; }
+
+        public PropostaPareceristaResumidoDTO(string login, string nome)
+        {
+            Login = login;
+            Nome = nome;
+        }
     }
 }
