@@ -301,6 +301,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<Notificacao, NotificacaoDTO>()
                 .ForMember(dest => dest.CategoriaDescricao, opt => opt.MapFrom(o => o.Categoria.Nome()))
                 .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(o => o.Tipo.Nome()));
+
+            CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>();
+            CreateMap<PropostaPareceristaResumidoDTO,NotificacaoUsuario>();
         }
     }
 }
