@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
@@ -297,6 +298,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(o => o.Email))
                 .ForMember(dest => dest.Telefone, opt => opt.MapFrom(o => o.Telefone));
 
+            CreateMap<Notificacao, NotificacaoDTO>()
+                .ForMember(dest => dest.CategoriaDescricao, opt => opt.MapFrom(o => o.Categoria.Nome()))
+                .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(o => o.Tipo.Nome()));
+
+            CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>();
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista))
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional));

@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao
 {
