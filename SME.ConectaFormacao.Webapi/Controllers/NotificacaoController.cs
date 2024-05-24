@@ -7,7 +7,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
-    //[Authorize("Bearer")]
+    [Authorize("Bearer")]
     public class NotificacaoController : BaseController
     {
         [HttpGet("categoria")]
