@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS public.notificacao_usuario (
 	CONSTRAINT notificacao_usuario_pk PRIMARY KEY (id),
 	CONSTRAINT notificacao_usuario_notificacao_fk FOREIGN KEY (notificacao_id) REFERENCES public.notificacao(id)
 );
-CREATE INDEX idx_notificacao_usuario_id ON public.notificacao_usuario USING btree (id);
+CREATE INDEX if not exists idx_notificacao_usuario_id ON public.notificacao_usuario USING btree (id);
 
 --> Adicionando parâmetro para endereço do sistema
 insert into parametro_sistema (nome, tipo, descricao, valor, ano, ativo, criado_em, criado_por, criado_login)
