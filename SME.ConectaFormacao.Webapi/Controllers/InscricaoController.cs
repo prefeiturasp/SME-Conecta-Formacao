@@ -102,6 +102,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUso.Executar(ids));
         }
 
+        [HttpPut("cancelar")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> CancelarInscricoes(
+            [FromServices] ICasoDeUsoCancelarInscricoes casoDeUso,
+            [FromQuery] long[] ids, 
+            [FromBody] string motivo)
+        {
+            return Ok(await casoDeUso.Executar(ids, motivo));
+        }
+
         [HttpGet("{propostaId}")]
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
