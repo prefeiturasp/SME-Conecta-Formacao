@@ -55,9 +55,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterNotificacao(
-            [FromServices] ICasoDeUsoObterTotalNotificacaoNaoLida casoDeUso)
+            [FromServices] ICasoDeUsoObterNotificacao casoDeUso,
+            [FromRoute] long id)
         {
-            return Ok(await casoDeUso.Executar());
+            return Ok(await casoDeUso.Executar(id));
         }
 
         [HttpGet]
