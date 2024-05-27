@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -97,7 +98,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     proposta.NomeFormacao, 
                     linkSistema),
                 
-                Parametros = JsonConvert.SerializeObject(proposta),
+                Parametros = JObject.FromObject(new { propostaId = proposta.Id }).ToString(),
                 Usuarios =  destinatarios
             };
         }

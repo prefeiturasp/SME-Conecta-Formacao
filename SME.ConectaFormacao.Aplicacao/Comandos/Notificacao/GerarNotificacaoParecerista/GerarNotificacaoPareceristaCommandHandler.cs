@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -80,7 +81,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 Categoria = NotificacaoCategoria.Aviso,
                 Tipo = NotificacaoTipo.Proposta,
                 TipoEnvio = NotificacaoTipoEnvio.Email,
-                Parametros = JsonConvert.SerializeObject(proposta),
+                Parametros = JObject.FromObject(new { propostaId = proposta.Id }).ToString(),
                 Usuarios =  usuarios,
                     
                 Titulo = string.Format("Proposta {0} - {1} foi atribuída a você", 
