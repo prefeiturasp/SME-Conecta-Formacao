@@ -6,8 +6,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\SME.Conecta.Notificacao.Worker\SME.Conecta.Notificacao.Worker.csproj" />
+    <ItemGroup>        
         <ProjectReference Include="..\SME.ConectaFormacao.Dominio\SME.ConectaFormacao.Dominio.csproj" />
         <ProjectReference Include="..\SME.ConectaFormacao.Infra.Dados\SME.ConectaFormacao.Infra.Dados.csproj" />
         <ProjectReference Include="..\SME.ConectaFormacao.Infra.Servicos\SME.ConectaFormacao.Infra.Servicos.csproj" />

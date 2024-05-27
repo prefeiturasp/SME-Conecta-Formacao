@@ -1,6 +1,6 @@
 ﻿
 using MediatR;
-using SME.Conecta.Notificacao.Worker;
+using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(EnviarNotificacaoCommand request, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new PublicarNaFilaRabbitCommand(WorkerRabbitMQNotificacaoConstantes.EnviarNotificacaoCriadaUsuarios, request.Notificacao));
+            await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarNotificacaoCriadaUsuarios, request.Notificacao));
 
             return true;
         }
