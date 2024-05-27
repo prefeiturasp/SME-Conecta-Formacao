@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             await InserirUsuario("4", "CriadorProposta");
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Aprovada, criado_login:"4");
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Aprovada, criadoLogin:"4");
 
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1", SituacaoParecerista.Enviada));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2", "Parecerista2", SituacaoParecerista.Enviada));
@@ -162,7 +162,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             await InserirUsuario("4", "CriadorProposta");
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Recusada, criado_login:"4");
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.Recusada, criadoLogin:"4");
 
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1", SituacaoParecerista.Enviada));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2", "Parecerista2", SituacaoParecerista.Enviada));

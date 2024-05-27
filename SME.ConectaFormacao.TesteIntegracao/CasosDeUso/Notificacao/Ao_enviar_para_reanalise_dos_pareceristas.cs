@@ -60,9 +60,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
-            await InserirUsuario("1", "Parecerista1");
-            await InserirUsuario("2", "Parecerista2");
-            await InserirUsuario("3", "Parecerista3");
+            await InserirUsuario("1", "Parecerista1","parecerista1@emaillcom");
+            await InserirUsuario("2", "Parecerista2","parecerista2@emaillcom");
+            await InserirUsuario("3", "Parecerista3","parecerista3@emaillcom");
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
                 modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoReanalisePeloParecerista);
@@ -116,9 +116,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             
             var notificacoesUsuarios = ObterTodos<NotificacaoUsuario>();
             notificacoesUsuarios.Count().ShouldBe(3);
-            notificacoesUsuarios.Any(a=> a.Login.Equals("1") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
-            notificacoesUsuarios.Any(a=> a.Login.Equals("2") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
-            notificacoesUsuarios.Any(a=> a.Login.Equals("3") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
+            notificacoesUsuarios.Any(a=> a.Login.Equals("1") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1 && a.Nome.Equals("Parecerista1") && a.Email.Equals("parecerista1@emaillcom")).ShouldBeTrue();
+            notificacoesUsuarios.Any(a=> a.Login.Equals("2") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1 && a.Nome.Equals("Parecerista2") && a.Email.Equals("parecerista2@emaillcom")).ShouldBeTrue();
+            notificacoesUsuarios.Any(a=> a.Login.Equals("3") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1 && a.Nome.Equals("Parecerista3") && a.Email.Equals("parecerista3@emaillcom")).ShouldBeTrue();
         }
         
         [Fact(DisplayName = "Notificacao - Não deve notificar os pareceristas quanto a reanálise solicitada pela Área Promotora")]
