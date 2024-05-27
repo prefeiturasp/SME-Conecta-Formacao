@@ -78,6 +78,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoSalvarInscricao.Executar(id));
         }
 
+        [HttpPut("confirmar")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> ConfirmarInscricoes(
+            [FromServices] ICasoDeUsoConfirmarInscricoes casoDeUso,
+            [FromQuery] long[] ids)
+        {
+            return Ok(await casoDeUso.Executar(ids));
+        }
+
         [HttpGet("{propostaId}")]
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

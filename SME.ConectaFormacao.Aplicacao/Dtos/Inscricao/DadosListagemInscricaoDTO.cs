@@ -15,5 +15,13 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public string? Origem { get; set; }
         public bool IntegrarNoSga { get; set; }
         public bool Iniciado { get; set; }
+        public DadosListagemInscricaoPermissaoDTO Permissao { get; set; }
+    }
+
+    public class DadosListagemInscricaoPermissaoDTO
+    {
+        public bool PodeCancelar { get; set; }
+        public bool PodeColocarEmEspera { get; set; }
+        public bool PodeConfirmar { get; set; }
     }
 }
