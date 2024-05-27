@@ -21,7 +21,9 @@ CREATE INDEX if not exists idx_notificacao_id ON public.notificacao USING btree 
 CREATE TABLE IF NOT EXISTS public.notificacao_usuario (
 	id int8 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 CACHE 1 NO CYCLE) NOT NULL,
 	notificacao_id int8 not null,
-	login varchar(50) NOT NULL,
+	login varchar(50) NULL,
+	nome varchar(100) NOT NULL,
+	email varchar(100) NULL,
 	situacao int2 NOT NULL,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
