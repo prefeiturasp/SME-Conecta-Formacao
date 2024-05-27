@@ -36,7 +36,5 @@ namespace SME.ConectaFormacao.Infra
         
         public const string EnviarEmail = "conecta.enviar.email";
         public const string EnviarNotificacao = "conecta.enviar.notificacao";
-        
-        public const string EnviarNotificacaoCriadaUsuarios = "conecta.notificacao.criada.usuarios";
     }
 }
