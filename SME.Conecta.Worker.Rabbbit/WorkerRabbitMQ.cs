@@ -62,6 +62,7 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.NotificarAreaPromotoraParaAnaliseParecer, new ComandoRabbit("Notificar área promotora para análise do parecer", typeof(ICasoDeUsoNotificarAreaPromotoraParaAnaliseParecer), true));
             Comandos.Add(RotasRabbit.NotificarPareceristasParaReanalise, new ComandoRabbit("Notificar parecerista para reanálise", typeof(ICasoDeUsoNotificarPareceristasParaReanalise), true));
             Comandos.Add(RotasRabbit.NotificarResponsavelDFSobreReanaliseDoParecerista, new ComandoRabbit("Notificar responsável DF sobre reanálise do parecerista", typeof(ICasoDeUsoNotificarResponsavelDFSobreReanaliseDoParecerista), true));
+            Comandos.Add(RotasRabbit.NotificarAreaPromotoraSobreValidacaoFinalPelaDF, new ComandoRabbit("Notificar Área promotora sobre a validação final pela DF", typeof(ICasoDeUsoNotificarResponsavelDFSobreReanaliseDoParecerista), true));
             
             Comandos.Add(RotasRabbit.EnviarEmail, new ComandoRabbit("Enviar e-mail", typeof(ICasoDeUsoEnviarEmail), true));
         }

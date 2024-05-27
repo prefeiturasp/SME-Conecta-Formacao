@@ -177,4 +177,5 @@ public class MensagemNegocio
     public const string NOTIFICACAO_NAO_ENCONTRADA = "Notificação não encontrada";
     public const string NOTIFICACAO_NAO_ENCONTRADA_USUARIO = "Notificação não encontrada para o usuário logado";
     public const string RESPONSAVEL_DF_NAO_ENCONTRADO = "O responsável DF não foi encontrado.";
+    public const string MOVIMENTACAO_PROPOSTA_NAO_ENCONTRADA = "Movimentação da proposta não encontrada";
 }
