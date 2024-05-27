@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Newtonsoft.Json;
+using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -45,7 +46,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 
                 transacao.Commit();
 
-                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarNotificacao, notificacao));
+                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarNotificacao, _mapper.Map<NotificacaoSignalRDTO>(notificacao)));
             }
             catch
             {
