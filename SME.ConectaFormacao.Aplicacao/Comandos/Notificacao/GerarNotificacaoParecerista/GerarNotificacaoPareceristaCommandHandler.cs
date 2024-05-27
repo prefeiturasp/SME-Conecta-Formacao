@@ -81,7 +81,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 Categoria = NotificacaoCategoria.Aviso,
                 Tipo = NotificacaoTipo.Proposta,
                 TipoEnvio = NotificacaoTipoEnvio.Email,
-                Parametros = JObject.FromObject(new { propostaId = proposta.Id }).ToString(),
+                Parametros = new { propostaId = proposta.Id}.ObjetoParaJson(),
                 Usuarios =  usuarios,
                     
                 Titulo = string.Format("Proposta {0} - {1} foi atribuída a você", 

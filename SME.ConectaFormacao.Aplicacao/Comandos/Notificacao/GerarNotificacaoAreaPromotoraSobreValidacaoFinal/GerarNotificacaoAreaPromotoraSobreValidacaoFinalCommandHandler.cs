@@ -97,7 +97,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 Categoria = NotificacaoCategoria.Aviso,
                 Tipo = NotificacaoTipo.Proposta,
                 TipoEnvio = NotificacaoTipoEnvio.Email,
-                Parametros = JObject.FromObject(new { propostaId = proposta.Id }).ToString(),
+                Parametros = new { propostaId = proposta.Id}.ObjetoParaJson(),
                 Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(destinatarios),
                     
                 Titulo = string.Format("Parecer final da proposta {0} - {1}", 

@@ -98,7 +98,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     proposta.NomeFormacao, 
                     linkSistema),
                 
-                Parametros = JObject.FromObject(new { propostaId = proposta.Id }).ToString(),
+                Parametros = new { propostaId = proposta.Id}.ObjetoParaJson(),
                 Usuarios =  destinatarios
             };
         }
