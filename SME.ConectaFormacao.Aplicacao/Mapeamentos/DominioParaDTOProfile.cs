@@ -325,7 +325,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<Notificacao, NotificacaoSignalRDTO>()
                 .ForMember(dest => dest.Usuarios, opt => opt.MapFrom(o => o.Usuarios.Any() ? o.Usuarios.Select(s => s.Login) : ArraySegment<string>.Empty));
             
-            CreateMap<Usuario, EnviarEmailDto>()
+            CreateMap<NotificacaoUsuario, EnviarEmailDto>()
                 .ForMember(dest => dest.NomeDestinatario, opt => opt.MapFrom(src => src.Nome))
                 .ForMember(dest => dest.EmailDestinatario, opt => opt.MapFrom(src => src.Email));
         }
