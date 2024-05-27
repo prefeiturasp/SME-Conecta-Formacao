@@ -85,9 +85,10 @@ namespace SME.ConectaFormacao.Aplicacao
                     proposta.Id, 
                     proposta.NomeFormacao),
                 
-                Mensagem = string.Format("O Parecerista  {0} - ({1}) sugeriu a aprovação (ou recusa) da proposta {2} - {3}. Motivo: {4}",
+                Mensagem = string.Format("O Parecerista  {0} - ({1}) sugeriu a {2} da proposta {3} - {4}. Motivo: {5}",
                     parecerista.Login,
                     parecerista.Nome,
+                    motivo.FirstOrDefault(f=> f.RegistroFuncional.Equals(parecerista.Login)).Situacao.Nome(),
                     proposta.Id, 
                     proposta.NomeFormacao, 
                     motivo.FirstOrDefault(f=> f.RegistroFuncional.Equals(parecerista.Login)).Justificativa)
