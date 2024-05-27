@@ -8,9 +8,9 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 {
-    public class Ao_cancelar_inscricao : TestePropostaBase
+    public class Ao_cancelar_inscricoes : TestePropostaBase
     {
-        public Ao_cancelar_inscricao(CollectionFixture collectionFixture) : base(collectionFixture)
+        public Ao_cancelar_inscricoes(CollectionFixture collectionFixture) : base(collectionFixture)
         {
         }
 
@@ -31,10 +31,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var vaga = PropostaMock.GerarTurmaVaga(propostaTurma.Id, inscricao.Id);
             await InserirNaBase(vaga);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoCancelarInscricao>();
+            var motivoCancelamento = "Cancelamento em lote";
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoCancelarInscricoes>();
 
             // act
-            await casoDeUso.Executar(inscricao.Id);
+            await casoDeUso.Executar(new long[] { inscricao.Id }, motivoCancelamento);
 
             // assert 
             var inscricaoDepois = ObterPorId<Dominio.Entidades.Inscricao, long>(inscricao.Id);
@@ -59,10 +61,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var inscricao = InscricaoMock.GerarInscricao(usuario.Id, propostaTurma.Id, Dominio.Enumerados.SituacaoInscricao.AguardandoAnalise);
             await InserirNaBase(inscricao);
 
-            var casoDeUso = ObterCasoDeUso<ICasoDeUsoCancelarInscricao>();
+            var motivoCancelamento = "Cancelamento em lote";
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoCancelarInscricoes>();
 
             // act
-            await casoDeUso.Executar(inscricao.Id);
+            await casoDeUso.Executar(new long[] { inscricao.Id }, motivoCancelamento);
 
             // assert 
             var inscricaoDepois = ObterPorId<Dominio.Entidades.Inscricao, long>(inscricao.Id);
