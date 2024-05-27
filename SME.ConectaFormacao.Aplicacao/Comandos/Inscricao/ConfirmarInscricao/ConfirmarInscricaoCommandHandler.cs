@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA);
 
             if (inscricao.Situacao.NaoEhAguardandoAnalise())
-                return true;
+                throw new NegocioException(MensagemNegocio.INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_OE_EM_ESPERA_PODE_IR_PARA_CONFIRMADA);
 
             var transacao = _transacao.Iniciar();
             try

@@ -175,4 +175,10 @@ public class MensagemNegocio
     public const string USUARIO_FOI_INATIVO_POR_POSSUIR_PROPOSTA_CADASTRADA = "Usuário foi inativado porque possui proposta cadastrada!";
     public const string INSCRICOES_NAO_CONFIRMADAS_POR_FALTA_DE_VAGA = "Existem inscrições não confirmadas por falta de vagas!";
     public const string INSCRICOES_CONFIRMADAS_COM_SUCESSO = "Inscrições confirmadas com sucesso!";
+
+    public const string INSCRICOES_EM_ESPERA_COM_SUCESSO = "Inscrições confirmadas com sucesso!";
+    public const string INSCRICOES_EM_ESPERA_COM_INCONSISTENCIAS = "Existem inscrições não adicionadas em espera!";
+
+    public const string INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_PODE_IR_PARA_EM_ESPERA = "Somente inscrição Aguardando Análise pode ser movida para Em Espera";
+    public const string INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_OE_EM_ESPERA_PODE_IR_PARA_CONFIRMADA = "Somente inscrição Aguardando Análise ou Em Espera pode ser Confirmada";
 }

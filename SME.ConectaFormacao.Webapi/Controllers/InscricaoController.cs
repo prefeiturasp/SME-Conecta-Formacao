@@ -90,6 +90,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUso.Executar(ids));
         }
 
+        [HttpPut("em-espera")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> EmEsperaInscricoes(
+            [FromServices] ICasoDeUsoEmEsperaInscricoes casoDeUso,
+            [FromQuery] long[] ids)
+        {
+            return Ok(await casoDeUso.Executar(ids));
+        }
+
         [HttpGet("{propostaId}")]
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
