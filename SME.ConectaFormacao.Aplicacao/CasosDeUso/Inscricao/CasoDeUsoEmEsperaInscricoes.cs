@@ -6,9 +6,9 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
-    public class CasoDeUsoConfirmarInscricoes : CasoDeUsoAbstrato, ICasoDeUsoConfirmarInscricoes
+    public class CasoDeUsoEmEsperaInscricoes : CasoDeUsoAbstrato, ICasoDeUsoEmEsperaInscricoes
     {
-        public CasoDeUsoConfirmarInscricoes(IMediator mediator) : base(mediator)
+        public CasoDeUsoEmEsperaInscricoes(IMediator mediator) : base(mediator)
         {
         }
 
@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
             {
                 try
                 {
-                    await mediator.Send(new ConfirmarInscricaoCommand(id));
+                    await mediator.Send(new EmEsperaInscricaoCommand(id));
                 }
                 catch(NegocioException ex)
                 {
@@ -31,9 +31,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 throw new NegocioException(erros);
 
             if (erros.Any())
-                return RetornoDTO.RetornarSucesso(MensagemNegocio.INSCRICOES_NAO_CONFIRMADAS_POR_FALTA_DE_VAGA);
+                return RetornoDTO.RetornarSucesso(MensagemNegocio.INSCRICOES_EM_ESPERA_COM_INCONSISTENCIAS);
 
-            return RetornoDTO.RetornarSucesso(MensagemNegocio.INSCRICOES_CONFIRMADAS_COM_SUCESSO);
+            return RetornoDTO.RetornarSucesso(MensagemNegocio.INSCRICOES_EM_ESPERA_COM_SUCESSO);
         }
     }
 }
