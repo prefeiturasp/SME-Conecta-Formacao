@@ -3,6 +3,7 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -22,16 +23,30 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>> Handle(ObterDadosPaginadosComFiltrosQuery request, CancellationToken cancellationToken)
         {
             var retornoComTurmas = new List<DadosListagemFormacaoComTurmaDTO>();
+            var propostaPossuiAnexo = Enumerable.Empty<InscricaoPossuiAnexoDTO>();
             var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroHomologacao);
             if (totalRegistrosFiltro > 0)
             {
                 var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros, request.NumeroHomologacao);
-
+                
+                propostaPossuiAnexo = await _repositorioInscricao.ObterSeInscricaoPossuiAnexoPorPropostasIds(propostasTurmas.Select(x => x.Id).ToArray());
+                
                 var formacao = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
                 var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
 
                 var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
                 var tiposInscricao = await _repositorioInscricao.ObterTiposInscricaoPorPropostaIds(codigosFormacao);
+
+
+                    formacao.ToList().ForEach(item =>
+                    {
+                        var anexos = propostaPossuiAnexo
+                            .Where(x => x.PropostaId == item.Id && !string.IsNullOrEmpty(x.NomeArquivo))
+                            .Select(anexo => new DadosAnexosInscricao(anexo.NomeArquivo, anexo.Codigo))
+                            .ToList();
+
+                        item.Anexos.AddRange(anexos);
+                    });
 
                 retornoComTurmas.AddRange(MapearTurmasETipoInscricao(formacao, turmas, tiposInscricao));
             }
