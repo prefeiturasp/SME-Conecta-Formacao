@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Newtonsoft.Json;
+using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -50,7 +51,13 @@ namespace SME.ConectaFormacao.Aplicacao
                 
                 transacao.Commit();
 
-                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, notificacao));
+                foreach (var usuario in notificacao.Usuarios)
+                {
+                    var destinatario = _mapper.Map<EnviarEmailDto>(usuario);
+                    destinatario.Titulo = notificacao.Titulo;
+                    destinatario.Texto = notificacao.Mensagem;
+                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario));    
+                }
             }
             catch
             {
