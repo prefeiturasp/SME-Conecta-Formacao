@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Funcionario;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao.ServicosFakes;
@@ -63,12 +64,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
-            await InserirUsuario("1", "Parecerista1");
-            await InserirUsuario("2", "Parecerista2");
-            await InserirUsuario("3", "Parecerista3");
+            await InserirUsuario("1", "Parecerista1","parecerista1@email.com");
+            await InserirUsuario("2", "Parecerista2","parecerista2@email.com");
+            await InserirUsuario("3", "Parecerista3","parecerista3@email.com");
+            await InserirUsuario("4", "CriadorProposta","criador.proposta@email.com");
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AnaliseParecerPelaAreaPromotora);
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AnaliseParecerPelaAreaPromotora, criadoLogin:"4");
 
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1", SituacaoParecerista.Enviada));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2", "Parecerista2", SituacaoParecerista.Enviada));
@@ -110,8 +112,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             notificacao.Parametros.ShouldNotBeEmpty();
             
             var notificacoesUsuarios = ObterTodos<NotificacaoUsuario>();
-            notificacoesUsuarios.Count().ShouldBe(10);
-            notificacoesUsuarios.Count(a=> a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBe(10);
+            notificacoesUsuarios.Count().ShouldBe(2);
+
+            var propostaInserida = (ObterTodos<Dominio.Entidades.Proposta>()).FirstOrDefault();
+            var usuarioDaProposta = (ObterTodos<Dominio.Entidades.Usuario>()).FirstOrDefault(f=> f.Login.Equals(propostaInserida.CriadoLogin));
+            notificacoesUsuarios.Count(a=> a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBe(2);
+            notificacoesUsuarios.Count(a=> a.Situacao.EhNaoLida() && a.NotificacaoId == 1 && a.Login.NaoEstaPreenchido() && a.Nome.Equals(areaPromotora.Nome) && a.Email.Equals(areaPromotora.Email)).ShouldBe(1);
+            notificacoesUsuarios.Count(a=> a.Situacao.EhNaoLida() && a.NotificacaoId == 1 && a.Login.EstaPreenchido() && a.Login.Equals(usuarioDaProposta.Login) && a.Nome.Equals(usuarioDaProposta.Nome) && a.Email.Equals(usuarioDaProposta.Email)).ShouldBe(1);
         }
         
         [Fact(DisplayName = "Notificacao - Não deve notificar a Área Promotora que foi enviado parecer pela DF")]

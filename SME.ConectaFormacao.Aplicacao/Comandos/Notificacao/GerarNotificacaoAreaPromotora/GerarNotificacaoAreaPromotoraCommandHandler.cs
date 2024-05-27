@@ -15,16 +15,19 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioNotificacao _repositorioNotificacao;
         private readonly IRepositorioNotificacaoUsuario _repositorioNotificacaoUsuario;
         private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
+        private readonly IRepositorioUsuario _repositorioUsuario;
         private readonly ITransacao _transacao;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
         public GerarNotificacaoAreaPromotoraCommandHandler(ITransacao transacao,IRepositorioNotificacao repositorioNotificacao,
-            IRepositorioNotificacaoUsuario repositorioNotificacaoUsuario,IMediator mediator,IMapper mapper,IRepositorioAreaPromotora repositorioAreaPromotora)
+            IRepositorioNotificacaoUsuario repositorioNotificacaoUsuario,IMediator mediator,IMapper mapper,IRepositorioAreaPromotora repositorioAreaPromotora,
+            IRepositorioUsuario repositorioUsuario)
         {
             _repositorioNotificacao = repositorioNotificacao ?? throw new ArgumentNullException(nameof(repositorioNotificacao));
             _repositorioNotificacaoUsuario = repositorioNotificacaoUsuario ?? throw new ArgumentNullException(nameof(repositorioNotificacaoUsuario));
             _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
+            _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -64,7 +67,13 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var areaPromotora = await _repositorioAreaPromotora.ObterAreaPromotoraPorPropostaId(proposta.Id);
 
-            var usuariosAreasPromotoras = await _mediator.Send(new ObterUsuariosPorPerfilQuery(new[] { areaPromotora.GrupoId }));
+            var usuarioCriadorProposta = await _repositorioUsuario.ObterPorLogin(proposta.CriadoLogin);
+            
+            var destinatarios = new List<NotificacaoUsuario>()
+            {
+                new (areaPromotora.Nome,areaPromotora.Email),
+                new (usuarioCriadorProposta.Login, usuarioCriadorProposta.Nome, usuarioCriadorProposta.Email)
+            };
             
             return new Notificacao()
             {
@@ -82,7 +91,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     linkSistema),
                 
                 Parametros = JsonConvert.SerializeObject(proposta),
-                Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(usuariosAreasPromotoras)
+                Usuarios =  destinatarios
             };
         }
     }
