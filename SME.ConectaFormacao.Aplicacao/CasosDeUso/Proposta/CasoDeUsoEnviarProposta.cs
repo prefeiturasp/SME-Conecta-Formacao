@@ -81,7 +81,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                         new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
                 }
                 
-                if (situacao.EstaAguardandoAnaliseParecerPelaDF())
+                if (situacao.EstaAnaliseParecerPelaAreaPromotora())
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarAreaPromotoraParaAnaliseParecer, proposta.Id));
             }
             else
