@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(EnviarNotificacaoCommand request, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbitNotificacao.EnviarNotificacaoCriadaUsuarios, request.Notificacao));
+            await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbitNotificacao.EnviarNotificacaoCriadaUsuarios, request.Notificacao,exchange:RotasRabbitNotificacao.Exchange));
 
             return true;
         }
