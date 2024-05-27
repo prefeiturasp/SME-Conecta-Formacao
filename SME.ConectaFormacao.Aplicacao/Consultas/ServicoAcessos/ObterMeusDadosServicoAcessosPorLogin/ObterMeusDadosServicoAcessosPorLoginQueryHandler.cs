@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using System.Text.RegularExpressions;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -37,10 +38,10 @@ namespace SME.ConectaFormacao.Aplicacao
             acessoDadosUsuario.EmailEducacional = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
             
             var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
-            if (Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) && string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
+            if (Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) && acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
                 acessoDadosUsuario.EmailEducacional = acessoDadosUsuario.Email;
             
-            if(string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
+            if(acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
                 acessoDadosUsuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuarioLogado), cancellationToken);
             
             return _mapper.Map<DadosUsuarioDTO>(acessoDadosUsuario);

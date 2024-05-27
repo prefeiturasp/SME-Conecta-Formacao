@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (usuario.EhNulo())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            usuario.Nome = request.Nome;
+            usuario.Nome = request.Nome.Trim();
 
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Usuario.Parametros(usuario.Login)));
             await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.UsuarioLogado.Parametros(usuario.Login)));
