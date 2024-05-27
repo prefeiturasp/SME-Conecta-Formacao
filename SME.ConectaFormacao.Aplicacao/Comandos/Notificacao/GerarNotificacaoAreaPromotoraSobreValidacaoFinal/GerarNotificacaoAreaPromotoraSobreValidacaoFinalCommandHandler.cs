@@ -107,7 +107,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 Mensagem = string.Format("Após análise dos pareceristas e da Divisão de formações a proposta {0} - {1} foi {2}.{3}.",
                     proposta.Id, 
                     proposta.NomeFormacao, 
-                    propostaMovimentacao.Situacao.Nome(),
+                    propostaMovimentacao.Situacao.EstaAprovada() ? "aprovada" : "recusada",
                     motivo)
             };
         }

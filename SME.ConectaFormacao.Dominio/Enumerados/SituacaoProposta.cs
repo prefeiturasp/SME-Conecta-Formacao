@@ -123,5 +123,15 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoProposta.Aprovada || valor == SituacaoProposta.Recusada;
         }
+        
+        public static bool EstaAprovada(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Aprovada;
+        }
+        
+        public static bool EstaRecusada(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Recusada;
+        }
     }
 }

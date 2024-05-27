@@ -72,6 +72,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new Exception(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             var motivo = await _repositorioProposta.ObterPareceristasPorPropostaId(proposta.Id);
+
+            var situacao = motivo.FirstOrDefault(f => f.RegistroFuncional.Equals(parecerista.Login)).Situacao.EstaAprovada() ? "aprovação" : "recusa";
             
             return new Notificacao()
             {
@@ -88,7 +90,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 Mensagem = string.Format("O Parecerista  {0} - ({1}) sugeriu a {2} da proposta {3} - {4}. Motivo: {5}",
                     parecerista.Login,
                     parecerista.Nome,
-                    motivo.FirstOrDefault(f=> f.RegistroFuncional.Equals(parecerista.Login)).Situacao.Nome(),
+                    situacao,
                     proposta.Id, 
                     proposta.NomeFormacao, 
                     motivo.FirstOrDefault(f=> f.RegistroFuncional.Equals(parecerista.Login)).Justificativa)
