@@ -320,6 +320,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista));
+
+            CreateMap<Notificacao, NotificacaoSignalRDTO>()
+                .ForMember(dest => dest.Usuarios, opt => opt.MapFrom(o => o.Usuarios.Any() ? o.Usuarios.Select(s => s.Login) : ArraySegment<string>.Empty));
         }
     }
 }
