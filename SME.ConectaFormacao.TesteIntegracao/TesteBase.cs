@@ -120,12 +120,13 @@ namespace SME.ConectaFormacao.TesteIntegracao
             };
         }
 
-        protected async Task InserirUsuario(string login = "1", string nome = "Sistema")
+        protected async Task InserirUsuario(string login = "1", string nome = "Sistema", string email = "")
         {
             await InserirNaBase(new Dominio.Entidades.Usuario()
             {
                 Login = login,
                 Nome = nome,
+                Email = email,
                 CriadoPor = nome,
                 CriadoEm = DateTimeExtension.HorarioBrasilia(),
                 CriadoLogin = login

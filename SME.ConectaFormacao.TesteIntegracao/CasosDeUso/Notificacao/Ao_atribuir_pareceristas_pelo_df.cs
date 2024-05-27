@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
@@ -60,9 +61,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var componentesCurriculares = ComponenteCurricularMock.GerarComponenteCurricular(10, anosTurmas.FirstOrDefault().Id);
             await InserirNaBase(componentesCurriculares);
 
-            await InserirUsuario("1", "Parecerista1");
-            await InserirUsuario("2", "Parecerista2");
-            await InserirUsuario("3", "Parecerista3");
+            await InserirUsuario("1", "Parecerista1", "parecerista1@email.com");
+            await InserirUsuario("2", "Parecerista2", "parecerista2@email.com");
+            await InserirUsuario("3", "Parecerista3", "parecerista3@email.com");
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
                 modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoAnalisePeloParecerista);
@@ -75,7 +76,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var mapper = ObterCasoDeUso<IMapper>();
 
             var pareceristas = ObterTodos<PropostaParecerista>();
-
+            
             var filtro = new NotificacaoPropostaPareceristasDTO(proposta.Id, mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristas));
             
             // act
@@ -96,9 +97,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             
             var notificacoesUsuarios = ObterTodos<NotificacaoUsuario>();
             notificacoesUsuarios.Count().ShouldBe(3);
-            notificacoesUsuarios.Any(a=> a.Login.Equals("1") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
-            notificacoesUsuarios.Any(a=> a.Login.Equals("2") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
-            notificacoesUsuarios.Any(a=> a.Login.Equals("3") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
+            notificacoesUsuarios.Any(a=> a.Login.Equals("1") && a.Email.Equals("parecerista1@email.com") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
+            notificacoesUsuarios.Any(a=> a.Login.Equals("2") && a.Email.Equals("parecerista2@email.com") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
+            notificacoesUsuarios.Any(a=> a.Login.Equals("3") && a.Email.Equals("parecerista3@email.com") && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
         }
         
         [Fact(DisplayName = "Notificacao - Não deve notificar os pareceristas quando estiver na situação aguardando análise pelo DF")]

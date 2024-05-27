@@ -443,6 +443,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoNotificarAreaPromotoraParaAnaliseParecer, CasoDeUsoNotificarAreaPromotoraParaAnaliseParecer>();
         _serviceCollection.TryAddScoped<ICasoDeUsoNotificarPareceristasParaReanalise, CasoDeUsoNotificarPareceristasParaReanalise>();
         _serviceCollection.TryAddScoped<ICasoDeUsoNotificarResponsavelDFSobreReanaliseDoParecerista, CasoDeUsoNotificarResponsavelDFSobreReanaliseDoParecerista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarAreaPromotoraSobreValidacaoFinalPelaDF, CasoDeUsoNotificarAreaPromotoraSobreValidacaoFinalPelaDF>();
     }
 
     protected virtual void RegistrarHttpClients()

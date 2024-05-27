@@ -36,5 +36,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().QueryFirstOrDefaultAsync<string>(query, new { propostaId, situacao = (int)SituacaoProposta.Devolvida });
         }
+        
+        public async Task<PropostaMovimentacao> ObterPorPropostaId(long propostaId)
+        {
+            var query = @"select p.id as proposta_id,
+                                 p.situacao, 
+	                             pm.justificativa 
+                          from proposta p 
+                          left join proposta_movimentacao pm on pm.proposta_id = p.id and pm.situacao = p.situacao 
+                          where p.id = @propostaId 
+                            and not p.excluido 
+                            and not pm.excluido
+                          order by pm.criado_em desc limit 1";
+            return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaMovimentacao>(query, new { propostaId });
+        }
     }
 }

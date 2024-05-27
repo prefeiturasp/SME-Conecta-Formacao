@@ -317,7 +317,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<RetornoUsuarioLoginNomeDTO,NotificacaoUsuario>();
             CreateMap<Usuario,NotificacaoUsuario>()
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => NotificacaoUsuarioSituacao.NaoLida));
-            CreateMap<PropostaParecerista,PropostaPareceristaResumidoDTO>();
+            CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
+                .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista));
         }
     }
 }
