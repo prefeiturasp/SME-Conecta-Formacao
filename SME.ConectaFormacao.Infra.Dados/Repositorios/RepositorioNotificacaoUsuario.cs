@@ -31,7 +31,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"select 
                             id, 
                             notificacao_id, 
-                            login, 
+                            login,
+                            nome,
+                            email,
                             excluido,
                             criado_em,
 	                        criado_por,
