@@ -30,9 +30,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterTurmas(
             [FromServices] ICasoDeUsoObterTurmasInscricao casoDeUsoObterTurmasInscricao,
-            [FromRoute] long propostaId)
+            [FromRoute] long propostaId,
+            [FromQuery] string? codigoDre = null)
         {
-            return Ok(await casoDeUsoObterTurmasInscricao.Executar(propostaId));
+            return Ok(await casoDeUsoObterTurmasInscricao.Executar(propostaId, codigoDre));
         }
 
         [HttpGet]

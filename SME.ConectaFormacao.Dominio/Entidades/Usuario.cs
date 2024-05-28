@@ -1,4 +1,5 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
@@ -45,15 +46,14 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public AreaPromotora AreaPromotora { get; set; }
 
-        public void Atualizar(string email, DateTime? dataHora, string? cpf)
+        public void Atualizar(string email, DateTime? dataHora, string? cpf, string nome)
         {
             //TODO: Evitar a atualização do e-mail ao logar
             // Email = email;
             UltimoLogin = dataHora;
-            if (!string.IsNullOrEmpty(cpf))
-            {
+            Nome = nome;
+            if (cpf.EstaPreenchido())
                 Cpf = cpf;
-            }
 
             TipoEmail ??= Enumerados.TipoEmail.FuncionarioUnidadeParceira;
         }

@@ -9,9 +9,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.ServicosFa
     {
         public Task<UsuarioAutenticacaoRetornoDTO> Handle(ObterUsuarioServicoAcessosPorLoginSenhaQuery request, CancellationToken cancellationToken)
         {
-            if (request.Login == AutenticacaoMock.AutenticacaoUsuarioDTOValido.Login && AutenticacaoMock.AutenticacaoUsuarioDTOValido.Senha == request.Senha)
+            var usuario = AutenticacaoMock.AutenticacaoUsuarioDTOValido;
+            
+            if (request.Login == usuario.Login && usuario.Senha == request.Senha)
             {
-                return Task.FromResult(AutenticacaoMock.UsuarioAutenticacaoRetornoDTOValido);
+                var usuarioAUtenticacao = new UsuarioAutenticacaoRetornoDTO
+                {
+                    Login = request.Login
+                };
+                return Task.FromResult(usuarioAUtenticacao);
             }
 
             return Task.FromResult(new UsuarioAutenticacaoRetornoDTO());

@@ -31,12 +31,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return Gerador().Generate();
         }
 
-        public static NotificacaoUsuario GerarNotificacaoUsuario(string login, Notificacao notificacao)
+        public static NotificacaoUsuario GerarNotificacaoUsuario(string login, string nome, Notificacao notificacao)
         {
             var notificacaoUsuario = new NotificacaoUsuario
             {
                 NotificacaoId = notificacao.Id,
-                Login = login
+                Login = login,
+                Nome = nome
             };
 
             Auditoria(notificacaoUsuario);
@@ -44,13 +45,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return notificacaoUsuario;
         }
 
-        public static IEnumerable<NotificacaoUsuario> GerarNotificacaoUsuarios(string login, IEnumerable<Notificacao> notificacaos)
+        public static IEnumerable<NotificacaoUsuario> GerarNotificacaoUsuarios(string login, string nome, IEnumerable<Notificacao> notificacaos)
         {
             var usuarios = new List<NotificacaoUsuario>();
 
             foreach (var notificacao in notificacaos)
             {
-                usuarios.Add(GerarNotificacaoUsuario(login, notificacao));
+                usuarios.Add(GerarNotificacaoUsuario(login, nome, notificacao));
             }
 
             return usuarios;

@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using System.Text.RegularExpressions;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -15,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioUsuario _repositorioUsuario;
         private readonly IMediator _mediator;
 
-        public ObterMeusDadosServicoAcessosPorLoginQueryHandler(IMapper mapper, IServicoAcessos servicoAcessos, IRepositorioUsuario repositorioUsuario,
+        public ObterMeusDadosServicoAcessosPorLoginQueryHandler(IMapper mapper, IServicoAcessos servicoAcessos,IRepositorioUsuario repositorioUsuario,
         IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -30,17 +31,17 @@ namespace SME.ConectaFormacao.Aplicacao
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
             if (usuarioLogado.Tipo == TipoUsuario.Externo)
             {
-                var unidade = !string.IsNullOrEmpty(usuarioLogado.CodigoEolUnidade) ? await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade)) : null;
+                var unidade = !string.IsNullOrEmpty(usuarioLogado.CodigoEolUnidade) ? await  _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade)) : null;
                 acessoDadosUsuario.Tipo = (int)TipoUsuario.Externo;
                 acessoDadosUsuario.NomeUnidade = unidade?.NomeUnidade!;
             }
             acessoDadosUsuario.EmailEducacional = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
 
             var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
-            if (Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) && string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
+            if (Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) && acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
                 acessoDadosUsuario.EmailEducacional = acessoDadosUsuario.Email;
-
-            if (string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
+            
+            if(acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
                 acessoDadosUsuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuarioLogado), cancellationToken);
 
             return _mapper.Map<DadosUsuarioDTO>(acessoDadosUsuario);

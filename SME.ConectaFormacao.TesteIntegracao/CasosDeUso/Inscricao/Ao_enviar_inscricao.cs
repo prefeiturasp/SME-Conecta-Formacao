@@ -57,7 +57,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
                 CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
                 CargoDreCodigo = proposta.Turmas.FirstOrDefault().Dres.FirstOrDefault().Dre.Codigo,
                 CargoUeCodigo = "094765",
-                Email = usuario.Email,
             };
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarInscricao>();
@@ -94,7 +93,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
                 CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
                 CargoDreCodigo = string.Empty,
                 CargoUeCodigo = string.Empty,
-                Email = usuario.Email,
             };
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarInscricao>();
@@ -106,6 +104,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             excecao.Mensagens.Contains(MensagemNegocio.INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA).ShouldBeTrue();
         }
 
+        //TODO: Por que esses testes estão comentados???
         //[Fact(DisplayName = "Inscrição - Deve permitir inscrição para código cargo eol com mais de um mapeamento DePara")]
         //public async Task Deve_permitir_inscricao_para_codigo_cargo_eol_com_mais_de_um_mapeamento_de_para()
         //{

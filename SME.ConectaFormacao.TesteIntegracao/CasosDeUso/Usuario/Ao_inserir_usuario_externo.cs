@@ -176,11 +176,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             excecao.Mensagens.FirstOrDefault().ShouldBe(MensagemNegocio.EMAIL_EDU_INVALIDO_NAO_VALIDO.Parametros(usuarioExterno.EmailEducacional));
         }
         [Fact(DisplayName = "Usuário - Não Deve Cadastrar Um Usuario Externo sem informar o E-mail Edu")]
-        public async Task Deve_Cadastrar_Usuario_Externo_sem_informar_email_edu()
+        public async Task Nao_deve_Cadastrar_Usuario_Externo_sem_informar_email_edu()
         {
             //arrange
             var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
-            usuarioExterno.EmailEducacional = null;
+            usuarioExterno.EmailEducacional = String.Empty;
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
