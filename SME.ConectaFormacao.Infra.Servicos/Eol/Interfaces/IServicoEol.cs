@@ -13,6 +13,7 @@
         Task<UnidadeEol> ObterUnidadePorCodigoEol(string codigoEol);
         Task<IEnumerable<FuncionarioExternoServicoEol>?> ObterDadosFuncionarioExternoPorCpf(string cpf);
         Task<IEnumerable<DreUeAtribuicaoServicoEol>> ObterDreUeAtribuicaoPorFuncionarioCargo(string registroFuncional, long codigoCargo);
+        Task<string> ObterNomeServidorPorRfEol(string rfServidor);
         Task<IEnumerable<UsuarioPerfilServicoEol>> ObterUsuariosPorPerfis(IEnumerable<Guid> perfis);
         Task<IEnumerable<string>> VerificarSeUsuarioEstaAtivo(string[] rf);
     }

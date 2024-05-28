@@ -9,24 +9,17 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao
 {
-    public class Ao_alterar_perfil_autenticacao : TesteBase
+    public class Ao_alterar_perfil_autenticacao : TesteUsuarioBase
     {
         public Ao_alterar_perfil_autenticacao(CollectionFixture collectionFixture) : base(collectionFixture)
         {
             AutenticacaoMock.Montar();
-        }
-
-        protected override void RegistrarQueryFakes(IServiceCollection services)
-        {
-            base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuarioLogadoQuery, Dominio.Entidades.Usuario>), typeof(ObterUsuarioLogadoQueryFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterPerfisUsuarioServicoAcessosPorLoginQuery, UsuarioPerfisRetornoDTO>), typeof(ObterPerfisUsuarioServicoAcessosPorLoginQueryHandlerFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<VincularPerfilExternoCoreSSOServicoAcessosCommand, bool>), typeof(VincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Autenticação - Deve retornar erro 401 com login não encontrado ao alterar perfil sem usuário autenticado")]
