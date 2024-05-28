@@ -10,5 +10,6 @@ public class InscricaoDadosEmailConfirmacao
     public string HoraFim { get; set; }
     public string Local { get; set; }
     public bool IntegradoSga { get; set; }
-    public string nomeFormacao { get; set; }
+    public string NomeFormacao { get; set; }
+    public string NomeDestinatario { get; set; }
 }

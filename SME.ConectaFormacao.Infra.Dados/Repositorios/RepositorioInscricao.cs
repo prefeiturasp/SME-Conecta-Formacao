@@ -391,6 +391,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @$" select 
 	                            i.usuario_id UsuarioId,
 	                            u.email ,
+	                            u.nome NomeDestinatario,
 	                            ped.data_inicio DataInicio,
 	                            ped.data_fim DataFim,
 	                            pe.hora_inicio HoraInicio,

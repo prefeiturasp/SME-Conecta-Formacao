@@ -1,6 +1,6 @@
 using System.Text;
 using MediatR;
-using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -9,11 +9,14 @@ namespace SME.ConectaFormacao.Aplicacao
     public class EnviarEmailConfirmacaoInscricaoCommandHandler : IRequestHandler<EnviarEmailConfirmacaoInscricaoCommand, bool>
     {
         private readonly IRepositorioInscricao _repositorioInscricao;
+        private IMediator _mediator;
 
-        public EnviarEmailConfirmacaoInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao)
+        public EnviarEmailConfirmacaoInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao,IMediator mediator)
         {
             _repositorioInscricao =
-                repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
+                repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));           
+            _mediator =
+                mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<bool> Handle(EnviarEmailConfirmacaoInscricaoCommand request, CancellationToken cancellationToken)
@@ -23,9 +26,14 @@ namespace SME.ConectaFormacao.Aplicacao
             var agrupadoPorUsuario = dadosParaEmail.GroupBy(x => x.UsuarioId);
             foreach (var usuario in agrupadoPorUsuario)
             {
-                var textoEmail = CriarTextoEmail(usuario);
-                
-                //Chamar a fila de enviar Email
+                var destinatario = new EnviarEmailDto
+                {
+                    EmailDestinatario = usuario.FirstOrDefault()!.Email,
+                    NomeDestinatario = usuario.FirstOrDefault()!.NomeDestinatario,
+                    Titulo = $"Confirmação de inscrição | {usuario.FirstOrDefault()!.NomeFormacao} ",
+                    Texto = CriarTextoEmail(usuario)
+                };
+                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);  
             }
 
             return true;
@@ -79,7 +87,7 @@ namespace SME.ConectaFormacao.Aplicacao
             { 
                 texto.AppendLine(@$"
                 <div class=""section"" id=""com-sga"">
-                <p>A sua inscrição na formação {usuario.FirstOrDefault().nomeFormacao}. Na data de início da sua turma acesse o SGA para iniciar a formação.</p>
+                <p>A sua inscrição na formação {usuario.FirstOrDefault().NomeFormacao}. Na data de início da sua turma acesse o SGA para iniciar a formação.</p>
                 <p>As aulas irão ocorrer nas seguintes datas:</p>
                 <table>
                     <tr>
@@ -105,7 +113,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (semSga.Any())
             {
                 texto.AppendLine(@$"    <div class=""section"" id=""sem-sga"">
-                                    <p>Sua inscrição foi confirmada. A sua inscrição na formação {usuario.FirstOrDefault().nomeFormacao}.</p>
+                                    <p>Sua inscrição foi confirmada. A sua inscrição na formação {usuario.FirstOrDefault().NomeFormacao}.</p>
                                     <p>As aulas irão ocorrer nas seguintes datas:</p>
                                     <table>
                                         <tr>
