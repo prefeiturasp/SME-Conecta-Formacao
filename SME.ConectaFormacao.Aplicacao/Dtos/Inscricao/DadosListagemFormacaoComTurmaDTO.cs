@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public string? NomeFormacao { get; set; }
         public IEnumerable<DadosListagemFormacaoTurma> Turmas { get; set; }
         public IEnumerable<TipoInscricao> TiposInscricoes { get; set; }
-        
+        public DadosListagemInscricaoPermissaoDTO Permissao { get; set; }
         public class DadosListagemInscricaoPermissaoDTO
         {
             public bool PodeCancelar { get; set; }
