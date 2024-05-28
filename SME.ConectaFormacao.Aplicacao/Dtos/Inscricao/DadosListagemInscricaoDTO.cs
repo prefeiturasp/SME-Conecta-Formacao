@@ -16,6 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public bool IntegrarNoSga { get; set; }
         public bool Iniciado { get; set; }
         public DadosListagemInscricaoPermissaoDTO Permissao { get; set; }
+        public List<DadosAnexosInscricao> Anexos { get; set; } = new List<DadosAnexosInscricao>();
+
     }
 
     public class DadosListagemInscricaoPermissaoDTO
