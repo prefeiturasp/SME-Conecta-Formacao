@@ -13,22 +13,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.ServicosFa
             
             if (request.Login == usuario.Login && usuario.Senha == request.Senha)
             {
-                var usuarioAUtenticacao = ObterUsuarioAutenticacao();
-                usuarioAUtenticacao.Login = request.Login;
+                var usuarioAUtenticacao = new UsuarioAutenticacaoRetornoDTO
+                {
+                    Login = request.Login
+                };
                 return Task.FromResult(usuarioAUtenticacao);
             }
 
-            return Task.FromResult(ObterUsuarioAutenticacao());
-        }
-
-        private static UsuarioAutenticacaoRetornoDTO ObterUsuarioAutenticacao()
-        {
-            return new UsuarioAutenticacaoRetornoDTO
-            {
-                Login = AutenticacaoMock.UsuarioLogado.Login,
-                Nome = AutenticacaoMock.UsuarioLogado.Nome,
-                Email = AutenticacaoMock.UsuarioLogado.Email
-            };
+            return Task.FromResult(new UsuarioAutenticacaoRetornoDTO());
         }
     }
 }

@@ -164,7 +164,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         {
             //arrange
             var usuarioExterno = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
-            usuarioExterno.EmailEducacional = string.Empty;
+            usuarioExterno.EmailEducacional = "teste@edu.sme.prefeitura.sp.gov";
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
