@@ -385,6 +385,30 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             where i.id = any(@inscricoesId) 
                          ";
             return await conexao.Obter().QueryAsync<InscricaoPossuiAnexoDTO>(query, new { inscricoesId });
+        }        
+        public async Task<IEnumerable<InscricaoDadosEmailConfirmacao>> ObterDadasInscricaoPorInscricaoId(long inscricoeId)
+        {
+            var query = @$" select 
+	                            i.usuario_id UsuarioId,
+	                            u.email ,
+	                            u.nome NomeDestinatario,
+	                            ped.data_inicio DataInicio,
+	                            ped.data_fim DataFim,
+	                            pe.hora_inicio HoraInicio,
+	                            pe.hora_fim HoraFim,
+	                            pe.local,
+	                            p.integrar_no_sga IntegradoSga,
+	                            p.id ||' - ' || p.nome_formacao nomeFormacao
+                            from 
+	                            inscricao i 
+	                            inner join usuario u on i.usuario_id = u.id 
+	                            inner join proposta_turma pt on i.proposta_turma_id = pt.id
+	                            inner join proposta p on pt.proposta_id = p.id 
+	                            inner join proposta_encontro pe on pe.proposta_id  = p.id
+	                            inner join proposta_encontro_data ped on ped.proposta_encontro_id  = pe.id 
+                            where i.id = @inscricoeId ;
+                        ";
+            return await conexao.Obter().QueryAsync<InscricaoDadosEmailConfirmacao>(query, new { inscricoeId });
         }
     }
 }

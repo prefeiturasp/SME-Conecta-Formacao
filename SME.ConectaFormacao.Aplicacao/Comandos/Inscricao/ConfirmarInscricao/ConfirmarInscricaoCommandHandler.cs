@@ -12,11 +12,15 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly ITransacao _transacao;
+        private readonly IMediator _mediator;
 
-        public ConfirmarInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao, ITransacao transacao)
+
+        public ConfirmarInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao, ITransacao transacao, IMediator mediator)
         {
             _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+
         }
 
         public async Task<bool> Handle(ConfirmarInscricaoCommand request, CancellationToken cancellationToken)
@@ -37,7 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 inscricao.Situacao = SituacaoInscricao.Confirmada;
                 await _repositorioInscricao.Atualizar(inscricao);
-
+                await _mediator.Send(new EnviarEmailConfirmacaoInscricaoCommand(request.Id), cancellationToken);
                 transacao.Commit();
 
                 return true;

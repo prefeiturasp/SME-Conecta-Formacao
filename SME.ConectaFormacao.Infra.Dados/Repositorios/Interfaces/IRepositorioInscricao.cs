@@ -20,5 +20,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<Inscricao>> ObterInscricoesConfirmadas();
         Task<IEnumerable<InscricaoUsuarioInternoDto>> ObterInscricoesPorPropostasTurmasIdUsuariosInternos(long[] propostasTurmasId);
         Task<IEnumerable<InscricaoPossuiAnexoDTO>> ObterSeInscricaoPossuiAnexoPorPropostasIds(long[] inscricoesId);
+        Task<IEnumerable<InscricaoDadosEmailConfirmacao>> ObterDadasInscricaoPorInscricaoId(long inscricoeId);
     }
 }
