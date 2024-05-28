@@ -58,7 +58,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     await _mediator.Send(new SalvarPropostaMovimentacaoCommand(proposta.Id, SituacaoProposta.AguardandoAnaliseParecerPelaDF), cancellationToken);
                 }
                 
-                var pareceristaResumido = _mapper.Map<PropostaPareceristaResumidoDTO>(pareceristas.Where(w=> w.RegistroFuncional.Equals(parecerista.RegistroFuncional)));
+                var pareceristaResumido = _mapper.Map<PropostaPareceristaResumidoDTO>(pareceristas.FirstOrDefault(w=> w.RegistroFuncional.Equals(parecerista.RegistroFuncional)));
                 await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarDFPeloEnvioParecerPeloParecerista, new NotificacaoPropostaPareceristaDTO(proposta.Id, pareceristaResumido)));
                 return true;
             }
