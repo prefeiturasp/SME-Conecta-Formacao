@@ -100,7 +100,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 Parametros = new { propostaId = proposta.Id}.ObjetoParaJson(),
                 Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(destinatarios),
                     
-                Titulo = string.Format("O Parecer final da proposta {0} - {1}", 
+                Titulo = string.Format("Parecer final da proposta {0} - {1}", 
                     proposta.Id, 
                     proposta.NomeFormacao),
                 
