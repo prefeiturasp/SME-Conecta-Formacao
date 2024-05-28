@@ -89,9 +89,9 @@ namespace SME.ConectaFormacao.Aplicacao
                     proposta.Id, 
                     proposta.NomeFormacao),
                 
-                Mensagem = string.Format("O Parecerista  {0} - ({1}) sugeriu a {2} da proposta {3} - {4}. Motivo: {5} \nAcesse <a href=\"{6}\">Aqui</a> o cadastro da proposta.",
-                    parecerista.Login,
+                Mensagem = string.Format("O Parecerista  {0} - ({1}) sugeriu a {2} da proposta {3} - {4}. Motivo: {5} \nAcesse <a href=\"{6}\">Aqui</a> o cadastro da proposta.",                    
                     parecerista.Nome,
+                    parecerista.Login,
                     situacao,
                     proposta.Id, 
                     proposta.NomeFormacao, 
