@@ -18,18 +18,20 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         private readonly IRepositorioNotificacao _repositorioNotificacao;
         private readonly IRepositorioNotificacaoUsuario _repositorioNotificacaoUsuario;
+        private readonly IRepositorioUsuario _repositorioUsuario;
         private readonly ITransacao _transacao;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
         public GerarNotificacaoDFCommandHandler(ITransacao transacao,IRepositorioNotificacao repositorioNotificacao,
-            IRepositorioNotificacaoUsuario repositorioNotificacaoUsuario,IMediator mediator,IMapper mapper)
+            IRepositorioNotificacaoUsuario repositorioNotificacaoUsuario,IMediator mediator,IMapper mapper,IRepositorioUsuario repositorioUsuario)
         {
             _repositorioNotificacao = repositorioNotificacao ?? throw new ArgumentNullException(nameof(repositorioNotificacao));
             _repositorioNotificacaoUsuario = repositorioNotificacaoUsuario ?? throw new ArgumentNullException(nameof(repositorioNotificacaoUsuario));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
         }
 
         public async Task<bool> Handle(GerarNotificacaoDFCommand request, CancellationToken cancellationToken)
@@ -64,7 +66,10 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
             
-            var usuariosDFs = await _mediator.Send(new ObterUsuariosPorPerfilQuery(Perfis.ADMIN_DF));
+            var usuarioResponsavelDF = await _repositorioUsuario.ObterPorLogin(proposta.RfResponsavelDf);
+
+            if (usuarioResponsavelDF.EhNulo())
+                throw new Exception(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
             
             return new Notificacao()
             {
@@ -72,7 +77,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 Tipo = NotificacaoTipo.Proposta,
                 TipoEnvio = NotificacaoTipoEnvio.SignalR,
                 Parametros = new { propostaId = proposta.Id}.ObjetoParaJson(),
-                Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(usuariosDFs),
+                Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(new List<Usuario>() {usuarioResponsavelDF }),
                     
                 Titulo = string.Format("Proposta {0} - {1} foi analisada pelo Parecerista", 
                     proposta.Id, 
