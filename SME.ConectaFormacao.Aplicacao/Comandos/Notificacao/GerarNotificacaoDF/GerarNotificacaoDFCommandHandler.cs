@@ -83,7 +83,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     parecerista.Nome, 
                     proposta.Id, 
                     proposta.NomeFormacao, 
-                    linkSistema),
+                    linkSistema.Valor),
                 
             };
         }
