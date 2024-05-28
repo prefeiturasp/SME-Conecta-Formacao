@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly IMapper _mapper;
 
-        public ObterInscricaoPorIdQueryHandler(IRepositorioInscricao repositorioInscricao, IMapper mapper, IMediator mediator)
+        public ObterInscricaoPorIdQueryHandler(IRepositorioInscricao repositorioInscricao, IMapper mapper)
         {
             _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
