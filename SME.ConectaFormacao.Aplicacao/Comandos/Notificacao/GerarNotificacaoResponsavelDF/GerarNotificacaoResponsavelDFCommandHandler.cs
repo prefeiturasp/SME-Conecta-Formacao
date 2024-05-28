@@ -68,9 +68,9 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
             
-            var usuarioDF = await _repositorioUsuario.ObterPorLogin(proposta.RfResponsavelDf);
+            var usuarioResponsavelDF = await _repositorioUsuario.ObterPorLogin(proposta.RfResponsavelDf);
 
-            if (usuarioDF.EhNulo())
+            if (usuarioResponsavelDF.EhNulo())
                 throw new Exception(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             var motivo = await _repositorioProposta.ObterPareceristasPorPropostaId(proposta.Id);
@@ -83,9 +83,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 Tipo = NotificacaoTipo.Proposta,
                 TipoEnvio = NotificacaoTipoEnvio.SignalR,
                 Parametros = new { propostaId = proposta.Id}.ObjetoParaJson(),
-                Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(new List<Usuario>() {usuarioDF }),
+                Usuarios =  _mapper.Map<IEnumerable<NotificacaoUsuario>>(new List<Usuario>() {usuarioResponsavelDF }),
                     
-                Titulo = string.Format("Proposta {0} - {1} foi analisada pelo Parecerista", 
+                Titulo = string.Format("A Proposta {0} - {1} foi analisada pelo Parecerista", 
                     proposta.Id, 
                     proposta.NomeFormacao),
                 
