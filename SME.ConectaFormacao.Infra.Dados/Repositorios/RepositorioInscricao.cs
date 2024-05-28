@@ -371,5 +371,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         ";
             return await conexao.Obter().QueryAsync<InscricaoUsuarioInternoDto>(query, new { propostasTurmasId, tipoUsuario });
         }
+        public async Task<IEnumerable<InscricaoPossuiAnexoDTO>> ObterSeInscricaoPossuiAnexoPorPropostasIds(long[] propostasIds)
+        {
+            var query = @$"
+                        select 
+	                            pt.proposta_id as PropostaId,
+	                            a.nome NomeArquivo,
+	                            a.codigo 
+                            from 
+	                            proposta_turma pt 
+	                            	left join inscricao i on pt.id = i.proposta_turma_id 
+	                                left join arquivo a on i.arquivo_id = a.id 
+                            where proposta_id = any(@propostasIds) 
+                         ";
+            return await conexao.Obter().QueryAsync<InscricaoPossuiAnexoDTO>(query, new { propostasIds });
+        }
     }
 }
