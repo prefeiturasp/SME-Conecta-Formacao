@@ -106,7 +106,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
                 proposta.NomeFormacao,
                 "http://conecta"));
             
-            notificacao.Titulo.ShouldBe(string.Format("Proposta {0} - {1} foi analisada pela Comissão de Análise",proposta.Id, proposta.NomeFormacao));
+            notificacao.Titulo.ShouldBe(string.Format("A Proposta {0} - {1} foi analisada pela Comissão de Análise",proposta.Id, proposta.NomeFormacao));
             notificacao.Categoria.ShouldBe(NotificacaoCategoria.Aviso);
             notificacao.Tipo.ShouldBe(NotificacaoTipo.Proposta);
             notificacao.Parametros.ShouldNotBeEmpty();

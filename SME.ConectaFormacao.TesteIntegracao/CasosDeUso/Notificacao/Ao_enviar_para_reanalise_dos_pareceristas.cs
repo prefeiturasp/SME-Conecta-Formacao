@@ -106,7 +106,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
                 proposta.NomeFormacao,
                 "http://conecta"));
             
-            notificacao.Titulo.ShouldBe(string.Format("Proposta {0} - {1} foi analisada atribuída a você",  
+            notificacao.Titulo.ShouldBe(string.Format("Proposta {0} - {1} foi atribuída a você",  
                 proposta.Id, 
                 proposta.NomeFormacao));
             

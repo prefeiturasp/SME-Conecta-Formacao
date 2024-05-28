@@ -11,19 +11,17 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.ServicosFa
         {
             if (request.Login == AutenticacaoMock.AutenticacaoUsuarioDTOValido.Login)
             {
-                return Task.FromResult(AutenticacaoMock.UsuarioPerfisRetornoDTOValido);
+                var usuario = AutenticacaoMock.UsuarioPerfisRetornoDTOValido;
+                usuario.UsuarioLogin = request.Login;
+                return Task.FromResult(usuario);
             }
-            else if (request.Login == AutenticacaoMock.UsuarioLogado.Login)
+            
+            return Task.FromResult(new UsuarioPerfisRetornoDTO
             {
-                return Task.FromResult(new UsuarioPerfisRetornoDTO
-                {
-                    UsuarioLogin = AutenticacaoMock.UsuarioLogado.Login,
-                    UsuarioNome = AutenticacaoMock.UsuarioLogado.Nome,
-                    Email = AutenticacaoMock.UsuarioLogado.Email
-                });
-            }
-
-            return Task.FromResult(new UsuarioPerfisRetornoDTO());
+                UsuarioLogin = AutenticacaoMock.UsuarioLogado.Login,
+                UsuarioNome = AutenticacaoMock.UsuarioLogado.Nome,
+                Email = AutenticacaoMock.UsuarioLogado.Email
+            });
         }
     }
 }

@@ -6,12 +6,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarUsuarioCommand : IRequest<bool>
     {
-        public SalvarUsuarioCommand(Usuario usuario)
+        public SalvarUsuarioCommand(Usuario usuario, bool alterouNome = false)
         {
             Usuario = usuario;
+            AlterouNome = alterouNome;
         }
 
         public Usuario Usuario { get; }
+        public bool AlterouNome { get; }
     }
 
     public class SalvarUsuarioCommandValidator : AbstractValidator<SalvarUsuarioCommand>

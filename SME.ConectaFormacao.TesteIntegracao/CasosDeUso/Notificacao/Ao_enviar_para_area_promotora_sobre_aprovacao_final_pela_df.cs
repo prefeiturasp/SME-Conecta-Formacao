@@ -1,12 +1,9 @@
 ﻿using System.Text.Json;
-using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -114,7 +111,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             notificacao.Mensagem.ShouldBe(string.Format("Após análise dos pareceristas e da Divisão de formações a proposta {0} - {1} foi {2}.{3}.",
                 proposta.Id, 
                 proposta.NomeFormacao,
-                proposta.Situacao.Nome(),
+                "aprovada",
                 motivo));
             
             var notificacoesUsuarios = ObterTodos<NotificacaoUsuario>();
@@ -207,7 +204,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             notificacao.Mensagem.ShouldBe(string.Format("Após análise dos pareceristas e da Divisão de formações a proposta {0} - {1} foi {2}.{3}.",
                 proposta.Id, 
                 proposta.NomeFormacao,
-                proposta.Situacao.Nome(),
+                "recusada",
                 motivo));
             
             var notificacoesUsuarios = ObterTodos<NotificacaoUsuario>();

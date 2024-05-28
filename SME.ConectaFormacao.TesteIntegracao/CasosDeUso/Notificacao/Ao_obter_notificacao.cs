@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var notificacao = NotificacaoMock.GerarNotificacao();
             await InserirNaBase(notificacao);
 
-            var notificacaoUsuario = NotificacaoMock.GerarNotificacaoUsuario(usuario.Login, notificacao);
+            var notificacaoUsuario = NotificacaoMock.GerarNotificacaoUsuario(usuario.Login, usuario.Nome, notificacao);
             await InserirNaBase(notificacaoUsuario);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNotificacao>();

@@ -19,25 +19,25 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(SalvarUsuarioCommand request, CancellationToken cancellationToken)
         {
-            await AtualizarEmail(request.Usuario);
+            if (request.AlterouNome || request.Usuario.EmailEducacional.NaoEstaPreenchido())
+                request.Usuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(request.Usuario));
+            
             if (request.Usuario.Id > 0)
             {
+                await AtualizarEmail(request.Usuario);
                 await RemoverCache(request.Usuario.Login);
                 return await _repositorioUsuario.Atualizar(request.Usuario) != null;
             }
-            else
-                return await _repositorioUsuario.Inserir(request.Usuario) > 0;
+            
+            return await _repositorioUsuario.Inserir(request.Usuario) > 0;
         }
         private async Task AtualizarEmail(Usuario usuario)
         {
-            if (string.IsNullOrEmpty(usuario.EmailEducacional))
-                usuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario));
-
-            if (string.IsNullOrEmpty(usuario.Email))
-            {
-                usuario.Email = usuario.EmailEducacional;
-                await _mediator.Send(new AlterarEmailServicoAcessosCommand(usuario.Login, usuario.EmailEducacional));
-            }
+          if(usuario.Email.NaoEstaPreenchido())
+           {
+               usuario.Email = usuario.EmailEducacional;
+               await _mediator.Send(new AlterarEmailServicoAcessosCommand(usuario.Login, usuario.EmailEducacional));
+           }
         }
         private async Task RemoverCache(string login)
         {
