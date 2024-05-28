@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var notificacaoPropostaPareceristasDto = param.ObterObjetoMensagem<NotificacaoPropostaPareceristasDTO>();
+            var notificacaoPropostaPareceristasDto = param.ObterObjetoMensagem<NotificacaoPropostaPareceristaDTO>();
             
             if (notificacaoPropostaPareceristasDto.PropostaId == 0)
                 throw new Exception(MensagemNegocio.PARAMETRO_INVALIDO);
@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 throw new Exception(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
             
             if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista())
-                return await mediator.Send(new GerarNotificacaoDFCommand(proposta, notificacaoPropostaPareceristasDto.Pareceristas));
+                return await mediator.Send(new GerarNotificacaoDFCommand(proposta, notificacaoPropostaPareceristasDto.Parecerista));
 
             return false;
         }

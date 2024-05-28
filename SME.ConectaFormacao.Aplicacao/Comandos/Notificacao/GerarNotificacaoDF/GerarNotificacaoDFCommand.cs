@@ -7,14 +7,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class GerarNotificacaoDFCommand : IRequest<bool>
     {
-        public GerarNotificacaoDFCommand(Proposta proposta, IEnumerable<PropostaPareceristaResumidoDTO> pareceristas)
+        public GerarNotificacaoDFCommand(Proposta proposta, PropostaPareceristaResumidoDTO parecerista)
         {
             Proposta = proposta;
-            Pareceristas = pareceristas;
+            Parecerista = parecerista;
         }
 
         public Proposta Proposta { get; }
-        public IEnumerable<PropostaPareceristaResumidoDTO> Pareceristas { get; }
+        public PropostaPareceristaResumidoDTO Parecerista { get; }
     }
 
     public class GerarNotificacaoDFCommandValidator : AbstractValidator<GerarNotificacaoDFCommand>
@@ -23,11 +23,11 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(t => t.Proposta)
                 .NotEmpty()
-                .WithMessage("É necessário informar a proposta para gerar a notificação aos pareceristas");
+                .WithMessage("É necessário informar a proposta para gerar a notificação ao Admin DF");
             
-            RuleFor(t => t.Pareceristas)
+            RuleFor(t => t.Parecerista)
                 .NotEmpty()
-                .WithMessage("É necessário informar os logins dos pareceristas para gerar a notificação aos pareceristas");
+                .WithMessage("É necessário informar o login do pareceristas para gerar a notificação ao Admin DF");
         }
     }
 }
