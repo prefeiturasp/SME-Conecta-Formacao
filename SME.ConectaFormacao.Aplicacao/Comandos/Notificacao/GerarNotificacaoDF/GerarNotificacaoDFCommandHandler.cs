@@ -84,8 +84,8 @@ namespace SME.ConectaFormacao.Aplicacao
                     proposta.NomeFormacao),
                 
                 Mensagem = string.Format("O Parecerista {0} ({1}) Inseriu comentários na proposta {2} - {3}. Acesse <a href=\"{4}\">Aqui</a> o cadastro da proposta.",
-                    parecerista.Login, 
                     parecerista.Nome, 
+                    parecerista.Login,
                     proposta.Id, 
                     proposta.NomeFormacao, 
                     linkSistema.Valor),
