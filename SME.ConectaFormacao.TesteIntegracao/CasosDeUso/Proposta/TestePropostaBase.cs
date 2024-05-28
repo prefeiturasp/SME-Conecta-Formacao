@@ -570,6 +570,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3"));
             await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950"));
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacao, "http://conecta"));
         }
     }
 }

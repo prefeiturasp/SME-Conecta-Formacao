@@ -66,9 +66,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             await InserirUsuario("1", "Parecerista1");
             await InserirUsuario("2", "Parecerista2");
             await InserirUsuario("3", "Parecerista3");
+            await InserirUsuario("4", "ResponsavelDf");
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoAnalisePeloParecerista);
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoAnalisePeloParecerista, responsavelDF:"4");
 
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1", SituacaoParecerista.Enviada));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2", "Parecerista2"));
@@ -83,7 +84,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
 
             var pareceristas = ObterTodos<PropostaParecerista>();
 
-            var filtro = new NotificacaoPropostaPareceristasDTO(proposta.Id, mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristas));
+            var filtro = new NotificacaoPropostaPareceristaDTO(proposta.Id, mapper.Map<PropostaPareceristaResumidoDTO>(pareceristas.FirstOrDefault()));
             
             // act
             var mensagem = JsonSerializer.Serialize(filtro);
@@ -97,8 +98,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var notificacao = notificacoes.FirstOrDefault();
             
             notificacao.Mensagem.ShouldBe(string.Format("O Parecerista {0} ({1}) Inseriu comentários na proposta {2} - {3}. Acesse <a href=\"{4}\">Aqui</a> o cadastro da proposta.",
-                pareceristas.FirstOrDefault().RegistroFuncional,
                 pareceristas.FirstOrDefault().NomeParecerista,
+                pareceristas.FirstOrDefault().RegistroFuncional,
                 proposta.Id, 
                 proposta.NomeFormacao,
                 "http://conecta"));
@@ -109,8 +110,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             notificacao.Parametros.ShouldNotBeEmpty();
             
             var notificacoesUsuarios = ObterTodos<NotificacaoUsuario>();
-            notificacoesUsuarios.Count().ShouldBe(10);
-            notificacoesUsuarios.Count(a=> a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBe(10);
+            notificacoesUsuarios.Count().ShouldBe(1);
+            notificacoesUsuarios.Count(a=> a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBe(1);
         }
         
         [Fact(DisplayName = "Notificacao - Não deve notificar os Admins DFs que foi enviado parecer do parecerista")]

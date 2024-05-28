@@ -97,14 +97,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var notificacoes = ObterTodos<Dominio.Entidades.Notificacao>();
             notificacoes.Count().ShouldBe(1);
             var notificacao = notificacoes.FirstOrDefault();
-            notificacao.Mensagem.ShouldBe(string.Format("O Parecerista  {0} - ({1}) sugeriu a aprovação (ou recusa) da proposta {2} - {3}. Motivo: {4}",
-                "1", 
+            notificacao.Mensagem.ShouldBe(string.Format("O Parecerista  {0} - ({1}) sugeriu a {2} da proposta {3} - {4}. Motivo: {5} \nAcesse <a href=\"{6}\">Aqui</a> o cadastro da proposta.",       
                 "Parecerista1",
+                "1", 
+                "aprovação",
                 proposta.Id,
                 proposta.NomeFormacao,
-                "Aprovado pelo parecerista"));
+                "Aprovado pelo parecerista",
+                "http://conecta"));
             
-            notificacao.Titulo.ShouldBe(string.Format("Proposta {0} - {1} foi analisada pelo Parecerista",  
+            notificacao.Titulo.ShouldBe(string.Format("A Proposta {0} - {1} foi analisada pelo Parecerista",  
                 proposta.Id, 
                 proposta.NomeFormacao));
             
