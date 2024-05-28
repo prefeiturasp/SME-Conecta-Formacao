@@ -421,6 +421,22 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoInserirUsuarioRedeParceria, CasoDeUsoInserirUsuarioRedeParceria>();
         _serviceCollection.TryAddScoped<ICasoDeUsoAlterarUsuarioRedeParceria, CasoDeUsoAlterarUsuarioRedeParceria>();
         _serviceCollection.TryAddScoped<ICasoDeUsoRemoverUsuarioRedeParceria, CasoDeUsoRemoverUsuarioRedeParceria>();
+        
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTotalNotificacaoNaoLida, CasoDeUsoObterTotalNotificacaoNaoLida>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterNotificacao, CasoDeUsoObterNotificacao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterNotificacaoPaginada, CasoDeUsoObterNotificacaoPaginada>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterCategoriaNotificacao, CasoDeUsoObterCategoriaNotificacao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterTipoNotificacao, CasoDeUsoObterTipoNotificacao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterSituacaoNotificacao, CasoDeUsoObterSituacaoNotificacao>();
+
+        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarEmail, CasoDeUsoEnviarEmail>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoEnviarNotificacao, CasoDeUsoEnviarNotificacao>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF, CasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarDFPeloEnvioParecerPeloParecerista, CasoDeUsoNotificarDFPeloEnvioParecerPeloParecerista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarAreaPromotoraParaAnaliseParecer, CasoDeUsoNotificarAreaPromotoraParaAnaliseParecer>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarPareceristasParaReanalise, CasoDeUsoNotificarPareceristasParaReanalise>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarResponsavelDFSobreReanaliseDoParecerista, CasoDeUsoNotificarResponsavelDFSobreReanaliseDoParecerista>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoNotificarAreaPromotoraSobreValidacaoFinalPelaDF, CasoDeUsoNotificarAreaPromotoraSobreValidacaoFinalPelaDF>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoConfirmarInscricoes, CasoDeUsoConfirmarInscricoes>();
         _serviceCollection.TryAddScoped<ICasoDeUsoEmEsperaInscricoes, CasoDeUsoEmEsperaInscricoes>();
