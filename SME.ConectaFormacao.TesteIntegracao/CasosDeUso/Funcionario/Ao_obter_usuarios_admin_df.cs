@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Funcionario
         {
             base.RegistrarFakes(services);
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuariosPorPerfisServicoEolQuery, IEnumerable<UsuarioPerfilServicoEol>>), typeof(ObterUsuariosAdminDfQueryFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuariosAdminDfQuery, IEnumerable<RetornoUsuarioLoginNomeDTO>>), typeof(ObterUsuariosAdminDfQueryFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuariosPorPerfilQuery, IEnumerable<RetornoUsuarioLoginNomeDTO>>), typeof(ObterUsuariosAdminDfQueryFake), ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Funcionário - Deve retornar os funcionários Admin DF")]

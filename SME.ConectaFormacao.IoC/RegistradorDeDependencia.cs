@@ -1,4 +1,4 @@
-﻿using Dapper.FluentMap;
+using Dapper.FluentMap;
 using Dapper.FluentMap.Dommel;
 using FluentValidation;
 using MediatR;
