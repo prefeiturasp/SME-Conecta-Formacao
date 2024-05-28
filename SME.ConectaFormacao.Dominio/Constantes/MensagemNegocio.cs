@@ -174,12 +174,6 @@ public class MensagemNegocio
     public const string USUARIO_EXCLUIDO_COM_SUCESSO = "Usuário excluído com sucesso!";
     public const string USUARIO_FOI_INATIVO_POR_POSSUIR_PROPOSTA_CADASTRADA = "Usuário foi inativado porque possui proposta cadastrada!";
     
-    public const string PARAMETRO_INVALIDO = "Parâmetro inválido";
-    public const string NOTIFICACAO_NAO_ENCONTRADA = "Notificação não encontrada";
-    public const string NOTIFICACAO_NAO_ENCONTRADA_USUARIO = "Notificação não encontrada para o usuário logado";
-    public const string RESPONSAVEL_DF_NAO_ENCONTRADO = "O responsável DF não foi encontrado.";
-    public const string MOVIMENTACAO_PROPOSTA_NAO_ENCONTRADA = "Movimentação da proposta não encontrada";
-    
     public const string INSCRICOES_NAO_CONFIRMADAS_POR_FALTA_DE_VAGA = "Existem inscrições não confirmadas por falta de vagas!";
     public const string INSCRICOES_CONFIRMADAS_COM_SUCESSO = "Inscrições confirmadas com sucesso!";
 
@@ -191,4 +185,10 @@ public class MensagemNegocio
 
     public const string INSCRICOES_CANCELADAS_COM_INCONSISTENCIAS = "Existem inscrições não canceladas!";
     public const string INSCRICOES_CANCELADAS_COM_SUCESSO = "Inscrições confirmadas com sucesso!";
+    
+    public const string PARAMETRO_INVALIDO = "Parâmetro inválido";
+    public const string NOTIFICACAO_NAO_ENCONTRADA = "Notificação não encontrada";
+    public const string NOTIFICACAO_NAO_ENCONTRADA_USUARIO = "Notificação não encontrada para o usuário logado";
+    public const string RESPONSAVEL_DF_NAO_ENCONTRADO = "O responsável DF não foi encontrado.";
+    public const string MOVIMENTACAO_PROPOSTA_NAO_ENCONTRADA = "Movimentação da proposta não encontrada";
 }
