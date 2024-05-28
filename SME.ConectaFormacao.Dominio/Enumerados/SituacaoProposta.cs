@@ -133,5 +133,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         {
             return valor == SituacaoProposta.Recusada;
         }
+        
+        public static bool EstaAguardandoAnalisePeloPareceristaOuAguardandoAnaliseParecerPelaDF(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnalisePeloParecerista || valor == SituacaoProposta.AguardandoAnaliseParecerPelaDF;
+        }
     }
 }

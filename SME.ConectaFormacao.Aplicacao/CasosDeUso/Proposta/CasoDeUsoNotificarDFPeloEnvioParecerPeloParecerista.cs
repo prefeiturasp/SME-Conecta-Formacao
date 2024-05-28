@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo())
                 throw new Exception(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
             
-            if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista())
+            if (proposta.Situacao.EstaAguardandoAnalisePeloPareceristaOuAguardandoAnaliseParecerPelaDF())
                 return await mediator.Send(new GerarNotificacaoDFCommand(proposta, notificacaoPropostaPareceristasDto.Parecerista));
 
             return false;
