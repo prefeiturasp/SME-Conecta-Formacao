@@ -137,7 +137,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                     ColaboradorRede = "1",
                     RegistroFuncional = usuarios[count].Login,
                     Cpf = usuarios[count].Cpf,
-                    Nome = usuarios[count].Nome
+                    Nome = usuarios[count].Nome,
+                    Vinculo = "1"
                 }).ObjetoParaJson();
                 count++;
                 await InserirNaBase(item);
