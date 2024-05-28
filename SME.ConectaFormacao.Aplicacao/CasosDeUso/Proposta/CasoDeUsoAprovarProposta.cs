@@ -1,10 +1,12 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
@@ -29,6 +31,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             await mediator.Send(new EnviarPropostaCommand(propostaId, situacao));
             await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao, propostaJustificativaDTO.Justificativa));
 
+            var perfilLogado = await mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia());
+            var ehAdminDF = perfilLogado.EhPerfilAdminDF();
+
+            if (ehAdminDF)
+                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarAreaPromotoraSobreValidacaoFinalPelaDF, proposta.Id));
+            
             return true;
         }
     }

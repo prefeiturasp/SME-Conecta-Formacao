@@ -8,5 +8,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
     {
         Task<PropostaMovimentacao> ObterUltimoParecerPropostaId(long propostaId, SituacaoProposta situacao);
         Task<string> ObterUltimaJustificativaDevolucao(long propostaId);
+        Task<PropostaMovimentacao> ObterPorPropostaId(long propostaId);
     }
 }

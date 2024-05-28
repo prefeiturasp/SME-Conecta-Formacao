@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             IEnumerable<Dominio.Entidades.ComponenteCurricular> componentesCurriculares, SituacaoProposta situacao = SituacaoProposta.Cadastrada,
             FormacaoHomologada formacaoHomologada = FormacaoHomologada.Sim, TipoInscricao tipoInscricao = TipoInscricao.Automatica,
             bool integrarNoSga = true, bool dataInscricaoForaPeriodo = false, bool numeroHomologacao = false,
-            int quantidadeParecerista = 0, string criado_login = "")
+            int quantidadeParecerista = 0, string criadoLogin = "", string responsavelDF = "")
         {
             var proposta = PropostaMock.GerarPropostaValida(
                 areaPromotora.Id,
@@ -99,6 +99,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 false, false, formacaoHomologada, integrarNoSga, dataInscricaoForaPeriodo);
 
             proposta.AreaPromotora = areaPromotora;
+            proposta.RfResponsavelDf = responsavelDF;
 
             if (tipoInscricao == TipoInscricao.Externa)
                 proposta.LinkParaInscricoesExterna = new Faker().Lorem.Sentence(20);
@@ -106,8 +107,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             if (numeroHomologacao)
                 proposta.NumeroHomologacao = new Random().NextInt64(100000, 9999999999);
 
-            if (criado_login.EstaPreenchido())
-                proposta.CriadoLogin = criado_login;
+            if (criadoLogin.EstaPreenchido())
+                proposta.CriadoLogin = criadoLogin;
 
             await InserirNaBase(proposta);
 
@@ -598,6 +599,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
             await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeLimitePareceristaProposta, "3"));
             await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeCursistasSuportadosPorTurma, "950"));
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacao, "http://conecta"));
         }
     }
 }
