@@ -6,8 +6,10 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Dtos.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
+using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
@@ -302,6 +304,35 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(o => o.Email))
                 .ForMember(dest => dest.Telefone, opt => opt.MapFrom(o => o.Telefone));
+
+            CreateMap<Notificacao, NotificacaoDTO>()
+                .ForMember(dest => dest.CategoriaDescricao, opt => opt.MapFrom(o => o.Categoria.Nome()))
+                .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(o => o.Tipo.Nome()));
+
+            CreateMap<Notificacao, NotificacaoPaginadoDTO>()
+                .ForMember(dest => dest.CategoriaDescricao, opt => opt.MapFrom(o => o.Categoria.Nome()))
+                .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(o => o.Tipo.Nome()))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Usuarios.FirstOrDefault().Situacao))
+                .ForMember(dest => dest.SituacaoDescricao, opt => opt.MapFrom(o => o.Usuarios.FirstOrDefault().Situacao.Nome()));
+
+            CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista))
+                .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional));
+            
+            CreateMap<PropostaPareceristaResumidoDTO,NotificacaoUsuario>();
+            CreateMap<RetornoUsuarioLoginNomeDTO,NotificacaoUsuario>();
+            CreateMap<Usuario,NotificacaoUsuario>()
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => NotificacaoUsuarioSituacao.NaoLida));
+            CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
+                .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista));
+
+            CreateMap<Notificacao, NotificacaoSignalRDTO>()
+                .ForMember(dest => dest.Usuarios, opt => opt.MapFrom(o => o.Usuarios.Any() ? o.Usuarios.Select(s => s.Login) : ArraySegment<string>.Empty));
+            
+            CreateMap<NotificacaoUsuario, EnviarEmailDto>()
+                .ForMember(dest => dest.NomeDestinatario, opt => opt.MapFrom(src => src.Nome))
+                .ForMember(dest => dest.EmailDestinatario, opt => opt.MapFrom(src => src.Email));
         }
     }
 }

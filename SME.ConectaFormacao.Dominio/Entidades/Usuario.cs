@@ -47,7 +47,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public void Atualizar(string email, DateTime? dataHora, string? cpf)
         {
-            Email = email;
+            //TODO: Evitar a atualização do e-mail ao logar
+            // Email = email;
             UltimoLogin = dataHora;
             if (!string.IsNullOrEmpty(cpf))
             {

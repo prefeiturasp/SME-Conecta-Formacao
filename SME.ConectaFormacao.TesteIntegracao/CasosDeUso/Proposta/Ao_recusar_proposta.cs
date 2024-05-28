@@ -18,6 +18,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_recusar_proposta_sucesso()
         {
             // arrange
+            var perfilLogado = Perfis.ADMIN_DF.ToString();
+            CriarClaimUsuario(perfilLogado, "1", "Admin DF");
+            await InserirUsuario("1", "Admin DF");
+            
             var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerPelaDF);
 
             var propostaJustificativaDto = PropostaJustificativaMock.GerarPropostaJustificativaDTO();

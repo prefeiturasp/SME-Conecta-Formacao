@@ -62,24 +62,9 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
             return valor == SituacaoProposta.Cadastrada;
         }
 
-        public static bool EhRascunho(this SituacaoProposta valor)
-        {
-            return valor == SituacaoProposta.Rascunho;
-        }
-
         public static bool EstaAguardandoAnaliseDf(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.AguardandoAnaliseDf;
-        }
-
-        public static bool EstaAguardandoAnaliseGestao(this SituacaoProposta valor)
-        {
-            return valor == SituacaoProposta.AguardandoAnaliseGestao;
-        }
-
-        public static bool EstaDesfavoravel(this SituacaoProposta valor)
-        {
-            return valor == SituacaoProposta.Desfavoravel;
         }
 
         public static bool EstaDevolvida(this SituacaoProposta valor)
@@ -134,14 +119,24 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
             return valor == SituacaoProposta.AguardandoReanalisePeloParecerista;
         }
 
-        public static bool NaoEstaAguardandoReanalisePeloParecerista(this SituacaoProposta valor)
-        {
-            return valor != SituacaoProposta.AguardandoReanalisePeloParecerista;
-        }
-
         public static bool EstaAprovadaOuRecusada(this SituacaoProposta valor)
         {
             return valor == SituacaoProposta.Aprovada || valor == SituacaoProposta.Recusada;
+        }
+        
+        public static bool EstaAprovada(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Aprovada;
+        }
+        
+        public static bool EstaRecusada(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.Recusada;
+        }
+        
+        public static bool EstaAguardandoAnalisePeloPareceristaOuAguardandoAnaliseParecerPelaDF(this SituacaoProposta valor)
+        {
+            return valor == SituacaoProposta.AguardandoAnalisePeloParecerista || valor == SituacaoProposta.AguardandoAnaliseParecerPelaDF;
         }
     }
 }
