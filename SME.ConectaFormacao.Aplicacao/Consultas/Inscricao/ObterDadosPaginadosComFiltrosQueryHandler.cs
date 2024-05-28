@@ -23,22 +23,21 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>> Handle(ObterDadosPaginadosComFiltrosQuery request, CancellationToken cancellationToken)
         {
             var retornoComTurmas = new List<DadosListagemFormacaoComTurmaDTO>();
-            var propostaPossuiAnexo = Enumerable.Empty<InscricaoPossuiAnexoDTO>();
             var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroHomologacao);
             if (totalRegistrosFiltro > 0)
             {
                 var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros, request.NumeroHomologacao);
                 
-                propostaPossuiAnexo = await _repositorioInscricao.ObterSeInscricaoPossuiAnexoPorPropostasIds(propostasTurmas.Select(x => x.Id).ToArray());
+                var propostaPossuiAnexo = await _repositorioInscricao.ObterSeInscricaoPossuiAnexoPorPropostasIds(propostasTurmas.Select(x => x.Id).ToArray());
                 
-                var formacao = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
+                var formacao = (_mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas)).ToList();
                 var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
 
                 var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
                 var tiposInscricao = await _repositorioInscricao.ObterTiposInscricaoPorPropostaIds(codigosFormacao);
 
 
-                    formacao.ToList().ForEach(item =>
+                    formacao.ForEach(item =>
                     {
                         var anexos = propostaPossuiAnexo
                             .Where(x => x.PropostaId == item.Id && !string.IsNullOrEmpty(x.NomeArquivo))
