@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
         public async Task<bool> Executar(long id)
         {
-            return await mediator.Send(new CancelarInscricaoCommand(id));
+            return await mediator.Send(new CancelarInscricaoCommand(id, null));
         }
     }
 }

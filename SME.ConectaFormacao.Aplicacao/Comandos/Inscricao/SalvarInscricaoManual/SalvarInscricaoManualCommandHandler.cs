@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 PropostaTurmaId = request.InscricaoManualDTO.PropostaTurmaId,
                 UsuarioId = usuario.Id,
-                Situacao = SituacaoInscricao.EmAnalise,
+                Situacao = SituacaoInscricao.AguardandoAnalise,
                 Origem = OrigemInscricao.Manual
             };
 
