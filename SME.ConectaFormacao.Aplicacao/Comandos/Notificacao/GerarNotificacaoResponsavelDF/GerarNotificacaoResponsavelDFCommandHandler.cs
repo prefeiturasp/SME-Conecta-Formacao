@@ -66,6 +66,8 @@ namespace SME.ConectaFormacao.Aplicacao
         
         private async Task<Notificacao> ObterNotificacao(Proposta proposta,PropostaPareceristaResumidoDTO parecerista)
         {
+            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
+            
             var usuarioDF = await _repositorioUsuario.ObterPorLogin(proposta.RfResponsavelDf);
 
             if (usuarioDF.EhNulo())
@@ -87,13 +89,14 @@ namespace SME.ConectaFormacao.Aplicacao
                     proposta.Id, 
                     proposta.NomeFormacao),
                 
-                Mensagem = string.Format("O Parecerista  {0} - ({1}) sugeriu a {2} da proposta {3} - {4}. Motivo: {5}",
+                Mensagem = string.Format("O Parecerista  {0} - ({1}) sugeriu a {2} da proposta {3} - {4}. Motivo: {5} \nAcesse <a href=\"{5}\">Aqui</a> o cadastro da proposta.",
                     parecerista.Login,
                     parecerista.Nome,
                     situacao,
                     proposta.Id, 
                     proposta.NomeFormacao, 
-                    motivo.FirstOrDefault(f=> f.RegistroFuncional.Equals(parecerista.Login)).Justificativa)
+                    motivo.FirstOrDefault(f=> f.RegistroFuncional.Equals(parecerista.Login)).Justificativa,
+                    linkSistema)
             };
         }
     }

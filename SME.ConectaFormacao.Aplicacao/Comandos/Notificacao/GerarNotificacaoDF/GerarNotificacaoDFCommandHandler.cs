@@ -34,9 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(GerarNotificacaoDFCommand request, CancellationToken cancellationToken)
         {
-            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
-            
-            var notificacao = await ObterNotificacao(request.Proposta, request.Pareceristas.FirstOrDefault(), linkSistema.Valor);
+            var notificacao = await ObterNotificacao(request.Proposta, request.Parecerista);
             
             var transacao = _transacao.Iniciar();
             try
@@ -62,8 +60,10 @@ namespace SME.ConectaFormacao.Aplicacao
             return true;
         }
         
-        private async Task<Notificacao> ObterNotificacao(Proposta proposta, PropostaPareceristaResumidoDTO parecerista, string linkSistema)
+        private async Task<Notificacao> ObterNotificacao(Proposta proposta, PropostaPareceristaResumidoDTO parecerista)
         {
+            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
+            
             var usuariosDFs = await _mediator.Send(new ObterUsuariosPorPerfilQuery(Perfis.ADMIN_DF));
             
             return new Notificacao()

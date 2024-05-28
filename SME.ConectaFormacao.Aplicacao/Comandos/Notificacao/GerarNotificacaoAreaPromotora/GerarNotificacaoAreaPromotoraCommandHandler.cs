@@ -37,9 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(GerarNotificacaoAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
-            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
-            
-            var notificacao = await ObterNotificacao(request.Proposta, linkSistema.Valor);
+            var notificacao = await ObterNotificacao(request.Proposta);
             
             var transacao = _transacao.Iniciar();
             try
@@ -71,8 +69,10 @@ namespace SME.ConectaFormacao.Aplicacao
             return true;
         }
         
-        private async Task<Notificacao> ObterNotificacao(Proposta proposta, string linkSistema)
+        private async Task<Notificacao> ObterNotificacao(Proposta proposta)
         {
+            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
+            
             var areaPromotora = await _repositorioAreaPromotora.ObterAreaPromotoraPorPropostaId(proposta.Id);
 
             var usuarioCriadorProposta = await _repositorioUsuario.ObterPorLogin(proposta.CriadoLogin);

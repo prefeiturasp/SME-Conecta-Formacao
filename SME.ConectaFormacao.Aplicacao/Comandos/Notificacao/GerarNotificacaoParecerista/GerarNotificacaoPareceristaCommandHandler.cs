@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -35,9 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(GerarNotificacaoPareceristaCommand request, CancellationToken cancellationToken)
         {
-            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
-            
-            var notificacao = await ObterNotificacao(request.Proposta, request.Pareceristas, linkSistema.Valor);
+            var notificacao = await ObterNotificacao(request.Proposta, request.Pareceristas);
             
             var transacao = _transacao.Iniciar();
             try
@@ -69,8 +65,10 @@ namespace SME.ConectaFormacao.Aplicacao
             return true;
         }
         
-        private async Task<Notificacao> ObterNotificacao(Proposta proposta, IEnumerable<PropostaPareceristaResumidoDTO> pareceristas, string linkSistema)
+        private async Task<Notificacao> ObterNotificacao(Proposta proposta, IEnumerable<PropostaPareceristaResumidoDTO> pareceristas)
         {
+            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
+            
             var usuarios = _mapper.Map<IEnumerable<NotificacaoUsuario>>(pareceristas);
 
             foreach (var usuario in usuarios)
