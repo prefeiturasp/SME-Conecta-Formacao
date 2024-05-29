@@ -3,6 +3,7 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -45,20 +46,35 @@ namespace SME.ConectaFormacao.Aplicacao
             foreach (var proposta in formacoes)
             {
                 var inscricao = turmasFormacao?.Where(x => x.PropostaId == proposta.Id);
-                var turmas = inscricao!.Select(i => new DadosListagemFormacaoTurma
-                {
-                    NomeTurma = i.NomeTurma,
-                    QuantidadeVagas = i.QuantidadeVagas,
-                    QuantidadeInscricoes = i.TotalInscricoes,
-                    Data = inscricao!.Where(x => x.NomeTurma == i.NomeTurma).Where(x => x.Datas != null).Any() ?
-                           string.Join(", ", inscricao!.Where(x => x.NomeTurma == i.NomeTurma).Select(x => x.Datas)) : string.Empty
-                }).DistinctBy(x => x.NomeTurma);
+                
+                var turmas = inscricao!
+                    .GroupBy(i => new { i.NomeTurma, i.QuantidadeVagas })
+                    .Select(g => new DadosListagemFormacaoTurma
+                    {
+                        NomeTurma = g.Key.NomeTurma,
+                        QuantidadeVagas = g.Key.QuantidadeVagas,
+                        QuantidadeInscricoes = g.Sum(i => i.TotalInscricoes),
+                        Confirmadas = g.Where(i => i.Situacao.EhConfirmada()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
+                        AguardandoAnalise = g.Where(i => i.Situacao.EhAguardandoAnalise()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
+                        EmEspera = g.Where(i => i.Situacao.EhEmEspera()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
+                        Data = ObterData(inscricao, g.First()),
+                        PodeRealizarSorteio = g.Key.QuantidadeVagas > 0 && g.Sum(i => (int?)i.TotalInscricoes) > g.Key.QuantidadeVagas
+                    })
+                    .DistinctBy(x => x.NomeTurma)
+                    .ToList();
 
                 proposta.Turmas = turmas;
                 proposta.TiposInscricoes = tipoInscricaos.Where(t => t.PropostaId == proposta.Id).Select(s => s.TipoInscricao);
             }
 
             return formacoes;
+        }
+
+        private static string ObterData(IEnumerable<ListagemFormacaoComTurmaDTO>? inscricao, ListagemFormacaoComTurmaDTO i)
+        {
+            return inscricao!.Any(x => x.NomeTurma.Equals(i.NomeTurma) && x.Datas.NaoEhNulo()) 
+                ? string.Join(", ", inscricao!.Where(x => x.NomeTurma.Equals(i.NomeTurma)).Select(x => x.Datas).Distinct()) 
+                : string.Empty;
         }
     }
 }

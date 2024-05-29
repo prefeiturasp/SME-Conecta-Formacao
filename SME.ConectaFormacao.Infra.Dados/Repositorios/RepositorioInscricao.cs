@@ -296,24 +296,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             var query = @" 
                     with inscricoes_turma as (
-                        select pt.id, count(1) as total_inscricoes
+                        select pt.id, 
+                          i.situacao, 
+                          count(1) as total_inscricoes
                         from proposta_turma pt 
-                        inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido 
+                        join inscricao i on i.proposta_turma_id = pt.id 
                         where not pt.excluido 
-                          and i.situacao = 1
+                          and not i.excluido
                           and pt.proposta_id = any(@propostaIds)
-                        group by pt.id
+                        group by pt.id,i.situacao
                     )
-
                     select
                         p.id as PropostaId,
-                        p.quantidade_vagas_turma as QuantidadeVagas,
+                        p.quantidade_vagas_turma as quantidadeVagas,
                         pt.nome as NomeTurma,
                         case 
                          when ped.data_fim is null then TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')
                          else TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')|| ' até ' || TO_CHAR(ped.data_fim, 'dd/mm/yyyy')
                         end as Datas,
-                        it.total_inscricoes as totalinscricoes
+                        it.situacao,
+                        it.total_inscricoes as totalInscricoes
                     from proposta p
                     left join proposta_turma pt on pt.proposta_id = p.id and not pt.excluido
                     left join proposta_encontro_turma pet on pet.turma_id = pt.id and not pet.excluido
