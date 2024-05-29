@@ -38,6 +38,11 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
             return situacao != SituacaoInscricao.AguardandoAnalise;
         }
 
+        public static bool NaoEhAguardandoAnaliseEEmEspera(this SituacaoInscricao situacao)
+        {
+            return situacao != SituacaoInscricao.AguardandoAnalise && situacao != SituacaoInscricao.EmEspera;
+        }
+
         public static bool EhCancelada(this SituacaoInscricao situacao)
         {
             return situacao == SituacaoInscricao.Cancelada;
