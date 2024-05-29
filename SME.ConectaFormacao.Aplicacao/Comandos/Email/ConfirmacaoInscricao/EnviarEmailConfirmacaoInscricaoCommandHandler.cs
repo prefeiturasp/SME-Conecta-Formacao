@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao
     public class EnviarEmailConfirmacaoInscricaoCommandHandler : IRequestHandler<EnviarEmailConfirmacaoInscricaoCommand, bool>
     {
         private readonly IRepositorioInscricao _repositorioInscricao;
-        private IMediator _mediator;
+        private readonly IMediator _mediator;
 
         public EnviarEmailConfirmacaoInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao,IMediator mediator)
         {
