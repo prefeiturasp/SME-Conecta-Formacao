@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Dominio;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
@@ -120,12 +121,13 @@ namespace SME.ConectaFormacao.TesteIntegracao
             };
         }
 
-        protected async Task InserirUsuario(string login = "1", string nome = "Sistema")
+        protected async Task InserirUsuario(string login = "1", string nome = "Sistema", string email = "")
         {
             await InserirNaBase(new Dominio.Entidades.Usuario()
             {
                 Login = login,
                 Nome = nome,
+                Email = email,
                 CriadoPor = nome,
                 CriadoEm = DateTimeExtension.HorarioBrasilia(),
                 CriadoLogin = login

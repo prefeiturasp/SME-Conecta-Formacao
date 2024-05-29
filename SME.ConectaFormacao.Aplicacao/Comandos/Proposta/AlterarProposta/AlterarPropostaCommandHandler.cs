@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
+using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao
 {

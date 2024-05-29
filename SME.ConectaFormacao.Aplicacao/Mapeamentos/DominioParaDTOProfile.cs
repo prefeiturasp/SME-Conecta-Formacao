@@ -6,8 +6,10 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Dtos.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
+using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
@@ -248,6 +250,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Iniciado, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.DataRealizacaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date))
                 .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != Dominio.Enumerados.SituacaoInscricao.Cancelada));
 
+            CreateMap<Inscricao, DadosListagemInscricaoPermissaoDTO>()
+                .ForMember(dest => dest.PodeConfirmar, opt => opt.MapFrom(o => o.Situacao.EhAguardandoAnalise() || o.Situacao.EhEmEspera()))
+                .ForMember(dest => dest.PodeColocarEmEspera, opt => opt.MapFrom(o => o.Situacao.EhAguardandoAnalise()))
+                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao.NaoEhCancelada()));
+
             CreateMap<Inscricao, DadosListagemInscricaoDTO>()
                 .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
                 .ForMember(dest => dest.NomeCursista, opt => opt.MapFrom(o => o.Usuario.Nome))
@@ -259,22 +266,26 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()))
                 .ForMember(dest => dest.Origem, opt => opt.MapFrom(o => o.Origem.Nome()))
                 .ForMember(dest => dest.IntegrarNoSga, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.IntegrarNoSGA))
-                .ForMember(dest => dest.Iniciado, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.DataRealizacaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date));
+                .ForMember(dest => dest.Iniciado, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.DataRealizacaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date))
+                .ForMember(d => d.Permissao, opt => opt.MapFrom(s => s));
 
             CreateMap<Proposta, DadosListagemFormacaoComTurmaDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(o => o.Id))
                 .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.NomeFormacao))
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
 
-            CreateMap<UsuarioExternoDTO, Usuario>().ReverseMap();
-
-            CreateMap<ImportacaoArquivoDTO, ImportacaoArquivo>().ReverseMap();
-            CreateMap<ImportacaoArquivoRegistroDTO, ImportacaoArquivoRegistro>().ReverseMap();
+            CreateMap<UsuarioExternoDTO, Usuario>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Nome.Trim()))
+                .ReverseMap();
+            
+            CreateMap<ImportacaoArquivoDTO,ImportacaoArquivo>().ReverseMap();
+            CreateMap<ImportacaoArquivoRegistroDTO,ImportacaoArquivoRegistro>().ReverseMap();
 
             CreateMap<RetornoUsuarioCpfNomeDTO, Usuario>().ReverseMap();
             CreateMap<RetornoUsuarioCpfNomeDTO, CursistaResumidoServicoEol>().ReverseMap();
 
-            CreateMap<DadosUsuarioDTO, Usuario>();
+            CreateMap<DadosUsuarioDTO, Usuario>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Nome.Trim()));
 
             CreateMap<AreaPromotora, PropostaAreaPromotoraDTO>();
 
@@ -298,6 +309,35 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(o => o.Email))
                 .ForMember(dest => dest.Telefone, opt => opt.MapFrom(o => o.Telefone));
+
+            CreateMap<Notificacao, NotificacaoDTO>()
+                .ForMember(dest => dest.CategoriaDescricao, opt => opt.MapFrom(o => o.Categoria.Nome()))
+                .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(o => o.Tipo.Nome()));
+
+            CreateMap<Notificacao, NotificacaoPaginadoDTO>()
+                .ForMember(dest => dest.CategoriaDescricao, opt => opt.MapFrom(o => o.Categoria.Nome()))
+                .ForMember(dest => dest.TipoDescricao, opt => opt.MapFrom(o => o.Tipo.Nome()))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Usuarios.FirstOrDefault().Situacao))
+                .ForMember(dest => dest.SituacaoDescricao, opt => opt.MapFrom(o => o.Usuarios.FirstOrDefault().Situacao.Nome()));
+
+            CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista))
+                .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional));
+            
+            CreateMap<PropostaPareceristaResumidoDTO,NotificacaoUsuario>();
+            CreateMap<RetornoUsuarioLoginNomeDTO,NotificacaoUsuario>();
+            CreateMap<Usuario,NotificacaoUsuario>()
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => NotificacaoUsuarioSituacao.NaoLida));
+            CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
+                .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista));
+
+            CreateMap<Notificacao, NotificacaoSignalRDTO>()
+                .ForMember(dest => dest.Usuarios, opt => opt.MapFrom(o => o.Usuarios.Any() ? o.Usuarios.Select(s => s.Login) : ArraySegment<string>.Empty));
+            
+            CreateMap<NotificacaoUsuario, EnviarEmailDto>()
+                .ForMember(dest => dest.NomeDestinatario, opt => opt.MapFrom(src => src.Nome))
+                .ForMember(dest => dest.EmailDestinatario, opt => opt.MapFrom(src => src.Email));
         }
     }
 }

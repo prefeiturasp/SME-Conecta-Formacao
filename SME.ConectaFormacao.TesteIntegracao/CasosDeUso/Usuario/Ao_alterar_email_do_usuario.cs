@@ -81,6 +81,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
 
             // assert
             retorno.ShouldBeTrue();
+            var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
+            var usuario = usuarios.FirstOrDefault();
+            usuario.EmailEducacional.ShouldBe(emailValido);
         }
 
         [Fact(DisplayName = "Usuário - Deve alterar o email do usuário")]

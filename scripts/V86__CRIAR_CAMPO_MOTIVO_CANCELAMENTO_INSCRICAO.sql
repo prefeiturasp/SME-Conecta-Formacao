@@ -1,0 +1,1 @@
+﻿ALTER TABLE public.inscricao ADD COLUMN IF NOT EXISTS motivo_cancelamento varchar(1000) NULL;

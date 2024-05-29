@@ -10,9 +10,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
         }
 
-        public async Task<IEnumerable<RetornoListagemDTO>> Executar(long propostaId)
+        public async Task<IEnumerable<RetornoListagemDTO>> Executar(long propostaId, string? codigoDre = null)
         {
-            return await mediator.Send(new ObterPropostaTurmasComVagasPorIdQuery(propostaId));
+            return await mediator.Send(new ObterPropostaTurmasComVagasPorIdQuery(propostaId, codigoDre));
         }
     }
 }

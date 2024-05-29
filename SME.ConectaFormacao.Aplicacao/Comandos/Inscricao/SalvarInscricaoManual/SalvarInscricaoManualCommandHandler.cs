@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoManualDTO);
             inscricao.UsuarioId = usuario.Id;
-            inscricao.Situacao = SituacaoInscricao.EmAnalise;
+            inscricao.Situacao = SituacaoInscricao.AguardandoAnalise;
             inscricao.Origem = OrigemInscricao.Manual;
 
             await MapearCargoFuncao(inscricao, cancellationToken);

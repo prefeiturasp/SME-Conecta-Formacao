@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             foreach (var inscricao in inscricoesParaCancelar)
             {
-                await mediator.Send(new CancelarInscricaoCommand(inscricao.InscricaoId));
+                await mediator.Send(new CancelarInscricaoCommand(inscricao.InscricaoId, null));
             }
 
             return true;

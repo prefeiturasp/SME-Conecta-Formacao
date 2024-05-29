@@ -14,8 +14,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
         {
         }
 
-        [Fact(DisplayName = "Inscrição - Deve cancelar inscrição proposta não homologada")]
-        public async Task Deve_cancelar_inscricao_proposta_nao_homologada()
+        [Fact(DisplayName = "Inscrição - Deve cancelar inscrição confirmada")]
+        public async Task Deve_cancelar_inscricao_confirmada()
         {
             // arrange
             var usuario = UsuarioMock.GerarUsuario();
@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 
             var propostaTurma = proposta.Turmas.FirstOrDefault();
 
-            var inscricao = InscricaoMock.GerarInscricao(usuario.Id, propostaTurma.Id);
+            var inscricao = InscricaoMock.GerarInscricao(usuario.Id, propostaTurma.Id, Dominio.Enumerados.SituacaoInscricao.Confirmada);
             await InserirNaBase(inscricao);
 
             var vaga = PropostaMock.GerarTurmaVaga(propostaTurma.Id, inscricao.Id);
@@ -45,8 +45,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             vagas.FirstOrDefault().InscricaoId.ShouldBeNull();
         }
 
-        [Fact(DisplayName = "Inscrição - Deve cancelar inscrição proposta homologada")]
-        public async Task Deve_cancelar_inscricao_proposta_homologada()
+        [Fact(DisplayName = "Inscrição - Deve cancelar inscrição não confirmada")]
+        public async Task Deve_cancelar_inscricao_nao_confirmada()
         {
             // arrange
             var usuario = UsuarioMock.GerarUsuario();
@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 
             var propostaTurma = proposta.Turmas.FirstOrDefault();
 
-            var inscricao = InscricaoMock.GerarInscricao(usuario.Id, propostaTurma.Id);
+            var inscricao = InscricaoMock.GerarInscricao(usuario.Id, propostaTurma.Id, Dominio.Enumerados.SituacaoInscricao.AguardandoAnalise);
             await InserirNaBase(inscricao);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoCancelarInscricao>();

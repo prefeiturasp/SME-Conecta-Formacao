@@ -15,5 +15,14 @@
                 EntidadeId = id
             };
         }
+
+        public static RetornoDTO RetornarSucesso(string mensagem)
+        {
+            return new RetornoDTO
+            {
+                Sucesso = true,
+                Mensagem = mensagem
+            };
+        }
     }
 }
