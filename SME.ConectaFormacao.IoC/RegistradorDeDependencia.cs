@@ -262,6 +262,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioImportacaoArquivo, RepositorioImportacaoArquivo>();
         _serviceCollection.TryAddScoped<IRepositorioImportacaoArquivoRegistro, RepositorioImportacaoArquivoRegistro>();
         _serviceCollection.TryAddScoped<IRepositorioPropostaPareceristaConsideracao, RepositorioPropostaPareceristaConsideracao>();
+        _serviceCollection.TryAddScoped<IRepositorioNotificacao, RepositorioNotificacao>();
+        _serviceCollection.TryAddScoped<IRepositorioNotificacaoUsuario, RepositorioNotificacaoUsuario>();
     }
 
     protected virtual void RegistrarCasosDeUso()
