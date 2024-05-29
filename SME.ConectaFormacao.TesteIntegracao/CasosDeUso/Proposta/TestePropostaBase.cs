@@ -59,7 +59,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
             await InserirNaBase(cargosFuncoes);
 
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(7);
             await InserirNaBase(criteriosValidacaoInscricao);
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
@@ -133,7 +133,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.VagasRemanecentes = vagasRemanecentes;
             }
 
-            var criterios = PropostaMock.GerarCritariosValidacaoInscricao(proposta.Id, criteriosValidacaoInscricao);
+            var criterios = PropostaMock.GerarCriteriosValidacaoInscricao(proposta.Id, criteriosValidacaoInscricao);
             if (criterios != null)
             {
                 await InserirNaBase(criterios);

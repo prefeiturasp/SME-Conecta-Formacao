@@ -2416,5 +2416,36 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecerista>(query, new { propostaId, registroFuncional });
         }
+
+        public Task<bool> PodeRealizarSorteioDasInscricoesPorPropostaId(long propostaId)
+        {
+            const int ehCriterioehCasoNumeroInscritosUltrapasseNumeroVagasSeraRealizadoSorteio = 7;
+            
+            var query = $@"
+            SELECT 
+                CASE 
+                    WHEN COUNT(DISTINCT i.id) > COUNT(DISTINCT ptv.id) THEN 1 
+                    ELSE 0 
+                END AS podeRealizarSorteio
+            FROM proposta p
+            JOIN proposta_criterio_validacao_inscricao pcvi ON p.id = pcvi.proposta_id  
+            JOIN proposta_turma pt ON pt.proposta_id = p.id
+            LEFT JOIN proposta_turma_vaga ptv ON pt.id = ptv.proposta_turma_id AND NOT ptv.excluido
+            LEFT JOIN inscricao i ON pt.id = i.proposta_turma_id AND NOT i.excluido
+            WHERE NOT p.excluido 
+              AND NOT pcvi.excluido 
+              AND NOT pt.excluido 
+              AND p.formacao_homologada = @ehFormacaoHomologada
+              AND pcvi.criterio_validacao_inscricao_id = @ehCriterioehCasoNumeroInscritosUltrapasseNumeroVagasSeraRealizadoSorteio
+              AND p.id = @propostaId ";
+
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, 
+                new
+                {
+                    propostaId, 
+                    ehFormacaoHomologada = (int)FormacaoHomologada.Sim,
+                    ehCriterioehCasoNumeroInscritosUltrapasseNumeroVagasSeraRealizadoSorteio
+                });
+        }
     }
 }
