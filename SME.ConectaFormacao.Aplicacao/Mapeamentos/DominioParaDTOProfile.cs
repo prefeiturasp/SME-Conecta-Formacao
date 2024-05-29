@@ -223,6 +223,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<Inscricao, InscricaoDTO>().ReverseMap();
 
+            CreateMap<Inscricao, InscricaoManualDTO>().ReverseMap();
+
             CreateMap<Inscricao, InscricaoAutomaticaDTO>().ReverseMap();
 
             CreateMap<CursistaServicoEol, CursistaServicoEol>().ReverseMap();
