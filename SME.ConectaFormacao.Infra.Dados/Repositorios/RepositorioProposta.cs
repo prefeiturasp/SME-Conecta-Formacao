@@ -2017,9 +2017,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().GetAsync<PropostaTurma>(propostaTurmaId);
         }
 
-        public async Task<IEnumerable<PropostaTurma>> ObterTurmasComVagaPorId(long propostaId)
+        public async Task<IEnumerable<PropostaTurma>> ObterTurmasComVagaPorId(long propostaId, string? codigoDre = null)
         {
-            var query = @"select 
+            var query = $@"select 
                             pt.id, 
                             pt.proposta_id, 
                             pt.nome
@@ -2028,12 +2028,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           and not pt.excluido
                           and exists(select 1 
                                      from proposta_turma_vaga ptv 
+                                     inner join proposta_turma_dre ptd on ptv.proposta_turma_id = ptd.proposta_turma_id
+                                     inner join dre on ptd.dre_id = dre.id
                                      where ptv.proposta_turma_id = pt.id 
                                        and not ptv.excluido 
-                                       and ptv.inscricao_id is null 
-                                     limit 1)";
+                                       and ptv.inscricao_id is null
+                                       {(codigoDre is not null ? "and dre.dre_id = @codigoDre" : string.Empty )})";
 
-            return await conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
+            return await conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId, codigoDre });
         }
 
         public async Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorPropostaTurmaId(long turmaId)

@@ -103,7 +103,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             if (!emailValido)
                 erros.Add(MensagemNegocio.EMAIL_INVALIDO.Parametros(email));
 
-            if (!string.IsNullOrEmpty(emailEdu))
+            if (emailEdu.EstaPreenchido())
             {
                 var emailEduValido = UtilValidacoes.EmailEduEhValido(emailEdu);
                 if (!emailEduValido)

@@ -89,6 +89,7 @@ public class MensagemNegocio
     public const string ERRO_OBTER_CARGOS_FUNCIONARIO_EOL = "Não foi possível localizar os cargos do funcionário no EOL";
     public const string ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL = "Não foi possível localizar os funcionário no EOL com base nos critérios de cargo, função, ano, modalidade e componente curricular";
     public const string ERRO_OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_E_CARGO_EOL = "Não foi possível obter as dre com atribuicao do servidor e cargo no EOL";
+    public const string ERRO_OBTER_NOME_SERVIDOR_POR_RF_EOL = "Não foi possível obter o nome do servidor por RF no EOL";
     public const string ERRO_OBTER_USUARIOS_POR_PERFIS = "Não foi possível obter os usuários dos perfis informados";
     public const string USUARIO_LOGADO_NAO_E_PARECERISTA_DA_PROPOSTA = "O usuário logado não está configurado como Parecerista da proposta";
 

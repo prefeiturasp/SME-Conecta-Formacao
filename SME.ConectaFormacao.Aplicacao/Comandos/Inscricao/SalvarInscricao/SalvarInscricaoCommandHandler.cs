@@ -32,10 +32,6 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
-            if (!Regex.IsMatch(request.InscricaoDTO.Email, pattern, RegexOptions.IgnoreCase))
-                throw new NegocioException(MensagemNegocio.EMAIL_EDU_INVALIDO);
-
             if (usuarioLogado.Tipo == TipoUsuario.Interno)
                 if (request.InscricaoDTO.CargoCodigo.EhNulo())
                     throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
@@ -60,8 +56,6 @@ namespace SME.ConectaFormacao.Aplicacao
             }
             else
                 await ValidarDreUsuarioExterno(inscricao.PropostaTurmaId, usuarioLogado.CodigoEolUnidade, cancellationToken);
-
-            await ValidarEmail(usuarioLogado.Login, usuarioLogado.Email, request.InscricaoDTO.Email, cancellationToken);
 
             var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
