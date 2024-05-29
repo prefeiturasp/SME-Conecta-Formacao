@@ -181,7 +181,7 @@ public class MensagemNegocio
     public const string INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_PODE_IR_PARA_EM_ESPERA = "Somente inscrição Aguardando Análise pode ser movida para Em Espera";
     public const string INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_OE_EM_ESPERA_PODE_IR_PARA_CONFIRMADA = "Somente inscrição Aguardando Análise ou Em Espera pode ser Confirmada";
     public const string INSCRICOES_CANCELADAS_COM_INCONSISTENCIAS = "Existem inscrições não canceladas!";
-    public const string INSCRICOES_CANCELADAS_COM_SUCESSO = "Inscrições confirmadas com sucesso!";
+    public const string INSCRICOES_CANCELADAS_COM_SUCESSO = "Inscrições canceladas com sucesso!";
     public const string PARAMETRO_INVALIDO = "Parâmetro inválido";
     public const string NOTIFICACAO_NAO_ENCONTRADA = "Notificação não encontrada";
     public const string NOTIFICACAO_NAO_ENCONTRADA_USUARIO = "Notificação não encontrada para o usuário logado";
