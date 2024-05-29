@@ -13,4 +13,12 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Cancelada")]
         Cancelada = 4
     }
+
+    public static class SituacaoInscricaoExtensao
+    {
+        public static bool EhConfirmada(this SituacaoInscricao situacao)
+        {
+            return situacao == SituacaoInscricao.Confirmada;
+        }
+    }
 }
