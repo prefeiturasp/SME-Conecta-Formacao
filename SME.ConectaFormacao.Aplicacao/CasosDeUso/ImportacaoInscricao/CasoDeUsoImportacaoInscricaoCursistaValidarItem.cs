@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 {
                     PropostaTurmaId = propostaTurma.Id,
                     UsuarioId = usuario.Id,
-                    Situacao = SituacaoInscricao.EmAnalise,
+                    Situacao = SituacaoInscricao.AguardandoAnalise,
                     Origem = OrigemInscricao.Manual,
                     TipoVinculo = tipoVinculo,
                 };

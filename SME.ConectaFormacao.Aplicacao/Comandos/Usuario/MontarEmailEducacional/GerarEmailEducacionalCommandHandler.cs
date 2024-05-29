@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<string> Handle(GerarEmailEducacionalCommand request, CancellationToken cancellationToken)
         {
             var cpfOuRf = request.Usuario.Tipo == TipoUsuario.Externo ? request.Usuario.Cpf : request.Usuario.Login;
-            var partesNome = request.Usuario.Nome.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var partesNome = request.Usuario.Nome.RemoverAcentuacao().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var primeiroNome = partesNome.FirstOrDefault();
             var ultimoNome = partesNome.Length > 1 ? partesNome.LastOrDefault() : String.Empty;
             var emailEdu = CriarEmailPorTipo(request.Usuario,cpfOuRf, primeiroNome, ultimoNome);

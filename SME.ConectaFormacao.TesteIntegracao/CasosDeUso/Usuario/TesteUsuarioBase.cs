@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         
         protected string ObterEmailEdu(UsuarioPerfisRetornoDTO retorno)
         {
-            var partesNome = retorno.UsuarioNome.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var partesNome = retorno.UsuarioNome.RemoverAcentuacao().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var primeiroNome = partesNome.FirstOrDefault();
             var ultimoNome = partesNome.Length > 1 ? partesNome.LastOrDefault() : String.Empty;
             return (ultimoNome.EstaPreenchido()

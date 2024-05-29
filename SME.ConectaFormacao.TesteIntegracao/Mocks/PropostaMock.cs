@@ -382,7 +382,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
             return retorno;
         }
-        public static PropostaTurmaVaga GerarTurmaVaga(long propostaTurmaId, long inscricaoId)
+        public static PropostaTurmaVaga GerarTurmaVaga(long propostaTurmaId, long? inscricaoId = null)
         {
             var vaga = new PropostaTurmaVaga() { PropostaTurmaId = propostaTurmaId, InscricaoId = inscricaoId };
             Auditoria(vaga);

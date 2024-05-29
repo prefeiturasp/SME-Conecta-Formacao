@@ -2,6 +2,7 @@
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -13,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly IMediator _mediator;
 
-        public CancelarInscricaoCommandHandler(ITransacao transacao, IRepositorioInscricao repositorioInscricao, IMediator mediator)
+        public CancelarInscricaoCommandHandler(ITransacao transacao, IRepositorioInscricao repositorioInscricao,IMediator mediator)
         {
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
@@ -25,23 +26,19 @@ namespace SME.ConectaFormacao.Aplicacao
             var inscricao = await _repositorioInscricao.ObterPorId(request.Id) ??
                 throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
-            var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
-                throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
-
-            var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-
-            var formacaoHomologada = proposta.FormacaoHomologada == FormacaoHomologada.Sim;
-
             var transacao = _transacao.Iniciar();
             try
             {
-                inscricao.Situacao = SituacaoInscricao.Cancelada;
-                await _repositorioInscricao.Atualizar(inscricao);
-
-                if (!formacaoHomologada)
+                if (inscricao.Situacao.EhConfirmada())
                     await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
 
+                inscricao.Situacao = SituacaoInscricao.Cancelada;
+
+                if (request.Motivo.EstaPreenchido())
+                    inscricao.MotivoCancelamento = request.Motivo;
+
+                await _repositorioInscricao.Atualizar(inscricao);
+                await _mediator.Send(new EnviarEmailCancelarInscricaoCommand(request.Id, request.Motivo), cancellationToken);
                 transacao.Commit();
 
                 return true;
