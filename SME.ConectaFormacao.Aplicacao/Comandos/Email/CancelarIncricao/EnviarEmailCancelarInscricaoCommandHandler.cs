@@ -1,6 +1,7 @@
 using System.Text;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -28,9 +29,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 EmailDestinatario = dadosParaEmail.FirstOrDefault()!.Email,
                 NomeDestinatario = dadosParaEmail.FirstOrDefault()!.NomeDestinatario,
                 Titulo = $"Cancelamento de inscrição | Formação {dadosParaEmail.FirstOrDefault()!.NomeFormacao} ",
-                Texto = CriarMensagemEmail(dadosParaEmail.FirstOrDefault()!.NomeFormacao,request.Motivo)
+                Texto = CriarMensagemEmail(dadosParaEmail.FirstOrDefault()!.NomeFormacao, request.Motivo)
             };
-            await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);  
+            await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);
 
             return true;
         }
@@ -77,9 +78,12 @@ namespace SME.ConectaFormacao.Aplicacao
                                             <body>
                                                 <div class=""container"">
                                                     <div class=""header"">Cancelamento de Inscrição</div>");
-                                                    mensagem.AppendLine($"<p>A sua inscrição na formação {nomeFormacao}.</p>");
-                                                    mensagem.AppendLine(@$" <p class=""reason"">Motivo: {motivoCancelamento}.</p>");
-                                                    mensagem.AppendLine(@"<p>Para mais detalhes entre em contato com a área promotora.</p>
+            mensagem.AppendLine($"<p>A sua inscrição na formação {nomeFormacao}.</p>");
+            
+            if (motivoCancelamento.EstaPreenchido())
+                mensagem.AppendLine(@$" <p class=""reason"">Motivo: {motivoCancelamento}.</p>");
+
+            mensagem.AppendLine(@"<p>Para mais detalhes entre em contato com a área promotora.</p>
                                                     <div class=""footer"">
                                                         <p>Acesse a nossa <a href=""https://conectaformacao.sme.prefeitura.sp.gov.br/area-publica"" class=""link"">área pública</a> e fique por dentro de todas as formações e eventos.</p>
                                                     </div>
