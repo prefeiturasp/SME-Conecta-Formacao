@@ -57,8 +57,12 @@ namespace SME.ConectaFormacao.Aplicacao
                         Confirmadas = g.Where(i => i.Situacao.EhConfirmada()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
                         AguardandoAnalise = g.Where(i => i.Situacao.EhAguardandoAnalise()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
                         EmEspera = g.Where(i => i.Situacao.EhEmEspera()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
+                        Cancelada = g.Where(i => i.Situacao.EhCancelada()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
                         Data = ObterData(inscricao, g.First()),
-                        PodeRealizarSorteio = g.Key.QuantidadeVagas > 0 && g.Sum(i => (int?)i.TotalInscricoes) > g.Key.QuantidadeVagas
+                        PodeRealizarSorteio = g.Key.QuantidadeVagas > 0 
+                                              && g.Sum(i => (int?)i.TotalInscricoes) 
+                                              - (g.Where(i => i.Situacao.EhConfirmada()).Sum(i => (int?)i.TotalInscricoes) ?? 0)
+                                               > g.Key.QuantidadeVagas,
                     })
                     .DistinctBy(x => x.NomeTurma)
                     .ToList();

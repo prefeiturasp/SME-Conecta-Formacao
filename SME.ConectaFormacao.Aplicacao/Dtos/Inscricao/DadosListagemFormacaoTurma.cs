@@ -10,5 +10,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public bool PodeRealizarSorteio { get; set; }
         public int? AguardandoAnalise { get; set; }
         public int? EmEspera { get; set; }
+        public int? Cancelada { get; set; }
     }
 }
