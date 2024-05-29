@@ -13,8 +13,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class
-        InserirConteudoArquivoInscricaoCursistaCommandHandler : IRequestHandler<InserirConteudoArquivoInscricaoCursistaCommand, bool>
+    public class InserirConteudoArquivoInscricaoCursistaCommandHandler : IRequestHandler<InserirConteudoArquivoInscricaoCursistaCommand, bool>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioImportacaoArquivoRegistro _repositorioImportacaoArquivoRegistro;
@@ -27,12 +26,14 @@ namespace SME.ConectaFormacao.Aplicacao
         private const string COLUNA_REGISTRO_FUNCIONAL_TEXTO = "REGISTRO FUNCIONAL";
         private const string COLUNA_CPF_TEXTO = "CPF";
         private const string COLUNA_NOME_TEXTO = "NOME";
+        private const string COLUNA_VINCULO_TEXTO = "VINCULO";
 
         private const int COLUNA_TURMA_NUMERO = 1;
         private const int COLUNA_COLABORADOR_DA_REDE_NUMERO = 2;
         private const int COLUNA_REGISTRO_FUNCIONAL_NUMERO = 3;
         private const int COLUNA_CPF_NUMERO = 4;
         private const int COLUNA_NOME_NUMERO = 5;
+        private const int COLUNA_VINCULO_NUMERO = 6;
 
         public InserirConteudoArquivoInscricaoCursistaCommandHandler(IMapper mapper, IRepositorioImportacaoArquivoRegistro repositorioImportacaoArquivoRegistro)
         {
@@ -70,16 +71,17 @@ namespace SME.ConectaFormacao.Aplicacao
             return true;
         }
 
-        private void ValidarOrdemColunas(IXLWorksheet planilha, int numeroLinha)
+        private static void ValidarOrdemColunas(IXLWorksheet planilha, int numeroLinha)
         {
             ValidarTituloDaColuna(planilha, numeroLinha, COLUNA_TURMA_TEXTO, COLUNA_TURMA_NUMERO);
             ValidarTituloDaColuna(planilha, numeroLinha, COLUNA_COLABORADOR_DA_REDE_TEXTO, COLUNA_COLABORADOR_DA_REDE_NUMERO);
             ValidarTituloDaColuna(planilha, numeroLinha, COLUNA_REGISTRO_FUNCIONAL_TEXTO, COLUNA_REGISTRO_FUNCIONAL_NUMERO);
             ValidarTituloDaColuna(planilha, numeroLinha, COLUNA_CPF_TEXTO, COLUNA_CPF_NUMERO);
             ValidarTituloDaColuna(planilha, numeroLinha, COLUNA_NOME_TEXTO, COLUNA_NOME_NUMERO);
+            ValidarTituloDaColuna(planilha, numeroLinha, COLUNA_VINCULO_TEXTO, COLUNA_VINCULO_NUMERO);
         }
 
-        private void ValidarTituloDaColuna(IXLWorksheet planilha, int numeroLinha, string nomeDaColuna,
+        private static void ValidarTituloDaColuna(IXLWorksheet planilha, int numeroLinha, string nomeDaColuna,
             int numeroDaColuna)
         {
             if (planilha.ObterValorDaCelula(numeroLinha, numeroDaColuna).RemoverAcentuacao()
@@ -89,7 +91,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     nomeDaColuna, numeroDaColuna));
         }
 
-        private InscricaoCursistaImportacaoDTO ObterInscricaoCursistaDto(IXLWorksheet planilha, int numeroLinha)
+        private static InscricaoCursistaImportacaoDTO ObterInscricaoCursistaDto(IXLWorksheet planilha, int numeroLinha)
         {
             return new InscricaoCursistaImportacaoDTO()
             {
@@ -97,7 +99,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 ColaboradorRede = planilha.ObterValorDaCelula(numeroLinha, COLUNA_COLABORADOR_DA_REDE_NUMERO),
                 RegistroFuncional = planilha.ObterValorDaCelula(numeroLinha, COLUNA_REGISTRO_FUNCIONAL_NUMERO),
                 Cpf = planilha.ObterValorDaCelula(numeroLinha, COLUNA_CPF_NUMERO),
-                Nome = planilha.ObterValorDaCelula(numeroLinha, COLUNA_NOME_NUMERO)
+                Nome = planilha.ObterValorDaCelula(numeroLinha, COLUNA_NOME_NUMERO),
+                Vinculo = planilha.ObterValorDaCelula(numeroLinha, COLUNA_VINCULO_NUMERO),
             };
         }
     }

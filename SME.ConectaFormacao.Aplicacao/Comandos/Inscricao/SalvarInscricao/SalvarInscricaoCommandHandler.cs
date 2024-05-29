@@ -32,9 +32,9 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            if (usuarioLogado.Tipo == TipoUsuario.Interno)
-                if (request.InscricaoDTO.CargoCodigo.EhNulo())
-                    throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
+
+            if (usuarioLogado.Tipo.EhInterno() && request.InscricaoDTO.CargoCodigo.NaoEstaPreenchido())
+                throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
 
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoDTO);
             inscricao.UsuarioId = usuarioLogado.Id;
