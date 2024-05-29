@@ -21,8 +21,6 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RuleFor(x => x.InscricaoId).GreaterThan(0)
                 .WithMessage("Informe o Id da Inscrição para Enviaro Email de Cancelamento");
-            RuleFor(x => x.Motivo).NotEmpty()
-                .WithMessage("Informe o motivo do cancelamento para Enviaro Email de Cancelamento");
         }
     }
 }
