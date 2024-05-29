@@ -111,9 +111,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> CancelarInscricoes(
             [FromServices] ICasoDeUsoCancelarInscricoes casoDeUso,
             [FromQuery] long[] ids, 
-            [FromBody] string motivo)
+            [FromBody] InscricaoMotivoCancelamentoDTO inscricaoMotivoCancelamentoDTO)
         {
-            return Ok(await casoDeUso.Executar(ids, motivo));
+            return Ok(await casoDeUso.Executar(ids, inscricaoMotivoCancelamentoDTO.Motivo));
         }
 
         [HttpGet("{propostaId}")]
