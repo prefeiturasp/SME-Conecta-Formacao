@@ -19,15 +19,26 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<PaginacaoResultadoDTO<DadosListagemInscricaoDTO>> Handle(ObterInscricaoPorIdQuery request, CancellationToken cancellationToken)
         {
-            var mapeamento = Enumerable.Empty<DadosListagemInscricaoDTO>();
-
+            var mapeamento = new List<DadosListagemInscricaoDTO>();
             var totalDeRegistros = await _repositorioInscricao.ObterInscricaoPorIdComFiltrosTotalRegistros(request.PropostaId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista, request.filtros.TurmasId);
             if (totalDeRegistros > 0)
             {
                 var inscricoes = await _repositorioInscricao.ObterInscricaoPorIdComFiltros(request.PropostaId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista,
                     request.filtros.TurmasId, request.NumeroPagina, request.NumeroRegistros);
+                
+                var propostaPossuiAnexo = await _repositorioInscricao.ObterSeInscricaoPossuiAnexoPorPropostasIds(inscricoes.Select(x => x.Id).ToArray());
 
-                mapeamento = _mapper.Map<IEnumerable<DadosListagemInscricaoDTO>>(inscricoes);
+                mapeamento = (_mapper.Map<IEnumerable<DadosListagemInscricaoDTO>>(inscricoes)).ToList();
+                
+                mapeamento.ForEach(item =>
+                {
+                    var anexos = propostaPossuiAnexo
+                        .Where(x => x.InscricaoId == item.InscricaoId && !string.IsNullOrEmpty(x.NomeArquivo))
+                        .Select(anexo => new DadosAnexosInscricao(anexo.NomeArquivo, anexo.Codigo))
+                        .ToList();
+                
+                    item.Anexos.AddRange(anexos);
+                });
             }
 
             return new PaginacaoResultadoDTO<DadosListagemInscricaoDTO>(mapeamento, totalDeRegistros, request.NumeroRegistros);
