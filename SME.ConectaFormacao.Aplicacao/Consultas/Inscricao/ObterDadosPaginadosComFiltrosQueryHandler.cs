@@ -47,24 +47,20 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 var inscricao = turmasFormacao?.Where(x => x.PropostaId == proposta.Id);
                 
-                var turmas = inscricao!
-                    .GroupBy(i => new { i.NomeTurma, i.QuantidadeVagas })
-                    .Select(g => new DadosListagemFormacaoTurma
+                var turmas = inscricao!.Select(i => new DadosListagemFormacaoTurma
                     {
-                        NomeTurma = g.Key.NomeTurma,
-                        QuantidadeVagas = g.Key.QuantidadeVagas,
-                        QuantidadeInscricoes = g.Sum(i => i.TotalInscricoes),
-                        Confirmadas = g.Where(i => i.Situacao.EhConfirmada()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
-                        AguardandoAnalise = g.Where(i => i.Situacao.EhAguardandoAnalise()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
-                        EmEspera = g.Where(i => i.Situacao.EhEmEspera()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
-                        Cancelada = g.Where(i => i.Situacao.EhCancelada()).Sum(i => (int?)i.TotalInscricoes) ?? 0,
-                        Data = ObterData(inscricao, g.First()),
-                        PodeRealizarSorteio = g.Key.QuantidadeVagas > 0 
-                                              && g.Sum(i => (int?)i.TotalInscricoes) 
-                                              - (g.Where(i => i.Situacao.EhConfirmada()).Sum(i => (int?)i.TotalInscricoes) ?? 0)
-                                               > g.Key.QuantidadeVagas,
-                    })
-                    .DistinctBy(x => x.NomeTurma)
+                        NomeTurma = i.NomeTurma,
+                        QuantidadeVagas = i.QuantidadeVagas,
+                        QuantidadeInscricoes = i.TotalInscricoes,
+                        Data = inscricao!.Any(x => x.NomeTurma.Equals(i.NomeTurma) &&  x.Datas.NaoEhNulo()) 
+                            ? string.Join(", ", inscricao!.Where(x => x.NomeTurma == i.NomeTurma).Select(x => x.Datas).Distinct()) 
+                            : string.Empty,
+                        Confirmadas = i.Confirmadas,
+                        AguardandoAnalise = i.AguardandoAnalise,
+                        EmEspera = i.EmEspera,
+                        Cancelada = i.Cancelada,
+                        PodeRealizarSorteio = i.Disponiveis > 0 && i.Excedidas > 0
+                    }).DistinctBy(x => x.NomeTurma)
                     .ToList();
 
                 proposta.Turmas = turmas;

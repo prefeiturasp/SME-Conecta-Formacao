@@ -284,48 +284,52 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (numeroHomologacao.NaoEhNulo())
                 query += " and p.numero_homologacao = @numeroHomologacao ";
 
-            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta, numeroHomologacao });
-        }
-
-        public Task<int> ObterInscricaoPorIdComFiltrosTotalRegistros(long inscricaoId, string? login, string? cpf, string? nomeCursista, double? turmaId)
-        {
-            throw new NotImplementedException();
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta, numeroHomologacao });
         }
 
         public Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds)
         {
             var query = @" 
-                    with inscricoes_turma as (
-                        select pt.id, 
-                          i.situacao, 
-                          count(1) as total_inscricoes
-                        from proposta_turma pt 
-                        join inscricao i on i.proposta_turma_id = pt.id 
-                        where not pt.excluido 
-                          and not i.excluido
-                          and pt.proposta_id = any(@propostaIds)
-                        group by pt.id,i.situacao
-                    )
-                    select
-                        p.id as PropostaId,
-                        p.quantidade_vagas_turma as quantidadeVagas,
-                        pt.nome as NomeTurma,
-                        case 
-                         when ped.data_fim is null then TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')
-                         else TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')|| ' até ' || TO_CHAR(ped.data_fim, 'dd/mm/yyyy')
-                        end as Datas,
-                        it.situacao,
-                        it.total_inscricoes as totalInscricoes
-                    from proposta p
-                    left join proposta_turma pt on pt.proposta_id = p.id and not pt.excluido
-                    left join proposta_encontro_turma pet on pet.turma_id = pt.id and not pet.excluido
-                    left join proposta_encontro pe on pe.id = pet.proposta_encontro_id and not pe.excluido
-                    left join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
-                    left join inscricoes_turma it on it.id = pt.id
-                    where not p.excluido and p.id = any(@propostaIds)
-                    order by pt.nome ";
+            WITH inscricoes_turma AS (
+                SELECT
+                    pt.id,
+                    COUNT(*) AS total_inscricoes,
+                    COUNT(*) FILTER (WHERE i.situacao = 1) AS Confirmadas,
+                    COUNT(*) FILTER (WHERE i.situacao = 3) AS AguardandoAnalise,
+                    COUNT(*) FILTER (WHERE i.situacao = 5) AS EmEspera,
+                    COUNT(*) FILTER (WHERE i.situacao = 4) AS Cancelada
+                FROM proposta_turma pt
+                INNER JOIN inscricao i ON i.proposta_turma_id = pt.id AND NOT i.excluido
+                WHERE NOT pt.excluido
+                  AND pt.proposta_id = ANY(@propostaIds)
+                GROUP BY pt.id
+            )
+            SELECT
+                p.id AS PropostaId,
+                p.quantidade_vagas_turma AS QuantidadeVagas,
+                pt.nome AS NomeTurma,
+                CASE
+                    WHEN ped.data_fim IS NULL THEN TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')
+                    ELSE TO_CHAR(ped.data_inicio, 'dd/mm/yyyy') || ' até ' || TO_CHAR(ped.data_fim, 'dd/mm/yyyy')
+                END AS Datas,
+                it.total_inscricoes AS TotalInscricoes,
+                it.Confirmadas,
+                it.AguardandoAnalise,
+                it.EmEspera,
+                it.cancelada,
+                p.quantidade_vagas_turma - it.Confirmadas as disponiveis,
+                it.total_inscricoes - p.quantidade_vagas_turma as excedidas
+            FROM proposta p
+            LEFT JOIN proposta_turma pt ON pt.proposta_id = p.id AND NOT pt.excluido
+            LEFT JOIN proposta_encontro_turma pet ON pet.turma_id = pt.id AND NOT pet.excluido
+            LEFT JOIN proposta_encontro pe ON pe.id = pet.proposta_encontro_id AND NOT pe.excluido
+            LEFT JOIN proposta_encontro_data ped ON ped.proposta_encontro_id = pe.id AND NOT ped.excluido
+            LEFT JOIN inscricoes_turma it ON it.id = pt.id
+            WHERE NOT p.excluido
+              AND p.id = ANY(@propostaIds)
+            ORDER BY pt.nome ";
 
-            return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>(query.ToString(), new { propostaIds });
+            return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>(query, new { propostaIds });
         }
 
         public Task<IEnumerable<PropostaTipoInscricao>> ObterTiposInscricaoPorPropostaIds(long[] codigosFormacao)

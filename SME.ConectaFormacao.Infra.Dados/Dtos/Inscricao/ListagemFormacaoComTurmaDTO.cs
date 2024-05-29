@@ -9,6 +9,11 @@ namespace SME.ConectaFormacao.Infra
         public int? QuantidadeVagas { get; set; }
         public string? NomeTurma { get; set; }
         public string? Datas { get; set; }
-        public SituacaoInscricao Situacao { get; set; }
+        public int? Confirmadas { get; set; }
+        public int? AguardandoAnalise { get; set; }
+        public int? EmEspera { get; set; }
+        public int? Cancelada { get; set; }
+        public int? Disponiveis { get; set; }
+        public int? Excedidas { get; set; } 
     }
 }
