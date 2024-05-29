@@ -63,7 +63,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             if (situacao.EstaPublicada())
             {
-                if (proposta.FormacaoHomologada.NaoEstaHomologada() && proposta.TiposInscricao.Any(a => a.TipoInscricao == TipoInscricao.Automatica || a.TipoInscricao == TipoInscricao.AutomaticaJEIF))
+                if (proposta.TiposInscricao.Any(a => a.TipoInscricao == TipoInscricao.Automatica || a.TipoInscricao == TipoInscricao.AutomaticaJEIF))
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomatica, propostaId));
                 else
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, propostaId));
