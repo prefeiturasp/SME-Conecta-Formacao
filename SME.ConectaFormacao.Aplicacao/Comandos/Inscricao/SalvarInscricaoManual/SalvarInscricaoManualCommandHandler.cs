@@ -32,9 +32,8 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuario = await ObterUsuarioPorLogin(request.InscricaoManualDTO, cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            if (usuario.Tipo.EhInterno())
-                if (request.InscricaoManualDTO.CargoCodigo.EhNulo())
-                    throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
+            if (usuario.Tipo.EhInterno() && request.InscricaoManualDTO.CargoCodigo.NaoEstaPreenchido())
+                throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
 
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoManualDTO);
             inscricao.UsuarioId = usuario.Id;
@@ -46,7 +45,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
                     throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
 
-            if (usuario.Tipo == TipoUsuario.Interno)
+            if (usuario.Tipo.EhInterno())
             {
                 await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
 

@@ -36,9 +36,8 @@ namespace SME.ConectaFormacao.Aplicacao
             if (!Regex.IsMatch(request.InscricaoDTO.Email, pattern, RegexOptions.IgnoreCase))
                 throw new NegocioException(MensagemNegocio.EMAIL_EDU_INVALIDO);
 
-            if (usuarioLogado.Tipo == TipoUsuario.Interno)
-                if (request.InscricaoDTO.CargoCodigo.EhNulo())
-                    throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
+            if (usuarioLogado.Tipo.EhInterno() && request.InscricaoDTO.CargoCodigo.NaoEstaPreenchido())
+                throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
 
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoDTO);
             inscricao.UsuarioId = usuarioLogado.Id;
