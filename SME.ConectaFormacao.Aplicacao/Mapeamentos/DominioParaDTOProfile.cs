@@ -248,6 +248,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Iniciado, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.DataRealizacaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date))
                 .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != Dominio.Enumerados.SituacaoInscricao.Cancelada));
 
+            CreateMap<Inscricao, DadosListagemInscricaoPermissaoDTO>()
+                .ForMember(dest => dest.PodeConfirmar, opt => opt.MapFrom(o => o.Situacao.EhAguardandoAnalise() || o.Situacao.EhEmEspera()))
+                .ForMember(dest => dest.PodeColocarEmEspera, opt => opt.MapFrom(o => o.Situacao.EhAguardandoAnalise()))
+                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao.NaoEhCancelada()));
+
             CreateMap<Inscricao, DadosListagemInscricaoDTO>()
                 .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
                 .ForMember(dest => dest.NomeCursista, opt => opt.MapFrom(o => o.Usuario.Nome))
@@ -259,7 +264,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => o.Situacao.Nome()))
                 .ForMember(dest => dest.Origem, opt => opt.MapFrom(o => o.Origem.Nome()))
                 .ForMember(dest => dest.IntegrarNoSga, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.IntegrarNoSGA))
-                .ForMember(dest => dest.Iniciado, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.DataRealizacaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date));
+                .ForMember(dest => dest.Iniciado, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.DataRealizacaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date))
+                .ForMember(d => d.Permissao, opt => opt.MapFrom(s => s));
 
             CreateMap<Proposta, DadosListagemFormacaoComTurmaDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(o => o.Id))

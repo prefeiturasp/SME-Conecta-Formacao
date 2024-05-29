@@ -19,6 +19,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public int? TipoVinculo { get; set; }
         public SituacaoInscricao Situacao { get; set; }
         public OrigemInscricao Origem { get; set; }
+        public string MotivoCancelamento { get; set; }
 
         public PropostaTurma PropostaTurma { get; set; }
 

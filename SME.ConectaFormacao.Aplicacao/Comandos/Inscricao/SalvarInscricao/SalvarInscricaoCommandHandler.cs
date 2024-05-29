@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoDTO);
             inscricao.UsuarioId = usuarioLogado.Id;
-            inscricao.Situacao = SituacaoInscricao.EmAnalise;
+            inscricao.Situacao = SituacaoInscricao.AguardandoAnalise;
             inscricao.Origem = OrigemInscricao.Manual;
 
             await MapearCargoFuncao(inscricao, cancellationToken);
@@ -182,7 +182,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 transacao.Commit();
 
-                var mensagem = !formacaoHomologada && integrarNoSGA ? MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA : MensagemNegocio.INSCRICAO_CONFIRMADA;
+                var mensagem = MensagemNegocio.INSCRICAO_CONFIRMADA;
+                if (!formacaoHomologada && integrarNoSGA)
+                    mensagem = MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA;
+                else if (formacaoHomologada)
+                    mensagem = MensagemNegocio.INSCRICAO_EM_ANALISE;
+                 
                 return RetornoDTO.RetornarSucesso(mensagem, inscricao.Id);
             }
             catch
