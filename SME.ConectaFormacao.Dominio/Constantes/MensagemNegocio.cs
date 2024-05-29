@@ -188,4 +188,5 @@ public class MensagemNegocio
     public const string NOTIFICACAO_NAO_ENCONTRADA_USUARIO = "Notificação não encontrada para o usuário logado";
     public const string RESPONSAVEL_DF_NAO_ENCONTRADO = "O responsável DF não foi encontrado.";
     public const string MOVIMENTACAO_PROPOSTA_NAO_ENCONTRADA = "Movimentação da proposta não encontrada";
+    public const string PROPOSTA_NUMERO_HOMOLOGACAO_DEVE_SER_INFORMADO = "O Número de homologação deve ser informado para publicar a proposta.";
 }
