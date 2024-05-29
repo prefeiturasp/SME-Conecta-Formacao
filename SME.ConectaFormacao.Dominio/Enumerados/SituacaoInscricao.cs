@@ -58,12 +58,4 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
             return situacao == SituacaoInscricao.EmEspera;
         }
     }
-
-    public static class SituacaoInscricaoExtensao
-    {
-        public static bool EhConfirmada(this SituacaoInscricao situacao)
-        {
-            return situacao == SituacaoInscricao.Confirmada;
-        }
-    }
 }
