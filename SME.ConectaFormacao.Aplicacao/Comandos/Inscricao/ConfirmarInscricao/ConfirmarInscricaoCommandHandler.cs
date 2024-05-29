@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (inscricao.EhNulo() || inscricao.Excluido)
                 throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA);
 
-            if (inscricao.Situacao.NaoEhAguardandoAnalise())
+            if (inscricao.Situacao.NaoEhAguardandoAnaliseEEmEspera())
                 throw new NegocioException(MensagemNegocio.INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_OE_EM_ESPERA_PODE_IR_PARA_CONFIRMADA);
 
             var transacao = _transacao.Iniciar();
