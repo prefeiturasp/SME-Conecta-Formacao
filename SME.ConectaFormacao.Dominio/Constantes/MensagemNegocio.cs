@@ -11,6 +11,7 @@ public class MensagemNegocio
     public const string SOMENTE_ARQUIVO_XLSX_SUPORTADO = "Esse arquivo não é um XLSX. Somente arquivos do tipo XLSX são permitidos";
     public const string INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA = "Sua inscrição foi confirmada. Na data de início da sua turma acesse o SGA para iniciar a formação.";
     public const string INSCRICAO_CONFIRMADA = "Sua inscrição foi confirmada.";
+    public const string INSCRICAO_EM_ANALISE = "Sua inscrição foi enviada com sucesso. Em breve você receberá a devolutiva por e-mail. Certifique-se que seu e-mail está atualizado no sistema em \"Meus dados\".";
     public const string PARAMETRO_QTDE_CURSISTAS_SUPORTADOS_POR_TURMA_NAO_ENCONTRADO = "Parâmetro de QtdeCursistasSuportadosPorTurma ausente para o ano {0}.";
     public const string FORMACAO_NAO_ENCONTRADA = "Formação não encontrada";
     public const string PERIODO_REALIZACAO_NAO_INFORMADO = "É necessário informar as datas do período de realização";
