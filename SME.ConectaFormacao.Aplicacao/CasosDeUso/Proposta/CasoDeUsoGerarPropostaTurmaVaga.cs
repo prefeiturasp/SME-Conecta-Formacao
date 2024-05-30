@@ -17,10 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
 
-            if (proposta.FormacaoHomologada != FormacaoHomologada.Sim)
-                return await mediator.Send(new GerarPropostaTurmaVagaCommand(propostaId, proposta.QuantidadeVagasTurma.GetValueOrDefault()));
-
-            return false;
+            return await mediator.Send(new GerarPropostaTurmaVagaCommand(propostaId, proposta.QuantidadeVagasTurma.GetValueOrDefault()));
         }
     }
 }

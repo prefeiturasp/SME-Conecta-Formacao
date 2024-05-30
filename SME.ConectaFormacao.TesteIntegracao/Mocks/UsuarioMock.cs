@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker.Generate();
         }
 
-        public static IEnumerable<Usuario> GerarUsuario(AreaPromotora areaPromotora, TipoUsuario tipoUsuario = TipoUsuario.Interno, int quantidade = 1)
+        public static IEnumerable<Usuario> GerarUsuarios(AreaPromotora areaPromotora, TipoUsuario tipoUsuario = TipoUsuario.Interno, int quantidade = 1)
         {
             var faker = new Faker<Usuario>("pt_BR");
             faker.RuleFor(dest => dest.Login, f => f.Random.Long(10000, 99999).ToString());
