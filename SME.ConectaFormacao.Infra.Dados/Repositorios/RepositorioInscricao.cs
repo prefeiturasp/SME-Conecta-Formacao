@@ -287,7 +287,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta, numeroHomologacao });
         }
 
-        public Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds)
+        public Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds, long? propostaTurmaId = null)
         {
             var query = @" 
             WITH inscricoes_turma AS (
@@ -342,10 +342,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             LEFT JOIN inscricoes_turma it ON it.id = pt.id
             LEFT JOIN criterio_validacao_permite_sorteio cvps on cvps.proposta_id = p.id
             WHERE NOT p.excluido
-              AND p.id = ANY(@propostaIds)
-            ORDER BY pt.nome ";
+              AND p.id = ANY(@propostaIds)";
 
-            return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>(query, new { propostaIds });
+            if (propostaTurmaId.HasValue)
+                query += " AND pt.id = @propostaTurmaId ";
+
+            query += " ORDER BY pt.nome ";
+
+            return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>(query, new { propostaIds, propostaTurmaId });
         }
 
         public Task<IEnumerable<PropostaTipoInscricao>> ObterTiposInscricaoPorPropostaIds(long[] codigosFormacao)
@@ -393,6 +397,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         ";
             return await conexao.Obter().QueryAsync<InscricaoUsuarioInternoDto>(query, new { propostasTurmasId, tipoUsuario });
         }
+        
         public async Task<IEnumerable<InscricaoPossuiAnexoDTO>> ObterSeInscricaoPossuiAnexoPorPropostasIds(long[] inscricoesId)
         {
             var query = @$"
@@ -407,7 +412,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             where i.id = any(@inscricoesId) 
                          ";
             return await conexao.Obter().QueryAsync<InscricaoPossuiAnexoDTO>(query, new { inscricoesId });
-        }        
+        }
+        
         public async Task<IEnumerable<InscricaoDadosEmailConfirmacao>> ObterDadasInscricaoPorInscricaoId(long inscricoeId)
         {
             var query = @$" select 
@@ -431,6 +437,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             where i.id = @inscricoeId ;
                         ";
             return await conexao.Obter().QueryAsync<InscricaoDadosEmailConfirmacao>(query, new { inscricoeId });
+        }
+
+        public Task<IEnumerable<long>> ObterIdsInscricoesAguardandoAnalise(long propostaTurmaId)
+        {
+            var situacao = SituacaoInscricao.AguardandoAnalise;
+            var query = @"select id from inscricao where not excluido and situacao = @situacao and proposta_turma_id = @propostaTurmaId";
+            return conexao.Obter().QueryAsync<long>(query, new { situacao, propostaTurmaId });
         }
     }
 }
