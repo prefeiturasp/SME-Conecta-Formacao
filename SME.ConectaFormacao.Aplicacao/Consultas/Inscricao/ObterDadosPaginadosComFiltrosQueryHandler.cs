@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (totalRegistrosFiltro > 0)
             {
                 var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros, request.NumeroHomologacao);
-                
+
                 var formacao = _mapper.Map<IEnumerable<DadosListagemFormacaoComTurmaDTO>>(propostasTurmas);
                 var codigosFormacao = propostasTurmas.Select(x => x.Id).ToArray();
 
@@ -46,21 +46,24 @@ namespace SME.ConectaFormacao.Aplicacao
             foreach (var proposta in formacoes)
             {
                 var inscricao = turmasFormacao?.Where(x => x.PropostaId == proposta.Id);
-                
+
                 var turmas = inscricao!.Select(i => new DadosListagemFormacaoTurma
+                {
+                    NomeTurma = i.NomeTurma,
+                    QuantidadeVagas = i.QuantidadeVagas,
+                    QuantidadeInscricoes = i.TotalInscricoes,
+                    Data = ObterData(inscricao, i),
+                    QuantidadeConfirmada = i.Confirmadas,
+                    QuantidadeAguardandoAnalise = i.AguardandoAnalise,
+                    QuantidadeEmEspera = i.EmEspera,
+                    QuantidadeCancelada = i.Cancelada,
+                    QuantidadeDisponivel = i.Disponiveis,
+                    QuantidadeExcedida = i.Excedidas,
+                    Permissao = new DadosListagemFormacaoTurmaPermissao
                     {
-                        NomeTurma = i.NomeTurma,
-                        QuantidadeVagas = i.QuantidadeVagas,
-                        QuantidadeInscricoes = i.TotalInscricoes,
-                        Data = inscricao!.Any(x => x.NomeTurma.Equals(i.NomeTurma) &&  x.Datas.NaoEhNulo()) 
-                            ? string.Join(", ", inscricao!.Where(x => x.NomeTurma == i.NomeTurma).Select(x => x.Datas).Distinct()) 
-                            : string.Empty,
-                        Confirmadas = i.Confirmadas,
-                        AguardandoAnalise = i.AguardandoAnalise,
-                        EmEspera = i.EmEspera,
-                        Cancelada = i.Cancelada,
-                        PodeRealizarSorteio = i.Disponiveis > 0 && i.Excedidas > 0
-                    }).DistinctBy(x => x.NomeTurma)
+                        PodeRealizarSorteio = i.PermiteSorteio.GetValueOrDefault() && i.Disponiveis > 0 && i.Excedidas > 0
+                    }
+                }).DistinctBy(x => x.NomeTurma)
                     .ToList();
 
                 proposta.Turmas = turmas;
@@ -72,8 +75,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private static string ObterData(IEnumerable<ListagemFormacaoComTurmaDTO>? inscricao, ListagemFormacaoComTurmaDTO i)
         {
-            return inscricao!.Any(x => x.NomeTurma.Equals(i.NomeTurma) && x.Datas.NaoEhNulo()) 
-                ? string.Join(", ", inscricao!.Where(x => x.NomeTurma.Equals(i.NomeTurma)).Select(x => x.Datas).Distinct()) 
+            return inscricao!.Any(x => x.NomeTurma.Equals(i.NomeTurma) && x.Datas.NaoEhNulo())
+                ? string.Join(", ", inscricao!.Where(x => x.NomeTurma.Equals(i.NomeTurma)).Select(x => x.Datas).Distinct())
                 : string.Empty;
         }
     }

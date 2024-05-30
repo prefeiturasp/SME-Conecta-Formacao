@@ -1,6 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
-
-namespace SME.ConectaFormacao.Infra
+﻿namespace SME.ConectaFormacao.Infra
 {
     public class ListagemFormacaoComTurmaDTO
     {
@@ -14,6 +12,7 @@ namespace SME.ConectaFormacao.Infra
         public int? EmEspera { get; set; }
         public int? Cancelada { get; set; }
         public int? Disponiveis { get; set; }
-        public int? Excedidas { get; set; } 
+        public int? Excedidas { get; set; }
+        public bool? PermiteSorteio { get; set; }
     }
 }

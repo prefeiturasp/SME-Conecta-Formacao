@@ -294,37 +294,53 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 SELECT
                     pt.id,
                     COUNT(*) AS total_inscricoes,
-                    COUNT(*) FILTER (WHERE i.situacao = 1) AS Confirmadas,
-                    COUNT(*) FILTER (WHERE i.situacao = 3) AS AguardandoAnalise,
-                    COUNT(*) FILTER (WHERE i.situacao = 5) AS EmEspera,
-                    COUNT(*) FILTER (WHERE i.situacao = 4) AS Cancelada
+                    COUNT(*) FILTER (WHERE i.situacao = 1) AS confirmadas,
+                    COUNT(*) FILTER (WHERE i.situacao = 3) AS aguardandoAnalise,
+                    COUNT(*) FILTER (WHERE i.situacao = 5) AS emEspera,
+                    COUNT(*) FILTER (WHERE i.situacao = 4) AS cancelada
                 FROM proposta_turma pt
                 INNER JOIN inscricao i ON i.proposta_turma_id = pt.id AND NOT i.excluido
                 WHERE NOT pt.excluido
                   AND pt.proposta_id = ANY(@propostaIds)
                 GROUP BY pt.id
+            ), criterio_validacao_permite_sorteio AS (
+	            SELECT 
+		            pcvi.proposta_id
+	            FROM proposta_criterio_validacao_inscricao pcvi 
+	            LEFT JOIN criterio_validacao_inscricao cvi ON cvi.id = pcvi.criterio_validacao_inscricao_id AND NOT cvi.excluido 
+	            WHERE NOT pcvi.excluido 
+	              AND cvi.permite_sorteio 
+	              AND pcvi.proposta_id = ANY(@propostaIds)
             )
             SELECT
-                p.id AS PropostaId,
-                p.quantidade_vagas_turma AS QuantidadeVagas,
-                pt.nome AS NomeTurma,
+                p.id AS propostaId,
+                p.quantidade_vagas_turma AS quantidadeVagas,
+                pt.nome AS nomeTurma,
                 CASE
                     WHEN ped.data_fim IS NULL THEN TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')
                     ELSE TO_CHAR(ped.data_inicio, 'dd/mm/yyyy') || ' até ' || TO_CHAR(ped.data_fim, 'dd/mm/yyyy')
-                END AS Datas,
-                it.total_inscricoes AS TotalInscricoes,
-                it.Confirmadas,
-                it.AguardandoAnalise,
-                it.EmEspera,
+                END AS datas,
+                it.total_inscricoes AS totalInscricoes,
+                it.confirmadas,
+                it.aguardandoAnalise,
+                it.emEspera,
                 it.cancelada,
                 p.quantidade_vagas_turma - it.Confirmadas as disponiveis,
-                it.total_inscricoes - p.quantidade_vagas_turma as excedidas
+                CASE 
+                    WHEN it.total_inscricoes <= p.quantidade_vagas_turma THEN 0 
+                    ELSE it.total_inscricoes - p.quantidade_vagas_turma 
+                END AS excedidas,
+                CASE 
+                    WHEN cvps.proposta_id IS NOT NULL THEN TRUE
+                    ELSE FALSE
+                END AS permiteSorteio
             FROM proposta p
             LEFT JOIN proposta_turma pt ON pt.proposta_id = p.id AND NOT pt.excluido
             LEFT JOIN proposta_encontro_turma pet ON pet.turma_id = pt.id AND NOT pet.excluido
             LEFT JOIN proposta_encontro pe ON pe.id = pet.proposta_encontro_id AND NOT pe.excluido
             LEFT JOIN proposta_encontro_data ped ON ped.proposta_encontro_id = pe.id AND NOT ped.excluido
             LEFT JOIN inscricoes_turma it ON it.id = pt.id
+            LEFT JOIN criterio_validacao_permite_sorteio cvps on cvps.proposta_id = p.id
             WHERE NOT p.excluido
               AND p.id = ANY(@propostaIds)
             ORDER BY pt.nome ";
