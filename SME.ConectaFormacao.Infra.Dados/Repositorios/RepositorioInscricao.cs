@@ -314,6 +314,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             )
             SELECT
                 p.id AS propostaId,
+                pt.id as propostaTurmaId,
                 p.quantidade_vagas_turma AS quantidadeVagas,
                 pt.nome AS nomeTurma,
                 CASE
