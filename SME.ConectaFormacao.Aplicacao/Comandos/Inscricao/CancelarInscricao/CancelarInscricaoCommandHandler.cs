@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly IMediator _mediator;
 
-        public CancelarInscricaoCommandHandler(ITransacao transacao, IRepositorioInscricao repositorioInscricao,IMediator mediator)
+        public CancelarInscricaoCommandHandler(ITransacao transacao, IRepositorioInscricao repositorioInscricao, IMediator mediator)
         {
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));

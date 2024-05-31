@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             Nome = nome;
             Email = email;
         }
-        
+
         public NotificacaoUsuario(string login, string nome, string email)
         {
             Login = login;
@@ -24,11 +24,11 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public Notificacao Notificacao { get; set; }
         public long NotificacaoId { get; set; }
-        
+
         public string Login { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
-        
+
         public NotificacaoUsuarioSituacao Situacao { get; set; }
     }
 }

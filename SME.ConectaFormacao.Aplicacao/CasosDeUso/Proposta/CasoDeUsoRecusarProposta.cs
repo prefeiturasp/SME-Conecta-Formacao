@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             if (ehAdminDF)
                 await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarAreaPromotoraSobreValidacaoFinalPelaDF, proposta.Id));
-            
+
             return true;
         }
     }

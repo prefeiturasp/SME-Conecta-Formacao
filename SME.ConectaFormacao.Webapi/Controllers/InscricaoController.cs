@@ -110,7 +110,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
         public async Task<IActionResult> CancelarInscricoes(
             [FromServices] ICasoDeUsoCancelarInscricoes casoDeUso,
-            [FromQuery] long[] ids, 
+            [FromQuery] long[] ids,
             [FromBody] InscricaoMotivoCancelamentoDTO inscricaoMotivoCancelamentoDTO)
         {
             return Ok(await casoDeUso.Executar(ids, inscricaoMotivoCancelamentoDTO.Motivo));
@@ -135,6 +135,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ObterFormacaoComTurmaPorFiltros([FromQuery] FiltroListagemInscricaoComTurmaDTO filtro, [FromServices] ICasoDeUsoObterDadosPaginadosComFiltros useCase)
         {
             return Ok(await useCase.Executar(filtro));
+        }
+
+        [HttpPut("sortear/{propostaTurmaId}")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> SortearInscricoes(
+            [FromServices] ICasoDeUsoSortearInscricoes useCase,
+            [FromRoute] long propostaTurmaId)
+        {
+            return Ok(await useCase.Executar(propostaTurmaId));
         }
 
         [HttpGet("tipos")]

@@ -189,4 +189,7 @@ public class MensagemNegocio
     public const string RESPONSAVEL_DF_NAO_ENCONTRADO = "O responsável DF não foi encontrado.";
     public const string MOVIMENTACAO_PROPOSTA_NAO_ENCONTRADA = "Movimentação da proposta não encontrada";
     public const string PROPOSTA_NUMERO_HOMOLOGACAO_DEVE_SER_INFORMADO = "O Número de homologação deve ser informado para publicar a proposta.";
+    public const string PROPOSTA_NAO_PERMITE_SORTEIO = "Proposta não permite sorteio de inscrições";
+    public const string PROPOSTA_TURMA_NAO_POSSUI_VAGA_DISPONIVEL_PARA_SORTEIO = "A Turma não possui vagas disponíveis para sorteio";
+    public const string SORTEIO_REALIZADO_COM_SUCESSO = "Sorteio realizado com sucesso";
 }

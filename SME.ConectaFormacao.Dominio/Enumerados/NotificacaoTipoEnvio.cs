@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
     {
         [Display(Name = "E-mail")]
         Email = 1,
-        
+
         [Display(Name = "SignalR")]
         SignalR = 2
     }

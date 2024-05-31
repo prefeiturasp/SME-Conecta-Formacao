@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
+﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
 {
     public class InscricaoDTO
     {

@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         {
         }
 
-        protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade, int quantidadeParecerista = 0)
+        protected async Task<IEnumerable<Dominio.Entidades.Proposta>> InserirNaBaseProposta(int quantidade, int quantidadeParecerista = 0, bool criterioValidacaoInscricaopermiteSorteio = false)
         {
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
             await InserirNaBase(cargosFuncoes);
 
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5, permiteSorteio: criterioValidacaoInscricaopermiteSorteio);
             await InserirNaBase(criteriosValidacaoInscricao);
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
@@ -59,7 +59,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var cargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
             await InserirNaBase(cargosFuncoes);
 
-            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(5);
+            var criteriosValidacaoInscricao = CriterioValidacaoInscricaoMock.GerarCriterioValidacaoInscricao(7);
             await InserirNaBase(criteriosValidacaoInscricao);
 
             var palavrasChaves = PalavraChaveMock.GerarPalavrasChaves(10);
@@ -133,7 +133,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.VagasRemanecentes = vagasRemanecentes;
             }
 
-            var criterios = PropostaMock.GerarCritariosValidacaoInscricao(proposta.Id, criteriosValidacaoInscricao);
+            var criterios = PropostaMock.GerarCriteriosValidacaoInscricao(proposta.Id, criteriosValidacaoInscricao);
             if (criterios != null)
             {
                 await InserirNaBase(criterios);
@@ -326,21 +326,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
 
             proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
-            
+
             if (propostaDTO.CargaHorariaTotal.NaoEstaPreenchido())
                 proposta.CargaHorariaTotal.ShouldBe(propostaDTO.CargaHorariaTotal);
-            
+
             if (propostaDTO.CargaHorariaNaoPresencial.NaoEstaPreenchido())
-                proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);            
-            
+                proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);
+
             if (propostaDTO.OutrosCriterios.NaoEstaPreenchido())
                 proposta.OutrosCriterios.ShouldBe(propostaDTO.OutrosCriterios);
-            
+
             if (propostaDTO.HorasTotais.HasValue)
                 proposta.HorasTotais.ShouldBe(propostaDTO.HorasTotais);
-            
+
             if (propostaDTO.CargaHorariaTotalOutra.NaoEstaPreenchido())
-                proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);            
+                proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);
         }
 
         protected void ValidarPropostaCompletoDTO(PropostaCompletoDTO propostaDTO, long id)
@@ -382,21 +382,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
             proposta.NumeroHomologacao.ShouldBe(propostaDTO.NumeroHomologacao);
-            
+
             if (propostaDTO.CargaHorariaTotal.NaoEstaPreenchido())
-                proposta.CargaHorariaTotal.ShouldBe(propostaDTO.CargaHorariaTotal);            
-            
+                proposta.CargaHorariaTotal.ShouldBe(propostaDTO.CargaHorariaTotal);
+
             if (propostaDTO.CargaHorariaNaoPresencial.NaoEstaPreenchido())
-                proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);            
-            
+                proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);
+
             if (propostaDTO.OutrosCriterios.NaoEstaPreenchido())
                 proposta.OutrosCriterios.ShouldBe(propostaDTO.OutrosCriterios);
-            
+
             if (propostaDTO.HorasTotais.HasValue)
                 proposta.HorasTotais.ShouldBe(propostaDTO.HorasTotais);
-            
+
             if (propostaDTO.CargaHorariaTotalOutra.NaoEstaPreenchido())
-                proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);            
+                proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);
         }
 
         protected void ValidarPropostaCriterioValidacaoInscricaoDTO(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> criteriosDTO, long id)

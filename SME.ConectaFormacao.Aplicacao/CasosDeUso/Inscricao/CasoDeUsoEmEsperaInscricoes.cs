@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 {
                     await mediator.Send(new EmEsperaInscricaoCommand(id));
                 }
-                catch(NegocioException ex)
+                catch (NegocioException ex)
                 {
                     erros.AddRange(ex.Mensagens);
                 }

@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -22,8 +20,8 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public GerarNotificacaoReanalisePareceristaCommandHandler(ITransacao transacao,IRepositorioNotificacao repositorioNotificacao,
-            IRepositorioNotificacaoUsuario repositorioNotificacaoUsuario,IMediator mediator,IMapper mapper,IRepositorioUsuario repositorioUsuario)
+        public GerarNotificacaoReanalisePareceristaCommandHandler(ITransacao transacao, IRepositorioNotificacao repositorioNotificacao,
+            IRepositorioNotificacaoUsuario repositorioNotificacaoUsuario, IMediator mediator, IMapper mapper, IRepositorioUsuario repositorioUsuario)
         {
             _repositorioNotificacao = repositorioNotificacao ?? throw new ArgumentNullException(nameof(repositorioNotificacao));
             _repositorioNotificacaoUsuario = repositorioNotificacaoUsuario ?? throw new ArgumentNullException(nameof(repositorioNotificacaoUsuario));
@@ -36,14 +34,14 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<bool> Handle(GerarNotificacaoReanalisePareceristaCommand request, CancellationToken cancellationToken)
         {
             var notificacao = await ObterNotificacao(request.Proposta, request.Pareceristas);
-            
+
             var transacao = _transacao.Iniciar();
             try
             {
                 var notificacaoId = await _repositorioNotificacao.Inserir(notificacao);
-                
+
                 await _repositorioNotificacaoUsuario.InserirUsuarios(transacao, notificacao.Usuarios, notificacaoId);
-                
+
                 transacao.Commit();
 
                 foreach (var usuario in notificacao.Usuarios)
@@ -51,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     var destinatario = _mapper.Map<EnviarEmailDto>(usuario);
                     destinatario.Titulo = notificacao.Titulo;
                     destinatario.Texto = notificacao.Mensagem;
-                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario));    
+                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario));
                 }
             }
             catch
@@ -66,31 +64,31 @@ namespace SME.ConectaFormacao.Aplicacao
 
             return true;
         }
-        
+
         private async Task<Notificacao> ObterNotificacao(Proposta proposta, IEnumerable<PropostaPareceristaResumidoDTO> pareceristas)
         {
             var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
-            
+
             var usuarios = _mapper.Map<IEnumerable<NotificacaoUsuario>>(pareceristas);
 
             foreach (var usuario in usuarios)
-                usuario.Email = (await _repositorioUsuario.ObterPorLogin(usuario.Login)).Email; 
-            
+                usuario.Email = (await _repositorioUsuario.ObterPorLogin(usuario.Login)).Email;
+
             return new Notificacao()
             {
                 Categoria = NotificacaoCategoria.Aviso,
                 Tipo = NotificacaoTipo.Proposta,
                 TipoEnvio = NotificacaoTipoEnvio.Email,
-                Parametros = new { propostaId = proposta.Id}.ObjetoParaJson(),
-                Usuarios =  usuarios,
-                    
-                Titulo = string.Format("Proposta {0} - {1} foi atribuída a você", 
-                    proposta.Id, 
+                Parametros = new { propostaId = proposta.Id }.ObjetoParaJson(),
+                Usuarios = usuarios,
+
+                Titulo = string.Format("Proposta {0} - {1} foi atribuída a você",
+                    proposta.Id,
                     proposta.NomeFormacao),
-                
+
                 Mensagem = string.Format("A proposta {0} - {1} foi atribuída a você. Acesse <a href=\"{2}\">Aqui</a> o cadastro da proposta e registre seu parecer final.",
-                    proposta.Id, 
-                    proposta.NomeFormacao, 
+                    proposta.Id,
+                    proposta.NomeFormacao,
                     linkSistema.Valor)
             };
         }

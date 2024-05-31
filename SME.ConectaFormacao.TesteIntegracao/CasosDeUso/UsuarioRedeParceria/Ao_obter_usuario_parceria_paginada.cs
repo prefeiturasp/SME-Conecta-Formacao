@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
             await InserirNaBase(areaPromotora);
 
-            var usuarios = UsuarioMock.GerarUsuario(areaPromotora, Dominio.Enumerados.TipoUsuario.RedeParceria, 5);
+            var usuarios = UsuarioMock.GerarUsuarios(areaPromotora, Dominio.Enumerados.TipoUsuario.RedeParceria, 5);
             await InserirNaBase(usuarios);
 
             var usuarioFiltro = usuarios.FirstOrDefault();
@@ -50,7 +50,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
             await InserirNaBase(areaPromotora);
 
-            var usuarios = UsuarioMock.GerarUsuario(areaPromotora, Dominio.Enumerados.TipoUsuario.RedeParceria, 5);
+            var usuarios = UsuarioMock.GerarUsuarios(areaPromotora, Dominio.Enumerados.TipoUsuario.RedeParceria, 5);
             await InserirNaBase(usuarios);
 
             var filtro = new FiltroUsuarioRedeParceriaDTO();

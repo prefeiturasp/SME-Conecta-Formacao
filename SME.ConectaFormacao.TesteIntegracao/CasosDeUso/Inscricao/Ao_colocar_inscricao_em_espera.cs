@@ -65,7 +65,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 
             var inscricaoSemVaga = InscricaoMock.GerarInscricao(usuarioSemVaga.Id, propostaTurmaSemVaga.Id, Dominio.Enumerados.SituacaoInscricao.Cancelada);
             await InserirNaBase(inscricaoSemVaga);
-            
+
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoEmEsperaInscricoes>();
 
             // act
