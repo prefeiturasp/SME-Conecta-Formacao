@@ -1,6 +1,7 @@
 using System.Text;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -97,7 +98,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     </tr> ");
                 foreach (var cSga in comSga)
                 {
-                    var data = cSga.DataFim != null ? $" {cSga.DataInicio:dd/MM/yyyy} até {cSga.DataInicio:dd/MM/yyyy}" :$"{cSga.DataInicio:dd/MM/yyyy}";
+                    var data = cSga.DataFim.NaoEhNulo() ? $" {cSga.DataInicio:dd/MM/yyyy} até {cSga.DataFim:dd/MM/yyyy}" :$"{cSga.DataInicio:dd/MM/yyyy}";
                     texto.AppendLine(@$"<tr>
                                         <td>{data}</td>
                                         <td>{cSga.HoraInicio} até {cSga.HoraFim}</td>
