@@ -329,7 +329,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 p.quantidade_vagas_turma - it.Confirmadas as disponiveis,
                 CASE 
                     WHEN it.total_inscricoes <= p.quantidade_vagas_turma THEN 0 
-                    ELSE (it.total_inscricoes - it.confirmadas) - p.quantidade_vagas_turma 
+                    when (it.total_inscricoes - it.cancelada -  p.quantidade_vagas_turma) <=0 then 0 else (it.total_inscricoes - it.cancelada -  p.quantidade_vagas_turma)
                 END AS excedidas,
                 CASE 
                     WHEN cvps.proposta_id IS NOT NULL THEN TRUE
