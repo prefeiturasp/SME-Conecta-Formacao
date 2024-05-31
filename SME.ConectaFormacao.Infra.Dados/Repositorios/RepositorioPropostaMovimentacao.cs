@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().QueryFirstOrDefaultAsync<string>(query, new { propostaId, situacao = (int)SituacaoProposta.Devolvida });
         }
-        
+
         public async Task<PropostaMovimentacao> ObterPorPropostaId(long propostaId)
         {
             var query = @"select p.id as proposta_id,

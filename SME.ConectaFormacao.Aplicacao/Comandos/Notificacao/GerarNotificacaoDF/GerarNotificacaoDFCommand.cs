@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(t => t.Proposta)
                 .NotEmpty()
                 .WithMessage("É necessário informar a proposta para gerar a notificação ao Admin DF");
-            
+
             RuleFor(t => t.Parecerista)
                 .NotEmpty()
                 .WithMessage("É necessário informar o login do pareceristas para gerar a notificação ao Admin DF");

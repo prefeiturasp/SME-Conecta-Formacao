@@ -7,7 +7,7 @@ public class NotificacaoPropostaPareceristaDTO
     public long PropostaId { get; set; }
     public PropostaPareceristaResumidoDTO Parecerista { get; set; }
 
-    public NotificacaoPropostaPareceristaDTO(long propostaId,PropostaPareceristaResumidoDTO parecerista)
+    public NotificacaoPropostaPareceristaDTO(long propostaId, PropostaPareceristaResumidoDTO parecerista)
     {
         PropostaId = propostaId;
         Parecerista = parecerista;

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class EnviarEmailConfirmacaoInscricaoCommand: IRequest<bool>
+    public class EnviarEmailConfirmacaoInscricaoCommand : IRequest<bool>
     {
         public EnviarEmailConfirmacaoInscricaoCommand(long inscricaoId)
         {

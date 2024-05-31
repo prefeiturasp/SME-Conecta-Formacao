@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.Nome).ToColumn("nome");
             Map(c => c.Email).ToColumn("email");
             Map(c => c.Situacao).ToColumn("situacao");
-            
+
             Map(c => c.Notificacao).Ignore();
         }
     }

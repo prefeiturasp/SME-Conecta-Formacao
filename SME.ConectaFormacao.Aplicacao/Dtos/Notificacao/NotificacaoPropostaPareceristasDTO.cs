@@ -7,7 +7,7 @@ public class NotificacaoPropostaPareceristasDTO
     public long PropostaId { get; set; }
     public IEnumerable<PropostaPareceristaResumidoDTO> Pareceristas { get; set; }
 
-    public NotificacaoPropostaPareceristasDTO(long propostaId,IEnumerable<PropostaPareceristaResumidoDTO> pareceristas)
+    public NotificacaoPropostaPareceristasDTO(long propostaId, IEnumerable<PropostaPareceristaResumidoDTO> pareceristas)
     {
         PropostaId = propostaId;
         Pareceristas = pareceristas;

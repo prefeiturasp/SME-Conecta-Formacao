@@ -1,8 +1,8 @@
-using System.Text;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -11,10 +11,10 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly IMediator _mediator;
 
-        public EnviarEmailConfirmacaoInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao,IMediator mediator)
+        public EnviarEmailConfirmacaoInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao, IMediator mediator)
         {
             _repositorioInscricao =
-                repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));           
+                repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
             _mediator =
                 mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     Titulo = $"Confirmação de inscrição | {usuario.FirstOrDefault()!.NomeFormacao} ",
                     Texto = CriarTextoEmail(usuario)
                 };
-                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);  
+                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);
             }
 
             return true;
@@ -84,7 +84,7 @@ namespace SME.ConectaFormacao.Aplicacao
                                                 <body>");
 
             if (comSga.Any())
-            { 
+            {
                 texto.AppendLine(@$"
                 <div class=""section"" id=""com-sga"">
                 <p>A sua inscrição na formação {usuario.FirstOrDefault().NomeFormacao} foi confirmada. Na data de início da sua turma acesse o SGA para iniciar a formação.</p>
@@ -97,7 +97,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     </tr> ");
                 foreach (var cSga in comSga)
                 {
-                    var data = cSga.DataFim != null ? $" {cSga.DataInicio:dd/MM/yyyy} até {cSga.DataInicio:dd/MM/yyyy}" :$"{cSga.DataInicio:dd/MM/yyyy}";
+                    var data = cSga.DataFim != null ? $" {cSga.DataInicio:dd/MM/yyyy} até {cSga.DataInicio:dd/MM/yyyy}" : $"{cSga.DataInicio:dd/MM/yyyy}";
                     texto.AppendLine(@$"<tr>
                                         <td>{data}</td>
                                         <td>{cSga.HoraInicio} até {cSga.HoraFim}</td>
@@ -123,7 +123,7 @@ namespace SME.ConectaFormacao.Aplicacao
                                         </tr>");
                 foreach (var sSga in semSga)
                 {
-                    var data = sSga.DataFim != null ? $" {sSga.DataInicio:dd/MM/yyyy} até {sSga.DataInicio:dd/MM/yyyy}" :$"{sSga.DataInicio:dd/MM/yyyy}";
+                    var data = sSga.DataFim != null ? $" {sSga.DataInicio:dd/MM/yyyy} até {sSga.DataInicio:dd/MM/yyyy}" : $"{sSga.DataInicio:dd/MM/yyyy}";
                     texto.AppendLine(@$"<tr>
                                         <td>{data}</td>
                                         <td>{sSga.HoraInicio} até {sSga.HoraFim}</td>

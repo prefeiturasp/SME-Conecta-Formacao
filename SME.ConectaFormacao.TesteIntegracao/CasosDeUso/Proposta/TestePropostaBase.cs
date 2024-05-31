@@ -326,21 +326,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 proposta.LinkParaInscricoesExterna.ShouldBe(propostaDTO.LinkParaInscricoesExterna);
 
             proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
-            
+
             if (propostaDTO.CargaHorariaTotal.NaoEstaPreenchido())
                 proposta.CargaHorariaTotal.ShouldBe(propostaDTO.CargaHorariaTotal);
-            
+
             if (propostaDTO.CargaHorariaNaoPresencial.NaoEstaPreenchido())
-                proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);            
-            
+                proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);
+
             if (propostaDTO.OutrosCriterios.NaoEstaPreenchido())
                 proposta.OutrosCriterios.ShouldBe(propostaDTO.OutrosCriterios);
-            
+
             if (propostaDTO.HorasTotais.HasValue)
                 proposta.HorasTotais.ShouldBe(propostaDTO.HorasTotais);
-            
+
             if (propostaDTO.CargaHorariaTotalOutra.NaoEstaPreenchido())
-                proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);            
+                proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);
         }
 
         protected void ValidarPropostaCompletoDTO(PropostaCompletoDTO propostaDTO, long id)
@@ -382,21 +382,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             proposta.CodigoEventoSigpec.ShouldBe(propostaDTO.CodigoEventoSigpec);
             proposta.NumeroHomologacao.ShouldBe(propostaDTO.NumeroHomologacao);
-            
+
             if (propostaDTO.CargaHorariaTotal.NaoEstaPreenchido())
-                proposta.CargaHorariaTotal.ShouldBe(propostaDTO.CargaHorariaTotal);            
-            
+                proposta.CargaHorariaTotal.ShouldBe(propostaDTO.CargaHorariaTotal);
+
             if (propostaDTO.CargaHorariaNaoPresencial.NaoEstaPreenchido())
-                proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);            
-            
+                proposta.CargaHorariaNaoPresencial.ShouldBe(propostaDTO.CargaHorariaNaoPresencial);
+
             if (propostaDTO.OutrosCriterios.NaoEstaPreenchido())
                 proposta.OutrosCriterios.ShouldBe(propostaDTO.OutrosCriterios);
-            
+
             if (propostaDTO.HorasTotais.HasValue)
                 proposta.HorasTotais.ShouldBe(propostaDTO.HorasTotais);
-            
+
             if (propostaDTO.CargaHorariaTotalOutra.NaoEstaPreenchido())
-                proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);            
+                proposta.CargaHorariaTotalOutra.ShouldBe(propostaDTO.CargaHorariaTotalOutra);
         }
 
         protected void ValidarPropostaCriterioValidacaoInscricaoDTO(IEnumerable<PropostaCriterioValidacaoInscricaoDTO> criteriosDTO, long id)

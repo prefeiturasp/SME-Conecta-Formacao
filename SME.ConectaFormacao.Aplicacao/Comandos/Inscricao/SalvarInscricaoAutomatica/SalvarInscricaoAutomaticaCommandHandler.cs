@@ -47,7 +47,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var transacao = _transacao.Iniciar();
             try
             {
-                if(proposta.FormacaoHomologada.NaoEstaHomologada())
+                if (proposta.FormacaoHomologada.NaoEstaHomologada())
                     inscricao.Situacao = SituacaoInscricao.Confirmada;
 
                 await _repositorioInscricao.Inserir(inscricao);

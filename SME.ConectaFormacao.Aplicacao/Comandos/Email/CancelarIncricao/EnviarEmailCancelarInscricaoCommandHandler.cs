@@ -1,9 +1,9 @@
-using System.Text;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -79,7 +79,7 @@ namespace SME.ConectaFormacao.Aplicacao
                                                 <div class=""container"">
                                                     <div class=""header"">Cancelamento de Inscrição</div>");
             mensagem.AppendLine($"<p>A sua inscrição na formação {nomeFormacao} foi cancelada.</p>");
-            
+
             if (motivoCancelamento.EstaPreenchido())
                 mensagem.AppendLine(@$" <p class=""reason"">Motivo: {motivoCancelamento}.</p>");
 

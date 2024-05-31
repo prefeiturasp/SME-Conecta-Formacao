@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.ServicosFa
                 usuario.UsuarioLogin = request.Login;
                 return Task.FromResult(usuario);
             }
-            
+
             return Task.FromResult(new UsuarioPerfisRetornoDTO
             {
                 UsuarioLogin = AutenticacaoMock.UsuarioLogado.Login,
