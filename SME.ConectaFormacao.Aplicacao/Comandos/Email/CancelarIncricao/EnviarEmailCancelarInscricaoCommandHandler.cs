@@ -83,13 +83,12 @@ namespace SME.ConectaFormacao.Aplicacao
             if (motivoCancelamento.EstaPreenchido())
                 mensagem.AppendLine(@$" <p class=""reason"">Motivo: {motivoCancelamento}.</p>");
 
-            mensagem.AppendLine(@"<p>Para mais detalhes entre em contato com a área promotora.</p>
-                                                    <div class=""footer"">
-                                                        <p>Acesse a nossa <a href=""https://conectaformacao.sme.prefeitura.sp.gov.br/area-publica"" class=""link"">área pública</a> e fique por dentro de todas as formações e eventos.</p>
-                                                    </div>
-                                                </div>
-                                            </body>
-                                            </html>");
+            mensagem.AppendLine(@"<div class=""footer"">
+                                    <p>Acesse a nossa <a href=""https://conectaformacao.sme.prefeitura.sp.gov.br/area-publica"" class=""link"">área pública</a> e fique por dentro de todas as formações e eventos.</p>
+                                  </div>
+                                  </div>
+                                  </body>
+                                  </html>");
 
 
             return mensagem.ToString();
