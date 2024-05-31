@@ -160,6 +160,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                                 i.id,
 												i.situacao,
                                                 i.origem,
+                                                i.arquivo_id,
                                                 i.proposta_turma_id,
 												pt.nome,
                                                 i.usuario_id ,

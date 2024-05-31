@@ -11,6 +11,7 @@ public class MensagemNegocio
     public const string SOMENTE_ARQUIVO_XLSX_SUPORTADO = "Esse arquivo não é um XLSX. Somente arquivos do tipo XLSX são permitidos";
     public const string INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA = "Sua inscrição foi confirmada. Na data de início da sua turma acesse o SGA para iniciar a formação.";
     public const string INSCRICAO_CONFIRMADA = "Sua inscrição foi confirmada.";
+    public const string INSCRICAO_EM_ANALISE = "Sua inscrição foi enviada com sucesso. Em breve você receberá a devolutiva por e-mail. Certifique-se que seu e-mail está atualizado no sistema em \"Meus dados\".";
     public const string PARAMETRO_QTDE_CURSISTAS_SUPORTADOS_POR_TURMA_NAO_ENCONTRADO = "Parâmetro de QtdeCursistasSuportadosPorTurma ausente para o ano {0}.";
     public const string FORMACAO_NAO_ENCONTRADA = "Formação não encontrada";
     public const string PERIODO_REALIZACAO_NAO_INFORMADO = "É necessário informar as datas do período de realização";
@@ -176,7 +177,7 @@ public class MensagemNegocio
     public const string USUARIO_FOI_INATIVO_POR_POSSUIR_PROPOSTA_CADASTRADA = "Usuário foi inativado porque possui proposta cadastrada!";
     public const string INSCRICOES_NAO_CONFIRMADAS_POR_FALTA_DE_VAGA = "Existem inscrições não confirmadas por falta de vagas!";
     public const string INSCRICOES_CONFIRMADAS_COM_SUCESSO = "Inscrições confirmadas com sucesso!";
-    public const string INSCRICOES_EM_ESPERA_COM_SUCESSO = "Inscrições confirmadas com sucesso!";
+    public const string INSCRICOES_EM_ESPERA_COM_SUCESSO = "Inscrições colocadas Em Espera com sucesso!";
     public const string INSCRICOES_EM_ESPERA_COM_INCONSISTENCIAS = "Existem inscrições não adicionadas em espera!";
     public const string INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_PODE_IR_PARA_EM_ESPERA = "Somente inscrição Aguardando Análise pode ser movida para Em Espera";
     public const string INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_OE_EM_ESPERA_PODE_IR_PARA_CONFIRMADA = "Somente inscrição Aguardando Análise ou Em Espera pode ser Confirmada";
@@ -187,6 +188,7 @@ public class MensagemNegocio
     public const string NOTIFICACAO_NAO_ENCONTRADA_USUARIO = "Notificação não encontrada para o usuário logado";
     public const string RESPONSAVEL_DF_NAO_ENCONTRADO = "O responsável DF não foi encontrado.";
     public const string MOVIMENTACAO_PROPOSTA_NAO_ENCONTRADA = "Movimentação da proposta não encontrada";
+    public const string PROPOSTA_NUMERO_HOMOLOGACAO_DEVE_SER_INFORMADO = "O Número de homologação deve ser informado para publicar a proposta.";
     public const string PROPOSTA_NAO_PERMITE_SORTEIO = "Proposta não permite sorteio de inscrições";
     public const string PROPOSTA_TURMA_NAO_POSSUI_VAGA_DISPONIVEL_PARA_SORTEIO = "A Turma não possui vagas disponíveis para sorteio";
     public const string SORTEIO_REALIZADO_COM_SUCESSO = "Sorteio realizado com sucesso";

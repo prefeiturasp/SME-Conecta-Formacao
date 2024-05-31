@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
