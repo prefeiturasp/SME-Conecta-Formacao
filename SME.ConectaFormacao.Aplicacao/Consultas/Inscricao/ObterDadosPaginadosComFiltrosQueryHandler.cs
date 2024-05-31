@@ -62,7 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     QuantidadeExcedida = i.Excedidas,
                     Permissao = new DadosListagemFormacaoTurmaPermissao
                     {
-                        PodeRealizarSorteio = i.PermiteSorteio.GetValueOrDefault() && i.Disponiveis > 0 && i.Excedidas > 0
+                        PodeRealizarSorteio = i.PermiteSorteio.GetValueOrDefault() && i.Disponiveis > 0 && i.Excedidas > 0 && i.AguardandoAnalise > 0
                     }
                 }).DistinctBy(x => x.NomeTurma)
                     .ToList();
