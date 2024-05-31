@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
             await InserirNaBase(areaPromotora);
 
-            var usuarios = UsuarioMock.GerarUsuario(areaPromotora, Dominio.Enumerados.TipoUsuario.RedeParceria);
+            var usuarios = UsuarioMock.GerarUsuarios(areaPromotora, Dominio.Enumerados.TipoUsuario.RedeParceria);
             await InserirNaBase(usuarios);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterUsuarioRedeParceriaPorId>();
@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora();
             await InserirNaBase(areaPromotora);
 
-            var usuarios = UsuarioMock.GerarUsuario(areaPromotora, Dominio.Enumerados.TipoUsuario.Externo);
+            var usuarios = UsuarioMock.GerarUsuarios(areaPromotora, Dominio.Enumerados.TipoUsuario.Externo);
             await InserirNaBase(usuarios);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterUsuarioRedeParceriaPorId>();
