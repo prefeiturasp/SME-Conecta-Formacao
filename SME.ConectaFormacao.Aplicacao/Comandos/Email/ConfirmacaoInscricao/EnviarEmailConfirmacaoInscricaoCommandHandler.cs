@@ -87,7 +87,7 @@ namespace SME.ConectaFormacao.Aplicacao
             { 
                 texto.AppendLine(@$"
                 <div class=""section"" id=""com-sga"">
-                <p>A sua inscrição na formação {usuario.FirstOrDefault().NomeFormacao}. Na data de início da sua turma acesse o SGA para iniciar a formação.</p>
+                <p>A sua inscrição na formação {usuario.FirstOrDefault().NomeFormacao} foi confirmada. Na data de início da sua turma acesse o SGA para iniciar a formação.</p>
                 <p>As aulas irão ocorrer nas seguintes datas:</p>
                 <table>
                     <tr>
