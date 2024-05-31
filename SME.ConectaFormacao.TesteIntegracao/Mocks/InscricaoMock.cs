@@ -24,6 +24,18 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
         {
             return Gerador(usuarioId, propostaTurmaId, situacao);
         }
+
+        public static IEnumerable<Inscricao> GerarInscricoes(IEnumerable<Usuario> usuarios, long propostaTurmaId, SituacaoInscricao? situacao = null)
+        {
+            var retorno = new List<Inscricao>();
+
+            foreach(var usuario in usuarios)
+            {
+                retorno.Add(Gerador(usuario.Id, propostaTurmaId, situacao));
+            }
+
+            return retorno;
+        }
     }
 }
 
