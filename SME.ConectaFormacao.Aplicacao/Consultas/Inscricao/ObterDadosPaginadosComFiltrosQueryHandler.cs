@@ -49,6 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 var turmas = inscricao!.Select(i => new DadosListagemFormacaoTurma
                 {
+                    PropostaTurmaId = i.PropostaTurmaId,
                     NomeTurma = i.NomeTurma,
                     QuantidadeVagas = i.QuantidadeVagas,
                     QuantidadeInscricoes = i.TotalInscricoes,

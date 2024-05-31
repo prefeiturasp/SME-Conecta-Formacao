@@ -2,6 +2,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
 {
     public class DadosListagemFormacaoTurma
     {
+        public long? PropostaTurmaId { get; set; }
         public string? NomeTurma { get; set; }
         public string? Data { get; set; }
         public int? QuantidadeVagas { get; set; }

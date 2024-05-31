@@ -39,6 +39,22 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker.Generate(quantidade);
         }
 
+        public static IEnumerable<Usuario> GerarUsuarios(TipoUsuario tipoUsuario = TipoUsuario.Interno, int quantidade = 1)
+        {
+            var faker = new Faker<Usuario>("pt_BR");
+            faker.RuleFor(dest => dest.Login, f => f.Random.Long(10000, 99999).ToString());
+            faker.RuleFor(dest => dest.Nome, f => f.Person.FullName);
+            faker.RuleFor(dest => dest.Email, f => f.Person.Email);
+            faker.RuleFor(dest => dest.Cpf, f => f.Person.Cpf(false));
+            faker.RuleFor(dest => dest.Tipo, f => tipoUsuario);
+            faker.RuleFor(dest => dest.Telefone, f => f.Person.Phone.SomenteNumeros());
+            faker.RuleFor(dest => dest.Situacao, f => f.PickRandom<SituacaoUsuario>());
+
+            AuditoriaFaker(faker);
+
+            return faker.Generate(quantidade);
+        }
+
         public static Faker<Usuario> GerarUsuarioFaker(TipoUsuario tipoUsuario = TipoUsuario.Interno)
         {
             var faker = new Faker<Usuario>("pt_BR");
