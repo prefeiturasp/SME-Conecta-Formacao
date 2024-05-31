@@ -78,7 +78,7 @@ namespace SME.ConectaFormacao.Aplicacao
                                             <body>
                                                 <div class=""container"">
                                                     <div class=""header"">Cancelamento de Inscrição</div>");
-            mensagem.AppendLine($"<p>A sua inscrição na formação {nomeFormacao}.</p>");
+            mensagem.AppendLine($"<p>A sua inscrição na formação {nomeFormacao} foi cancelada.</p>");
             
             if (motivoCancelamento.EstaPreenchido())
                 mensagem.AppendLine(@$" <p class=""reason"">Motivo: {motivoCancelamento}.</p>");
