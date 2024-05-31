@@ -42,6 +42,23 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AguardandoAnaliseDf);
         }
 
+        [Fact(DisplayName = "Proposta - Deve Enviar para Publicada uma Proposta com Situação Aprovada homologada")]
+        public async Task Enviar_para_publicada_proposta_aprovada_homologada()
+        {
+            // arrange
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.Aprovada, numeroHomologacao: true);
+
+            var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
+
+            // act
+            await casoUsoEnviarProposta.Executar(proposta.Id);
+
+            // assert
+            var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
+            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.Publicada);
+            obterPropostaDepois.NumeroHomologacao.GetValueOrDefault().ShouldBeGreaterThan(0);
+        }
+
         [Fact(DisplayName = "Proposta - Deve Enviar para o Publicada uma Proposta com Situação Cadastrada não homologada")]
         public async Task Enviar_para_publicada_proposta_cadastrada_nao_homologada()
         {
