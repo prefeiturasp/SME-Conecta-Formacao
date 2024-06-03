@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public Guid[] Perfis { get; set; }
     }
-    
+
     public class ObterUsuariosPorPerfilQueryValidator : AbstractValidator<ObterUsuariosPorPerfilQuery>
     {
         public ObterUsuariosPorPerfilQueryValidator()

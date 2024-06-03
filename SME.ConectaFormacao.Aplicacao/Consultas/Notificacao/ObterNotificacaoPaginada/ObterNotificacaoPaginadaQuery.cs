@@ -16,11 +16,11 @@ namespace SME.ConectaFormacao.Aplicacao
             QuantidadeRegistrosIgnorados = quantidadeRegistrosIgnorados;
         }
 
-        public string Login { get;  }
-        public NotificacaoFiltroDTO Filtro { get;  }
-        public int NumeroPagina { get;  }
-        public int NumeroRegistros { get;  }
-        public int QuantidadeRegistrosIgnorados { get;  }
+        public string Login { get; }
+        public NotificacaoFiltroDTO Filtro { get; }
+        public int NumeroPagina { get; }
+        public int NumeroRegistros { get; }
+        public int QuantidadeRegistrosIgnorados { get; }
     }
 
     public class ObterNotificacaoPaginadaQueryValidator : AbstractValidator<ObterNotificacaoPaginadaQuery>

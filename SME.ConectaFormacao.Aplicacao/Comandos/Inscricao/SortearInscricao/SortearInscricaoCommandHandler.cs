@@ -58,7 +58,7 @@ namespace SME.ConectaFormacao.Aplicacao
             for (int i = 0; i < vagas; i++)
             {
                 int indice = random.Next(listaSorteio.Count);
-                if(!listaSorteio.Any())continue;
+                if (!listaSorteio.Any()) continue;
                 numerosSorteados.Add(listaSorteio[indice]);
                 listaSorteio.RemoveAt(indice);
             }

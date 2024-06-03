@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class GerarNotificacaoReanalisePareceristaCommand : IRequest<bool>
     {
-        public GerarNotificacaoReanalisePareceristaCommand(Proposta proposta,IEnumerable<PropostaPareceristaResumidoDTO> pareceristas)
+        public GerarNotificacaoReanalisePareceristaCommand(Proposta proposta, IEnumerable<PropostaPareceristaResumidoDTO> pareceristas)
         {
             Proposta = proposta;
             Pareceristas = pareceristas;
@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(t => t.Proposta)
                 .NotEmpty()
                 .WithMessage("É necessário informar a proposta para gerar a notificação de reanálise do parecerista");
-            
+
             RuleFor(t => t.Pareceristas)
                 .NotEmpty()
                 .WithMessage("É necessário informar os pareceristas para gerar a notificação de reanálise do parecerista");

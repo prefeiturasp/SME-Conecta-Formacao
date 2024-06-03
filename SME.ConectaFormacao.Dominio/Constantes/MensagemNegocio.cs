@@ -102,7 +102,7 @@ public class MensagemNegocio
     public const string USUARIO_JA_INSCRITO_NA_PROPOSTA = "Este cursista já está matriculado nesta formação. Confira mais detalhes na lista de inscrição dessa formação.";
     public const string USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO = "Cargo/Função selecionado não definido no público alvo da formação, sendo assim, não será possível inserir a sua inscrição.";
     public const string CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL = "Este cursista não possui cargo/vinculo compatível com o público alvo da formação, não será possível realizar a sua inscrição.";
-    public const string INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição, a turma selecionada não possui mais vagas disponível.";
+    public const string INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar a inscrição, a turma selecionada não possui mais vagas disponíveis.";
     public const string INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição automática, a turma selecionada não possui mais vagas disponível. {0}";
     public const string USUARIO_NAO_ENCONTRADO = "Nenhum Usuário encontrado";
     public const string NOME_USUARIO_NAO_PREENCHIDO = "Nome do usuário não preenchido";
@@ -188,8 +188,8 @@ public class MensagemNegocio
     public const string NOTIFICACAO_NAO_ENCONTRADA_USUARIO = "Notificação não encontrada para o usuário logado";
     public const string RESPONSAVEL_DF_NAO_ENCONTRADO = "O responsável DF não foi encontrado.";
     public const string MOVIMENTACAO_PROPOSTA_NAO_ENCONTRADA = "Movimentação da proposta não encontrada";
+    public const string PROPOSTA_NUMERO_HOMOLOGACAO_DEVE_SER_INFORMADO = "O Número de homologação deve ser informado para publicar a proposta.";
     public const string PROPOSTA_NAO_PERMITE_SORTEIO = "Proposta não permite sorteio de inscrições";
     public const string PROPOSTA_TURMA_NAO_POSSUI_VAGA_DISPONIVEL_PARA_SORTEIO = "A Turma não possui vagas disponíveis para sorteio";
     public const string SORTEIO_REALIZADO_COM_SUCESSO = "Sorteio realizado com sucesso";
-    public const string PROPOSTA_NUMERO_HOMOLOGACAO_DEVE_SER_INFORMADO = "O Número de homologação deve ser informado para publicar a proposta.";
 }

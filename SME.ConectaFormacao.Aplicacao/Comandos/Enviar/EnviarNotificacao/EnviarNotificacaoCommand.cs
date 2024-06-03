@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
-using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -26,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(c => c.Notificacao.Id)
                 .NotEmpty()
                 .WithMessage("O identificador da notificação deve ser informado para o envio via signalR.");
-            
+
             RuleFor(c => c.Notificacao.Titulo)
                 .NotEmpty()
                 .WithMessage("O título da mensagem deve ser informada para o envio via signalR.");

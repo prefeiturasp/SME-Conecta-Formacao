@@ -160,6 +160,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                                 i.id,
 												i.situacao,
                                                 i.origem,
+                                                i.arquivo_id,
                                                 i.proposta_turma_id,
 												pt.nome,
                                                 i.usuario_id ,
@@ -398,7 +399,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         ";
             return await conexao.Obter().QueryAsync<InscricaoUsuarioInternoDto>(query, new { propostasTurmasId, tipoUsuario });
         }
-        
+
         public async Task<IEnumerable<InscricaoPossuiAnexoDTO>> ObterSeInscricaoPossuiAnexoPorPropostasIds(long[] inscricoesId)
         {
             var query = @$"
@@ -414,7 +415,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                          ";
             return await conexao.Obter().QueryAsync<InscricaoPossuiAnexoDTO>(query, new { inscricoesId });
         }
-        
+
         public async Task<IEnumerable<InscricaoDadosEmailConfirmacao>> ObterDadasInscricaoPorInscricaoId(long inscricoeId)
         {
             var query = @$" select 

@@ -6,7 +6,6 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using System.Net;
-using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -26,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuarioPerfisRetornoDto = await ObterPerfisUsuarioAcessos(request, cancellationToken);
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(request.Login), cancellationToken);
-            
+
             if (usuario.EhNulo() && request.Login.Trim().Length > TAMANHO_RF)
                 throw new NegocioException(MensagemNegocio.REALIZE_SEU_CADASTRO_NO_SISTEMA, HttpStatusCode.Unauthorized);
 
@@ -34,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 usuario = new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email);
 
             var alterouNomeUsuario = !usuarioPerfisRetornoDto.UsuarioNome.Equals(usuario.Nome);
-                
+
             usuarioPerfisRetornoDto = await ValidarPerfisAutomaticos(request, usuarioPerfisRetornoDto, cancellationToken);
 
             if (usuario.Tipo.EhExterno() && usuario.EstaAguardandoValidacaoEmail())
@@ -45,9 +44,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 var nomeUsuarioEOL = await mediator.Send(new ObterNomeServidorPorRfEolQuery(request.Login), cancellationToken);
                 usuarioPerfisRetornoDto.UsuarioNome = nomeUsuarioEOL.EstaPreenchido() ? nomeUsuarioEOL : usuarioPerfisRetornoDto.UsuarioNome;
             }
-            
+
             usuario.Atualizar(usuarioPerfisRetornoDto.Email, DateTimeExtension.HorarioBrasilia(), usuarioPerfisRetornoDto.Cpf, usuarioPerfisRetornoDto.UsuarioNome);
-            await mediator.Send(new SalvarUsuarioCommand(usuario,alterouNomeUsuario), cancellationToken);
+            await mediator.Send(new SalvarUsuarioCommand(usuario, alterouNomeUsuario), cancellationToken);
 
             //TODO: quando interno vier a informação do EOL, esse trecho de código se torna obsoleto
             if (alterouNomeUsuario)

@@ -187,7 +187,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"select 1 from proposta where not excluido and area_promotora_id = @id limit 1 ";
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { id });
         }
-        
+
         public Task<AreaPromotora> ObterAreaPromotoraPorPropostaId(long propostaId)
         {
             var query = @" 

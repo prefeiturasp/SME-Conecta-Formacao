@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao
         {
             var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
             return await mediator.Send(new ObterNotificacaoPaginadaQuery(
-                usuarioLogado.Login, 
+                usuarioLogado.Login,
                 notificacaoFiltroDTO,
                 NumeroPagina,
                 NumeroRegistros,

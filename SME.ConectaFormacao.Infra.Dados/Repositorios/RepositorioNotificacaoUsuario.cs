@@ -1,10 +1,10 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
+using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using Dommel;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Data;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
                 usuario.NotificacaoId = notificacaoId;
                 usuario.Situacao = NotificacaoUsuarioSituacao.NaoLida;
-                await conexao.Obter().InsertAsync(usuario,transacao);
+                await conexao.Obter().InsertAsync(usuario, transacao);
             }
         }
 

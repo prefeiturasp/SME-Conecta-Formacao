@@ -16,7 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
             var lista = Enum.GetValues(typeof(HorasTotaisProposta))
                 .Cast<HorasTotaisProposta>()
-                .Select(t => new RetornoListagemDTO{
+                .Select(t => new RetornoListagemDTO
+                {
                     Id = (short)t,
                     Descricao = t.Nome()
                 });
