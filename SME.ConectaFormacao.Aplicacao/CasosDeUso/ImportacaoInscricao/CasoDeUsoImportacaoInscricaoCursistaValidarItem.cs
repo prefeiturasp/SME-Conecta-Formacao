@@ -38,6 +38,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, usuario.Id));
 
+                if(usuario.Tipo.EhInterno() && importacaoInscricaoCursista.Vinculo.NaoEstaPreenchido())
+                    throw new NegocioException(MensagemNegocio.ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA);
+
                 var tipoVinculo = usuario.Tipo.EhInterno() ? int.Parse(importacaoInscricaoCursista.Vinculo) : default;
 
                 var inscricao = new Dominio.Entidades.Inscricao()
