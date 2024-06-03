@@ -6,8 +6,6 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using System.Text.RegularExpressions;
-using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Excecoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -30,10 +28,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<DadosUsuarioDTO> Handle(ObterMeusDadosServicoAcessosPorLoginQuery request, CancellationToken cancellationToken)
         {
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
-            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login) ??
-                          throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-            
-            if (usuario.Tipo == TipoUsuario.Externo)
+
+            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);            
+            if (usuario.NaoEhNulo() && usuario.Tipo.EhExterno())
             {
                 var unidade = !string.IsNullOrEmpty(usuario.CodigoEolUnidade) ? await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuario.CodigoEolUnidade), cancellationToken) : null;
                 acessoDadosUsuario.Tipo = (int)TipoUsuario.Externo;
@@ -45,7 +42,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) && acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
                 acessoDadosUsuario.EmailEducacional = acessoDadosUsuario.Email;
 
-            if (acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
+            if (usuario.NaoEhNulo() && acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
                 acessoDadosUsuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario), cancellationToken);
 
             return _mapper.Map<DadosUsuarioDTO>(acessoDadosUsuario);
