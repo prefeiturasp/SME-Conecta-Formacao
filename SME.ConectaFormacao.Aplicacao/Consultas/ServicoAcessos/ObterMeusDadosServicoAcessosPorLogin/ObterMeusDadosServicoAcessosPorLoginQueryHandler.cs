@@ -27,11 +27,11 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<DadosUsuarioDTO> Handle(ObterMeusDadosServicoAcessosPorLoginQuery request, CancellationToken cancellationToken)
         {
-            var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery());
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
-            if (usuarioLogado.Tipo == TipoUsuario.Externo)
+            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);
+            if (usuario.Tipo == TipoUsuario.Externo)
             {
-                var unidade = !string.IsNullOrEmpty(usuarioLogado.CodigoEolUnidade) ? await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuarioLogado.CodigoEolUnidade)) : null;
+                var unidade = !string.IsNullOrEmpty(usuario.CodigoEolUnidade) ? await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuario.CodigoEolUnidade), cancellationToken) : null;
                 acessoDadosUsuario.Tipo = (int)TipoUsuario.Externo;
                 acessoDadosUsuario.NomeUnidade = unidade?.NomeUnidade!;
             }
@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 acessoDadosUsuario.EmailEducacional = acessoDadosUsuario.Email;
 
             if (acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
-                acessoDadosUsuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuarioLogado), cancellationToken);
+                acessoDadosUsuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario), cancellationToken);
 
             return _mapper.Map<DadosUsuarioDTO>(acessoDadosUsuario);
         }
