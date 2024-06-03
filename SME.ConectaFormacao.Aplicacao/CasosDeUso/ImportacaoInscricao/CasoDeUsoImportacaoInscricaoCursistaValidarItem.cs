@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, usuario.Id));
 
-                var tipoVinculo = int.Parse(importacaoInscricaoCursista.Vinculo);
+                var tipoVinculo = usuario.Tipo.EhInterno() ? int.Parse(importacaoInscricaoCursista.Vinculo) : default;
 
                 var inscricao = new Dominio.Entidades.Inscricao()
                 {
@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                     TipoVinculo = tipoVinculo,
                 };
 
-                if (usuario.Tipo == TipoUsuario.Interno)
+                if (usuario.Tipo.EhInterno())
                     await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId, tipoVinculo);
 
                 importacaoInscricaoCursista.Inscricao = inscricao;
