@@ -11,7 +11,6 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes;
-using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -108,7 +107,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var usuario = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
             usuario.Login = UsuarioRecuperarSenhaMock.LoginValido;
             await InserirNaBase(mapper.Map<Dominio.Entidades.Usuario>(usuario));
-            
+
             var recuperacaoSenhaDto = UsuarioRecuperarSenhaMock.RecuperacaoSenhaDto;
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioRecuperarSenha>();
 
@@ -122,7 +121,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
             usuarios.Any().ShouldBeTrue();
 
-            var usuarioLogin = usuarios.FirstOrDefault(f=> f.Login.Equals(usuario.Login));
+            var usuarioLogin = usuarios.FirstOrDefault(f => f.Login.Equals(usuario.Login));
             usuarioLogin.Nome.ShouldNotBeNull(retorno.UsuarioNome);
         }
     }

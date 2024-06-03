@@ -2033,7 +2033,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                      where ptv.proposta_turma_id = pt.id 
                                        and not ptv.excluido 
                                        and ptv.inscricao_id is null
-                                       {(codigoDre is not null ? "and dre.dre_id = @codigoDre" : string.Empty )})";
+                                       {(codigoDre is not null ? "and dre.dre_id = @codigoDre" : string.Empty)})";
 
             return await conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId, codigoDre });
         }

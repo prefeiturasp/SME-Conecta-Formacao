@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             RfServidor = rfServidor;
         }
-        
+
         public string RfServidor { get; }
     }
 }

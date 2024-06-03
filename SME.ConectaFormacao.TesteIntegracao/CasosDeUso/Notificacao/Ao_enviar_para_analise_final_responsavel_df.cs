@@ -1,11 +1,8 @@
-﻿using System.Text.Json;
-using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -15,6 +12,7 @@ using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
+using System.Text.Json;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
@@ -66,7 +64,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             await InserirUsuario("4", "ResponsavelDF");
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoReanalisePeloParecerista, responsavelDF:"4");
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoReanalisePeloParecerista, responsavelDF: "4");
 
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1", SituacaoParecerista.Aprovada, "Aprovado pelo parecerista"));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2", "Parecerista2", SituacaoParecerista.Enviada));
@@ -75,48 +73,48 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1, CampoConsideracao.Formato, "1"));
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1, CampoConsideracao.FormacaoHomologada, "1"));
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(1, CampoConsideracao.TipoFormacao, "1"));
-            
+
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2, CampoConsideracao.Formato, "2"));
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2, CampoConsideracao.FormacaoHomologada, "2"));
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(2, CampoConsideracao.TipoFormacao, "2"));
-            
+
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3, CampoConsideracao.Formato, "3"));
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3, CampoConsideracao.FormacaoHomologada, "3"));
             await InserirNaBase(PropostaPareceristaConsideracaoMock.GerarPropostaPareceristaConsideracao(3, CampoConsideracao.TipoFormacao, "3"));
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoNotificarResponsavelDFSobreReanaliseDoParecerista>();
             var filtro = new NotificacaoPropostaPareceristaDTO(proposta.Id, new PropostaPareceristaResumidoDTO("1", "Parecerista1"));
-            
+
             // act
             var mensagem = JsonSerializer.Serialize(filtro);
             var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
-            
+
             // assert 
             retorno.ShouldBeTrue();
-            
+
             var notificacoes = ObterTodos<Dominio.Entidades.Notificacao>();
             notificacoes.Count().ShouldBe(1);
             var notificacao = notificacoes.FirstOrDefault();
-            notificacao.Mensagem.ShouldBe(string.Format("O Parecerista  {0} - ({1}) sugeriu a {2} da proposta {3} - {4}. Motivo: {5} \nAcesse <a href=\"{6}\">Aqui</a> o cadastro da proposta.",       
+            notificacao.Mensagem.ShouldBe(string.Format("O Parecerista  {0} - ({1}) sugeriu a {2} da proposta {3} - {4}. Motivo: {5} \nAcesse <a href=\"{6}\">Aqui</a> o cadastro da proposta.",
                 "Parecerista1",
-                "1", 
+                "1",
                 "aprovação",
                 proposta.Id,
                 proposta.NomeFormacao,
                 "Aprovado pelo parecerista",
                 "http://conecta"));
-            
-            notificacao.Titulo.ShouldBe(string.Format("A Proposta {0} - {1} foi analisada pelo Parecerista",  
-                proposta.Id, 
+
+            notificacao.Titulo.ShouldBe(string.Format("A Proposta {0} - {1} foi analisada pelo Parecerista",
+                proposta.Id,
                 proposta.NomeFormacao));
-            
+
             notificacao.Categoria.ShouldBe(NotificacaoCategoria.Aviso);
             notificacao.Tipo.ShouldBe(NotificacaoTipo.Proposta);
             notificacao.Parametros.ShouldNotBeEmpty();
-            
+
             var notificacoesUsuarios = ObterTodos<NotificacaoUsuario>();
             notificacoesUsuarios.Count().ShouldBe(1);
-            notificacoesUsuarios.Any(a=> a.Login.Equals(proposta.RfResponsavelDf) && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
+            notificacoesUsuarios.Any(a => a.Login.Equals(proposta.RfResponsavelDf) && a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBeTrue();
         }
     }
 }

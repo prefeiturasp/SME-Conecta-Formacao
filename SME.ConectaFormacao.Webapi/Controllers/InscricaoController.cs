@@ -110,7 +110,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
         public async Task<IActionResult> CancelarInscricoes(
             [FromServices] ICasoDeUsoCancelarInscricoes casoDeUso,
-            [FromQuery] long[] ids, 
+            [FromQuery] long[] ids,
             [FromBody] InscricaoMotivoCancelamentoDTO inscricaoMotivoCancelamentoDTO)
         {
             return Ok(await casoDeUso.Executar(ids, inscricaoMotivoCancelamentoDTO.Motivo));

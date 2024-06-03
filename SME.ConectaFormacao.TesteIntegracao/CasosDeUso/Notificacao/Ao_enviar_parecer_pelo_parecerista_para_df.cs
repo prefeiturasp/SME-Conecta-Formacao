@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -16,6 +15,7 @@ using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
+using System.Text.Json;
 using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             await InserirUsuario("4", "ResponsavelDf");
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
-                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoAnalisePeloParecerista, responsavelDF:"4");
+                modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoAnalisePeloParecerista, responsavelDF: "4");
 
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "1", "Parecerista1", SituacaoParecerista.Enviada));
             await InserirNaBase(PropostaPareceristaMock.GerarPropostaParecerista(proposta.Id, "2", "Parecerista2"));
@@ -85,35 +85,35 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             var pareceristas = ObterTodos<PropostaParecerista>();
 
             var filtro = new NotificacaoPropostaPareceristaDTO(proposta.Id, mapper.Map<PropostaPareceristaResumidoDTO>(pareceristas.FirstOrDefault()));
-            
+
             // act
             var mensagem = JsonSerializer.Serialize(filtro);
             var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
-            
+
             // assert 
             retorno.ShouldBeTrue();
-            
+
             var notificacoes = ObterTodos<Dominio.Entidades.Notificacao>();
             notificacoes.Count().ShouldBe(1);
             var notificacao = notificacoes.FirstOrDefault();
-            
+
             notificacao.Mensagem.ShouldBe(string.Format("O Parecerista {0} ({1}) Inseriu comentários na proposta {2} - {3}. Acesse <a href=\"{4}\">Aqui</a> o cadastro da proposta.",
                 pareceristas.FirstOrDefault().NomeParecerista,
                 pareceristas.FirstOrDefault().RegistroFuncional,
-                proposta.Id, 
+                proposta.Id,
                 proposta.NomeFormacao,
                 "http://conecta"));
-            
-            notificacao.Titulo.ShouldBe(string.Format("Proposta {0} - {1} foi analisada pelo Parecerista",proposta.Id, proposta.NomeFormacao));
+
+            notificacao.Titulo.ShouldBe(string.Format("Proposta {0} - {1} foi analisada pelo Parecerista", proposta.Id, proposta.NomeFormacao));
             notificacao.Categoria.ShouldBe(NotificacaoCategoria.Aviso);
             notificacao.Tipo.ShouldBe(NotificacaoTipo.Proposta);
             notificacao.Parametros.ShouldNotBeEmpty();
-            
+
             var notificacoesUsuarios = ObterTodos<NotificacaoUsuario>();
             notificacoesUsuarios.Count().ShouldBe(1);
-            notificacoesUsuarios.Count(a=> a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBe(1);
+            notificacoesUsuarios.Count(a => a.Situacao.EhNaoLida() && a.NotificacaoId == 1).ShouldBe(1);
         }
-        
+
         [Fact(DisplayName = "Notificacao - Não deve notificar os Admins DFs que foi enviado parecer do parecerista")]
         public async Task Nao_deve_notificar_os_admins_dfs_que_foi_enviado_parecer_do_parecerista()
         {
@@ -146,21 +146,21 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
 
             var proposta = await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
                 modalidades, anosTurmas, componentesCurriculares, SituacaoProposta.AguardandoAnaliseDf);
-           
+
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoNotificarPareceristasSobreAtribuicaoPelaDF>();
 
             var filtro = new NotificacaoPropostaPareceristasDTO(proposta.Id, null);
-            
+
             // act
             var mensagem = JsonSerializer.Serialize(filtro);
             var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
-            
+
             // assert 
             retorno.ShouldBeFalse();
-            
+
             var notificacoes = ObterTodos<Dominio.Entidades.Notificacao>();
             notificacoes.Count().ShouldBe(0);
-            
+
             var notificacoesUsuarios = ObterTodos<Dominio.Entidades.NotificacaoUsuario>();
             notificacoesUsuarios.Count().ShouldBe(0);
         }

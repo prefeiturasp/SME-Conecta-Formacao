@@ -277,9 +277,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<UsuarioExternoDTO, Usuario>()
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Nome.Trim()))
                 .ReverseMap();
-            
-            CreateMap<ImportacaoArquivoDTO,ImportacaoArquivo>().ReverseMap();
-            CreateMap<ImportacaoArquivoRegistroDTO,ImportacaoArquivoRegistro>().ReverseMap();
+
+            CreateMap<ImportacaoArquivoDTO, ImportacaoArquivo>().ReverseMap();
+            CreateMap<ImportacaoArquivoRegistroDTO, ImportacaoArquivoRegistro>().ReverseMap();
 
             CreateMap<RetornoUsuarioCpfNomeDTO, Usuario>().ReverseMap();
             CreateMap<RetornoUsuarioCpfNomeDTO, CursistaResumidoServicoEol>().ReverseMap();
@@ -323,10 +323,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista))
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional));
-            
-            CreateMap<PropostaPareceristaResumidoDTO,NotificacaoUsuario>();
-            CreateMap<RetornoUsuarioLoginNomeDTO,NotificacaoUsuario>();
-            CreateMap<Usuario,NotificacaoUsuario>()
+
+            CreateMap<PropostaPareceristaResumidoDTO, NotificacaoUsuario>();
+            CreateMap<RetornoUsuarioLoginNomeDTO, NotificacaoUsuario>();
+            CreateMap<Usuario, NotificacaoUsuario>()
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(o => NotificacaoUsuarioSituacao.NaoLida));
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
@@ -334,7 +334,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<Notificacao, NotificacaoSignalRDTO>()
                 .ForMember(dest => dest.Usuarios, opt => opt.MapFrom(o => o.Usuarios.Any() ? o.Usuarios.Select(s => s.Login) : ArraySegment<string>.Empty));
-            
+
             CreateMap<NotificacaoUsuario, EnviarEmailDto>()
                 .ForMember(dest => dest.NomeDestinatario, opt => opt.MapFrom(src => src.Nome))
                 .ForMember(dest => dest.EmailDestinatario, opt => opt.MapFrom(src => src.Email));
