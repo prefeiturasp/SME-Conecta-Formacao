@@ -137,11 +137,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return default;
         }
 
-        public static IEnumerable<PropostaCriterioValidacaoInscricao> GerarCritariosValidacaoInscricao(long propostaId, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
+        public static IEnumerable<PropostaCriterioValidacaoInscricao> GerarCriteriosValidacaoInscricao(long propostaId, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
         {
             if (criteriosValidacaoInscricao != null && criteriosValidacaoInscricao.Any())
             {
-                var quantidade = new Randomizer().Number(1, criteriosValidacaoInscricao.Count());
                 return criteriosValidacaoInscricao
                     .Select(t => new PropostaCriterioValidacaoInscricao
                     {
@@ -150,7 +149,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
                         CriadoEm = t.CriadoEm,
                         CriadoPor = t.CriadoPor,
                         CriadoLogin = t.CriadoLogin,
-                    }).Take(quantidade);
+                    });
             }
 
             return default;

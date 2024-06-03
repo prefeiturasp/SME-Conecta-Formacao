@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Notificacao.ObterNotificacao
             var notificacao = await _repositorioNotificacao.ObterPorId(request.Id) ??
                 throw new NegocioException(MensagemNegocio.NOTIFICACAO_NAO_ENCONTRADA);
 
-            if(notificacao.Excluido)
+            if (notificacao.Excluido)
                 throw new NegocioException(MensagemNegocio.NOTIFICACAO_NAO_ENCONTRADA);
 
             var notificacaoUsuario = await _repositorioNotificacaoUsuario.ObterNotificacaoUsuario(request.Id, request.Login) ??

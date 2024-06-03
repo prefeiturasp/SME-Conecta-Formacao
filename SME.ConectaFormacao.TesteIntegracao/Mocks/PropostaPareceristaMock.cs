@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 {
     public class PropostaPareceristaMock : BaseMock
     {
-        private static Faker<PropostaParecerista> Gerador(long propostaId, string registroFuncional, string nomeParecerista, SituacaoParecerista situacaoParecerista, 
+        private static Faker<PropostaParecerista> Gerador(long propostaId, string registroFuncional, string nomeParecerista, SituacaoParecerista situacaoParecerista,
             string justificativa = "")
         {
             var faker = new Faker<PropostaParecerista>("pt_BR");
@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return faker;
         }
 
-        public static PropostaParecerista GerarPropostaParecerista(long propostaId, string registroFuncional, string nomeParecerista, 
+        public static PropostaParecerista GerarPropostaParecerista(long propostaId, string registroFuncional, string nomeParecerista,
             SituacaoParecerista situacaoParecerista = SituacaoParecerista.AguardandoValidacao, string justificativa = "")
         {
             return Gerador(propostaId, registroFuncional, nomeParecerista, situacaoParecerista, justificativa).Generate();

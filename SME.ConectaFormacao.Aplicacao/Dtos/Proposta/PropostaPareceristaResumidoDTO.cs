@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public PropostaPareceristaResumidoDTO()
         {
         }
-        
+
 
         public PropostaPareceristaResumidoDTO(string login, string nome)
         {

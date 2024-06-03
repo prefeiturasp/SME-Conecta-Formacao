@@ -8,7 +8,6 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -182,7 +181,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 transacao.Commit();
 
-                var mensagem = !formacaoHomologada && integrarNoSGA ? MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA : MensagemNegocio.INSCRICAO_CONFIRMADA;
+                var mensagem = MensagemNegocio.INSCRICAO_CONFIRMADA;
+                if (!formacaoHomologada && integrarNoSGA)
+                    mensagem = MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA;
+                else if (formacaoHomologada)
+                    mensagem = MensagemNegocio.INSCRICAO_EM_ANALISE;
+
                 return RetornoDTO.RetornarSucesso(mensagem, inscricao.Id);
             }
             catch

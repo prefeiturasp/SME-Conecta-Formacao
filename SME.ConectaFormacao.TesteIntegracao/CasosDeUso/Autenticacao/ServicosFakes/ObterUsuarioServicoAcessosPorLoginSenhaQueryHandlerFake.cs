@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.ServicosFa
         public Task<UsuarioAutenticacaoRetornoDTO> Handle(ObterUsuarioServicoAcessosPorLoginSenhaQuery request, CancellationToken cancellationToken)
         {
             var usuario = AutenticacaoMock.AutenticacaoUsuarioDTOValido;
-            
+
             if (request.Login == usuario.Login && usuario.Senha == request.Senha)
             {
                 var usuarioAUtenticacao = new UsuarioAutenticacaoRetornoDTO

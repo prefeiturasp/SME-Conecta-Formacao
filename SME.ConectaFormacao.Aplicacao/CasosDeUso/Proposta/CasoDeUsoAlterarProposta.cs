@@ -16,25 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (propostaDTO.Situacao.EhParaSalvarRascunho() || propostaDTO.EhProximoPasso)
                 return await mediator.Send(new AlterarPropostaRascunhoCommand(id, propostaDTO));
 
-            AlteraSituacaoParaPublicada(propostaDTO);
-
-            await SalvarMovimentacao(id, propostaDTO.Situacao);
-
             return await mediator.Send(new AlterarPropostaCommand(id, propostaDTO));
-        }
-
-        //TODO: essa validação deve estar no ENVIAR
-        private void AlteraSituacaoParaPublicada(PropostaDTO propostaDTO)
-        {
-            if (propostaDTO.Situacao.EhAprovada() &&
-                propostaDTO.FormacaoHomologada.EstaHomologada() &&
-                propostaDTO.NumeroHomologacao.GetValueOrDefault() != 0)
-                propostaDTO.Situacao = SituacaoProposta.Publicada;
-        }
-
-        private async Task SalvarMovimentacao(long propostaId, SituacaoProposta situacao)
-        {
-            await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
         }
     }
 }

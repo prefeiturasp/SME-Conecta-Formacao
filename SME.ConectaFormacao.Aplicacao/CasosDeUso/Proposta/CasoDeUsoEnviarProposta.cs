@@ -14,8 +14,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
     public class CasoDeUsoEnviarProposta : CasoDeUsoAbstrato, ICasoDeUsoEnviarProposta
     {
         private readonly IMapper _mapper;
-        
-        public CasoDeUsoEnviarProposta(IMediator mediator,IMapper mapper) : base(mediator)
+
+        public CasoDeUsoEnviarProposta(IMediator mediator, IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -33,11 +33,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 SituacaoProposta.AguardandoAnaliseParecerPelaDF,
                 SituacaoProposta.AguardandoAnalisePeloParecerista,
                 SituacaoProposta.AguardandoReanalisePeloParecerista,
-                SituacaoProposta.AnaliseParecerPelaAreaPromotora };
+                SituacaoProposta.AnaliseParecerPelaAreaPromotora,
+                SituacaoProposta.Aprovada,
+            };
 
             if (!situacoes.Contains(proposta.Situacao))
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_PODE_SER_ENVIADA);
 
+            if (proposta.Situacao.EhAprovada() && proposta.FormacaoHomologada.EstaHomologada() && proposta.NumeroHomologacao.GetValueOrDefault() == 0)
+                throw new NegocioException(MensagemNegocio.PROPOSTA_NUMERO_HOMOLOGACAO_DEVE_SER_INFORMADO);
+
+            // TODO validações devem ser feitas somente no em AlterarPropostaCommand
             var existeFuncaoEspecificaOutros = await mediator.Send(new ExisteCargoFuncaoOutrosNaPropostaQuery(proposta.Id));
             var propostasTipoInscricao = await mediator.Send(new ObterPropostaTipoInscricaoPorIdQuery(proposta.Id));
             if (propostasTipoInscricao.PossuiElementos())
@@ -63,12 +69,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             if (situacao.EstaPublicada())
             {
-                if (proposta.FormacaoHomologada.NaoEstaHomologada() && proposta.TiposInscricao.Any(a => a.TipoInscricao == TipoInscricao.Automatica || a.TipoInscricao == TipoInscricao.AutomaticaJEIF))
+                if (proposta.TiposInscricao.Any(a => a.TipoInscricao == TipoInscricao.Automatica || a.TipoInscricao == TipoInscricao.AutomaticaJEIF))
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomatica, propostaId));
                 else
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, propostaId));
             }
-            
+
             var perfilUsuarioLogado = await mediator.Send(new ObterGrupoUsuarioLogadoQuery());
 
             if (perfilUsuarioLogado.EhPerfilAdminDF())
@@ -80,7 +86,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarPareceristasSobreAtribuicaoPelaDF,
                         new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
                 }
-                
+
                 if (situacao.EstaAnaliseParecerPelaAreaPromotora())
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarAreaPromotoraParaAnaliseParecer, proposta.Id));
             }
@@ -91,7 +97,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 if (areaPromotora.NaoEhNulo() && areaPromotora.Id == proposta.AreaPromotoraId)
                 {
                     var pareceristas = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristasDaProposta);
-                    
+
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarPareceristasParaReanalise,
                         new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
                 }
@@ -123,9 +129,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && existemPareceristasAguardandoValidacao)
                 return SituacaoProposta.AguardandoAnalisePeloParecerista;
 
-            return proposta.Situacao.EstaAguardandoReanalisePeloParecerista()
-                ? SituacaoProposta.AguardandoReanalisePeloParecerista
-                : SituacaoProposta.AguardandoAnaliseDf;
+            if (proposta.Situacao.EstaAguardandoReanalisePeloParecerista())
+                return SituacaoProposta.AguardandoReanalisePeloParecerista;
+
+            if (proposta.Situacao.EhAprovada())
+                return SituacaoProposta.Publicada;
+
+            return SituacaoProposta.AguardandoAnaliseDf;
         }
     }
 }

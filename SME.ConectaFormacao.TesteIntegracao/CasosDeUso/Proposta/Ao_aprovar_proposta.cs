@@ -1,10 +1,8 @@
 ﻿using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -23,7 +21,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var perfilLogado = Perfis.ADMIN_DF.ToString();
             CriarClaimUsuario(perfilLogado, "1", "Admin DF");
             await InserirUsuario("1", "Admin DF");
-            
+
             var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerPelaDF);
 
             var propostaJustificativaDto = PropostaJustificativaMock.GerarPropostaJustificativaDTO();
@@ -47,7 +45,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var perfilLogado = Perfis.ADMIN_DF.ToString();
             CriarClaimUsuario(perfilLogado, "1", "Admin DF");
             await InserirUsuario("1", "Admin DF");
-            
+
             var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.AguardandoAnaliseParecerPelaDF);
 
             var propostaJustificativaDto = new Aplicacao.Dtos.Proposta.PropostaJustificativaDTO();
