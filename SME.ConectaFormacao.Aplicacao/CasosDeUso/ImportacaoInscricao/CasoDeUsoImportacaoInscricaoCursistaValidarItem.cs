@@ -196,7 +196,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             if (ehProfissionalRede)
             {
                 var dadosUsuario = await mediator.Send(new ObterMeusDadosServicoAcessosPorLoginQuery(login));
-                if (dadosUsuario.EhNulo() || string.IsNullOrEmpty(dadosUsuario.Login))
+                if (dadosUsuario.EhNulo() || dadosUsuario.Login.NaoEstaPreenchido())
                     return default;
 
                 usuario = _mapper.Map<Dominio.Entidades.Usuario>(dadosUsuario);
