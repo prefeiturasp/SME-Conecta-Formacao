@@ -6,6 +6,8 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using System.Text.RegularExpressions;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Excecoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -28,7 +30,9 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<DadosUsuarioDTO> Handle(ObterMeusDadosServicoAcessosPorLoginQuery request, CancellationToken cancellationToken)
         {
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
-            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);
+            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login) ??
+                          throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+            
             if (usuario.Tipo == TipoUsuario.Externo)
             {
                 var unidade = !string.IsNullOrEmpty(usuario.CodigoEolUnidade) ? await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuario.CodigoEolUnidade), cancellationToken) : null;
