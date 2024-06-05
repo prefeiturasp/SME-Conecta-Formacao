@@ -51,10 +51,13 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 foreach (var usuario in notificacao.Usuarios)
                 {
-                    var destinatario = _mapper.Map<EnviarEmailDto>(usuario);
-                    destinatario.Titulo = notificacao.Titulo;
-                    destinatario.Texto = notificacao.Mensagem;
-                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario));
+                    if (usuario.Email.EstaPreenchido())
+                    {
+                        var destinatario = _mapper.Map<EnviarEmailDto>(usuario);
+                        destinatario.Titulo = notificacao.Titulo;
+                        destinatario.Texto = notificacao.Mensagem;
+                        await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario));
+                    }
                 }
             }
             catch

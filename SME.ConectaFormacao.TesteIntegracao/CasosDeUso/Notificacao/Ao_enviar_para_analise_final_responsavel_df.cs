@@ -102,7 +102,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
                 proposta.Id,
                 proposta.NomeFormacao,
                 "Aprovado pelo parecerista",
-                "http://conecta"));
+                $"https://conectaformacao/cadastro/cadastro-de-propostas/editar/{proposta.Id}"));
 
             notificacao.Titulo.ShouldBe(string.Format("A Proposta {0} - {1} foi analisada pelo Parecerista",
                 proposta.Id,

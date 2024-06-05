@@ -64,7 +64,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task<Notificacao> ObterNotificacao(Proposta proposta, PropostaPareceristaResumidoDTO parecerista)
         {
-            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
+            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacaoEdicaoProposta, DateTimeExtension.HorarioBrasilia().Year));
 
             var usuarioResponsavelDF = await _repositorioUsuario.ObterPorLogin(proposta.RfResponsavelDf);
 
@@ -94,7 +94,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     proposta.Id,
                     proposta.NomeFormacao,
                     motivo.FirstOrDefault(f => f.RegistroFuncional.Equals(parecerista.Login)).Justificativa,
-                    linkSistema.Valor)
+                    string.Format(linkSistema.Valor,proposta.Id))
             };
         }
     }
