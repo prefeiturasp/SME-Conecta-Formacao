@@ -75,7 +75,7 @@ namespace SME.ConectaFormacao.Aplicacao
             mensagem.AppendLine($"<p>A sua inscrição na formação {nomeFormacao} foi cancelada.</p>");
 
             if (motivoCancelamento.EstaPreenchido())
-                mensagem.AppendLine(@$" <p>Motivo: {motivoCancelamento}.</p>");
+                mensagem.AppendLine(@$" <p>Motivo: {motivoCancelamento}</p>");
 
             mensagem.AppendLine(@"<div class=""footer"">
                                     <p>Acesse a nossa <a href=""https://conectaformacao.sme.prefeitura.sp.gov.br/area-publica"" class=""link"">área pública</a> e fique por dentro de todas as formações e eventos.</p>
