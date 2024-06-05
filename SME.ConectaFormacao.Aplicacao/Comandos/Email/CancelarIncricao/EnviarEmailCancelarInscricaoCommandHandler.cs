@@ -48,7 +48,7 @@ namespace SME.ConectaFormacao.Aplicacao
                                                     body {
                                                         font-family: Arial, sans-serif;
                                                         margin: 20px;
-                                                        background-color: #f4f4f4;
+                                                        line-height: 1.6;
                                                     }
                                                     .container {
                                                         background-color: #fff;
