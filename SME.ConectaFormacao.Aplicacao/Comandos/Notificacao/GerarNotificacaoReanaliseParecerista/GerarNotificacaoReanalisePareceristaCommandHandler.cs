@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 Mensagem = string.Format("A proposta {0} - {1} foi atribuída a você. Acesse <a href=\"{2}\">Aqui</a> o cadastro da proposta e registre seu parecer final.",
                     proposta.Id,
                     proposta.NomeFormacao,
-                    linkSistema.Valor)
+                    string.Format(linkSistema.Valor,proposta.Id))
             };
         }
     }

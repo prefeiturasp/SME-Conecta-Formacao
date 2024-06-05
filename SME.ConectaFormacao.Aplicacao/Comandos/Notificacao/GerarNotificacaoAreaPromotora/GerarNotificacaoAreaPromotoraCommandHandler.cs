@@ -94,7 +94,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 Mensagem = string.Format("A proposta {0} - {1} foi analisada pela Comissão de Análise. Acesse <a href=\"{2}\">Aqui</a> o cadastro da proposta e verifique os comentários.",
                     proposta.Id,
                     proposta.NomeFormacao,
-                    linkSistema.Valor),
+                    string.Format(linkSistema.Valor,proposta.Id)),
 
                 Parametros = new { propostaId = proposta.Id }.ObjetoParaJson(),
                 Usuarios = destinatarios

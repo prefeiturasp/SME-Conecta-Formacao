@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
         {
             // arrange
             await InserirParametrosProposta();
-            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacao, "http://conecta"));
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacao, "https://conectaformacao/cadastro/cadastro-de-propostas/editar/{0}"));
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -102,7 +102,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
                 pareceristas.FirstOrDefault().RegistroFuncional,
                 proposta.Id,
                 proposta.NomeFormacao,
-                "http://conecta"));
+                $"https://conectaformacao/cadastro/cadastro-de-propostas/editar/{proposta.Id}"));
 
             notificacao.Titulo.ShouldBe(string.Format("Proposta {0} - {1} foi analisada pelo Parecerista", proposta.Id, proposta.NomeFormacao));
             notificacao.Categoria.ShouldBe(NotificacaoCategoria.Aviso);

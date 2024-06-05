@@ -94,7 +94,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     proposta.Id,
                     proposta.NomeFormacao,
                     motivo.FirstOrDefault(f => f.RegistroFuncional.Equals(parecerista.Login)).Justificativa,
-                    linkSistema.Valor)
+                    string.Format(linkSistema.Valor,proposta.Id))
             };
         }
     }

@@ -194,7 +194,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (turmasId?.Length > 0)
                 query.AppendLine($" and pt.id = any(@turmasId) ");
 
-            query.AppendLine(" order by pt.nome, u.nome");
+            query.AppendLine(" order by pt.nome, i.id");
             query.AppendLine(" limit @numeroRegistros offset @registrosIgnorados ");
 
             var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
