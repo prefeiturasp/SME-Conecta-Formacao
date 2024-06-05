@@ -24,14 +24,17 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<bool> Handle(EnviarEmailCancelarInscricaoCommand request, CancellationToken cancellationToken)
         {
             var dadosParaEmail = await _repositorioInscricao.ObterDadasInscricaoPorInscricaoId(request.InscricaoId);
-            var destinatario = new EnviarEmailDto
+            if (dadosParaEmail.FirstOrDefault()!.Email.EstaPreenchido())
             {
-                EmailDestinatario = dadosParaEmail.FirstOrDefault()!.Email,
-                NomeDestinatario = dadosParaEmail.FirstOrDefault()!.NomeDestinatario,
-                Titulo = $"Cancelamento de inscrição | Formação {dadosParaEmail.FirstOrDefault()!.NomeFormacao} ",
-                Texto = CriarMensagemEmail(dadosParaEmail.FirstOrDefault()!.NomeFormacao, request.Motivo)
-            };
-            await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);
+                var destinatario = new EnviarEmailDto
+                {
+                    EmailDestinatario = dadosParaEmail.FirstOrDefault()!.Email,
+                    NomeDestinatario = dadosParaEmail.FirstOrDefault()!.NomeDestinatario,
+                    Titulo = $"Cancelamento de inscrição | Formação {dadosParaEmail.FirstOrDefault()!.NomeFormacao} ",
+                    Texto = CriarMensagemEmail(dadosParaEmail.FirstOrDefault()!.NomeFormacao, request.Motivo)
+                };
+                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);
+            }
 
             return true;
         }

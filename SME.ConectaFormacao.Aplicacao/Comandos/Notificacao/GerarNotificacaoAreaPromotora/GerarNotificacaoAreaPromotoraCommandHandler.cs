@@ -48,10 +48,13 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 foreach (var usuario in notificacao.Usuarios)
                 {
-                    var destinatario = _mapper.Map<EnviarEmailDto>(usuario);
-                    destinatario.Titulo = notificacao.Titulo;
-                    destinatario.Texto = notificacao.Mensagem;
-                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario));
+                    if (usuario.Email.EstaPreenchido())
+                    {
+                        var destinatario = _mapper.Map<EnviarEmailDto>(usuario);
+                        destinatario.Titulo = notificacao.Titulo;
+                        destinatario.Texto = notificacao.Mensagem;
+                        await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario));
+                    }
                 }
             }
             catch
@@ -69,12 +72,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task<Notificacao> ObterNotificacao(Proposta proposta)
         {
-            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacao, DateTimeExtension.HorarioBrasilia().Year));
+            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacaoEdicaoProposta, DateTimeExtension.HorarioBrasilia().Year));
 
             var areaPromotora = await _repositorioAreaPromotora.ObterAreaPromotoraPorPropostaId(proposta.Id);
 
             var usuarioCriadorProposta = await _repositorioUsuario.ObterPorLogin(proposta.CriadoLogin);
-
+            
             var destinatarios = new List<NotificacaoUsuario>()
             {
                 new (areaPromotora.Nome,areaPromotora.Email),
