@@ -1,0 +1,1 @@
+﻿ALTER TABLE public.proposta ADD COLUMN IF NOT EXISTS carga_horaria_nao_presencial varchar(6) NULL;

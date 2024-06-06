@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public long Id { get; set; }
     }
-    
+
     public class ObterImportacaoArquivoPorIdQueryValidator : AbstractValidator<ObterImportacaoArquivoPorIdQuery>
     {
         public ObterImportacaoArquivoPorIdQueryValidator()

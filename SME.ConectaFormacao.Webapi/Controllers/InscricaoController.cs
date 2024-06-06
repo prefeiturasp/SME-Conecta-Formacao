@@ -79,6 +79,43 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoSalvarInscricao.Executar(id));
         }
 
+        [HttpPut("confirmar")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> ConfirmarInscricoes(
+            [FromServices] ICasoDeUsoConfirmarInscricoes casoDeUso,
+            [FromQuery] long[] ids)
+        {
+            return Ok(await casoDeUso.Executar(ids));
+        }
+
+        [HttpPut("em-espera")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> EmEsperaInscricoes(
+            [FromServices] ICasoDeUsoEmEsperaInscricoes casoDeUso,
+            [FromQuery] long[] ids)
+        {
+            return Ok(await casoDeUso.Executar(ids));
+        }
+
+        [HttpPut("cancelar")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> CancelarInscricoes(
+            [FromServices] ICasoDeUsoCancelarInscricoes casoDeUso,
+            [FromQuery] long[] ids,
+            [FromBody] InscricaoMotivoCancelamentoDTO inscricaoMotivoCancelamentoDTO)
+        {
+            return Ok(await casoDeUso.Executar(ids, inscricaoMotivoCancelamentoDTO.Motivo));
+        }
+
         [HttpGet("{propostaId}")]
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -98,6 +135,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ObterFormacaoComTurmaPorFiltros([FromQuery] FiltroListagemInscricaoComTurmaDTO filtro, [FromServices] ICasoDeUsoObterDadosPaginadosComFiltros useCase)
         {
             return Ok(await useCase.Executar(filtro));
+        }
+
+        [HttpPut("sortear/{propostaTurmaId}")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> SortearInscricoes(
+            [FromServices] ICasoDeUsoSortearInscricoes useCase,
+            [FromRoute] long propostaTurmaId)
+        {
+            return Ok(await useCase.Executar(propostaTurmaId));
         }
 
         [HttpGet("tipos")]
@@ -123,7 +172,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterCpfCursistaInscricao.Executar(registroFuncional, cpf));
         }
-        
+
         [HttpPut("{id}/alterar-vinculo")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
@@ -134,8 +183,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromBody] AlterarCargoFuncaoVinculoIncricaoDTO alterarCargoFuncaoVinculoIncricao)
         {
             return Ok(await casoDeUsoAlterarVinculoInscricao.Executar(id, alterarCargoFuncaoVinculoIncricao));
-        }       
-        
+        }
+
         [HttpGet("{propostaId}/abertas")]
         [ProducesResponseType(typeof(PodeInscreverMensagemDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

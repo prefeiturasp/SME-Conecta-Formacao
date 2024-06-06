@@ -20,6 +20,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes
                     CdCargoBase = codigoCargo,
                     CdDreCargoBase = codigoCargo.ToString(),
                     CdUeCargoBase = codigoCargo.ToString(),
+                    TipoVinculoCargoBase = 1
                 });
             }
 
@@ -35,6 +36,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes
                     CdCargoBase = codigoFuncao,
                     CdDreCargoBase = codigoFuncao.ToString(),
                     CdUeCargoBase = codigoFuncao.ToString(),
+                    TipoVinculoCargoBase = 1
                 });
             }
 

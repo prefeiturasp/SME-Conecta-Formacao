@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly IMapper _mapper;
 
-        public ObterInscricaoPorIdQueryHandler(IRepositorioInscricao repositorioInscricao, IMapper mapper,IRepositorioProposta repositorioProposta)
+        public ObterInscricaoPorIdQueryHandler(IRepositorioInscricao repositorioInscricao, IMapper mapper)
         {
             _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -25,7 +25,20 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 var inscricoes = await _repositorioInscricao.ObterInscricaoPorIdComFiltros(request.PropostaId, request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista,
                     request.filtros.TurmasId, request.NumeroPagina, request.NumeroRegistros);
-                mapeamento.AddRange(_mapper.Map<IEnumerable<DadosListagemInscricaoDTO>>(inscricoes));
+
+                var propostaPossuiAnexo = await _repositorioInscricao.ObterSeInscricaoPossuiAnexoPorPropostasIds(inscricoes.Select(x => x.Id).ToArray());
+
+                mapeamento = (_mapper.Map<IEnumerable<DadosListagemInscricaoDTO>>(inscricoes)).ToList();
+
+                mapeamento.ForEach(item =>
+                {
+                    var anexos = propostaPossuiAnexo
+                        .Where(x => x.InscricaoId == item.InscricaoId && !string.IsNullOrEmpty(x.NomeArquivo))
+                        .Select(anexo => new DadosAnexosInscricao(anexo.NomeArquivo, anexo.Codigo))
+                        .ToList();
+
+                    item.Anexos.AddRange(anexos);
+                });
             }
 
             return new PaginacaoResultadoDTO<DadosListagemInscricaoDTO>(mapeamento, totalDeRegistros, request.NumeroRegistros);

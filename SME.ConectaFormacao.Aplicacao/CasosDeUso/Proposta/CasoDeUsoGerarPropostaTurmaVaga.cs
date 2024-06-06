@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
-using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
@@ -17,10 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaId));
 
-            if (proposta.FormacaoHomologada != FormacaoHomologada.Sim)
-                return await mediator.Send(new GerarPropostaTurmaVagaCommand(propostaId, proposta.QuantidadeVagasTurma.GetValueOrDefault()));
-
-            return false;
+            return await mediator.Send(new GerarPropostaTurmaVagaCommand(propostaId, proposta.QuantidadeVagasTurma.GetValueOrDefault()));
         }
     }
 }

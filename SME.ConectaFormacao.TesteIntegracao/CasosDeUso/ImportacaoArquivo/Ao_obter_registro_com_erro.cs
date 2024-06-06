@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                 RegistroFuncional = "22222",
                 Turma = "Turma 1",
                 Nome = "Erro 1"
-            }); 
+            });
 
             var registroErro1 = ImportacaoArquivoRegistroMock.GerarImportacaoArquivo(
                                                     arquivosValidado.FirstOrDefault().Id,

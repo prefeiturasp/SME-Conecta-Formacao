@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -32,13 +31,13 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            if (usuarioLogado.Tipo == TipoUsuario.Interno)
-                if (request.InscricaoDTO.CargoCodigo.EhNulo())
-                    throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
+
+            if (usuarioLogado.Tipo.EhInterno() && request.InscricaoDTO.CargoCodigo.NaoEstaPreenchido())
+                throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
 
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoDTO);
             inscricao.UsuarioId = usuarioLogado.Id;
-            inscricao.Situacao = SituacaoInscricao.EmAnalise;
+            inscricao.Situacao = SituacaoInscricao.AguardandoAnalise;
             inscricao.Origem = OrigemInscricao.Manual;
 
             await MapearCargoFuncao(inscricao, cancellationToken);
@@ -76,6 +75,19 @@ namespace SME.ConectaFormacao.Aplicacao
             }
         }
 
+        private async Task ValidarEmail(string login, string emailUsuario, string novoEmail, CancellationToken cancellationToken)
+        {
+            if (emailUsuario != novoEmail)
+            {
+                var emailValidar = novoEmail.ToLower().Trim();
+
+                if (!emailValidar.EmailEhValido())
+                    throw new NegocioException(string.Format(MensagemNegocio.EMAIL_INVALIDO, emailValidar));
+
+                await _mediator.Send(new AlterarEmailServicoAcessosCommand(login, emailValidar), cancellationToken);
+            }
+        }
+
         private async Task ValidarExisteInscricaoNaProposta(long propostaId, long usuarioId)
         {
             var possuiInscricaoNaProposta = await _repositorioInscricao.UsuarioEstaInscritoNaProposta(propostaId, usuarioId);
@@ -105,11 +117,11 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (funcaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == funcaoId))
                     temErroFuncao = true;
             }
-            
-            if(temErroCargo && temErroFuncao)
+
+            if (temErroCargo && temErroFuncao)
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
-            
-            if(!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
+
+            if (!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO);
         }
 
@@ -169,7 +181,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 transacao.Commit();
 
-                var mensagem = !formacaoHomologada && integrarNoSGA ? MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA : MensagemNegocio.INSCRICAO_CONFIRMADA;
+                var mensagem = MensagemNegocio.INSCRICAO_CONFIRMADA;
+                if (!formacaoHomologada && integrarNoSGA)
+                    mensagem = MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA;
+                else if (formacaoHomologada)
+                    mensagem = MensagemNegocio.INSCRICAO_EM_ANALISE;
+
                 return RetornoDTO.RetornarSucesso(mensagem, inscricao.Id);
             }
             catch

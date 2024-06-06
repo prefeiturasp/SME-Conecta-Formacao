@@ -13,10 +13,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         public async Task<RetornoDTO> Executar(long id, PropostaDTO propostaDTO)
         {
-            if (propostaDTO.Situacao.EhParaSalvarRascunho())
+            if (propostaDTO.Situacao.EhParaSalvarRascunho() || propostaDTO.EhProximoPasso)
                 return await mediator.Send(new AlterarPropostaRascunhoCommand(id, propostaDTO));
-
-            await mediator.Send(new SalvarPropostaMovimentacaoCommand(id, propostaDTO.Situacao));
 
             return await mediator.Send(new AlterarPropostaCommand(id, propostaDTO));
         }

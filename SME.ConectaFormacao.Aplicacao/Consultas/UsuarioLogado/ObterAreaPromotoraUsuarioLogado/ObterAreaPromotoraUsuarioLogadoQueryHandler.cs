@@ -16,17 +16,15 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<Dominio.Entidades.AreaPromotora?> Handle(ObterAreaPromotoraUsuarioLogadoQuery request, CancellationToken cancellationToken)
         {
             var grupoUsuarioLogadoId = await _mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia(), cancellationToken);
-            if (grupoUsuarioLogadoId != new Guid(Perfis.ADMIN_DF))
-            {
-                var dres = await _mediator.Send(ObterDresUsuarioLogadoQuery.Instancia(), cancellationToken);
+            if (grupoUsuarioLogadoId == Perfis.ADMIN_DF || grupoUsuarioLogadoId == Perfis.PARECERISTA)
+                return default;
 
-                var areaPromotora = await _mediator.Send(new ObterAreaPromotoraPorGrupoIdEDresQuery(grupoUsuarioLogadoId, dres), cancellationToken) ??
-                    throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO, System.Net.HttpStatusCode.NotFound);
+            var dres = await _mediator.Send(ObterDresUsuarioLogadoQuery.Instancia(), cancellationToken);
 
-                return areaPromotora;
-            }
+            var areaPromotora = await _mediator.Send(new ObterAreaPromotoraPorGrupoIdEDresQuery(grupoUsuarioLogadoId, dres), cancellationToken) ??
+                                throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO, System.Net.HttpStatusCode.NotFound);
 
-            return default;
+            return areaPromotora;
         }
     }
 }

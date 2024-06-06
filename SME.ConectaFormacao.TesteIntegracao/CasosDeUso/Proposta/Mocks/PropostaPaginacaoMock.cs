@@ -5,17 +5,16 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta.Mocks
 {
     public class PropostaPaginacaoMock
     {
-        public static PropostaFiltrosDTO GerarPropostaFiltrosDTOValido(Dominio.Entidades.AreaPromotora areaPromotora, IEnumerable<Dominio.Entidades.Proposta> propostas)
+        public static PropostaFiltrosDTO GerarPropostaFiltrosDTOValido(Dominio.Entidades.AreaPromotora areaPromotora, Dominio.Entidades.Proposta propostaFiltro)
         {
-            var propostaFiltro = propostas.FirstOrDefault();
-
             return new PropostaFiltrosDTO
             {
                 AreaPromotoraId = areaPromotora.Id,
                 Formato = propostaFiltro.Formato,
                 NomeFormacao = propostaFiltro.NomeFormacao,
                 PublicoAlvoIds = propostaFiltro.PublicosAlvo.Select(t => t.CargoFuncaoId).ToArray(),
-                Situacao = propostaFiltro.Situacao
+                Situacao = propostaFiltro.Situacao,
+                NumeroHomologacao = propostaFiltro.NumeroHomologacao
             };
         }
 

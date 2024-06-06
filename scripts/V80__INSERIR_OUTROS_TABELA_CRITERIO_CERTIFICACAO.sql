@@ -1,0 +1,2 @@
+﻿insert into public.criterio_certificacao (descricao, criado_em, criado_por, criado_login)
+select 'Outros', NOW(), 'SISTEMA', '0' where not exists (select 1 from public.criterio_certificacao where descricao = 'Outros');

@@ -2,6 +2,7 @@
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
 
@@ -159,6 +160,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                                 i.id,
 												i.situacao,
                                                 i.origem,
+                                                i.arquivo_id,
                                                 i.proposta_turma_id,
 												pt.nome,
                                                 i.usuario_id ,
@@ -192,7 +194,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (turmasId?.Length > 0)
                 query.AppendLine($" and pt.id = any(@turmasId) ");
 
-            query.AppendLine(" order by pt.nome, u.nome");
+            query.AppendLine(" order by pt.nome, i.id");
             query.AppendLine(" limit @numeroRegistros offset @registrosIgnorados ");
 
             var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
@@ -232,7 +234,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { propostaId, login, cpf, nomeCursista, turmasId });
         }
 
-        public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros)
+        public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros, long? numeroHomologacao)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"  
@@ -252,14 +254,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (codigoDaFormacao != null)
                 query += "  and p.id = @codigoDaFormacao ";
 
+            if (numeroHomologacao.NaoEhNulo())
+                query += "  and p.numero_homologacao = @numeroHomologacao ";
+
             query += " order by p.id desc limit @numeroRegistros offset @registrosIgnorados  ";
 
             var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
-            var parametros = new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta };
+            var parametros = new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, numeroRegistros, registrosIgnorados, situacaoProposta, numeroHomologacao };
             return conexao.Obter().QueryAsync<Proposta>(query.ToString(), parametros);
         }
 
-        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao)
+        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, long? numeroHomologacao)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"	
@@ -277,41 +282,76 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (codigoDaFormacao != null)
                 query += "  and p.id = @codigoDaFormacao ";
 
-            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta });
+            if (numeroHomologacao.NaoEhNulo())
+                query += " and p.numero_homologacao = @numeroHomologacao ";
+
+            return conexao.Obter().ExecuteScalarAsync<int>(query, new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta, numeroHomologacao });
         }
 
-        public Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds)
+        public Task<IEnumerable<ListagemFormacaoComTurmaDTO>> DadosListagemFormacaoComTurma(long[] propostaIds, long? propostaTurmaId = null)
         {
             var query = @" 
-                    with inscricoes_turma as (
-                        select pt.id, count(1) as total_inscricoes
-                        from proposta_turma pt 
-                        inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido 
-                        where not pt.excluido 
-                          and i.situacao = 1
-                          and pt.proposta_id = any(@propostaIds)
-                        group by pt.id
-                    )
+            WITH inscricoes_turma AS (
+                SELECT
+                    pt.id,
+                    COUNT(*) AS total_inscricoes,
+                    COUNT(*) FILTER (WHERE i.situacao = 1) AS confirmadas,
+                    COUNT(*) FILTER (WHERE i.situacao = 3) AS aguardandoAnalise,
+                    COUNT(*) FILTER (WHERE i.situacao = 5) AS emEspera,
+                    COUNT(*) FILTER (WHERE i.situacao = 4) AS cancelada
+                FROM proposta_turma pt
+                INNER JOIN inscricao i ON i.proposta_turma_id = pt.id AND NOT i.excluido
+                WHERE NOT pt.excluido
+                  AND pt.proposta_id = ANY(@propostaIds)
+                GROUP BY pt.id
+            ), criterio_validacao_permite_sorteio AS (
+	            SELECT 
+		            pcvi.proposta_id
+	            FROM proposta_criterio_validacao_inscricao pcvi 
+	            LEFT JOIN criterio_validacao_inscricao cvi ON cvi.id = pcvi.criterio_validacao_inscricao_id AND NOT cvi.excluido 
+	            WHERE NOT pcvi.excluido 
+	              AND cvi.permite_sorteio 
+	              AND pcvi.proposta_id = ANY(@propostaIds)
+            )
+            SELECT
+                p.id AS propostaId,
+                pt.id as propostaTurmaId,
+                p.quantidade_vagas_turma AS quantidadeVagas,
+                pt.nome AS nomeTurma,
+                CASE
+                    WHEN ped.data_fim IS NULL THEN TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')
+                    ELSE TO_CHAR(ped.data_inicio, 'dd/mm/yyyy') || ' até ' || TO_CHAR(ped.data_fim, 'dd/mm/yyyy')
+                END AS datas,
+                it.total_inscricoes AS totalInscricoes,
+                it.confirmadas,
+                it.aguardandoAnalise,
+                it.emEspera,
+                it.cancelada,
+                p.quantidade_vagas_turma - it.Confirmadas as disponiveis,
+                CASE 
+                    WHEN it.total_inscricoes <= p.quantidade_vagas_turma THEN 0 
+                    ELSE it.total_inscricoes - p.quantidade_vagas_turma
+                END AS excedidas,
+                CASE 
+                    WHEN cvps.proposta_id IS NOT NULL THEN TRUE
+                    ELSE FALSE
+                END AS permiteSorteio
+            FROM proposta p
+            LEFT JOIN proposta_turma pt ON pt.proposta_id = p.id AND NOT pt.excluido
+            LEFT JOIN proposta_encontro_turma pet ON pet.turma_id = pt.id AND NOT pet.excluido
+            LEFT JOIN proposta_encontro pe ON pe.id = pet.proposta_encontro_id AND NOT pe.excluido
+            LEFT JOIN proposta_encontro_data ped ON ped.proposta_encontro_id = pe.id AND NOT ped.excluido
+            LEFT JOIN inscricoes_turma it ON it.id = pt.id
+            LEFT JOIN criterio_validacao_permite_sorteio cvps on cvps.proposta_id = p.id
+            WHERE NOT p.excluido
+              AND p.id = ANY(@propostaIds)";
 
-                    select
-                        p.id as PropostaId,
-                        p.quantidade_vagas_turma as QuantidadeVagas,
-                        pt.nome as NomeTurma,
-                        case 
-                         when ped.data_fim is null then TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')
-                         else TO_CHAR(ped.data_inicio, 'dd/mm/yyyy')|| ' até ' || TO_CHAR(ped.data_fim, 'dd/mm/yyyy')
-                        end as Datas,
-                        it.total_inscricoes as totalinscricoes
-                    from proposta p
-                    left join proposta_turma pt on pt.proposta_id = p.id and not pt.excluido
-                    left join proposta_encontro_turma pet on pet.turma_id = pt.id and not pet.excluido
-                    left join proposta_encontro pe on pe.id = pet.proposta_encontro_id and not pe.excluido
-                    left join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
-                    left join inscricoes_turma it on it.id = pt.id
-                    where not p.excluido and p.id = any(@propostaIds)
-                    order by pt.nome ";
+            if (propostaTurmaId.HasValue)
+                query += " AND pt.id = @propostaTurmaId ";
 
-            return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>(query.ToString(), new { propostaIds });
+            query += " ORDER BY pt.nome ";
+
+            return conexao.Obter().QueryAsync<ListagemFormacaoComTurmaDTO>(query, new { propostaIds, propostaTurmaId });
         }
 
         public Task<IEnumerable<PropostaTipoInscricao>> ObterTiposInscricaoPorPropostaIds(long[] codigosFormacao)
@@ -346,6 +386,66 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    inscricao.Usuario = usuario;
                    return inscricao;
                }, new { situacao = (int)SituacaoInscricao.Confirmada }, splitOn: "id, login");
+        }
+
+        public async Task<IEnumerable<InscricaoUsuarioInternoDto>> ObterInscricoesPorPropostasTurmasIdUsuariosInternos(long[] propostasTurmasId)
+        {
+            var tipoUsuario = (int)TipoUsuario.Interno;
+            var query = @$"
+                            select i.id as InscricaoId ,u.id as UsuarioId, u.login from inscricao i 
+                            inner join usuario u on i.usuario_id = u.id 
+                            where not i.excluido  and u.tipo = @tipoUsuario
+                            and i.proposta_turma_id = any(@propostasTurmasId)
+                        ";
+            return await conexao.Obter().QueryAsync<InscricaoUsuarioInternoDto>(query, new { propostasTurmasId, tipoUsuario });
+        }
+
+        public async Task<IEnumerable<InscricaoPossuiAnexoDTO>> ObterSeInscricaoPossuiAnexoPorPropostasIds(long[] inscricoesId)
+        {
+            var query = @$"
+                        select 
+	                            i.id as InscricaoId,
+	                            a.nome NomeArquivo,
+	                            a.codigo 
+                            from 
+	                            proposta_turma pt 
+	                            	left join inscricao i on pt.id = i.proposta_turma_id 
+	                                left join arquivo a on i.arquivo_id = a.id 
+                            where i.id = any(@inscricoesId) 
+                         ";
+            return await conexao.Obter().QueryAsync<InscricaoPossuiAnexoDTO>(query, new { inscricoesId });
+        }
+
+        public async Task<IEnumerable<InscricaoDadosEmailConfirmacao>> ObterDadasInscricaoPorInscricaoId(long inscricoeId)
+        {
+            var query = @$" select 
+	                            i.usuario_id UsuarioId,
+	                            u.email ,
+	                            u.nome NomeDestinatario,
+	                            ped.data_inicio DataInicio,
+	                            ped.data_fim DataFim,
+	                            pe.hora_inicio HoraInicio,
+	                            pe.hora_fim HoraFim,
+	                            pe.local,
+	                            p.integrar_no_sga IntegradoSga,
+	                            p.id ||' - ' || p.nome_formacao nomeFormacao
+                            from 
+	                            inscricao i 
+	                            inner join usuario u on i.usuario_id = u.id 
+	                            inner join proposta_turma pt on i.proposta_turma_id = pt.id
+	                            inner join proposta p on pt.proposta_id = p.id 
+	                            inner join proposta_encontro pe on pe.proposta_id  = p.id
+	                            inner join proposta_encontro_data ped on ped.proposta_encontro_id  = pe.id 
+                            where i.id = @inscricoeId ;
+                        ";
+            return await conexao.Obter().QueryAsync<InscricaoDadosEmailConfirmacao>(query, new { inscricoeId });
+        }
+
+        public Task<IEnumerable<long>> ObterIdsInscricoesAguardandoAnalise(long propostaTurmaId)
+        {
+            var situacao = SituacaoInscricao.AguardandoAnalise;
+            var query = @"select id from inscricao where not excluido and situacao = @situacao and proposta_turma_id = @propostaTurmaId";
+            return conexao.Obter().QueryAsync<long>(query, new { situacao, propostaTurmaId });
         }
     }
 }

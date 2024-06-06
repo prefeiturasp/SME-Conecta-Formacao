@@ -8,7 +8,6 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
-using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
@@ -16,43 +15,45 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
     public class CasoDeUsoImportacaoInscricaoCursistaValidarItem : CasoDeUsoAbstrato, ICasoDeUsoImportacaoInscricaoCursistaValidarItem
     {
         private readonly IMapper _mapper;
-        private readonly IConexoesRabbit _conexoesRabbit;
-        public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator, IMapper mapper, IConexoesRabbit conexoesRabbit) : base(mediator)
+
+        public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator, IMapper mapper) : base(mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _conexoesRabbit = conexoesRabbit ?? throw new ArgumentNullException(nameof(conexoesRabbit));
         }
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>()
-                                            ?? throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
+            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>() ??
+                throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
 
             try
             {
                 var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDTO>();
 
-                var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorNomeQuery(importacaoInscricaoCursista.Turma, importacaoArquivoRegistro.PropostaId))
-                                    ?? throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
+                var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorNomeQuery(importacaoInscricaoCursista.Turma, importacaoArquivoRegistro.PropostaId)) ??
+                    throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
 
                 var usuario = await ObterUsuarioPorLogin(importacaoInscricaoCursista) ??
-                              throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-                
-                var cargoFuncaoUsuarioEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuario.Login));
-                var tipoVinculo = cargoFuncaoUsuarioEol?.FirstOrDefault().TipoVinculoCargoSobreposto ?? cargoFuncaoUsuarioEol?.FirstOrDefault().TipoVinculoCargoBase;
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+
+                await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, usuario.Id));
+
+                if(usuario.Tipo.EhInterno() && importacaoInscricaoCursista.Vinculo.NaoEstaPreenchido())
+                    throw new NegocioException(MensagemNegocio.ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA);
+
+                var tipoVinculo = usuario.Tipo.EhInterno() ? int.Parse(importacaoInscricaoCursista.Vinculo) : default;
+
                 var inscricao = new Dominio.Entidades.Inscricao()
                 {
                     PropostaTurmaId = propostaTurma.Id,
                     UsuarioId = usuario.Id,
-                    Situacao = SituacaoInscricao.EmAnalise,
+                    Situacao = SituacaoInscricao.AguardandoAnalise,
                     Origem = OrigemInscricao.Manual,
                     TipoVinculo = tipoVinculo,
                 };
 
-                await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
-
-                if (usuario.Tipo == TipoUsuario.Interno)
-                    await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId);
+                if (usuario.Tipo.EhInterno())
+                    await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId, tipoVinculo);
 
                 importacaoInscricaoCursista.Inscricao = inscricao;
 
@@ -67,21 +68,40 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
             return true;
         }
-        
-        private async Task MapearValidarCargoFuncao(Dominio.Entidades.Inscricao inscricao, string login, long propostaId)
+
+        private async Task MapearValidarCargoFuncao(Dominio.Entidades.Inscricao inscricao, string login, long propostaId, int tipoVinculo)
         {
             var temErroCargo = false;
             var temErroFuncao = false;
             var cargoFuncaoUsuarioEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(login));
+
+            cargoFuncaoUsuarioEol = cargoFuncaoUsuarioEol.Where(t =>
+               t.TipoVinculoCargoSobreposto == tipoVinculo ||
+               t.TipoVinculoCargoBase == tipoVinculo || 
+               t.TipoVinculoFuncaoAtividade == tipoVinculo);
 
             var cargosProposta = await mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId));
             if (cargosProposta.PossuiElementos())
             {
                 foreach (var cargoEol in cargoFuncaoUsuarioEol)
                 {
-                    var codigoCargo = cargoEol.CdCargoSobreposto.HasValue ? cargoEol.CdCargoSobreposto.Value : cargoEol.CdCargoBase.Value;
-                    var codigoDre = cargoEol.CdCargoSobreposto.HasValue ? cargoEol.CdDreCargoSobreposto : cargoEol.CdDreCargoBase;
-                    var codigoUe = cargoEol.CdCargoSobreposto.HasValue ? cargoEol.CdUeCargoSobreposto : cargoEol.CdUeCargoBase;
+                    long codigoCargo = 0;
+                    string codigoDre, codigoUe;
+
+                    if(cargoEol.CdCargoSobreposto.HasValue && cargoEol.TipoVinculoCargoSobreposto == tipoVinculo)
+                    {
+                        codigoCargo = cargoEol.CdCargoSobreposto.Value;
+                        codigoDre = cargoEol.CdDreCargoSobreposto;
+                        codigoUe = cargoEol.CdUeCargoSobreposto;
+                    }
+                    else if (cargoEol.CdCargoBase.HasValue && cargoEol.TipoVinculoCargoBase == tipoVinculo)
+                    {
+                        codigoCargo = cargoEol.CdCargoBase.Value;
+                        codigoDre = cargoEol.CdDreCargoBase;
+                        codigoUe = cargoEol.CdUeCargoBase;
+                    }
+                    else
+                        continue;
 
                     var cargoFuncao = await mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(new long[] { codigoCargo }, new long[] { }));
 
@@ -95,21 +115,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                         break;
                     }
                 }
+
                 if (cargosProposta.PossuiElementos())
                 {
                     var cargoFuncaoOutros = await mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia());
                     var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
-                    if (inscricao.CargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == inscricao.CargoId))
+                    if (!cargoEhOutros && (!inscricao.CargoId.HasValue || !cargosProposta.Any(a => a.CargoFuncaoId == inscricao.CargoId)))
                         temErroCargo = true;
-                        
                 }
-
             }
 
             var funcaoAtividadeProposta = await mediator.Send(new ObterPropostaFuncoesEspecificasPorIdQuery(propostaId));
             if (funcaoAtividadeProposta.PossuiElementos())
             {
-                foreach (var funcaoEol in cargoFuncaoUsuarioEol.Where(t => t.CdFuncaoAtividade.HasValue))
+                foreach (var funcaoEol in cargoFuncaoUsuarioEol.Where(t => t.CdFuncaoAtividade.HasValue && t.TipoVinculoFuncaoAtividade == tipoVinculo))
                 {
                     var codigoCargo = funcaoEol.CdCargoSobreposto.HasValue ? funcaoEol.CdCargoSobreposto.Value : funcaoEol.CdCargoBase.Value;
                     var codigoDre = funcaoEol.CdCargoSobreposto.HasValue ? funcaoEol.CdDreCargoSobreposto : funcaoEol.CdDreCargoBase;
@@ -136,21 +155,22 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                         break;
                     }
                 }
-                
+
                 if (funcaoAtividadeProposta.PossuiElementos())
                 {
-                    if (inscricao.FuncaoId.HasValue && !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == inscricao.FuncaoId))
+                    if (!inscricao.FuncaoId.HasValue || !funcaoAtividadeProposta.Any(a => a.CargoFuncaoId == inscricao.FuncaoId))
                         temErroFuncao = true;
                 }
-                if(temErroCargo && temErroFuncao)
-                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
-            
-                if(!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
-                    throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
             }
+
+            if (temErroCargo && temErroFuncao)
+                throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
+
+            if (!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
+                throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
         }
 
-        private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDTO inscricaoCursistaDTO ) 
+        private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDTO inscricaoCursistaDTO)
         {
             var ehProfissionalRede = inscricaoCursistaDTO.ColaboradorRede.EhColaboradorRede();
             var login = ehProfissionalRede ? inscricaoCursistaDTO.RegistroFuncional : inscricaoCursistaDTO.Cpf;
@@ -176,7 +196,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             if (ehProfissionalRede)
             {
                 var dadosUsuario = await mediator.Send(new ObterMeusDadosServicoAcessosPorLoginQuery(login));
-                if (dadosUsuario.EhNulo() || string.IsNullOrEmpty(dadosUsuario.Login))
+                if (dadosUsuario.EhNulo() || dadosUsuario.Login.NaoEstaPreenchido())
                     return default;
 
                 usuario = _mapper.Map<Dominio.Entidades.Usuario>(dadosUsuario);
@@ -192,7 +212,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         private async Task AlterarSituacaoArquivo(long importacaoArquivoId)
         {
             var possuiRegistroCarregamentoInicial = await mediator.Send(new PossuiRegistroPorArquivoSituacaoQuery(importacaoArquivoId, SituacaoImportacaoArquivoRegistro.CarregamentoInicial));
-            var possuiRegistrosNaFila = _conexoesRabbit.Get().MessageCount(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem) > 0;
+            var possuiRegistrosNaFila = await mediator.Send(new ObterTotalRegistroFilaQuery(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem)) > 0;
 
             if (!possuiRegistroCarregamentoInicial || !possuiRegistrosNaFila)
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoId, SituacaoImportacaoArquivo.Validado));

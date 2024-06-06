@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -31,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     registro.Erro = registroErro.Erro;
                     registros.Add(registro);
                 }
-            
+
             return new PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDTO>(registros, registrosComErro.TotalRegistros, request.NumeroRegistros, temRegistrosValidados);
         }
     }

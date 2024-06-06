@@ -57,7 +57,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
                 ProfissionalRede = true,
                 RegistroFuncional = usuario.Login,
                 Cpf = usuario.Cpf,
-                PodeContinuar = true
+                PodeContinuar = true,
+                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
+                CargoDreCodigo = proposta.Turmas.FirstOrDefault().Dres.FirstOrDefault().Dre.Codigo,
+                CargoUeCodigo = "094765",
             };
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarInscricaoManual>();
@@ -76,7 +79,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var usuario = UsuarioMock.GerarUsuario();
             await InserirNaBase(usuario);
 
-            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.Publicada, Dominio.Enumerados.FormacaoHomologada.NaoCursosPorIN, Dominio.Enumerados.TipoInscricao.Automatica, false, true, true);
+            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.Publicada, Dominio.Enumerados.FormacaoHomologada.NaoCursosPorIN, Dominio.Enumerados.TipoInscricao.Automatica, false, true, true, true);
 
             var CargosFuncoes = ObterTodos<Dominio.Entidades.CargoFuncao>();
 
@@ -96,7 +99,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
                 ProfissionalRede = true,
                 RegistroFuncional = usuario.Login,
                 Cpf = usuario.Cpf,
-                PodeContinuar = true
+                PodeContinuar = true,
+                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
+                CargoDreCodigo = proposta.Turmas.FirstOrDefault().Dres.FirstOrDefault().Dre.Codigo,
+                CargoUeCodigo = "094765",
             };
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarInscricaoManual>();

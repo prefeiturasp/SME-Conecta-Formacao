@@ -54,13 +54,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
 
             var usuarioAlterado = ObterTodos<Dominio.Entidades.Usuario>();
             usuarioAlterado.ShouldNotBeNull();
-            
+
             var usuarioLogin = usuarioAlterado.FirstOrDefault(f => f.Login.Equals(login));
             usuarioLogin.Login.ShouldBe(login);
             usuarioLogin.Nome.ShouldBe(nome.ToUpper());
             usuarioLogin.Excluido.ShouldBeFalse();
         }
-        
+
         [Fact(DisplayName = "Usuário - Deve alterar o email edu com base no primeiro e último nome contendo espaços no final - bug 121342")]
         public async Task Deve_alterar_o_email_edu_com_base_no_primeiro_e_ultimo_nome_contendo_espacos_no_final_bug_121342()
         {
@@ -83,14 +83,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
 
             var usuarioAlterado = ObterTodos<Dominio.Entidades.Usuario>();
             usuarioAlterado.ShouldNotBeNull();
-            
-            var usuarioLogin = usuarioAlterado.FirstOrDefault(f=> f.Login.Equals(login));
+
+            var usuarioLogin = usuarioAlterado.FirstOrDefault(f => f.Login.Equals(login));
             usuarioLogin.Login.ShouldBe(login);
             usuarioLogin.Nome.ShouldBe(nome.Trim().ToUpper());
             usuarioLogin.Excluido.ShouldBeFalse();
             usuarioLogin.EmailEducacional.ShouldBe("josemiguel.48682233720@edu.sme.prefeitura.sp.gov.br");
         }
-        
+
         [Fact(DisplayName = "Usuário - Deve alterar o email edu com base no primeiro ponto cpf contendo espaços no final - bug 121342")]
         public async Task Deve_alterar_o_email_edu_com_base_no_primeiro_nome__ponto_cpf_contendo_espacos_no_final_bug_121342()
         {
@@ -113,8 +113,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
 
             var usuarioAlterado = ObterTodos<Dominio.Entidades.Usuario>();
             usuarioAlterado.ShouldNotBeNull();
-            
-            var usuarioLogin = usuarioAlterado.FirstOrDefault(f=> f.Login.Equals(login));
+
+            var usuarioLogin = usuarioAlterado.FirstOrDefault(f => f.Login.Equals(login));
             usuarioLogin.Login.ShouldBe(login);
             usuarioLogin.Nome.ShouldBe(nome.Trim().ToUpper());
             usuarioLogin.Excluido.ShouldBeFalse();
