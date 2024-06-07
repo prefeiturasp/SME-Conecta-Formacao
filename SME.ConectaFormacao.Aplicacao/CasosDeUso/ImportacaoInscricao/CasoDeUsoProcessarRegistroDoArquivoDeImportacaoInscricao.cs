@@ -36,8 +36,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId)) ??
                                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-                
-                await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
+
+                if (await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId)))
+                    return true;
                 
                 await mediator.Send(new SalvarInscricaoImportacaoCommand(inscricao,proposta.FormacaoHomologada.EstaHomologada()));
                 await mediator.Send(new AlterarSituacaoRegistroImportacaoArquivoCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Processado));

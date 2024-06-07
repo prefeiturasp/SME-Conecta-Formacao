@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
@@ -35,14 +35,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var arquivosValidado = ImportacaoArquivoMock.GerarImportacaoArquivo(proposta.Id, SituacaoImportacaoArquivo.Validando, 2);
             await InserirNaBase(arquivosValidado);
 
-            var conteudoErro1 = JsonConvert.SerializeObject(new InscricaoCursistaImportacaoDTO()
+            var conteudoErro1 = new InscricaoCursistaImportacaoDTO
             {
                 ColaboradorRede = "Não",
                 Cpf = "99910000000",
                 RegistroFuncional = "22222",
                 Turma = "Turma 1",
                 Nome = "Erro 1"
-            }); 
+            }.ObjetoParaJson(); 
 
             var registroErro1 = ImportacaoArquivoRegistroMock.GerarImportacaoArquivo(
                                                     arquivosValidado.FirstOrDefault().Id,
@@ -52,14 +52,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                                                     SituacaoImportacaoArquivoRegistro.Erro, 1);
             await InserirNaBase(registroErro1);
 
-            var conteudoErro2 = JsonConvert.SerializeObject(new InscricaoCursistaImportacaoDTO()
+            var conteudoErro2 = new InscricaoCursistaImportacaoDTO
             {
                 ColaboradorRede = "Sim",
                 Cpf = "90000000000",
                 RegistroFuncional = "111111",
                 Turma = "Turma 2",
                 Nome = "Erro 2"
-            });
+            }.ObjetoParaJson();
 
             var registroErro2 = ImportacaoArquivoRegistroMock.GerarImportacaoArquivo(
                                         arquivosValidado.FirstOrDefault().Id,
@@ -69,14 +69,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                                         SituacaoImportacaoArquivoRegistro.Erro, 1);
             await InserirNaBase(registroErro2);
 
-            var conteudoErro3 = JsonConvert.SerializeObject(new InscricaoCursistaImportacaoDTO()
+            var conteudoErro3 = new InscricaoCursistaImportacaoDTO
             {
                 ColaboradorRede = "Sim",
                 Cpf = "90000000001",
                 RegistroFuncional = "333333",
                 Turma = "Turma 3",
                 Nome = "Erro 3"
-            });
+            }.ObjetoParaJson();
 
             var registroErro3 = ImportacaoArquivoRegistroMock.GerarImportacaoArquivo(
                                         arquivosValidado.FirstOrDefault().Id,

@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Polly;
+﻿using Polly;
 using Polly.Registry;
 using RabbitMQ.Client;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -8,6 +7,7 @@ using SME.ConectaFormacao.Infra.Servicos.Polly;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using System.Text;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Mensageria
 {
@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Mensageria
         {
             this.conexaoRabbit = conexaoRabbit ?? throw new ArgumentNullException(nameof(conexaoRabbit));
             this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
-            this.policy = registry.Get<IAsyncPolicy>(ConstsPoliticaPolly.PublicaFila);
+            policy = registry.Get<IAsyncPolicy>(ConstsPoliticaPolly.PublicaFila);
         }
 
         public Task Concluido(string rota)
@@ -38,15 +38,12 @@ namespace SME.ConectaFormacao.Infra.Servicos.Mensageria
 
         public async Task<bool> Publicar(MetricaMensageria request, string rota, string exchange, string nomeAcao, IModel canalRabbit = null)
         {
-            var mensagem = JsonConvert.SerializeObject(request, new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            });
-            var body = Encoding.UTF8.GetBytes(mensagem);
+            var body = Encoding.UTF8.GetBytes(request.ObjetoParaJson());
+            var fnTaskPublicarMensagem = async () => await PublicarMensagem(rota, body, exchange, canalRabbit);
+            var fnTaskPolicy = async () => await policy.ExecuteAsync(fnTaskPublicarMensagem);
 
-            Func<Task> fnTaskPublicarMensagem = async () => await PublicarMensagem(rota, body, exchange, canalRabbit);
-            Func<Task> fnTaskPolicy = async () => await policy.ExecuteAsync(fnTaskPublicarMensagem);
             await servicoTelemetria.RegistrarAsync(fnTaskPolicy, "RabbitMQ", nomeAcao, rota);
+
             return true;
         }
         private Task PublicarMensagem(string rota, byte[] body, string exchange = null, IModel canalRabbit = null)

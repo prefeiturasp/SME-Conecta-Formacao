@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -26,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (registrosComErro.TotalRegistros > 0)
                 foreach (var registroErro in registrosComErro.Registros)
                 {
-                    var registro = JsonConvert.DeserializeObject<RegistroDaInscricaoInsconsistenteDTO>(registroErro.Conteudo);
+                    var registro = registroErro.Conteudo.JsonParaObjeto<RegistroDaInscricaoInsconsistenteDTO>();
                     registro.Linha = registroErro.Linha;
                     registro.Erro = registroErro.Erro;
                     registros.Add(registro);
