@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
-using Polly;
+﻿using Polly;
 using Polly.Registry;
 using RabbitMQ.Client;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Polly;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using System.Text;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Mensageria
 {
@@ -19,34 +19,30 @@ namespace SME.ConectaFormacao.Infra.Servicos.Mensageria
         {
             this.conexaoRabbit = conexaoRabbit ?? throw new ArgumentNullException(nameof(conexaoRabbit));
             this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
-            this.policy = registry.Get<IAsyncPolicy>(ConstsPoliticaPolly.PublicaFila);
+            policy = registry.Get<IAsyncPolicy>(ConstsPoliticaPolly.PublicaFila);
         }
 
         public string ObterParametrosMensagem(LogMensagem mensagemLog)
         {
-            var json = JsonConvert.SerializeObject(mensagemLog);
-            var mensagem = JsonConvert.DeserializeObject<LogMensagem>(json);
-            return $"{mensagem!.Mensagem}, ExcecaoInterna:{mensagem.ExcecaoInterna}";
+            var json = mensagemLog.ObjetoParaJson();
+            var mensagem = json.JsonParaObjeto<LogMensagem>();
+            return $"{mensagem.Mensagem}, ExcecaoInterna:{mensagem.ExcecaoInterna}";
         }
 
         public async Task<bool> Publicar(LogMensagem request, string rota, string exchange, string nomeAcao, IModel canalRabbit = null)
         {
-
-            var mensagem = JsonConvert.SerializeObject(request, new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            });
-            var body = Encoding.UTF8.GetBytes(mensagem);
-
             if (!ValidarPublicacao(request))
-                return true;
+                return true;            
+            
+            var body = Encoding.UTF8.GetBytes(request.ObjetoParaJson());
 
-            Func<Task> fnTaskPublicarMensagem = async () => await PublicarMensagem(rota, body, exchange, canalRabbit);
-            Func<Task> fnTaskPolicy = async () => await policy.ExecuteAsync(fnTaskPublicarMensagem);
+            var fnTaskPublicarMensagem = async () => await PublicarMensagem(rota, body, exchange, canalRabbit);
+            var fnTaskPolicy = async () => await policy.ExecuteAsync(fnTaskPublicarMensagem);
+
             await servicoTelemetria.RegistrarAsync(fnTaskPolicy, "RabbitMQ", nomeAcao,
-                                                    rota, ObterParametrosMensagem(request));
+                rota, ObterParametrosMensagem(request));
+            
             return true;
-
         }
 
         protected bool ValidarPublicacao(LogMensagem mensagem)
