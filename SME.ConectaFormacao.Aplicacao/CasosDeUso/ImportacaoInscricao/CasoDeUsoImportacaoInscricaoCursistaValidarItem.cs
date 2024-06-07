@@ -38,9 +38,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 var usuario = await ObterUsuarioPorLogin(importacaoInscricaoCursista) ??
                               throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
                 
-                var cargoFuncaoUsuarioEol = await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuario.Login));
-                var tipoVinculo = cargoFuncaoUsuarioEol?.FirstOrDefault().TipoVinculoCargoSobreposto ?? cargoFuncaoUsuarioEol?.FirstOrDefault().TipoVinculoCargoBase;
-                var inscricao = new Dominio.Entidades.Inscricao()
+                var cargoFuncaoUsuarioEol = (await mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuario.Login))).FirstOrDefault();
+                var tipoVinculo = cargoFuncaoUsuarioEol?.TipoVinculoCargoSobreposto ?? cargoFuncaoUsuarioEol?.TipoVinculoCargoBase;
+
+                var inscricao = new Dominio.Entidades.Inscricao
                 {
                     PropostaTurmaId = propostaTurma.Id,
                     UsuarioId = usuario.Id,
@@ -49,7 +50,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                     TipoVinculo = tipoVinculo,
                 };
 
-                await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
+                if (await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId)))
+                    return true;
 
                 if (usuario.Tipo == TipoUsuario.Interno)
                     await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId);

@@ -27,7 +27,10 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<DadosUsuarioDTO> Handle(ObterMeusDadosServicoAcessosPorLoginQuery request, CancellationToken cancellationToken)
         {
-            var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery());
+            var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery(), cancellationToken);
+            if (usuarioLogado.EhNulo())
+                return default;
+            
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
             if (usuarioLogado.Tipo == TipoUsuario.Externo)
             {

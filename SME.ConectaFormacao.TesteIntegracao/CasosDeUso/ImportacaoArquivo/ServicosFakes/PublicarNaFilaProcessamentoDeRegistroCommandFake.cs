@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo.ServicosFakes
@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo.Servi
 
         public async Task<bool> Handle(PublicarNaFilaRabbitCommand request, CancellationToken cancellationToken)
         {
-            var mensagem = new MensagemRabbit(JsonConvert.SerializeObject(request.Filtros));
+            var mensagem = new MensagemRabbit(request.ObjetoParaJson());
 
             await _useCase.Executar(mensagem);
 
