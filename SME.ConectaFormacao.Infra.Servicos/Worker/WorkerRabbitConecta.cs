@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SME.ConectaFormacao.Dominio.Excecoes;
@@ -156,7 +155,7 @@ namespace SME.ConectaFormacao.Infra
 
             if (Comandos.ContainsKey(rota))
             {
-                var mensagemRabbit = JsonConvert.DeserializeObject<MensagemRabbit>(mensagem);
+                var mensagemRabbit = mensagem.JsonParaObjeto<MensagemRabbit>();
                 var comandoRabbit = Comandos[rota];
 
                 var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, apmTransactionType) : null;
@@ -219,15 +218,15 @@ namespace SME.ConectaFormacao.Infra
                 canalRabbit.BasicReject(ea.DeliveryTag, false);
                 await servicoMensageriaMetricas.Erro(rota);
 
-                var mensagemRabbit = JsonConvert.DeserializeObject<MensagemRabbit>(mensagem);
+                var mensagemRabbit = mensagem.JsonParaObjeto<MensagemRabbit>();
                 await RegistrarErroTratamentoMensagem(ea, mensagemRabbit, null, LogNivel.Critico, $"Rota não registrada");
             }
         }
+
         protected virtual Task RegistrarErroTratamentoMensagem(BasicDeliverEventArgs ea, MensagemRabbit mensagemRabbit, Exception ex, LogNivel logNivel, string observacao)
         {
             return Task.CompletedTask;
         }
-
 
         protected virtual Task RegistrarErro(string mensagem, LogNivel logNivel, string observacao = "", string rastreamento = "", string excecaoInterna = "")
         {
