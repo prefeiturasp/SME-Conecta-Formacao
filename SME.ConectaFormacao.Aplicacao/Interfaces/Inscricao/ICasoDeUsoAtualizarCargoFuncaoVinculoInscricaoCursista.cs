@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
 {
-    public interface ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista: IRabbitUseCase
+    public interface ICasoDeUsoAtualizarCargoFuncaoVinculoInscricaoCursista : IRabbitUseCase
     {
     }
 }

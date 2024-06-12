@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var propostaId = request.InscricaoAutomaticaDTO.PropostaId;
 
             var inscricao = _mapper.Map<Inscricao>(request.InscricaoAutomaticaDTO);
-            inscricao.Situacao = SituacaoInscricao.Confirmada;
+            inscricao.Situacao = SituacaoInscricao.AguardandoAnalise;
             inscricao.Origem = OrigemInscricao.Automatica;
 
             if (await ValidarExisteInscricaoNaProposta(propostaId, inscricao.UsuarioId))
@@ -42,14 +42,22 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await ValidarDre(inscricao.PropostaTurmaId, inscricao.CargoDreCodigo, inscricao.FuncaoDreCodigo, cancellationToken);
 
+            var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaId), cancellationToken);
+
             var transacao = _transacao.Iniciar();
             try
             {
+                if (proposta.FormacaoHomologada.NaoEstaHomologada())
+                    inscricao.Situacao = SituacaoInscricao.Confirmada;
+
                 await _repositorioInscricao.Inserir(inscricao);
 
-                var confirmada = await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
-                if (!confirmada)
-                    throw new NegocioException("não foi possível realizar a inscrição por falta de vaga na turma");
+                if (proposta.FormacaoHomologada.NaoEstaHomologada())
+                {
+                    var confirmada = await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
+                    if (!confirmada)
+                        throw new NegocioException("não foi possível realizar a inscrição por falta de vaga na turma");
+                }
 
                 transacao.Commit();
                 return inscricao.Id;

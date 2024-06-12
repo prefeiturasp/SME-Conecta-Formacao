@@ -1,0 +1,1 @@
+﻿ALTER TABLE public.proposta ADD COLUMN IF NOT EXISTS outros_criterios varchar(200) NULL;

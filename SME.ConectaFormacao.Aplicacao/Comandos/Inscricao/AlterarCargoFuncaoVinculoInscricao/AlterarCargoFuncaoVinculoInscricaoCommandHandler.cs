@@ -28,29 +28,29 @@ namespace SME.ConectaFormacao.Aplicacao
             var inscricao = await _repositorioInscricao.ObterPorId(request.Id) ??
                             throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA,
                                 System.Net.HttpStatusCode.NotFound);
-            
+
             var cargosFuncoesEol = await ObterCargosFuncoesEol();
             if (!cargosFuncoesEol.Any())
                 return false;
-            
+
             var dadosInscricao = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoesEol);
             var tipoVinculo = request.AlterarCargoFuncaoVinculoIncricao.TipoVinculo;
-            
+
             var cargoInscricao = dadosInscricao.FirstOrDefault(c =>
                 c.Codigo == request.AlterarCargoFuncaoVinculoIncricao.CargoCodigo &&
                 c.TipoVinculo == tipoVinculo);
-            
+
             var cargoCodigo = cargoInscricao?.Codigo;
             if (cargoCodigo == null || cargoInscricao == null)
-                return false;            
-            
+                return false;
+
             var funcaoInscricao = cargoInscricao.Funcoes.FirstOrDefault(c => c.TipoVinculo == tipoVinculo);
-            
+
             var cargosFuncoes = await ObterCargosFuncoes(cargoCodigo, funcaoInscricao?.Codigo);
             var cargo = cargosFuncoes.FirstOrDefault(c => c.Tipo == CargoFuncaoTipo.Cargo);
             if (cargo == null)
                 throw new NegocioException(MensagemNegocio.CARGO_NAO_ENCONTRATO_PARA_ALTERACAO_VINCULO_INSCRICAO);
-            
+
             inscricao.CargoId = cargo.Id;
             inscricao.CargoCodigo = cargoCodigo;
             inscricao.CargoDreCodigo = cargoInscricao.DreCodigo;
@@ -102,16 +102,16 @@ namespace SME.ConectaFormacao.Aplicacao
             var codigosFuncoesEol = Enumerable.Empty<long>();
             if (!string.IsNullOrEmpty(funcaoCodigo))
                 codigosFuncoesEol = new List<long> { long.Parse(funcaoCodigo) };
-            
-            return await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol));            
+
+            return await _mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol));
         }
 
         private async Task<IEnumerable<CursistaCargoServicoEol>> ObterCargosFuncoesEol()
         {
             var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia());
-            return await _mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuarioLogado.Login));            
+            return await _mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(usuarioLogado.Login));
         }
-        
+
         private static IEnumerable<DadosInscricaoCargoEol> ObterCargosBaseSobrepostoFuncaoAtividade(IEnumerable<CursistaCargoServicoEol> cargosFuncoesEol)
         {
             var usuarioCargos = new List<DadosInscricaoCargoEol>();
@@ -156,6 +156,6 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             return usuarioCargos;
-        }        
+        }
     }
 }

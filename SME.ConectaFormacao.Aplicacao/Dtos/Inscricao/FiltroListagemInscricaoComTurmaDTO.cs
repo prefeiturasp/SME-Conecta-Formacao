@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
     {
         public long? CodigoFormacao { get; set; }
         public string? NomeFormacao { get; set; }
-        public string? NumeroHomologacao { get; set; }
+        public long? NumeroHomologacao { get; set; }
     }
 }

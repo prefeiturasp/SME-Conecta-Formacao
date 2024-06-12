@@ -28,8 +28,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_formacao_listagem_sem_filtro()
         {
             // arrange
-            for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Optativa);
+
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Externa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var filtro = new FiltroListagemFormacaoDTO();
@@ -38,6 +41,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var paginacao = await casoDeUso.Executar(filtro);
 
             // assert 
+            paginacao.Items.Count().ShouldBe(10);
             ValidarPaginacaoFormacao(paginacao);
         }
 
@@ -45,8 +49,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_formacao_listagem_com_filtro_por_titulo()
         {
             // arrange
-            for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Optativa);
+
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Externa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostas = ObterTodos<Dominio.Entidades.Proposta>();
@@ -66,8 +73,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_formacao_listagem_com_filtro_de_publico_alvo()
         {
             // arrange
-            for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Optativa);
+
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Externa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostaPublicoAlvos = ObterTodos<Dominio.Entidades.PropostaPublicoAlvo>();
@@ -80,6 +90,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var paginacao = await casoDeUso.Executar(filtro);
 
             // assert 
+            var publicosAlvos = ObterTodos<Dominio.Entidades.PropostaPublicoAlvo>();
+            var publicosAlvosFiltro = publicosAlvos.Where(s => filtro.PublicosAlvosIds.Contains(s.CargoFuncaoId)).DistinctBy(p => p.PropostaId);
+            paginacao.Items.Count().ShouldBe(publicosAlvosFiltro.Count());
             ValidarPaginacaoFormacao(paginacao);
         }
 
@@ -87,8 +100,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_formacao_listagem_com_filtro_de_areas_promotoras()
         {
             // arrange
-            for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Optativa);
+
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Externa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var areaPromotoras = ObterTodos<Dominio.Entidades.AreaPromotora>();
@@ -101,6 +117,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var paginacao = await casoDeUso.Executar(filtro);
 
             // assert 
+            paginacao.Items.Count().ShouldBe(2);
             ValidarPaginacaoFormacao(paginacao);
         }
 
@@ -108,8 +125,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_formacao_listagem_com_filtro_de_data_inicial()
         {
             // arrange
-            for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Optativa);
+
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Externa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostas = ObterTodos<Dominio.Entidades.Proposta>();
@@ -122,6 +142,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var paginacao = await casoDeUso.Executar(filtro);
 
             // assert 
+            paginacao.Items.Count().ShouldBe(10);
             ValidarPaginacaoFormacao(paginacao);
         }
 
@@ -129,8 +150,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_formacao_listagem_com_filtro_de_data_final()
         {
             // arrange
-            for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Optativa);
+
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Externa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostas = ObterTodos<Dominio.Entidades.Proposta>();
@@ -143,6 +167,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var paginacao = await casoDeUso.Executar(filtro);
 
             // assert 
+            paginacao.Items.Count().ShouldBe(10);
             ValidarPaginacaoFormacao(paginacao);
         }
 
@@ -150,8 +175,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_formacao_listagem_com_filtro_de_formatos()
         {
             // arrange
-            for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Optativa);
+
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Externa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostas = ObterTodos<Dominio.Entidades.Proposta>();
@@ -164,6 +192,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var paginacao = await casoDeUso.Executar(filtro);
 
             // assert 
+            paginacao.Items.Count().ShouldBe(10);
             ValidarPaginacaoFormacao(paginacao);
         }
 
@@ -171,8 +200,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Deve_obter_formacao_listagem_com_filtro_de_palavras_chaves()
         {
             // arrange
-            for (int i = 0; i < 10; i++)
-                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Optativa);
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(situacao: SituacaoProposta.Publicada, tipoInscricao: TipoInscricao.Optativa);
+
+            for (int i = 0; i < 5; i++)
+                await InserirNaBaseProposta(tipoInscricao: TipoInscricao.Externa);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterListagemFormacaoPaginada>();
             var propostaPalavraChaves = ObterTodos<Dominio.Entidades.PropostaPalavraChave>();
@@ -200,7 +232,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
                 formacao.AreaPromotora.ShouldNotBeEmpty();
                 formacao.TipoFormacaoDescricao.ShouldNotBeEmpty();
                 formacao.FormatoDescricao.ShouldNotBeEmpty();
-                formacao.InscricaoEncerrada.ShouldBeTrue();
                 formacao.ImagemUrl.ShouldBeNull();
             }
         }

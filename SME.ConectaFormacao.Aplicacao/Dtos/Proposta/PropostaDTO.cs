@@ -36,6 +36,15 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? AcaoFormativaLink { get; set; }
         public bool? IntegrarNoSGA { get; set; }
         public string? PublicoAlvoOutros { get; set; }
+        public string? RfResponsavelDf { get; set; }
+        public string? LinkParaInscricoesExterna { get; set; }
+        public long? CodigoEventoSigpec { get; set; }
+        public long? NumeroHomologacao { get; set; }
+        public string? CargaHorariaTotal { get; set; }
+        public string? CargaHorariaNaoPresencial { get; set; }
+        public string? OutrosCriterios { get; set; }
+        public int? HorasTotais { get; set; }
+        public string? CargaHorariaTotalOutra { get; set; }
 
         public IEnumerable<PropostaDreDTO> Dres { get; set; }
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
@@ -51,5 +60,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaAnoTurmaDTO> AnosTurmas { get; set; }
         public IEnumerable<PropostaComponenteCurricularDTO> ComponentesCurriculares { get; set; }
         public IEnumerable<PropostaTipoInscricaoDTO> TiposInscricao { get; set; }
+        public IEnumerable<PropostaPareceristaDTO>? Pareceristas { get; set; }
+        public bool EhProximoPasso { get; set; }
     }
 }

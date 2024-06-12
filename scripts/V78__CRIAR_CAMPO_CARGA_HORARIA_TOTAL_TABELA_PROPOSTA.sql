@@ -1,0 +1,1 @@
+﻿ALTER TABLE public.proposta ADD COLUMN IF NOT EXISTS carga_horaria_total varchar(6) NULL;

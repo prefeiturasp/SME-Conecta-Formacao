@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Executar(string login, string email)
         {
-            return await mediator.Send(new AlterarEmailEducacionalCommand(email,login));
+            return await mediator.Send(new AlterarEmailEducacionalCommand(email, login));
         }
     }
 }

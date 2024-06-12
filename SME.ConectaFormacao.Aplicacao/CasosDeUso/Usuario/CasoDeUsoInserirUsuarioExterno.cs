@@ -17,14 +17,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         {
         }
 
-        public async Task<InserirUsuarioRetornoDTO> InserirUsuarioExterno(UsuarioExternoDTO usuarioExternoDto)
+        public async Task<InserirUsuarioRetornoDTO> Executar(UsuarioExternoDTO usuarioExternoDto)
         {
             var cpfSemPontos = usuarioExternoDto.Cpf.SomenteNumeros();
             usuarioExternoDto.Login = cpfSemPontos;
             usuarioExternoDto.Cpf = cpfSemPontos;
-            usuarioExternoDto.EmailEducacional = usuarioExternoDto.EmailEducacional.Trim().ToLower();
+            usuarioExternoDto.EmailEducacional = usuarioExternoDto.EmailEducacional?.Trim().ToLower();
             ValidacoesPreenchimento(usuarioExternoDto.Senha, usuarioExternoDto.ConfirmarSenha, usuarioExternoDto.Cpf, usuarioExternoDto.Email, usuarioExternoDto.EmailEducacional);
-            await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login,cpfSemPontos);
+            await UsuarioNaoExisteNoConecta(usuarioExternoDto.Login, cpfSemPontos);
 
             var existeNoCoreSSO = await mediator.Send(new UsuarioExisteNoCoreSsoQuery(usuarioExternoDto.Login));
 
@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
             bool confirmarEmail = await ObterParametroConfirmarEmailUsuarioExterno();
 
             var tipo = usuarioExternoDto.Tipo ?? TipoUsuario.Externo;
-            var situacaoCadastroUsuario = confirmarEmail ? SituacaoCadastroUsuario.AguardandoValidacaoEmail : SituacaoCadastroUsuario.Ativo;
+            var situacaoCadastroUsuario = confirmarEmail ? SituacaoUsuario.AguardandoValidacaoEmail : SituacaoUsuario.Ativo;
 
             await mediator.Send(new SalvarUsuarioCommand(new Dominio.Entidades.Usuario(
                 usuarioExternoDto.Login,
