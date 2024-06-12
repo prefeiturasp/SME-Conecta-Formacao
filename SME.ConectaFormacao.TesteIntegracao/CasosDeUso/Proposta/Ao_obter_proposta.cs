@@ -876,8 +876,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostaCompletoDTO.PodeEnviar.ShouldBeTrue();
         }
 
-        [Fact(DisplayName = "Proposta - Deve permitir enviar quando a proposta estiver na situação devolvida")]
-        public async Task Deve_permitir_enviar_quando_a_proposta_estiver_na_situacao_devolvida()
+        [Fact(DisplayName = "Proposta - Não deve permitir enviar quando a proposta estiver na situação devolvida e não for Área Promotora")]
+        public async Task Nap_deve_permitir_enviar_quando_a_proposta_estiver_na_situacao_devolvida_e_nao_for_area_promotora()
         {
             // arrange
             var usuario = UsuarioMock.GerarUsuario();
@@ -900,7 +900,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert 
             propostaCompletoDTO.ShouldNotBeNull();
-            propostaCompletoDTO.PodeEnviar.ShouldBeTrue();
+            propostaCompletoDTO.PodeEnviar.ShouldBeFalse();
         }
 
         [Fact(DisplayName = "Proposta - Deve permitir enviar quando a proposta estiver na situação Aguardando Analise Df com pareceristas")]
