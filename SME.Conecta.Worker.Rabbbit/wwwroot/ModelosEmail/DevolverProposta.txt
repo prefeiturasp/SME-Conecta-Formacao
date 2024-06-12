@@ -8,16 +8,12 @@
     />
     <style>
       body {
-        background: #fafafa;
         font-family: 'Roboto', sans-serif;
       }
       .main {
         padding: 20px;
       }
       .texto {
-        align-self: center;        
-        font-weight: bold;
-        max-width: 150px;
       }
       .mensagem {
         color: #000;
@@ -34,7 +30,8 @@
     <div class="main">
       <div class="mensagem">
         <p class="texto">#TEXTO</p>
-        <p>
+		<p>
+		  Motivo:</br>
           #MOTIVO
         </p>
       </div>
