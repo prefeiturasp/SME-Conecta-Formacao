@@ -175,7 +175,10 @@ namespace SME.ConectaFormacao.Aplicacao
                 || (ehAreaPromotora && proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora()))
                 return possuiPareceristasNaProposta;
 
-            return proposta.Situacao.EstaCadastrada() || proposta.Situacao.EstaDevolvida();
+            if (ehAreaPromotora && proposta.Situacao.EstaDevolvida())
+                return true;
+
+            return proposta.Situacao.EstaCadastrada();
         }
 
 
