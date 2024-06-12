@@ -36,10 +36,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             faker.RuleFor(x => x.ProcedimentoMetadologico, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.Referencia, f => f.Lorem.Sentence(200));
             faker.RuleFor(x => x.DataInscricaoInicio, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.DataInscricaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-1) : DateTimeExtension.HorarioBrasilia().AddMonths(1));
-            faker.RuleFor(x => x.DataRealizacaoInicio, DateTimeExtension.HorarioBrasilia());
-            faker.RuleFor(x => x.DataRealizacaoFim, DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataInscricaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataRealizacaoInicio, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
+            faker.RuleFor(x => x.DataRealizacaoFim, dataInscricaoForaPeriodo ? DateTimeExtension.HorarioBrasilia().AddMonths(-2) : DateTimeExtension.HorarioBrasilia());
             faker.RuleFor(x => x.IntegrarNoSGA, integrarNoSga);
+            faker.RuleFor(x => x.CodigoEventoSigpec, f => f.Random.Long(100000, 9999999999));
+            faker.RuleFor(x => x.NumeroHomologacao, f => f.Random.Long(100000, 9999999999));
 
             AuditoriaFaker(faker);
 
@@ -135,11 +137,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             return default;
         }
 
-        public static IEnumerable<PropostaCriterioValidacaoInscricao> GerarCritariosValidacaoInscricao(long propostaId, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
+        public static IEnumerable<PropostaCriterioValidacaoInscricao> GerarCriteriosValidacaoInscricao(long propostaId, IEnumerable<CriterioValidacaoInscricao> criteriosValidacaoInscricao)
         {
             if (criteriosValidacaoInscricao != null && criteriosValidacaoInscricao.Any())
             {
-                var quantidade = new Randomizer().Number(1, criteriosValidacaoInscricao.Count());
                 return criteriosValidacaoInscricao
                     .Select(t => new PropostaCriterioValidacaoInscricao
                     {
@@ -148,7 +149,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
                         CriadoEm = t.CriadoEm,
                         CriadoPor = t.CriadoPor,
                         CriadoLogin = t.CriadoLogin,
-                    }).Take(quantidade);
+                    });
             }
 
             return default;
@@ -380,7 +381,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
 
             return retorno;
         }
-        public static PropostaTurmaVaga GerarTurmaVaga(long propostaTurmaId, long inscricaoId)
+        public static PropostaTurmaVaga GerarTurmaVaga(long propostaTurmaId, long? inscricaoId = null)
         {
             var vaga = new PropostaTurmaVaga() { PropostaTurmaId = propostaTurmaId, InscricaoId = inscricaoId };
             Auditoria(vaga);
@@ -397,6 +398,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.Mocks
             AuditoriaFaker(faker);
 
             return faker.Generate();
+        }
+
+        public static IEnumerable<PropostaParecerista> GerarPareceristas(long propostaId, int quantidade = 1, string rf = "")
+        {
+            var faker = new Faker<PropostaParecerista>();
+            faker.RuleFor(x => x.PropostaId, propostaId);
+            faker.RuleFor(x => x.NomeParecerista, f => f.Person.FullName);
+            faker.RuleFor(x => x.Situacao, f => f.PickRandom<SituacaoParecerista>());
+            faker.RuleFor(x => x.RegistroFuncional, f => string.IsNullOrEmpty(rf) ? f.Random.Number(10000, 99999).ToString() : rf);
+            faker.RuleFor(x => x.Justificativa, f => f.Lorem.Word());
+
+            AuditoriaFaker(faker);
+
+            return faker.Generate(quantidade);
         }
     }
 }

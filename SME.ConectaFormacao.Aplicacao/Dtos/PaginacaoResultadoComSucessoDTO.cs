@@ -2,7 +2,7 @@
 {
     public class PaginacaoResultadoComSucessoDTO<T> : PaginacaoResultadoDTO<T>
     {
-        public PaginacaoResultadoComSucessoDTO(IEnumerable<T> items, int totalRegistros, int numeroRegistros, bool sucesso) 
+        public PaginacaoResultadoComSucessoDTO(IEnumerable<T> items, int totalRegistros, int numeroRegistros, bool sucesso)
             : base(items, totalRegistros, numeroRegistros)
         {
             Sucesso = sucesso;

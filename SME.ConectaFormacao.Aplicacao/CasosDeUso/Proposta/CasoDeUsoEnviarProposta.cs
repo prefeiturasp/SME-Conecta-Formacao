@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -10,8 +13,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
     public class CasoDeUsoEnviarProposta : CasoDeUsoAbstrato, ICasoDeUsoEnviarProposta
     {
-        public CasoDeUsoEnviarProposta(IMediator mediator) : base(mediator)
+        private readonly IMapper _mapper;
+
+        public CasoDeUsoEnviarProposta(IMediator mediator, IMapper mapper) : base(mediator)
         {
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<bool> Executar(long propostaId)
@@ -20,9 +26,24 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (proposta.EhNulo() || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            if (proposta.Situacao != SituacaoProposta.Cadastrada)
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA);
+            var situacoes = new[] {
+                SituacaoProposta.Cadastrada,
+                SituacaoProposta.Devolvida,
+                SituacaoProposta.AguardandoAnaliseDf,
+                SituacaoProposta.AguardandoAnaliseParecerPelaDF,
+                SituacaoProposta.AguardandoAnalisePeloParecerista,
+                SituacaoProposta.AguardandoReanalisePeloParecerista,
+                SituacaoProposta.AnaliseParecerPelaAreaPromotora,
+                SituacaoProposta.Aprovada,
+            };
 
+            if (!situacoes.Contains(proposta.Situacao))
+                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_PODE_SER_ENVIADA);
+
+            if (proposta.Situacao.EhAprovada() && proposta.FormacaoHomologada.EstaHomologada() && proposta.NumeroHomologacao.GetValueOrDefault() == 0)
+                throw new NegocioException(MensagemNegocio.PROPOSTA_NUMERO_HOMOLOGACAO_DEVE_SER_INFORMADO);
+
+            // TODO validações devem ser feitas somente no em AlterarPropostaCommand
             var existeFuncaoEspecificaOutros = await mediator.Send(new ExisteCargoFuncaoOutrosNaPropostaQuery(proposta.Id));
             var propostasTipoInscricao = await mediator.Send(new ObterPropostaTipoInscricaoPorIdQuery(proposta.Id));
             if (propostasTipoInscricao.PossuiElementos())
@@ -35,16 +56,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (!string.IsNullOrEmpty(validarDatas))
                 throw new NegocioException(validarDatas);
 
-            var situacao = proposta.FormacaoHomologada == FormacaoHomologada.Sim ?
-                SituacaoProposta.AguardandoAnaliseDf :
-                SituacaoProposta.Publicada;
+            var pareceristasDaProposta = await mediator.Send(new ObterPareceristasAdicionadosNaPropostaQuery(proposta.Id));
+
+            var existemPareceristasAguardandoValidacao = pareceristasDaProposta.Where(w => !w.Situacao.EstaDesativado()).Any(a => a.Situacao.EstaAguardandoValidacao());
+
+            var situacao = await ObterSituacaoProposta(proposta, existemPareceristasAguardandoValidacao);
 
             await mediator.Send(new EnviarPropostaCommand(propostaId, situacao));
             await mediator.Send(new SalvarPropostaMovimentacaoCommand(propostaId, situacao));
 
             proposta.TiposInscricao = await mediator.Send(new ObterPropostaTipoInscricaoPorIdQuery(propostaId));
 
-            if (situacao == SituacaoProposta.Publicada && proposta.FormacaoHomologada != FormacaoHomologada.Sim)
+            if (situacao.EstaPublicada())
             {
                 if (proposta.TiposInscricao.Any(a => a.TipoInscricao == TipoInscricao.Automatica || a.TipoInscricao == TipoInscricao.AutomaticaJEIF))
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.RealizarInscricaoAutomatica, propostaId));
@@ -52,7 +75,67 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarPropostaTurmaVaga, propostaId));
             }
 
+            var perfilUsuarioLogado = await mediator.Send(new ObterGrupoUsuarioLogadoQuery());
+
+            if (perfilUsuarioLogado.EhPerfilAdminDF())
+            {
+                if (situacao.EstaAguardandoAnalisePeloParecerista())
+                {
+                    var pareceristas = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristasDaProposta);
+
+                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarPareceristasSobreAtribuicaoPelaDF,
+                        new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
+                }
+
+                if (situacao.EstaAnaliseParecerPelaAreaPromotora())
+                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarAreaPromotoraParaAnaliseParecer, proposta.Id));
+            }
+            else
+            {
+                var areaPromotora = await mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilUsuarioLogado));
+
+                if (areaPromotora.NaoEhNulo() && areaPromotora.Id == proposta.AreaPromotoraId)
+                {
+                    var pareceristas = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristasDaProposta);
+
+                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarPareceristasParaReanalise,
+                        new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
+                }
+            }
+
             return true;
+        }
+
+        private async Task<SituacaoProposta> ObterSituacaoProposta(Dominio.Entidades.Proposta proposta, bool existemPareceristasAguardandoValidacao)
+        {
+            if (proposta.FormacaoHomologada.EstaHomologada())
+                return await ObterSituacaoHomologada(proposta, existemPareceristasAguardandoValidacao);
+
+            return SituacaoProposta.Publicada;
+        }
+
+        private async Task<SituacaoProposta> ObterSituacaoHomologada(Dominio.Entidades.Proposta proposta, bool existemPareceristasAguardandoValidacao)
+        {
+            if (proposta.Situacao.EstaAguardandoAnaliseDf()
+                && await mediator.Send(new ExistePareceristasAdicionadosNaPropostaQuery(proposta.Id)))
+                return SituacaoProposta.AguardandoAnalisePeloParecerista;
+
+            if (proposta.Situacao.EstaAguardandoAnaliseParecerPelaDF())
+                return SituacaoProposta.AnaliseParecerPelaAreaPromotora;
+
+            if (proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora())
+                return SituacaoProposta.AguardandoReanalisePeloParecerista;
+
+            if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && existemPareceristasAguardandoValidacao)
+                return SituacaoProposta.AguardandoAnalisePeloParecerista;
+
+            if (proposta.Situacao.EstaAguardandoReanalisePeloParecerista())
+                return SituacaoProposta.AguardandoReanalisePeloParecerista;
+
+            if (proposta.Situacao.EhAprovada())
+                return SituacaoProposta.Publicada;
+
+            return SituacaoProposta.AguardandoAnaliseDf;
         }
     }
 }

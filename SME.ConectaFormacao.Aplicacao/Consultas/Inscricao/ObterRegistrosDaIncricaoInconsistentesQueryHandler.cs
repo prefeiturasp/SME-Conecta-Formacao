@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     registro.Erro = registroErro.Erro;
                     registros.Add(registro);
                 }
-            
+
             return new PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDTO>(registros, registrosComErro.TotalRegistros, request.NumeroRegistros, temRegistrosValidados);
         }
     }

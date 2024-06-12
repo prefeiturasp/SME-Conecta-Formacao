@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(r => r.PropostaTurmaNome)
                 .NotEmpty()
                 .WithMessage("É necessário informar o nome para obter a proposta turma");
-            
+
             RuleFor(r => r.PropostaId)
                 .NotEmpty()
                 .WithMessage("É necessário informar o id da proposta para obter a proposta turma");

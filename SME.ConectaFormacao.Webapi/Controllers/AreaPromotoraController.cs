@@ -58,6 +58,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterAreaPromotoraLista.Executar());
         }
 
+        [HttpGet("lista/rede-parceria")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_C, Policy = "Bearer")]
+        public async Task<IActionResult> ObterAreaPromotoraListaRedeParceria(
+            [FromServices] ICasoDeUsoObterAreaPromotoraListaRedeParceria casoDeUsoObterAreaPromotoraListaRedeParceria)
+        {
+            return Ok(await casoDeUsoObterAreaPromotoraListaRedeParceria.Executar());
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(long), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

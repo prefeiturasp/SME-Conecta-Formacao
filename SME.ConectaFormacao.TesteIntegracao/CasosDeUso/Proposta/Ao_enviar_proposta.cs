@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
         public async Task Enviar_para_df_proposta_cadastrada_homologada()
         {
             // arrange
-            var proposta = await InserirNaBaseProposta();
+            var proposta = await InserirNaBaseProposta(dataInscricaoForaPeriodo: true);
 
             var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
 
@@ -42,11 +42,28 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AguardandoAnaliseDf);
         }
 
+        [Fact(DisplayName = "Proposta - Deve Enviar para Publicada uma Proposta com Situação Aprovada homologada")]
+        public async Task Enviar_para_publicada_proposta_aprovada_homologada()
+        {
+            // arrange
+            var proposta = await InserirNaBaseProposta(situacao: SituacaoProposta.Aprovada, numeroHomologacao: true);
+
+            var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
+
+            // act
+            await casoUsoEnviarProposta.Executar(proposta.Id);
+
+            // assert
+            var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
+            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.Publicada);
+            obterPropostaDepois.NumeroHomologacao.GetValueOrDefault().ShouldBeGreaterThan(0);
+        }
+
         [Fact(DisplayName = "Proposta - Deve Enviar para o Publicada uma Proposta com Situação Cadastrada não homologada")]
         public async Task Enviar_para_publicada_proposta_cadastrada_nao_homologada()
         {
             // arrange
-            var proposta = await InserirNaBaseProposta(formacaoHomologada: FormacaoHomologada.NaoCursosPorIN);
+            var proposta = await InserirNaBaseProposta(formacaoHomologada: FormacaoHomologada.NaoCursosPorIN, dataInscricaoForaPeriodo: true);
 
             var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
 
@@ -70,7 +87,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             var excecao = await Should.ThrowAsync<NegocioException>(casoUsoEnviarProposta.Executar(proposta.Id));
 
             // assert
-            excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ESTA_COMO_CADASTRADA).ShouldBeTrue();
+            excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_PODE_SER_ENVIADA).ShouldBeTrue();
         }
 
         [Fact(DisplayName = "Proposta - Não Deve Enviar uma Proposta não encontrada")]
@@ -84,6 +101,38 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             excecao.Mensagens.Contains(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA).ShouldBeTrue();
+        }
+
+        [Fact(DisplayName = "Proposta - Deve alterar proposta aguardando df homologada em aguardando parecerista")]
+        public async Task Deve_alterar_proposta_aguardando_df_homologada_em_aguardando_parecerista()
+        {
+            //arrange
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseDf, formacaoHomologada: FormacaoHomologada.Sim, dataInscricaoForaPeriodo: true, quantidadeParecerista: 2);
+
+            var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
+
+            // act
+            await casoUsoEnviarProposta.Executar(proposta.Id);
+
+            // assert
+            var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
+            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AguardandoAnalisePeloParecerista);
+        }
+
+        [Fact(DisplayName = "Proposta - Deve alterar proposta aguardando análise parecer df homologada em aguardando análise área promotora")]
+        public async Task Deve_alterar_proposta_aguardando_parecer_df_homologada_em_aguardando_analise_area_promotora()
+        {
+            //arrange
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.AguardandoAnaliseParecerPelaDF, formacaoHomologada: FormacaoHomologada.Sim, dataInscricaoForaPeriodo: true, quantidadeParecerista: 2);
+
+            var casoUsoEnviarProposta = ObterCasoDeUso<ICasoDeUsoEnviarProposta>();
+
+            // act
+            await casoUsoEnviarProposta.Executar(proposta.Id);
+
+            // assert
+            var obterPropostaDepois = ObterPorId<Dominio.Entidades.Proposta, long>(proposta.Id);
+            obterPropostaDepois.Situacao.ShouldBeEquivalentTo(SituacaoProposta.AnaliseParecerPelaAreaPromotora);
         }
     }
 }

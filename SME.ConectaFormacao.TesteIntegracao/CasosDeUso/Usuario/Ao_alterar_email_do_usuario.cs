@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
         {
             UsuarioAlterarEmailMock.Montar();
         }
-        
+
         protected override void RegistrarCommandFakes(IServiceCollection services)
         {
             base.RegistrarCommandFakes(services);
@@ -44,7 +44,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             excecao.StatusCode.ShouldBe(400);
             excecao.Mensagens.Contains("Email inválido");
         }
-        
+
         [Fact(DisplayName = "Usuário - Deve retornar exceção ao alterar email @edu com email inválido")]
         public async Task Deve_retornar_excecao_ao_alterar_email_edu_com_email_invalido()
         {
@@ -62,7 +62,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             excecao.StatusCode.ShouldBe(400);
             excecao.Mensagens.Contains(MensagemNegocio.EMAIL_EDU_INVALIDO);
         }
-        
+
         [Fact(DisplayName = "Usuário - Deve alterar o email @edu do usuário")]
         public async Task Deve_alterar_o_email_edu_do_usuario()
         {
@@ -76,7 +76,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
             var casoDeUsoInserir = ObterCasoDeUso<ICasoDeUsoInserirUsuarioExterno>();
 
             // act
-            await casoDeUsoInserir.InserirUsuarioExterno(usuarioExterno);
+            await casoDeUsoInserir.Executar(usuarioExterno);
             var retorno = await casoDeUso.Executar(usuarioExterno.Cpf, emailValido);
 
             // assert

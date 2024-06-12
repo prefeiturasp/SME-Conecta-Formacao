@@ -7,6 +7,7 @@
         public string RegistroFuncional { get; set; }
         public string Cpf { get; set; }
         public string Nome { get; set; }
+        public string Vinculo { get; set; }
 
         public Dominio.Entidades.Inscricao Inscricao { get; set; }
     }
