@@ -27,14 +27,17 @@ namespace SME.ConectaFormacao.Aplicacao
             var agrupadoPorUsuario = dadosParaEmail.GroupBy(x => x.UsuarioId);
             foreach (var usuario in agrupadoPorUsuario)
             {
-                var destinatario = new EnviarEmailDto
+                if (usuario.FirstOrDefault()!.Email.EstaPreenchido())
                 {
-                    EmailDestinatario = usuario.FirstOrDefault()!.Email,
-                    NomeDestinatario = usuario.FirstOrDefault()!.NomeDestinatario,
-                    Titulo = $"Confirmação de inscrição | {usuario.FirstOrDefault()!.NomeFormacao} ",
-                    Texto = CriarTextoEmail(usuario)
-                };
-                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);
+                    var destinatario = new EnviarEmailDto
+                    {
+                        EmailDestinatario = usuario.FirstOrDefault()!.Email,
+                        NomeDestinatario = usuario.FirstOrDefault()!.NomeDestinatario,
+                        Titulo = $"Confirmação de inscrição | {usuario.FirstOrDefault()!.NomeFormacao} ",
+                        Texto = CriarTextoEmail(usuario)
+                    };
+                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);
+                }
             }
 
             return true;

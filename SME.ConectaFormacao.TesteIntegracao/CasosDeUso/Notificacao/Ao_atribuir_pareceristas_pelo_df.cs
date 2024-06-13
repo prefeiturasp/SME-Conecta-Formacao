@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
         {
             // arrange
             await InserirParametrosProposta();
-            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacao, "http://conecta"));
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacaoEdicaoProposta, "http://conecta"));
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -106,7 +106,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
         {
             // arrange
             await InserirParametrosProposta();
-            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacao, "http://conecta"));
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacaoEdicaoProposta, "http://conecta"));
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);

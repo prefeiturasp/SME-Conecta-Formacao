@@ -24,14 +24,17 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<bool> Handle(EnviarEmailCancelarInscricaoCommand request, CancellationToken cancellationToken)
         {
             var dadosParaEmail = await _repositorioInscricao.ObterDadasInscricaoPorInscricaoId(request.InscricaoId);
-            var destinatario = new EnviarEmailDto
+            if (dadosParaEmail.FirstOrDefault()!.Email.EstaPreenchido())
             {
-                EmailDestinatario = dadosParaEmail.FirstOrDefault()!.Email,
-                NomeDestinatario = dadosParaEmail.FirstOrDefault()!.NomeDestinatario,
-                Titulo = $"Cancelamento de inscrição | Formação {dadosParaEmail.FirstOrDefault()!.NomeFormacao} ",
-                Texto = CriarMensagemEmail(dadosParaEmail.FirstOrDefault()!.NomeFormacao, request.Motivo)
-            };
-            await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);
+                var destinatario = new EnviarEmailDto
+                {
+                    EmailDestinatario = dadosParaEmail.FirstOrDefault()!.Email,
+                    NomeDestinatario = dadosParaEmail.FirstOrDefault()!.NomeDestinatario,
+                    Titulo = $"Cancelamento de inscrição | Formação {dadosParaEmail.FirstOrDefault()!.NomeFormacao} ",
+                    Texto = CriarMensagemEmail(dadosParaEmail.FirstOrDefault()!.NomeFormacao, request.Motivo)
+                };
+                await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);
+            }
 
             return true;
         }
@@ -48,24 +51,18 @@ namespace SME.ConectaFormacao.Aplicacao
                                                     body {
                                                         font-family: Arial, sans-serif;
                                                         margin: 20px;
-                                                        background-color: #f4f4f4;
+                                                        line-height: 1.6;
                                                     }
                                                     .container {
                                                         background-color: #fff;
                                                         padding: 20px;
                                                         border-radius: 8px;
-                                                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                                                     }
                                                     .header {
                                                         font-size: 20px;
                                                         font-weight: bold;
                                                         margin-bottom: 10px;
-                                                    }
-                                                    .reason {
-                                                        color: #d9534f;
-                                                        font-weight: bold;
-                                                        margin-top: 10px;
-                                                    }
+                                                    }                                                   
                                                     .footer {
                                                         margin-top: 20px;
                                                     }
@@ -81,7 +78,7 @@ namespace SME.ConectaFormacao.Aplicacao
             mensagem.AppendLine($"<p>A sua inscrição na formação {nomeFormacao} foi cancelada.</p>");
 
             if (motivoCancelamento.EstaPreenchido())
-                mensagem.AppendLine(@$" <p class=""reason"">Motivo: {motivoCancelamento}.</p>");
+                mensagem.AppendLine(@$" <p>Motivo: {motivoCancelamento}</p>");
 
             mensagem.AppendLine(@"<div class=""footer"">
                                     <p>Acesse a nossa <a href=""https://conectaformacao.sme.prefeitura.sp.gov.br/area-publica"" class=""link"">área pública</a> e fique por dentro de todas as formações e eventos.</p>

@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
         {
             // arrange
             await InserirParametrosProposta();
-            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacao, "http://conecta"));
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacaoEdicaoProposta, "https://conectaformacao/cadastro/cadastro-de-propostas/editar/{0}"));
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);
@@ -102,7 +102,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
             notificacao.Mensagem.ShouldBe(string.Format("A proposta {0} - {1} foi analisada pela Comissão de Análise. Acesse <a href=\"{2}\">Aqui</a> o cadastro da proposta e verifique os comentários.",
                 proposta.Id,
                 proposta.NomeFormacao,
-                "http://conecta"));
+                $"https://conectaformacao/cadastro/cadastro-de-propostas/editar/{proposta.Id}"));
 
             notificacao.Titulo.ShouldBe(string.Format("A Proposta {0} - {1} foi analisada pela Comissão de Análise", proposta.Id, proposta.NomeFormacao));
             notificacao.Categoria.ShouldBe(NotificacaoCategoria.Aviso);
@@ -124,7 +124,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
         {
             // arrange
             await InserirParametrosProposta();
-            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacao, "http://conecta"));
+            await InserirNaBase(ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.UrlConectaFormacaoEdicaoProposta, "http://conecta"));
 
             var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
             await InserirNaBase(areaPromotora);

@@ -1,6 +1,4 @@
 using MediatR;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.SalvarLogViaRabbit;
@@ -20,13 +18,8 @@ public class SalvarLogViaRabbitCommand : IRequest<bool>
     }
 
     public string Mensagem { get; set; }
-
-    [JsonConverter(typeof(StringEnumConverter))]
     public LogNivel Nivel { get; set; }
-
-    [JsonConverter(typeof(StringEnumConverter))]
     public LogContexto Contexto { get; set; }
-
     public string Observacao { get; set; }
     public string Projeto { get; set; }
     public string Rastreamento { get; set; }

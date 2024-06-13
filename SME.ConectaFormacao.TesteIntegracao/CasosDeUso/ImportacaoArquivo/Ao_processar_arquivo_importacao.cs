@@ -1,12 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Newtonsoft.Json;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
@@ -55,7 +55,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeRegistrosImportacaoArquivoInscricaoCursista, "1");
             await InserirNaBase(parametro);
 
-            var conteudo1 = JsonConvert.SerializeObject(new InscricaoCursistaImportacaoDTO()
+            var conteudo1 =  new InscricaoCursistaImportacaoDTO
             {
                 ColaboradorRede = "1",
                 Cpf = usuario.Cpf,
@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                     UsuarioId = 1,
                     FuncaoId = 1
                 }
-            });
+            }.ObjetoParaJson();
 
             var registro1 = ImportacaoArquivoRegistroMock.GerarImportacaoArquivo(
                                                     arquivosValidado.FirstOrDefault().Id,

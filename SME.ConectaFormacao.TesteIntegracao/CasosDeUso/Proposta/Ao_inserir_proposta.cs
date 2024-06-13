@@ -1132,7 +1132,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             propostaDTO.TiposInscricao = new List<PropostaTipoInscricaoDTO>() { new PropostaTipoInscricaoDTO { TipoInscricao = TipoInscricao.Externa } };
 
-            propostaDTO.LinkParaInscricoesExterna = new Faker().Lorem.Sentence(25);
+            propostaDTO.LinkParaInscricoesExterna = new Faker().Image.PicsumUrl();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoInserirProposta>();
 

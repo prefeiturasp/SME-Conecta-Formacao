@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Infra
 {
@@ -47,7 +47,11 @@ namespace SME.ConectaFormacao.Infra
 
         public T ObterObjetoMensagem<T>() where T : class
         {
-            return JsonConvert.DeserializeObject<T>(Mensagem.ToString());
+            var obj = Mensagem.ToString();
+            if (obj == null)
+                throw new ArgumentNullException(nameof(Mensagem));
+            
+            return obj.JsonParaObjeto<T>();
         }
     }
 }
