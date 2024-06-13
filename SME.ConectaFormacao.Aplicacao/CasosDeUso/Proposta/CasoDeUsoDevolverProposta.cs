@@ -67,8 +67,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         private static EnviarEmailDevolverPropostaDto MontarEmail(string destinatario, string emailDestinatario,
             string codigoFormacao, string nomeFormacao, string justificativa)
         {
-            var titulo = $"Proposta de {nomeFormacao} {codigoFormacao} foi devolvida.";
-            var texto = $"A proposta {nomeFormacao} {codigoFormacao} foi devolvida, realize os ajustes necessários para envia-la novamente.";
+            var titulo = $"Proposta de {codigoFormacao} - {nomeFormacao} foi devolvida.";
+            var texto = $"A proposta <strong>{codigoFormacao} - {nomeFormacao}</strong> foi devolvida, realize os ajustes necessários para envia-la novamente.";
 
             return new EnviarEmailDevolverPropostaDto
             {
