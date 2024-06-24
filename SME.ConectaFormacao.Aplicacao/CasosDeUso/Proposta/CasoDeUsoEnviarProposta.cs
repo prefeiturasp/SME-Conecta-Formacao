@@ -77,31 +77,19 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             var perfilUsuarioLogado = await mediator.Send(new ObterGrupoUsuarioLogadoQuery());
 
-            if (perfilUsuarioLogado.EhPerfilAdminDF())
+            if (!perfilUsuarioLogado.EhPerfilAdminDF())
+                return true;
+            
+            if (situacao.EstaAguardandoAnalisePeloParecerista())
             {
-                if (situacao.EstaAguardandoAnalisePeloParecerista())
-                {
-                    var pareceristas = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristasDaProposta);
+                var pareceristas = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristasDaProposta);
 
-                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarPareceristasSobreAtribuicaoPelaDF,
-                        new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
-                }
-
-                if (situacao.EstaAnaliseParecerPelaAreaPromotora())
-                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarAreaPromotoraParaAnaliseParecer, proposta.Id));
+                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarPareceristasSobreAtribuicaoPelaDF,
+                    new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
             }
-            else
-            {
-                var areaPromotora = await mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilUsuarioLogado));
 
-                if (areaPromotora.NaoEhNulo() && areaPromotora.Id == proposta.AreaPromotoraId)
-                {
-                    var pareceristas = _mapper.Map<IEnumerable<PropostaPareceristaResumidoDTO>>(pareceristasDaProposta);
-
-                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarPareceristasParaReanalise,
-                        new NotificacaoPropostaPareceristasDTO(proposta.Id, pareceristas)));
-                }
-            }
+            if (situacao.EstaAnaliseParecerPelaAreaPromotora())
+                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.NotificarAreaPromotoraParaAnaliseParecer, proposta.Id));
 
             return true;
         }
@@ -124,7 +112,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 return SituacaoProposta.AnaliseParecerPelaAreaPromotora;
 
             if (proposta.Situacao.EstaAnaliseParecerPelaAreaPromotora())
-                return SituacaoProposta.AguardandoReanalisePeloParecerista;
+                return SituacaoProposta.AguardandoValidacaoFinalPelaDF;
 
             if (proposta.Situacao.EstaAguardandoAnalisePeloParecerista() && existemPareceristasAguardandoValidacao)
                 return SituacaoProposta.AguardandoAnalisePeloParecerista;

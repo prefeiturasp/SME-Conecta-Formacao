@@ -113,7 +113,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"
                 select i.id,
                        i.situacao,
-                       i.origem, 
+                       i.origem,
+                       i.criado_em,
                        i.proposta_turma_id,
                        pt.nome,
                        pt.proposta_id,
@@ -128,7 +129,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 where not i.excluido 
                     and not p.excluido 
 	                and i.usuario_id = @usuarioId
-                order by i.id
+                order by pt.nome, i.criado_em
                 limit @numeroRegistros offset @registrosIgnorados";
 
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
@@ -161,6 +162,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												i.situacao,
                                                 i.origem,
                                                 i.arquivo_id,
+                                                i.criado_em,
                                                 i.proposta_turma_id,
 												pt.nome,
                                                 i.usuario_id ,
@@ -187,14 +189,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 												and pt.proposta_id = @propostaId ");
             if (!string.IsNullOrEmpty(login))
                 query.AppendLine($" and u.login like '%{@login}%' ");
+            
             if (!string.IsNullOrEmpty(cpf))
                 query.AppendLine($"and u.cpf like '%{@cpf}%' ");
+            
             if (!string.IsNullOrEmpty(nomeCursista))
                 query.AppendLine($" and lower(u.nome) like '%{@nomeCursista.ToLower()}%' ");
+            
             if (turmasId?.Length > 0)
                 query.AppendLine($" and pt.id = any(@turmasId) ");
 
-            query.AppendLine(" order by pt.nome, i.id");
+            query.AppendLine(" order by pt.nome, i.criado_em");
             query.AppendLine(" limit @numeroRegistros offset @registrosIgnorados ");
 
             var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
