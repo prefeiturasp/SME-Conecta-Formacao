@@ -234,7 +234,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             retornoDto.EntidadeId.ShouldBeGreaterThan(0);
-            retornoDto.Mensagem.Contains(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA).ShouldBeTrue();
             retornoDto.Mensagem.Contains(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA).ShouldBeFalse();
 
             ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);
@@ -306,7 +305,6 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             // assert
             retornoDto.EntidadeId.ShouldBeGreaterThan(0);
-            retornoDto.Mensagem.Contains(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA).ShouldBeTrue();
             retornoDto.Mensagem.Contains(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA).ShouldBeTrue();
 
             ValidarPropostaDTO(propostaDTO, retornoDto.EntidadeId);

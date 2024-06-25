@@ -127,13 +127,11 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
 
-                if (ehPropostaPublicada)
-                {
-                    mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA);
-
-                    if (ehPropostaAutomatica)
-                        mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
-                }
+                if (!ehPropostaPublicada)
+                    return RetornoDTO.RetornarSucesso(mensagem.ToString(), request.Id);
+                
+                if (ehPropostaAutomatica)
+                    mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
 
                 return RetornoDTO.RetornarSucesso(mensagem.ToString(), request.Id);
             }
