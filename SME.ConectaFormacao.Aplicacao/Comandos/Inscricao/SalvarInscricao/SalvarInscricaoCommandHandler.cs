@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -155,12 +156,21 @@ namespace SME.ConectaFormacao.Aplicacao
             if (dres.PossuiElementos())
             {
                 var unidade = await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(codigoEolUnidade), cancellationToken);
+                var codigosUndAdmReferencia = ObterCodigoUnidadeAdmReferenciaEscola(unidade) 
+                                              ?? ObterCodigosUnidadeAdmEReferencia(unidade);
 
-                var codigo = unidade.Tipo == Infra.Servicos.Eol.UnidadeEolTipo.Escola ? unidade.CodigoReferencia : unidade.Codigo;
-                if (!dres.Any(t => t.Dre.Codigo == codigo))
+                if (!dres.Any(t => codigosUndAdmReferencia.Contains(t.Dre.Codigo)))
                     throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA);
             }
         }
+
+        private string[]? ObterCodigoUnidadeAdmReferenciaEscola(UnidadeEol unidade)
+            => unidade.Tipo == Infra.Servicos.Eol.UnidadeEolTipo.Escola
+               ? new string[] { unidade.CodigoReferencia } 
+               : null;
+
+        private string[] ObterCodigosUnidadeAdmEReferencia(UnidadeEol unidade)
+            => new string[] { unidade.Codigo, unidade.CodigoReferencia };
 
         private async Task<RetornoDTO> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao, bool integrarNoSGA)
         {
