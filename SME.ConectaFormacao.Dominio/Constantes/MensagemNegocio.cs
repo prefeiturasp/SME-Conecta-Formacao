@@ -54,6 +54,7 @@ public class MensagemNegocio
     public const string EMAIL_INVALIDO = "E-mail {0} é inválido";
     public const string EMAIL_EDU_INVALIDO = "E-mail @edu é inválido";
     public const string EMAIL_NAO_ATUALIZADO = "Não foi possível atualizar o e-mail";
+    public const string TIPO_EMAIL_NAO_ATUALIZADO = "Não foi possível atualizar o tipo e-mail";
     public const string EMAIL_EDU_INVALIDO_NAO_VALIDO = "E-mail @edu informado não é um e-mail @edu válido";
     public const string CPF_COM_DIGITO_VERIFICADOR_INVALIDO = "CPF {0} é inválido";
     public const string PROPOSTA_NAO_ENCONTRADA = "Proposta não encontrada";

@@ -6,6 +6,7 @@
         public string Cpf { get; set; }
         public string Login { get; set; }
         public string Email { get; set; }
+        public int TipoEmail{ get; set; }
         public string? EmailEducacional { get; set; }
         public string Telefone { get; set; }
         public string Endereco { get; set; }
