@@ -10,7 +10,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         public Task AtivarCadastroUsuario(long usuarioId);
         Task<Usuario> ObterPorCpf(string cpf);
         Task<bool> AtualizarEmailEducacional(string login, string email);
-        Task<string?> ObterEmailEducacionalPorLogin(string login);
+        Task<bool> AtualizarTipoEmail(string login, int tipo);
+        Task<(int tipo, string? email)> ObterEmailEducacionalPorLogin(string login);
         Task<IEnumerable<Usuario>> ObterUsuarioInternoPorId(long[] ids);
         Task<bool> UsuarioPossuiPropostaCadastrada(string login);
         Task<int> ObterTotalUsuarioRedeParceria(long[] areaPromotoraIds, string? nome, string? cpf, SituacaoUsuario? situacao);
