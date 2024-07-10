@@ -3,9 +3,9 @@ using MediatR;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class AlterarEmailEduAoAlterarNomeCommand : IRequest<bool>
+    public class AlterarEmailEduAoAlterarNomeTipoEmailCommand : IRequest<bool>
     {
-        public AlterarEmailEduAoAlterarNomeCommand(string login)
+        public AlterarEmailEduAoAlterarNomeTipoEmailCommand(string login)
         {
             Login = login;
         }
@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Login { get; set; }
     }
 
-    public class AlterarEmailEduAoAlterarNomeCommandValidator : AbstractValidator<AlterarEmailEduAoAlterarNomeCommand>
+    public class AlterarEmailEduAoAlterarNomeCommandValidator : AbstractValidator<AlterarEmailEduAoAlterarNomeTipoEmailCommand>
     {
         public AlterarEmailEduAoAlterarNomeCommandValidator()
         {
