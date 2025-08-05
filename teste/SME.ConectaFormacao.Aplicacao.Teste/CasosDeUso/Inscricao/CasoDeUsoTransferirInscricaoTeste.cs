@@ -4,7 +4,6 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
-using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao
 {
@@ -30,13 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao
                 IdTurmaOrigem = 2,
                 IdFormacaoDestino = 3,
                 IdTurmaDestino = 4,
-                CargoCodigo = "123",
-                FuncaoCodigo = "456",
-                FuncaoDreCodigo = "789",
-                Cursistas = new List<CursistaServicoEol>
-                {
-                    new CursistaServicoEol { CargoDreCodigo = "1", CargoUeCodigo = "2", Rf = "999" }
-                }
+                Cursistas = new List<int> { 999 }  
             };
 
             var retornoEsperado = RetornoDTO.RetornarSucesso("Transferência realizada com sucesso", idInscricao);

@@ -58,17 +58,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 var propostaTurmaDestino = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(request.InscricaoTransferenciaDTO.IdTurmaDestino);
 
-                if (propostaTurmaDestino == null)
-                    throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
-
-                if (propostaTurmaDestino.Dres == null || !propostaTurmaDestino.Dres.Any())
-                    throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL);
-
-                var dreCodigoDestino = propostaTurmaDestino.Dres.FirstOrDefault()?.DreCodigo;
-                var dreCodigoOrigem = inscricao.CargoDreCodigo;
-
-                if (!string.Equals(dreCodigoOrigem, dreCodigoDestino, StringComparison.OrdinalIgnoreCase))
-                    throw new NegocioException(MensagemNegocio.DRE_IGUAL_ORIGEM_DESTINO, HttpStatusCode.BadRequest);
+                ValidarDreTransferencia(propostaTurmaDestino, inscricao.CargoDreCodigo);
 
                 await _repositorioInscricao.Inserir(inscricaoNova);
 
@@ -137,5 +127,28 @@ namespace SME.ConectaFormacao.Aplicacao
             if (dto.Cursistas == null || !dto.Cursistas.Any())
                 throw new NegocioException("Cursista(s) não informado(s).", HttpStatusCode.BadRequest);
         }
+
+        private void ValidarDreTransferencia(PropostaTurma propostaTurmaDestino, string dreCodigoOrigem)
+        {
+            if (propostaTurmaDestino == null)
+                throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
+
+            if (propostaTurmaDestino.Dres == null || !propostaTurmaDestino.Dres.Any())
+                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL);
+
+            var dreCodigoDestino = propostaTurmaDestino.Dres
+                .FirstOrDefault()?
+                .DreCodigo;
+
+            if (string.IsNullOrWhiteSpace(dreCodigoDestino))
+                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL);
+
+            if (string.IsNullOrWhiteSpace(dreCodigoOrigem))
+                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL);
+
+            if (!string.Equals(dreCodigoOrigem, dreCodigoDestino, StringComparison.OrdinalIgnoreCase))
+                throw new NegocioException(MensagemNegocio.DRE_IGUAL_ORIGEM_DESTINO, HttpStatusCode.BadRequest);
+        }
+
     }
 }
