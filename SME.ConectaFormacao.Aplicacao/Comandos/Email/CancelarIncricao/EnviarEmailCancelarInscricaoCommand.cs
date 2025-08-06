@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public EnviarEmailCancelarInscricaoCommandValidator()
         {
             RuleFor(x => x.InscricaoId).GreaterThan(0)
-                .WithMessage("Informe o Id da Inscrição para Enviaro Email de Cancelamento");
+                .WithMessage("Informe o Id da Inscrição para Enviar o Email de Cancelamento");
         }
     }
 }

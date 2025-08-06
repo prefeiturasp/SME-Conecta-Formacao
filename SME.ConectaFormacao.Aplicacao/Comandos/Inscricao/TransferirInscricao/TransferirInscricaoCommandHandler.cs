@@ -46,9 +46,10 @@ namespace SME.ConectaFormacao.Aplicacao
 
             try
             {
-                inscricao.Situacao = SituacaoInscricao.Cancelada;
+                inscricao.Situacao = SituacaoInscricao.Transferida;
                 await _repositorioInscricao.Atualizar(inscricao);
                 await _mediator.Send(new EnviarEmailCancelarInscricaoCommand(request.IdInscricao, "Inscrição transferida"), cancellationToken);
+                await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
 
                 var inscricaoNova = new Inscricao();
                 inscricaoNova.Situacao = SituacaoInscricao.Confirmada;
@@ -69,8 +70,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
                     var dto = new InscricaoAutomaticaDTO
                     {
-                        PropostaId = inscricao.Id,
-                        PropostaTurmaId = request.InscricaoTransferenciaDTO.IdTurmaDestino,
+                        PropostaId = propostaTurmaDestino.PropostaId,
+                        PropostaTurmaId = propostaTurmaDestino.Id,
 
                         CargoId = inscricao.CargoId,
                         CargoCodigo = inscricao.CargoCodigo,
@@ -82,7 +83,7 @@ namespace SME.ConectaFormacao.Aplicacao
                         FuncaoDreCodigo = inscricao.FuncaoDreCodigo,
                         FuncaoUeCodigo = inscricao.FuncaoUeCodigo,
 
-                        UsuarioId = inscricao.UsuarioId,
+                        UsuarioId = cursistaBanco.Id,
                         UsuarioRf = cursistaBanco.Login,
                         UsuarioNome = cursistaBanco.Nome,
                         UsuarioCpf = cursistaBanco.Cpf,
