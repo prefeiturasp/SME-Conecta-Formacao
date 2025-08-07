@@ -177,6 +177,7 @@ public class MensagemNegocio
     public const string USUARIO_FOI_INATIVO_POR_POSSUIR_PROPOSTA_CADASTRADA = "Usuário foi inativado porque possui proposta cadastrada!";
     public const string INSCRICOES_NAO_CONFIRMADAS_POR_FALTA_DE_VAGA = "Existem inscrições não confirmadas por falta de vagas!";
     public const string INSCRICOES_CONFIRMADAS_COM_SUCESSO = "Inscrições confirmadas com sucesso!";
+    public const string INSCRICOES_REATIVACAO_CONFIRMADAS_COM_SUCESSO = "Reativação confirmada com sucesso!";
     public const string INSCRICOES_EM_ESPERA_COM_SUCESSO = "Inscrições colocadas Em Espera com sucesso!";
     public const string INSCRICOES_EM_ESPERA_COM_INCONSISTENCIAS = "Existem inscrições não adicionadas em espera!";
     public const string INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_PODE_IR_PARA_EM_ESPERA = "Somente inscrição Aguardando Análise pode ser movida para Em Espera";
@@ -192,4 +193,9 @@ public class MensagemNegocio
     public const string PROPOSTA_NAO_PERMITE_SORTEIO = "Proposta não permite sorteio de inscrições";
     public const string PROPOSTA_TURMA_NAO_POSSUI_VAGA_DISPONIVEL_PARA_SORTEIO = "A Turma não possui vagas disponíveis para sorteio";
     public const string SORTEIO_REALIZADO_COM_SUCESSO = "Sorteio realizado com sucesso";
+    public const string INSCRICOES_REATIVADAS_COM_INCONSISTENCIAS = "Houve uma inconsistência durante a reativação";
+    public const string INSCRICOES_REATIVADAS_COM_PROBLEMA = "Houve um problema na reativação";
+    public const string INSCRICAO_SO_PODE_REATIVAR_CANCELADAS = "A inscrição só pode ser reativada se estiver cancelada";
+    public const string INSCRICAO_CARGO_NAO_PERMITIDO = "Cargo/Função selecionado não definido no público alvo da formação, sendo assim, não será possível reativar a inscrição.";
+    public const string INSCRICAO_DRE_NAO_PERMITIDA = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível reativar a inscrição.";
 }

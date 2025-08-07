@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.ConectaFormacao.Acessor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Conecta.Notificacao.Worker", "SME.Conecta.Notificacao.Worker\SME.Conecta.Notificacao.Worker.csproj", "{57FDE46A-D73A-448E-AAA9-EDAEEFC59190}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.ConectaFormacao.Aplicacao", "Aplicacao\SME.ConectaFormacao.Aplicacao.csproj", "{5756E912-E4BC-4C68-AB2B-2036DD02B4F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{57FDE46A-D73A-448E-AAA9-EDAEEFC59190}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57FDE46A-D73A-448E-AAA9-EDAEEFC59190}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57FDE46A-D73A-448E-AAA9-EDAEEFC59190}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5756E912-E4BC-4C68-AB2B-2036DD02B4F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5756E912-E4BC-4C68-AB2B-2036DD02B4F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5756E912-E4BC-4C68-AB2B-2036DD02B4F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5756E912-E4BC-4C68-AB2B-2036DD02B4F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +94,7 @@ Global
 		{9A1D1EA4-16CB-43EF-9757-7CEEF39D64E9} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
 		{79D5BD73-D4DD-4636-BA78-681DA12F301F} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
 		{57FDE46A-D73A-448E-AAA9-EDAEEFC59190} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
+		{5756E912-E4BC-4C68-AB2B-2036DD02B4F6} = {085C79CC-4DEB-42E1-93A5-D85858E8F5E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C8BFE3B-BC28-4781-A67F-86F9898E68E7}
