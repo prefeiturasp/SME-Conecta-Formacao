@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
             {
                 Id = 10,
                 PropostaId = 999,
-                Dres = new List<PropostaTurmaDre> { new PropostaTurmaDre { DreCodigo = "123456" } }
+                Dres = new List<PropostaTurmaDre> { new PropostaTurmaDre { DreId = 123456 } }
             };
 
             var dto = new InscricaoTransferenciaDTO
@@ -168,7 +168,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
 
             var propostaTurma = new PropostaTurma
             {
-                Dres = new List<PropostaTurmaDre> { new PropostaTurmaDre { DreCodigo = "123456" } }
+                Dres = new List<PropostaTurmaDre> { new PropostaTurmaDre { DreId = 123456 } }
             };
 
             _repositorioInscricaoMock.Setup(r => r.ObterPorId(It.IsAny<long>())).ReturnsAsync(inscricao);

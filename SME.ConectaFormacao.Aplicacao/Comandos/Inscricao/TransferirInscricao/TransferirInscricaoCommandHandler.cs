@@ -116,7 +116,7 @@ namespace SME.ConectaFormacao.Aplicacao
             if (inscricao is null)
                 throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
-            if (inscricao.Situacao == SituacaoInscricao.Cancelada)
+            if (inscricao.Situacao == SituacaoInscricao.Transferida || inscricao.Situacao == SituacaoInscricao.Cancelada)
                 throw new NegocioException(MensagemNegocio.INSCRICOES_CANCELADAS, HttpStatusCode.BadRequest);
         }
 
@@ -139,15 +139,15 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var dreCodigoDestino = propostaTurmaDestino.Dres
                 .FirstOrDefault()?
-                .DreCodigo;
+                .DreId;
 
-            if (string.IsNullOrWhiteSpace(dreCodigoDestino))
+            if (dreCodigoDestino == null || dreCodigoDestino == 0)
                 throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL);
 
             if (string.IsNullOrWhiteSpace(dreCodigoOrigem))
                 throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL);
 
-            if (!string.Equals(dreCodigoOrigem, dreCodigoDestino, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(dreCodigoOrigem, dreCodigoDestino.ToString(), StringComparison.OrdinalIgnoreCase))
                 throw new NegocioException(MensagemNegocio.DRE_IGUAL_ORIGEM_DESTINO, HttpStatusCode.BadRequest);
         }
 
