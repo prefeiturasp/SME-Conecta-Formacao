@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.ConectaFormacao.Acessor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Conecta.Notificacao.Worker", "SME.Conecta.Notificacao.Worker\SME.Conecta.Notificacao.Worker.csproj", "{57FDE46A-D73A-448E-AAA9-EDAEEFC59190}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.ConectaFormacao.Aplicacao", "Aplicacao\SME.ConectaFormacao.Aplicacao.csproj", "{5756E912-E4BC-4C68-AB2B-2036DD02B4F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.ConectaFormacao.Aplicacao.Teste", "Aplicacao\SME.ConectaFormacao.Aplicacao.Teste.csproj", "{5756E912-E4BC-4C68-AB2B-2036DD02B4F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
