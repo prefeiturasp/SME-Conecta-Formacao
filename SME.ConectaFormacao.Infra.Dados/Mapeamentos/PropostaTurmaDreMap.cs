@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.PropostaTurmaId).ToColumn("proposta_turma_id");
             Map(c => c.DreId).ToColumn("dre_id");
 
-            Map(c => c.DreCodigo);
+            Map(c => c.DreCodigo).Ignore();
             Map(t => t.Dre).Ignore();
         }
     }

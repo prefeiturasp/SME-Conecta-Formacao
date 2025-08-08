@@ -113,7 +113,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (propostaTurma != null)
             {
-                var sql = @" SELECT d.id AS Id, d.dre_id AS DreCodigo, d.abreviacao AS DreAbreviacao, d.nome AS DreNome
+                var sql = @" SELECT d.id AS Id, d.dre_id AS DreId, d.abreviacao AS DreAbreviacao, d.nome AS DreNome
                   FROM proposta_turma_dre ptd
                   INNER JOIN dre d ON d.id = ptd.dre_id
                   WHERE ptd.proposta_turma_id = @Id";
