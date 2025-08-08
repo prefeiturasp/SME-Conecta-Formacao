@@ -36,6 +36,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorId(long propostaId);
         Task<int> ObterTotalEncontros(long propostaId);
         Task<int> ObterTotalTutores(long propostaId);
+        Task<PropostaTurma> ObterTurmaDaPropostaComDresPorId(long propostaTurmaId);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId);
         Task<IEnumerable<PropostaRegente>> ObterRegentesPaginado(int numeroPagina, int numeroRegistros, long propostaId);
         Task<IEnumerable<PropostaPalavraChave>> ObterPalavrasChavesPorId(long id);

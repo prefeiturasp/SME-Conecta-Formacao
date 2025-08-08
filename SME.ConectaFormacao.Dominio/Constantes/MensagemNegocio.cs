@@ -1,3 +1,5 @@
+using SME.ConectaFormacao.Dominio.Entidades;
+
 namespace SME.ConectaFormacao.Dominio.Constantes;
 
 public class MensagemNegocio
@@ -96,6 +98,7 @@ public class MensagemNegocio
 
     public const string TURMA_NAO_ENCONTRADA = "Turma não encontrada";
     public const string NENHUMA_TURMA_ENCONTRADA = "Nenhuma turma encontrada para a proposta";
+    public const string DRE_IGUAL_ORIGEM_DESTINO = "A DRE da turma destino deve ser a mesma da inscrição de origem.";
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível inserir sua inscrição.";
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL = "A lotação/local de trabalho do cursista não corresponde com a DRE promotora desta formação. Deseja continuar?";
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_AUTOMATICO = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível inserir sua inscrição. {0}";
@@ -104,11 +107,14 @@ public class MensagemNegocio
     public const string CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL = "Este cursista não possui cargo/vinculo compatível com o público alvo da formação, não será possível realizar a sua inscrição.";
     public const string INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar a inscrição, a turma selecionada não possui mais vagas disponíveis.";
     public const string INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição automática, a turma selecionada não possui mais vagas disponível. {0}";
+    public const string INSCRICAO_TRANSFERENCIA_CARGOS_DIFERENTES = "O cargo da inscrição de origem deve ser o mesmo da inscrição destino";
+    public const string INSCRICAO_TRANSFERENCIA_FUNCOES_DIFERENTES = "A função da inscrição de origem deve ser a mesma da inscrição destino";
     public const string USUARIO_NAO_ENCONTRADO = "Nenhum Usuário encontrado";
     public const string NOME_USUARIO_NAO_PREENCHIDO = "Nome do usuário não preenchido";
     public const string CARGO_SOBREPOSTO_FUNCAO_ATIVIDADE_NAO_ENCONTRADO = "Informações de Cargo, CargoSobreposto e Função Atividade no EOL não foram encontradas";
     public const string EMAIL_FORA_DOMINIO_REDE_DIRETA = "É permitido somente e-mails com o domínio @SME ou @EDU.SME";
     public const string INSCRICAO_NAO_ENCONTRADA = "Inscrição não encontrada";
+    public const string INSCRICAO_MESMA_TURMA_ORIGEM_DESTINO = "Turma de origem e destino não pode ser a mesma";
     public const string NENHUMA_TURMA_COM_VAGA_DISPONIVEL = "Nenhuma turma com vaga disponível encontrada";
     public const string INTEGRAR_NO_SGA_EH_OBRIGATORIO_QUANDO_AREA_PROMOTORA_DIRETA = "O campo 'Integrar no SGA' deve ser preenchido quando a área promotora for direta.";
     public const string USUARIO_NAO_INSCRITO_AUTOMATICAMENTE_NAO_POSSUI_PUBLICO_ALVO_NA_FORMACAO = "Cargo não definido no público alvo da formação, sendo assim, não será possível inserir a sua inscrição automática. {0}";
@@ -183,6 +189,7 @@ public class MensagemNegocio
     public const string INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_OE_EM_ESPERA_PODE_IR_PARA_CONFIRMADA = "Somente inscrição Aguardando Análise ou Em Espera pode ser Confirmada";
     public const string INSCRICOES_CANCELADAS_COM_INCONSISTENCIAS = "Existem inscrições não canceladas!";
     public const string INSCRICOES_CANCELADAS_COM_SUCESSO = "Inscrições canceladas com sucesso!";
+    public const string INSCRICOES_CANCELADAS = "Inscrição não pode estar cancelada para ser alterada";
     public const string PARAMETRO_INVALIDO = "Parâmetro inválido";
     public const string NOTIFICACAO_NAO_ENCONTRADA = "Notificação não encontrada";
     public const string NOTIFICACAO_NAO_ENCONTRADA_USUARIO = "Notificação não encontrada para o usuário logado";

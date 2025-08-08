@@ -107,6 +107,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
+        public async Task<PropostaTurma> ObterTurmaDaPropostaComDresPorId(long propostaTurmaId)
+        {
+            var propostaTurma = await conexao.Obter().GetAsync<PropostaTurma>(propostaTurmaId);
+
+            if (propostaTurma != null)
+            {
+                var sql = @" SELECT d.id AS Id, d.dre_id AS DreCodigo, d.abreviacao AS DreAbreviacao, d.nome AS DreNome
+                  FROM proposta_turma_dre ptd
+                  INNER JOIN dre d ON d.id = ptd.dre_id
+                  WHERE ptd.proposta_turma_id = @Id";
+
+                var dres = await conexao.Obter().QueryAsync<PropostaTurmaDre>(sql, new { Id = propostaTurmaId });
+
+                propostaTurma.Dres = dres.ToList();
+            }
+
+            return propostaTurma;
+        }
+
         public async Task<IEnumerable<PropostaCriterioValidacaoInscricao>> ObterCriteriosValidacaoInscricaoPorId(long propostaId)
         {
             var query = @"select 
