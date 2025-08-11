@@ -25,5 +25,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public bool PodeCancelar { get; set; }
         public bool PodeColocarEmEspera { get; set; }
         public bool PodeConfirmar { get; set; }
+        public bool PodeReativar { get; set; }
     }
 }

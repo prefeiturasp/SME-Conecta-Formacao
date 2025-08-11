@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {

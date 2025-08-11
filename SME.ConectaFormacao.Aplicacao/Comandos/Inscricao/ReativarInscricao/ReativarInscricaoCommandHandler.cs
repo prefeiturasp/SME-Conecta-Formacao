@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricao.ReativarInscricao
             var transacao = _transacao.Iniciar();
             try
             {
-                inscricao.Situacao = SituacaoInscricao.AguardandoAnalise;
+                inscricao.Situacao = SituacaoInscricao.anter;
                 inscricao.MotivoCancelamento = null;
                 await _repositorioInscricao.Atualizar(inscricao);
                 transacao.Commit();
