@@ -55,23 +55,23 @@ namespace SME.ConectaFormacao.Aplicacao
                     var query = new ObterCargosFuncoesDresFuncionarioServicoEolQuery(inscricaoNovaManual.RegistroFuncional);
                     var cargos = await _mediator.Send(query);
 
-                    if (cargos != null && cargos.Any())
+                    var queryOutros = new ObterCargoFuncaoOutrosQuery();
+                    var cargosOutros = await _mediator.Send(queryOutros);
+
+                    inscricaoNovaManual.CargoCodigo = cargos?.FirstOrDefault()?.CdCargoBase?.ToString() ?? cargosOutros?.Id.ToString();
+                    inscricaoNovaManual.FuncaoCodigo = cargos?.FirstOrDefault()?.CdFuncaoAtividade?.ToString();
+                    inscricaoNovaManual.CargoUeCodigo = cargos?.FirstOrDefault()?.CdUeCargoBase?.ToString();
+
+                    var propostaTurmaDestino = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(request.InscricaoTransferenciaDTO.IdTurmaDestino);
+
+                    if (propostaTurmaDestino != null)
                     {
-                        inscricaoNovaManual.CargoCodigo = cargos.First().CdCargoBase.ToString();
-                        inscricaoNovaManual.FuncaoCodigo = cargos.First().CdFuncaoAtividade.ToString();
-                        inscricaoNovaManual.CargoUeCodigo = cargos.First().CdUeCargoBase.ToString();
+                        ValidarDreTransferencia(propostaTurmaDestino, inscricao.CargoDreCodigo);
 
-                        var propostaTurmaDestino = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(request.InscricaoTransferenciaDTO.IdTurmaDestino);
+                        if (!string.IsNullOrEmpty(inscricaoNovaManual.CargoCodigo) && !string.IsNullOrEmpty(inscricao.CargoCodigo) && inscricaoNovaManual.CargoCodigo != cargosOutros?.Id.ToString())
+                            ValidarCargoTransferencia(inscricao.CargoCodigo, inscricaoNovaManual.CargoCodigo);
 
-                        if (propostaTurmaDestino != null)
-                        {
-                            ValidarDreTransferencia(propostaTurmaDestino, inscricao.CargoDreCodigo);
-
-                            if (!string.IsNullOrEmpty(inscricaoNovaManual.CargoCodigo) && !string.IsNullOrEmpty(inscricao.CargoCodigo))
-                                ValidarCargoTransferencia(inscricao.CargoCodigo, inscricaoNovaManual.CargoCodigo);
-
-                            await _mediator.Send(new SalvarInscricaoManualCommand(inscricaoNovaManual));
-                        }
+                        await _mediator.Send(new SalvarInscricaoManualCommand(inscricaoNovaManual));
                     }
                 }
                 catch (Exception ex)

@@ -49,6 +49,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        and i.usuario_id = @usuarioId 
 	                        and i.situacao <> @situacaoCancelada
                             and i.situacao <> @situacaoTransferida
+                            and not pt.excluido
                         limit 1";
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, usuarioId, situacaoCancelada, situacaoTransferida });
