@@ -39,6 +39,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public Task<bool> UsuarioEstaInscritoNaProposta(long propostaId, long usuarioId)
         {
             var situacaoCancelada = (int)SituacaoInscricao.Cancelada;
+            var situacaoTransferida = (int)SituacaoInscricao.Transferida;
 
             var query = @"
                         select 1 
@@ -47,9 +48,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where pt.proposta_id = @propostaId 
 	                        and i.usuario_id = @usuarioId 
 	                        and i.situacao <> @situacaoCancelada
+                            and i.situacao <> @situacaoTransferida
                         limit 1";
 
-            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, usuarioId, situacaoCancelada });
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, usuarioId, situacaoCancelada, situacaoTransferida });
         }
 
         public Task<int> LiberarInscricaoVaga(Inscricao inscricao)
