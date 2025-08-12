@@ -39,6 +39,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public Task<bool> UsuarioEstaInscritoNaProposta(long propostaId, long usuarioId)
         {
             var situacaoCancelada = (int)SituacaoInscricao.Cancelada;
+            var situacaoTransferida = (int)SituacaoInscricao.Transferida;
 
             var query = @"
                         select 1 
@@ -47,9 +48,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         where pt.proposta_id = @propostaId 
 	                        and i.usuario_id = @usuarioId 
 	                        and i.situacao <> @situacaoCancelada
+                            and i.situacao <> @situacaoTransferida
+                            and not pt.excluido
                         limit 1";
 
-            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, usuarioId, situacaoCancelada });
+            return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, usuarioId, situacaoCancelada, situacaoTransferida });
         }
 
         public Task<int> LiberarInscricaoVaga(Inscricao inscricao)
@@ -452,5 +455,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"select id from inscricao where not excluido and situacao = @situacao and proposta_turma_id = @propostaTurmaId";
             return conexao.Obter().QueryAsync<long>(query, new { situacao, propostaTurmaId });
         }
+        public async Task AtualizarSituacao(long inscricaoId, SituacaoInscricao situacao)
+        {
+            var sql = "UPDATE inscricao SET situacao = @situacao WHERE Id = @inscricaoId";
+            await conexao.Obter().ExecuteAsync(sql, new { situacao, inscricaoId });
+        }
+
     }
 }

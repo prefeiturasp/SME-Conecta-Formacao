@@ -1206,7 +1206,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
-
+        public async Task AtualizarIntegrarNoSGA(long propostaId, bool valor)
+        {
+            var sql = "UPDATE proposta SET integrar_no_sga = @valor WHERE Id = @propostaId";
+            await conexao.Obter().ExecuteAsync(sql, new { valor, propostaId });
+        }
         public Task RemoverModalidades(IEnumerable<PropostaModalidade> modalidades)
         {
             var modalidade = modalidades.First();

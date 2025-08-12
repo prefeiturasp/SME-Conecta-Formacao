@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
             var command = new TransferirInscricaoCommand(0, new InscricaoTransferenciaDTO
             {
                 IdTurmaDestino = 1,
-                Cursistas = new List<int> { 1 }
+                Cursistas = new List<string> { "1" }
             });
 
             var resultado = _validator.TestValidate(command);
@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
             var dto = new InscricaoTransferenciaDTO
             {
                 IdTurmaDestino = 0,
-                Cursistas = new List<int> { 1 }
+                Cursistas = new List<string> { "1" }
             };
 
             var command = new TransferirInscricaoCommand(1, dto);
@@ -53,7 +53,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
             var dto = new InscricaoTransferenciaDTO
             {
                 IdTurmaDestino = 1,
-                Cursistas = new List<int>() 
+                Cursistas = new List<string>() 
             };
 
             var command = new TransferirInscricaoCommand(1, dto);
@@ -85,7 +85,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
             var dto = new InscricaoTransferenciaDTO
             {
                 IdTurmaDestino = 10,
-                Cursistas = new List<int> { 100, 200 }
+                Cursistas = new List<string> { "100", "200"}
             };
 
             var command = new TransferirInscricaoCommand(123, dto);
