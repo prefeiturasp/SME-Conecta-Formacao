@@ -1,15 +1,10 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.Infra;
-using SME.ConectaFormacao.Infra.Dados;
-using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Net;
 
@@ -17,19 +12,17 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class TransferirInscricaoCommandHandler : IRequestHandler<TransferirInscricaoCommand, RetornoDTO>
     {
-        private readonly ITransacao _transacao;
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly IRepositorioUsuario _repositorioUsuario;
         private readonly IMediator _mediator;
         private readonly IRepositorioProposta _repositorioProposta;
 
-        public TransferirInscricaoCommandHandler(ITransacao transacao, IRepositorioInscricao repositorioInscricao, IRepositorioCargoFuncao repositorioCargoFuncao, IMediator mediator, IRepositorioProposta repositorioProposta, IRepositorioUsuario repositorioUsuario)
+        public TransferirInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao, IRepositorioCargoFuncao repositorioCargoFuncao, IMediator mediator, IRepositorioProposta repositorioProposta, IRepositorioUsuario repositorioUsuario)
         {
             _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
             _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
         }
 
         public async Task<RetornoDTO> Handle(TransferirInscricaoCommand request, CancellationToken cancellationToken)

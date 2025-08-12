@@ -7,9 +7,7 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System.Data;
 using System.Net;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
@@ -20,16 +18,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
         private readonly Mock<IRepositorioProposta> _repositorioPropostaMock = new();
         private readonly Mock<IRepositorioUsuario> _repositorioUsuarioMock = new();
         private readonly Mock<IMediator> _mediatorMock = new();
-        private readonly Mock<ITransacao> _transacaoMock = new();
-        private readonly Mock<IDbTransaction> _transacaoDbMock = new();
 
         private readonly TransferirInscricaoCommandHandler _handler;
 
         public TransferirInscricaoCommandHandlerTeste()
         {
-            _transacaoMock.Setup(t => t.Iniciar()).Returns(_transacaoDbMock.Object);
             _handler = new TransferirInscricaoCommandHandler(
-                _transacaoMock.Object,
                 _repositorioInscricaoMock.Object,
                 null,
                 _mediatorMock.Object,
@@ -73,7 +67,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
 
             resultado.Sucesso.Should().BeTrue();
             resultado.Mensagem.Should().Be("Todas as inscrições foram transferidas com sucesso.");
-            _transacaoDbMock.Verify(t => t.Commit(), Times.Never); 
         }
 
         [Fact]
