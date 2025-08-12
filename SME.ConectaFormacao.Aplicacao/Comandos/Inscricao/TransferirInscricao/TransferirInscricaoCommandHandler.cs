@@ -87,22 +87,20 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
             }
 
-            if (!cursistasErro.Any())
-            {
-                inscricao.Situacao = SituacaoInscricao.Transferida;
-                await _repositorioInscricao.Atualizar(inscricao);
-                await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
-
-                return RetornoDTO.RetornarSucesso("Todas as inscrições foram transferidas com sucesso.");
-            }
-            else
+            if (cursistasErro.Any())
             {
                 var mensagem = "Processamento concluído com falhas.\n\n" +
                     "\n\nErros:\n" + string.Join("\n", cursistasErro) +
                     "\n\nA inscrição original não foi alterada pois houve falhas.";
 
-                return RetornoDTO.RetornarSucesso(mensagem);
+                return RetornoDTO.RetornarErro(mensagem);
             }
+
+            inscricao.Situacao = SituacaoInscricao.Transferida;
+            await _repositorioInscricao.Atualizar(inscricao);
+            await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
+
+            return RetornoDTO.RetornarSucesso("Todas as inscrições foram transferidas com sucesso.");
         }
 
         private void ValidarInscricao(Inscricao inscricao)
