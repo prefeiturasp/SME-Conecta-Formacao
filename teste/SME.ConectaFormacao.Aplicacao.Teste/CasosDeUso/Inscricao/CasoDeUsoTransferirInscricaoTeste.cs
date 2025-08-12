@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao
                 IdTurmaOrigem = 2,
                 IdFormacaoDestino = 3,
                 IdTurmaDestino = 4,
-                Cursistas = new List<int> { 999 }  
+                Cursistas = new List<string> { "999" }  
             };
 
             var retornoEsperado = RetornoDTO.RetornarSucesso("Transferência realizada com sucesso", idInscricao);
