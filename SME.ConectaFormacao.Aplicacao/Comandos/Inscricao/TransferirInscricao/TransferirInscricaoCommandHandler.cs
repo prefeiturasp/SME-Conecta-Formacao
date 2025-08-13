@@ -28,6 +28,8 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             ValidarTransferencia(request.InscricaoTransferenciaDTO);
 
+            Usuario cursistaBanco = new Usuario();
+
             var retorno = new RetornoInscricaoDTO
             {
                 Cursistas = new List<Dtos.Usuario.CursistaDTO>()
@@ -38,12 +40,13 @@ namespace SME.ConectaFormacao.Aplicacao
                 try
                 {
                     var inscricao = await _repositorioInscricao.ObterPorId(cursista.IdInscricao);
-                    ValidarInscricao(inscricao);
 
-                    var cursistaBanco = await _repositorioUsuario.ObterPorLogin(cursista.Rf)
+                    cursistaBanco = await _repositorioUsuario.ObterPorLogin(cursista.Rf)
                         ?? throw new NegocioException(
                             string.Format(MensagemNegocio.USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS, cursista),
                             HttpStatusCode.NotFound);
+
+                    ValidarInscricao(inscricao);
 
                     var inscricaoNovaManual = new InscricaoManualDTO
                     {
@@ -91,7 +94,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     retorno.Cursistas.Add(new Dtos.Usuario.CursistaDTO
                     {
-                        NomeCursista = cursista?.Rf != null ? cursista.Rf : "Não identificado",
+                        NomeCursista = cursistaBanco.Nome,
                         Rf = !string.IsNullOrEmpty(cursista.Rf) ? Convert.ToInt64(cursista.Rf) : 0,
                         Mensagem = !string.IsNullOrEmpty(ex.Message) ? ex.Message : "Erro ao transferir inscrição."
                     });
