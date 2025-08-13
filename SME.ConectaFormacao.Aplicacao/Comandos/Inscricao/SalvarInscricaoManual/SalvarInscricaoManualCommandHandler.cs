@@ -45,9 +45,13 @@ namespace SME.ConectaFormacao.Aplicacao
             var propostaTurma = await _mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
                     throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
 
+            var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
+                    throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
+
             if (usuario.Tipo.EhInterno())
             {
-                await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
+                if (proposta.FuncoesEspecificas != null && proposta.FuncoesEspecificas.Any())
+                    await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
 
                 var possuiErros = await ValidarSeDreUsuarioInternoPossuiErros(usuario.Login, inscricao, cancellationToken);
                 if (!request.InscricaoManualDTO.PodeContinuar && possuiErros)
@@ -62,12 +66,10 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await ValidarExisteInscricaoNaProposta(propostaTurma.PropostaId, inscricao.UsuarioId);
 
-            var proposta = await _mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
-                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
-
             ValidaPeriodoDeInscricao(proposta);
 
             return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao);
+
         }
 
         private static void ValidaPeriodoDeInscricao(Proposta proposta)
