@@ -207,5 +207,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await casoDeUsoObterInformacoesInscricoesEstaoAbertasPorId.Executar(propostaId));
         }
+
+        [HttpPut("reativar")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> ReativarInscricoes(
+            [FromServices] ICasoDeUsoReativarInscricoes casoDeUso,
+            [FromQuery] long[] ids)
+        {
+            return Ok(await casoDeUso.Executar(ids));
+        }
     }
 }

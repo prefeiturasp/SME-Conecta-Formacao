@@ -254,7 +254,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<Inscricao, DadosListagemInscricaoPermissaoDTO>()
                 .ForMember(dest => dest.PodeConfirmar, opt => opt.MapFrom(o => o.Situacao.EhAguardandoAnalise() || o.Situacao.EhEmEspera()))
                 .ForMember(dest => dest.PodeColocarEmEspera, opt => opt.MapFrom(o => o.Situacao.EhAguardandoAnalise()))
-                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao.NaoEhCancelada()));
+                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao.NaoEhCancelada()))
+                .ForMember(dest => dest.PodeReativar, opt => opt.MapFrom(o => o.Situacao.EhCancelada()));
 
             CreateMap<Inscricao, DadosListagemInscricaoDTO>()
                 .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
