@@ -11,7 +11,7 @@ using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
-    //[Authorize("Bearer")]
+    [Authorize("Bearer")]
     public class InscricaoController : BaseController
     {
         [HttpGet("dados-inscricao")]
@@ -107,7 +107,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        //[Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
         public async Task<IActionResult> CancelarInscricoes(
             [FromServices] ICasoDeUsoCancelarInscricoes casoDeUso,
             [FromQuery] long[] ids,
@@ -200,7 +200,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        //[Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
         public async Task<IActionResult> ReativarInscricoes(
             [FromServices] ICasoDeUsoReativarInscricoes casoDeUso,
             [FromQuery] long[] ids)
