@@ -28,50 +28,54 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<RetornoDTO> Handle(TransferirInscricaoCommand request, CancellationToken cancellationToken)
         {
             var cursistasErro = new List<string>();
+            var inscricoesSucesso = new List<Inscricao>();
 
-            var inscricao = await _repositorioInscricao.ObterPorId(request.IdInscricao);
-
-            ValidarInscricao(inscricao);
             ValidarTransferencia(request.InscricaoTransferenciaDTO);
-
-            var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken)
-                ?? throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-
-            var inscricaoNovaManual = new InscricaoManualDTO();
 
             foreach (var cursista in request.InscricaoTransferenciaDTO.Cursistas)
             {
-                var cursistaBanco = await _repositorioUsuario.ObterPorLogin(cursista.ToString())
+                var inscricao = await _repositorioInscricao.ObterPorId(cursista.IdInscricao);
+
+                ValidarInscricao(inscricao);
+
+                var cursistaBanco = await _repositorioUsuario.ObterPorLogin(cursista.Rf)
                     ?? throw new NegocioException(
                         string.Format(MensagemNegocio.USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS, cursista),
                         HttpStatusCode.NotFound);
 
                 try
                 {
-                    inscricaoNovaManual.PropostaTurmaId = request.InscricaoTransferenciaDTO.IdTurmaDestino;
-                    inscricaoNovaManual.Cpf = cursistaBanco.Cpf;
-                    inscricaoNovaManual.RegistroFuncional = cursistaBanco.Login;
+                    var inscricaoNovaManual = new InscricaoManualDTO
+                    {
+                        PropostaTurmaId = request.InscricaoTransferenciaDTO.IdTurmaDestino,
+                        Cpf = cursistaBanco.Cpf,
+                        RegistroFuncional = cursistaBanco.Login
+                    };
 
-                    var query = new ObterCargosFuncoesDresFuncionarioServicoEolQuery(inscricaoNovaManual.RegistroFuncional);
-                    var cargos = await _mediator.Send(query);
-
-                    var queryOutros = new ObterCargoFuncaoOutrosQuery();
-                    var cargosOutros = await _mediator.Send(queryOutros);
+                    var cargos = await _mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(inscricaoNovaManual.RegistroFuncional));
+                    var cargosOutros = await _mediator.Send(new ObterCargoFuncaoOutrosQuery());
 
                     inscricaoNovaManual.CargoCodigo = cargos?.FirstOrDefault()?.CdCargoBase?.ToString() ?? cargosOutros?.Id.ToString();
                     inscricaoNovaManual.FuncaoCodigo = cargos?.FirstOrDefault()?.CdFuncaoAtividade?.ToString();
                     inscricaoNovaManual.CargoUeCodigo = cargos?.FirstOrDefault()?.CdUeCargoBase?.ToString();
 
-                    var propostaTurmaDestino = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(request.InscricaoTransferenciaDTO.IdTurmaDestino);
+                    var propostaTurmaDestino = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(
+                        request.InscricaoTransferenciaDTO.IdTurmaDestino);
 
                     if (propostaTurmaDestino != null)
                     {
                         ValidarDreTransferencia(propostaTurmaDestino, inscricao.CargoDreCodigo);
 
-                        if (!string.IsNullOrEmpty(inscricaoNovaManual.CargoCodigo) && !string.IsNullOrEmpty(inscricao.CargoCodigo) && inscricaoNovaManual.CargoCodigo != cargosOutros?.Id.ToString())
+                        if (!string.IsNullOrEmpty(inscricaoNovaManual.CargoCodigo) &&
+                            !string.IsNullOrEmpty(inscricao.CargoCodigo) &&
+                            inscricaoNovaManual.CargoCodigo != cargosOutros?.Id.ToString())
+                        {
                             ValidarCargoTransferencia(inscricao.CargoCodigo, inscricaoNovaManual.CargoCodigo);
+                        }
 
                         await _mediator.Send(new SalvarInscricaoManualCommand(inscricaoNovaManual));
+
+                        inscricoesSucesso.Add(inscricao);
                     }
                 }
                 catch (Exception ex)
@@ -80,18 +84,20 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
             }
 
-            if (cursistasErro.Any())
+            foreach (var inscricao in inscricoesSucesso)
             {
-                var mensagem = "Processamento concluído com falhas.\n\n" +
-                    "\n\nErros:\n" + string.Join("\n", cursistasErro) +
-                    "\n\nA inscrição original não foi alterada pois houve falhas.";
-
-                return RetornoDTO.RetornarErro(mensagem);
+                inscricao.Situacao = SituacaoInscricao.Transferida;
+                await _repositorioInscricao.Atualizar(inscricao);
+                await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
             }
 
-            inscricao.Situacao = SituacaoInscricao.Transferida;
-            await _repositorioInscricao.Atualizar(inscricao);
-            await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
+            if (cursistasErro.Any())
+            {
+                var mensagem = "Processamento concluído com algumas falhas.\n\n" +
+                               "Erros:\n" + string.Join("\n", cursistasErro) +
+                               $"\n\n{inscricoesSucesso.Count} inscrições foram transferidas com sucesso.";
+                return RetornoDTO.RetornarErro(mensagem);
+            }
 
             return RetornoDTO.RetornarSucesso("Todas as inscrições foram transferidas com sucesso.");
         }

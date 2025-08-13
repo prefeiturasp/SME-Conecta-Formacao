@@ -11,9 +11,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
         {
         }
 
-        public async Task<RetornoDTO> Executar(long Id, InscricaoTransferenciaDTO inscricaoTransferenciaDTO)
+        public async Task<RetornoDTO> Executar(InscricaoTransferenciaDTO inscricaoTransferenciaDTO)
         {
-            return await mediator.Send(new TransferirInscricaoCommand(Id, inscricaoTransferenciaDTO));
+            return await mediator.Send(new TransferirInscricaoCommand(inscricaoTransferenciaDTO));
         }
     }
 }

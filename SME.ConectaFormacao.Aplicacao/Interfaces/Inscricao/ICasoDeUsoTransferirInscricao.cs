@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
 {
     public interface ICasoDeUsoTransferirInscricao
     {
-        Task<RetornoDTO> Executar(long Id, InscricaoTransferenciaDTO inscricaoTransferenciaDTO);
+        Task<RetornoDTO> Executar(InscricaoTransferenciaDTO inscricaoTransferenciaDTO);
     }
 }

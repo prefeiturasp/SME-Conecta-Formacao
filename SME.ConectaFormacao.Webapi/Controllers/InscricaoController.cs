@@ -6,9 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
@@ -123,9 +121,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
-        public async Task<IActionResult> TransferirInscricoes([FromServices] ICasoDeUsoTransferirInscricao casoDeUso, [FromQuery] long id, [FromBody] InscricaoTransferenciaDTO inscricaoTransferenciaDTO)
+        public async Task<IActionResult> TransferirInscricoes([FromServices] ICasoDeUsoTransferirInscricao casoDeUso, [FromBody] InscricaoTransferenciaDTO inscricaoTransferenciaDTO)
         {
-            return Ok(await casoDeUso.Executar(id, inscricaoTransferenciaDTO));
+            return Ok(await casoDeUso.Executar(inscricaoTransferenciaDTO));
         }
 
         [HttpGet("{propostaId}")]
