@@ -73,22 +73,26 @@ namespace SME.ConectaFormacao.Aplicacao
                             ValidarCargoTransferencia(inscricao.CargoCodigo, inscricaoNovaManual.CargoCodigo);
                         }
 
+                        var proposta = (await _repositorioProposta.ObterPropostasResumidasPorId(new[] { propostaTurmaDestino.PropostaId }))
+                                       .SingleOrDefault();
+
+                        if (proposta == null)
+                            throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
+
+                        await _repositorioProposta.AtualizarIntegrarNoSGA(proposta.Id, PropostaIntegrarNoSGA.NAO.ToBool());
+
                         await _mediator.Send(new SalvarInscricaoManualCommand(inscricaoNovaManual));
 
                         inscricoesSucesso.Add(inscricao);
+
+                        await _repositorioInscricao.AtualizarSituacao(inscricao.Id, SituacaoInscricao.Transferida);
+                        await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
                     }
                 }
                 catch (Exception ex)
                 {
                     cursistasErro.Add($"{cursistaBanco.Nome} ({cursistaBanco.Login}) - {ex.Message}");
                 }
-            }
-
-            foreach (var inscricao in inscricoesSucesso)
-            {
-                inscricao.Situacao = SituacaoInscricao.Transferida;
-                await _repositorioInscricao.Atualizar(inscricao);
-                await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
             }
 
             if (cursistasErro.Any())
