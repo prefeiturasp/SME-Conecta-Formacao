@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class TransferirInscricaoCommand : IRequest<RetornoDTO>
+    public class TransferirInscricaoCommand : IRequest<RetornoInscricaoDTO>
     {
         public TransferirInscricaoCommand(InscricaoTransferenciaDTO inscricaoTransferenciaDTO)
         {

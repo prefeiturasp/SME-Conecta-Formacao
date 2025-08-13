@@ -66,7 +66,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
             await ValidarExisteInscricaoNaProposta(propostaTurma.PropostaId, inscricao.UsuarioId);
 
-            ValidaPeriodoDeInscricao(proposta);
+            if (!request.EhTransferencia)
+                ValidaPeriodoDeInscricao(proposta);
 
             return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao);
 
