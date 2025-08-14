@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 
         public async Task<RetornoDTO> Executar(InscricaoManualDTO inscricaoManualDTO)
         {
-            return await mediator.Send(new SalvarInscricaoManualCommand(inscricaoManualDTO));
+            return await mediator.Send(new SalvarInscricaoManualCommand(inscricaoManualDTO, false));
         }
     }
 }

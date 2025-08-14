@@ -1,19 +1,15 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class TransferirInscricaoCommand : IRequest<RetornoDTO>
+    public class TransferirInscricaoCommand : IRequest<RetornoInscricaoDTO>
     {
-        public TransferirInscricaoCommand(long id, InscricaoTransferenciaDTO inscricaoTransferenciaDTO)
+        public TransferirInscricaoCommand(InscricaoTransferenciaDTO inscricaoTransferenciaDTO)
         {
-            IdInscricao = id;
             InscricaoTransferenciaDTO = inscricaoTransferenciaDTO;
         }
-
-        public long IdInscricao { get; set; }
         public InscricaoTransferenciaDTO InscricaoTransferenciaDTO { get; set; }
     }
 
@@ -21,10 +17,6 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         public TransferirInscricaoCommandValidator()
         {
-            RuleFor(t => t.IdInscricao)
-                .NotEmpty()
-                .WithMessage("É necessário informar a inscrição");
-
             RuleFor(t => t.InscricaoTransferenciaDTO)
                 .NotNull()
                 .WithMessage("É necessário informar os dados da transferência");

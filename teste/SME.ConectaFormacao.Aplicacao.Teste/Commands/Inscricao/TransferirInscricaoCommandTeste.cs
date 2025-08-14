@@ -12,24 +12,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
             _validator = new TransferirInscricaoCommandValidator();
         }
 
-        [Fact(DisplayName = "Erro quando IdInscricao for 0")]
-        public void Deve_Retornar_Erro_Se_IdInscricao_For_Zero()
-        {
-            var command = new TransferirInscricaoCommand(0, new InscricaoTransferenciaDTO
-            {
-                IdTurmaDestino = 1,
-                Cursistas = new List<string> { "1" }
-            });
-
-            var resultado = _validator.TestValidate(command);
-            resultado.ShouldHaveValidationErrorFor(x => x.IdInscricao);
-        }
-
         [Fact(DisplayName = "Erro quando InscricaoTransferenciaDTO for nulo")]
         public void Deve_Retornar_Erro_Se_InscricaoTransferenciaDTO_For_Nulo()
         {
-            var command = new TransferirInscricaoCommand(1, null);
+            var command = new TransferirInscricaoCommand(null);
+
             var resultado = _validator.TestValidate(command);
+
             resultado.ShouldHaveValidationErrorFor(x => x.InscricaoTransferenciaDTO);
         }
 
@@ -39,11 +28,15 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
             var dto = new InscricaoTransferenciaDTO
             {
                 IdTurmaDestino = 0,
-                Cursistas = new List<string> { "1" }
+                Cursistas = new List<InscricaoTransferenciaDTOCursista>
+                {
+                    new InscricaoTransferenciaDTOCursista { IdInscricao = 1, Rf = "RF1" }
+                }
             };
 
-            var command = new TransferirInscricaoCommand(1, dto);
+            var command = new TransferirInscricaoCommand(dto);
             var resultado = _validator.TestValidate(command);
+
             resultado.ShouldHaveValidationErrorFor("InscricaoTransferenciaDTO.IdTurmaDestino");
         }
 
@@ -53,18 +46,20 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
             var dto = new InscricaoTransferenciaDTO
             {
                 IdTurmaDestino = 1,
-                Cursistas = new List<string>() 
+                Cursistas = new List<InscricaoTransferenciaDTOCursista>()
             };
 
-            var command = new TransferirInscricaoCommand(1, dto);
+            var command = new TransferirInscricaoCommand(dto);
             var resultado = _validator.TestValidate(command);
+
             resultado.ShouldHaveValidationErrorFor("InscricaoTransferenciaDTO.Cursistas");
         }
 
         [Fact(DisplayName = "Não deve validar regras internas se DTO for nulo")]
         public void Nao_Deve_Validar_IdTurmaDestino_Se_DTO_For_Nulo()
         {
-            var command = new TransferirInscricaoCommand(1, null);
+            var command = new TransferirInscricaoCommand(null);
+
             var resultado = _validator.TestValidate(command);
 
             resultado.ShouldNotHaveValidationErrorFor("InscricaoTransferenciaDTO.IdTurmaDestino");
@@ -73,7 +68,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
         [Fact(DisplayName = "Não deve validar cursistas se DTO for nulo")]
         public void Nao_Deve_Validar_Cursistas_Se_DTO_For_Nulo()
         {
-            var command = new TransferirInscricaoCommand(1, null);
+            var command = new TransferirInscricaoCommand(null);
+
             var resultado = _validator.TestValidate(command);
 
             resultado.ShouldNotHaveValidationErrorFor("InscricaoTransferenciaDTO.Cursistas");
@@ -85,10 +81,14 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
             var dto = new InscricaoTransferenciaDTO
             {
                 IdTurmaDestino = 10,
-                Cursistas = new List<string> { "100", "200"}
+                Cursistas = new List<InscricaoTransferenciaDTOCursista>
+                {
+                    new InscricaoTransferenciaDTOCursista { IdInscricao = 1, Rf = "RF1" },
+                    new InscricaoTransferenciaDTOCursista { IdInscricao = 2, Rf = "RF2" }
+                }
             };
 
-            var command = new TransferirInscricaoCommand(123, dto);
+            var command = new TransferirInscricaoCommand(dto);
             var resultado = _validator.TestValidate(command);
 
             resultado.ShouldNotHaveAnyValidationErrors();

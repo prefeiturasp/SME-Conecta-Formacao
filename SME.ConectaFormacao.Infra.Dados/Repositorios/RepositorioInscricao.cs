@@ -49,6 +49,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        and i.usuario_id = @usuarioId 
 	                        and i.situacao <> @situacaoCancelada
                             and i.situacao <> @situacaoTransferida
+                            and not pt.excluido
                         limit 1";
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { propostaId, usuarioId, situacaoCancelada, situacaoTransferida });
@@ -454,5 +455,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = @"select id from inscricao where not excluido and situacao = @situacao and proposta_turma_id = @propostaTurmaId";
             return conexao.Obter().QueryAsync<long>(query, new { situacao, propostaTurmaId });
         }
+        public async Task AtualizarSituacao(long inscricaoId, SituacaoInscricao situacao)
+        {
+            var sql = "UPDATE inscricao SET situacao = @situacao WHERE Id = @inscricaoId";
+            await conexao.Obter().ExecuteAsync(sql, new { situacao, inscricaoId });
+        }
+
     }
 }

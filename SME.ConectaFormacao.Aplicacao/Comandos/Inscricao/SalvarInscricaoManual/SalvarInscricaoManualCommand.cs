@@ -7,12 +7,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class SalvarInscricaoManualCommand : IRequest<RetornoDTO>
     {
-        public SalvarInscricaoManualCommand(InscricaoManualDTO inscricaoManualDTO)
+        public SalvarInscricaoManualCommand(InscricaoManualDTO inscricaoManualDTO, bool ehTransferencia)
         {
             InscricaoManualDTO = inscricaoManualDTO;
+            EhTransferencia = ehTransferencia;
         }
 
         public InscricaoManualDTO InscricaoManualDTO { get; }
+        public bool EhTransferencia { get; set; }
     }
 
     public class SalvarInscricaoManualCommandValidator : AbstractValidator<SalvarInscricaoManualCommand>

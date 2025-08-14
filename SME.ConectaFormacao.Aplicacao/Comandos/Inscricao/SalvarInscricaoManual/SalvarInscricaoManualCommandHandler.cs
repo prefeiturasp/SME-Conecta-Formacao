@@ -55,18 +55,19 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 var possuiErros = await ValidarSeDreUsuarioInternoPossuiErros(usuario.Login, inscricao, cancellationToken);
                 if (!request.InscricaoManualDTO.PodeContinuar && possuiErros)
-                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL);
+                    throw new NegocioException(request.EhTransferencia ? MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_TRANSFERENCIA : MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL);
             }
             else
             {
                 var possuiErros = await ValidarSeDreUsuarioExternoPossuiErros(inscricao.PropostaTurmaId, usuario.CodigoEolUnidade, cancellationToken);
                 if (!request.InscricaoManualDTO.PodeContinuar && possuiErros)
-                    throw new NegocioException(MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL);
+                    throw new NegocioException(request.EhTransferencia ? MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_TRANSFERENCIA : MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL);
             }
 
             await ValidarExisteInscricaoNaProposta(propostaTurma.PropostaId, inscricao.UsuarioId);
 
-            ValidaPeriodoDeInscricao(proposta);
+            if (!request.EhTransferencia)
+                ValidaPeriodoDeInscricao(proposta);
 
             return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao);
 
