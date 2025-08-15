@@ -304,7 +304,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
         }
 
         [Fact]
-        public void ValidarInscricao_Deve_Lancar_Se_Null_Ou_Cancelada()
+        public void Validar_Inscricao_Deve_Lancar_Se_Null_Ou_Cancelada()
         {
             var metodo = typeof(TransferirInscricaoCommandHandler).GetMethod("ValidarInscricao", BindingFlags.NonPublic | BindingFlags.Static);
 
@@ -313,10 +313,49 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
         }
 
         [Fact]
-        public void ValidarCargoTransferencia_Deve_Lancar_Se_Diferente()
+        public void Validar_Cargo_Transferencia_Deve_Lancar_Se_CargoOrigem_Nulo()
         {
-            var metodo = typeof(TransferirInscricaoCommandHandler).GetMethod("ValidarCargoTransferencia", BindingFlags.NonPublic | BindingFlags.Static);
-            Assert.Throws<TargetInvocationException>(() => metodo.Invoke(null, new object[] { "1", "2" }));
+            var metodo = typeof(TransferirInscricaoCommandHandler)
+                .GetMethod("ValidarCargoTransferencia", BindingFlags.NonPublic | BindingFlags.Static);
+
+            var ex = Assert.Throws<TargetInvocationException>(() =>
+                metodo.Invoke(null, new object[] { null, "2", "3" })
+            );
+
+            var negocio = Assert.IsType<NegocioException>(ex.InnerException);
+            Assert.Equal(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, negocio.Message);
+            Assert.Equal((int)HttpStatusCode.NotFound, negocio.StatusCode);
         }
+
+        [Fact]
+        public void Validar_Cargo_Transferencia_Deve_Lancar_Excecao_Se_CargoBase_Vazio()
+        {
+            var metodo = typeof(TransferirInscricaoCommandHandler)
+                .GetMethod("ValidarCargoTransferencia", BindingFlags.NonPublic | BindingFlags.Static);
+
+            var ex = Assert.Throws<TargetInvocationException>(() =>
+                metodo.Invoke(null, new object[] { "1", "", "3" })
+            );
+
+            var negocio = Assert.IsType<NegocioException>(ex.InnerException);
+            Assert.Equal(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, negocio.Message);
+            Assert.Equal((int)HttpStatusCode.NotFound, negocio.StatusCode);
+        }
+
+        [Fact]
+        public void Validar_Cargo_Transferencia_Deve_Lancar_Excecao_Se_Cargos_Diferentes()
+        {
+            var metodo = typeof(TransferirInscricaoCommandHandler)
+                .GetMethod("ValidarCargoTransferencia", BindingFlags.NonPublic | BindingFlags.Static);
+
+            var ex = Assert.Throws<TargetInvocationException>(() =>
+                metodo.Invoke(null, new object[] { "1", "2", null })
+            );
+
+            var negocio = Assert.IsType<NegocioException>(ex.InnerException);
+            Assert.Equal(MensagemNegocio.INSCRICAO_TRANSFERENCIA_CARGOS_DIFERENTES, negocio.Message);
+            Assert.Equal((int)HttpStatusCode.BadRequest, negocio.StatusCode);
+        }
+
     }
 }

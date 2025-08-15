@@ -57,7 +57,11 @@ namespace SME.ConectaFormacao.Aplicacao
 
                     var cargos = await _mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(inscricaoNovaManual.RegistroFuncional));
 
-                    inscricaoNovaManual.CargoCodigo = cargos?.FirstOrDefault()?.CdCargoBase?.ToString();
+                    var cargoBase = cargos?.FirstOrDefault()?.CdCargoBase?.ToString() ?? string.Empty;
+                    var cargoSobreposto = cargos?.FirstOrDefault()?.CdCargoSobreposto?.ToString() ?? string.Empty;
+
+                    inscricaoNovaManual.CargoCodigo = cargoBase;
+
                     inscricaoNovaManual.FuncaoCodigo = cargos?.FirstOrDefault()?.CdFuncaoAtividade?.ToString();
                     inscricaoNovaManual.CargoUeCodigo = cargos?.FirstOrDefault()?.CdUeCargoBase?.ToString();
 
@@ -76,7 +80,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                         if (cargos != null && cargos.Any(c => c.CdCargoBase != null))
                         {
-                            ValidarCargoTransferencia(inscricao.CargoCodigo, inscricaoNovaManual.CargoCodigo);
+                            ValidarCargoTransferencia(inscricao.CargoCodigo, cargoBase, cargoSobreposto);
                         }
 
                         var proposta = (await _repositorioProposta.ObterPropostasResumidasPorId(new[] { propostaTurmaDestino.PropostaId })).SingleOrDefault();
@@ -150,16 +154,15 @@ namespace SME.ConectaFormacao.Aplicacao
             if (string.IsNullOrWhiteSpace(dreCodigoOrigem))
                 throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL, HttpStatusCode.NotFound);
         }
-
-        private static void ValidarCargoTransferencia(string cargoOrigem, string cargoDestino)
+        private static void ValidarCargoTransferencia(string cargoOrigem, string cargoBase, string cargoSobreposto)
         {
-            if (cargoOrigem == null || cargoOrigem == "")
+            if (string.IsNullOrEmpty(cargoOrigem))
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, HttpStatusCode.NotFound);
 
-            if (cargoDestino == null || cargoDestino == "")
+            if (string.IsNullOrEmpty(cargoBase))
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, HttpStatusCode.NotFound);
 
-            if (cargoOrigem != cargoDestino)
+            if (cargoOrigem != cargoBase && (cargoSobreposto == null || cargoOrigem != cargoSobreposto))
                 throw new NegocioException(MensagemNegocio.INSCRICAO_TRANSFERENCIA_CARGOS_DIFERENTES, HttpStatusCode.BadRequest);
         }
     }
