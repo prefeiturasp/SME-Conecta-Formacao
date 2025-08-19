@@ -23,14 +23,18 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var totalDeRegistros = await _repositorioInscricao.ObterInscricaoPorIdComFiltrosTotalRegistros(
                 request.PropostaId, request.filtros.RegistroFuncional, request.filtros.Cpf,
-                request.filtros.NomeCursista, request.filtros.TurmasId);
+                request.filtros.NomeCursista, request.filtros.TurmasId, request.filtros.OcultarCancelada,
+
+                request.filtros.OcultarTransferida);
+
 
             if (totalDeRegistros <= 0)
                 return new PaginacaoResultadoDTO<DadosListagemInscricaoDTO>(mapeamento, totalDeRegistros, request.NumeroRegistros);
 
             var inscricoes = await _repositorioInscricao.ObterInscricaoPorIdComFiltros(request.PropostaId,
                 request.filtros.RegistroFuncional, request.filtros.Cpf, request.filtros.NomeCursista,
-                request.filtros.TurmasId, request.NumeroPagina, request.NumeroRegistros);
+                request.filtros.TurmasId, request.NumeroPagina, request.NumeroRegistros, request.filtros.OcultarCancelada,
+                request.filtros.OcultarTransferida);
 
             var propostaPossuiAnexo = await _repositorioInscricao.ObterSeInscricaoPossuiAnexoPorPropostasIds(inscricoes.Select(x => x.Id).ToArray());
 
