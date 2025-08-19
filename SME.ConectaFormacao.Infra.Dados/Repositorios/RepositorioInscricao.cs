@@ -201,13 +201,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             ");
 
             if (!string.IsNullOrEmpty(login))
-                query.AppendLine(" and u.login like '%' || @login || '%' ");
+                query.AppendLine($" and u.login like '%{@login}%' ");
 
             if (!string.IsNullOrEmpty(cpf))
-                query.AppendLine(" and u.cpf like '%' || @cpf || '%' ");
+                query.AppendLine($"and u.cpf like '%{@cpf}%' ");
 
             if (!string.IsNullOrEmpty(nomeCursista))
-                query.AppendLine(" and lower(u.nome) like '%' || @nomeCursista || '%' ");
+                query.AppendLine($" and lower(u.nome) like '%{@nomeCursista.ToLower()}%' ");
 
             if (turmasId?.Length > 0)
                 query.AppendLine(" and pt.id = any(@turmasId) ");
