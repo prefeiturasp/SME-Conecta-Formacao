@@ -64,10 +64,11 @@ namespace SME.ConectaFormacao.Aplicacao
                     throw new NegocioException(request.EhTransferencia ? MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_TRANSFERENCIA : MensagemNegocio.USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_INSCRICAO_MANUAL);
             }
 
-            await ValidarExisteInscricaoNaProposta(propostaTurma.PropostaId, inscricao.UsuarioId);
-
             if (!request.EhTransferencia)
+            {
+                await ValidarExisteInscricaoNaProposta(propostaTurma.PropostaId, inscricao.UsuarioId);
                 ValidaPeriodoDeInscricao(proposta);
+            }
 
             return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao);
 
