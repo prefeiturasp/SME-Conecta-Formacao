@@ -194,6 +194,7 @@ public class MensagemNegocio
     public const string INSCRICOES_CANCELADAS_COM_INCONSISTENCIAS = "Existem inscrições não canceladas!";
     public const string INSCRICOES_CANCELADAS_COM_SUCESSO = "Inscrições canceladas com sucesso!";
     public const string INSCRICOES_CANCELADAS = "Inscrição não pode estar cancelada para ser alterada";
+    public const string INSCRICOES_CANCELADAS_OU_TRANSFERIDAS = "Inscrição não pode estar cancelada/transferida para ser alterada";
     public const string PARAMETRO_INVALIDO = "Parâmetro inválido";
     public const string NOTIFICACAO_NAO_ENCONTRADA = "Notificação não encontrada";
     public const string NOTIFICACAO_NAO_ENCONTRADA_USUARIO = "Notificação não encontrada para o usuário logado";

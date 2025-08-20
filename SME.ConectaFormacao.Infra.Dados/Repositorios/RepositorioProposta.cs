@@ -1920,6 +1920,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return propostas;
         }
 
+        public async Task<IEnumerable<PropostaPublicoAlvo>> ObterPropostasPublicoAlvoPorIdProposta(long propostaId)
+        {
+            var query = $@"select * from proposta_publico_alvo where proposta_id = @propostaId and excluido is not true";
+
+            return await conexao.Obter().QueryAsync<PropostaPublicoAlvo>(query, new { propostaId });
+        }
         public async Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId)
         {
             var tipoInscricao = new int[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
