@@ -51,6 +51,8 @@ namespace SME.ConectaFormacao.Aplicacao
                     var propostaTurmaOrigem = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(
                         request.InscricaoTransferenciaDTO.IdTurmaOrigem);
 
+                    var dreTurmaOrigem = inscricao.CargoDreCodigo != null ? inscricao.CargoDreCodigo : propostaTurmaOrigem?.Dres?.FirstOrDefault()?.Id.ToString();
+
                     var propostaTurmaDestino = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(
                         request.InscricaoTransferenciaDTO.IdTurmaDestino);
 
@@ -59,7 +61,9 @@ namespace SME.ConectaFormacao.Aplicacao
                         var cargoPropostaTurmaOrigem = await _repositorioProposta.ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaOrigem.PropostaId);
                         var cargoPropostaTurmaDestino = await _repositorioProposta.ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaDestino.PropostaId);
 
-                        ValidarDreTransferencia(propostaTurmaDestino, inscricao.CargoDreCodigo);
+                        ValidarDreTransferencia(propostaTurmaDestino, dreTurmaOrigem);
+
+                        IEnumerable<long> cargosComuns = new List<long>();
 
                         if (cargoPropostaTurmaOrigem != null && cargoPropostaTurmaOrigem.Any() && cargoPropostaTurmaDestino != null && cargoPropostaTurmaDestino.Any())
                         {
@@ -73,8 +77,7 @@ namespace SME.ConectaFormacao.Aplicacao
                                 .Select(x => x.CargoFuncaoId)
                                 .ToList();
 
-                            // Verifica se existe pelo menos um cargo em comum
-                            var cargosComuns = cargosOrigem.Intersect(cargosDestino);
+                            cargosComuns = cargosOrigem.Intersect(cargosDestino);
 
                             if (!cargosComuns.Any())
                                 throw new NegocioException(
@@ -88,7 +91,11 @@ namespace SME.ConectaFormacao.Aplicacao
                             PropostaTurmaId = request.InscricaoTransferenciaDTO.IdTurmaDestino,
                             Cpf = cursistaBanco.Cpf,
                             RegistroFuncional = cursistaBanco.Login,
-                            CargoCodigo = cargoPropostaTurmaDestino?.FirstOrDefault()?.CargoFuncaoId.ToString(),
+                            CargoCodigo = inscricao.CargoCodigo,
+                            FuncaoCodigo = inscricao.FuncaoCodigo,
+                            FuncaoDreCodigo = inscricao.FuncaoDreCodigo,
+                            FuncaoUeCodigo = inscricao.FuncaoUeCodigo,
+                            FuncaoId = inscricao.FuncaoId
                         };
 
                         var proposta = (await _repositorioProposta.ObterPropostasResumidasPorId(new[] { propostaTurmaDestino.PropostaId })).SingleOrDefault();
