@@ -116,7 +116,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 var sql = @" SELECT d.id AS Id, d.dre_id AS DreId, d.abreviacao AS DreAbreviacao, d.nome AS DreNome
                   FROM proposta_turma_dre ptd
                   INNER JOIN dre d ON d.id = ptd.dre_id
-                  WHERE ptd.proposta_turma_id = @Id";
+                  WHERE ptd.proposta_turma_id = @Id 
+                  AND ptd.excluido IS NOT TRUE
+                  AND d.excluido IS NOT TRUE ";
 
                 var dres = await conexao.Obter().QueryAsync<PropostaTurmaDre>(sql, new { Id = propostaTurmaId });
 

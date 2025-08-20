@@ -144,15 +144,15 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
             if (propostaTurmaDestino.Dres == null || !propostaTurmaDestino.Dres.Any())
-                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL, HttpStatusCode.NotFound);
+                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL_TRANSFERENCIA, HttpStatusCode.NotFound);
 
-            var dreCodigoDestino = propostaTurmaDestino.Dres.FirstOrDefault()?.DreId;
+            var dreCodigoDestino = propostaTurmaDestino.Dres.FirstOrDefault()?.DreId ?? propostaTurmaDestino.Dres.FirstOrDefault()?.Id;
 
             if (dreCodigoDestino == null || dreCodigoDestino == 0)
-                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL, HttpStatusCode.NotFound);
+                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL_TRANSFERENCIA, HttpStatusCode.NotFound);
 
             if (string.IsNullOrWhiteSpace(dreCodigoOrigem))
-                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL, HttpStatusCode.NotFound);
+                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL_TRANSFERENCIA, HttpStatusCode.NotFound);
         }
         private static void ValidarCargoTransferencia(string cargoOrigem, string cargoBase, string cargoSobreposto)
         {

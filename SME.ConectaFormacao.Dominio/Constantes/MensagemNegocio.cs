@@ -81,6 +81,7 @@ public class MensagemNegocio
     public const string UNIDADE_NAO_LOCALIZADA_POR_CODIGO = "Nenhuma Unidade foi localizada com o código informado";
     public const string CONTRATO_EXTERNO_NAO_LOCALIZADO_POR_CPF = "Nenhum contrato externo foi localizado com o cpf informado";
     public const string NENHUMA_DRE_ENCONTRADA_NO_EOL = "Não foi possível localizar as Dres no EOL para a sincronização instituicional";
+    public const string NENHUMA_DRE_ENCONTRADA_NO_EOL_TRANSFERENCIA = "Não foi possível localizar a DRE correspondente para realizar a transferência.";
     public const string PROPOSTA_NAO_PODE_SER_ENVIADA = "Proposta deve estar com situação de cadastrada, devolvida, Aguardando análise do DF ou Aguardando análise do parecer pelo DF para ser enviada para validação";
     public const string PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECER_DF = "Proposta deve estar com situação Aguardando parecer do DF";
     public const string PROPOSTA_NAO_ESTA_COMO_AGUARDANDO_PARECERISTA = "Proposta deve estar com situação Aguardando Análise/Reanalise do Parecerista";
