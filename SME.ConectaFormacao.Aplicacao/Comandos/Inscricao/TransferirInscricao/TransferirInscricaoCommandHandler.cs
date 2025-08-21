@@ -48,40 +48,55 @@ namespace SME.ConectaFormacao.Aplicacao
 
                     ValidarInscricao(inscricao);
 
-                    var inscricaoNovaManual = new InscricaoManualDTO
-                    {
-                        PropostaTurmaId = request.InscricaoTransferenciaDTO.IdTurmaDestino,
-                        Cpf = cursistaBanco.Cpf,
-                        RegistroFuncional = cursistaBanco.Login
-                    };
+                    var propostaTurmaOrigem = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(
+                        request.InscricaoTransferenciaDTO.IdTurmaOrigem);
 
-                    var cargos = await _mediator.Send(new ObterCargosFuncoesDresFuncionarioServicoEolQuery(inscricaoNovaManual.RegistroFuncional));
-
-                    var cargoBase = cargos?.FirstOrDefault()?.CdCargoBase?.ToString() ?? string.Empty;
-                    var cargoSobreposto = cargos?.FirstOrDefault()?.CdCargoSobreposto?.ToString() ?? string.Empty;
-
-                    inscricaoNovaManual.CargoCodigo = cargoBase;
-
-                    inscricaoNovaManual.FuncaoCodigo = cargos?.FirstOrDefault()?.CdFuncaoAtividade?.ToString();
-                    inscricaoNovaManual.CargoUeCodigo = cargos?.FirstOrDefault()?.CdUeCargoBase?.ToString();
-
-                    if (inscricaoNovaManual.CargoCodigo == null)
-                    {
-                        var cargosOutros = await _mediator.Send(new ObterCargoFuncaoOutrosQuery());
-                        inscricaoNovaManual.CargoCodigo = cargosOutros?.Id.ToString();
-                    }
+                    var dreTurmaOrigem = inscricao.CargoDreCodigo != null ? inscricao.CargoDreCodigo : propostaTurmaOrigem?.Dres?.FirstOrDefault()?.Id.ToString();
 
                     var propostaTurmaDestino = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(
                         request.InscricaoTransferenciaDTO.IdTurmaDestino);
 
-                    if (propostaTurmaDestino != null)
+                    if (propostaTurmaDestino != null && propostaTurmaOrigem != null)
                     {
-                        ValidarDreTransferencia(propostaTurmaDestino, inscricao.CargoDreCodigo);
+                        var cargoPropostaTurmaOrigem = await _repositorioProposta.ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaOrigem.PropostaId);
+                        var cargoPropostaTurmaDestino = await _repositorioProposta.ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaDestino.PropostaId);
 
-                        if (cargos != null && cargos.Any(c => c.CdCargoBase != null))
+                        ValidarDreTransferencia(propostaTurmaDestino, dreTurmaOrigem);
+
+                        IEnumerable<long> cargosComuns = new List<long>();
+
+                        if (cargoPropostaTurmaOrigem != null && cargoPropostaTurmaOrigem.Any() && cargoPropostaTurmaDestino != null && cargoPropostaTurmaDestino.Any())
                         {
-                            ValidarCargoTransferencia(inscricao.CargoCodigo, cargoBase, cargoSobreposto);
+                            var cargosOrigem = (await _repositorioProposta
+                                .ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaOrigem.PropostaId))
+                                .Select(x => x.CargoFuncaoId)
+                                .ToList();
+
+                            var cargosDestino = (await _repositorioProposta
+                                .ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaDestino.PropostaId))
+                                .Select(x => x.CargoFuncaoId)
+                                .ToList();
+
+                            cargosComuns = cargosOrigem.Intersect(cargosDestino);
+
+                            if (!cargosComuns.Any())
+                                throw new NegocioException(
+                                    MensagemNegocio.INSCRICAO_TRANSFERENCIA_CARGOS_DIFERENTES,
+                                    HttpStatusCode.BadRequest
+                                );
                         }
+
+                        var inscricaoNovaManual = new InscricaoManualDTO
+                        {
+                            PropostaTurmaId = request.InscricaoTransferenciaDTO.IdTurmaDestino,
+                            Cpf = cursistaBanco.Cpf,
+                            RegistroFuncional = cursistaBanco.Login,
+                            CargoCodigo = inscricao.CargoCodigo,
+                            FuncaoCodigo = inscricao.FuncaoCodigo,
+                            FuncaoDreCodigo = inscricao.FuncaoDreCodigo,
+                            FuncaoUeCodigo = inscricao.FuncaoUeCodigo,
+                            FuncaoId = inscricao.FuncaoId
+                        };
 
                         var proposta = (await _repositorioProposta.ObterPropostasResumidasPorId(new[] { propostaTurmaDestino.PropostaId })).SingleOrDefault();
 
@@ -126,7 +141,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
             if (inscricao.Situacao == SituacaoInscricao.Transferida || inscricao.Situacao == SituacaoInscricao.Cancelada)
-                throw new NegocioException(MensagemNegocio.INSCRICOES_CANCELADAS, HttpStatusCode.BadRequest);
+                throw new NegocioException(MensagemNegocio.INSCRICOES_CANCELADAS_OU_TRANSFERIDAS, HttpStatusCode.BadRequest);
         }
 
         private static void ValidarTransferencia(InscricaoTransferenciaDTO dto)
@@ -144,26 +159,15 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
             if (propostaTurmaDestino.Dres == null || !propostaTurmaDestino.Dres.Any())
-                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL, HttpStatusCode.NotFound);
+                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL_TRANSFERENCIA, HttpStatusCode.NotFound);
 
-            var dreCodigoDestino = propostaTurmaDestino.Dres.FirstOrDefault()?.DreId;
+            var dreCodigoDestino = propostaTurmaDestino.Dres.FirstOrDefault()?.DreId ?? propostaTurmaDestino.Dres.FirstOrDefault()?.Id;
 
             if (dreCodigoDestino == null || dreCodigoDestino == 0)
-                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL, HttpStatusCode.NotFound);
+                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL_TRANSFERENCIA, HttpStatusCode.NotFound);
 
             if (string.IsNullOrWhiteSpace(dreCodigoOrigem))
-                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL, HttpStatusCode.NotFound);
-        }
-        private static void ValidarCargoTransferencia(string cargoOrigem, string cargoBase, string cargoSobreposto)
-        {
-            if (string.IsNullOrEmpty(cargoOrigem))
-                throw new NegocioException(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, HttpStatusCode.NotFound);
-
-            if (string.IsNullOrEmpty(cargoBase))
-                throw new NegocioException(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, HttpStatusCode.NotFound);
-
-            if (cargoOrigem != cargoBase && (cargoSobreposto == null || cargoOrigem != cargoSobreposto))
-                throw new NegocioException(MensagemNegocio.INSCRICAO_TRANSFERENCIA_CARGOS_DIFERENTES, HttpStatusCode.BadRequest);
+                throw new NegocioException(MensagemNegocio.NENHUMA_DRE_ENCONTRADA_NO_EOL_TRANSFERENCIA, HttpStatusCode.NotFound);
         }
     }
 }

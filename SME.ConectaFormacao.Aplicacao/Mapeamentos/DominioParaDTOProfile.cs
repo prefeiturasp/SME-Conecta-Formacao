@@ -248,13 +248,13 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Origem, opt => opt.MapFrom(o => o.Origem.Nome()))
                 .ForMember(dest => dest.IntegrarNoSga, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.IntegrarNoSGA))
                 .ForMember(dest => dest.Iniciado, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.DataRealizacaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date))
-                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != Dominio.Enumerados.SituacaoInscricao.Cancelada))
+                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != Dominio.Enumerados.SituacaoInscricao.Cancelada && o.Situacao != Dominio.Enumerados.SituacaoInscricao.Transferida))
                 .ForMember(dest => dest.DataInscricao, opt => opt.MapFrom(o => o.CriadoEm.ToString("dd/MM/yyyy HH:mm")));
 
             CreateMap<Inscricao, DadosListagemInscricaoPermissaoDTO>()
                 .ForMember(dest => dest.PodeConfirmar, opt => opt.MapFrom(o => o.Situacao.EhAguardandoAnalise() || o.Situacao.EhEmEspera()))
                 .ForMember(dest => dest.PodeColocarEmEspera, opt => opt.MapFrom(o => o.Situacao.EhAguardandoAnalise()))
-                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao.NaoEhCancelada()))
+                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != Dominio.Enumerados.SituacaoInscricao.Cancelada && o.Situacao != Dominio.Enumerados.SituacaoInscricao.Transferida))
                 .ForMember(dest => dest.PodeReativar, opt => opt.MapFrom(o => o.Situacao.EhCancelada()));
 
             CreateMap<Inscricao, DadosListagemInscricaoDTO>()
