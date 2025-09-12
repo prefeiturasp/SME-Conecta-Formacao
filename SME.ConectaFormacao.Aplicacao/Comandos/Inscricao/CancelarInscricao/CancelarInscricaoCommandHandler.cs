@@ -32,6 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 if (inscricao.Situacao.EhConfirmada())
                     await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
 
+                inscricao.SituacaoAnterior = inscricao.Situacao;
                 inscricao.Situacao = SituacaoInscricao.Cancelada;
 
                 if (request.Motivo.EstaPreenchido())

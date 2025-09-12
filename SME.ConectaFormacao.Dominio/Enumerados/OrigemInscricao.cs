@@ -8,5 +8,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Automatica = 1,
         [Display(Name = "Manual")]
         Manual = 2,
+        [Display(Name = "Transferência")]
+        Transferencia = 3
     }
 }

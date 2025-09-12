@@ -26,6 +26,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.TipoVinculo).ToColumn("tipo_vinculo");
             Map(c => c.MotivoCancelamento).ToColumn("motivo_cancelamento");
 
+            Map(c => c.SituacaoAnterior).ToColumn("situacao_anterior");
+
             Map(c => c.PropostaTurma).Ignore();
             Map(c => c.Cargo).Ignore();
             Map(c => c.Funcao).Ignore();

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -13,7 +14,9 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Cancelada")]
         Cancelada = 4,
         [Display(Name = "Em Espera")]
-        EmEspera = 5
+        EmEspera = 5,
+        [Display(Name = "Transferida")]
+        Transferida = 6
     }
 
     public static class SituacaoInscricaoExtensao
