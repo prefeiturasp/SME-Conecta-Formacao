@@ -18,6 +18,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public long? ArquivoId { get; set; }
         public int? TipoVinculo { get; set; }
         public SituacaoInscricao Situacao { get; set; }
+        public SituacaoInscricao? SituacaoAnterior { get; set; }
         public OrigemInscricao Origem { get; set; }
         public string MotivoCancelamento { get; set; }
 

@@ -149,8 +149,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             propostas.All(a => a.Situacao.EstaAnaliseParecerPelaAreaPromotora()).ShouldBeTrue();
         }
 
-        [Fact(DisplayName = "Proposta - A Área Promotora deve enviar parecer e a situação da proposta deve ser alterada para aguardando a reanálise do parecerista")]
-        public async Task A_area_promotora_deve_enviar_parecer_e_a_situacao_da_proposta_deve_ser_alterada_para_aguardando_a_reanalise_do_parecerista()
+        [Fact(DisplayName = "Proposta - A Área Promotora deve enviar parecer e a situação da proposta deve ser alterada para Aguardando validação final pela DF")]
+        public async Task A_area_promotora_deve_enviar_parecer_e_a_situacao_da_proposta_deve_ser_alterada_para_aguardando_validacao_final_pela_df()
         {
             // arrange
             var perfilLogado = Perfis.COPED.ToString();
@@ -193,7 +193,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             pareceristas.All(a => a.Situacao.EstaEnviada()).ShouldBeTrue();
 
             var propostas = ObterTodos<Dominio.Entidades.Proposta>();
-            propostas.All(a => a.Situacao.EstaAguardandoReanalisePeloParecerista()).ShouldBeTrue();
+            propostas.All(a => a.Situacao.EstaAguardandoAnaliseParecerFinalPelaDF()).ShouldBeTrue();
         }
     }
 }

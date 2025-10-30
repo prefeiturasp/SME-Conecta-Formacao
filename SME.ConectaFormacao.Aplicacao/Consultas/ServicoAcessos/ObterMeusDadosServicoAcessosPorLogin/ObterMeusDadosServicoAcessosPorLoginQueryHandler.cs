@@ -36,7 +36,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 acessoDadosUsuario.Tipo = (int)TipoUsuario.Externo;
                 acessoDadosUsuario.NomeUnidade = unidade?.NomeUnidade!;
             }
-            acessoDadosUsuario.EmailEducacional = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
+            var (tipoEmail, emailEducacional) = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
+            acessoDadosUsuario.TipoEmail = tipoEmail;
+            acessoDadosUsuario.EmailEducacional = emailEducacional;
 
             var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
             if (Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) && acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())

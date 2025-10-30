@@ -107,6 +107,27 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
+        public async Task<PropostaTurma> ObterTurmaDaPropostaComDresPorId(long propostaTurmaId)
+        {
+            var propostaTurma = await conexao.Obter().GetAsync<PropostaTurma>(propostaTurmaId);
+
+            if (propostaTurma != null)
+            {
+                var sql = @" SELECT d.id AS Id, d.dre_id AS DreId, d.abreviacao AS DreAbreviacao, d.nome AS DreNome
+                  FROM proposta_turma_dre ptd
+                  INNER JOIN dre d ON d.id = ptd.dre_id
+                  WHERE ptd.proposta_turma_id = @Id 
+                  AND ptd.excluido IS NOT TRUE
+                  AND d.excluido IS NOT TRUE ";
+
+                var dres = await conexao.Obter().QueryAsync<PropostaTurmaDre>(sql, new { Id = propostaTurmaId });
+
+                propostaTurma.Dres = dres.ToList();
+            }
+
+            return propostaTurma;
+        }
+
         public async Task<IEnumerable<PropostaCriterioValidacaoInscricao>> ObterCriteriosValidacaoInscricaoPorId(long propostaId)
         {
             var query = @"select 
@@ -1187,7 +1208,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteAsync(query, parametros);
         }
-
+        public async Task AtualizarIntegrarNoSGA(long propostaId, bool valor)
+        {
+            var sql = "UPDATE proposta SET integrar_no_sga = @valor WHERE Id = @propostaId";
+            await conexao.Obter().ExecuteAsync(sql, new { valor, propostaId });
+        }
         public Task RemoverModalidades(IEnumerable<PropostaModalidade> modalidades)
         {
             var modalidade = modalidades.First();
@@ -1895,6 +1920,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return propostas;
         }
 
+        public async Task<IEnumerable<PropostaPublicoAlvo>> ObterPropostasPublicoAlvoPorIdProposta(long propostaId)
+        {
+            var query = $@"select * from proposta_publico_alvo where proposta_id = @propostaId and excluido is not true";
+
+            return await conexao.Obter().QueryAsync<PropostaPublicoAlvo>(query, new { propostaId });
+        }
         public async Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId)
         {
             var tipoInscricao = new int[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };

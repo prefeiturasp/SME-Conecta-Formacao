@@ -75,7 +75,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private static string ObterData(IEnumerable<ListagemFormacaoComTurmaDTO>? inscricao, ListagemFormacaoComTurmaDTO i)
         {
-            return inscricao!.Any(x => x.NomeTurma.Equals(i.NomeTurma) && x.Datas.NaoEhNulo())
+            return inscricao!.Any(x => x.NomeTurma != null && x.NomeTurma.Equals(i.NomeTurma) && x.Datas.NaoEhNulo())
                 ? string.Join(", ", inscricao!.Where(x => x.NomeTurma.Equals(i.NomeTurma)).Select(x => x.Datas).Distinct())
                 : string.Empty;
         }

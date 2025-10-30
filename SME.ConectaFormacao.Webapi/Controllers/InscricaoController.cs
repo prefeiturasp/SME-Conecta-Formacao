@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
+using System.Net;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
@@ -116,13 +117,31 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUso.Executar(ids, inscricaoMotivoCancelamentoDTO.Motivo));
         }
 
+        [HttpPost("transferir")]
+        [ProducesResponseType(typeof(RetornoInscricaoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoInscricaoDTO), 400)]
+        [ProducesResponseType(typeof(RetornoInscricaoDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> TransferirInscricoes([FromServices] ICasoDeUsoTransferirInscricao casoDeUso, [FromBody] InscricaoTransferenciaDTO inscricaoTransferenciaDTO)
+        {
+            var resultado = await casoDeUso.Executar(inscricaoTransferenciaDTO);
+
+            if (resultado.Status == (int)HttpStatusCode.BadRequest)
+                return BadRequest(resultado);
+
+            if (resultado.Status == (int)HttpStatusCode.InternalServerError)
+                return StatusCode(500, resultado);
+
+            return Ok(resultado);
+        }
+
         [HttpGet("{propostaId}")]
         [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long propostaId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
-        [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
+    [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
         {
             return Ok(await casoDeUsoObterInscricaoPorId.Executar(propostaId, filtroListagemInscricaoDTO));
         }
@@ -194,6 +213,18 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId casoDeUsoObterInformacoesInscricoesEstaoAbertasPorId)
         {
             return Ok(await casoDeUsoObterInformacoesInscricoesEstaoAbertasPorId.Executar(propostaId));
+        }
+
+        [HttpPut("reativar")]
+        [ProducesResponseType(typeof(RetornoDTO), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> ReativarInscricoes(
+            [FromServices] ICasoDeUsoReativarInscricoes casoDeUso,
+            [FromQuery] long[] ids)
+        {
+            return Ok(await casoDeUso.Executar(ids));
         }
     }
 }

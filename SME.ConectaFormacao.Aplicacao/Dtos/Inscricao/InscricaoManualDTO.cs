@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public string? CargoDreCodigo { get; set; }
         public string? CargoUeCodigo { get; set; }
 
+        public long? FuncaoId { get; set; }
         public string? FuncaoCodigo { get; set; }
         public string? FuncaoDreCodigo { get; set; }
         public string? FuncaoUeCodigo { get; set; }

@@ -36,6 +36,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorId(long propostaId);
         Task<int> ObterTotalEncontros(long propostaId);
         Task<int> ObterTotalTutores(long propostaId);
+        Task<PropostaTurma> ObterTurmaDaPropostaComDresPorId(long propostaTurmaId);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId);
         Task<IEnumerable<PropostaRegente>> ObterRegentesPaginado(int numeroPagina, int numeroRegistros, long propostaId);
         Task<IEnumerable<PropostaPalavraChave>> ObterPalavrasChavesPorId(long id);
@@ -86,6 +87,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task RemoverPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres);
         Task<IEnumerable<long>> ObterListagemFormacoesPorFiltro(long[] publicosAlvosIds, string titulo, long[] areasPromotorasIds, DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds);
         Task<IEnumerable<Proposta>> ObterPropostasResumidasPorId(long[] propostaIds);
+        Task<IEnumerable<PropostaPublicoAlvo>> ObterPropostasPublicoAlvoPorIdProposta(long propostaId);
         Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId);
         Task<IEnumerable<PropostaTurma>> ObterTurmasComVagaPorId(long propostaId, string? codigoDre = null);
         Task<int> InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga, int quantidade);
@@ -119,5 +121,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<PropostaParecerista> ObterPareceristaPorPropostaIdRegistroFuncional(long propostaId, string registroFuncional);
         Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id);
         Task RemoverParecerista(PropostaParecerista parecerista);
+        Task AtualizarIntegrarNoSGA(long propostaId, bool valor);
     }
 }

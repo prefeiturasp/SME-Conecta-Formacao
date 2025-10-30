@@ -24,5 +24,14 @@
                 Mensagem = mensagem
             };
         }
+
+        public static RetornoDTO RetornarErro(string mensagem)
+        {
+            return new RetornoDTO
+            {
+                Sucesso = false,
+                Mensagem = mensagem
+            };
+        }
     }
 }

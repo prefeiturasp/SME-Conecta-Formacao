@@ -16,8 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public bool IntegrarNoSga { get; set; }
         public bool Iniciado { get; set; }
         public DadosListagemInscricaoPermissaoDTO Permissao { get; set; }
+        public string DataInscricao { get; set; } = string.Empty;        
         public List<DadosAnexosInscricao> Anexos { get; set; } = new List<DadosAnexosInscricao>();
-
     }
 
     public class DadosListagemInscricaoPermissaoDTO
@@ -25,5 +25,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public bool PodeCancelar { get; set; }
         public bool PodeColocarEmEspera { get; set; }
         public bool PodeConfirmar { get; set; }
+        public bool PodeReativar { get; set; }
     }
 }
