@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Globalization;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -12,11 +13,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
         }
 
-        public Task<IEnumerable<AnoTurma>> ObterAnosPorModalidadeAnoLetivo(Modalidade[] modalidade, int anoLetivo, bool exibirTodos)
+        public Task<IEnumerable<AnoTurma>> ObterAnosPorModalidadeAnoLetivo(Modalidade[] modalidade, int? anoLetivo, bool exibirTodos)
         {
             var modalidades = modalidade.Select(t => (long)t).ToArray();
 
-            var query = $@"select id, 
+            var query = $@"select DISTINCT ON (descricao)
+                                 id, 
                                  codigo_eol,
                                  descricao,
                                  codigo_serie_ensino,
@@ -26,13 +28,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                  ordem 
                           from ano_turma 
                           where not excluido
-                              and (modalidade = any(@modalidades) or modalidade is null)
-                              and ano_letivo = @anoLetivo ";
+                              and (modalidade = any(@modalidades) or modalidade is null)";
+
+            if (anoLetivo != 0 && anoLetivo > 0)
+            {
+                query += " and ano_letivo = @anoLetivo ";
+            }
 
             if (!exibirTodos)
                 query += " and not todos ";
 
-            query += " order by ordem, descricao ";
+            query += " order by descricao, ordem ";
 
             return conexao.Obter().QueryAsync<AnoTurma>(query, new { modalidades, anoLetivo });
         }

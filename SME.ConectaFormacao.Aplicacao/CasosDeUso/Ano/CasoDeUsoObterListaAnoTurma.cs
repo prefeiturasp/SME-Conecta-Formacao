@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Ano
 
         public async Task<IEnumerable<RetornoListagemTodosDTO>> Executar(FiltroAnoTurmaDTO filtroAnoTurmaDTO)
         {
-            return await mediator.Send(new ObterAnosPorModalidadeAnoLetivoQuery(filtroAnoTurmaDTO.Modalidade, filtroAnoTurmaDTO.AnoLetivo, filtroAnoTurmaDTO.ExibirOpcaoTodos));
+            return await mediator.Send(new ObterAnosPorModalidadeAnoLetivoQuery(filtroAnoTurmaDTO.Modalidade, (int)filtroAnoTurmaDTO.AnoLetivo, filtroAnoTurmaDTO.ExibirOpcaoTodos));
         }
     }
 }
