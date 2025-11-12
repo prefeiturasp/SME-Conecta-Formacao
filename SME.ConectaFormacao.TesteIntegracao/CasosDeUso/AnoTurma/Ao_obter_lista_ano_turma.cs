@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AnoTurma
 
             var filtro = new Aplicacao.Dtos.Ano.FiltroAnoTurmaDTO
             {
-                AnoLetivo = anosTurma.FirstOrDefault().AnoLetivo,
+                AnoLetivo = anosTurma.FirstOrDefault()?.AnoLetivo,
                 Modalidade = new Dominio.Enumerados.Modalidade[] { anosTurma.FirstOrDefault().Modalidade.GetValueOrDefault() },
                 ExibirOpcaoTodos = true
             };
@@ -45,7 +45,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.AnoTurma
 
             var filtro = new Aplicacao.Dtos.Ano.FiltroAnoTurmaDTO
             {
-                AnoLetivo = anosTurma.FirstOrDefault().AnoLetivo,
+                AnoLetivo = anosTurma.FirstOrDefault()?.AnoLetivo,
                 Modalidade = new Dominio.Enumerados.Modalidade[] { anosTurma.FirstOrDefault().Modalidade.GetValueOrDefault() },
                 ExibirOpcaoTodos = false
             };
