@@ -6,7 +6,6 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using System.Text.RegularExpressions;
-
 namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterMeusDadosServicoAcessosPorLoginQueryHandler : IRequestHandler<ObterMeusDadosServicoAcessosPorLoginQuery, DadosUsuarioDTO>
@@ -27,9 +26,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<DadosUsuarioDTO> Handle(ObterMeusDadosServicoAcessosPorLoginQuery request, CancellationToken cancellationToken)
         {
-            var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
+            var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login); 
 
-            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);            
+            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);              
             if (usuario.NaoEhNulo() && usuario.Tipo.EhExterno())
             {
                 var unidade = !string.IsNullOrEmpty(usuario.CodigoEolUnidade) ? await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuario.CodigoEolUnidade), cancellationToken) : null;
@@ -41,13 +40,21 @@ namespace SME.ConectaFormacao.Aplicacao
             acessoDadosUsuario.EmailEducacional = emailEducacional;
 
             var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
-            if (Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) && acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
+
+            if (!string.IsNullOrEmpty(acessoDadosUsuario.Email) && Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) &&
+                 acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
                 acessoDadosUsuario.EmailEducacional = acessoDadosUsuario.Email;
 
             if (usuario.NaoEhNulo() && acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
                 acessoDadosUsuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario), cancellationToken);
 
             return _mapper.Map<DadosUsuarioDTO>(acessoDadosUsuario);
+        }
+
+        private async Task<string> ObterNomeUsuarioPeloLogin(string login)
+        {
+            var cursista = await _mediator.Send(new ObterNomeCpfProfissionalPorRegistroFuncionalQuery(login));
+            return cursista.Nome;
         }
     }
 }
