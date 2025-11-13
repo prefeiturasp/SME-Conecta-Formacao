@@ -374,7 +374,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.Proposta_E, Policy = "Bearer")]
+        [Permissao(Permissao.Proposta_E, Permissao.Proposta_A, Policy = "Bearer")]
         public async Task<IActionResult> RemoverParecer([FromRoute] long parecerId, [FromServices] ICasoDeUsoRemoverParecerDaProposta casoDeUso)
         {
             return Ok(await casoDeUso.Executar(parecerId));
