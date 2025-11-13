@@ -56,6 +56,7 @@ public class MensagemNegocio
     public const string EMAIL_INVALIDO = "E-mail {0} é inválido";
     public const string EMAIL_EDU_INVALIDO = "E-mail @edu é inválido";
     public const string EMAIL_NAO_ATUALIZADO = "Não foi possível atualizar o e-mail";
+    public const string TIPO_EMAIL_NAO_ATUALIZADO = "Não foi possível atualizar o tipo e-mail";
     public const string EMAIL_EDU_INVALIDO_NAO_VALIDO = "E-mail @edu informado não é um e-mail @edu válido";
     public const string CPF_COM_DIGITO_VERIFICADOR_INVALIDO = "CPF {0} é inválido";
     public const string PROPOSTA_NAO_ENCONTRADA = "Proposta não encontrada";
@@ -149,7 +150,6 @@ public class MensagemNegocio
 
     public const string PROPOSTA_X_ALTERADA_COM_SUCESSO = "Proposta '{0}' alterada com sucesso!";
     public const string PROPOSTA_X_INSERIDA_COM_SUCESSO = "Proposta '{0}' inserida com sucesso!";
-    public const string PROPOSTA_PUBLICADA_ALTERADA = "\nForam realizadas alterações de parâmetros de inscrição. Caso necessário cancele as inscrições com os parâmetros anteriores na tela de inscrições.";
     public const string PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA = "\nAtenção: Não serão feitas novas inscrições automáticas para os novos parâmetros.";
     public const string VALIDAR_EMAIL_USUARIO_EXTERNO = "Cadastro inserido com sucesso. Enviamos um e-mail para validação do seu cadastro. Confira a sua caixa de entrada!";
     public const string USUARIO_EXTRNO_CADASTRADO_COM_SUCESSO = "Cadastro realizado com sucesso";

@@ -121,13 +121,23 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().ExecuteAsync(query, new { login, email }) > 0;
         }
 
-        public Task<string?> ObterEmailEducacionalPorLogin(string login)
+        public Task<(int tipo, string? email)> ObterEmailEducacionalPorLogin(string login)
         {
             var query = @"select 
-	                        email_educacional as EmailEducacional
+                            tipo_email as tipoEmail,
+	                        email_educacional as email
                         from usuario where login = @login";
 
-            return conexao.Obter().QueryFirstOrDefaultAsync<string?>(query, new { login });
+            return conexao.Obter().QueryFirstOrDefaultAsync<(int tipo, string? email)>(query, new { login });
+        }
+
+        public async Task<bool> AtualizarTipoEmail(string login, int tipo)
+        {
+            var query = @" UPDATE public.usuario
+                            SET alterado_em= now(), alterado_por='Sistema',  alterado_login='Sistema', tipo_email = @tipo
+                            WHERE login= @login ";
+
+            return await conexao.Obter().ExecuteAsync(query, new { login, tipo }) > 0;
         }
 
         #region Usuario Rede Parceria
@@ -217,7 +227,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().ExecuteScalarAsync<bool>(query, new { login });
         }
-
         #endregion
     }
 }

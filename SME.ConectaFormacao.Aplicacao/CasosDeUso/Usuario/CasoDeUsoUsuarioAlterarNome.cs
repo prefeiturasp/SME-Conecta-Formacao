@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
         {
             await mediator.Send(new AlterarNomeServicoAcessosCommand(login, nome));
             var nomeFoiAlterado = await mediator.Send(new SalvarUsuarioParcialCommand(login, nome.ToUpper()));
-            await mediator.Send(new AlterarEmailEduAoAlterarNomeCommand(login));
+            await mediator.Send(new AlterarEmailEduAoAlterarNomeTipoEmailCommand(login));
             return nomeFoiAlterado;
         }
     }
