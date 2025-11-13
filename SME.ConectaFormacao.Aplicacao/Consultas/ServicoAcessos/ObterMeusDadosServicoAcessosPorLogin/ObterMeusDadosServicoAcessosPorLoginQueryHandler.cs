@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
 
-            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);            
+            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);
             if (usuario.NaoEhNulo() && usuario.Tipo.EhExterno())
             {
                 var unidade = !string.IsNullOrEmpty(usuario.CodigoEolUnidade) ? await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuario.CodigoEolUnidade), cancellationToken) : null;
@@ -39,15 +39,25 @@ namespace SME.ConectaFormacao.Aplicacao
             var (tipoEmail, emailEducacional) = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
             acessoDadosUsuario.TipoEmail = tipoEmail;
             acessoDadosUsuario.EmailEducacional = emailEducacional;
+            acessoDadosUsuario.Nome = acessoDadosUsuario.Nome ?? await ObterNomeUsuarioPeloLogin(request.Login);
+            acessoDadosUsuario.Login = acessoDadosUsuario.Login ?? request.Login;
 
             var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
-            if (Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) && acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
+            if (!string.IsNullOrEmpty(acessoDadosUsuario.Email) && Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) &&
+                 acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
+
                 acessoDadosUsuario.EmailEducacional = acessoDadosUsuario.Email;
 
             if (usuario.NaoEhNulo() && acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
                 acessoDadosUsuario.EmailEducacional = await _mediator.Send(new GerarEmailEducacionalCommand(usuario), cancellationToken);
 
             return _mapper.Map<DadosUsuarioDTO>(acessoDadosUsuario);
+        }
+
+        private async Task<string> ObterNomeUsuarioPeloLogin(string login)
+        {
+            var cursista = await _mediator.Send(new ObterNomeCpfProfissionalPorRegistroFuncionalQuery(login));
+            return cursista.Nome;
         }
     }
 }
