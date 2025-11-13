@@ -6,7 +6,6 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using System.Text.RegularExpressions;
-
 namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterMeusDadosServicoAcessosPorLoginQueryHandler : IRequestHandler<ObterMeusDadosServicoAcessosPorLoginQuery, DadosUsuarioDTO>
@@ -27,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<DadosUsuarioDTO> Handle(ObterMeusDadosServicoAcessosPorLoginQuery request, CancellationToken cancellationToken)
         {
-            var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login);
+            var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login); 
 
             var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);
             if (usuario.NaoEhNulo() && usuario.Tipo.EhExterno())

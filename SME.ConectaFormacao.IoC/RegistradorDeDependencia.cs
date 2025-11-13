@@ -110,7 +110,11 @@ public class RegistradorDeDependencia
 
     protected virtual void RegistrarProfiles()
     {
-        _serviceCollection.AddAutoMapper(typeof(DominioParaDTOProfile), typeof(ServicoParaDTOProfile));
+        _serviceCollection.AddAutoMapper(cfg =>
+        {
+            cfg.AddProfile<DominioParaDTOProfile>(); 
+            cfg.AddProfile<ServicoParaDTOProfile>();
+        });
     }
 
     protected virtual void RegistrarMediatr()
