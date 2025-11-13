@@ -30,10 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste
             };
 
             servicoAcessosMock.Setup(s => s.ObterMeusDados("1234567")).ReturnsAsync(acessoDadosUsuario);
-            //repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("1234567")).ReturnsAsync("usuario@edu.sme.prefeitura.sp.gov.br");
-            repositorioUsuarioMock
-    .Setup(r => r.ObterEmailEducacionalPorLogin("1234567"))
-    .ReturnsAsync((1, "usuario@edu.sme.prefeitura.sp.gov.br"));
+            repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("1234567")).ReturnsAsync((1, "usuario@edu.sme.prefeitura.sp.gov.br"));
 
             mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns(new DadosUsuarioDTO { Nome = "Usuario Teste", Login = "1234567", Email = "usuario@teste.com", EmailEducacional = "usuario@edu.sme.prefeitura.sp.gov.br" });
 
@@ -68,11 +65,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste
 
             servicoAcessosMock.Setup(s => s.ObterMeusDados("1234567")).ReturnsAsync(acessoDadosUsuario);
             repositorioUsuarioMock.Setup(r => r.ObterPorLogin("1234567")).ReturnsAsync(usuario);
-            //repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("1234567")).ReturnsAsync(string.Empty);
-            repositorioUsuarioMock
-    .Setup(r => r.ObterEmailEducacionalPorLogin("1234567"))
-    .ReturnsAsync((1, "usuario@edu.sme.prefeitura.sp.gov.br"));
-
+            repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("1234567")).ReturnsAsync((1, "usuario@edu.sme.prefeitura.sp.gov.br"));
 
             mediatorMock.Setup(m => m.Send(It.IsAny<object>(), It.IsAny<CancellationToken>())).ReturnsAsync("Unidade Teste");
             mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns(new DadosUsuarioDTO { Nome = "Usuario Externo", Login = "1234567", Email = "usuario@externo.com", NomeUnidade = "Unidade Teste" });
