@@ -8,7 +8,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Teste
+namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 {
 
     public class ObterMeusDadosServicoAcessosPorLoginQueryHandlerTeste
@@ -30,7 +30,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste
             };
 
             servicoAcessosMock.Setup(s => s.ObterMeusDados("1234567")).ReturnsAsync(acessoDadosUsuario);
-            repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("1234567")).ReturnsAsync("usuario@edu.sme.prefeitura.sp.gov.br");
+            repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("1234567")).ReturnsAsync((1, "usuario@edu.sme.prefeitura.sp.gov.br"));
+
             mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns(new DadosUsuarioDTO { Nome = "Usuario Teste", Login = "1234567", Email = "usuario@teste.com", EmailEducacional = "usuario@edu.sme.prefeitura.sp.gov.br" });
 
             var handler = new ObterMeusDadosServicoAcessosPorLoginQueryHandler(mapperMock.Object, servicoAcessosMock.Object, repositorioUsuarioMock.Object, mediatorMock.Object);
@@ -64,7 +65,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste
 
             servicoAcessosMock.Setup(s => s.ObterMeusDados("1234567")).ReturnsAsync(acessoDadosUsuario);
             repositorioUsuarioMock.Setup(r => r.ObterPorLogin("1234567")).ReturnsAsync(usuario);
-            repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("1234567")).ReturnsAsync(string.Empty);
+            repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("1234567")).ReturnsAsync((1, "usuario@edu.sme.prefeitura.sp.gov.br"));
+
             mediatorMock.Setup(m => m.Send(It.IsAny<object>(), It.IsAny<CancellationToken>())).ReturnsAsync("Unidade Teste");
             mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns(new DadosUsuarioDTO { Nome = "Usuario Externo", Login = "1234567", Email = "usuario@externo.com", NomeUnidade = "Unidade Teste" });
 
@@ -81,7 +83,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste
 
         private static Usuario ObterUsuario()
         {
-            var usuario = new SME.ConectaFormacao.Dominio.Entidades.Usuario();
+            var usuario = new Usuario();
             usuario.Login = "1234567";
             usuario.Nome = "Usuario Externo";
             usuario.Email = "usuario@externo.com";

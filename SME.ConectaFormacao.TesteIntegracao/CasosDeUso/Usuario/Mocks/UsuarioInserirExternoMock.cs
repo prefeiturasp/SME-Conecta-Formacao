@@ -24,6 +24,7 @@ public class UsuarioInserirExternoMock
             ConfirmarSenha = senha,
             CodigoUnidade = new Faker().Random.AlphaNumeric(4).ToString(),
             Tipo = TipoUsuario.Externo,
+            TipoEmail = TipoEmail.FuncionarioUnidadeParceira,
             CriadoEm = DateTimeExtension.HorarioBrasilia(),
             CriadoLogin = "Sistema",
             CriadoPor = "Sistema"

@@ -45,11 +45,13 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             return tamanhoString > limite ? str.Substring(0, limite) : str;
         }
 
+        [Obsolete("Substitua por !string.IsNullOrEmpty")]
         public static bool EstaPreenchido(this string? str)
         {
             return !string.IsNullOrEmpty(str);
         }
 
+        [Obsolete("Substitua por string.IsNullOrEmpty")]
         public static bool NaoEstaPreenchido(this string? str)
         {
             return string.IsNullOrEmpty(str);
@@ -62,7 +64,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
         public static string RemoverTagsHtml(this string texto)
         {
-            if (texto.NaoEstaPreenchido())
+            if (string.IsNullOrWhiteSpace(texto))
                 return string.Empty;
 
             texto = RegexTagsBR.Replace(texto, " ");
@@ -77,8 +79,8 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         public static string RemoverAcentosECaracteresEspeciais(this string str)
         {
             var strResultado = str;
-            string[] acentos = new string[] { "ç", "Ç", "á", "é", "í", "ó", "ú", "ý", "Á", "É", "Í", "Ó", "Ú", "Ý", "à", "è", "ì", "ò", "ù", "À", "È", "Ì", "Ò", "Ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "Ä", "Ë", "Ï", "Ö", "Ü", "Ã", "Õ", "Ñ", "â", "ê", "î", "ô", "û", "Â", "Ê", "Î", "Ô", "Û" };
-            string[] semAcento = new string[] { "c", "C", "a", "e", "i", "o", "u", "y", "A", "E", "I", "O", "U", "Y", "a", "e", "i", "o", "u", "A", "E", "I", "O", "U", "a", "o", "n", "a", "e", "i", "o", "u", "y", "A", "E", "I", "O", "U", "A", "O", "N", "a", "e", "i", "o", "u", "A", "E", "I", "O", "U" };
+            string[] acentos = ["ç", "Ç", "á", "é", "í", "ó", "ú", "ý", "Á", "É", "Í", "Ó", "Ú", "Ý", "à", "è", "ì", "ò", "ù", "À", "È", "Ì", "Ò", "Ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "Ä", "Ë", "Ï", "Ö", "Ü", "Ã", "Õ", "Ñ", "â", "ê", "î", "ô", "û", "Â", "Ê", "Î", "Ô", "Û"];
+            string[] semAcento = ["c", "C", "a", "e", "i", "o", "u", "y", "A", "E", "I", "O", "U", "Y", "a", "e", "i", "o", "u", "A", "E", "I", "O", "U", "a", "o", "n", "a", "e", "i", "o", "u", "y", "A", "E", "I", "O", "U", "A", "O", "N", "a", "e", "i", "o", "u", "A", "E", "I", "O", "U"];
 
             for (int i = 0; i < acentos.Length; i++)
             {
@@ -101,7 +103,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
         public static string RemoverEspacoEmBranco(this string texto)
         {
-            if (texto.NaoEstaPreenchido())
+            if (string.IsNullOrWhiteSpace(texto))
                 return string.Empty;
 
             texto = RegexEspacosEmBranco.Replace(texto, " ").Trim();
@@ -118,8 +120,8 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             if (cpf == string.Empty.PadLeft(11, primeiroDigito))
                 return false;
 
-            int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-            int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplicador1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+            int[] multiplicador2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
             string tempCpf, digito;
             int soma = 0, resto;
             tempCpf = cpf[..9];
@@ -161,13 +163,12 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
         public static string RemoverAcentuacao(this string valor)
         {
-            if (valor.NaoEstaPreenchido())
+            if (string.IsNullOrWhiteSpace(valor))
                 return valor;
 
-            return new string(valor
+            return new string([.. valor
                 .Normalize(NormalizationForm.FormD)
-                .Where(ch => char.GetUnicodeCategory(ch) != UnicodeCategory.NonSpacingMark)
-                .ToArray());
+                .Where(ch => char.GetUnicodeCategory(ch) != UnicodeCategory.NonSpacingMark)]);
         }
 
         public static bool SaoDiferentes(this string valor, string valorAComparar)

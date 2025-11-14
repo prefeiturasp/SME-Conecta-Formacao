@@ -28,21 +28,23 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var acessoDadosUsuario = await _servicoAcessos.ObterMeusDados(request.Login); 
 
-            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);              
+            var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);
             if (usuario.NaoEhNulo() && usuario.Tipo.EhExterno())
             {
                 var unidade = !string.IsNullOrEmpty(usuario.CodigoEolUnidade) ? await _mediator.Send(new ObterUnidadePorCodigoEOLQuery(usuario.CodigoEolUnidade), cancellationToken) : null;
                 acessoDadosUsuario.Tipo = (int)TipoUsuario.Externo;
                 acessoDadosUsuario.NomeUnidade = unidade?.NomeUnidade!;
             }
-            acessoDadosUsuario.EmailEducacional = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
+            var (tipoEmail, emailEducacional) = await _repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
+            acessoDadosUsuario.TipoEmail = tipoEmail;
+            acessoDadosUsuario.EmailEducacional = emailEducacional;
             acessoDadosUsuario.Nome = acessoDadosUsuario.Nome ?? await ObterNomeUsuarioPeloLogin(request.Login);
             acessoDadosUsuario.Login = acessoDadosUsuario.Login ?? request.Login;
 
             var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
-
             if (!string.IsNullOrEmpty(acessoDadosUsuario.Email) && Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) &&
                  acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
+
                 acessoDadosUsuario.EmailEducacional = acessoDadosUsuario.Email;
 
             if (usuario.NaoEhNulo() && acessoDadosUsuario.EmailEducacional.NaoEstaPreenchido())
