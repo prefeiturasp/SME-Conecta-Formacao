@@ -8,7 +8,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Teste
+namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 {
 
     public class ObterMeusDadosServicoAcessosPorLoginQueryHandlerTeste
@@ -83,7 +83,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste
 
         private static Usuario ObterUsuario()
         {
-            var usuario = new SME.ConectaFormacao.Dominio.Entidades.Usuario();
+            var usuario = new Usuario();
             usuario.Login = "1234567";
             usuario.Nome = "Usuario Externo";
             usuario.Email = "usuario@externo.com";
