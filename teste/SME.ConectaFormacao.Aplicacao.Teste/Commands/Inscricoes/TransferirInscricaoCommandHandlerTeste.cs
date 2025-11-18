@@ -10,7 +10,7 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 using System.Net;
 using System.Reflection;
 
-namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
+namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
 {
     public class TransferirInscricaoCommandHandlerTeste
     {

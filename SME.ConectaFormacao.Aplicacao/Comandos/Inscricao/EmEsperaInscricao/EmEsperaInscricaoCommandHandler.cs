@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.Email.InscricaoEmEspera;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
@@ -7,18 +8,11 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class EmEsperaInscricaoCommandHandler : IRequestHandler<EmEsperaInscricaoCommand, bool>
+    public class EmEsperaInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao, IMediator mediator) : IRequestHandler<EmEsperaInscricaoCommand, bool>
     {
-        private readonly IRepositorioInscricao _repositorioInscricao;
-
-        public EmEsperaInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao)
-        {
-            _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
-        }
-
         public async Task<bool> Handle(EmEsperaInscricaoCommand request, CancellationToken cancellationToken)
         {
-            var inscricao = await _repositorioInscricao.ObterPorId(request.Id);
+            var inscricao = await repositorioInscricao.ObterPorId(request.Id);
             if (inscricao.EhNulo() || inscricao.Excluido)
                 throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA);
 
@@ -26,7 +20,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_PODE_IR_PARA_EM_ESPERA);
 
             inscricao.Situacao = Dominio.Enumerados.SituacaoInscricao.EmEspera;
-            await _repositorioInscricao.Atualizar(inscricao);
+            await repositorioInscricao.Atualizar(inscricao);
+            await mediator.Send(new EnviarEmailInscricaoEmEsperaCommand(inscricao.Id), cancellationToken);
 
             return true;
         }

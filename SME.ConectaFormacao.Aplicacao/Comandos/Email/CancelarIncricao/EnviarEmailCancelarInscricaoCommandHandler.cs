@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(EnviarEmailCancelarInscricaoCommand request, CancellationToken cancellationToken)
         {
-            var dadosParaEmail = await _repositorioInscricao.ObterDadasInscricaoPorInscricaoId(request.InscricaoId);
+            var dadosParaEmail = await _repositorioInscricao.ObterDadosInscricaoPorInscricaoId(request.InscricaoId);
             if (dadosParaEmail.FirstOrDefault()!.Email.EstaPreenchido())
             {
                 var destinatario = new EnviarEmailDto

@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(EnviarEmailConfirmacaoInscricaoCommand request, CancellationToken cancellationToken)
         {
-            var dadosParaEmail = await _repositorioInscricao.ObterDadasInscricaoPorInscricaoId(request.InscricaoId);
+            var dadosParaEmail = await _repositorioInscricao.ObterDadosInscricaoPorInscricaoId(request.InscricaoId);
 
             var agrupadoPorUsuario = dadosParaEmail.GroupBy(x => x.UsuarioId);
             foreach (var usuario in agrupadoPorUsuario)

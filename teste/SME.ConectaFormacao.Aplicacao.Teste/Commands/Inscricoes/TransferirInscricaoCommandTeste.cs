@@ -1,7 +1,7 @@
 ﻿using FluentValidation.TestHelper;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 
-namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricao
+namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
 {
     public class TransferirInscricaoCommandTeste
     {

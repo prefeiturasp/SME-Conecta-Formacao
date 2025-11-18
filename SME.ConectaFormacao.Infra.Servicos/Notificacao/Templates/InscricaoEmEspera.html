@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscrição em Lista de Espera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #e0a800;
+        }
+        /* Amarelo/Laranja para alerta de espera */
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .btn-link {
+            color: #004a99;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Inscrição Em Espera</div> <p>Olá, <strong>{{NOME_CURSISTA}}</strong>!</p>
+
+        <p>Sua inscrição para a <strong>lista de espera</strong> da formação <strong>{{NOME_FORMACAO}}</strong> foi realizada com sucesso!</p>
+
+        <p>Caso sua inscrição seja aprovada, você receberá um e-mail de confirmação.</p>
+
+        <p>
+            Você também pode acompanhar suas inscrições através da plataforma Conecta pela tela "minhas inscrições"
+            clicando <a href="https://conectaformacao.sme.prefeitura.sp.gov.br/area-logada/minhas-inscricoes" class="btn-link">aqui</a>.
+        </p>
+
+        <div class="footer">
+            <p>Secretaria Municipal de Educação</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,8 +1,11 @@
 ﻿using Shouldly;
+using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
@@ -12,16 +15,19 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
     {
         public Ao_colocar_inscricao_em_espera(CollectionFixture collectionFixture) : base(collectionFixture)
         {
+            MensagemQueueSpy.Limpar();
         }
 
-        [Fact(DisplayName = "Inscrição - Deve mover inscrições em espera com sucesso")]
-        public async Task Deve_mover_em_espera_inscricao_com_sucesso()
+        [Fact(DisplayName = "Inscrição - Deve mover inscrições em espera com sucesso e enviar email")]
+        public async Task Deve_mover_em_espera_inscricao_com_sucesso_e_validar_email()
         {
-            // arrange
-            var usuario = UsuarioMock.GerarUsuario();
+            // Arrange
+            var nomeFormacao = "Formação Integrada de C#";
+            var nomeUsuario = "João Cursista da Silva";
+            var usuario = UsuarioMock.GerarUsuario(nome: nomeUsuario);
             await InserirNaBase(usuario);
 
-            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.Publicada, Dominio.Enumerados.FormacaoHomologada.Sim);
+            var proposta = await InserirNaBaseProposta(Dominio.Enumerados.SituacaoProposta.Publicada, Dominio.Enumerados.FormacaoHomologada.Sim, nomeFormacao: nomeFormacao);
 
             var propostaTurma = proposta.Turmas.FirstOrDefault();
 
@@ -31,14 +37,29 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             var vaga = PropostaMock.GerarTurmaVaga(propostaTurma.Id);
             await InserirNaBase(vaga);
 
+            CriarClaimUsuario(Perfis.ADMIN_DF.ToString()); // Simular usuário logado
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoEmEsperaInscricoes>();
 
-            // act
-            var retorno = await casoDeUso.Executar(new long[] { inscricao.Id });
+            // Act
+            var retorno = await casoDeUso.Executar([inscricao.Id]);
 
-            // assert 
-
+            // Assert 
             retorno.Mensagem.ShouldBe(MensagemNegocio.INSCRICOES_EM_ESPERA_COM_SUCESSO);
+            MensagemQueueSpy.MensagensEnviadas.Count.ShouldBe(1);
+
+            var commandMensagem = MensagemQueueSpy.MensagensEnviadas.FirstOrDefault()?.ShouldBeOfType<PublicarNaFilaRabbitCommand>();
+            commandMensagem.ShouldNotBeNull();
+            var emailDto = commandMensagem!.Filtros.ShouldBeOfType<EnviarEmailDto>();
+            emailDto.ShouldNotBeNull();
+            emailDto.Titulo.ShouldContain("Inscrição em lista de espera");
+            emailDto.Titulo.ShouldContain(nomeFormacao);
+            emailDto.Texto.ShouldNotContain("{NOME_DESTINATARIO}"); // Verifica que o placeholder foi substituído
+            emailDto.Texto.ShouldNotContain("{NOME_FORMACAO}");      // Verifica que o placeholder foi substituído
+
+            emailDto.Texto.ShouldContain(nomeUsuario); // Verifica o nome do cursista
+            emailDto.Texto.ShouldContain(nomeFormacao); // Verifica o nome da formação
+            emailDto.Texto.ShouldContain("lista de espera"); // Verifica o texto específico do cenário
+            emailDto.Texto.ShouldContain("clicando <a href=\"https://conectaformacao.sme.prefeitura.sp.gov.br/area-logada/minhas-inscricoes\""); // Verifica o link de acompanhamento
         }
 
         [Fact(DisplayName = "Inscrição - Deve mover em espera inscrições com inconsistencias")]

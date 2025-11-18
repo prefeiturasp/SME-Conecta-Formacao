@@ -7,6 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Notificacao\Templates\InscricaoEmEspera.html" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Notificacao\Templates\InscricaoEmEspera.html" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.22.0" />
       <PackageReference Include="Elastic.Apm.StackExchange.Redis" Version="1.22.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
