@@ -4,6 +4,7 @@ using MediatR;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.Comandos.Email.InscricaoEmEspera;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Dominio.Interfaces;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -72,14 +73,17 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Email
             _repositorioInscricaoMock
                 .Setup(r => r.ObterDadosInscricaoPorInscricaoId(It.IsAny<long>()))
                 .ReturnsAsync(dadosParaEmail);
+
             _servicoTemplateEmailMock
                 .Setup(s => s.ObterHtmlInscricaoEmEsperaAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync("<html>Email Content</html>");
+
             // Act
             var resultado = await _handler.Handle(comando, CancellationToken.None);
+
             // Assert
             resultado.Should().BeTrue();
-            _mediatorMock.Verify(m => m.Send(It.IsAny<EnviarEmailCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
