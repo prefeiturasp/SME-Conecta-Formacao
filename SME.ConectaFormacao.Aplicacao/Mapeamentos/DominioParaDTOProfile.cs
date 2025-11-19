@@ -341,6 +341,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<NotificacaoUsuario, EnviarEmailDto>()
                 .ForMember(dest => dest.NomeDestinatario, opt => opt.MapFrom(src => src.Nome))
                 .ForMember(dest => dest.EmailDestinatario, opt => opt.MapFrom(src => src.Email));
+
+            CreateMap<Usuario, DadosLoginUsuarioDto>();
         }
     }
 }

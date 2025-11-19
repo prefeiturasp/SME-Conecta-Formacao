@@ -457,6 +457,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoSortearInscricoes, CasoDeUsoSortearInscricoes>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoReativarInscricoes, CasoDeUsoReativarInscricoes>();
+        _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuariosPorEolUnidade, CasoDeUsoObterUsuariosPorEolUnidade>();
     }
 
     protected virtual void RegistrarHttpClients()

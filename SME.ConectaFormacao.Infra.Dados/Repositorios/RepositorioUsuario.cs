@@ -4,17 +4,15 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioUsuario : RepositorioBaseAuditavel<Usuario>, IRepositorioUsuario
+    [ExcludeFromCodeCoverage]
+    public class RepositorioUsuario(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : RepositorioBaseAuditavel<Usuario>(contexto, conexao), IRepositorioUsuario
     {
-        public RepositorioUsuario(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
-        {
-        }
-
-        public Task<Usuario> ObterPorLogin(string login)
+        public Task<Usuario?> ObterPorLogin(string login)
         {
             var query = @"select 
                             id, 
@@ -73,7 +71,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().QueryAsync<Usuario>(query, new { ids, tipoUsuario });
         }
 
-        public Task<Usuario> ObterPorCpf(string cpf)
+        public Task<Usuario?> ObterPorCpf(string cpf)
         {
             var query = @"select 
                             id, 
@@ -140,6 +138,30 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().ExecuteAsync(query, new { login, tipo }) > 0;
         }
 
+        public async Task<IEnumerable<Usuario>> ObterUsuariosPorEolUnidadeAsync(string codigoEolUnidade, string? login, string? nome)
+        {
+            var query = @"select distinct login, nome from usuario where codigo_eol_unidade = @codigoEolUnidade ";
+
+            if (!string.IsNullOrWhiteSpace(login))
+                query += " and login = @login ";
+
+            if (!string.IsNullOrWhiteSpace(nome))
+            {
+                query += " and lower(f_unaccent(nome)) like f_unaccent(@nome) ";
+                nome = $"%{nome}%";
+            }
+            query += " order  by nome";
+
+            var parametro = new
+            {
+                codigoEolUnidade,
+                login,
+                nome
+            };
+
+            return await conexao.Obter().QueryAsync<Usuario>(query, parametro);
+        }
+
         #region Usuario Rede Parceria
 
         public Task<int> ObterTotalUsuarioRedeParceria(long[] areaPromotoraIds, string? nome, string? cpf, SituacaoUsuario? situacao)
@@ -154,19 +176,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query.Append(" AND area_promotora_id = any(@areaPromotoraIds)");
             }
 
-            if (nome.EstaPreenchido())
+            if (!string.IsNullOrWhiteSpace(nome))
             {
                 nome = "%" + nome.ToLower() + "%";
                 query.Append(" AND lower(nome) LIKE @nome ");
             }
 
-            if (cpf.PossuiElementos())
+            if (!string.IsNullOrWhiteSpace(cpf))
             {
                 cpf = cpf.SomenteNumeros();
                 query.Append(" AND cpf = @cpf");
             }
 
-            if (situacao.NaoEhNulo())
+            if (situacao is not null)
             {
                 query.Append(" AND situacao_cadastro = @situacao");
             }
@@ -190,19 +212,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query.Append(" AND u.area_promotora_id = any(@areaPromotoraIds)");
             }
 
-            if (nome.EstaPreenchido())
+            if (!string.IsNullOrWhiteSpace(nome))
             {
                 nome = "%" + nome.ToLower() + "%";
                 query.Append(" AND lower(u.nome) LIKE @nome ");
             }
 
-            if (cpf.PossuiElementos())
+            if (!string.IsNullOrWhiteSpace(cpf))
             {
                 cpf = cpf.SomenteNumeros();
                 query.Append(" AND u.cpf = @cpf");
             }
 
-            if (situacao.NaoEhNulo())
+            if (situacao is not null)
             {
                 query.Append(" AND u.situacao_cadastro = @situacao");
             }
