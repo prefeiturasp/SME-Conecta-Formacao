@@ -32,5 +32,21 @@ namespace SME.ConectaFormacao.Infra.Servicos.Teste.Notificacao
             htmlGerado.Should().NotContain("{{NOME_FORMACAO}}");
             htmlGerado.Should().Contain("Inscrição em Lista de Espera");
         }
+
+        [Fact]
+        public async Task DadoDadosValidos_QuandoObterHtmlInscricaoConfirmada_EntaoSubstituiPlaceholdersCorretamente()
+        {
+            // Arrange
+            var nomeCursista = _faker.Name.FullName();
+            var nomeFormacao = _faker.Lorem.Word();
+            // Act
+            var htmlGerado = await _servicoTemplateEmail.ObterHtmlInscricaoConfirmadaAsync(nomeCursista, nomeFormacao);
+            // Assert
+            htmlGerado.Should().Contain(nomeCursista);
+            htmlGerado.Should().Contain(nomeFormacao);
+            htmlGerado.Should().NotContain("{{NOME_CURSISTA}}");
+            htmlGerado.Should().NotContain("{{NOME_FORMACAO}}");
+            htmlGerado.Should().Contain("Inscrição Confirmada");
+        }
     }
 }
