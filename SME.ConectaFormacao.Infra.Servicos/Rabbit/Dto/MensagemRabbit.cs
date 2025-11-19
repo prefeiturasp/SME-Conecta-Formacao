@@ -1,10 +1,10 @@
 ﻿using SME.ConectaFormacao.Dominio.Extensoes;
 
-namespace SME.ConectaFormacao.Infra
+namespace SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto
 {
     public class MensagemRabbit
     {
-        public MensagemRabbit(string action, object mensagem, Guid? codigoCorrelacao, string usuarioLogadoRF, bool notificarErroUsuario = false, string perfilUsuario = null, string administrador = null)
+        public MensagemRabbit(string action, object mensagem, Guid? codigoCorrelacao, string usuarioLogadoRF, bool notificarErroUsuario = false, string? perfilUsuario = null, string? administrador = null)
         {
             Action = action;
             Mensagem = mensagem;
@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Infra
             Administrador = administrador;
         }
 
-        public MensagemRabbit(object mensagem, Guid? codigoCorrelacao, string usuarioLogadoNomeCompleto, string usuarioLogadoRF, Guid? perfil, bool notificarErroUsuario = false, string administrador = null, string acao = null)
+        public MensagemRabbit(object mensagem, Guid? codigoCorrelacao, string? usuarioLogadoNomeCompleto, string? usuarioLogadoRF, Guid? perfil, bool notificarErroUsuario = false, string? administrador = null, string? acao = null)
         {
             Mensagem = mensagem;
             CodigoCorrelacao = codigoCorrelacao ?? Guid.NewGuid(); ;
@@ -39,8 +39,8 @@ namespace SME.ConectaFormacao.Infra
         public string Action { get; set; }
         public object Mensagem { get; set; }
         public Guid CodigoCorrelacao { get; set; }
-        public string UsuarioLogadoNomeCompleto { get; set; }
-        public string UsuarioLogadoRF { get; set; }
+        public string? UsuarioLogadoNomeCompleto { get; set; }
+        public string? UsuarioLogadoRF { get; set; }
         public bool NotificarErroUsuario { get; set; }
         public string PerfilUsuario { get; set; }
         public string Administrador { get; set; }
@@ -48,10 +48,7 @@ namespace SME.ConectaFormacao.Infra
         public T ObterObjetoMensagem<T>() where T : class
         {
             var obj = Mensagem.ToString();
-            if (obj == null)
-                throw new ArgumentNullException(nameof(Mensagem));
-            
-            return obj.JsonParaObjeto<T>();
+            return obj == null ? throw new ArgumentNullException(nameof(Mensagem)) : obj.JsonParaObjeto<T>();
         }
     }
 }

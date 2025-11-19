@@ -6,26 +6,16 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.ConfirmarInscricao
 {
-    public class ConfirmarInscricaoCommandHandler : IRequestHandler<ConfirmarInscricaoCommand, bool>
+    public class ConfirmarInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao, ITransacao transacao, IMediator mediator) :
+        IRequestHandler<ConfirmarInscricaoCommand, bool>
     {
-        private readonly IRepositorioInscricao _repositorioInscricao;
-        private readonly ITransacao _transacao;
-        private readonly IMediator _mediator;
-
-
-        public ConfirmarInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao, ITransacao transacao, IMediator mediator)
-        {
-            _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-
-        }
+        private readonly ITransacao _transacao = transacao;
 
         public async Task<bool> Handle(ConfirmarInscricaoCommand request, CancellationToken cancellationToken)
         {
-            var inscricao = await _repositorioInscricao.ObterPorId(request.Id);
+            var inscricao = await repositorioInscricao.ObterPorId(request.Id);
             if (inscricao.EhNulo() || inscricao.Excluido)
                 throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA);
 
@@ -35,13 +25,13 @@ namespace SME.ConectaFormacao.Aplicacao
             var transacao = _transacao.Iniciar();
             try
             {
-                bool confirmada = await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
+                bool confirmada = await repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
                 if (!confirmada)
                     throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA);
 
                 inscricao.Situacao = SituacaoInscricao.Confirmada;
-                await _repositorioInscricao.Atualizar(inscricao);
-                await _mediator.Send(new EnviarEmailConfirmacaoInscricaoCommand(request.Id), cancellationToken);
+                await repositorioInscricao.Atualizar(inscricao);
+                await mediator.Send(new EnviarEmailConfirmacaoInscricaoCommand(request.Id), cancellationToken);
                 transacao.Commit();
 
                 return true;

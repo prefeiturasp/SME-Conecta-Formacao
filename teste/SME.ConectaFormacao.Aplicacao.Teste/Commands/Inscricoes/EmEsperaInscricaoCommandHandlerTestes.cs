@@ -3,6 +3,7 @@ using MediatR;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.Comandos.Email.InscricaoEmEspera;
+using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.EmEsperaInscricao;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;

@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text.RegularExpressions;
 
-namespace SME.ConectaFormacao.Aplicacao.Comandos.Usuario.AlterarEmailEducacional
+namespace SME.ConectaFormacao.Aplicacao.Comandos.Usuarios.AlterarEmailEducacional
 {
     public class AlterarEmailEducacionalCommandHandler : IRequestHandler<AlterarEmailEducacionalCommand, bool>
     {

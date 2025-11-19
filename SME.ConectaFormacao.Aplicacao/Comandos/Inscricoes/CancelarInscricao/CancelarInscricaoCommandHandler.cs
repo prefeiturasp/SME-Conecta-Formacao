@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.CancelarInscricao
 {
     public class CancelarInscricaoCommandHandler : IRequestHandler<CancelarInscricaoCommand, bool>
     {

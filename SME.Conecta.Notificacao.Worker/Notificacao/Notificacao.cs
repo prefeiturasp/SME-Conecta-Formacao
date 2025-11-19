@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SME.Conecta.Notificacao.Worker.Hub;
 using SME.Conecta.Notificacao.Worker.Interfaces;
-using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
 namespace SME.Conecta.Notificacao.Worker.Notificacao
 {

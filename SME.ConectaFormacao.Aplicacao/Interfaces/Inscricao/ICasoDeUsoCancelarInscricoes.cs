@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao
 {
     public interface ICasoDeUsoCancelarInscricoes
     {
-        Task<RetornoDTO> Executar(long[] ids, string motivo);
+        Task<RetornoDTO> Executar(long[] ids, string? motivo);
     }
 }

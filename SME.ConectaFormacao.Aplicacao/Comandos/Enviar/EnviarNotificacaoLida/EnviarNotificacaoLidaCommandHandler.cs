@@ -1,5 +1,6 @@
 ﻿
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao

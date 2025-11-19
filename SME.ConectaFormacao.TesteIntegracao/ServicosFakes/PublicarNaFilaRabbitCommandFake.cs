@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.ServicosFakes
 {

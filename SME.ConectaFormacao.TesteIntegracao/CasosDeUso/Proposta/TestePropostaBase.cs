@@ -74,10 +74,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             await InserirNaBase(componentesCurriculares);
 
             if (vincularUltimoCargoAoPublicoAlvo)
-                cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() { cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Cargo) };
+                cargosFuncoes = [cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Cargo)];
 
             if (vincularUltimoFuncaoAoPublicoAlvo)
-                cargosFuncoes = new List<Dominio.Entidades.CargoFuncao>() { cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Funcao) };
+                cargosFuncoes = [cargosFuncoes.LastOrDefault(w => w.Tipo == CargoFuncaoTipo.Funcao)];
 
             return await InserirNaBaseProposta(areaPromotora, cargosFuncoes, criteriosValidacaoInscricao, palavrasChaves,
                 modalidades, anosTurmas, componentesCurriculares, situacao, formacaoHomologada, tipoInscricao, integrarNoSga, dataInscricaoForaPeriodo, numeroHomologacao, quantidadeParecerista, criado_login, nomeFormacao: nomeFormacao);
@@ -247,7 +247,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
 
             var propostaTiposInscricao = PropostaMock.GerarTiposInscricao(proposta.Id, tipoInscricao);
             await InserirNaBase(propostaTiposInscricao);
-            proposta.TiposInscricao = new List<PropostaTipoInscricao>() { propostaTiposInscricao };
+            proposta.TiposInscricao = [propostaTiposInscricao];
 
             return proposta;
         }

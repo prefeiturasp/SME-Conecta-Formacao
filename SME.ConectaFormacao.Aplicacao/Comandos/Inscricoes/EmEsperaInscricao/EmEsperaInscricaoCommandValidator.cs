@@ -1,18 +1,7 @@
 ﻿using FluentValidation;
-using MediatR;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.EmEsperaInscricao
 {
-    public class EmEsperaInscricaoCommand : IRequest<bool>
-    {
-        public EmEsperaInscricaoCommand(long id)
-        {
-            Id = id;
-        }
-
-        public long Id { get; }
-    }
-
     public class EmEsperaInscricaoCommandValidator : AbstractValidator<EmEsperaInscricaoCommand>
     {
         public EmEsperaInscricaoCommandValidator()

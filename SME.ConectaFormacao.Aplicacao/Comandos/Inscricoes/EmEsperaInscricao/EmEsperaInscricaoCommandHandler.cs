@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.EmEsperaInscricao
 {
     public class EmEsperaInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao, IMediator mediator) : IRequestHandler<EmEsperaInscricaoCommand, bool>
     {

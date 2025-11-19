@@ -1,7 +1,7 @@
 using FluentValidation;
 using MediatR;
 
-namespace SME.ConectaFormacao.Aplicacao.Comandos.Usuario.AlterarEmailEducacional
+namespace SME.ConectaFormacao.Aplicacao.Comandos.Usuarios.AlterarEmailEducacional
 {
     public class AlterarEmailEducacionalCommand : IRequest<bool>
     {
