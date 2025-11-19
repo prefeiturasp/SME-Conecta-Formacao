@@ -1,10 +1,12 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {

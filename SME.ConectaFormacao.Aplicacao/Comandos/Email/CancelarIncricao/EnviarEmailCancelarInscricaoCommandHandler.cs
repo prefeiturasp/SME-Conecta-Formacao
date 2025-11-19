@@ -1,4 +1,5 @@
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
@@ -23,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Handle(EnviarEmailCancelarInscricaoCommand request, CancellationToken cancellationToken)
         {
-            var dadosParaEmail = await _repositorioInscricao.ObterDadasInscricaoPorInscricaoId(request.InscricaoId);
+            var dadosParaEmail = await _repositorioInscricao.ObterDadosInscricaoPorInscricaoId(request.InscricaoId);
             if (dadosParaEmail.FirstOrDefault()!.Email.EstaPreenchido())
             {
                 var destinatario = new EnviarEmailDto

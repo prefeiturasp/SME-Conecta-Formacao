@@ -1,6 +1,8 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso;
+using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.CancelarInscricao;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao
 {

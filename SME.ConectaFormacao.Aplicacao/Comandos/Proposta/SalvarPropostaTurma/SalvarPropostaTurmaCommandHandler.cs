@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;

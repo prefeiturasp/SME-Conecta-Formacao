@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao

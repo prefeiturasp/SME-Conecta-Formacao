@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.EmEsperaInscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -6,12 +7,8 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
-    public class CasoDeUsoEmEsperaInscricoes : CasoDeUsoAbstrato, ICasoDeUsoEmEsperaInscricoes
+    public class CasoDeUsoEmEsperaInscricoes(IMediator mediator) : CasoDeUsoAbstrato(mediator), ICasoDeUsoEmEsperaInscricoes
     {
-        public CasoDeUsoEmEsperaInscricoes(IMediator mediator) : base(mediator)
-        {
-        }
-
         public async Task<RetornoDTO> Executar(long[] ids)
         {
             var erros = new List<string>();
@@ -27,10 +24,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
                 }
             }
 
-            if (ids.Count() == 1 && erros.Any())
+            if (ids.Length == 1 && erros.Count != 0)
                 throw new NegocioException(erros);
 
-            if (erros.Any())
+            if (erros.Count != 0)
                 return RetornoDTO.RetornarSucesso(MensagemNegocio.INSCRICOES_EM_ESPERA_COM_INCONSISTENCIAS);
 
             return RetornoDTO.RetornarSucesso(MensagemNegocio.INSCRICOES_EM_ESPERA_COM_SUCESSO);

@@ -53,6 +53,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Aplicacao.Pipelines;
+using SME.ConectaFormacao.Dominio.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
@@ -61,6 +62,7 @@ using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
 using SME.ConectaFormacao.Infra.Servicos.CacheDistribuido.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria.IoC;
+using SME.ConectaFormacao.Infra.Servicos.Notificacao;
 using SME.ConectaFormacao.Infra.Servicos.Options;
 using SME.ConectaFormacao.Infra.Servicos.Polly;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.IoC;
@@ -87,6 +89,7 @@ public class RegistradorDeDependencia
         ConfigurarMensageria();
         RegistrarConexao();
         RegistrarRepositorios();
+        RegistrarServices();
         RegistrarLogs();
         RegistrarRabbit();
         RegistrarPolly();
@@ -463,5 +466,10 @@ public class RegistradorDeDependencia
     protected virtual void RegistrarHttpClients()
     {
         _serviceCollection.AdicionarHttpClients(_configuration);
+    }
+
+    protected virtual void RegistrarServices()
+    {
+        _serviceCollection.AddScoped<IServicoTemplateEmail, ServicoTemplateEmail>();
     }
 }

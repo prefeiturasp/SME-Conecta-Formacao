@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
@@ -46,7 +47,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             AoRealizarInscricaoAutomaticaMock.CargosFuncoesDeparaEol = depara;
 
             var mensagem = proposta.Id.ToString();
-            var mensagemRabbit = new Infra.MensagemRabbit(mensagem);
+            var mensagemRabbit = new MensagemRabbit(mensagem);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoRealizarInscricaoAutomatica>();
 
@@ -87,7 +88,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             };
 
             var mensagem = tratarTurma.ObjetoParaJson();
-            var mensagemRabbit = new Infra.MensagemRabbit(mensagem);
+            var mensagemRabbit = new MensagemRabbit(mensagem);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoRealizarInscricaoAutomaticaTratarTurmas>();
 
@@ -136,7 +137,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             };
 
             var mensagem = tratarTurma.ObjetoParaJson();
-            var mensagemRabbit = new Infra.MensagemRabbit(mensagem);
+            var mensagemRabbit = new MensagemRabbit(mensagem);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoRealizarInscricaoAutomaticaTratarTurmas>();
 

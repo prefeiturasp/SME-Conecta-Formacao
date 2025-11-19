@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11205.157 d18.0
+VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.ConectaFormacao.Webapi", "SME.ConectaFormacao.Webapi\SME.ConectaFormacao.Webapi.csproj", "{117FFFA0-C476-4429-9FA2-081D93C42ECC}"
 EndProject
@@ -28,6 +28,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Conecta.Notificacao.Worker", "SME.Conecta.Notificacao.Worker\SME.Conecta.Notificacao.Worker.csproj", "{57FDE46A-D73A-448E-AAA9-EDAEEFC59190}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.ConectaFormacao.Aplicacao.Teste", "teste\SME.ConectaFormacao.Aplicacao.Teste\SME.ConectaFormacao.Aplicacao.Teste.csproj", "{26020B24-BD3C-48D0-B6CE-44AF8A01CD3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.ConectaFormacao.Infra.Servicos.Teste", "teste\SME.ConectaFormacao.Infra.Servicos.Teste\SME.ConectaFormacao.Infra.Servicos.Teste.csproj", "{25F2AAC4-B84E-45A9-A111-61B1E24E8A39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +81,10 @@ Global
 		{26020B24-BD3C-48D0-B6CE-44AF8A01CD3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26020B24-BD3C-48D0-B6CE-44AF8A01CD3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26020B24-BD3C-48D0-B6CE-44AF8A01CD3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25F2AAC4-B84E-45A9-A111-61B1E24E8A39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25F2AAC4-B84E-45A9-A111-61B1E24E8A39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25F2AAC4-B84E-45A9-A111-61B1E24E8A39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25F2AAC4-B84E-45A9-A111-61B1E24E8A39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +101,7 @@ Global
 		{79D5BD73-D4DD-4636-BA78-681DA12F301F} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
 		{57FDE46A-D73A-448E-AAA9-EDAEEFC59190} = {3B996AD4-62BF-4BA4-976D-01C4C26CA458}
 		{26020B24-BD3C-48D0-B6CE-44AF8A01CD3F} = {085C79CC-4DEB-42E1-93A5-D85858E8F5E3}
+		{25F2AAC4-B84E-45A9-A111-61B1E24E8A39} = {085C79CC-4DEB-42E1-93A5-D85858E8F5E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C8BFE3B-BC28-4781-A67F-86F9898E68E7}

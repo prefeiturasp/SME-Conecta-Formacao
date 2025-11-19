@@ -3,26 +3,12 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit
 {
-    public class PublicarNaFilaRabbitCommandHandler : IRequestHandler<PublicarNaFilaRabbitCommand, bool>
+    public class PublicarNaFilaRabbitCommandHandler(IMediator mediator, IServicoMensageriaConecta servicoMensageria, IServicoMensageriaMetricas servicoMensageriaMetricas) : IRequestHandler<PublicarNaFilaRabbitCommand, bool>
     {
-        private readonly IMediator mediator;
-        private readonly IServicoMensageriaConecta servicoMensageria;
-        private readonly IServicoMensageriaMetricas servicoMensageriaMetricas;
-
-        public PublicarNaFilaRabbitCommandHandler(IMediator mediator, IServicoMensageriaConecta servicoMensageria, IServicoMensageriaMetricas servicoMensageriaMetricas)
-        {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            this.servicoMensageria = servicoMensageria ?? throw new ArgumentNullException(nameof(servicoMensageria));
-            this.servicoMensageriaMetricas = servicoMensageriaMetricas ?? throw new ArgumentNullException(nameof(servicoMensageriaMetricas));
-        }
-        public PublicarNaFilaRabbitCommandHandler(IMediator mediator, IServicoMensageriaConecta servicoMensageria)
-        {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            this.servicoMensageria = servicoMensageria ?? throw new ArgumentNullException(nameof(servicoMensageria));
-        }
         public async Task<bool> Handle(PublicarNaFilaRabbitCommand command, CancellationToken cancellationToken)
         {
             var usuario = command.Usuario ?? await ObterUsuario();
