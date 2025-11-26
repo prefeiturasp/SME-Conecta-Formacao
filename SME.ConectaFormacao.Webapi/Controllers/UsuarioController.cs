@@ -159,5 +159,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             return Ok(await useCase.Executar());
         }
+
+        [HttpGet("eolUnidade/{codigoEolUnidade}")]
+        [ProducesResponseType(typeof(IEnumerable<DadosLoginUsuarioDto>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ObterUsuariosPorEolUnidadeAsync([FromServices] ICasoDeUsoObterUsuariosPorEolUnidade useCase,
+                                                                         [FromRoute] string codigoEolUnidade,
+                                                                         [FromQuery] string? login = null,
+                                                                         [FromQuery] string? nome = null) =>
+            Ok(await useCase.ExecutarAsync(codigoEolUnidade, login, nome));
     }
 }

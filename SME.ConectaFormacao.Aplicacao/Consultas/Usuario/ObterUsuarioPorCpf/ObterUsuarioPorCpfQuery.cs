@@ -1,16 +1,11 @@
 using FluentValidation;
 using MediatR;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Consultas.Usuario.ObterUsuarioPorCpf
 {
-    public class ObterUsuarioPorCpfQuery : IRequest<Dominio.Entidades.Usuario>
+    public class ObterUsuarioPorCpfQuery(string cpf) : IRequest<Dominio.Entidades.Usuario?>
     {
-        public ObterUsuarioPorCpfQuery(string cpf)
-        {
-            Cpf = cpf;
-        }
-
-        public string Cpf { get; }
+        public string Cpf { get; } = cpf;
 
     }
 

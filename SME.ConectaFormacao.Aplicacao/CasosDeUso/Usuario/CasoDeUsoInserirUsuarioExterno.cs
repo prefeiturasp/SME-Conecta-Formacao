@@ -1,7 +1,7 @@
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Consultas.Usuario.ObterUsuarioPorCpf;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
-using SME.ConectaFormacao.Aplicacao.ObterDominioDeEmailPermitido;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
@@ -82,13 +82,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario
                 throw new NegocioException(MensagemNegocio.VOCE_JA_POSSUI_LOGIN_CONECTA);
 
             var usuarioCpf = await mediator.Send(new ObterUsuarioPorCpfQuery(cpf));
-            if (usuarioCpf.NaoEhNulo())
+            if (usuarioCpf is not null)
                 throw new NegocioException(MensagemNegocio.VOCE_JA_POSSUI_LOGIN_CONECTA);
-        }
-
-        private async Task<IEnumerable<string>> ObterDominiosPermitidos()
-        {
-            return await mediator.Send(new ObterDominioDeEmailPermitidoQuery());
         }
 
         private static void ValidacoesPreenchimento(string senhaNova, string confirmarSenha, string cpf, string email, string emailEdu)
