@@ -230,7 +230,7 @@ namespace SME.ConectaFormacao.Infra
             }
         }
 
-        protected virtual Task RegistrarErroTratamentoMensagem(BasicDeliverEventArgs ea, MensagemRabbit mensagemRabbit, Exception ex, LogNivel logNivel, string observacao)
+        protected virtual Task RegistrarErroTratamentoMensagem(BasicDeliverEventArgs ea, MensagemRabbit mensagemRabbit, Exception? ex, LogNivel logNivel, string observacao)
         {
             return Task.CompletedTask;
         }
