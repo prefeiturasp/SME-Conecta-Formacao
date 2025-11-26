@@ -258,6 +258,7 @@ namespace SME.ConectaFormacao.Infra
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine($"[DEBUG] [ERRO] ERRO AO TRATAR MENSAGEM: {ex.Message}"); Console.WriteLine(ex.ToString());
                     await RegistrarErro($"Erro ao tratar mensagem {ea.DeliveryTag} - {ea.RoutingKey}", LogNivel.Critico, ex.Message);
                     canalRabbit.BasicReject(ea.DeliveryTag, false);
                 }
