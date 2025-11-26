@@ -90,8 +90,10 @@ namespace SME.ConectaFormacao.Infra
 
                     if (retryAutomatico)
                     {
-                        var argsLimbo = new Dictionary<string, object>();
-                        argsLimbo.Add("x-queue-mode", "lazy");
+                        var argsLimbo = new Dictionary<string, object>
+                        {
+                            { "x-queue-mode", "lazy" }
+                        };
 
                         var queueLimbo = $"{fila}.limbo";
                         canalRabbit.QueueDeclare(
@@ -149,7 +151,6 @@ namespace SME.ConectaFormacao.Infra
         }
         public async Task TratarMensagem(BasicDeliverEventArgs ea)
         {
-            Console.WriteLine($"[DEBUG] 1. Iniciando msg {ea.DeliveryTag}");
             var mensagem = Encoding.UTF8.GetString(ea.Body.ToArray());
             var rota = ea.RoutingKey;
 
@@ -157,19 +158,15 @@ namespace SME.ConectaFormacao.Infra
 
             if (Comandos.TryGetValue(rota, out ComandoRabbit? comandoRabbit))
             {
-                Console.WriteLine($"[DEBUG] 2. Rota encontrada. Iniciando APM...");
                 var mensagemRabbit = mensagem.JsonParaObjeto<MensagemRabbit>();
                 var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, apmTransactionType) : null;
                 try
                 {
-                    Console.WriteLine($"[DEBUG] 3. Criando Scope...");
                     using var scope = serviceScopeFactory.CreateScope();
                     AtribuirContextoAplicacao(mensagemRabbit, scope);
 
-                    Console.WriteLine($"[DEBUG] 4. Resolvendo Caso de Uso...");
                     IRabbitUseCase casoDeUso = (IRabbitUseCase)scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso)!;
 
-                    Console.WriteLine($"[DEBUG] 5. Executando Caso de Uso...");
                     await servicoTelemetria.RegistrarAsync(
                             async () => await casoDeUso.Executar(mensagemRabbit),
                             "RabbitMQ",
@@ -177,7 +174,6 @@ namespace SME.ConectaFormacao.Infra
                             rota,
                             mensagem);
 
-                    Console.WriteLine($"[DEBUG] 6. Sucesso. Dando Ack.");
                     canalRabbit.BasicAck(ea.DeliveryTag, false);
                     await servicoMensageriaMetricas.Concluido(rota);
                 }
