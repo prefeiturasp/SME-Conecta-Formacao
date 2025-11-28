@@ -113,7 +113,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (propostaTurma != null)
             {
-                var sql = @" SELECT d.id AS Id, d.dre_id AS DreId, d.abreviacao AS DreAbreviacao, d.nome AS DreNome
+                var sql = @" SELECT d.id AS Id, d.dre_id AS CodigoDre, d.abreviacao AS DreAbreviacao, d.nome AS DreNome
                   FROM proposta_turma_dre ptd
                   INNER JOIN dre d ON d.id = ptd.dre_id
                   WHERE ptd.proposta_turma_id = @Id 
@@ -2129,7 +2129,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             where pti.proposta_id = @propostaId and not pti.excluido;
 
             select pt.id,
-                   ptd.dre_id as DreId, 
+                   ptd.dre_id as CodigoDre, 
                    dre.dre_id as codigoDre
             from proposta_turma pt
               join proposta_turma_dre ptd on ptd.proposta_turma_id = pt.id and not ptd.excluido 

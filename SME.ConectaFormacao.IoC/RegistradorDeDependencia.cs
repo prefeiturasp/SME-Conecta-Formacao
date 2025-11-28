@@ -27,6 +27,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria;
@@ -48,6 +49,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Modalidade;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Aplicacao.Interfaces.SincronizacaoEOL;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ue;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
@@ -274,6 +276,8 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaPareceristaConsideracao, RepositorioPropostaPareceristaConsideracao>();
         _serviceCollection.TryAddScoped<IRepositorioNotificacao, RepositorioNotificacao>();
         _serviceCollection.TryAddScoped<IRepositorioNotificacaoUsuario, RepositorioNotificacaoUsuario>();
+        _serviceCollection.AddScoped<IRepositorioCargoEol, RepositorioCargoEol>();
+        _serviceCollection.AddScoped<IRepositorioSincronizador, RepositorioSincronizador>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -461,6 +465,9 @@ public class RegistradorDeDependencia
 
         _serviceCollection.TryAddScoped<ICasoDeUsoReativarInscricoes, CasoDeUsoReativarInscricoes>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuariosPorEolUnidade, CasoDeUsoObterUsuariosPorEolUnidade>();
+
+        _serviceCollection.AddScoped<IExecutarSincronizacaoCargosEolUseCase, ExecutarSincronizacaoCargosEolUseCase>();
+        _serviceCollection.AddScoped<ISincronizarCargosEolPorDreUseCase, SincronizarCargosEolPorDreUseCase>();
     }
 
     protected virtual void RegistrarHttpClients()

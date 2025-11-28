@@ -1,0 +1,9 @@
+﻿using SME.ConectaFormacao.Dominio.Entidades;
+
+namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
+{
+    public interface IRepositorioSincronizador
+    {
+        Task SincronizarLoteCargosEolAsync(List<CargoEol> cargos, string codigoDre);
+    }
+}

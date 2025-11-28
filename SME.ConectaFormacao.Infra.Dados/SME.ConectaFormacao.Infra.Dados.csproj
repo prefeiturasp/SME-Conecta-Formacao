@@ -14,6 +14,7 @@
       <PackageReference Include="Dapper" Version="2.1.66" />
       <PackageReference Include="Dapper.FluentMap.Dommel" Version="2.0.0" />
       <PackageReference Include="Dommel" Version="3.4.0" />      
-      <PackageReference Include="Npgsql" Version="9.0.4" />
+      <PackageReference Include="Npgsql" Version="10.0.0" />      
+      <PackageReference Include="Polly" Version="8.6.5" />
     </ItemGroup>
 </Project>
