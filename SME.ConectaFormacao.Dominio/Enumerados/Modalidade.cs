@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
-    public enum Modalidade
+    public enum Modalidade : short
     {
         [Display(Name = "Educação Infantil", ShortName = "EI")]
         EducacaoInfantil = 1,

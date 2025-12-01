@@ -211,4 +211,5 @@ public class MensagemNegocio
     public const string INSCRICAO_DRE_NAO_PERMITIDA = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível reativar a inscrição.";
 
     public const string ERRO_OBTER_CARGOS_EOL_POR_DRE = "Não foi possível obter os cargos com atribuição no EOL para a DRE informada";
+    public const string ERRO_OBTER_ATRIBUICOES_SERVIDOR_EOL = "Não foi possível obter as atribuições de aula do servidor no EOL";
 }

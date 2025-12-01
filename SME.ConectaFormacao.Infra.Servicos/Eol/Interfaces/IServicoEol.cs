@@ -16,6 +16,7 @@
         Task<string> ObterNomeServidorPorRfEol(string rfServidor);
         Task<IEnumerable<UsuarioPerfilServicoEol>> ObterUsuariosPorPerfis(IEnumerable<Guid> perfis);
         Task<IEnumerable<string>> VerificarSeUsuarioEstaAtivo(string[] rf);
-        Task<IEnumerable<CargoEolDto>> ObterCargosEolPorDreAsync(string codigoDre);
+        Task<IEnumerable<CargoEolDto>?> ObterCargosEolPorDreAsync(string codigoDre);
+        Task<IEnumerable<AtribuicaoServidorEolDto>?> ObterAtribuicoesServidorEolPorDataAtualizacaoAsync(DateTime? dataUltimaAtualizacao);
     }
 }

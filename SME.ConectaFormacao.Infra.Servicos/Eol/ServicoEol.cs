@@ -150,7 +150,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             return json.JsonParaObjeto<IEnumerable<string>>();
         }
 
-        public async Task<IEnumerable<CargoEolDto>> ObterCargosEolPorDreAsync(string codigoDre)
+        public async Task<IEnumerable<CargoEolDto>?> ObterCargosEolPorDreAsync(string codigoDre)
         {
             var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_CARGOS_EOL_POR_DRE_SYNC.Parametros(codigoDre));
 
@@ -159,6 +159,19 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<IEnumerable<CargoEolDto>>();
+        }
+
+        public async Task<IEnumerable<AtribuicaoServidorEolDto>?> ObterAtribuicoesServidorEolPorDataAtualizacaoAsync(DateTime? dataUltimaAtualizacao)
+        {
+            var parametroQuery = dataUltimaAtualizacao.HasValue ? $"?dataUltimaAtualizacao={dataUltimaAtualizacao.Value.ToString("yyyy-MM-ddTHH:mm:ss")}" : "";
+            var urlFinal = EndpointsEolConstantes.OBTER_ATRIBUICOES_SERVIDOR_EOL_SYNC + parametroQuery;
+            var resposta = await httpClient.GetAsync(urlFinal);
+
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.ERRO_OBTER_ATRIBUICOES_SERVIDOR_EOL, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<IEnumerable<AtribuicaoServidorEolDto>>();
         }
     }
 }
