@@ -15,17 +15,21 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
 
             var origem = await servicoEol.ObterFuncaoAtividadeEolPorDre(codigoDre);
 
-            var destino = origem?.Select(c => new FuncaoAtividadeUsuario
-            {
-                CdRegistroFuncional = c.CdRegistroFuncional,
-                CdTipoFuncao = c.CdTipoFuncao,
-                CdUe = c.CdUe
-            }).ToList() ?? [];
+            var destino = origem?
+                .Select(c => new FuncaoAtividadeUsuario
+                {
+                    CdRegistroFuncional = c.CdRegistroFuncional,
+                    CdTipoFuncao = c.CdTipoFuncao,
+                    CdUe = c.CdUe
+                })
+                .DistinctBy(x => new { x.CdRegistroFuncional, x.CdTipoFuncao, x.CdUe }) // remove duplicados
+                .ToList() ?? [];
 
             await repositorioSincronizador.SincronizarLoteFuncaoAtividadeEolAsync(destino, codigoDre);
 
             return true;
         }
+
 
     }
 }

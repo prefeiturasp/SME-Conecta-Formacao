@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task SincronizarLoteFuncaoAtividadeEolAsync(List<FuncaoAtividadeUsuario> funcoesAtividade, string codigoDre)
         {
-            const string deleteTableCommand = "DELETE FROM funcaoatividade_eol WHERE codigo_dre = @codigoDre";
+            const string deleteTableCommand = "DELETE FROM funcaoatividade_eol";
             await _politicaRetry.ExecuteAsync(async () =>
             {
                 var conn = (NpgsqlConnection)conexao.Obter();
@@ -58,7 +58,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     cd_registro_funcional, 
                     cd_tipo_funcao, 
                     codigo_ue, 
-                    data_atualizacao, 
+                    data_atualizacao
                 ) FROM STDIN (FORMAT BINARY)";
 
             using var writer = await conn.BeginBinaryImportAsync(copyCommand);
