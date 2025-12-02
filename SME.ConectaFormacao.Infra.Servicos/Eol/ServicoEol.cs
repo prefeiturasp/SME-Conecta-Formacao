@@ -163,7 +163,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<IEnumerable<AtribuicaoServidorEolDto>?> ObterAtribuicoesServidorEolPorDataAtualizacaoAsync(DateTime? dataUltimaAtualizacao)
         {
-            var parametroQuery = dataUltimaAtualizacao.HasValue ? $"?dataUltimaAtualizacao={dataUltimaAtualizacao.Value.ToString("yyyy-MM-ddTHH:mm:ss")}" : "";
+            var parametroQuery = dataUltimaAtualizacao.HasValue ? $"?dataUltimaAtualizacao={dataUltimaAtualizacao.Value:yyyy-MM-ddTHH:mm:ss}" : "";
             var urlFinal = EndpointsEolConstantes.OBTER_ATRIBUICOES_SERVIDOR_EOL_SYNC + parametroQuery;
             var resposta = await httpClient.GetAsync(urlFinal);
 
