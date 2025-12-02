@@ -7,6 +7,7 @@ public interface IContextoAplicacao
     string UsuarioLogado { get; }
     string NomeUsuario { get; }
     string PerfilUsuario { get; }
+    Guid IdPerfilUsuario => Guid.Parse(PerfilUsuario);
     string Administrador { get; }
     T ObterVariavel<T>(string nome);
 

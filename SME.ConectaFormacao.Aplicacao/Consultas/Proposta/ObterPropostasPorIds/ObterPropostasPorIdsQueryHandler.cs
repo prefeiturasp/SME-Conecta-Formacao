@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.Aplicacao
             foreach (var proposta in propostas)
             {
                 var formacao = _mapper.Map<RetornoListagemFormacaoDTO>(proposta);
-                if (proposta.ArquivoImagemDivulgacao.NaoEhNulo())
+                if (proposta.ArquivoImagemDivulgacao is not null)
                     formacao.ImagemUrl = await _mediator.Send(new ObterEnderecoArquivoServicoArmazenamentoQuery(proposta.ArquivoImagemDivulgacao.NomeArquivoFisico, false));
 
                 formacoes.Add(formacao);
