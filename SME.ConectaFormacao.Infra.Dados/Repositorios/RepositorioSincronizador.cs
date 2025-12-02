@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
                 await writer.WriteAsync(funcaoAtividade.Id, NpgsqlTypes.NpgsqlDbType.Uuid);
                 await writer.WriteAsync(funcaoAtividade.CdRegistroFuncional, NpgsqlTypes.NpgsqlDbType.Char);
-                await writer.WriteAsync(funcaoAtividade.CdTipoFuncao, NpgsqlTypes.NpgsqlDbType.Varchar);
+                await writer.WriteAsync(funcaoAtividade.CdTipoFuncao, NpgsqlTypes.NpgsqlDbType.Integer);
                 await writer.WriteAsync(funcaoAtividade.CdUe, NpgsqlTypes.NpgsqlDbType.Char);
                 await writer.WriteAsync(funcaoAtividade.DataAtualizacao, NpgsqlTypes.NpgsqlDbType.TimestampTz);
             }

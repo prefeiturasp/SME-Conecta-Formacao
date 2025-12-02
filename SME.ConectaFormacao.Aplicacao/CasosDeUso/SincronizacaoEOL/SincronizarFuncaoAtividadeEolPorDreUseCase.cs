@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
                 .Select(c => new FuncaoAtividadeUsuario
                 {
                     CdRegistroFuncional = c.CdRegistroFuncional,
-                    CdTipoFuncao = c.CdTipoFuncao,
+                    CdTipoFuncao = Convert.ToInt32(c.CdTipoFuncao),
                     CdUe = c.CdUe
                 })
                 .DistinctBy(x => new { x.CdRegistroFuncional, x.CdTipoFuncao, x.CdUe }) // remove duplicados
