@@ -1987,7 +1987,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             -- Ano/Série
             AND (
-                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_ANO_TURMA WHERE PROPOSTA_ID = P.ID)
+                NOT EXISTS (SELECT 1 
+                       FROM PUBLIC.PROPOSTA_ANO_TURMA PAT 
+                       INNER JOIN PUBLIC.ANO_TURMA AT ON AT.ID = PAT.ANO_TURMA_ID
+                       WHERE PAT.PROPOSTA_ID = P.ID AND AT.TODOS = false)
                 OR EXISTS (
                     SELECT 1 FROM PUBLIC.PROPOSTA_ANO_TURMA PAT
                     INNER JOIN PUBLIC.ANO_TURMA AT ON AT.ID = PAT.ANO_TURMA_ID
