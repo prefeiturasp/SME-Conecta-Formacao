@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Atribuicoes_Servidor_Eol(
 CREATE TABLE IF NOT EXISTS funcaoatividade_eol(
 	id uuid PRIMARY KEY,	
 	cd_registro_funcional char(7) NOT NULL,
-	cd_tipo_funcao int8 NOT NULL,
+	cd_tipo_funcao int4 NOT NULL,
 	codigo_ue char(6) NOT NULL,
 	data_atualizacao TIMESTAMP WITH time ZONE DEFAULT now()
 );
