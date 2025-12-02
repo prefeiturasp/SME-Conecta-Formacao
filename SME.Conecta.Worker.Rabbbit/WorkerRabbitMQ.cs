@@ -34,6 +34,9 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.SincronizaCargosEol, new ComandoRabbit("Sincronização de Cargos EOL - Obter Dre", typeof(IExecutarSincronizacaoCargosEolUseCase), false));
             Comandos.Add(RotasRabbit.SincronizaCargosEolPorDre, new ComandoRabbit("Sincronização de Cargos EOL por DRE - Tratar uma Dre/Sme", typeof(ISincronizarCargosEolPorDreUseCase), true));
             Comandos.Add(RotasRabbit.SincronizaAtribuicoesServidoresEol, new ComandoRabbit("Sincronização de Atribuições dos Servidores EOL", typeof(ISincronizarAtribuicoesServidoresEolUseCase), false));
+            Comandos.Add(RotasRabbit.SincronizaFuncaoAtividade, new ComandoRabbit("Sincronização por Função Atividade", typeof(ISincronizarFuncaoAtividadeEolUseCase), false));
+            Comandos.Add(RotasRabbit.SincronizaFuncaoAtividadeDre, new ComandoRabbit("Sincronização por Função Atividade DRE/SME", typeof(ISincronizarFuncaoAtividadeEolPorDreUseCase), false));
+
 
             Comandos.Add(RotasRabbit.SincronizaComponentesCurricularesEAnosTurmaEOL, new ComandoRabbit("Sincronização de Componentes Curriculares e Anos da Turma do EOL", typeof(IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase), true));
 

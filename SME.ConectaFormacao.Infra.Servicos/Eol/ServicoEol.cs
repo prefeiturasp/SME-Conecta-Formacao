@@ -173,5 +173,17 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<IEnumerable<AtribuicaoServidorEolDto>>();
         }
+
+
+        public async Task<IEnumerable<FuncaoAtividadeDTO>?> ObterFuncaoAtividadeEolPorDre(string codigoDre)
+        {
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_FUNCAO_ATIVIDADE_EOL_POR_DRE_SYNC.Parametros(codigoDre));
+
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.ERRO_FUNCAO_ATIVIDADE_EOL_POR_DRE, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<IEnumerable<FuncaoAtividadeDTO>>();
+        }
     }
 }

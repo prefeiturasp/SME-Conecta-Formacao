@@ -7,5 +7,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task SincronizarLoteCargosEolAsync(List<CargoEol> cargos, string codigoDre);
         Task LimparAtribuicaoServidorEolAsync(List<string> chavesExclusao);
         Task SincronizarLoteAtribuicaoServidorEolAsync(List<AtribuicaoServidorEol> atribuicoes);
+        Task SincronizarLoteFuncaoAtividadeEolAsync(List<FuncaoAtividadeUsuario> funcoesAtividade, string codigoDre);
     }
 }

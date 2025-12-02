@@ -209,7 +209,11 @@ public class MensagemNegocio
     public const string INSCRICAO_SO_PODE_REATIVAR_CANCELADAS = "A inscrição só pode ser reativada se estiver cancelada";
     public const string INSCRICAO_CARGO_NAO_PERMITIDO = "Cargo/Função selecionado não definido no público alvo da formação, sendo assim, não será possível reativar a inscrição.";
     public const string INSCRICAO_DRE_NAO_PERMITIDA = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível reativar a inscrição.";
+    public const string FUNCAO_ATIVIDADE_USUARIO_CADASTRADA = "Funcao Cadastrada do usuario foi inserida com sucesso";
+
 
     public const string ERRO_OBTER_CARGOS_EOL_POR_DRE = "Não foi possível obter os cargos com atribuição no EOL para a DRE informada";
     public const string ERRO_OBTER_ATRIBUICOES_SERVIDOR_EOL = "Não foi possível obter as atribuições de aula do servidor no EOL";
+
+    public const string ERRO_FUNCAO_ATIVIDADE_EOL_POR_DRE = "Não foi possivel obter os dados de funcao atividade";
 }

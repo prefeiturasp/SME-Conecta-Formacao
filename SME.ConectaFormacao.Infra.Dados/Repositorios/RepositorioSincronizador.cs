@@ -33,6 +33,51 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             });
         }
 
+        public async Task SincronizarLoteFuncaoAtividadeEolAsync(List<FuncaoAtividadeUsuario> funcoesAtividade, string codigoDre)
+        {
+            const string deleteTableCommand = "DELETE FROM funcaoatividade_eol WHERE codigo_dre = @codigoDre";
+            await _politicaRetry.ExecuteAsync(async () =>
+            {
+                var conn = (NpgsqlConnection)conexao.Obter();
+
+                if (conn.State != System.Data.ConnectionState.Open)
+                    await conn.OpenAsync();
+                await using var transaction = await conn.BeginTransactionAsync();
+
+                await conexao.Obter().ExecuteAsync(deleteTableCommand, new { codigoDre });
+                await RealizarBulkFuncaoAtividadeAsync(conn, funcoesAtividade);
+                await transaction.CommitAsync();
+            });
+        }
+
+        private static async Task RealizarBulkFuncaoAtividadeAsync(NpgsqlConnection conn, List<FuncaoAtividadeUsuario> dados)
+        {
+            const string copyCommand = @"
+                COPY funcaoatividade_eol (
+                    id, 
+                    cd_registro_funcional, 
+                    cd_tipo_funcao, 
+                    codigo_ue, 
+                    data_atualizacao, 
+                ) FROM STDIN (FORMAT BINARY)";
+
+            using var writer = await conn.BeginBinaryImportAsync(copyCommand);
+
+            foreach (var funcaoAtividade in dados)
+            {
+                await writer.StartRowAsync();
+
+                await writer.WriteAsync(funcaoAtividade.Id, NpgsqlTypes.NpgsqlDbType.Uuid);
+                await writer.WriteAsync(funcaoAtividade.CdRegistroFuncional, NpgsqlTypes.NpgsqlDbType.Char);
+                await writer.WriteAsync(funcaoAtividade.CdTipoFuncao, NpgsqlTypes.NpgsqlDbType.Varchar);
+                await writer.WriteAsync(funcaoAtividade.CdUe, NpgsqlTypes.NpgsqlDbType.Char);
+                await writer.WriteAsync(funcaoAtividade.DataAtualizacao, NpgsqlTypes.NpgsqlDbType.TimestampTz);
+            }
+
+            // Completa a importação e envia ao banco
+            await writer.CompleteAsync();
+        }
+
         public async Task LimparAtribuicaoServidorEolAsync(List<string> chavesExclusao)
         {
             const string deleteCommand = @"
@@ -87,7 +132,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             // Completa a importação e envia ao banco
             await writer.CompleteAsync();
         }
-
         private static async Task RealizarBulkInsertAtribuicoesServidoresAsync(NpgsqlConnection conn, List<AtribuicaoServidorEol> dados)
         {
             const string copyCommand = @"
