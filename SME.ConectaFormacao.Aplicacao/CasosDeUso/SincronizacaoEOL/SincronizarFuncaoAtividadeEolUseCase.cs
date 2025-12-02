@@ -20,13 +20,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
 
             Task LogNegocioAsync(string dre) =>
                 mediator.Send(new SalvarLogViaRabbitCommand(
-                    $"Erro ao publicar mensagem na fila para sincronização de cargos EOL da DRE {dre}.",
+                    $"Erro ao publicar mensagem na fila para sincronização de função atividade EOL da DRE {dre}.",
                     LogNivel.Negocio,
                     LogContexto.SincronizacaoCargosEol));
 
             Task LogErroCriticoAsync(string dre, Exception ex) =>
                 mediator.Send(new SalvarLogViaRabbitCommand(
-                    $"Erro ao sincronizar cargos EOL da DRE {dre}.",
+                    $"Erro ao sincronizar função atividade EOL da DRE {dre}.",
                     LogNivel.Critico,
                     LogContexto.SincronizacaoCargosEol,
                     "",

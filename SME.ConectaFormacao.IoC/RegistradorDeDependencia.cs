@@ -279,6 +279,7 @@ public class RegistradorDeDependencia
         _serviceCollection.AddScoped<IRepositorioCargoEol, RepositorioCargoEol>();
         _serviceCollection.AddScoped<IRepositorioSincronizador, RepositorioSincronizador>();
         _serviceCollection.AddScoped<IRepositorioAtribuicaoAulaServidor, RepositorioAtribuicaoAulaServidor>();
+        _serviceCollection.AddScoped<IRepositorioFuncaoAtividadeUsuario, RepositorioFuncaoAtividadeUsuario>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -470,6 +471,8 @@ public class RegistradorDeDependencia
         _serviceCollection.AddScoped<IExecutarSincronizacaoCargosEolUseCase, ExecutarSincronizacaoCargosEolUseCase>();
         _serviceCollection.AddScoped<ISincronizarCargosEolPorDreUseCase, SincronizarCargosEolPorDreUseCase>();
         _serviceCollection.AddScoped<ISincronizarAtribuicoesServidoresEolUseCase, SincronizarAtribuicoesServidoresEolUseCase>();
+        _serviceCollection.AddScoped<ISincronizarFuncaoAtividadeEolUseCase, SincronizarFuncaoAtividadeEolUseCase>();
+        _serviceCollection.AddScoped<ISincronizarFuncaoAtividadeEolPorDreUseCase, SincronizarFuncaoAtividadeEolPorDreUseCase>();
     }
 
     protected virtual void RegistrarHttpClients()
