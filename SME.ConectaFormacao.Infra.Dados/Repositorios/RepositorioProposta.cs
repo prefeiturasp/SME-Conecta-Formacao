@@ -1951,6 +1951,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 FROM PUBLIC.CARGOS_EOL ce
                 INNER JOIN PUBLIC.CARGO_FUNCAO_DEPARA_EOL cf ON ce.CD_CARGO = cf.CODIGO_CARGO_EOL
                 WHERE ce.CD_REGISTRO_FUNCIONAL = @rf
+            ),
+            ContextoFuncoes AS (
+                SELECT DISTINCT CF.CARGO_FUNCAO_ID
+                FROM PUBLIC.FUNCAOATIVIDADE_EOL AS FE 
+                INNER JOIN PUBLIC.CARGO_FUNCAO_DEPARA_EOL AS CF ON FE.CD_TIPO_FUNCAO = CF.CODIGO_FUNCAO_EOL 
+                WHERE FE.CD_REGISTRO_FUNCIONAL = @rf
             )";
 
         private static string ObterFiltrosDePermissaoServidor() =>
@@ -2002,13 +2008,23 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             -- Vaga Remanescente
             AND (
                 NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR WHERE PROPOSTA_ID = P.ID)
-                OR
-                EXISTS (
+                OR EXISTS (
       	            SELECT 1
       	            FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR
                     INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PVR.CARGO_FUNCAO_ID
                     WHERE PROPOSTA_ID = P.ID
                 )
+            )
+
+            -- Função
+            AND (
+	            NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE WHERE PROPOSTA_ID = P.ID)
+	            OR EXISTS (
+		            SELECT 1
+		            FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE 
+		            INNER JOIN ContextoFuncoes CF ON CF.CARGO_FUNCAO_ID = PFE.CARGO_FUNCAO_ID
+		            WHERE PROPOSTA_ID = P.ID
+	            )
             )";
 
         #endregion

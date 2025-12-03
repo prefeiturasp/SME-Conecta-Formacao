@@ -7,7 +7,7 @@ public interface IContextoAplicacao
     string UsuarioLogado { get; }
     string NomeUsuario { get; }
     string PerfilUsuario { get; }
-    Guid IdPerfilUsuario => Guid.Parse(PerfilUsuario);
+    Guid? IdPerfilUsuario => !string.IsNullOrWhiteSpace(PerfilUsuario) ? Guid.Parse(PerfilUsuario) : null;
     string Administrador { get; }
     T ObterVariavel<T>(string nome);
 
