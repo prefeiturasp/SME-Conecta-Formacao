@@ -2,13 +2,8 @@
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso
 {
-    public abstract class CasoDeUsoAbstrato
+    public abstract class CasoDeUsoAbstrato(IMediator mediator)
     {
-        protected readonly IMediator mediator;
-
-        protected CasoDeUsoAbstrato(IMediator mediator)
-        {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        }
+        protected readonly IMediator mediator = mediator;
     }
 }

@@ -2,6 +2,7 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Dominio.Repositorios;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
@@ -85,7 +86,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaTurmaDre>> ObterPropostaTurmasDresPorPropostaTurmaId(params long[] propostaTurmaId);
         Task InserirPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres);
         Task RemoverPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres);
-        Task<IEnumerable<long>> ObterListagemFormacoesPorFiltro(long[] publicosAlvosIds, string titulo, long[] areasPromotorasIds, DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds);
+        Task<PaginacaoResultadoDto<long>> ObterListagemFormacoesPorFiltro(FiltroListaFormacaoPropostaDto filtroListaFormacaoPropostaDto);
         Task<IEnumerable<Proposta>> ObterPropostasResumidasPorId(long[] propostaIds);
         Task<IEnumerable<PropostaPublicoAlvo>> ObterPropostasPublicoAlvoPorIdProposta(long propostaId);
         Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId);

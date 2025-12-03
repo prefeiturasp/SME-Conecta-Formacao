@@ -46,8 +46,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public int? HorasTotais { get; set; }
         public string? CargaHorariaTotalOutra { get; set; }
 
-        public AreaPromotora AreaPromotora { get; set; }
-        public Arquivo ArquivoImagemDivulgacao { get; set; }
+        public AreaPromotora? AreaPromotora { get; set; }
+        public Arquivo? ArquivoImagemDivulgacao { get; set; }
         public IEnumerable<PropostaDre> Dres { get; set; }
         public IEnumerable<PropostaPublicoAlvo> PublicosAlvo { get; set; }
         public IEnumerable<PropostaFuncaoEspecifica> FuncoesEspecificas { get; set; }

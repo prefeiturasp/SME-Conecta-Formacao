@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
 
@@ -113,7 +114,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (propostaTurma != null)
             {
-                var sql = @" SELECT d.id AS Id, d.dre_id AS DreId, d.abreviacao AS DreAbreviacao, d.nome AS DreNome
+                var sql = @" SELECT d.id AS Id, d.dre_id AS CodigoDre, d.abreviacao AS DreAbreviacao, d.nome AS DreNome
                   FROM proposta_turma_dre ptd
                   INNER JOIN dre d ON d.id = ptd.dre_id
                   WHERE ptd.proposta_turma_id = @Id 
@@ -1811,71 +1812,222 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
-        public async Task<IEnumerable<long>> ObterListagemFormacoesPorFiltro(long[] publicosAlvosIds, string titulo, long[] areasPromotorasIds,
-            DateTime? dataInicial, DateTime? dataFinal, int[] formatosIds, long[] palavrasChavesIds)
+        public async Task<PaginacaoResultadoDto<long>> ObterListagemFormacoesPorFiltro(FiltroListaFormacaoPropostaDto filtro)
         {
-            var tipoInscricao = new int[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
-            var situacao = SituacaoProposta.Publicada;
-            titulo = titulo.NaoEhNulo() ? titulo.ToLower() : string.Empty;
-            var dataAtual = DateTimeExtension.HorarioBrasilia().Date;
+            var sql = new StringBuilder();
+            var parametros = new DynamicParameters();
 
-            var query = @"select distinct p.id, p.data_realizacao_inicio, p.data_realizacao_fim
-                          from proposta p
-                          inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id and not pti.excluido
-                          where not p.excluido 
-                             and pti.tipo_inscricao = any(@tipoInscricao) 
-                             and p.situacao = @situacao
-                             and @dataAtual between p.data_inscricao_inicio::date and  p.data_inscricao_fim::date";
+            // 1. Configuração Básica e Paginação
+            var aplicarFiltroPerfil = filtro.EhPerfilCursista && !string.IsNullOrWhiteSpace(filtro.RfServidor);
+            var offset = (filtro.Pagina - 1) * filtro.TamanhoPagina;
 
-            if (areasPromotorasIds.PossuiElementos())
-                query += " and p.area_promotora_id = any(@areasPromotorasIds) ";
+            parametros.Add("@dataAtual", DateTimeExtension.HorarioBrasilia().Date);
+            parametros.Add("@situacao", SituacaoProposta.Publicada);
+            parametros.Add("@tipoInscricao", new int[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa });
 
-            if (titulo.EstaPreenchido())
-                query += " and f_unaccent(lower(p.nome_formacao)) LIKE ('%' || f_unaccent(@titulo) || '%') ";
+            // Parâmetros de Paginação
+            parametros.Add("@offset", offset);
+            parametros.Add("@tamanhoPagina", filtro.TamanhoPagina);
 
-            if (dataInicial.HasValue && dataFinal.HasValue)
-                query += @" and (
-                                (p.data_realizacao_inicio::date between @dataInicial and @dataFinal) or 
-                                (p.data_realizacao_fim::date between @dataInicial and @dataFinal)
-                                )";
-
-            if (formatosIds.PossuiElementos())
-                query += " and p.formato = any(@formatosIds) ";
-
-            if (publicosAlvosIds.PossuiElementos())
+            // 2. CTEs de Contexto (Se necessário)
+            if (aplicarFiltroPerfil)
             {
-                query += @" and exists(select 1 
-                                       from proposta_publico_alvo ppa 
-                                       where not ppa.excluido 
-                                         and ppa.proposta_id = p.id 
-                                         and ppa.cargo_funcao_id = any(@publicosAlvosIds)) ";
+                sql.AppendLine(ObterCteContextoServidor());
+                parametros.Add("@rf", filtro.RfServidor);
+                sql.AppendLine(", BaseConsulta AS (");
+            }
+            else
+                sql.AppendLine("WITH BaseConsulta AS (");
+
+            // 3. CTE Principal (Query Base com Distinct)
+            // Encapsulamos numa CTE 'BaseConsulta' para que o DISTINCT ocorra ANTES da contagem e paginação
+
+            sql.AppendLine(@"
+            SELECT DISTINCT 
+                p.id, 
+                p.data_realizacao_inicio, 
+                p.data_realizacao_fim
+            FROM proposta p
+            INNER JOIN proposta_tipo_inscricao pti ON pti.proposta_id = p.id AND NOT pti.excluido
+            WHERE NOT p.excluido 
+                AND pti.tipo_inscricao = ANY(@tipoInscricao) 
+                AND p.situacao = @situacao
+                AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date");
+
+            if (aplicarFiltroPerfil)
+            {
+                sql.AppendLine(ObterFiltrosDePermissaoServidor());
             }
 
-            if (palavrasChavesIds.PossuiElementos())
-            {
-                query += @" and exists(select 1 
-                                       from proposta_palavra_chave ppc 
-                                       where not ppc.excluido 
-                                         and ppc.proposta_id = p.id 
-                                         and ppc.palavra_chave_id = any(@palavrasChavesIds)) ";
-            }
+            AdicionarFiltrosOpcionais(sql, parametros, filtro);
 
-            query += @" order by p.data_realizacao_inicio, p.data_realizacao_fim";
+            sql.AppendLine(")"); // Fecha CTE BaseConsulta
 
-            return await conexao.Obter().QueryAsync<long>(query, new
+            // 4. Select Final com Window Function para Total e Paginação
+            sql.AppendLine(@"
+            SELECT 
+                id,
+                COUNT(*) OVER() AS TotalGeral
+            FROM BaseConsulta
+            ORDER BY data_realizacao_inicio, data_realizacao_fim
+            OFFSET @offset LIMIT @tamanhoPagina;");
+
+            // 5. Execução e Mapeamento
+            var resultadoDapper = await conexao.Obter().QueryAsync<dynamic>(sql.ToString(), parametros);
+
+            var listaIds = resultadoDapper.Select(x => (long)x.id).ToList();
+            var totalRegistros = resultadoDapper.FirstOrDefault()?.totalgeral ?? 0;
+
+            return new PaginacaoResultadoDto<long>
             {
-                dataAtual,
-                palavrasChavesIds,
-                formatosIds,
-                dataInicial = dataInicial.GetValueOrDefault().Date,
-                dataFinal = dataFinal.GetValueOrDefault().Date,
-                areasPromotorasIds,
-                titulo,
-                publicosAlvosIds,
-                tipoInscricao,
-                situacao
-            });
+                Itens = listaIds,
+                TotalRegistros = (int)totalRegistros,
+                PaginaAtual = filtro.Pagina,
+                TamanhoPagina = filtro.TamanhoPagina
+            };
         }
+
+        #region Helpers de Construção SQL
+
+        private static void AdicionarFiltrosOpcionais(StringBuilder sql, DynamicParameters p, FiltroListaFormacaoPropostaDto f)
+        {
+            if (f.AreasPromotorasIds?.Length > 0)
+            {
+                sql.AppendLine(" AND p.area_promotora_id = ANY(@areasPromotorasIds) ");
+                p.Add("@areasPromotorasIds", f.AreasPromotorasIds);
+            }
+
+            if (!string.IsNullOrWhiteSpace(f.Titulo))
+            {
+                sql.AppendLine(" AND f_unaccent(lower(p.nome_formacao)) LIKE ('%' || f_unaccent(@titulo) || '%') ");
+                p.Add("@titulo", f.Titulo.Trim().ToLower());
+            }
+
+            if (f.DataInicial.HasValue && f.DataFinal.HasValue)
+            {
+                sql.AppendLine(@" AND (
+                    (p.data_realizacao_inicio::date BETWEEN @dataInicial AND @dataFinal) OR 
+                    (p.data_realizacao_fim::date BETWEEN @dataInicial AND @dataFinal)
+                )");
+                p.Add("@dataInicial", f.DataInicial.Value.Date);
+                p.Add("@dataFinal", f.DataFinal.Value.Date);
+            }
+
+            if (f.FormatosIds?.Length > 0)
+            {
+                sql.AppendLine(" AND p.formato = ANY(@formatosIds) ");
+                p.Add("@formatosIds", f.FormatosIds);
+            }
+
+            if (f.PublicosAlvosIds?.Length > 0)
+            {
+                sql.AppendLine(@" AND EXISTS(SELECT 1 
+                                     FROM proposta_publico_alvo ppa 
+                                     WHERE NOT ppa.excluido 
+                                       AND ppa.proposta_id = p.id 
+                                       AND ppa.cargo_funcao_id = ANY(@publicosAlvosIds)) ");
+                p.Add("@publicosAlvosIds", f.PublicosAlvosIds);
+            }
+
+            if (f.PalavrasChavesIds?.Length > 0)
+            {
+                sql.AppendLine(@" AND EXISTS(SELECT 1 
+                                     FROM proposta_palavra_chave ppc 
+                                     WHERE NOT ppc.excluido 
+                                       AND ppc.proposta_id = p.id 
+                                       AND ppc.palavra_chave_id = ANY(@palavrasChavesIds)) ");
+                p.Add("@palavrasChavesIds", f.PalavrasChavesIds);
+            }
+        }
+
+        private static string ObterCteContextoServidor() => @"
+            WITH ContextoServidor AS (
+                SELECT CD_MODALIDADE, CD_COMPONENTE_CURRICULAR, ano_serie
+                FROM PUBLIC.ATRIBUICOES_SERVIDOR_EOL 
+                WHERE CD_REGISTRO_FUNCIONAL = @rf
+            ),
+            ContextoCargos AS (
+                SELECT DISTINCT cf.CARGO_FUNCAO_ID
+                FROM PUBLIC.CARGOS_EOL ce
+                INNER JOIN PUBLIC.CARGO_FUNCAO_DEPARA_EOL cf ON ce.CD_CARGO = cf.CODIGO_CARGO_EOL
+                WHERE ce.CD_REGISTRO_FUNCIONAL = @rf
+            ),
+            ContextoFuncoes AS (
+                SELECT DISTINCT CF.CARGO_FUNCAO_ID
+                FROM PUBLIC.FUNCAOATIVIDADE_EOL AS FE 
+                INNER JOIN PUBLIC.CARGO_FUNCAO_DEPARA_EOL AS CF ON FE.CD_TIPO_FUNCAO = CF.CODIGO_FUNCAO_EOL 
+                WHERE FE.CD_REGISTRO_FUNCIONAL = @rf
+            )";
+
+        private static string ObterFiltrosDePermissaoServidor() =>
+            @"
+            -- Público Alvo (Cargos)
+            AND (
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO WHERE PROPOSTA_ID = P.ID)
+                OR EXISTS (
+                    SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO PPA
+                    INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PPA.CARGO_FUNCAO_ID
+                    WHERE PPA.PROPOSTA_ID = P.ID
+                )
+            )
+            
+            --  Etapa/Modalidade
+            AND (
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_MODALIDADE WHERE PROPOSTA_ID = P.ID)
+                OR EXISTS (
+                    SELECT 1 FROM PUBLIC.PROPOSTA_MODALIDADE PM
+                    INNER JOIN ContextoServidor CS ON CS.CD_MODALIDADE = PM.MODALIDADE
+                    WHERE PM.PROPOSTA_ID = P.ID
+                )
+            )
+
+            -- Componente Curricular
+            AND (
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_COMPONENTE_CURRICULAR WHERE PROPOSTA_ID = P.ID)
+                OR EXISTS (
+                    SELECT 1 FROM PUBLIC.PROPOSTA_COMPONENTE_CURRICULAR PCC
+                    INNER JOIN ContextoServidor CS ON CS.CD_COMPONENTE_CURRICULAR = PCC.COMPONENTE_CURRICULAR_ID
+                    WHERE PCC.PROPOSTA_ID = P.ID
+                )
+            )
+
+            -- Ano/Série
+            AND (
+                NOT EXISTS (SELECT 1 
+                       FROM PUBLIC.PROPOSTA_ANO_TURMA PAT 
+                       INNER JOIN PUBLIC.ANO_TURMA AT ON AT.ID = PAT.ANO_TURMA_ID
+                       WHERE PAT.PROPOSTA_ID = P.ID AND AT.TODOS = false)
+                OR EXISTS (
+                    SELECT 1 FROM PUBLIC.PROPOSTA_ANO_TURMA PAT
+                    INNER JOIN PUBLIC.ANO_TURMA AT ON AT.ID = PAT.ANO_TURMA_ID
+                    INNER JOIN ContextoServidor CS ON CS.ano_serie = AT.CODIGO_EOL
+                    WHERE PAT.PROPOSTA_ID = P.ID
+                )
+            )
+  
+            -- Vaga Remanescente
+            AND (
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR WHERE PROPOSTA_ID = P.ID)
+                OR EXISTS (
+      	            SELECT 1
+      	            FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR
+                    INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PVR.CARGO_FUNCAO_ID
+                    WHERE PROPOSTA_ID = P.ID
+                )
+            )
+
+            -- Função
+            AND (
+	            NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE WHERE PROPOSTA_ID = P.ID)
+	            OR EXISTS (
+		            SELECT 1
+		            FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE 
+		            INNER JOIN ContextoFuncoes CF ON CF.CARGO_FUNCAO_ID = PFE.CARGO_FUNCAO_ID
+		            WHERE PROPOSTA_ID = P.ID
+	            )
+            )";
+
+        #endregion
 
         public async Task<IEnumerable<Proposta>> ObterPropostasResumidasPorId(long[] propostaIds)
         {
@@ -1891,18 +2043,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         p.area_promotora_id,
                         p.arquivo_imagem_divulgacao_id
                     from public.proposta p  
-                    where not p.excluido and p.id = any(@propostaIds);
+                    where p.id = any(@propostaIds);
 
                     select ap.id,
 	                       ap.nome 
                     from area_promotora ap 
-                    where not ap.excluido and exists(select 1 from proposta p where not p.excluido and ap.id = p.area_promotora_id and p.id = any(@propostaIds));
+                    where exists(select 1 from proposta p where ap.id = p.area_promotora_id and p.id = any(@propostaIds));
 
                     select a.id,
                            a.nome,
                            a.codigo
                     from arquivo a 
-                    where not a.excluido and exists(select 1 from proposta p where not p.excluido and a.id = p.arquivo_imagem_divulgacao_id and p.id = any(@propostaIds));";
+                    where not a.excluido and exists(select 1 from proposta p where a.id = p.arquivo_imagem_divulgacao_id and p.id = any(@propostaIds));";
 
             var multiQuery = await conexao.Obter().QueryMultipleAsync(query, new { propostaIds });
 
@@ -2129,7 +2281,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             where pti.proposta_id = @propostaId and not pti.excluido;
 
             select pt.id,
-                   ptd.dre_id as DreId, 
+                   ptd.dre_id as CodigoDre, 
                    dre.dre_id as codigoDre
             from proposta_turma pt
               join proposta_turma_dre ptd on ptd.proposta_turma_id = pt.id and not ptd.excluido 
