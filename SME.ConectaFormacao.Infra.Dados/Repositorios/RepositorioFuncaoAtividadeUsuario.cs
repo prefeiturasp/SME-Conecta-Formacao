@@ -23,5 +23,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().QueryAsync<FuncaoAtividadeUsuario>(query, parametros);
         }
+
+        public async Task<DateTime?> ObterDataUltimaAtualizacaoAsync()
+        {
+            const string query = @"SELECT MAX(data_atualizacao)
+                                    FROM funcaoatividade_eol";
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<DateTime?>(query);
+        }
     }
 }
