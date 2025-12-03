@@ -43,13 +43,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             };
 
             _servicoEolMock
-                .Setup(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre))
+                .Setup(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()))
                 .ReturnsAsync(funcoesAtividadesOrigem);
 
             var resultado = await _useCase.Executar(new() { Mensagem = codigoDre });
 
             resultado.Should().BeTrue();
-            _servicoEolMock.Verify(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre), Times.Once);
+            _servicoEolMock.Verify(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()), Times.Once);
 
             _repositorioSincronizadorMock.Verify(r => r.SincronizarLoteFuncaoAtividadeEolAsync(
                 It.Is<List<FuncaoAtividadeUsuario>>(list =>
@@ -66,13 +66,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var codigoDre = "DRE1";
 
             _servicoEolMock
-                .Setup(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre))
+                .Setup(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()))
                 .ReturnsAsync(new List<FuncaoAtividadeDTO>());
 
             var resultado = await _useCase.Executar(new() { Mensagem = codigoDre });
 
             resultado.Should().BeTrue();
-            _servicoEolMock.Verify(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre), Times.Once);
+            _servicoEolMock.Verify(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()), Times.Once);
 
             _repositorioSincronizadorMock.Verify(r => r.SincronizarLoteFuncaoAtividadeEolAsync(
                 It.Is<List<FuncaoAtividadeUsuario>>(list => list.Count == 0),
@@ -85,13 +85,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var codigoDre = "DRE1";
 
             _servicoEolMock
-                .Setup(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre))
+                .Setup(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()))
                 .ReturnsAsync((List<FuncaoAtividadeDTO>?)null);
 
             var resultado = await _useCase.Executar(new() { Mensagem = codigoDre });
 
             resultado.Should().BeTrue();
-            _servicoEolMock.Verify(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre), Times.Once);
+            _servicoEolMock.Verify(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()), Times.Once);
 
             _repositorioSincronizadorMock.Verify(r => r.SincronizarLoteFuncaoAtividadeEolAsync(
                 It.Is<List<FuncaoAtividadeUsuario>>(list => list.Count == 0),
