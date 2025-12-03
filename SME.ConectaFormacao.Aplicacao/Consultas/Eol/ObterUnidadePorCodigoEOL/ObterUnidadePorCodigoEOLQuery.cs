@@ -4,14 +4,9 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUnidadePorCodigoEOLQuery : IRequest<UnidadeEol>
+    public class ObterUnidadePorCodigoEOLQuery(string? unidadeCodigo) : IRequest<UnidadeEol>
     {
-        public ObterUnidadePorCodigoEOLQuery(string unidadeCodigo)
-        {
-            UnidadeCodigo = unidadeCodigo;
-        }
-
-        public string UnidadeCodigo { get; set; }
+        public string? UnidadeCodigo { get; set; } = unidadeCodigo;
     }
 
     public class ObterUePorCodigoEOLQueryValidator : AbstractValidator<ObterUnidadePorCodigoEOLQuery>

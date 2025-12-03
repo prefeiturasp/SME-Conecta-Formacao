@@ -7,9 +7,9 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricao
         public long PropostaTurmaId { get; set; }
         public bool ProfissionalRede { get; set; }
         public bool PodeContinuar { get; set; } = false;
-        public string RegistroFuncional { get; set; }
+        public string? RegistroFuncional { get; set; }
         [Required(ErrorMessage = "CPF é obrigatório")]
-        public string Cpf { get; set; }
+        public string Cpf { get; set; } = null!;
         public string? CargoCodigo { get; set; }
         public string? CargoDreCodigo { get; set; }
         public string? CargoUeCodigo { get; set; }
