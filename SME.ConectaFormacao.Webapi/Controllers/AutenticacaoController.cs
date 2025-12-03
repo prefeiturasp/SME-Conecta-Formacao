@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Autenticar(
             [FromServices] ICasoDeUsoAutenticarUsuario casoDeUsoAutenticar,
-            AutenticacaoDTO autenticacaoDto)
+            AutenticacaoDto autenticacaoDto)
         {
             return Ok(await casoDeUsoAutenticar.Executar(autenticacaoDto));
         }

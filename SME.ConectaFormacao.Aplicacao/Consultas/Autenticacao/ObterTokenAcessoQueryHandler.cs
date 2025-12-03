@@ -66,7 +66,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task<UsuarioPerfisRetornoDTO> ValidarPerfisAutomaticos(ObterTokenAcessoQuery request, UsuarioPerfisRetornoDTO usuarioPerfisRetornoDto, CancellationToken cancellationToken)
         {
-            var perfilCursista = new Guid(PerfilAutomatico.PERFIL_CURSISTA_GUID);
+            var perfilCursista = PerfilAutomatico.PERIL_CURSISTA_CODIGO;
             if (usuarioPerfisRetornoDto.PerfilUsuario.EhNulo() || !usuarioPerfisRetornoDto.PerfilUsuario.Any(t => t.Perfil == perfilCursista))
             {
                 await mediator.Send(new VincularPerfilExternoCoreSSOServicoAcessosCommand(request.Login, perfilCursista), cancellationToken);

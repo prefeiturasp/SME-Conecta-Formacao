@@ -1,23 +1,15 @@
 ﻿namespace SME.ConectaFormacao.Aplicacao.Dtos
 {
-    public class PaginacaoResultadoDTO<T>
+    public class PaginacaoResultadoDTO<T>(IEnumerable<T> items, int totalRegistros, int numeroRegistros)
     {
-        public PaginacaoResultadoDTO(IEnumerable<T> items, int totalRegistros, int numeroRegistros)
-        {
-            Items = items;
-            TotalRegistros = totalRegistros;
-            NumeroRegistros = numeroRegistros;
-        }
-
-        public IEnumerable<T> Items { get; set; }
+        public IEnumerable<T> Items { get; set; } = items;
         public int TotalPaginas
         {
             get
             {
-                return (int)Math.Ceiling((double)TotalRegistros / NumeroRegistros);
+                return (int)Math.Ceiling((double)TotalRegistros / numeroRegistros);
             }
         }
-        public int TotalRegistros { get; private set; }
-        private int NumeroRegistros { get; set; }
+        public int TotalRegistros { get; private set; } = totalRegistros;
     }
 }

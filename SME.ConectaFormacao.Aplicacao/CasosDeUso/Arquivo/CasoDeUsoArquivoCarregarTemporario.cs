@@ -15,15 +15,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo
         {
         }
 
-        public async Task<ArquivoArmazenadoDTO> Executar(IFormFile arquivo)
+        public async Task<ArquivoArmazenadoDTO> Executar(IFormFile file)
         {
-            if (arquivo.Length == 0)
+            if (file.Length == 0)
                 throw new NegocioException(MensagemNegocio.ARQUIVO_VAZIO);
 
-            if (arquivo.Length > DezMb)
+            if (file.Length > DezMb)
                 throw new NegocioException(MensagemNegocio.ARQUIVO_MAIOR_QUE_10_MB);
 
-            var arquivoDTO = new ArquivoDTO(arquivo.FileName, Guid.NewGuid(), TipoArquivo.Temp, arquivo.ContentType, arquivo);
+            var arquivoDTO = new ArquivoDTO(file.FileName, Guid.NewGuid(), TipoArquivo.Temp, file.ContentType, file);
 
             var id = await mediator.Send(new InserirArquivoCommand(arquivoDTO));
             var caminho = await mediator.Send(new ArmazenarArquivoTemporarioServicoArmazenamentoCommand(arquivoDTO));

@@ -12,17 +12,6 @@
 
         protected CargoEol() : this(0, string.Empty, string.Empty, false, string.Empty) { } // EF Core
 
-        public void AtualizarDados(int cdCargo, string codigoUe, bool sobreposto)
-        {
-            // Lógica para verificar se houve mudança real antes de atualizar timestamp
-            if (CdCargo == cdCargo && CodigoUe == codigoUe && Sobreposto == sobreposto) return;
-
-            CdCargo = cdCargo;
-            CodigoUe = codigoUe;
-            Sobreposto = sobreposto;
-            DataAtualizacao = DateTime.UtcNow;
-        }
-
         public string ObterChaveNegocio()
         {
             return $"{CdRegistroFuncional}-{CdCargo}-{CodigoUe}-{Sobreposto}";

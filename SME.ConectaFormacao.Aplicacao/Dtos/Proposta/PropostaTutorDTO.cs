@@ -8,6 +8,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? Cpf { get; set; }
         public string? NomeTutor { get; set; }
         public string? NomesTurmas { get; set; }
-        public IEnumerable<PropostaTutorTurmaDTO> Turmas { get; set; }
+        public IEnumerable<PropostaTutorTurmaDTO> Turmas { get; set; } = [];
     }
 }
