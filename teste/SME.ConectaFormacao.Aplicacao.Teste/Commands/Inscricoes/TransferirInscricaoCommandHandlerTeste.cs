@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Moq;
+using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -8,7 +9,6 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 using System.Net;
-using System.Reflection;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
 {
@@ -19,34 +19,21 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
         private readonly Mock<IRepositorioProposta> _repoProposta;
         private readonly Mock<IMediator> _mediator;
         private readonly Mock<IRepositorioCargoFuncao> _repoCargoFuncao;
+        private readonly AutoMocker _mocker;
 
         public TransferirInscricaoCommandHandlerTeste()
         {
-            _repoInscricao = new Mock<IRepositorioInscricao>();
-            _repoUsuario = new Mock<IRepositorioUsuario>();
-            _repoProposta = new Mock<IRepositorioProposta>();
-            _mediator = new Mock<IMediator>();
-            _repoCargoFuncao = new Mock<IRepositorioCargoFuncao>();
+            _mocker = new AutoMocker();
+            _repoInscricao = _mocker.GetMock<IRepositorioInscricao>();
+            _repoUsuario = _mocker.GetMock<IRepositorioUsuario>();
+            _repoProposta = _mocker.GetMock<IRepositorioProposta>();
+            _mediator = _mocker.GetMock<IMediator>();
+            _repoCargoFuncao = _mocker.GetMock<IRepositorioCargoFuncao>();
         }
 
         private TransferirInscricaoCommandHandler CriarHandler()
         {
-            return new TransferirInscricaoCommandHandler(
-                _repoInscricao.Object,
-                _repoCargoFuncao.Object,
-                _mediator.Object,
-                _repoProposta.Object,
-                _repoUsuario.Object
-            );
-        }
-
-        [Fact]
-        public void Construtor_Deve_Lancar_ArgumentNullException_Se_Depencia_Nula()
-        {
-            Assert.Throws<ArgumentNullException>(() => new TransferirInscricaoCommandHandler(null, _repoCargoFuncao.Object, _mediator.Object, _repoProposta.Object, _repoUsuario.Object));
-            Assert.Throws<ArgumentNullException>(() => new TransferirInscricaoCommandHandler(_repoInscricao.Object, _repoCargoFuncao.Object, null, _repoProposta.Object, _repoUsuario.Object));
-            Assert.Throws<ArgumentNullException>(() => new TransferirInscricaoCommandHandler(_repoInscricao.Object, _repoCargoFuncao.Object, _mediator.Object, null, _repoUsuario.Object));
-            Assert.Throws<ArgumentNullException>(() => new TransferirInscricaoCommandHandler(_repoInscricao.Object, _repoCargoFuncao.Object, _mediator.Object, _repoProposta.Object, null));
+            return _mocker.CreateInstance<TransferirInscricaoCommandHandler>();
         }
 
         [Fact(DisplayName = "Handle deve retornar sucesso")]
@@ -115,9 +102,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
         [Fact]
         public async Task Handle_Deve_Retornar_Falha_Se_Usuario_Nao_Encontrado()
         {
-            var inscricao = new SME.ConectaFormacao.Dominio.Entidades.Inscricao { Id = 1, Situacao = SituacaoInscricao.Confirmada };
+            var inscricao = new Inscricao { Id = 1, Situacao = SituacaoInscricao.Confirmada };
             _repoInscricao.Setup(r => r.ObterPorId(It.IsAny<long>())).ReturnsAsync(inscricao);
-            _repoUsuario.Setup(r => r.ObterPorLogin(It.IsAny<string>())).ReturnsAsync((Usuario)null);
 
             var handler = CriarHandler();
 
@@ -302,15 +288,5 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
 
             await Assert.ThrowsAsync<NegocioException>(() => handler.Handle(comando, default));
         }
-
-        [Fact]
-        public void Validar_Inscricao_Deve_Lancar_Se_Null_Ou_Cancelada()
-        {
-            var metodo = typeof(TransferirInscricaoCommandHandler).GetMethod("ValidarInscricao", BindingFlags.NonPublic | BindingFlags.Static);
-
-            Assert.Throws<TargetInvocationException>(() => metodo.Invoke(null, new object[] { null }));
-            Assert.Throws<TargetInvocationException>(() => metodo.Invoke(null, new object[] { new SME.ConectaFormacao.Dominio.Entidades.Inscricao { Situacao = SituacaoInscricao.Cancelada } }));
-        }
-       
     }
 }

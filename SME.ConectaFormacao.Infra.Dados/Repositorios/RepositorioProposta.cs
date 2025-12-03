@@ -1963,31 +1963,31 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             @"
             -- Público Alvo (Cargos)
             AND (
-                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO WHERE PROPOSTA_ID = P.ID)
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
                 OR EXISTS (
                     SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO PPA
                     INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PPA.CARGO_FUNCAO_ID
-                    WHERE PPA.PROPOSTA_ID = P.ID
+                    WHERE PPA.PROPOSTA_ID = P.ID AND NOT PPA.EXCLUIDO
                 )
             )
             
             --  Etapa/Modalidade
             AND (
-                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_MODALIDADE WHERE PROPOSTA_ID = P.ID)
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_MODALIDADE WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
                 OR EXISTS (
                     SELECT 1 FROM PUBLIC.PROPOSTA_MODALIDADE PM
                     INNER JOIN ContextoServidor CS ON CS.CD_MODALIDADE = PM.MODALIDADE
-                    WHERE PM.PROPOSTA_ID = P.ID
+                    WHERE PM.PROPOSTA_ID = P.ID AND NOT PM.EXCLUIDO
                 )
             )
 
             -- Componente Curricular
             AND (
-                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_COMPONENTE_CURRICULAR WHERE PROPOSTA_ID = P.ID)
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_COMPONENTE_CURRICULAR WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
                 OR EXISTS (
                     SELECT 1 FROM PUBLIC.PROPOSTA_COMPONENTE_CURRICULAR PCC
                     INNER JOIN ContextoServidor CS ON CS.CD_COMPONENTE_CURRICULAR = PCC.COMPONENTE_CURRICULAR_ID
-                    WHERE PCC.PROPOSTA_ID = P.ID
+                    WHERE PCC.PROPOSTA_ID = P.ID AND NOT PCC.EXCLUIDO
                 )
             )
 
@@ -1996,34 +1996,34 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 NOT EXISTS (SELECT 1 
                        FROM PUBLIC.PROPOSTA_ANO_TURMA PAT 
                        INNER JOIN PUBLIC.ANO_TURMA AT ON AT.ID = PAT.ANO_TURMA_ID
-                       WHERE PAT.PROPOSTA_ID = P.ID AND AT.TODOS = false)
+                       WHERE PAT.PROPOSTA_ID = P.ID AND AT.TODOS = false AND NOT PAT.EXCLUIDO AND NOT AT.EXCLUIDO)
                 OR EXISTS (
                     SELECT 1 FROM PUBLIC.PROPOSTA_ANO_TURMA PAT
                     INNER JOIN PUBLIC.ANO_TURMA AT ON AT.ID = PAT.ANO_TURMA_ID
                     INNER JOIN ContextoServidor CS ON CS.ano_serie = AT.CODIGO_EOL
-                    WHERE PAT.PROPOSTA_ID = P.ID
+                    WHERE PAT.PROPOSTA_ID = P.ID AND NOT PAT.EXCLUIDO AND NOT AT.EXCLUIDO
                 )
             )
   
             -- Vaga Remanescente
             AND (
-                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR WHERE PROPOSTA_ID = P.ID)
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR WHERE PROPOSTA_ID = P.ID AND NOT PVR.EXCLUIDO)
                 OR EXISTS (
       	            SELECT 1
       	            FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR
                     INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PVR.CARGO_FUNCAO_ID
-                    WHERE PROPOSTA_ID = P.ID
+                    WHERE PROPOSTA_ID = P.ID AND NOT PVR.EXCLUIDO
                 )
             )
 
             -- Função
             AND (
-	            NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE WHERE PROPOSTA_ID = P.ID)
+	            NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE WHERE PROPOSTA_ID = P.ID AND NOT PFE.EXCLUIDO)
 	            OR EXISTS (
 		            SELECT 1
 		            FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE 
 		            INNER JOIN ContextoFuncoes CF ON CF.CARGO_FUNCAO_ID = PFE.CARGO_FUNCAO_ID
-		            WHERE PROPOSTA_ID = P.ID
+		            WHERE PROPOSTA_ID = P.ID AND NOT PFE.EXCLUIDO
 	            )
             )";
 

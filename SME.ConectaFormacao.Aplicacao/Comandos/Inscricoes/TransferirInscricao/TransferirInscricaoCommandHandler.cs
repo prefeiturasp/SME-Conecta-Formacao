@@ -9,21 +9,11 @@ using System.Net;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class TransferirInscricaoCommandHandler : IRequestHandler<TransferirInscricaoCommand, RetornoInscricaoDTO>
+    public class TransferirInscricaoCommandHandler(
+        IRepositorioInscricao repositorioInscricao, IMediator mediator, IRepositorioProposta repositorioProposta, 
+        IRepositorioUsuario repositorioUsuario) : 
+        IRequestHandler<TransferirInscricaoCommand, RetornoInscricaoDTO>
     {
-        private readonly IRepositorioInscricao _repositorioInscricao;
-        private readonly IRepositorioUsuario _repositorioUsuario;
-        private readonly IMediator _mediator;
-        private readonly IRepositorioProposta _repositorioProposta;
-
-        public TransferirInscricaoCommandHandler(IRepositorioInscricao repositorioInscricao, IRepositorioCargoFuncao repositorioCargoFuncao, IMediator mediator, IRepositorioProposta repositorioProposta, IRepositorioUsuario repositorioUsuario)
-        {
-            _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-            _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
-        }
-
         public async Task<RetornoInscricaoDTO> Handle(TransferirInscricaoCommand request, CancellationToken cancellationToken)
         {
             ValidarTransferencia(request.InscricaoTransferenciaDTO);
@@ -39,27 +29,27 @@ namespace SME.ConectaFormacao.Aplicacao
             {
                 try
                 {
-                    var inscricao = await _repositorioInscricao.ObterPorId(cursista.IdInscricao);
+                    var inscricao = await repositorioInscricao.ObterPorId(cursista.IdInscricao);
 
-                    cursistaBanco = await _repositorioUsuario.ObterPorLogin(cursista.Rf)
+                    cursistaBanco = await repositorioUsuario.ObterPorLogin(cursista.Rf)
                         ?? throw new NegocioException(
                             string.Format(MensagemNegocio.USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS, cursista),
                             HttpStatusCode.NotFound);
 
                     ValidarInscricao(inscricao);
 
-                    var propostaTurmaOrigem = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(
+                    var propostaTurmaOrigem = await repositorioProposta.ObterTurmaDaPropostaComDresPorId(
                         request.InscricaoTransferenciaDTO.IdTurmaOrigem);
 
                     var dreTurmaOrigem = inscricao.CargoDreCodigo != null ? inscricao.CargoDreCodigo : propostaTurmaOrigem?.Dres?.FirstOrDefault()?.Id.ToString();
 
-                    var propostaTurmaDestino = await _repositorioProposta.ObterTurmaDaPropostaComDresPorId(
+                    var propostaTurmaDestino = await repositorioProposta.ObterTurmaDaPropostaComDresPorId(
                         request.InscricaoTransferenciaDTO.IdTurmaDestino);
 
                     if (propostaTurmaDestino != null && propostaTurmaOrigem != null)
                     {
-                        var cargoPropostaTurmaOrigem = await _repositorioProposta.ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaOrigem.PropostaId);
-                        var cargoPropostaTurmaDestino = await _repositorioProposta.ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaDestino.PropostaId);
+                        var cargoPropostaTurmaOrigem = await repositorioProposta.ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaOrigem.PropostaId);
+                        var cargoPropostaTurmaDestino = await repositorioProposta.ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaDestino.PropostaId);
 
                         ValidarDreTransferencia(propostaTurmaDestino, dreTurmaOrigem);
 
@@ -67,12 +57,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
                         if (cargoPropostaTurmaOrigem != null && cargoPropostaTurmaOrigem.Any() && cargoPropostaTurmaDestino != null && cargoPropostaTurmaDestino.Any())
                         {
-                            var cargosOrigem = (await _repositorioProposta
+                            var cargosOrigem = (await repositorioProposta
                                 .ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaOrigem.PropostaId))
                                 .Select(x => x.CargoFuncaoId)
                                 .ToList();
 
-                            var cargosDestino = (await _repositorioProposta
+                            var cargosDestino = (await repositorioProposta
                                 .ObterPropostasPublicoAlvoPorIdProposta(propostaTurmaDestino.PropostaId))
                                 .Select(x => x.CargoFuncaoId)
                                 .ToList();
@@ -98,17 +88,17 @@ namespace SME.ConectaFormacao.Aplicacao
                             FuncaoId = inscricao.FuncaoId
                         };
 
-                        var proposta = (await _repositorioProposta.ObterPropostasResumidasPorId(new[] { propostaTurmaDestino.PropostaId })).SingleOrDefault();
+                        var proposta = (await repositorioProposta.ObterPropostasResumidasPorId(new[] { propostaTurmaDestino.PropostaId })).SingleOrDefault();
 
                         if (proposta == null)
                             throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
-                        await _repositorioProposta.AtualizarIntegrarNoSGA(proposta.Id, PropostaIntegrarNoSGA.NAO.ToBool());
+                        await repositorioProposta.AtualizarIntegrarNoSGA(proposta.Id, PropostaIntegrarNoSGA.NAO.ToBool());
 
-                        await _mediator.Send(new SalvarInscricaoManualCommand(inscricaoNovaManual, true));
+                        await mediator.Send(new SalvarInscricaoManualCommand(inscricaoNovaManual, true));
 
-                        await _repositorioInscricao.AtualizarSituacao(inscricao.Id, SituacaoInscricao.Transferida);
-                        await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
+                        await repositorioInscricao.AtualizarSituacao(inscricao.Id, SituacaoInscricao.Transferida);
+                        await repositorioInscricao.LiberarInscricaoVaga(inscricao);
                     }
                 }
                 catch (Exception ex)
@@ -153,7 +143,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.CURSISTA_INFORMAR, HttpStatusCode.BadRequest);
         }
 
-        private static void ValidarDreTransferencia(PropostaTurma propostaTurmaDestino, string dreCodigoOrigem)
+        private static void ValidarDreTransferencia(PropostaTurma propostaTurmaDestino, string? dreCodigoOrigem)
         {
             if (propostaTurmaDestino == null)
                 throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
