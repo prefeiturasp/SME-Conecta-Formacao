@@ -12,7 +12,7 @@ public class RetornoBaseDTO
     }
     public RetornoBaseDTO()
     {
-        Mensagens = new List<string>();
+        Mensagens = [];
     }
 
     public RetornoBaseDTO(List<string> mensagens)
@@ -22,7 +22,7 @@ public class RetornoBaseDTO
 
 
     [Required]
-    public List<string> Mensagens { get; set; }
+    public List<string> Mensagens { get; set; } = null!;
 
     public bool ExistemErros => Mensagens?.Any() ?? false;
 }

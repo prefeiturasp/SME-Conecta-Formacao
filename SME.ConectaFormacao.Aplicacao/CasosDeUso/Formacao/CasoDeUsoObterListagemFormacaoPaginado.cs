@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
 
         private bool EhPerfilCursista()
         {
-            var perfilCursista = Guid.Parse(PerfilAutomatico.PERFIL_CURSISTA_GUID);
+            var perfilCursista = PerfilAutomatico.PERIL_CURSISTA_CODIGO;
             return contextoAplicacao.IdPerfilUsuario == perfilCursista;
         }
     }

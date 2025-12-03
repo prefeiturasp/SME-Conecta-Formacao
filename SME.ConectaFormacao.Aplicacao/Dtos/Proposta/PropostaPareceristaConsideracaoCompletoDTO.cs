@@ -6,6 +6,6 @@
 
         public bool PodeInserir { get; set; }
 
-        public IEnumerable<PropostaPareceristaConsideracaoDTO> Itens { get; set; } = Enumerable.Empty<PropostaPareceristaConsideracaoDTO>();
+        public IEnumerable<PropostaPareceristaConsideracaoDTO> Itens { get; set; } = [];
     }
 }
