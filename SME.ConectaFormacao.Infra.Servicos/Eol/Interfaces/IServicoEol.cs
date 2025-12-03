@@ -18,6 +18,6 @@
         Task<IEnumerable<string>> VerificarSeUsuarioEstaAtivo(string[] rf);
         Task<IEnumerable<CargoEolDto>?> ObterCargosEolPorDreAsync(string codigoDre);
         Task<IEnumerable<AtribuicaoServidorEolDto>?> ObterAtribuicoesServidorEolPorDataAtualizacaoAsync(DateTime? dataUltimaAtualizacao);
-        Task<IEnumerable<FuncaoAtividadeDTO>?> ObterFuncaoAtividadeEolPorDre(string codigoDre);
+        Task<IEnumerable<FuncaoAtividadeDTO>?> ObterFuncaoAtividadeEolPorDre(string codigoDre, DateTime? dataUltimaAtualizacao);
     }
 }

@@ -175,9 +175,11 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
         }
 
 
-        public async Task<IEnumerable<FuncaoAtividadeDTO>?> ObterFuncaoAtividadeEolPorDre(string codigoDre)
+        public async Task<IEnumerable<FuncaoAtividadeDTO>?> ObterFuncaoAtividadeEolPorDre(string codigoDre, DateTime? dataUltimaAtualizacao)
         {
-            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_FUNCAO_ATIVIDADE_EOL_POR_DRE_SYNC.Parametros(codigoDre));
+            var parametroQuery = dataUltimaAtualizacao.HasValue ? $"?dataUltimaAtualizacao={dataUltimaAtualizacao.Value:yyyy-MM-ddTHH:mm:ss}" : "";
+            var urlFinal = EndpointsEolConstantes.OBTER_FUNCAO_ATIVIDADE_EOL_POR_DRE_SYNC.Parametros(codigoDre) + parametroQuery;
+            var resposta = await httpClient.GetAsync(urlFinal);
 
             if (!resposta.IsSuccessStatusCode)
                 throw new NegocioException(MensagemNegocio.ERRO_FUNCAO_ATIVIDADE_EOL_POR_DRE, resposta.StatusCode);
