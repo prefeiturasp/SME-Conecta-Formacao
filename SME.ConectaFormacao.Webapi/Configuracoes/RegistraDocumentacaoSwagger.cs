@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using SME.ConectaFormacao.Infra.Servicos.GitHub.Interfaces;
-using SME.ConectaFormacao.Webapi.Filtros;
+using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Configuracoes;
 
@@ -31,12 +31,8 @@ public static class RegistraDocumentacaoSwagger
                 BearerFormat = "JWT"
             });
 
-            c.OperationFilter<BasicAuthOperationsFilter>();
-        });
-
-        services.AddSwaggerGen(o =>
-        {
-            o.OperationFilter<FiltroIntegracaoExterna>();
+            c.OperationFilter<BasicAuthOperationsFilter>(); 
+            c.OperationFilter<FiltroIntegracaoExterna>();
         });
     }
 }
