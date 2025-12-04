@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;

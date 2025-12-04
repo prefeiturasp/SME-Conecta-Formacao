@@ -1,6 +1,8 @@
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
 

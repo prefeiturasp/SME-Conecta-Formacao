@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.Options;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
@@ -89,8 +90,10 @@ namespace SME.ConectaFormacao.Infra
 
                     if (retryAutomatico)
                     {
-                        var argsLimbo = new Dictionary<string, object>();
-                        argsLimbo.Add("x-queue-mode", "lazy");
+                        var argsLimbo = new Dictionary<string, object>
+                        {
+                            { "x-queue-mode", "lazy" }
+                        };
 
                         var queueLimbo = $"{fila}.limbo";
                         canalRabbit.QueueDeclare(
@@ -148,23 +151,21 @@ namespace SME.ConectaFormacao.Infra
         }
         public async Task TratarMensagem(BasicDeliverEventArgs ea)
         {
-            var mensagem = Encoding.UTF8.GetString(ea.Body.Span);
+            var mensagem = Encoding.UTF8.GetString(ea.Body.ToArray());
             var rota = ea.RoutingKey;
 
             await servicoMensageriaMetricas.Obtido(rota);
 
-            if (Comandos.ContainsKey(rota))
+            if (Comandos.TryGetValue(rota, out ComandoRabbit? comandoRabbit))
             {
                 var mensagemRabbit = mensagem.JsonParaObjeto<MensagemRabbit>();
-                var comandoRabbit = Comandos[rota];
-
                 var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, apmTransactionType) : null;
                 try
                 {
                     using var scope = serviceScopeFactory.CreateScope();
                     AtribuirContextoAplicacao(mensagemRabbit, scope);
 
-                    IRabbitUseCase casoDeUso = (IRabbitUseCase)scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso);
+                    IRabbitUseCase casoDeUso = (IRabbitUseCase)scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso)!;
 
                     await servicoTelemetria.RegistrarAsync(
                             async () => await casoDeUso.Executar(mensagemRabbit),
@@ -178,6 +179,7 @@ namespace SME.ConectaFormacao.Infra
                 }
                 catch (NegocioException nex)
                 {
+                    Console.WriteLine($"[DEBUG] [ERRO] ERRO DE NEGÓCIO CAPTURADO: {nex.Message}");
                     transacao?.CaptureException(nex);
 
                     canalRabbit.BasicReject(ea.DeliveryTag, false);
@@ -186,10 +188,11 @@ namespace SME.ConectaFormacao.Infra
                     await RegistrarErroTratamentoMensagem(ea, mensagemRabbit, nex, LogNivel.Negocio, $"Erros: {nex.Message}");
 
                     if (mensagemRabbit.NotificarErroUsuario)
-                        NotificarErroUsuario(nex.Message, mensagemRabbit.UsuarioLogadoRF, comandoRabbit.NomeProcesso);
+                        NotificarErroUsuario(nex.Message, mensagemRabbit.UsuarioLogadoRF ?? string.Empty, comandoRabbit.NomeProcesso);
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine($"[DEBUG] [ERRO] ERRO GERENCIADO CAPTURADO: {ex.Message}");
                     transacao?.CaptureException(ex);
 
                     var rejeicoes = GetRetryCount(ea.BasicProperties);
@@ -206,7 +209,7 @@ namespace SME.ConectaFormacao.Infra
                     await RegistrarErroTratamentoMensagem(ea, mensagemRabbit, ex, LogNivel.Critico, $"Erros: {ex.Message}");
 
                     if (mensagemRabbit.NotificarErroUsuario)
-                        NotificarErroUsuario($"Ocorreu um erro interno, por favor tente novamente", mensagemRabbit.UsuarioLogadoRF, comandoRabbit.NomeProcesso);
+                        NotificarErroUsuario($"Ocorreu um erro interno, por favor tente novamente", mensagemRabbit.UsuarioLogadoRF ?? string.Empty, comandoRabbit.NomeProcesso);
                 }
                 finally
                 {
@@ -223,7 +226,7 @@ namespace SME.ConectaFormacao.Infra
             }
         }
 
-        protected virtual Task RegistrarErroTratamentoMensagem(BasicDeliverEventArgs ea, MensagemRabbit mensagemRabbit, Exception ex, LogNivel logNivel, string observacao)
+        protected virtual Task RegistrarErroTratamentoMensagem(BasicDeliverEventArgs ea, MensagemRabbit mensagemRabbit, Exception? ex, LogNivel logNivel, string observacao)
         {
             return Task.CompletedTask;
         }
@@ -251,6 +254,7 @@ namespace SME.ConectaFormacao.Infra
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine($"[DEBUG] [ERRO] ERRO AO TRATAR MENSAGEM: {ex.Message}"); Console.WriteLine(ex.ToString());
                     await RegistrarErro($"Erro ao tratar mensagem {ea.DeliveryTag} - {ea.RoutingKey}", LogNivel.Critico, ex.Message);
                     canalRabbit.BasicReject(ea.DeliveryTag, false);
                 }

@@ -10,9 +10,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular
         public CasoDeUsoObterListaComponentesCurriculares(IMediator mediator) : base(mediator)
         { }
 
-        public async Task<IEnumerable<RetornoListagemTodosDTO>> Executar(FiltroListaComponenteCurricularDTO filtroListaComponenteCurricularDTO)
+        public async Task<IEnumerable<RetornoListagemTodosDTO>> Executar(FiltroListaComponenteCurricularDTO filtroComponenteCurricularDTO)
         {
-            return await mediator.Send(new ObterComponentesCurricularesPorAnoTurmaQuery(filtroListaComponenteCurricularDTO.AnoTurmaId, filtroListaComponenteCurricularDTO.ExibirOpcaoTodos));
+            return await mediator.Send(new ObterComponentesCurricularesPorAnoTurmaQuery(filtroComponenteCurricularDTO.AnoTurmaId, filtroComponenteCurricularDTO.ExibirOpcaoTodos));
         }
     }
 }

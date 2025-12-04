@@ -4,6 +4,11 @@ namespace SME.ConectaFormacao.Infra
     {
         public const string SincronizaEstruturaInstitucionalDre = "conecta.sincronizacao.institucional.dre";
         public const string SincronizaEstruturaInstitucionalDreTratar = "conecta.sincronizacao.institucional.dre.tratar";
+        public const string SincronizaCargosEol = "conecta.sincronizacao.cargos.eol";
+        public const string SincronizaCargosEolPorDre = "conecta.sincronizacao.cargos.eol.por.dre";
+        public const string SincronizaAtribuicoesServidoresEol = "conecta.sincronizacao.atribuicoes.servidores.eol";
+        public const string SincronizaFuncaoAtividade = "conecta.sincronizacao.funcao.atividade.eol";
+        public const string SincronizaFuncaoAtividadeDre = "conecta.sincronizacao.funcao.atividade.eol.dre";
 
         public const string SincronizaComponentesCurricularesEAnosTurmaEOL = "conecta.sincronizacao.componentes.curriculares.ano.turma.eol";
 

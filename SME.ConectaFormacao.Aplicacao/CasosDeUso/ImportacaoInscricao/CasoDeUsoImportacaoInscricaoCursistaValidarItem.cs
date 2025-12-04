@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.ImportacaoInscricao.AlterarSituacaoImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
@@ -8,6 +9,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
@@ -28,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
             try
             {
-                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDTO>();
+                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDTO>()!;
 
                 var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorNomeQuery(importacaoInscricaoCursista.Turma, importacaoArquivoRegistro.PropostaId)) ??
                     throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
@@ -38,10 +40,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, usuario.Id));
 
-                if(usuario.Tipo.EhInterno() && importacaoInscricaoCursista.Vinculo.NaoEstaPreenchido())
+                if (usuario.Tipo.EhInterno() && !string.IsNullOrWhiteSpace(importacaoInscricaoCursista.Vinculo))
                     throw new NegocioException(MensagemNegocio.ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA);
 
-                var tipoVinculo = usuario.Tipo.EhInterno() ? int.Parse(importacaoInscricaoCursista.Vinculo) : default;
+                var tipoVinculo = usuario.Tipo.EhInterno() ? int.Parse(importacaoInscricaoCursista.Vinculo ?? "0") : default;
 
                 var inscricao = new Dominio.Entidades.Inscricao()
                 {
@@ -77,7 +79,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
             cargoFuncaoUsuarioEol = cargoFuncaoUsuarioEol.Where(t =>
                t.TipoVinculoCargoSobreposto == tipoVinculo ||
-               t.TipoVinculoCargoBase == tipoVinculo || 
+               t.TipoVinculoCargoBase == tipoVinculo ||
                t.TipoVinculoFuncaoAtividade == tipoVinculo);
 
             var cargosProposta = await mediator.Send(new ObterPropostaPublicosAlvosPorIdQuery(propostaId));
@@ -88,7 +90,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                     long codigoCargo = 0;
                     string codigoDre, codigoUe;
 
-                    if(cargoEol.CdCargoSobreposto.HasValue && cargoEol.TipoVinculoCargoSobreposto == tipoVinculo)
+                    if (cargoEol.CdCargoSobreposto.HasValue && cargoEol.TipoVinculoCargoSobreposto == tipoVinculo)
                     {
                         codigoCargo = cargoEol.CdCargoSobreposto.Value;
                         codigoDre = cargoEol.CdDreCargoSobreposto;
@@ -103,7 +105,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                     else
                         continue;
 
-                    var cargoFuncao = await mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(new long[] { codigoCargo }, new long[] { }));
+                    var cargoFuncao = await mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery([codigoCargo], []));
 
                     var cargoId = cargoFuncao.FirstOrDefault(t => t.Tipo == CargoFuncaoTipo.Cargo)?.Id;
                     if (cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
@@ -130,12 +132,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             {
                 foreach (var funcaoEol in cargoFuncaoUsuarioEol.Where(t => t.CdFuncaoAtividade.HasValue && t.TipoVinculoFuncaoAtividade == tipoVinculo))
                 {
-                    var codigoCargo = funcaoEol.CdCargoSobreposto.HasValue ? funcaoEol.CdCargoSobreposto.Value : funcaoEol.CdCargoBase.Value;
+                    var codigoCargo = funcaoEol.CdCargoSobreposto ?? funcaoEol.CdCargoBase ?? 0;
                     var codigoDre = funcaoEol.CdCargoSobreposto.HasValue ? funcaoEol.CdDreCargoSobreposto : funcaoEol.CdDreCargoBase;
                     var codigoUe = funcaoEol.CdCargoSobreposto.HasValue ? funcaoEol.CdUeCargoSobreposto : funcaoEol.CdUeCargoBase;
 
                     var cargoFuncao = await mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(
-                        new long[] { codigoCargo }, new long[] { funcaoEol.CdFuncaoAtividade.Value }));
+                        [codigoCargo], [funcaoEol.CdFuncaoAtividade ?? 0]));
 
                     var cargoId = cargoFuncao.FirstOrDefault(t => t.Tipo == CargoFuncaoTipo.Cargo)?.Id;
                     var funcaoId = cargoFuncao.FirstOrDefault(t => t.Tipo == CargoFuncaoTipo.Funcao)?.Id;
@@ -147,7 +149,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                         inscricao.CargoUeCodigo = codigoUe;
                         inscricao.CargoId = cargoId;
 
-                        inscricao.FuncaoCodigo = funcaoEol.CdFuncaoAtividade.Value.ToString();
+                        inscricao.FuncaoCodigo = funcaoEol.CdFuncaoAtividade.ToString();
                         inscricao.FuncaoDreCodigo = funcaoEol.CdDreFuncaoAtividade.ToString();
                         inscricao.FuncaoUeCodigo = funcaoEol.CdUeFuncaoAtividade.ToString();
                         inscricao.FuncaoId = funcaoId;
@@ -175,7 +177,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             var ehProfissionalRede = inscricaoCursistaDTO.ColaboradorRede.EhColaboradorRede();
             var login = ehProfissionalRede ? inscricaoCursistaDTO.RegistroFuncional : inscricaoCursistaDTO.Cpf;
 
-            if (login.NaoEstaPreenchido())
+            if (string.IsNullOrWhiteSpace(login))
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_FOI_ENCONTRADO_COM_O_REGISTRO_FUNCIONAL_OU_CPF_INFORMADOS);
 
             if (ehProfissionalRede)
@@ -196,8 +198,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             if (ehProfissionalRede)
             {
                 var dadosUsuario = await mediator.Send(new ObterMeusDadosServicoAcessosPorLoginQuery(login));
-                if (dadosUsuario.EhNulo() || dadosUsuario.Login.NaoEstaPreenchido())
-                    return default;
+                if (dadosUsuario is null || string.IsNullOrWhiteSpace(dadosUsuario.Login))
+                    return default!;
 
                 usuario = _mapper.Map<Dominio.Entidades.Usuario>(dadosUsuario);
                 usuario.Cpf = inscricaoCursistaDTO.Cpf.SomenteNumeros();

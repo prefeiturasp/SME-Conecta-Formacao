@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;

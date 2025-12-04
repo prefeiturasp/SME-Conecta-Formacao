@@ -1,5 +1,5 @@
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Comandos.Inscricao.ReativarInscricao;
+using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.ReativarInscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Constantes;

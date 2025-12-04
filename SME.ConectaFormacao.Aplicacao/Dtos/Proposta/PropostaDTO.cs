@@ -46,21 +46,21 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public int? HorasTotais { get; set; }
         public string? CargaHorariaTotalOutra { get; set; }
 
-        public IEnumerable<PropostaDreDTO> Dres { get; set; }
-        public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; }
-        public IEnumerable<PropostaFuncaoEspecificaDTO> FuncoesEspecificas { get; set; }
-        public IEnumerable<PropostaVagaRemanecenteDTO> VagasRemanecentes { get; set; }
-        public IEnumerable<PropostaCriterioValidacaoInscricaoDTO> CriteriosValidacaoInscricao { get; set; }
-        public IEnumerable<PropostaEncontroDTO>? Encontros { get; set; }
-        public IEnumerable<PropostaPalavraChaveDTO> PalavrasChaves { get; set; }
-        public IEnumerable<CriterioCertificacaoDTO> CriterioCertificacao { get; set; }
-        public IEnumerable<PropostaTurmaDTO> Turmas { get; set; }
+        public IEnumerable<PropostaDreDTO> Dres { get; set; } = [];
+        public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; } = [];
+        public IEnumerable<PropostaFuncaoEspecificaDTO> FuncoesEspecificas { get; set; } = [];
+        public IEnumerable<PropostaVagaRemanecenteDTO> VagasRemanecentes { get; set; } = [];
+        public IEnumerable<PropostaCriterioValidacaoInscricaoDTO> CriteriosValidacaoInscricao { get; set; } = [];
+        public IEnumerable<PropostaEncontroDTO>? Encontros { get; set; } = [];
+        public IEnumerable<PropostaPalavraChaveDTO> PalavrasChaves { get; set; } = [];
+        public IEnumerable<CriterioCertificacaoDTO> CriterioCertificacao { get; set; } = [];
+        public IEnumerable<PropostaTurmaDTO> Turmas { get; set; } = [];
 
-        public IEnumerable<PropostaModalidadeDTO> Modalidades { get; set; }
-        public IEnumerable<PropostaAnoTurmaDTO> AnosTurmas { get; set; }
-        public IEnumerable<PropostaComponenteCurricularDTO> ComponentesCurriculares { get; set; }
-        public IEnumerable<PropostaTipoInscricaoDTO> TiposInscricao { get; set; }
-        public IEnumerable<PropostaPareceristaDTO>? Pareceristas { get; set; }
+        public IEnumerable<PropostaModalidadeDTO> Modalidades { get; set; } = [];
+        public IEnumerable<PropostaAnoTurmaDTO> AnosTurmas { get; set; } = [];
+        public IEnumerable<PropostaComponenteCurricularDTO> ComponentesCurriculares { get; set; } = [];
+        public IEnumerable<PropostaTipoInscricaoDTO> TiposInscricao { get; set; } = [];
+        public IEnumerable<PropostaPareceristaDTO>? Pareceristas { get; set; } = [];
         public bool EhProximoPasso { get; set; }
     }
 }

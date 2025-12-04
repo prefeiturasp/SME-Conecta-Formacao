@@ -5,14 +5,14 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
     public class PropostaPaginadaDTO
     {
         public long Id { get; set; }
-        public string TipoFormacao { get; set; }
-        public string AreaPromotora { get; set; }
-        public string Formato { get; set; }
-        public string NomeFormacao { get; set; }
+        public string TipoFormacao { get; set; } = null!;
+        public string AreaPromotora { get; set; } = null!;
+        public string Formato { get; set; } = null!;
+        public string NomeFormacao { get; set; } = null!;
         public long NumeroHomologacao { get; set; }
-        public string DataRealizacaoInicio { get; set; }
-        public string DataRealizacaoFim { get; set; }
-        public string Situacao { get; set; }
+        public string DataRealizacaoInicio { get; set; } = null!;
+        public string DataRealizacaoFim { get; set; } = null!;
+        public string Situacao { get; set; } = null!;
         public FormacaoHomologada FormacaoHomologada { get; set; }
     }
 }

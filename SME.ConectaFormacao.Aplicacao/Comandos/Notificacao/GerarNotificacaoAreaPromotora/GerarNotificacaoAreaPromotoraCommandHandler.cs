@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;

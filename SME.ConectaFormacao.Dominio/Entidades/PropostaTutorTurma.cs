@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public long PropostaTutorId { get; set; }
         public long TurmaId { get; set; }
 
-        public PropostaTurma Turma { get; set; }
+        public PropostaTurma Turma { get; set; } = new();
     }
 }

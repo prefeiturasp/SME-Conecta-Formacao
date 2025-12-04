@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Funcionario;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
@@ -88,7 +89,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
 
             // act
             var mensagem = JsonSerializer.Serialize(filtro);
-            var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
+            var retorno = await casoDeUso.Executar(new MensagemRabbit(mensagem));
 
             // assert 
             retorno.ShouldBeTrue();
@@ -153,7 +154,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Notificacao
 
             // act
             var mensagem = JsonSerializer.Serialize(filtro);
-            var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
+            var retorno = await casoDeUso.Executar(new MensagemRabbit(mensagem));
 
             // assert 
             retorno.ShouldBeFalse();

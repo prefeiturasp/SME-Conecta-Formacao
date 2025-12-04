@@ -13,5 +13,8 @@
         public const string OBTER_NOME_SERVIDOR_EOL = "funcionarios/nome-usuario-eol/{0}";
         public const string OBTER_USUARIOS_POR_PERFIS = "funcionarios/usuarios/conecta-formacao";
         public const string VERIFICAR_SE_FUNCIONARIOS_ESTAO_ATIVOS = "acessos/buscar-rfs-cargo-ativo";
+        public const string OBTER_CARGOS_EOL_POR_DRE_SYNC = "sync/cargos/dre/{0}";
+        public const string OBTER_ATRIBUICOES_SERVIDOR_EOL_SYNC = "sync/atribuicoes-aula/servidor";
+        public const string OBTER_FUNCAO_ATIVIDADE_EOL_POR_DRE_SYNC = "sync/funcoes-atividade/dre/{0}";
     }
 }

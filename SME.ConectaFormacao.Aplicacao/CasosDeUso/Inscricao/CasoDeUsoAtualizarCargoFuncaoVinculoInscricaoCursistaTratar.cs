@@ -3,8 +3,8 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao
 {
