@@ -2,35 +2,34 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace SME.ConectaFormacao.Webapi.Filtros
+namespace SME.ConectaFormacao.Webapi.Controllers.Filtros;
+
+public class BasicAuthOperationsFilter : IOperationFilter
 {
-    public class BasicAuthOperationsFilter : IOperationFilter
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        public void Apply(OpenApiOperation operation, OperationFilterContext context)
-        {
-            var noAuthRequired = context.ApiDescription.CustomAttributes()
-                .Any(attr => attr.GetType() == typeof(AllowAnonymousAttribute));
+        var noAuthRequired = context.ApiDescription.CustomAttributes()
+            .Any(attr => attr.GetType() == typeof(AllowAnonymousAttribute));
 
-            if (noAuthRequired)
-                return;
+        if (noAuthRequired)
+            return;
 
-            operation.Security = new List<OpenApiSecurityRequirement>
+        operation.Security =
+        [
+            new()
             {
-                new()
                 {
+                    new OpenApiSecurityScheme
                     {
-                        new OpenApiSecurityScheme
+                        Reference = new OpenApiReference
                         {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[] { }
-                    }
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
                 }
-            };
-        }
+            }
+        ];
     }
 }
