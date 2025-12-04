@@ -1983,7 +1983,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             -- Componente Curricular
             AND (
-                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_COMPONENTE_CURRICULAR WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_COMPONENTE_CURRICULAR WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO AND componente_curricular_id <> 1)
                 OR EXISTS (
                     SELECT 1 FROM PUBLIC.PROPOSTA_COMPONENTE_CURRICULAR PCC
                     INNER JOIN ContextoServidor CS ON CS.CD_COMPONENTE_CURRICULAR = PCC.COMPONENTE_CURRICULAR_ID

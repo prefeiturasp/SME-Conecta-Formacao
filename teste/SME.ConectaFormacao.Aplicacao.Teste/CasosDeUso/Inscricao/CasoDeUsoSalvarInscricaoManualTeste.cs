@@ -2,6 +2,7 @@
 using MediatR;
 using Moq;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricaoManual;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
