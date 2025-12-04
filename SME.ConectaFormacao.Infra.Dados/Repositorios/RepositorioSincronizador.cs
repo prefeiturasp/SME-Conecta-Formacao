@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task SincronizarLoteFuncaoAtividadeEolAsync(List<FuncaoAtividadeUsuario> funcoesAtividade, string codigoDre)
         {
-            const string deleteTableCommand = "DELETE FROM funcaoatividade_eol";
+            const string deleteTableCommand = "DELETE FROM funcoes_atividades_eol WHERE codigo_dre = @codigoDre";
             await _politicaRetry.ExecuteAsync(async () =>
             {
                 var conn = (NpgsqlConnection)conexao.Obter();
@@ -53,10 +53,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         private static async Task RealizarBulkFuncaoAtividadeAsync(NpgsqlConnection conn, List<FuncaoAtividadeUsuario> dados)
         {
             const string copyCommand = @"
-                COPY funcaoatividade_eol (
+                COPY funcoes_atividades_eol (
                     id, 
                     cd_registro_funcional, 
                     cd_tipo_funcao, 
+                    codigo_dre,
                     codigo_ue, 
                     data_atualizacao
                 ) FROM STDIN (FORMAT BINARY)";
@@ -70,6 +71,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 await writer.WriteAsync(funcaoAtividade.Id, NpgsqlTypes.NpgsqlDbType.Uuid);
                 await writer.WriteAsync(funcaoAtividade.CdRegistroFuncional, NpgsqlTypes.NpgsqlDbType.Char);
                 await writer.WriteAsync(funcaoAtividade.CdTipoFuncao, NpgsqlTypes.NpgsqlDbType.Integer);
+                await writer.WriteAsync(funcaoAtividade.CdDre, NpgsqlTypes.NpgsqlDbType.Char);
                 await writer.WriteAsync(funcaoAtividade.CdUe, NpgsqlTypes.NpgsqlDbType.Char);
                 await writer.WriteAsync(funcaoAtividade.DataAtualizacao, NpgsqlTypes.NpgsqlDbType.TimestampTz);
             }

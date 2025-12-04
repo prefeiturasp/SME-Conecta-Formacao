@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                         , cd_tipo_funcao AS cdTipoFuncao
                                         , codigo_ue AS cdUe
                                         , data_atualizacao AS dataAtualizacao
-                                    FROM funcaoatividade_eol
+                                    FROM funcoes_atividades_eol
                                    WHERE cd_registro_funcional = @cdRegistroFuncional";
 
             var parametros = new DynamicParameters();
@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task<DateTime?> ObterDataUltimaAtualizacaoAsync()
         {
             const string query = @"SELECT MAX(data_atualizacao)
-                                    FROM funcaoatividade_eol";
+                                    FROM funcoes_atividades_eol";
 
             return await conexao.Obter().QueryFirstOrDefaultAsync<DateTime?>(query);
         }
