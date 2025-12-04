@@ -1954,7 +1954,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             ),
             ContextoFuncoes AS (
                 SELECT DISTINCT CF.CARGO_FUNCAO_ID
-                FROM PUBLIC.FUNCAOATIVIDADE_EOL AS FE 
+                FROM PUBLIC.FUNCOES_ATIVIDADES_EOL AS FE 
                 INNER JOIN PUBLIC.CARGO_FUNCAO_DEPARA_EOL AS CF ON FE.CD_TIPO_FUNCAO = CF.CODIGO_FUNCAO_EOL 
                 WHERE FE.CD_REGISTRO_FUNCIONAL = @rf
             )";

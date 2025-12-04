@@ -38,8 +38,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             var funcoesAtividadesOrigem = new List<FuncaoAtividadeDTO>
             {
-                new() { CdRegistroFuncional = "RF1", CdTipoFuncao = "1", CdUe = "UE1" },
-                new() { CdRegistroFuncional = "RF2", CdTipoFuncao = "2", CdUe = "UE2" }
+                new() { CdRegistroFuncional = "RF1", CdTipoFuncao = "1", CdDre = "DRE1", CdUe = "UE1" },
+                new() { CdRegistroFuncional = "RF2", CdTipoFuncao = "2", CdDre = "DRE1", CdUe = "UE2" }
             };
 
             _servicoEolMock
@@ -54,8 +54,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _repositorioSincronizadorMock.Verify(r => r.SincronizarLoteFuncaoAtividadeEolAsync(
                 It.Is<List<FuncaoAtividadeUsuario>>(list =>
                     list.Count == 2 &&
-                    list.Exists(f => f.CdRegistroFuncional == "RF1" && f.CdTipoFuncao == 1 && f.CdUe == "UE1") &&
-                    list.Exists(f => f.CdRegistroFuncional == "RF2" && f.CdTipoFuncao == 2 && f.CdUe == "UE2")
+                    list.Exists(f => f.CdRegistroFuncional == "RF1" && f.CdTipoFuncao == 1 && f.CdDre == "DRE1" && f.CdUe == "UE1") &&
+                    list.Exists(f => f.CdRegistroFuncional == "RF2" && f.CdTipoFuncao == 2 && f.CdDre == "DRE1" && f.CdUe == "UE2")
                 ),
                 codigoDre), Times.Once);
         }
