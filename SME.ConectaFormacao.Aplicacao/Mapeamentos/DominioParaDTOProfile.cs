@@ -130,8 +130,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
                 .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
                 .ReverseMap()
-                .ForMember(dest => dest.NomeTutor, opt => opt.MapFrom(o => o.NomeTutor.NaoEhNulo() ? o.NomeTutor.Trim().ToUpper() : null))
-                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf.NaoEhNulo() ? o.Cpf.SomenteNumeros() : null));
+                .ForMember(dest => dest.NomeTutor, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.NomeTutor) ? null : o.NomeTutor.Trim().ToUpper()))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.Cpf) ? null : o.Cpf.SomenteNumeros()));
 
             CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>()
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))

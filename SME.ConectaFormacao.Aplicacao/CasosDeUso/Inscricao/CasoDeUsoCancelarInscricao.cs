@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.CancelarInscricao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao

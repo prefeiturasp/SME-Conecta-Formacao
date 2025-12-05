@@ -4,16 +4,10 @@ using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarPropostaDreCommand : IRequest<bool>
+    public class SalvarPropostaDreCommand(long propostaId, IEnumerable<PropostaDre> dres) : IRequest<bool>
     {
-        public SalvarPropostaDreCommand(long propostaId, IEnumerable<PropostaDre> dres)
-        {
-            PropostaId = propostaId;
-            Dres = dres;
-        }
-
-        public long PropostaId { get; }
-        public IEnumerable<PropostaDre> Dres { get; }
+        public long PropostaId { get; } = propostaId;
+        public IEnumerable<PropostaDre> Dres { get; } = dres;
     }
 
     public class SalvarPropostaDreCommandValidator : AbstractValidator<SalvarPropostaDreCommand>

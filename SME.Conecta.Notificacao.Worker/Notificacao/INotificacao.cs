@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Infra;
+﻿using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
 namespace SME.Conecta.Notificacao.Worker.Notificacao
 {

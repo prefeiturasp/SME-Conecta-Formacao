@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao
         {
         }
 
-        public async Task<UsuarioPerfisRetornoDTO> Executar(AutenticacaoDTO autenticacaoDTO)
+        public async Task<UsuarioPerfisRetornoDTO> Executar(AutenticacaoDto autenticacaoDTO)
         {
             var usuarioAutenticadoRetornoDto = await mediator.Send(new ObterUsuarioServicoAcessosPorLoginSenhaQuery(autenticacaoDTO.Login, autenticacaoDTO.Senha));
 

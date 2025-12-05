@@ -7,6 +7,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? RegistroFuncional { get; set; }
         public string? Cpf { get; set; }
         public string? NomeTutor { get; set; }
-        public IEnumerable<PropostaTutorTurma> Turmas { get; set; }
+        public IEnumerable<PropostaTutorTurma> Turmas { get; set; } = [];
     }
 }

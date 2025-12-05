@@ -4,14 +4,9 @@ using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostaTurmaPorIdQuery : IRequest<PropostaTurma>
+    public class ObterPropostaTurmaPorIdQuery(long propostaTurmaId) : IRequest<PropostaTurma>
     {
-        public ObterPropostaTurmaPorIdQuery(long propostaTurmaId)
-        {
-            PropostaTurmaId = propostaTurmaId;
-        }
-
-        public long PropostaTurmaId { get; }
+        public long PropostaTurmaId { get; } = propostaTurmaId;
     }
 
     public class ObterPropostaTurmaPorIdQueryValidator : AbstractValidator<ObterPropostaTurmaPorIdQuery>

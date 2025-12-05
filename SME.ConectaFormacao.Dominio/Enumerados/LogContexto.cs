@@ -4,6 +4,7 @@
     {
         Geral,
         SincronizacaoInstitucional,
-        Cache
+        Cache,
+        SincronizacaoCargosEol
     }
 }

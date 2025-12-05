@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre.ServicoFake;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -34,7 +35,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
             var codigoDre = "67";
             var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoInstitucionalDreTratarUseCase>();
             var mensagem = JsonSerializer.Serialize(new DreServicoEol(codigoDre, "Nome da Dre", "abr Dre"));
-            await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
+            await casoDeUso.Executar(new MensagemRabbit(mensagem));
 
             var todosAreasDepois = ObterTodos<Dominio.Entidades.Dre>();
             todosAreasDepois.Count.ShouldBeEquivalentTo(2);
@@ -46,7 +47,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
         public async Task Deve_sincronizar_e_retornar_sucesso()
         {
             var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoInstitucionalDreSyncUseCase>();
-            var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit());
+            var retorno = await casoDeUso.Executar(new MensagemRabbit());
             retorno.ShouldBeTrue();
         }
 
@@ -63,7 +64,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
 
             var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoInstitucionalDreTratarUseCase>();
             var mensagem = JsonSerializer.Serialize(new DreServicoEol(dre!.FirstOrDefault()!.Codigo, nomeDre, abreviacao));
-            await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
+            await casoDeUso.Executar(new MensagemRabbit(mensagem));
 
 
             var todosAreasDepois = ObterTodos<Dominio.Entidades.Dre>();

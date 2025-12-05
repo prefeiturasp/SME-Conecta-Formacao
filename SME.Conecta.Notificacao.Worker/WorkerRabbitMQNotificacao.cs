@@ -2,7 +2,7 @@
 using RabbitMQ.Client.Events;
 using SME.Conecta.Notificacao.Worker.Notificacao;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using System.Reflection;
 using System.Text;

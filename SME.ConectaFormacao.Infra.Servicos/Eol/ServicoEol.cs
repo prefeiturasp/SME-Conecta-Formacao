@@ -8,19 +8,11 @@ using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Eol
 {
-    public class ServicoEol : IServicoEol
+    public class ServicoEol(HttpClient httpClient) : IServicoEol
     {
-        private readonly HttpClient _httpClient;
-
-        public ServicoEol(HttpClient httpClient)
-        {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        }
-
-
         public async Task<CursistaResumidoServicoEol> ObterNomeCpfProfissionalPorRegistroFuncional(string registroFuncional)
         {
-            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_NOME_PROFISSIONAL.Parametros(registroFuncional));
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_NOME_PROFISSIONAL.Parametros(registroFuncional));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO, resposta.StatusCode);
@@ -31,17 +23,17 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<IEnumerable<DreServicoEol>> ObterCodigosDres()
         {
-            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_NOME_ABREVIACAO_DRE);
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_NOME_ABREVIACAO_DRE);
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
-                throw new NegocioException(MensagemNegocio.CODIGOS_DRE_NAO_LOCALIZADO, resposta.StatusCode);
+                return [];
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<DreServicoEol[]>();
         }
         public async Task<UnidadeEol> ObterUnidadePorCodigoEol(string codigoEol)
         {
-            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_UNIDADE_POR_CODIGO.Parametros(codigoEol));
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_UNIDADE_POR_CODIGO.Parametros(codigoEol));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.UNIDADE_NAO_LOCALIZADA_POR_CODIGO);
@@ -52,7 +44,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<IEnumerable<FuncionarioExternoServicoEol>?> ObterDadosFuncionarioExternoPorCpf(string cpf)
         {
-            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.URL_FUNCIONARIO_EXTERNO_POR_CPF.Parametros(cpf));
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.URL_FUNCIONARIO_EXTERNO_POR_CPF.Parametros(cpf));
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 return null;
             var json = await resposta.Content.ReadAsStringAsync();
@@ -61,7 +53,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<IEnumerable<ComponenteCurricularAnoTurmaServicoEol>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo)
         {
-            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO.Parametros(anoLetivo));
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_COMPONENTE_CURRICULAR_E_ANO_TURMA_POR_ANO_LETIVO.Parametros(anoLetivo));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.NENHUM_COMPONENTE_CURRICULAR_DOS_ANOS_DA_TURMA_DO_EOL_FORAM_LOCALIZADOS, resposta.StatusCode);
@@ -72,7 +64,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<IEnumerable<CursistaCargoServicoEol>> ObterCargosFuncionadoPorRegistroFuncional(string registroFuncional)
         {
-            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_CARGOS_FUNCIONARIO_POR_RF.Parametros(registroFuncional));
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_CARGOS_FUNCIONARIO_POR_RF.Parametros(registroFuncional));
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_CARGOS_FUNCIONARIO_EOL, resposta.StatusCode);
@@ -106,7 +98,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
             filtrosUrl += $"&EhTipoJornadaJEIF={EhTipoJornadaJEIF}";
 
-            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.URL_FUNCIONARIOS_REGISTROS_FUNCIONAIS_CONECTA_FORMACAO + filtrosUrl);
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.URL_FUNCIONARIOS_REGISTROS_FUNCIONAIS_CONECTA_FORMACAO + filtrosUrl);
 
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_FUNCIONARIO_POR_CARGO_FUNCAO_ANO_MODALIDADE_COMPONENTE_EOL, resposta.StatusCode);
@@ -117,7 +109,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<IEnumerable<DreUeAtribuicaoServicoEol>> ObterDreUeAtribuicaoPorFuncionarioCargo(string registroFuncional, long codigoCargo)
         {
-            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_CARGO.Parametros(registroFuncional, codigoCargo));
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_CARGO.Parametros(registroFuncional, codigoCargo));
 
             if (!resposta.IsSuccessStatusCode)
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_DRE_UE_ATRIBUICAO_POR_FUNCIONARIO_E_CARGO_EOL, resposta.StatusCode);
@@ -128,7 +120,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
         public async Task<string> ObterNomeServidorPorRfEol(string rfServidor)
         {
-            var resposta = await _httpClient.GetAsync(EndpointsEolConstantes.OBTER_NOME_SERVIDOR_EOL.Parametros(rfServidor));
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_NOME_SERVIDOR_EOL.Parametros(rfServidor));
 
             if (!resposta.IsSuccessStatusCode)
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_NOME_SERVIDOR_POR_RF_EOL, resposta.StatusCode);
@@ -140,7 +132,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
         public async Task<IEnumerable<UsuarioPerfilServicoEol>> ObterUsuariosPorPerfis(IEnumerable<Guid> perfis)
         {
             var parametros = perfis.ObjetoParaJson();
-            var resposta = await _httpClient.PostAsync(EndpointsEolConstantes.OBTER_USUARIOS_POR_PERFIS, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            var resposta = await httpClient.PostAsync(EndpointsEolConstantes.OBTER_USUARIOS_POR_PERFIS, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
             if (!resposta.IsSuccessStatusCode)
                 throw new NegocioException(MensagemNegocio.ERRO_OBTER_USUARIOS_POR_PERFIS, resposta.StatusCode);
 
@@ -151,11 +143,49 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
         public async Task<IEnumerable<string>> VerificarSeUsuarioEstaAtivo(string[] rf)
         {
             var parametros = new { codigosRfs = rf }.ObjetoParaJson();
-            var resposta = await _httpClient.PostAsync(EndpointsEolConstantes.VERIFICAR_SE_FUNCIONARIOS_ESTAO_ATIVOS, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            var resposta = await httpClient.PostAsync(EndpointsEolConstantes.VERIFICAR_SE_FUNCIONARIOS_ESTAO_ATIVOS, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
             if (!resposta.IsSuccessStatusCode)
                 throw new NegocioException($"{MensagemNegocio.ERRO_A0_VERIFICAR_USUARIO_ATIVO} - {resposta.StatusCode}", resposta.StatusCode);
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<IEnumerable<string>>();
+        }
+
+        public async Task<IEnumerable<CargoEolDto>?> ObterCargosEolPorDreAsync(string codigoDre)
+        {
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_CARGOS_EOL_POR_DRE_SYNC.Parametros(codigoDre));
+
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.ERRO_OBTER_CARGOS_EOL_POR_DRE, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<IEnumerable<CargoEolDto>>();
+        }
+
+        public async Task<IEnumerable<AtribuicaoServidorEolDto>?> ObterAtribuicoesServidorEolPorDataAtualizacaoAsync(DateTime? dataUltimaAtualizacao)
+        {
+            var parametroQuery = dataUltimaAtualizacao.HasValue ? $"?dataUltimaAtualizacao={dataUltimaAtualizacao.Value:yyyy-MM-ddTHH:mm:ss}" : "";
+            var urlFinal = EndpointsEolConstantes.OBTER_ATRIBUICOES_SERVIDOR_EOL_SYNC + parametroQuery;
+            var resposta = await httpClient.GetAsync(urlFinal);
+
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.ERRO_OBTER_ATRIBUICOES_SERVIDOR_EOL, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<IEnumerable<AtribuicaoServidorEolDto>>();
+        }
+
+
+        public async Task<IEnumerable<FuncaoAtividadeDTO>?> ObterFuncaoAtividadeEolPorDre(string codigoDre, DateTime? dataUltimaAtualizacao)
+        {
+            var parametroQuery = dataUltimaAtualizacao.HasValue ? $"?dataUltimaAtualizacao={dataUltimaAtualizacao.Value:yyyy-MM-ddTHH:mm:ss}" : "";
+            var urlFinal = EndpointsEolConstantes.OBTER_FUNCAO_ATIVIDADE_EOL_POR_DRE_SYNC.Parametros(codigoDre) + parametroQuery;
+            var resposta = await httpClient.GetAsync(urlFinal);
+
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.ERRO_FUNCAO_ATIVIDADE_EOL_POR_DRE, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<IEnumerable<FuncaoAtividadeDTO>>();
         }
     }
 }

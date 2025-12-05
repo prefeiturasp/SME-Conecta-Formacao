@@ -27,6 +27,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria;
@@ -48,11 +49,13 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Modalidade;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Aplicacao.Interfaces.SincronizacaoEOL;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ue;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Aplicacao.Pipelines;
+using SME.ConectaFormacao.Dominio.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
@@ -61,6 +64,7 @@ using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
 using SME.ConectaFormacao.Infra.Servicos.CacheDistribuido.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria.IoC;
+using SME.ConectaFormacao.Infra.Servicos.Notificacao;
 using SME.ConectaFormacao.Infra.Servicos.Options;
 using SME.ConectaFormacao.Infra.Servicos.Polly;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.IoC;
@@ -87,6 +91,7 @@ public class RegistradorDeDependencia
         ConfigurarMensageria();
         RegistrarConexao();
         RegistrarRepositorios();
+        RegistrarServices();
         RegistrarLogs();
         RegistrarRabbit();
         RegistrarPolly();
@@ -271,6 +276,10 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<IRepositorioPropostaPareceristaConsideracao, RepositorioPropostaPareceristaConsideracao>();
         _serviceCollection.TryAddScoped<IRepositorioNotificacao, RepositorioNotificacao>();
         _serviceCollection.TryAddScoped<IRepositorioNotificacaoUsuario, RepositorioNotificacaoUsuario>();
+        _serviceCollection.AddScoped<IRepositorioCargoEol, RepositorioCargoEol>();
+        _serviceCollection.AddScoped<IRepositorioSincronizador, RepositorioSincronizador>();
+        _serviceCollection.AddScoped<IRepositorioAtribuicaoAulaServidor, RepositorioAtribuicaoAulaServidor>();
+        _serviceCollection.AddScoped<IRepositorioFuncaoAtividadeUsuario, RepositorioFuncaoAtividadeUsuario>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -458,10 +467,21 @@ public class RegistradorDeDependencia
 
         _serviceCollection.TryAddScoped<ICasoDeUsoReativarInscricoes, CasoDeUsoReativarInscricoes>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterUsuariosPorEolUnidade, CasoDeUsoObterUsuariosPorEolUnidade>();
+
+        _serviceCollection.AddScoped<IExecutarSincronizacaoCargosEolUseCase, ExecutarSincronizacaoCargosEolUseCase>();
+        _serviceCollection.AddScoped<ISincronizarCargosEolPorDreUseCase, SincronizarCargosEolPorDreUseCase>();
+        _serviceCollection.AddScoped<ISincronizarAtribuicoesServidoresEolUseCase, SincronizarAtribuicoesServidoresEolUseCase>();
+        _serviceCollection.AddScoped<ISincronizarFuncaoAtividadeEolUseCase, SincronizarFuncaoAtividadeEolUseCase>();
+        _serviceCollection.AddScoped<ISincronizarFuncaoAtividadeEolPorDreUseCase, SincronizarFuncaoAtividadeEolPorDreUseCase>();
     }
 
     protected virtual void RegistrarHttpClients()
     {
         _serviceCollection.AdicionarHttpClients(_configuration);
+    }
+
+    protected virtual void RegistrarServices()
+    {
+        _serviceCollection.AddScoped<IServicoTemplateEmail, ServicoTemplateEmail>();
     }
 }

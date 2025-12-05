@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao.Comandos.Usuario.AlterarEmailEducacional;
+using SME.ConectaFormacao.Aplicacao.Comandos.Usuarios.AlterarTipoEmail;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario

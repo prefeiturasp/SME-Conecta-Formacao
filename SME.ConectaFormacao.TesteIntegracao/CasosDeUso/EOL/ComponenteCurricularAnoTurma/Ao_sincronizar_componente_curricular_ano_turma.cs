@@ -5,10 +5,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricularAnoTurma.Mock;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
@@ -39,7 +41,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
 
             // act 
             var mensagem = JsonSerializer.Serialize(new AnoLetivoDTO(DateTimeExtension.HorarioBrasilia().Year));
-            var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
+            var retorno = await casoDeUso.Executar(new MensagemRabbit(mensagem));
 
             // assert
             retorno.ShouldBeTrue();
@@ -86,7 +88,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.EOL.ComponenteCurricula
 
             // act 
             var mensagem = JsonSerializer.Serialize(new AnoLetivoDTO(DateTimeExtension.HorarioBrasilia().Year));
-            var retorno = await casoDeUso.Executar(new Infra.MensagemRabbit(mensagem));
+            var retorno = await casoDeUso.Executar(new MensagemRabbit(mensagem));
 
             // assert
             retorno.ShouldBeTrue();

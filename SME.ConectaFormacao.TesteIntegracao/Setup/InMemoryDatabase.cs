@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
 {
     public class InMemoryDatabase : IDisposable
     {
-        public NpgsqlConnection Conexao;
+        public NpgsqlConnection Conexao = null!;
         private readonly PostgresRunner _postgresRunner;
 
         public InMemoryDatabase()
@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
             new ConstrutorDeTabelas().Contruir(Conexao);
         }
 
-        private void DefinirComportamentoDateTimeNpgsql()
+        private static void DefinirComportamentoDateTimeNpgsql()
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
             return Conexao.GetAll<T>().ToList();
         }
 
-        public T ObterPorId<T, K>(K id)
+        public T? ObterPorId<T, K>(K id)
             where T : class, new()
             where K : struct
         {
@@ -72,10 +72,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
             builder.Append(" END LOOP; ");
             builder.Append(" END $$; ");
 
-            using (var cmd = new NpgsqlCommand(builder.ToString(), Conexao))
-            {
-                cmd.ExecuteNonQuery();
-            }
+            using var cmd = new NpgsqlCommand(builder.ToString(), Conexao);
+            cmd.ExecuteNonQuery();
         }
 
         public void Inserir(string tabela, params string[] campos)
@@ -83,12 +81,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
             var builder = new StringBuilder();
             builder.Append($"Insert into {tabela} Values (");
             builder.Append(string.Join(", ", campos));
-            builder.Append(")");
+            builder.Append(')');
 
-            using (var cmd = new NpgsqlCommand(builder.ToString(), Conexao))
-            {
-                cmd.ExecuteNonQuery();
-            }
+            using var cmd = new NpgsqlCommand(builder.ToString(), Conexao);
+            cmd.ExecuteNonQuery();
         }
 
         public void Inserir(string tabela, string[] campos, string[] valores)
@@ -98,12 +94,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
             builder.Append(string.Join(", ", campos));
             builder.Append(@") Values (");
             builder.Append(string.Join(", ", valores));
-            builder.Append(")");
+            builder.Append(')');
 
-            using (var cmd = new NpgsqlCommand(builder.ToString(), Conexao))
-            {
-                cmd.ExecuteNonQuery();
-            }
+            using var cmd = new NpgsqlCommand(builder.ToString(), Conexao);
+            cmd.ExecuteNonQuery();
         }
 
         public void Dispose()
@@ -111,6 +105,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
             Conexao.Close();
             Conexao.Dispose();
             _postgresRunner.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

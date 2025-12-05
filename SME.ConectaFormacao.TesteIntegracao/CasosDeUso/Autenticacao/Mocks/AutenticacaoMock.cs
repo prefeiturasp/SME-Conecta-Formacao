@@ -7,13 +7,13 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.Mocks
 {
     public static class AutenticacaoMock
     {
-        public static AutenticacaoDTO AutenticacaoUsuarioDTOValido { get; set; }
+        public static AutenticacaoDto AutenticacaoUsuarioDTOValido { get; set; }
 
         public static UsuarioAutenticacaoRetornoDTO UsuarioAutenticacaoRetornoDTOValido { get; set; }
 
         public static UsuarioPerfisRetornoDTO UsuarioPerfisRetornoDTOValido { get; set; }
 
-        public static AutenticacaoDTO AutenticacaoUsuarioDTOInvalido { get; set; }
+        public static AutenticacaoDto AutenticacaoUsuarioDTOInvalido { get; set; }
 
         public static Dominio.Entidades.Usuario UsuarioLogado { get; set; }
 

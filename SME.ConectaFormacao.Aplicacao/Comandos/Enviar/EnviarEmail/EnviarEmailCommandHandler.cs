@@ -3,17 +3,10 @@ using MediatR;
 using MimeKit;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Comandos.Enviar.EnviarEmail
 {
-    public class EnviarEmailCommandHandler : IRequestHandler<EnviarEmailCommand, bool>
+    public class EnviarEmailCommandHandler(IServicoAcessos servicoAcessos) : IRequestHandler<EnviarEmailCommand, bool>
     {
-        private readonly IServicoAcessos servicoAcessos;
-
-        public EnviarEmailCommandHandler(IServicoAcessos servicoAcessos)
-        {
-            this.servicoAcessos = servicoAcessos ?? throw new ArgumentNullException(nameof(servicoAcessos));
-        }
-
         public async Task<bool> Handle(EnviarEmailCommand request, CancellationToken cancellationToken)
         {
             var configuracaoEmail = await servicoAcessos.ObterConfiguracaoEmail();

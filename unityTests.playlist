@@ -1,0 +1,867 @@
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="All">
+      <Property Name="Solution" />
+      <Rule Match="Any">
+        <Rule Match="All">
+          <Property Name="Project" Value="SME.ConectaFormacao.Infra.Servicos.Teste" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="SME.ConectaFormacao.Infra.Servicos.Teste.Notificacao" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="ServicoTemplateEmailTeste" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Infra.Servicos.Teste.Notificacao.ServicoTemplateEmailTeste.DadoDadosValidos_QuandoObterHtmlEmEspera_EntaoSubstituiPlaceholdersCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Infra.Servicos.Teste.Notificacao.ServicoTemplateEmailTeste.DadoDadosValidos_QuandoObterHtmlEmEspera_EntaoSubstituiPlaceholdersCorretamente" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Infra.Servicos.Teste.Notificacao.ServicoTemplateEmailTeste.DadoDadosValidos_QuandoObterHtmlInscricaoConfirmada_EntaoSubstituiPlaceholdersCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Infra.Servicos.Teste.Notificacao.ServicoTemplateEmailTeste.DadoDadosValidos_QuandoObterHtmlInscricaoConfirmada_EntaoSubstituiPlaceholdersCorretamente" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+        <Rule Match="All">
+          <Property Name="Project" Value="SME.ConectaFormacao.Aplicacao.Teste" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="CasoDeUsoObterListagemFormacaoPaginadaTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterListagemFormacaoPaginadaTests.DadoContextoSemPerfilUsuario_QuandoExecutar_EntaoDevePassarFlagFalsaParaRepositorio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterListagemFormacaoPaginadaTests.DadoContextoSemPerfilUsuario_QuandoExecutar_EntaoDevePassarFlagFalsaParaRepositorio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterListagemFormacaoPaginadaTests.DadoFiltrosValidosEPropostasEncontradas_QuandoExecutar_EntaoDeveRetornarListaPaginadaPreenchida" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterListagemFormacaoPaginadaTests.DadoFiltrosValidosEPropostasEncontradas_QuandoExecutar_EntaoDeveRetornarListaPaginadaPreenchida" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterListagemFormacaoPaginadaTests.DadoRepositorioRetornaVazio_QuandoExecutar_EntaoNaoDeveChamarMediatorERetornarVazio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterListagemFormacaoPaginadaTests.DadoRepositorioRetornaVazio_QuandoExecutar_EntaoNaoDeveChamarMediatorERetornarVazio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterListagemFormacaoPaginadaTests.DadoUsuarioPerfilCursista_QuandoExecutar_EntaoDevePassarFlagVerdadeiraParaRepositorio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterListagemFormacaoPaginadaTests.DadoUsuarioPerfilCursista_QuandoExecutar_EntaoDevePassarFlagVerdadeiraParaRepositorio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterListagemFormacaoPaginadaTests.DadoUsuarioPerfilNaoCursista_QuandoExecutar_EntaoDevePassarFlagFalsaParaRepositorio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterListagemFormacaoPaginadaTests.DadoUsuarioPerfilNaoCursista_QuandoExecutar_EntaoDevePassarFlagFalsaParaRepositorio" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="CasoDeUsoObterUsuariosPorEolUnidadeTestes" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterUsuariosPorEolUnidadeTestes.DadoQualquerRequisicao_QuandoChamarExecutar_DeveRetornarDadosDoLoginDoUsuario" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CasoDeUsoObterUsuariosPorEolUnidadeTestes.DadoQualquerRequisicao_QuandoChamarExecutar_DeveRetornarDadosDoLoginDoUsuario" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="ExecutarSincronizacaoCargosEolUseCaseTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.ExecutarSincronizacaoCargosEolUseCaseTests.DadoQueConsultaDresNaoRetornaDados_QuandoExecutar_EntaoDevePublicarMensagensSomenteParaSme" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.ExecutarSincronizacaoCargosEolUseCaseTests.DadoQueConsultaDresNaoRetornaDados_QuandoExecutar_EntaoDevePublicarMensagensSomenteParaSme" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.ExecutarSincronizacaoCargosEolUseCaseTests.DadoQueConsultaDresRetornaDados_QuandoExecutar_EntaoDevePublicarMensagensParaCadaDreEParaSme" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.ExecutarSincronizacaoCargosEolUseCaseTests.DadoQueConsultaDresRetornaDados_QuandoExecutar_EntaoDevePublicarMensagensParaCadaDreEParaSme" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.ExecutarSincronizacaoCargosEolUseCaseTests.DadoQueOcorreExcecaoNoLoop_QuandoExecutar_EntaoDeveSalvarLogCriticoEContinuar" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.ExecutarSincronizacaoCargosEolUseCaseTests.DadoQueOcorreExcecaoNoLoop_QuandoExecutar_EntaoDeveSalvarLogCriticoEContinuar" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.ExecutarSincronizacaoCargosEolUseCaseTests.DadoQuePublicacaoRetornaFalse_QuandoExecutar_EntaoDeveSalvarLogNegocio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.ExecutarSincronizacaoCargosEolUseCaseTests.DadoQuePublicacaoRetornaFalse_QuandoExecutar_EntaoDeveSalvarLogNegocio" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="SincronizarAtribuicoesServidoresEolUseCaseTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarAtribuicoesServidoresEolUseCaseTests.DadoQueExistemAtribuicoesParaSincronizar_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarAtribuicoesServidoresEolUseCaseTests.DadoQueExistemAtribuicoesParaSincronizar_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarAtribuicoesServidoresEolUseCaseTests.DadoQueNaoExistemAtribuicoesParaSincronizar_QuandoExecutar_EntaoDeveRetornarVerdadeiroSemProcessarDados" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarAtribuicoesServidoresEolUseCaseTests.DadoQueNaoExistemAtribuicoesParaSincronizar_QuandoExecutar_EntaoDeveRetornarVerdadeiroSemProcessarDados" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="SincronizarCargosEolPorDreUseCaseTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarCargosEolPorDreUseCaseTests.DadoQueExistemCargosParaSincronizar_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarCargosEolPorDreUseCaseTests.DadoQueExistemCargosParaSincronizar_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarCargosEolPorDreUseCaseTests.DadoQueNaoExistemCargosParaSincronizar_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarCargosEolPorDreUseCaseTests.DadoQueNaoExistemCargosParaSincronizar_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarCargosEolPorDreUseCaseTests.DadoQueParametroEhNulo_QuandoExecutar_EntaoDeveLancarArgumentNullException" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarCargosEolPorDreUseCaseTests.DadoQueParametroEhNulo_QuandoExecutar_EntaoDeveLancarArgumentNullException" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarCargosEolPorDreUseCaseTests.DadoQueServicoEolRetornaNulo_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarCargosEolPorDreUseCaseTests.DadoQueServicoEolRetornaNulo_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="SincronizarFuncaoAtividadeEolPorDreUseCaseTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolPorDreUseCaseTests.DadoQueExistemFuncoesAtividadesParaSincronizar_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolPorDreUseCaseTests.DadoQueExistemFuncoesAtividadesParaSincronizar_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolPorDreUseCaseTests.DadoQueNaoExistemFuncoesAtividadesParaSincronizar_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolPorDreUseCaseTests.DadoQueNaoExistemFuncoesAtividadesParaSincronizar_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolPorDreUseCaseTests.DadoQueParametroEhNulo_QuandoExecutar_EntaoDeveLancarArgumentNullException" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolPorDreUseCaseTests.DadoQueParametroEhNulo_QuandoExecutar_EntaoDeveLancarArgumentNullException" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolPorDreUseCaseTests.DadoQueServicoEolRetornaNulo_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolPorDreUseCaseTests.DadoQueServicoEolRetornaNulo_QuandoExecutar_EntaoDeveProcessarDadosCorretamente" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="SincronizarFuncaoAtividadeEolUseCaseTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolUseCaseTests.DadoQueConsultaDresNaoRetornaDados_QuandoExecutar_EntaoDevePublicarMensagensSomenteParaSme" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolUseCaseTests.DadoQueConsultaDresNaoRetornaDados_QuandoExecutar_EntaoDevePublicarMensagensSomenteParaSme" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolUseCaseTests.DadoQueConsultaDresRetornaDados_QuandoExecutar_EntaoDevePublicarMensagensParaCadaDreEParaSme" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolUseCaseTests.DadoQueConsultaDresRetornaDados_QuandoExecutar_EntaoDevePublicarMensagensParaCadaDreEParaSme" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolUseCaseTests.DadoQueOcorreExcecaoNoLoop_QuandoExecutar_EntaoDeveSalvarLogCriticoEContinuar" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolUseCaseTests.DadoQueOcorreExcecaoNoLoop_QuandoExecutar_EntaoDeveSalvarLogCriticoEContinuar" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolUseCaseTests.DadoQuePublicacaoRetornaFalse_QuandoExecutar_EntaoDeveSalvarLogNegocio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.SincronizarFuncaoAtividadeEolUseCaseTests.DadoQuePublicacaoRetornaFalse_QuandoExecutar_EntaoDeveSalvarLogNegocio" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="CasoDeUsoSalvarInscricaoManualTeste" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.Executar_Deve_Chamar_Mediator_Send_E_Retornar_Retorno_DTO" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.Executar_Deve_Chamar_Mediator_Send_E_Retornar_Retorno_DTO" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.RetornoDTO_Deve_Retornar_Erro" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.RetornoDTO_Deve_Retornar_Erro" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.RetornoDTO_Deve_Retornar_Sucesso_Com_Id" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.RetornoDTO_Deve_Retornar_Sucesso_Com_Id" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.RetornoDTO_Deve_Retornar_Sucesso_Sem_Id" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.RetornoDTO_Deve_Retornar_Sucesso_Sem_Id" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.Validator_Deve_Passar_Quando_Dados_Validos" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.Validator_Deve_Passar_Quando_Dados_Validos" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.Validator_Deve_Retornar_Erro_Quando_Cpf_Vazio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.Validator_Deve_Retornar_Erro_Quando_Cpf_Vazio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.Validator_Deve_Retornar_Erro_Quando_PropostaTurmaId_Vazio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoSalvarInscricaoManualTeste.Validator_Deve_Retornar_Erro_Quando_PropostaTurmaId_Vazio" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="CasoDeUsoTransferirInscricaoTeste" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao.CasoDeUsoTransferirInscricaoTeste.Deve_Executar_Transferencia_De_Inscricao_Com_Sucesso" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Deve executar transferência de inscrição com sucesso" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="EnviarEmailConfirmacaoInscricaoCommandHandlerTestes" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailConfirmacaoInscricaoCommandHandlerTestes.DadoDadosParaEmailNull_QuandoExecutarHandler_DeveRetornarFalse" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailConfirmacaoInscricaoCommandHandlerTestes.DadoDadosParaEmailNull_QuandoExecutarHandler_DeveRetornarFalse" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailConfirmacaoInscricaoCommandHandlerTestes.DadoDadosParaEmailValidos_QuandoExecutarHandler_DeveEnviarEmailERetornarTrue" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailConfirmacaoInscricaoCommandHandlerTestes.DadoDadosParaEmailValidos_QuandoExecutarHandler_DeveEnviarEmailERetornarTrue" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailConfirmacaoInscricaoCommandHandlerTestes.DadoDadosParaEmailVazio_QuandoExecutarHandler_DeveRetornarFalse" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailConfirmacaoInscricaoCommandHandlerTestes.DadoDadosParaEmailVazio_QuandoExecutarHandler_DeveRetornarFalse" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="EnviarEmailInscricaoEmEsperaCommandHandlerTestes" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailInscricaoEmEsperaCommandHandlerTestes.DadoDadosParaEmailNull_QuandoExecutarHandler_DeveRetornarFalse" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailInscricaoEmEsperaCommandHandlerTestes.DadoDadosParaEmailNull_QuandoExecutarHandler_DeveRetornarFalse" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailInscricaoEmEsperaCommandHandlerTestes.DadoDadosParaEmailValidos_QuandoExecutarHandler_DeveEnviarEmailERetornarTrue" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailInscricaoEmEsperaCommandHandlerTestes.DadoDadosParaEmailValidos_QuandoExecutarHandler_DeveEnviarEmailERetornarTrue" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailInscricaoEmEsperaCommandHandlerTestes.DadoDadosParaEmailVazio_QuandoExecutarHandler_DeveRetornarFalse" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Email.EnviarEmailInscricaoEmEsperaCommandHandlerTestes.DadoDadosParaEmailVazio_QuandoExecutarHandler_DeveRetornarFalse" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="ConfirmarInscricaoCommandHandlerTestes" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.ConfirmarInscricaoCommandHandlerTestes.DadoInscricaoNull_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.ConfirmarInscricaoCommandHandlerTestes.DadoInscricaoNull_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.ConfirmarInscricaoCommandHandlerTestes.DadoUmaInscricaoComSituacaoDiferenteDeAguardandoAnalise_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.ConfirmarInscricaoCommandHandlerTestes.DadoUmaInscricaoComSituacaoDiferenteDeAguardandoAnalise_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.ConfirmarInscricaoCommandHandlerTestes.DadoUmaInscricaoExcluida_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.ConfirmarInscricaoCommandHandlerTestes.DadoUmaInscricaoExcluida_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.ConfirmarInscricaoCommandHandlerTestes.DadoUmaInscricaoValida_QuandoExecutarHandle_DeveConfirmarInscricaoERetornarTrue" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.ConfirmarInscricaoCommandHandlerTestes.DadoUmaInscricaoValida_QuandoExecutarHandle_DeveConfirmarInscricaoERetornarTrue" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.ConfirmarInscricaoCommandHandlerTestes.DadoUmaInscricaoValidaSemVagas_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.ConfirmarInscricaoCommandHandlerTestes.DadoUmaInscricaoValidaSemVagas_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="EmEsperaInscricaoCommandHandlerTestes" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.EmEsperaInscricaoCommandHandlerTestes.DadoInscricaoNull_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.EmEsperaInscricaoCommandHandlerTestes.DadoInscricaoNull_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.EmEsperaInscricaoCommandHandlerTestes.DadoUmaInscricaoComSituacaoDiferenteDeAguardandoAnalise_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.EmEsperaInscricaoCommandHandlerTestes.DadoUmaInscricaoComSituacaoDiferenteDeAguardandoAnalise_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.EmEsperaInscricaoCommandHandlerTestes.DadoUmaInscricaoExcluida_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.EmEsperaInscricaoCommandHandlerTestes.DadoUmaInscricaoExcluida_QuandoExecutarHandle_DeveLancarExcecaoDeNegocio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.EmEsperaInscricaoCommandHandlerTestes.DadoUmaInscricaoValida_QuandoExecutarHandle_DeveAtualizarStatusEEnviarEmail" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.EmEsperaInscricaoCommandHandlerTestes.DadoUmaInscricaoValida_QuandoExecutarHandle_DeveAtualizarStatusEEnviarEmail" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="TransferirInscricaoCommandHandlerTeste" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Handle_Deve_Buscar_CargoCodigo_Em_ObterCargoFuncaoOutrosQuery" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Handle deve buscar CargoCodigo em ObterCargoFuncaoOutrosQuery" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Handle_Deve_Retornar_Erro_Se_Proposta_Nula" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Handle deve retornar erro se proposta for nula" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Handle_Deve_Retornar_Sucesso" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Handle deve retornar sucesso" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Construtor_Deve_Lancar_ArgumentNullException_Se_Depencia_Nula" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Construtor_Deve_Lancar_ArgumentNullException_Se_Depencia_Nula" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Handle_Deve_Lancar_Se_Cursistas_Vazio" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Handle_Deve_Lancar_Se_Cursistas_Vazio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Handle_Deve_Lancar_Se_Mesma_Turma" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Handle_Deve_Lancar_Se_Mesma_Turma" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Handle_Deve_Retornar_Falha_Se_Usuario_Nao_Encontrado" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Handle_Deve_Retornar_Falha_Se_Usuario_Nao_Encontrado" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Validar_Inscricao_Deve_Lancar_Se_Null_Ou_Cancelada" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandHandlerTeste.Validar_Inscricao_Deve_Lancar_Se_Null_Ou_Cancelada" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="TransferirInscricaoCommandTeste" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandTeste.Deve_Passar_Se_Dados_Forem_Validos" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Deve passar com dados válidos" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandTeste.Deve_Retornar_Erro_Se_Cursistas_Estiverem_Vazios" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Erro quando Cursistas estiver vazio" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandTeste.Deve_Retornar_Erro_Se_IdTurmaDestino_For_Zero" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Erro quando IdTurmaDestino for 0" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandTeste.Deve_Retornar_Erro_Se_InscricaoTransferenciaDTO_For_Nulo" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Erro quando InscricaoTransferenciaDTO for nulo" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandTeste.Nao_Deve_Validar_Cursistas_Se_DTO_For_Nulo" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Não deve validar cursistas se DTO for nulo" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes.TransferirInscricaoCommandTeste.Nao_Deve_Validar_IdTurmaDestino_Se_DTO_For_Nulo" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Não deve validar regras internas se DTO for nulo" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="ObterMeusDadosServicoAcessosPorLoginQueryHandlerTeste" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas.ObterMeusDadosServicoAcessosPorLoginQueryHandlerTeste.DeveRetornarDadosUsuarioDTO_QuandoUsuarioExterno" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas.ObterMeusDadosServicoAcessosPorLoginQueryHandlerTeste.DeveRetornarDadosUsuarioDTO_QuandoUsuarioExterno" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas.ObterMeusDadosServicoAcessosPorLoginQueryHandlerTeste.DeveRetornarDadosUsuarioDTO_QuandoUsuarioInterno" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas.ObterMeusDadosServicoAcessosPorLoginQueryHandlerTeste.DeveRetornarDadosUsuarioDTO_QuandoUsuarioInterno" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="ObterUsuariosPorEolUnidadeQueryHandlerTestes" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas.ObterUsuariosPorEolUnidadeQueryHandlerTestes.DadoUmaRequisicaoComCodigoEolUnidade_QuandoChamarHandler_DeveRetornarDadosDoUsuarioCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas.ObterUsuariosPorEolUnidadeQueryHandlerTestes.DadoUmaRequisicaoComCodigoEolUnidade_QuandoChamarHandler_DeveRetornarDadosDoUsuarioCorretamente" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas.ObterUsuariosPorEolUnidadeQueryHandlerTestes.DadoUmaRequisicaoComLogin_QuandoChamarHandler_DeveRetornarDadosDoUsuarioCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas.ObterUsuariosPorEolUnidadeQueryHandlerTestes.DadoUmaRequisicaoComLogin_QuandoChamarHandler_DeveRetornarDadosDoUsuarioCorretamente" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas.ObterUsuariosPorEolUnidadeQueryHandlerTestes.DadoUmaRequisicaoComNome_QuandoChamarHandler_DeveRetornarDadosDoUsuarioCorretamente" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Aplicacao.Teste.Consultas.ObterUsuariosPorEolUnidadeQueryHandlerTestes.DadoUmaRequisicaoComNome_QuandoChamarHandler_DeveRetornarDadosDoUsuarioCorretamente" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+        <Rule Match="All">
+          <Property Name="Project" Value="SME.ConectaFormacao.Webapi.Teste" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="SME.ConectaFormacao.Webapi.Teste" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="PropostaControllerTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoDevolverDtoEId_QuandoDevolverProposta_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoDevolverDtoEId_QuandoDevolverProposta_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoEncontroDto_QuandoSalvarPropostaEncontro_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoEncontroDto_QuandoSalvarPropostaEncontro_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoExibirOpcaoOutros_QuandoObterCriterioValidacaoInscricao_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoExibirOpcaoOutros_QuandoObterCriterioValidacaoInscricao_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoFiltros_QuandoObterPropostaPaginada_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoFiltros_QuandoObterPropostaPaginada_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoFiltrosDashboard_QuandoObterPropostasDashboard_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoFiltrosDashboard_QuandoObterPropostasDashboard_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoFiltrosParecer_QuandoObterPropostaPareceresPorPropostaIdECampo_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoFiltrosParecer_QuandoObterPropostaPareceresPorPropostaIdECampo_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoId_QuandoRemoverProposta_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoId_QuandoRemoverProposta_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoIdEncontro_QuandoRemoverPropostaEncontro_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoIdEncontro_QuandoRemoverPropostaEncontro_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoJustificativa_QuandoAprovarProposta_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoJustificativa_QuandoAprovarProposta_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoJustificativa_QuandoAprovarPropostaParecerista_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoJustificativa_QuandoAprovarPropostaParecerista_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoJustificativa_QuandoRecusarProposta_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoJustificativa_QuandoRecusarProposta_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoJustificativa_QuandoRecusarPropostaParecerista_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoJustificativa_QuandoRecusarPropostaParecerista_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoParecerDto_QuandoAlterarPropostaParecer_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoParecerDto_QuandoAlterarPropostaParecer_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoParecerDto_QuandoInserirPropostaParecer_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoParecerDto_QuandoInserirPropostaParecer_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoParecerId_QuandoRemoverParecer_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoParecerId_QuandoRemoverParecer_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaDto_QuandoInserirProposta_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaDto_QuandoInserirProposta_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaDtoEId_QuandoAlterarProposta_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaDtoEId_QuandoAlterarProposta_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoEnviarProposta_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoEnviarProposta_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoEnviarPropostaParecerista_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoEnviarPropostaParecerista_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterComunicadoAcaoFormativaPorParametro_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterComunicadoAcaoFormativaPorParametro_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterPropostaEncontrosPaginado_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterPropostaEncontrosPaginado_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterPropostaPorId_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterPropostaPorId_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterPropostaRegentePaginado_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterPropostaRegentePaginado_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterPropostaTutorPaginado_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterPropostaTutorPaginado_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterRelatorioLaudaCompleta_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterRelatorioLaudaCompleta_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterRelatorioLaudaDePublicacao_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterRelatorioLaudaDePublicacao_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterSugestoesPareceristaAprovada_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterSugestoesPareceristaAprovada_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterTurmas_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaId_QuandoObterTurmas_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaIdValido_QuandoObterInformacoesCadastrante_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoPropostaIdValido_QuandoObterInformacoesCadastrante_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoRegenteDto_QuandoSalvarPropostaProfissionalRegente_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoRegenteDto_QuandoSalvarPropostaProfissionalRegente_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoRegenteId_QuandoExcluirRegente_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoRegenteId_QuandoExcluirRegente_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoRegenteId_QuandoObterPropostaRegentePorId_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoRegenteId_QuandoObterPropostaRegentePorId_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoRegistroFuncional_QuandoObterNomeProfissionalTutorRegente_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoRegistroFuncional_QuandoObterNomeProfissionalTutorRegente_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterFormacaoHomologada_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterFormacaoHomologada_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterHorasTotaisProposta_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterHorasTotaisProposta_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterRoteiroPropostaFormativa_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterRoteiroPropostaFormativa_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterSituacoes_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterSituacoes_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterTipoEncontro_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterTipoEncontro_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterTipoFormacao_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterTipoFormacao_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterTipoInscricao_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoSolicitacaoValida_QuandoObterTipoInscricao_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoTipoFormacaoValido_QuandoObterformatos_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoTipoFormacaoValido_QuandoObterformatos_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoTutorDto_QuandoSalvarPropostaProfissionalTutor_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoTutorDto_QuandoSalvarPropostaProfissionalTutor_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoTutorId_QuandoExcluirTutor_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoTutorId_QuandoExcluirTutor_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoTutorId_QuandoObterPropostaTutorPorId_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PropostaControllerTests.DadoTutorId_QuandoObterPropostaTutorPorId_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="PublicoControllerTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpFiltrosValidos_QuandoObterListagemFormacao_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpFiltrosValidos_QuandoObterListagemFormacao_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpPropostaIdValido_QuandoObterFormacaoDetalhada_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpPropostaIdValido_QuandoObterFormacaoDetalhada_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpSolicitacaoValida_QuandoObterListaAreaPromotora_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpSolicitacaoValida_QuandoObterListaAreaPromotora_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpSolicitacaoValida_QuandoObterListaFormato_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpSolicitacaoValida_QuandoObterListaFormato_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpSolicitacaoValida_QuandoObterListaPalavraChave_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpSolicitacaoValida_QuandoObterListaPalavraChave_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpTipoValido_QuandoObterListaCargoFuncao_EntaoDeveRetornarOk" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SME.ConectaFormacao.Webapi.Teste.PublicoControllerTests.DadpTipoValido_QuandoObterListaCargoFuncao_EntaoDeveRetornarOk" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+      </Rule>
+    </Rule>
+  </Rule>
+</Playlist>

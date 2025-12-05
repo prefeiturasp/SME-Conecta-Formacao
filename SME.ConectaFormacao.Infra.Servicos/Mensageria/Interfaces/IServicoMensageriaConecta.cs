@@ -1,4 +1,5 @@
 ﻿using RabbitMQ.Client;
+using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Mensageria
 {
