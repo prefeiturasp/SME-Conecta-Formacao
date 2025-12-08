@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     public class PublicoController : BaseController
     {
         [HttpGet("cargo-funcao/tipo/{tipo}")]
-        [ProducesResponseType(typeof(IEnumerable<CargoFuncaoDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<CargoFuncaoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterListaCargoFuncao(

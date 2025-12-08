@@ -53,8 +53,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _servicoEolMock.Verify(s => s.ObterCargosEolPorDreAsync(codigoDre), Times.Once);
             _repositorioSincronizadorMock.Verify(r => r.SincronizarLoteCargosEolAsync(
                 It.Is<List<CargoEol>>(list => list.Count == 2 &&
-                                               list.Exists(c => c.CdCargo == 1 && c.CdRegistroFuncional == "RF1" && c.CodigoUe == "UE1" && c.Sobreposto == false) &&
-                                               list.Exists(c => c.CdCargo == 2 && c.CdRegistroFuncional == "RF2" && c.CodigoUe == "UE2" && c.Sobreposto == true)),
+                                               list.Exists(c => c.CodigoCargo == 1 && c.CodigoRegistroFuncional == "RF1" && c.CodigoUe == "UE1" && c.Sobreposto == false) &&
+                                               list.Exists(c => c.CodigoCargo == 2 && c.CodigoRegistroFuncional == "RF2" && c.CodigoUe == "UE2" && c.Sobreposto == true)),
                 codigoDre), Times.Once);
         }
 

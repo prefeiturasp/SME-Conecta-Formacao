@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             var codigoDre = "DRE1";
 
-            var funcoesAtividadesOrigem = new List<FuncaoAtividadeDTO>
+            var funcoesAtividadesOrigem = new List<FuncaoAtividadeDto>
             {
                 new() { CdRegistroFuncional = "RF1", CdTipoFuncao = "1", CdDre = "DRE1", CdUe = "UE1" },
                 new() { CdRegistroFuncional = "RF2", CdTipoFuncao = "2", CdDre = "DRE1", CdUe = "UE2" }
@@ -52,7 +52,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _servicoEolMock.Verify(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()), Times.Once);
 
             _repositorioSincronizadorMock.Verify(r => r.SincronizarLoteFuncaoAtividadeEolAsync(
-                It.Is<List<FuncaoAtividadeUsuario>>(list =>
+                It.Is<List<FuncaoAtividadeServidorEol>>(list =>
                     list.Count == 2 &&
                     list.Exists(f => f.CdRegistroFuncional == "RF1" && f.CdTipoFuncao == 1 && f.CdDre == "DRE1" && f.CdUe == "UE1") &&
                     list.Exists(f => f.CdRegistroFuncional == "RF2" && f.CdTipoFuncao == 2 && f.CdDre == "DRE1" && f.CdUe == "UE2")
@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _servicoEolMock
                 .Setup(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()))
-                .ReturnsAsync(new List<FuncaoAtividadeDTO>());
+                .ReturnsAsync(new List<FuncaoAtividadeDto>());
 
             var resultado = await _useCase.Executar(new() { Mensagem = codigoDre });
 
@@ -75,7 +75,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _servicoEolMock.Verify(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()), Times.Once);
 
             _repositorioSincronizadorMock.Verify(r => r.SincronizarLoteFuncaoAtividadeEolAsync(
-                It.Is<List<FuncaoAtividadeUsuario>>(list => list.Count == 0),
+                It.Is<List<FuncaoAtividadeServidorEol>>(list => list.Count == 0),
                 codigoDre), Times.Once);
         }
 
@@ -86,7 +86,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _servicoEolMock
                 .Setup(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()))
-                .ReturnsAsync((List<FuncaoAtividadeDTO>?)null);
+                .ReturnsAsync((List<FuncaoAtividadeDto>?)null);
 
             var resultado = await _useCase.Executar(new() { Mensagem = codigoDre });
 
@@ -94,7 +94,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _servicoEolMock.Verify(s => s.ObterFuncaoAtividadeEolPorDre(codigoDre, It.IsAny<DateTime?>()), Times.Once);
 
             _repositorioSincronizadorMock.Verify(r => r.SincronizarLoteFuncaoAtividadeEolAsync(
-                It.Is<List<FuncaoAtividadeUsuario>>(list => list.Count == 0),
+                It.Is<List<FuncaoAtividadeServidorEol>>(list => list.Count == 0),
                 codigoDre), Times.Once);
         }
     }

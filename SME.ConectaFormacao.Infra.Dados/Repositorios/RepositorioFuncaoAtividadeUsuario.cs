@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
     [ExcludeFromCodeCoverage]
     public class RepositorioFuncaoAtividadeUsuario(IConectaFormacaoConexao conexao) : IRepositorioFuncaoAtividadeUsuario
     {
-        public async Task<IEnumerable<FuncaoAtividadeUsuario>> ObterPorRegistroFuncionalAsync(string cdRegistroFuncional)
+        public async Task<IEnumerable<FuncaoAtividadeServidorEol>> ObterPorRegistroFuncionalAsync(string cdRegistroFuncional)
         {
             const string query = @"SELECT id
                                         , cd_registro_funcional AS cdRegistroFuncional
@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var parametros = new DynamicParameters();
             parametros.Add("cdRegistroFuncional", cdRegistroFuncional);
 
-            return await conexao.Obter().QueryAsync<FuncaoAtividadeUsuario>(query, parametros);
+            return await conexao.Obter().QueryAsync<FuncaoAtividadeServidorEol>(query, parametros);
         }
 
         public async Task<DateTime?> ObterDataUltimaAtualizacaoAsync()

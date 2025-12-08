@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SME.ConectaFormacao.Infra.Servicos.Eol
+﻿namespace SME.ConectaFormacao.Infra.Servicos.Eol
 {
-    public class FuncaoAtividadeDTO
+    public class FuncaoAtividadeDto
     {
-        public string CdRegistroFuncional { get; set; }
-        public string CdTipoFuncao { get; set; }
-        public string CdDre { get; set; }
-        public string CdUe { get; set; }
+        public required string CdRegistroFuncional { get; set; }
+        public required string CdTipoFuncao { get; set; }
+        public required string CdDre { get; set; }
+        public required string CdUe { get; set; }
+        public string? NomeFuncao { get; set; }
+        public DateTime? DataPosse { get; set; }
+        public int? TipoVinculo { get; set; }
     }
 }

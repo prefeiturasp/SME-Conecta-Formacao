@@ -7,6 +7,9 @@
         public required string CodigoUe { get; set; }
         public required bool Sobreposto { get; set; }
         public required string CodigoDre { get; set; }
+        public string? NomeCargo { get; set; }
+        public DateTime? DataPosse { get; set; }
+        public int? TipoVinculo { get; set; }
 
         public string ObterChaveNegocio()
         {

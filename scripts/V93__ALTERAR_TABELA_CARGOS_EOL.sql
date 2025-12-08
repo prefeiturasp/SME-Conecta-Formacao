@@ -1,0 +1,4 @@
+ALTER TABLE CARGOS_EOL 
+ADD COLUMN data_posse DATE NULL,
+ADD COLUMN nome_cargo varchar(200) NULL,
+ADD COLUMN tipo_vinculo INT NULL

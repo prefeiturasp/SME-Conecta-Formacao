@@ -21,12 +21,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
             var origem = await servicoEol.ObterFuncaoAtividadeEolPorDre(codigoDre, dataUltimaAtualizacao);
 
             var destino = origem?
-                .Select(c => new FuncaoAtividadeUsuario
-                {
-                    CdRegistroFuncional = c.CdRegistroFuncional,
-                    CdTipoFuncao = Convert.ToInt32(c.CdTipoFuncao),
-                    CdDre = c.CdDre,
-                    CdUe = c.CdUe
+                .Select(c => new FuncaoAtividadeServidorEol(                
+                    c.CdRegistroFuncional,
+                    Convert.ToInt32(c.CdTipoFuncao),
+                    c.CdDre,
+                    c.CdUe
+                )
+                { 
+                    DataPosse = c.DataPosse is not null ? DateOnly.FromDateTime(c.DataPosse.Value) : null,
+                    NomeFuncao = c.NomeFuncao,
+                    TipoVinculo = c.TipoVinculo
                 })
                 .DistinctBy(x => new { x.CdRegistroFuncional, x.CdTipoFuncao, x.CdUe }) // remove duplicados
                 .ToList() ?? [];

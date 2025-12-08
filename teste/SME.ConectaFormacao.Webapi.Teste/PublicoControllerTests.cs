@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var mockUseCase = new Mock<ICasoDeUsoObterCargoFuncao>();
             var tipo = CargoFuncaoTipo.Cargo;
             var exibirOpcaoOutros = true;
-            var lista = new List<CargoFuncaoDTO>
+            var lista = new List<CargoFuncaoDto>
             {
                 new() { Id = 1, Nome = _faker.Name.JobTitle() }
             };
@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(resultado);
-            var retorno = Assert.IsAssignableFrom<IEnumerable<CargoFuncaoDTO>>(okResult.Value);
+            var retorno = Assert.IsAssignableFrom<IEnumerable<CargoFuncaoDto>>(okResult.Value);
             Assert.NotEmpty(retorno);
             mockUseCase.Verify(x => x.Executar(tipo, exibirOpcaoOutros), Times.Once);
         }

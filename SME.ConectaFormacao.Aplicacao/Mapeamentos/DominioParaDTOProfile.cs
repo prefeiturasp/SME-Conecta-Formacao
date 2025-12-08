@@ -8,7 +8,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Dtos.Dre;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.AreaPromotoraTipoId, opt => opt.MapFrom(x => x.Tipo));
 
             CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
-            CreateMap<CargoFuncao, CargoFuncaoDTO>();
+            CreateMap<CargoFuncao, CargoFuncaoDto>();
             CreateMap<PalavraChave, PalavraChaveDTO>();
             CreateMap<PropostaParecerista, PropostaPareceristaDTO>();
             CreateMap<PropostaCriterioCertificacao, PropostaCriterioCertificacaoDto>();

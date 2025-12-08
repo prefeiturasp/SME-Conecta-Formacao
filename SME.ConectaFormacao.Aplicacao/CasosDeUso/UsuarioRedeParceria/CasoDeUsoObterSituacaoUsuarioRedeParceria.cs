@@ -2,7 +2,7 @@
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria
 {
     public class CasoDeUsoObterSituacaoUsuarioRedeParceria : CasoDeUsoAbstrato, ICasoDeUsoObterSituacaoUsuarioRedeParceria
     {

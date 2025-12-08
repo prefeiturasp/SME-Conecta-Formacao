@@ -22,15 +22,15 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.FuncionarioExterno.ObterFuncionar
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ano;
 using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
@@ -44,7 +44,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.FuncionarioExterno.ObterFuncionarioExternoPorCpf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Grupo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Modalidade;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.PalavraChave;
@@ -280,6 +280,7 @@ public class RegistradorDeDependencia
         _serviceCollection.AddScoped<IRepositorioSincronizador, RepositorioSincronizador>();
         _serviceCollection.AddScoped<IRepositorioAtribuicaoAulaServidor, RepositorioAtribuicaoAulaServidor>();
         _serviceCollection.AddScoped<IRepositorioFuncaoAtividadeUsuario, RepositorioFuncaoAtividadeUsuario>();
+        _serviceCollection.AddScoped<IRepositorioCargoFuncaoEol, RepositorioCargoFuncaoEol>();
     }
 
     protected virtual void RegistrarCasosDeUso()

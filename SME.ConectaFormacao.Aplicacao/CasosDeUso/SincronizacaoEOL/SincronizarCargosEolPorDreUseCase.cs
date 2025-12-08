@@ -10,7 +10,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
     {
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var codigoDre = param.ObterObjetoMensagem<string>() ?? throw new ArgumentNullException("Parâmetro código DRE não pode ser nulo.", nameof(param));
+            var codigoDre = param.ObterObjetoMensagem<string>() ?? 
+                            throw new ArgumentNullException(nameof(param), "Parâmetro código DRE não pode ser nulo.");
 
             var cargosEolOrigem = await servicoEol.ObterCargosEolPorDreAsync(codigoDre);
             var cargosEolDestino = cargosEolOrigem?.Select(c => new CargoEol(
@@ -18,7 +19,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
                 c.CdRegistroFuncional,
                 c.CodigoUe,
                 c.Sobreposto,
-                codigoDre)).DistinctBy(c => c.ObterChaveNegocio()).ToList() ?? [];
+                codigoDre)
+                {
+                    DataPosse = c.DataPosse is not null ? DateOnly.FromDateTime(c.DataPosse.Value) : null,
+                    NomeCargo = c.NomeCargo,
+                    TipoVinculo = c.TipoVinculo
+                }).DistinctBy(c => c.ObterChaveNegocio()).ToList() ?? [];
 
             await repositorioSincronizador.SincronizarLoteCargosEolAsync(cargosEolDestino, codigoDre);
             return true;
