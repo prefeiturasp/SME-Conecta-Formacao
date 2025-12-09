@@ -63,7 +63,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> SalvarInscricao(
             [FromServices] ICasoDeUsoSalvarInscricao casoDeUsoSalvarInscricao,
-            [FromBody] InscricaoDTO inscricaoDTO)
+            [FromBody] InscricaoDto inscricaoDTO)
         {
             return Ok(await casoDeUsoSalvarInscricao.Executar(inscricaoDTO));
         }
@@ -151,7 +151,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long propostaId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
-    [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
+            [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
         {
             return Ok(await casoDeUsoObterInscricaoPorId.Executar(propostaId, filtroListagemInscricaoDTO));
         }
