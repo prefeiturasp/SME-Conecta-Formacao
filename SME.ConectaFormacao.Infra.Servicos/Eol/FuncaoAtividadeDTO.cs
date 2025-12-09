@@ -2,6 +2,7 @@
 {
     public class FuncaoAtividadeDto
     {
+        public required int CdCargoBaseServidor { get; set; }
         public required string CdRegistroFuncional { get; set; }
         public required string CdTipoFuncao { get; set; }
         public required string CdDre { get; set; }

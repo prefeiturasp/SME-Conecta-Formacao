@@ -15,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
 
             var cargosEolOrigem = await servicoEol.ObterCargosEolPorDreAsync(codigoDre);
             var cargosEolDestino = cargosEolOrigem?.Select(c => new CargoEol(
+                c.CdCargoBaseServidor,
                 c.CdCargo,
                 c.CdRegistroFuncional,
                 c.CodigoUe,

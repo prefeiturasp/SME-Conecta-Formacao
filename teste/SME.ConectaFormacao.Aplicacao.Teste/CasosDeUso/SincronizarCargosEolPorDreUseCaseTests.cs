@@ -40,8 +40,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var codigoDre = "DRE1";
             var cargosEolOrigem = new List<CargoEolDto>
             {
-                new() { CdCargo = 1, CdRegistroFuncional = "RF1", CodigoUe = "UE1", Sobreposto = false, CodigoDre = codigoDre },
-                new() { CdCargo = 2, CdRegistroFuncional = "RF2", CodigoUe = "UE2", Sobreposto = true, CodigoDre = codigoDre }
+                new() { CdCargo = 1, CdRegistroFuncional = "RF1", CodigoUe = "UE1", Sobreposto = false, CodigoDre = codigoDre, CdCargoBaseServidor = 1 },
+                new() { CdCargo = 2, CdRegistroFuncional = "RF2", CodigoUe = "UE2", Sobreposto = true, CodigoDre = codigoDre, CdCargoBaseServidor = 2 }
             };
             _servicoEolMock
                 .Setup(s => s.ObterCargosEolPorDreAsync(codigoDre))

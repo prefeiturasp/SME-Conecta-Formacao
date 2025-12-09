@@ -8,24 +8,55 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
     {
         public async Task<IEnumerable<CargoFuncaoEolDto>> ObterCargosFuncoesEolDoServidorAsync(string rf)
         {
-            const string query = @" SELECT CD_CARGO Codigo
-                                         , CASE SOBREPOSTO WHEN true THEN 2
-                                           ELSE 1 END Tipo
-                                         , DATA_POSSE
-                                         , NOME_CARGO Nome
-                                         , TIPO_VINCULO TipoVinculo
-                                    FROM PUBLIC.CARGOS_EOL
-                                    WHERE CD_REGISTRO_FUNCIONAL = @rf
-                                    UNION ALL
-                                    SELECT CD_TIPO_FUNCAO Codigo
-                                         , 3 Tipo 
-                                         , DATA_POSSE
-                                         , NOME_FUNCAO Nome
-                                         , TIPO_VINCULO TipoVinculo
-                                    FROM PUBLIC.FUNCOES_ATIVIDADES_EOL
-                                    WHERE CD_REGISTRO_FUNCIONAL = @rf";
+            const string query = @"
+            SELECT 
+                  C.CD_CARGO                  AS Codigo
+                , CASE C.SOBREPOSTO 
+                    WHEN true THEN 2 
+                    ELSE 1 
+                  END                         AS TipoCargoFuncao
+                , C.DATA_POSSE::timestamp     AS DataPosse
+                , C.NOME_CARGO                AS Nome
+                , C.TIPO_VINCULO              AS TipoVinculo
+                , C.CODIGO_DRE                AS CodigoDre
+                , C.CODIGO_UE                 AS CodigoUe
+                , CFDE_CARGO.CARGO_FUNCAO_ID  AS CargoFuncaoId
+                -- Campos da Função (SplitOn começa aqui)
+                , F.CD_TIPO_FUNCAO            AS CodigoFuncao
+                , F.DATA_POSSE::timestamp     AS DataPosse
+                , F.NOME_FUNCAO               AS Nome
+                , F.TIPO_VINCULO              AS TipoVinculo
+                , F.CODIGO_DRE                AS CodigoDre
+                , F.CODIGO_UE                 AS CodigoUe
+                , CFDE_FUNCAO.CARGO_FUNCAO_ID AS CargoFuncaoId
+            FROM CARGOS_EOL C
+            LEFT JOIN CARGO_FUNCAO_DEPARA_EOL CFDE_CARGO ON CFDE_CARGO.CODIGO_CARGO_EOL = C.CD_CARGO
+            LEFT JOIN FUNCOES_ATIVIDADES_EOL F 
+                ON C.CD_CARGO_BASE_COTIC = F.CD_CARGO_BASE_COTIC 
+                AND C.CD_REGISTRO_FUNCIONAL = F.CD_REGISTRO_FUNCIONAL 
+            LEFT JOIN CARGO_FUNCAO_DEPARA_EOL CFDE_FUNCAO ON CFDE_FUNCAO.CODIGO_FUNCAO_EOL  = F.CD_TIPO_FUNCAO 
+            WHERE C.CD_REGISTRO_FUNCIONAL = @rf";
 
-            return await conexao.Obter().QueryAsync<CargoFuncaoEolDto>(query, new { rf });
+            var cargoDictionary = new Dictionary<int, CargoFuncaoEolDto>();
+            await conexao.Obter().QueryAsync<CargoFuncaoEolDto, FuncaoDoCargoEolDto, CargoFuncaoEolDto>(
+                query,
+                (cargo, funcao) =>
+                {
+                    if (!cargoDictionary.TryGetValue(cargo.Codigo, out var cargoEntry))
+                    {
+                        cargoEntry = cargo with { Funcoes = [] };
+                        cargoDictionary.Add(cargo.Codigo, cargoEntry);
+                    }
+                    if (funcao is not null && !string.IsNullOrEmpty(funcao.Nome))
+                    {
+                        cargoEntry.Funcoes.Add(funcao);
+                    }
+                    return cargoEntry;
+                },
+                new { rf },
+                splitOn: "CodigoFuncao"
+            );
+            return cargoDictionary.Values;
         }
     }
 }

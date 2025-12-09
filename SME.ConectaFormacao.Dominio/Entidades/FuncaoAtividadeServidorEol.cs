@@ -3,6 +3,7 @@
     public class FuncaoAtividadeServidorEol
     {
         public Guid Id { get; private set; }
+        public int CdCargoBaseServidor { get; set; }
         public string CdRegistroFuncional { get; private set; }
         public int CdTipoFuncao { get; private set; }
         public string CdDre { get; private set; }
@@ -12,9 +13,10 @@
         public string? NomeFuncao { get; set; }
         public int? TipoVinculo { get; set; }
 
-        public FuncaoAtividadeServidorEol(string cdRegistroFuncional, int cdTipoFuncao, string cdDre, string cdUe)
+        public FuncaoAtividadeServidorEol(int cdCargoBaseServidor, string cdRegistroFuncional, int cdTipoFuncao, string cdDre, string cdUe)
         {
             Id = Guid.NewGuid();
+            CdCargoBaseServidor = cdCargoBaseServidor;
             CdRegistroFuncional = cdRegistroFuncional;
             CdTipoFuncao = cdTipoFuncao;
             CdDre = cdDre;

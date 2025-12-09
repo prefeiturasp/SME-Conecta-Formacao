@@ -77,7 +77,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             const string copyCommand = @"
                 COPY cargos_eol (
-                    id, 
+                    id,
+                    cd_cargo_base_cotic,
                     cd_cargo, 
                     cd_registro_funcional, 
                     codigo_dre, 
@@ -96,6 +97,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 await writer.StartRowAsync();
 
                 await writer.WriteAsync(cargo.Id, NpgsqlTypes.NpgsqlDbType.Uuid);
+                await writer.WriteAsync(cargo.CdCargoBaseServidor, NpgsqlTypes.NpgsqlDbType.Integer);
                 await writer.WriteAsync(cargo.CodigoCargo, NpgsqlTypes.NpgsqlDbType.Integer);
                 await writer.WriteAsync(cargo.CodigoRegistroFuncional, NpgsqlTypes.NpgsqlDbType.Char); // Postgres Char
                 await writer.WriteAsync(cargo.CodigoDre, NpgsqlTypes.NpgsqlDbType.Char);
@@ -157,7 +159,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             const string copyCommand = @"
                 COPY funcoes_atividades_eol (
-                    id, 
+                    id,
+                    cd_cargo_base_cotic,
                     cd_registro_funcional, 
                     cd_tipo_funcao, 
                     codigo_dre,
@@ -175,6 +178,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 await writer.StartRowAsync();
 
                 await writer.WriteAsync(funcaoAtividade.Id, NpgsqlTypes.NpgsqlDbType.Uuid);
+                await writer.WriteAsync(funcaoAtividade.CdCargoBaseServidor, NpgsqlTypes.NpgsqlDbType.Integer);
                 await writer.WriteAsync(funcaoAtividade.CdRegistroFuncional, NpgsqlTypes.NpgsqlDbType.Char);
                 await writer.WriteAsync(funcaoAtividade.CdTipoFuncao, NpgsqlTypes.NpgsqlDbType.Integer);
                 await writer.WriteAsync(funcaoAtividade.CdDre, NpgsqlTypes.NpgsqlDbType.Char);

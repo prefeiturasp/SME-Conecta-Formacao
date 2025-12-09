@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUsuarioServicoAcessosPorLoginSenhaQueryHandler : IRequestHandler<ObterUsuarioServicoAcessosPorLoginSenhaQuery, UsuarioAutenticacaoRetornoDTO>
+    public class ObterUsuarioServicoAcessosPorLoginSenhaQueryHandler : IRequestHandler<ObterUsuarioServicoAcessosPorLoginSenhaQuery, UsuarioAutenticacaoRetornoDto>
     {
         private readonly IMapper _mapper;
         private readonly IServicoAcessos _servicoAcessos;
@@ -16,10 +16,10 @@ namespace SME.ConectaFormacao.Aplicacao
             _servicoAcessos = servicoAcessos ?? throw new ArgumentNullException(nameof(servicoAcessos));
         }
 
-        public async Task<UsuarioAutenticacaoRetornoDTO> Handle(ObterUsuarioServicoAcessosPorLoginSenhaQuery request, CancellationToken cancellationToken)
+        public async Task<UsuarioAutenticacaoRetornoDto> Handle(ObterUsuarioServicoAcessosPorLoginSenhaQuery request, CancellationToken cancellationToken)
         {
             var usuarioAutenticacaoRetorno = await _servicoAcessos.Autenticar(request.Login, request.Senha);
-            return _mapper.Map<UsuarioAutenticacaoRetornoDTO>(usuarioAutenticacaoRetorno);
+            return _mapper.Map<UsuarioAutenticacaoRetornoDto>(usuarioAutenticacaoRetorno);
         }
     }
 }

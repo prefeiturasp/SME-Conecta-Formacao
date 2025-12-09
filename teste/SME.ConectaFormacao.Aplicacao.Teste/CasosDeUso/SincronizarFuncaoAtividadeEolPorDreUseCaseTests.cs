@@ -38,8 +38,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             var funcoesAtividadesOrigem = new List<FuncaoAtividadeDto>
             {
-                new() { CdRegistroFuncional = "RF1", CdTipoFuncao = "1", CdDre = "DRE1", CdUe = "UE1" },
-                new() { CdRegistroFuncional = "RF2", CdTipoFuncao = "2", CdDre = "DRE1", CdUe = "UE2" }
+                new() { CdRegistroFuncional = "RF1", CdTipoFuncao = "1", CdDre = "DRE1", CdUe = "UE1", CdCargoBaseServidor = 1 },
+                new() { CdRegistroFuncional = "RF2", CdTipoFuncao = "2", CdDre = "DRE1", CdUe = "UE2", CdCargoBaseServidor = 2 }
             };
 
             _servicoEolMock

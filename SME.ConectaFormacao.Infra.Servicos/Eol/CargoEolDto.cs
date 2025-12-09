@@ -2,6 +2,7 @@
 {
     public class CargoEolDto
     {
+        public required int CdCargoBaseServidor { get; set; }
         public required int CdCargo { get; set; }
         public required string CdRegistroFuncional { get; set; }
         public required string CodigoUe { get; set; }

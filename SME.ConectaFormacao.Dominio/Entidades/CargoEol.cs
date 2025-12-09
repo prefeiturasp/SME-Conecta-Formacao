@@ -3,6 +3,7 @@
     public class CargoEol
     {
         public Guid Id { get; private set; }
+        public int CdCargoBaseServidor { get; set; }
         public int CodigoCargo { get; private set; }
         public string CodigoRegistroFuncional { get; private set; }
         public string CodigoUe { get; private set; }
@@ -13,9 +14,10 @@
         public string? NomeCargo { get; set; }
         public int? TipoVinculo { get; set; }
 
-        public CargoEol(int cdCargo, string cdRegistroFuncional, string codigoUe, bool sobreposto, string codigoDre)
+        public CargoEol(int cdCargoBaseServidor, int cdCargo, string cdRegistroFuncional, string codigoUe, bool sobreposto, string codigoDre)
         {
             Id = Guid.NewGuid();
+            CdCargoBaseServidor = cdCargoBaseServidor;
             CodigoCargo = cdCargo;
             CodigoRegistroFuncional = cdRegistroFuncional;
             CodigoUe = codigoUe;

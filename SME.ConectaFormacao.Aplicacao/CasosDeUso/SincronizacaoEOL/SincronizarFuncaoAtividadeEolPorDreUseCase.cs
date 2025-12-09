@@ -16,15 +16,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
             var codigoDre = param.ObterObjetoMensagem<string>()
                 ?? throw new ArgumentNullException(nameof(param), "Parâmetro código DRE não pode ser nulo.");
 
-            var dataUltimaAtualizacao = await repositorioFuncaoAtividadeUsuario.ObterDataUltimaAtualizacaoAsync();
+            var dataUltimaAtualizacao = await repositorioFuncaoAtividadeUsuario.ObterDataUltimaAtualizacaoAsync(codigoDre);
 
             var origem = await servicoEol.ObterFuncaoAtividadeEolPorDre(codigoDre, dataUltimaAtualizacao);
 
             var destino = origem?
-                .Select(c => new FuncaoAtividadeServidorEol(                
+                .Select(c => new FuncaoAtividadeServidorEol(
+                    c.CdCargoBaseServidor,
                     c.CdRegistroFuncional,
                     Convert.ToInt32(c.CdTipoFuncao),
-                    c.CdDre,
+                    codigoDre,
                     c.CdUe
                 )
                 { 

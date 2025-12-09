@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(DadosInscricaoDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        public async Task<IActionResult> ObterDadosUsuario([FromRoute] 
+        public async Task<IActionResult> ObterDadosUsuario(
             [FromServices] ICasoDeUsoObterDadosInscricao casoDeUsoObterDadosInscricao)
         {
             return Ok(await casoDeUsoObterDadosInscricao.Executar());

@@ -1,3 +1,4 @@
+using Dapper;
 using Dapper.FluentMap;
 using Dapper.FluentMap.Dommel;
 using FluentValidation;
@@ -387,7 +388,7 @@ public class RegistradorDeDependencia
         _serviceCollection.TryAddScoped<ICasoDeUsoObterListagemFormacaoPaginada, CasoDeUsoObterListagemFormacaoPaginada>();
         _serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoDetalhada, CasoDeUsoObterFormacaoDetalhada>();
 
-        _serviceCollection.TryAddScoped<ICasoDeUsoObterDadosInscricao, CasoDeUsoObterDadosInscricao>();
+        _serviceCollection.AddScoped<ICasoDeUsoObterDadosInscricao, CasoDeUsoObterDadosInscricao>();
 
         _serviceCollection.TryAddScoped<ICasoDeUsoGerarPropostaTurmaVaga, CasoDeUsoGerarPropostaTurmaVaga>();
         _serviceCollection.TryAddScoped<ICasoDeUsoSalvarInscricao, CasoDeUsoSalvarInscricao>();
@@ -474,6 +475,7 @@ public class RegistradorDeDependencia
         _serviceCollection.AddScoped<ISincronizarAtribuicoesServidoresEolUseCase, SincronizarAtribuicoesServidoresEolUseCase>();
         _serviceCollection.AddScoped<ISincronizarFuncaoAtividadeEolUseCase, SincronizarFuncaoAtividadeEolUseCase>();
         _serviceCollection.AddScoped<ISincronizarFuncaoAtividadeEolPorDreUseCase, SincronizarFuncaoAtividadeEolPorDreUseCase>();
+        _serviceCollection.AddScoped<ICasoDeUsoObterDadosInscricaoParaProposta, CasoDeUsoObterDadosInscricaoParaProposta>();
     }
 
     protected virtual void RegistrarHttpClients()
