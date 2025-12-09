@@ -1,6 +1,6 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {

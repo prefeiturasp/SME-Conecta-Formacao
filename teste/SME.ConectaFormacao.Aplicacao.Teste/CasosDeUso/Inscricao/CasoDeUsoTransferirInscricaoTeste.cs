@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Moq;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricao;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao
 {

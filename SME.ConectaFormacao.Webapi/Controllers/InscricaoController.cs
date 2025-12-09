@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.DTOS;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 using System.Net;
@@ -16,13 +16,23 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     public class InscricaoController : BaseController
     {
         [HttpGet("dados-inscricao")]
-        [ProducesResponseType(typeof(DadosInscricaoDTO), 200)]
+        [ProducesResponseType(typeof(DadosInscricaoDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterDadosUsuario(
             [FromServices] ICasoDeUsoObterDadosInscricao casoDeUsoObterDadosInscricao)
         {
             return Ok(await casoDeUsoObterDadosInscricao.Executar());
+        }
+
+        [HttpGet("dados-inscricao-proposta/{propostaId:long}")]
+        [ProducesResponseType(typeof(DadosInscricaoPropostaDto), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterDadosInscricaoProposta([FromRoute] long propostaId,
+            [FromServices] ICasoDeUsoObterDadosInscricaoParaProposta casoDeUsoObterDadosInscricaoParaProposta)
+        {
+            return Ok(await casoDeUsoObterDadosInscricaoParaProposta.ExecutarAsync(propostaId));
         }
 
         [HttpGet("turmas/{propostaId}")]

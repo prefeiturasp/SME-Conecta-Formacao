@@ -1,9 +1,13 @@
 CREATE TABLE IF NOT EXISTS funcoes_atividades_eol(
-	id uuid PRIMARY KEY,	
+	id uuid PRIMARY KEY,
+	cd_cargo_base_cotic int NOT NULL,
 	cd_registro_funcional char(7) NOT NULL,
 	cd_tipo_funcao int4 NOT NULL,
+	nome_funcao varchar(200) NULL,
+	tipo_vinculo INT NULL,
 	codigo_dre char(6) NOT NULL,
 	codigo_ue char(6) NOT NULL,
+	data_posse DATE NULL,
 	data_atualizacao TIMESTAMP WITH time ZONE DEFAULT now()
 );
 

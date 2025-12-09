@@ -2,13 +2,13 @@
 {
     public class LogMensagem
     {
-        public LogMensagem(string mensagem, string contexto = "", string nivel = "", string observacao = "", string rastreamento = "", string projeto = "ConectaFormacao", string excecaoInterna = "")
+        public LogMensagem(string mensagem, string contexto = "", string nivel = "", string observacao = "", string? rastreamento = "", string projeto = "ConectaFormacao", string excecaoInterna = "")
         {
             Mensagem = mensagem;
             Contexto = contexto;
             Nivel = nivel;
             Observacao = observacao;
-            Rastreamento = rastreamento;
+            Rastreamento = rastreamento ?? "";
             Projeto = projeto;
             ExcecaoInterna = excecaoInterna;
         }

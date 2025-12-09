@@ -8,7 +8,7 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria
 {
     public class CasoDeUsoAlterarUsuarioRedeParceria : CasoDeUsoAbstrato, ICasoDeUsoAlterarUsuarioRedeParceria
     {

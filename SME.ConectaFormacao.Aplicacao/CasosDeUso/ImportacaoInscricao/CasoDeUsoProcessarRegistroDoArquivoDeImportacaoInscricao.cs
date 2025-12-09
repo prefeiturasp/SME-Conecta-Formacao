@@ -2,7 +2,7 @@
 using SME.ConectaFormacao.Aplicacao.Comandos.ImportacaoInscricao.AlterarSituacaoImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricaoImportacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;

@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INVALIDOS, resposta.StatusCode);
 
             var json = await resposta.Content.ReadAsStringAsync();
-            return json.JsonParaObjeto<AcessosUsuarioAutenticacaoRetorno>();
+            return json.JsonParaObjeto<AcessosUsuarioAutenticacaoRetorno>()!;
         }
 
         public async Task<AcessosPerfisUsuarioRetorno> RevalidarToken(string token)

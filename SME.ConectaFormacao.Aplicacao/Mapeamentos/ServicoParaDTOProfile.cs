@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
     {
         public ServicoParaDTOProfile()
         {
-            CreateMap<AcessosUsuarioAutenticacaoRetorno, UsuarioAutenticacaoRetornoDTO>();
+            CreateMap<AcessosUsuarioAutenticacaoRetorno, UsuarioAutenticacaoRetornoDto>();
             CreateMap<AcessosPerfisUsuarioRetorno, UsuarioPerfisRetornoDTO>();
             CreateMap<AcessosPerfilUsuario, PerfilUsuarioDTO>();
 

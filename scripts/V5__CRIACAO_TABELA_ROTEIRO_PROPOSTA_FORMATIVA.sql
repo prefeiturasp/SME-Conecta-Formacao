@@ -13,4 +13,4 @@ CREATE TABLE IF NOT EXISTS public.roteiro_proposta_formativa (
 
 CREATE index if not exists roteiro_proposta_formativa_excluido_idx ON public.usuario (excluido);
 
-insert into roteiro_proposta_formativa (descricao, criado_em, criado_por, criado_login, excluido) values ('O título da formação deve apresentar de forma sucinta a idéia central do tema que será tratado, indicando ao cursista o macro área do tema e a especificidade do curso proposto.', now(), 'Sistema', 'Sistema', false);
+insert into roteiro_proposta_formativa (descricao, criado_em, criado_por, criado_login, excluido) values ('O tÃ­tulo da formaÃ§Ã£o deve apresentar de forma sucinta a ideia central do tema que serÃ¡ tratado, indicando ao cursista o macro Ã¡rea do tema e a especificidade do curso proposto.', now(), 'Sistema', 'Sistema', false);

@@ -1,20 +1,41 @@
 ﻿namespace SME.ConectaFormacao.Dominio.Entidades
 {
-    public class CargoEol(int cdCargo, string cdRegistroFuncional, string codigoUe, bool sobreposto, string codigoDre)
+    public class CargoEol
     {
-        public Guid Id { get; private set; } = Guid.NewGuid();
-        public int CdCargo { get; private set; } = cdCargo;
-        public string CdRegistroFuncional { get; private set; } = cdRegistroFuncional;
-        public string CodigoUe { get; private set; } = codigoUe;
-        public bool Sobreposto { get; private set; } = sobreposto;
-        public string CodigoDre { get; private set; } = codigoDre;
-        public DateTime DataAtualizacao { get; private set; } = DateTime.UtcNow;
+        public Guid Id { get; private set; }
+        public int CdCargoBaseServidor { get; set; }
+        public int CodigoCargo { get; private set; }
+        public string CodigoRegistroFuncional { get; private set; }
+        public string CodigoUe { get; private set; }
+        public bool Sobreposto { get; private set; }
+        public string CodigoDre { get; private set; }
+        public DateTime DataAtualizacao { get; private set; }
+        public DateOnly? DataPosse { get; set; }
+        public string? NomeCargo { get; set; }
+        public int? TipoVinculo { get; set; }
 
-        protected CargoEol() : this(0, string.Empty, string.Empty, false, string.Empty) { } // EF Core
+        public CargoEol(int cdCargoBaseServidor, int cdCargo, string cdRegistroFuncional, string codigoUe, bool sobreposto, string codigoDre)
+        {
+            Id = Guid.NewGuid();
+            CdCargoBaseServidor = cdCargoBaseServidor;
+            CodigoCargo = cdCargo;
+            CodigoRegistroFuncional = cdRegistroFuncional;
+            CodigoUe = codigoUe;
+            Sobreposto = sobreposto;
+            CodigoDre = codigoDre;
+            DataAtualizacao = DateTime.UtcNow;
+        }
+
+        protected CargoEol()  // EF Core
+        {
+            CodigoRegistroFuncional = null!;
+            CodigoUe = null!;
+            CodigoDre = null!;
+        }
 
         public string ObterChaveNegocio()
         {
-            return $"{CdRegistroFuncional}-{CdCargo}-{CodigoUe}-{Sobreposto}";
+            return $"{CodigoRegistroFuncional}-{CodigoCargo}-{CodigoUe}-{Sobreposto}";
         }
     }
 }

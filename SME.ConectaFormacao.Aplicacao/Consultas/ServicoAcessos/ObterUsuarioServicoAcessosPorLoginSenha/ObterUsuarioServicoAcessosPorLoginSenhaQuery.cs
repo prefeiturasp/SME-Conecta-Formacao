@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Autenticacao;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUsuarioServicoAcessosPorLoginSenhaQuery : IRequest<UsuarioAutenticacaoRetornoDTO>
+    public class ObterUsuarioServicoAcessosPorLoginSenhaQuery : IRequest<UsuarioAutenticacaoRetornoDto>
     {
         public ObterUsuarioServicoAcessosPorLoginSenhaQuery(string login, string senha)
         {

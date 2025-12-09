@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.CargoFuncao
 {
-    public class CargoFuncaoDTO
+    public class CargoFuncaoDto
     {
         public long Id { get; set; }
         public string Nome { get; set; } = null!;

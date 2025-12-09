@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Log
             this.policy = registry.Get<IAsyncPolicy>(ConstsPoliticaPolly.PublicaFila);
         }
 
-        public async Task Enviar(string mensagem, LogContexto contexto = LogContexto.Geral, LogNivel nivel = LogNivel.Critico, string observacao = "", string rastreamento = "")
+        public async Task Enviar(string mensagem, LogContexto contexto = LogContexto.Geral, LogNivel nivel = LogNivel.Critico, string observacao = "", string? rastreamento = "")
         {
             var logMensagem = new LogMensagem(mensagem, contexto.ToString(), nivel.ToString(), observacao, rastreamento).ObjetoParaJson();
             var body = Encoding.UTF8.GetBytes(logMensagem);
