@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
@@ -19,7 +20,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 {
     public class Ao_obter_dados_paginados_com_filtro : TestePropostaBase
     {
-        private FiltroListagemInscricaoDto Filtro = new();
+        private FiltroListagemInscricaoDto Filtro = new() { PropostaId = 0 , NumeroPagina = 1, NumeroRegistros = 10 };
         private long InscricaoId = 0;
         public Ao_obter_dados_paginados_com_filtro(CollectionFixture collectionFixture) : base(collectionFixture)
         {

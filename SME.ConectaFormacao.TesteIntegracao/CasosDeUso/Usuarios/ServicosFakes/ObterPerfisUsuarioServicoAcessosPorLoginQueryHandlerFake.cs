@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios.Mocks;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios.ServicosFakes
 {
     internal class ObterPerfisUsuarioServicoAcessosPorLoginQueryHandlerFake : IRequestHandler<ObterPerfisUsuarioServicoAcessosPorLoginQuery, UsuarioPerfisRetornoDTO>
     {

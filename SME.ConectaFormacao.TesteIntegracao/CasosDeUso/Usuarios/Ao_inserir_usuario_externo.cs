@@ -7,12 +7,12 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios
 {
     public class Ao_inserir_usuario_externo : TesteBase
     {

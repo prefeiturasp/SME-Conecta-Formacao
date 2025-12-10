@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.ServicosFakes
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios.ServicosFakes
 {
     public class EnviarEmailValidacaoUsuarioExternoServicoAcessoCommandFake : IRequestHandler<EnviarEmailValidacaoUsuarioExternoServicoAcessoCommand, bool>
     {

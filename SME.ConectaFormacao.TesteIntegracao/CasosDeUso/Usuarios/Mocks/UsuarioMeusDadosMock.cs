@@ -2,7 +2,7 @@
 using Bogus.Extensions.Brazil;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios.Mocks
 {
     public class UsuarioMeusDadosMock
     {

@@ -2,11 +2,11 @@
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios
 {
     public class Ao_alterar_nome_do_usuario : TesteBase
     {

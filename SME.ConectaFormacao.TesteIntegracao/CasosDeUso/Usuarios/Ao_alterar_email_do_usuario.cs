@@ -6,12 +6,12 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuario
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios
 {
     public class Ao_alterar_email_do_usuario : TesteBase
     {
