@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.CancelarInscricao
             var transacao = _transacao.Iniciar();
             try
             {
-                if (inscricao.Situacao.EhConfirmada())
+                if (inscricao.Situacao == SituacaoInscricao.Confirmada)
                     await _repositorioInscricao.LiberarInscricaoVaga(inscricao);
 
                 inscricao.SituacaoAnterior = inscricao.Situacao;

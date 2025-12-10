@@ -7,7 +7,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUsuarioRedeParceiraPaginadaQueryHandler : IRequestHandler<ObterUsuarioRedeParceiraPaginadaQuery, PaginacaoResultadoDTO<UsuarioRedeParceriaPaginadoDTO>>
+    public class ObterUsuarioRedeParceiraPaginadaQueryHandler : IRequestHandler<ObterUsuarioRedeParceiraPaginadaQuery, PaginacaoResultadoDto<UsuarioRedeParceriaPaginadoDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioUsuario _repositorioUsuario;
@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
         }
 
-        public async Task<PaginacaoResultadoDTO<UsuarioRedeParceriaPaginadoDTO>> Handle(ObterUsuarioRedeParceiraPaginadaQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDto<UsuarioRedeParceriaPaginadoDTO>> Handle(ObterUsuarioRedeParceiraPaginadaQuery request, CancellationToken cancellationToken)
         {
             var totalRegistrosFiltro = await _repositorioUsuario.ObterTotalUsuarioRedeParceria(request.Filtros.AreaPromotoraIds, request.Filtros.Nome, request.Filtros.Cpf, request.Filtros.Situacao);
 
@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             var items = _mapper.Map<IEnumerable<UsuarioRedeParceriaPaginadoDTO>>(usuarios);
-            return new PaginacaoResultadoDTO<UsuarioRedeParceriaPaginadoDTO>(items, totalRegistrosFiltro, request.NumeroRegistros);
+            return new PaginacaoResultadoDto<UsuarioRedeParceriaPaginadoDTO>(items, totalRegistrosFiltro, request.NumeroRegistros);
         }
     }
 }

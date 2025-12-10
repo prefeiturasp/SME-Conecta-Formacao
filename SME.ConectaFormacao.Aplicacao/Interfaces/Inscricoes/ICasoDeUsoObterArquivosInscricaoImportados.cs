@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes
 {
     public interface ICasoDeUsoObterArquivosInscricaoImportados
     {
-        Task<PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>> Executar(long propostaId);
+        Task<PaginacaoResultadoDto<ArquivoInscricaoImportadoDTO>> Executar(long propostaId);
     }
 }

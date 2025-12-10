@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas
 {
-    public class ObterRegentesPaginadoQuery : IRequest<PaginacaoResultadoDTO<PropostaRegenteDTO>>
+    public class ObterRegentesPaginadoQuery : IRequest<PaginacaoResultadoDto<PropostaRegenteDTO>>
     {
         public ObterRegentesPaginadoQuery(long propostaId, int numeroPagina, int numeroRegistros)
         {

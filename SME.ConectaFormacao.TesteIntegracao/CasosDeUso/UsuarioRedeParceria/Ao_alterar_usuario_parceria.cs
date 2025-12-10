@@ -6,13 +6,13 @@ using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria.Mock;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuariosRedeParceria.Mock;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuariosRedeParceria.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuariosRedeParceria
 {
     public class Ao_alterar_usuario_parceria : TesteBase
     {

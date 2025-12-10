@@ -3,17 +3,18 @@ using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioInscricao : RepositorioBaseAuditavel<Inscricao>, IRepositorioInscricao
+    [ExcludeFromCodeCoverage]
+    public class RepositorioInscricao(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) :
+        RepositorioBaseAuditavel<Inscricao>(contexto, conexao), IRepositorioInscricao
     {
-        public RepositorioInscricao(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
-        {
-        }
-
         public async Task<bool> ConfirmarInscricaoVaga(Inscricao inscricao)
         {
             PreencherAuditoriaAlteracao(inscricao);
@@ -157,74 +158,111 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { usuarioId });
         }
 
-        public Task<IEnumerable<Inscricao>> ObterInscricaoPorIdComFiltros(
-            long propostaId,
-            string? login,
-            string? cpf,
-            string? nomeCursista,
-            long[]? turmasId,
-            int numeroPagina,
-            int numeroRegistros,
-            bool ocultarCancelada = false,
-            bool ocultarTransferida = false)
+        public async Task<PaginacaoResultadoDto<Inscricao>> ObterInscricoesPorPropostaPaginadasAsync(FiltroListagemInscricaoDto filtro)
+        {
+            var parametros = new DynamicParameters();
+            parametros.Add("propostaId", filtro.PropostaId);
+
+            var condicoesBuilder = new StringBuilder();
+
+            condicoesBuilder.AppendLine("WHERE NOT pt.excluido AND pt.proposta_id = @propostaId");
+
+            if (!string.IsNullOrWhiteSpace(filtro.RegistroFuncional))
+            {
+                condicoesBuilder.AppendLine(" AND u.login ILIKE @registroFuncional ");
+                parametros.Add("registroFuncional", $"%{filtro.RegistroFuncional}%");
+            }
+
+            if (!string.IsNullOrEmpty(filtro.Cpf))
+            {
+                condicoesBuilder.AppendLine(" AND u.cpf LIKE @cpf ");
+                parametros.Add("cpf", $"%{filtro.Cpf}%");
+            }
+
+            if (!string.IsNullOrEmpty(filtro.NomeCursista))
+            {
+                condicoesBuilder.AppendLine(" AND unaccent(u.nome) ILIKE @nomeCursista ");
+                parametros.Add("nomeCursista", $"%{filtro.NomeCursista.RemoverAcentuacao()}%");
+            }
+
+            if (filtro.TurmasId?.Length > 0)
+            {
+                condicoesBuilder.AppendLine(" AND pt.id = ANY(@turmasId) ");
+                parametros.Add("turmasId", filtro.TurmasId);
+            }
+
+
+            if (filtro.Situacao is not null)
+            {
+                condicoesBuilder.AppendLine(" AND i.situacao = @situacao ");
+                parametros.Add("situacao", filtro.Situacao.Value);
+            }
+            else
+            {
+                if (filtro.OcultarCancelada)
                 {
-                    var query = new StringBuilder(@"
-                select 
-                    i.id,
-                    i.situacao,
-                    i.origem,
-                    i.arquivo_id,
-                    i.criado_em,
-                    i.proposta_turma_id,
-                    pt.nome,
-                    i.usuario_id,
-                    u.login,
-                    u.cpf,
-                    u.nome,
-                    i.cargo_id,
-                    i.funcao_id,
-                    case 
-                        when i.tipo_vinculo is not null then trim(cf.nome) || ' - v' || cast(i.tipo_vinculo as varchar(10))
-                        else trim(cf.nome)
-                    end as nome,
-                    i.tipo_vinculo,
-                    pt.proposta_id,
-                    p.integrar_no_sga,
-                    p.data_realizacao_inicio
-                from proposta_turma pt
-                inner join proposta p on p.id = pt.proposta_id and not p.excluido
-                inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido
-                inner join usuario u on i.usuario_id = u.id and not u.excluido
-                left join cargo_funcao cf on coalesce(i.funcao_id, i.cargo_id) = cf.id and not cf.excluido
-                where not pt.excluido
-                    and pt.proposta_id = @propostaId
-            ");
+                    condicoesBuilder.AppendLine(" AND i.situacao <> @situacaoCancelada ");
+                    parametros.Add("situacaoCancelada", SituacaoInscricao.Cancelada);
+                }
 
-            if (!string.IsNullOrEmpty(login))
-                query.AppendLine($" and u.login like '%{@login}%' ");
+                if (filtro.OcultarTransferida)
+                {
+                    condicoesBuilder.AppendLine(" AND i.situacao <> @situacaoTransferida ");
+                    parametros.Add("situacaoTransferida", SituacaoInscricao.Transferida);
+                }
+            }
 
-            if (!string.IsNullOrEmpty(cpf))
-                query.AppendLine($"and u.cpf like '%{@cpf}%' ");
+            if (filtro.CargoFuncaoId is not null)
+            {
+                condicoesBuilder.AppendLine(" AND (i.cargo_id = @cargoFuncaoId OR i.funcao_id = @cargoFuncaoId) ");
+                parametros.Add("cargoFuncaoId", filtro.CargoFuncaoId);
+            }
 
-            if (!string.IsNullOrEmpty(nomeCursista))
-                query.AppendLine($" and lower(u.nome) like '%{@nomeCursista.ToLower()}%' ");
+            const string sqlBaseJoins = """
+                FROM proposta_turma pt
+                INNER JOIN proposta p ON p.id = pt.proposta_id AND NOT p.excluido
+                INNER JOIN inscricao i ON i.proposta_turma_id = pt.id AND NOT i.excluido
+                INNER JOIN usuario u ON i.usuario_id = u.id AND NOT u.excluido
+                LEFT JOIN cargo_funcao cf ON COALESCE(i.funcao_id, i.cargo_id) = cf.id AND NOT cf.excluido
+                """;
 
-            if (turmasId?.Length > 0)
-                query.AppendLine(" and pt.id = any(@turmasId) ");
+            var conn = conexao.Obter();
+            var sqlCount = $"SELECT COUNT(1) {sqlBaseJoins} {condicoesBuilder}";
+            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, parametros);
+            if (totalRegistros == 0)
+            {
+                return new PaginacaoResultadoDto<Inscricao>
+                {
+                    Itens = [],
+                    TotalRegistros = 0,
+                    PaginaAtual = filtro.NumeroPagina,
+                    TamanhoPagina = filtro.NumeroRegistros
+                };
+            }
+            var registrosIgnorados = (filtro.NumeroPagina - 1) * filtro.NumeroRegistros;
+            parametros.Add("limit", filtro.NumeroRegistros);
+            parametros.Add("offset", registrosIgnorados);
 
-            if (ocultarCancelada)
-                query.AppendLine(" and i.situacao <> @situacaoCancelada ");
+            var sqlSelect = $"""
+                SELECT 
+                    i.id, i.situacao, i.origem, i.arquivo_id, i.criado_em, 
+                    i.proposta_turma_id, pt.nome, 
+                    i.usuario_id, u.login, u.cpf, u.nome, 
+                    i.cargo_id, i.funcao_id, 
+                    CASE 
+                        WHEN i.tipo_vinculo IS NOT NULL THEN TRIM(cf.nome) || ' - v' || CAST(i.tipo_vinculo AS VARCHAR(10))
+                        ELSE TRIM(cf.nome)
+                    END AS nome,
+                    i.tipo_vinculo, 
+                    pt.proposta_id, p.integrar_no_sga, p.data_realizacao_inicio
+                {sqlBaseJoins}
+                {condicoesBuilder}
+                ORDER BY pt.nome, i.criado_em
+                LIMIT @limit OFFSET @offset
+                """;
 
-            if (ocultarTransferida)
-                query.AppendLine(" and i.situacao <> @situacaoTransferida ");
-
-            query.AppendLine(" order by pt.nome, i.criado_em");
-            query.AppendLine(" limit @numeroRegistros offset @registrosIgnorados ");
-
-            var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
-
-            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Usuario, CargoFuncao, Proposta, Inscricao>(
-                query.ToString(),
+            var dados = await conn.QueryAsync<Inscricao, PropostaTurma, Usuario, CargoFuncao, Proposta, Inscricao>(
+                sqlSelect,
                 (inscricao, propostaTurma, usuario, cargoFuncao, proposta) =>
                 {
                     propostaTurma.Proposta = proposta;
@@ -233,64 +271,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     inscricao.Usuario = usuario;
                     return inscricao;
                 },
-                new
-                {
-                    propostaId,
-                    login,
-                    cpf,
-                    nomeCursista = nomeCursista?.ToLower(),
-                    turmasId,
-                    numeroRegistros,
-                    registrosIgnorados,
-                    situacaoCancelada = (short)SituacaoInscricao.Cancelada,
-                    situacaoTransferida = (short)SituacaoInscricao.Transferida
-                },
+                parametros,
                 splitOn: "id,proposta_turma_id,usuario_id,cargo_id,proposta_id"
             );
-        }
 
-        public Task<int> ObterInscricaoPorIdComFiltrosTotalRegistros(long propostaId, string? login, string? cpf, string? nomeCursista, long[]? turmasId, bool ocultarCancelada = false,
-    bool ocultarTransferida = false)
-        {
-
-
-            var query = new StringBuilder(@"select count(1)
-											from proposta_turma pt
-											inner join inscricao i on i.proposta_turma_id = pt.id and not i.excluido
-											inner join usuario u on i.usuario_id = u.id and not u.excluido
-											left join cargo_funcao cf on coalesce(i.cargo_id, i.funcao_id) = cf.id and not cf.excluido
-											where
-                                                not pt.excluido
-												and pt.proposta_id = @propostaId ");
-
-            if (!string.IsNullOrEmpty(login))
-                query.AppendLine($" and u.login like '%{@login}%' ");
-
-            if (!string.IsNullOrEmpty(cpf))
-                query.AppendLine($"and u.cpf like '%{@cpf}%' ");
-
-            if (!string.IsNullOrEmpty(nomeCursista))
-                query.AppendLine($" and lower(u.nome) like '%{@nomeCursista.ToLower()}%' ");
-
-            if (turmasId?.Length > 0)
-                query.AppendLine($" and pt.id = any(@turmasId) ");
-
-            if (ocultarCancelada)
-                query.AppendLine(" and i.situacao <> @situacaoCancelada ");
-
-            if (ocultarTransferida)
-                query.AppendLine(" and i.situacao <> @situacaoTransferida ");
-
-            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new
+            return new PaginacaoResultadoDto<Inscricao>
             {
-                propostaId,
-                login,
-                cpf,
-                nomeCursista = nomeCursista?.ToLower(),
-                turmasId,
-                situacaoCancelada = (short)SituacaoInscricao.Cancelada,
-                situacaoTransferida = (short)SituacaoInscricao.Transferida
-            });
+                Itens = dados,
+                TotalRegistros = totalRegistros,
+                PaginaAtual = filtro.NumeroPagina,
+                TamanhoPagina = filtro.NumeroRegistros
+            };
         }
 
         public Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros, long? numeroHomologacao)

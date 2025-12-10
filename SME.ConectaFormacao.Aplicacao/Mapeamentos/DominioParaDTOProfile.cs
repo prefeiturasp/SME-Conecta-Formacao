@@ -251,13 +251,13 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != Dominio.Enumerados.SituacaoInscricao.Cancelada && o.Situacao != Dominio.Enumerados.SituacaoInscricao.Transferida))
                 .ForMember(dest => dest.DataInscricao, opt => opt.MapFrom(o => o.CriadoEm.ToString("dd/MM/yyyy HH:mm")));
 
-            CreateMap<Inscricao, DadosListagemInscricaoPermissaoDTO>()
-                .ForMember(dest => dest.PodeConfirmar, opt => opt.MapFrom(o => o.Situacao.EhAguardandoAnalise() || o.Situacao.EhEmEspera()))
-                .ForMember(dest => dest.PodeColocarEmEspera, opt => opt.MapFrom(o => o.Situacao.EhAguardandoAnalise()))
-                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != Dominio.Enumerados.SituacaoInscricao.Cancelada && o.Situacao != Dominio.Enumerados.SituacaoInscricao.Transferida))
-                .ForMember(dest => dest.PodeReativar, opt => opt.MapFrom(o => o.Situacao.EhCancelada()));
+            CreateMap<Inscricao, DadosListagemInscricaoPermissaoDto>()
+                .ForMember(dest => dest.PodeConfirmar, opt => opt.MapFrom(o => o.Situacao == SituacaoInscricao.AguardandoAnalise || o.Situacao == SituacaoInscricao.EmEspera))
+                .ForMember(dest => dest.PodeColocarEmEspera, opt => opt.MapFrom(o => o.Situacao == SituacaoInscricao.AguardandoAnalise))
+                .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != SituacaoInscricao.Cancelada && o.Situacao != SituacaoInscricao.Transferida))
+                .ForMember(dest => dest.PodeReativar, opt => opt.MapFrom(o => o.Situacao == SituacaoInscricao.Cancelada));
 
-            CreateMap<Inscricao, DadosListagemInscricaoDTO>()
+            CreateMap<Inscricao, DadosListagemInscricaoDto>()
                 .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
                 .ForMember(dest => dest.NomeCursista, opt => opt.MapFrom(o => o.Usuario.Nome))
                 .ForMember(dest => dest.RegistroFuncional, opt => opt.MapFrom(o => o.Usuario.Login))

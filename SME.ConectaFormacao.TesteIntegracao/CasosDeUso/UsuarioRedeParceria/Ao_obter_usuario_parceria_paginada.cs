@@ -5,7 +5,7 @@ using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuariosRedeParceria
 {
     public class Ao_obter_usuario_parceria_paginada : TesteBase
     {

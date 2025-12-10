@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterNotificacaoPaginadaQueryHandler : IRequestHandler<ObterNotificacaoPaginadaQuery, PaginacaoResultadoDTO<NotificacaoPaginadoDTO>>
+    public class ObterNotificacaoPaginadaQueryHandler : IRequestHandler<ObterNotificacaoPaginadaQuery, PaginacaoResultadoDto<NotificacaoPaginadoDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioNotificacao _repositorioNotificacao;
@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioNotificacao = repositorioNotificacao ?? throw new ArgumentNullException(nameof(repositorioNotificacao));
         }
 
-        public async Task<PaginacaoResultadoDTO<NotificacaoPaginadoDTO>> Handle(ObterNotificacaoPaginadaQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDto<NotificacaoPaginadoDTO>> Handle(ObterNotificacaoPaginadaQuery request, CancellationToken cancellationToken)
         {
             int total = await _repositorioNotificacao.ObterTotalNotificacao(
                 request.Login,
@@ -45,7 +45,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 items = _mapper.Map<IEnumerable<NotificacaoPaginadoDTO>>(notificacoes);
             }
 
-            return new PaginacaoResultadoDTO<NotificacaoPaginadoDTO>(items, total, request.NumeroRegistros);
+            return new PaginacaoResultadoDto<NotificacaoPaginadoDTO>(items, total, request.NumeroRegistros);
         }
     }
 }

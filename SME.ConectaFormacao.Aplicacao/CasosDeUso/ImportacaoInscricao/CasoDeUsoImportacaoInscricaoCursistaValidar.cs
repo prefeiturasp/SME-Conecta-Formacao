@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             return true;
         }
 
-        private async Task<PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>> ObterRegistrosParaValidar(int qtdeRegistros, long importacaoArquivoId, int qtdeRegistroIgnorados = 0)
+        private async Task<PaginacaoResultadoDto<ImportacaoArquivoRegistroDTO>> ObterRegistrosParaValidar(int qtdeRegistros, long importacaoArquivoId, int qtdeRegistroIgnorados = 0)
         {
             return await mediator.Send(new ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(
                 qtdeRegistroIgnorados,

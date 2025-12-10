@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
         {
         }
 
-        public async Task<PaginacaoResultadoDTO<InscricaoPaginadaDTO>> Executar()
+        public async Task<PaginacaoResultadoDto<InscricaoPaginadaDTO>> Executar()
         {
             var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
 

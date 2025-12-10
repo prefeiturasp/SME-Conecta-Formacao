@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricoes;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 using System.Net;
 
@@ -48,7 +49,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<InscricaoPaginadaDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<InscricaoPaginadaDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterInscricoesPaginada(
@@ -145,19 +146,20 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(resultado);
         }
 
-        [HttpGet("{propostaId}")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemInscricaoDTO>), 200)]
+        [HttpGet("{propostaId:long}")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<DadosListagemInscricaoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
-        public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long propostaId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
+        public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long propostaId, [FromQuery] FiltroListagemInscricaoDto filtroListagemInscricaoDto,
             [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
         {
-            return Ok(await casoDeUsoObterInscricaoPorId.Executar(propostaId, filtroListagemInscricaoDTO));
+            filtroListagemInscricaoDto.PropostaId = propostaId;
+            return Ok(await casoDeUsoObterInscricaoPorId.ExecutarAsync(filtroListagemInscricaoDto));
         }
 
         [HttpGet("formacao-turmas")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<DadosListagemFormacaoComTurmaDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]

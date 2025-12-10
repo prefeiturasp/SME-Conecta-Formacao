@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao
 {
     public interface ICasoDeUsoObterNotificacaoPaginada
     {
-        Task<PaginacaoResultadoDTO<NotificacaoPaginadoDTO>> Executar(NotificacaoFiltroDTO notificacaoFiltroDTO);
+        Task<PaginacaoResultadoDto<NotificacaoPaginadoDTO>> Executar(NotificacaoFiltroDTO notificacaoFiltroDTO);
     }
 }

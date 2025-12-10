@@ -127,7 +127,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             };
 
             // Simulando o objeto de paginação genérico
-            var paginacao = new PaginacaoResultadoDTO<RetornoListagemFormacaoDTO>(itens, 1, 1);
+            var paginacao = new PaginacaoResultadoDto<RetornoListagemFormacaoDTO>(itens, 1, 1);
 
             mockUseCase.Setup(x => x.Executar(filtro)).ReturnsAsync(paginacao);
 

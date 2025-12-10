@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria
         {
         }
 
-        public async Task<PaginacaoResultadoDTO<UsuarioRedeParceriaPaginadoDTO>> Executar(FiltroUsuarioRedeParceriaDTO filtroUsuarioRedeParceriaDTO)
+        public async Task<PaginacaoResultadoDto<UsuarioRedeParceriaPaginadoDTO>> Executar(FiltroUsuarioRedeParceriaDTO filtroUsuarioRedeParceriaDTO)
         {
             return await mediator.Send(new ObterUsuarioRedeParceiraPaginadaQuery(filtroUsuarioRedeParceriaDTO, NumeroPagina, NumeroRegistros));
         }
