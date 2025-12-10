@@ -220,7 +220,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
             ValidarPaginacaoFormacao(paginacao);
         }
 
-        private static void ValidarPaginacaoFormacao(PaginacaoResultadoDTO<RetornoListagemFormacaoDTO> paginacao)
+        private static void ValidarPaginacaoFormacao(PaginacaoResultadoDto<RetornoListagemFormacaoDTO> paginacao)
         {
             paginacao.ShouldNotBeNull();
 

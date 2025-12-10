@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricaoManual;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
-namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao
+namespace SME.ConectaFormacao.Aplicacao.Teste
 {
     public class CasoDeUsoSalvarInscricaoManualTeste
     {

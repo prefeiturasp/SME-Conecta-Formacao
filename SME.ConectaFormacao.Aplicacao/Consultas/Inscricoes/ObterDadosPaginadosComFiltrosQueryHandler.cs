@@ -9,7 +9,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterDadosPaginadosComFiltrosQueryHandler : IRequestHandler<ObterDadosPaginadosComFiltrosQuery, PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>>
+    public class ObterDadosPaginadosComFiltrosQueryHandler : IRequestHandler<ObterDadosPaginadosComFiltrosQuery, PaginacaoResultadoDto<DadosListagemFormacaoComTurmaDTO>>
     {
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>> Handle(ObterDadosPaginadosComFiltrosQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDto<DadosListagemFormacaoComTurmaDTO>> Handle(ObterDadosPaginadosComFiltrosQuery request, CancellationToken cancellationToken)
         {
             var retornoComTurmas = new List<DadosListagemFormacaoComTurmaDTO>();
             var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroHomologacao);
@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 retornoComTurmas.AddRange(MapearTurmasETipoInscricao(formacao, turmas, tiposInscricao));
             }
 
-            return new PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas, totalRegistrosFiltro, request.NumeroRegistros);
+            return new PaginacaoResultadoDto<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas, totalRegistrosFiltro, request.NumeroRegistros);
         }
 
         private static IEnumerable<DadosListagemFormacaoComTurmaDTO> MapearTurmasETipoInscricao(IEnumerable<DadosListagemFormacaoComTurmaDTO> formacoes, IEnumerable<ListagemFormacaoComTurmaDTO>? turmasFormacao, IEnumerable<PropostaTipoInscricao> tipoInscricaos)

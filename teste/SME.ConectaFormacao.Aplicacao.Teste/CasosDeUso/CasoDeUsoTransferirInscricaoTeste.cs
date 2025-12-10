@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 
-namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricao
+namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
     public class CasoDeUsoTransferirInscricaoTeste
     {

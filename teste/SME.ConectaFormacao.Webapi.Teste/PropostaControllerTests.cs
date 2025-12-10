@@ -204,7 +204,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterPropostaPaginacao>();
             var filtro = new PropostaFiltrosDTO();
-            var paginacao = new PaginacaoResultadoDTO<PropostaPaginadaDTO>(new List<PropostaPaginadaDTO>(), 10, 10);
+            var paginacao = new PaginacaoResultadoDto<PropostaPaginadaDTO>(new List<PropostaPaginadaDTO>(), 10, 10);
             mockUseCase.Setup(x => x.Executar(filtro)).ReturnsAsync(paginacao);
 
             // Act
@@ -284,7 +284,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterPropostaEncontroPaginacao>();
             var id = _faker.Random.Long();
-            var paginacao = new PaginacaoResultadoDTO<PropostaEncontroDTO>(new List<PropostaEncontroDTO>(), 0, 10);
+            var paginacao = new PaginacaoResultadoDto<PropostaEncontroDTO>(new List<PropostaEncontroDTO>(), 0, 10);
             mockUseCase.Setup(x => x.Executar(id)).ReturnsAsync(paginacao);
 
             // Act
@@ -378,7 +378,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterPropostaRegentePaginacao>();
             var id = _faker.Random.Long();
-            var paginacao = new PaginacaoResultadoDTO<PropostaRegenteDTO>(new List<PropostaRegenteDTO>(), 0, 10);
+            var paginacao = new PaginacaoResultadoDto<PropostaRegenteDTO>(new List<PropostaRegenteDTO>(), 0, 10);
             mockUseCase.Setup(x => x.Executar(id)).ReturnsAsync(paginacao);
 
             // Act
@@ -456,7 +456,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterPropostaTutorPaginacao>();
             var id = _faker.Random.Long();
-            var paginacao = new PaginacaoResultadoDTO<PropostaTutorDTO>(new List<PropostaTutorDTO>(), 0, 10);
+            var paginacao = new PaginacaoResultadoDto<PropostaTutorDTO>(new List<PropostaTutorDTO>(), 0, 10);
             mockUseCase.Setup(x => x.Executar(id)).ReturnsAsync(paginacao);
 
             // Act

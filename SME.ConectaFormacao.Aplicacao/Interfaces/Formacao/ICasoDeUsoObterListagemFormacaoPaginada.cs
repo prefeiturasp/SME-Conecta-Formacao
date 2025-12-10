@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Formacao
 {
     public interface ICasoDeUsoObterListagemFormacaoPaginada
     {
-        Task<PaginacaoResultadoDTO<RetornoListagemFormacaoDTO>> Executar(FiltroListagemFormacaoDTO filtroListagemFormacaoDTO);
+        Task<PaginacaoResultadoDto<RetornoListagemFormacaoDTO>> Executar(FiltroListagemFormacaoDTO filtroListagemFormacaoDTO);
     }
 }

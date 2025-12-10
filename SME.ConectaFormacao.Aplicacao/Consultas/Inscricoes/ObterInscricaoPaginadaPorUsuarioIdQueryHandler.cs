@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterInscricaoPaginadaPorUsuarioIdQueryHandler : IRequestHandler<ObterInscricaoPaginadaPorUsuarioIdQuery, PaginacaoResultadoDTO<InscricaoPaginadaDTO>>
+    public class ObterInscricaoPaginadaPorUsuarioIdQueryHandler : IRequestHandler<ObterInscricaoPaginadaPorUsuarioIdQuery, PaginacaoResultadoDto<InscricaoPaginadaDTO>>
     {
         private readonly IRepositorioInscricao _repositorioInscricao;
         private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<PaginacaoResultadoDTO<InscricaoPaginadaDTO>> Handle(ObterInscricaoPaginadaPorUsuarioIdQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDto<InscricaoPaginadaDTO>> Handle(ObterInscricaoPaginadaPorUsuarioIdQuery request, CancellationToken cancellationToken)
         {
             var totalRegistrosFiltro = await _repositorioInscricao.ObterTotalRegistrosPorUsuarioId(request.UsuarioId);
 
@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 item.TipoVinculo = cargoFuncao.TipoVinculo;
             }
 
-            return new PaginacaoResultadoDTO<InscricaoPaginadaDTO>(items, totalRegistrosFiltro, request.NumeroRegistros);
+            return new PaginacaoResultadoDto<InscricaoPaginadaDTO>(items, totalRegistrosFiltro, request.NumeroRegistros);
         }
     }
 }

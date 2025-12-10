@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora
 {
     public interface ICasoDeUsoObterAreaPromotoraPaginada
     {
-        Task<PaginacaoResultadoDTO<AreaPromotoraPaginadaDTO>> Executar(AreaPromotoraFiltrosDTO filtrosAreaPromotoraDTO);
+        Task<PaginacaoResultadoDto<AreaPromotoraPaginadaDTO>> Executar(AreaPromotoraFiltrosDTO filtrosAreaPromotoraDTO);
     }
 }

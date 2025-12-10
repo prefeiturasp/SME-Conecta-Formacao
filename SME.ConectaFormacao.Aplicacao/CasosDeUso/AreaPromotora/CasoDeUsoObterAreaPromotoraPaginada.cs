@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora
         {
         }
 
-        public async Task<PaginacaoResultadoDTO<AreaPromotoraPaginadaDTO>> Executar(AreaPromotoraFiltrosDTO filtrosAreaPromotoraDTO)
+        public async Task<PaginacaoResultadoDto<AreaPromotoraPaginadaDTO>> Executar(AreaPromotoraFiltrosDTO filtrosAreaPromotoraDTO)
         {
             return await mediator.Send(new ObterAreasPromotorasPaginadasQuery(filtrosAreaPromotoraDTO, NumeroPagina, NumeroRegistros));
         }

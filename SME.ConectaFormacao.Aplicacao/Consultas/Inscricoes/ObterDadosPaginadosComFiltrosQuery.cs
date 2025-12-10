@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterDadosPaginadosComFiltrosQuery : IRequest<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>>
+    public class ObterDadosPaginadosComFiltrosQuery : IRequest<PaginacaoResultadoDto<DadosListagemFormacaoComTurmaDTO>>
     {
         public ObterDadosPaginadosComFiltrosQuery(int numeroPagina, int numeroRegistros, long? codigoFormacao, string? nomeFormacao, long? areaPromotoraIdUsuarioLogado, long? numeroHomologacao)
         {

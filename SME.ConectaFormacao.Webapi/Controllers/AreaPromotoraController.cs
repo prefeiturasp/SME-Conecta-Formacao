@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<AreaPromotoraPaginadaDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<AreaPromotoraPaginadaDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]

@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
     public interface ICasoDeUsoObterPropostaEncontroPaginacao
     {
-        Task<PaginacaoResultadoDTO<PropostaEncontroDTO>> Executar(long id);
+        Task<PaginacaoResultadoDto<PropostaEncontroDTO>> Executar(long id);
     }
 }

@@ -5,12 +5,12 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
     public class RetornoInscricaoDTO
     {
         public int Status { get; set; }
-        public string Mensagem { get; set; }
+        public string? Mensagem { get; set; }
         public List<CursistaDTO> Cursistas { get; set; }
 
         public RetornoInscricaoDTO()
         {
-            Cursistas = new List<CursistaDTO>();
+            Cursistas = [];
         }
         public RetornoInscricaoDTO(string mensagem, List<CursistaDTO> cursistas)
         {

@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<UsuarioRedeParceriaPaginadoDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<UsuarioRedeParceriaPaginadoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.RedeParceria_C, Permissao.RedeParceria_I, Permissao.RedeParceria_A, Permissao.RedeParceria_E, Policy = "Bearer")]

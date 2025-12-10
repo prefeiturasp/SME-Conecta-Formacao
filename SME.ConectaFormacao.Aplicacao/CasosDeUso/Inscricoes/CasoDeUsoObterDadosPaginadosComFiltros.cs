@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
         {
         }
 
-        public async Task<PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>> Executar(FiltroListagemInscricaoComTurmaDTO filtro)
+        public async Task<PaginacaoResultadoDto<DadosListagemFormacaoComTurmaDTO>> Executar(FiltroListagemInscricaoComTurmaDTO filtro)
         {
             var areaPromotoraUsuarioLogado = await mediator.Send(ObterAreaPromotoraUsuarioLogadoQuery.Instancia());
             return await mediator.Send(new ObterDadosPaginadosComFiltrosQuery(NumeroPagina, NumeroRegistros, filtro.CodigoFormacao, filtro.NomeFormacao, areaPromotoraUsuarioLogado?.Id, filtro.NumeroHomologacao));

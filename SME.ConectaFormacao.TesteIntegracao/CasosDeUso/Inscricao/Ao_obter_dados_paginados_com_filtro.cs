@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -20,7 +19,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 {
     public class Ao_obter_dados_paginados_com_filtro : TestePropostaBase
     {
-        private FiltroListagemInscricaoDTO Filtro = new();
+        private FiltroListagemInscricaoDto Filtro = new();
         private long InscricaoId = 0;
         public Ao_obter_dados_paginados_com_filtro(CollectionFixture collectionFixture) : base(collectionFixture)
         {

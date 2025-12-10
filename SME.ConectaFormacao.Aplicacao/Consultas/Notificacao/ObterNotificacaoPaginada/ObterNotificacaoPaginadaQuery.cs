@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterNotificacaoPaginadaQuery : IRequest<PaginacaoResultadoDTO<NotificacaoPaginadoDTO>>
+    public class ObterNotificacaoPaginadaQuery : IRequest<PaginacaoResultadoDto<NotificacaoPaginadoDTO>>
     {
         public ObterNotificacaoPaginadaQuery(string login, NotificacaoFiltroDTO filtro, int numeroPagina, int numeroRegistros, int quantidadeRegistrosIgnorados)
         {

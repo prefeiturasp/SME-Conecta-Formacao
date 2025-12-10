@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("formacao-listagem")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<IEnumerable<RetornoListagemFormacaoDTO>>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<IEnumerable<RetornoListagemFormacaoDTO>>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterListagemFormacao([FromQuery] FiltroListagemFormacaoDTO filtroListagemFormacaoDTO, [FromServices] ICasoDeUsoObterListagemFormacaoPaginada casoDeUsoObterListagemFormacaoPaginada)

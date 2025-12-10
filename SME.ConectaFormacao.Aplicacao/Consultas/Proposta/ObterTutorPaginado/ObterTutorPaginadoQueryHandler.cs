@@ -7,7 +7,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterTutorPaginadoQueryHandler : IRequestHandler<ObterTutorPaginadoQuery, PaginacaoResultadoDTO<PropostaTutorDTO>>
+    public class ObterTutorPaginadoQueryHandler : IRequestHandler<ObterTutorPaginadoQuery, PaginacaoResultadoDto<PropostaTutorDTO>>
     {
         private readonly IMapper _mapper;
 
@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         }
 
         private readonly IRepositorioProposta _repositorioProposta;
-        public async Task<PaginacaoResultadoDTO<PropostaTutorDTO>> Handle(ObterTutorPaginadoQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDto<PropostaTutorDTO>> Handle(ObterTutorPaginadoQuery request, CancellationToken cancellationToken)
         {
             var totalRegistros = await _repositorioProposta.ObterTotalTutores(request.PropostaId);
             IEnumerable<PropostaTutor> tutores = new List<PropostaTutor>();
@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     tutor.Turmas = turmas.Where(x => x.PropostaTutorId == tutor.Id);
             }
             var items = _mapper.Map<IEnumerable<PropostaTutorDTO>>(tutores);
-            return new PaginacaoResultadoDTO<PropostaTutorDTO>(items, totalRegistros, request.NumeroRegistros);
+            return new PaginacaoResultadoDto<PropostaTutorDTO>(items, totalRegistros, request.NumeroRegistros);
         }
     }
 }

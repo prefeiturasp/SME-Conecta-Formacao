@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 {
     public class Ao_obter_inscricoes_por_id_e_filtro : TestePropostaBase
     {
-        private FiltroListagemInscricaoDTO Filtro = new();
+        private FiltroListagemInscricaoDto Filtro = new();
         private long PropostaId = 0;
         public Ao_obter_inscricoes_por_id_e_filtro(CollectionFixture collectionFixture) : base(collectionFixture)
         {
@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             await DadosBasico();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO();
+            var dtoFiltro = new FiltroListagemInscricaoDto();
 
             // act
             var retorno = await casoDeUso.Executar(PropostaId, dtoFiltro);
@@ -52,7 +52,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             await DadosBasico();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO() { Cpf = Filtro.Cpf };
+            var dtoFiltro = new FiltroListagemInscricaoDto() { Cpf = Filtro.Cpf };
 
             // act
             var retorno = await casoDeUso.Executar(PropostaId, dtoFiltro);
@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             await DadosBasico();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO() { RegistroFuncional = Filtro.RegistroFuncional };
+            var dtoFiltro = new FiltroListagemInscricaoDto() { RegistroFuncional = Filtro.RegistroFuncional };
 
             // act
             var retorno = await casoDeUso.Executar(PropostaId, dtoFiltro);
@@ -86,7 +86,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             await DadosBasico();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO() { NomeCursista = Filtro.NomeCursista };
+            var dtoFiltro = new FiltroListagemInscricaoDto() { NomeCursista = Filtro.NomeCursista };
 
             // act
             var retorno = await casoDeUso.Executar(PropostaId, dtoFiltro);
@@ -103,7 +103,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             await DadosBasico();
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO() { NomeCursista = Filtro.NomeCursista, Cpf = Filtro.Cpf, RegistroFuncional = Filtro.RegistroFuncional };
+            var dtoFiltro = new FiltroListagemInscricaoDto() { NomeCursista = Filtro.NomeCursista, Cpf = Filtro.Cpf, RegistroFuncional = Filtro.RegistroFuncional };
 
             // act
             var retorno = await casoDeUso.Executar(PropostaId, dtoFiltro);
@@ -118,7 +118,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
         {
             // arrange
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO();
+            var dtoFiltro = new FiltroListagemInscricaoDto();
 
             // act
             var excecao = await casoDeUso.Executar(PropostaId, dtoFiltro);
@@ -134,7 +134,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             await DadosBasico(SituacaoInscricao.AguardandoAnalise);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO();
+            var dtoFiltro = new FiltroListagemInscricaoDto();
 
             // act
             var retorno = await casoDeUso.Executar(PropostaId, dtoFiltro);
@@ -157,7 +157,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             await DadosBasico(SituacaoInscricao.Cancelada);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO();
+            var dtoFiltro = new FiltroListagemInscricaoDto();
 
             // act
             var retorno = await casoDeUso.Executar(PropostaId, dtoFiltro);
@@ -180,7 +180,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             await DadosBasico(SituacaoInscricao.Confirmada);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO();
+            var dtoFiltro = new FiltroListagemInscricaoDto();
 
             // act
             var retorno = await casoDeUso.Executar(PropostaId, dtoFiltro);
@@ -203,7 +203,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             await DadosBasico(SituacaoInscricao.EmEspera);
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
-            var dtoFiltro = new FiltroListagemInscricaoDTO();
+            var dtoFiltro = new FiltroListagemInscricaoDto();
 
             // act
             var retorno = await casoDeUso.Executar(PropostaId, dtoFiltro);

@@ -140,7 +140,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaPaginadaDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<PropostaPaginadaDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
@@ -202,7 +202,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{propostaId}/encontro")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaEncontroDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<PropostaEncontroDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterPropostaEncontrosPaginado(
@@ -270,7 +270,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{propostaId}/regente")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaRegenteDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<PropostaRegenteDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]
@@ -326,7 +326,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{propostaId}/tutor")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<PropostaTutorDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<PropostaTutorDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Proposta_C, Permissao.Proposta_I, Permissao.Proposta_A, Permissao.Proposta_E, Policy = "Bearer")]

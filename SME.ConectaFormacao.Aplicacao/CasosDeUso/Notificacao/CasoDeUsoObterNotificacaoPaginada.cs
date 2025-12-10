@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao
         {
         }
 
-        public async Task<PaginacaoResultadoDTO<NotificacaoPaginadoDTO>> Executar(NotificacaoFiltroDTO notificacaoFiltroDTO)
+        public async Task<PaginacaoResultadoDto<NotificacaoPaginadoDTO>> Executar(NotificacaoFiltroDTO notificacaoFiltroDTO)
         {
             var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
             return await mediator.Send(new ObterNotificacaoPaginadaQuery(

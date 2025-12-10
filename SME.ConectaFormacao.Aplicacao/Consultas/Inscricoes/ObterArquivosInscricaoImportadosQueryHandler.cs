@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterArquivosInscricaoImportadosQueryHandler : IRequestHandler<ObterArquivosInscricaoImportadosQuery, PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>>
+    public class ObterArquivosInscricaoImportadosQueryHandler : IRequestHandler<ObterArquivosInscricaoImportadosQuery, PaginacaoResultadoDto<ArquivoInscricaoImportadoDTO>>
     {
         private readonly IRepositorioImportacaoArquivo _repositorioImportacao;
 
@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioImportacao = repositorioImportacao ?? throw new ArgumentNullException(nameof(repositorioImportacao));
         }
 
-        public async Task<PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>> Handle(ObterArquivosInscricaoImportadosQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDto<ArquivoInscricaoImportadoDTO>> Handle(ObterArquivosInscricaoImportadosQuery request, CancellationToken cancellationToken)
         {
             var arquivos = new List<ArquivoInscricaoImportadoDTO>();
             var arquivoImportados = await _repositorioImportacao.ObterArquivosInscricaoImportacao(request.QuantidadeRegistrosIgnorados, request.NumeroRegistros, request.PropostaId);
@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao
                         TotalRegistros = arquivo.TotalRegistros
                     });
 
-            return new PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>(arquivos, arquivoImportados.TotalRegistros, request.NumeroRegistros);
+            return new PaginacaoResultadoDto<ArquivoInscricaoImportadoDTO>(arquivos, arquivoImportados.TotalRegistros, request.NumeroRegistros);
         }
     }
 }

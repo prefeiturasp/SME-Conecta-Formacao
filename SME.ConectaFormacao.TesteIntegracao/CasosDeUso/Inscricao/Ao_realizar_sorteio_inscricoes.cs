@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
 
             var propostaTurma = proposta.Turmas.FirstOrDefault();
 
-            var inscricao = InscricaoMock.GerarInscricoes(usuarios, propostaTurma.Id, Dominio.Enumerados.SituacaoInscricao.AguardandoAnalise);
+            var inscricao = InscricaoMock.GerarInscricoes(usuarios, propostaTurma.Id, SituacaoInscricao.AguardandoAnalise);
             await InserirNaBase(inscricao);
 
             var vaga = PropostaMock.GerarTurmaVagas(proposta.Turmas, proposta.QuantidadeVagasTurma.GetValueOrDefault());
@@ -40,10 +40,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao
             // assert 
             var inscricoesDepois = ObterTodos<Dominio.Entidades.Inscricao>();
 
-            inscricoesDepois.Count(c => c.PropostaTurmaId == propostaTurma.Id && c.Situacao.EhConfirmada()).ShouldBe(proposta.QuantidadeVagasTurma.GetValueOrDefault());
+            inscricoesDepois.Count(c => c.PropostaTurmaId == propostaTurma.Id && c.Situacao == SituacaoInscricao.Confirmada).ShouldBe(proposta.QuantidadeVagasTurma.GetValueOrDefault());
 
             var canceladas = usuarios.Count() - proposta.QuantidadeVagasTurma.GetValueOrDefault();
-            inscricoesDepois.Count(c => c.PropostaTurmaId == propostaTurma.Id && c.Situacao.EhCancelada()).ShouldBe(canceladas);
+            inscricoesDepois.Count(c => c.PropostaTurmaId == propostaTurma.Id && c.Situacao == SituacaoInscricao.Cancelada).ShouldBe(canceladas);
         }
     }
 }

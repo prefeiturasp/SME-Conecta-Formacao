@@ -7,7 +7,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas
 {
-    public class ObterRegentesPaginadoQueryHandler : IRequestHandler<ObterRegentesPaginadoQuery, PaginacaoResultadoDTO<PropostaRegenteDTO>>
+    public class ObterRegentesPaginadoQueryHandler : IRequestHandler<ObterRegentesPaginadoQuery, PaginacaoResultadoDto<PropostaRegenteDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public async Task<PaginacaoResultadoDTO<PropostaRegenteDTO>> Handle(ObterRegentesPaginadoQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDto<PropostaRegenteDTO>> Handle(ObterRegentesPaginadoQuery request, CancellationToken cancellationToken)
         {
             var totalRegistros = await _repositorioProposta.ObterTotalRegentes(request.PropostaId);
             IEnumerable<PropostaRegente> regentes = new List<PropostaRegente>();
@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas
                     regente.Turmas = turmas.Where(x => x.PropostaRegenteId == regente.Id);
             }
             var items = _mapper.Map<IEnumerable<PropostaRegenteDTO>>(regentes);
-            return new PaginacaoResultadoDTO<PropostaRegenteDTO>(items, totalRegistros, request.NumeroRegistros);
+            return new PaginacaoResultadoDto<PropostaRegenteDTO>(items, totalRegistros, request.NumeroRegistros);
         }
     }
 }
