@@ -8,7 +8,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
 {
     public abstract class TesteUsuarioBase : TesteBase
     {
