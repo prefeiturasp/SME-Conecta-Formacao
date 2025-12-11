@@ -10,6 +10,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using System.Text.Json;
 
@@ -81,6 +82,63 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mocker.GetMock<IMediator>().Verify(m => m.Send(
                 It.Is<AlterarImportacaoRegistroCommand>(c =>
                     c.AlterarImportacaoRegistroDto.Situacao == SituacaoImportacaoArquivoRegistro.Validado
+                ), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUsuarioSemCargoPublicoAlvoQuandoExecutarDeveRegistrarAviso()
+        {
+            // Arrange
+            var (mensagemRabbit, dto) = MontarMensagemRabbitPadrao(isRf: true);
+            var propostaId = 1;
+            var usuario = new Usuario { Id = 99, Login = dto.RegistroFuncional, Tipo = TipoUsuario.Interno };
+
+            ConfigurarMocksBasicos(propostaId, usuario, encontrarUsuarioLocalmente: true);
+
+            // Mock: Retornar público alvo que não bate com o cargo do usuário
+            var publicosAlvo = new List<PropostaPublicoAlvo>
+            {
+                new PropostaPublicoAlvo { CargoFuncaoId = 999 } // ID diferente do que o usuário tem
+            };
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaPublicosAlvosPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(publicosAlvo);
+
+            // Mock: Retornar dados de cargo do EOL (sem match com público alvo)
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterCargosFuncoesDresFuncionarioServicoEolQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<CursistaCargoServicoEol>
+                {
+                    new CursistaCargoServicoEol
+                    {
+                        CdCargoBase = 100,
+                        TipoVinculoCargoBase = 1,
+                        CdDreCargoBase = "DRE123",
+                        CdUeCargoBase = "UE456"
+                    }
+                });
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterCargoFuncaoPorCodigoEolQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<CargoFuncao>
+                {
+                    new CargoFuncao { Id = 1, Tipo = CargoFuncaoTipo.Cargo } // ID diferente do público alvo
+                });
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterCargoFuncaoOutrosQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CargoFuncao { Id = 888 }); // ID diferente do público alvo
+
+            // Act
+            await _casoDeUso.Executar(mensagemRabbit);
+
+            // Assert
+            // Verifica se o registro foi marcado como Aviso
+            _mocker.GetMock<IMediator>().Verify(m => m.Send(
+                It.Is<AlterarImportacaoRegistroCommand>(c =>
+                    c.AlterarImportacaoRegistroDto.Situacao == SituacaoImportacaoArquivoRegistro.Aviso &&
+                    c.AlterarImportacaoRegistroDto.Erro == MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL
                 ), It.IsAny<CancellationToken>()), Times.Once);
         }
 
