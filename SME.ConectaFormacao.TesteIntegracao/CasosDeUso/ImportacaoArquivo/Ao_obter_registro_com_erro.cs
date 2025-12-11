@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var arquivosValidado = ImportacaoArquivoMock.GerarImportacaoArquivo(proposta.Id, SituacaoImportacaoArquivo.Validando, 2);
             await InserirNaBase(arquivosValidado);
 
-            var conteudoErro1 = new InscricaoCursistaImportacaoDTO
+            var conteudoErro1 = new InscricaoCursistaImportacaoDto
             {
                 ColaboradorRede = "Não",
                 Cpf = "99910000000",
@@ -52,7 +52,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                                                     SituacaoImportacaoArquivoRegistro.Erro, 1);
             await InserirNaBase(registroErro1);
 
-            var conteudoErro2 = new InscricaoCursistaImportacaoDTO
+            var conteudoErro2 = new InscricaoCursistaImportacaoDto
             {
                 ColaboradorRede = "Sim",
                 Cpf = "90000000000",
@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                                         SituacaoImportacaoArquivoRegistro.Erro, 1);
             await InserirNaBase(registroErro2);
 
-            var conteudoErro3 = new InscricaoCursistaImportacaoDTO
+            var conteudoErro3 = new InscricaoCursistaImportacaoDto
             {
                 ColaboradorRede = "Sim",
                 Cpf = "90000000001",

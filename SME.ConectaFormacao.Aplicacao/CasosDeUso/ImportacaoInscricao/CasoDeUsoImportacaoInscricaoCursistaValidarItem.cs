@@ -21,20 +21,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
     {
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>() ??
+            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDto>() ??
                 throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
 
             try
             {
-                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDTO>()!;
+                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDto>()!;
 
                 var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorNomeQuery(importacaoInscricaoCursista.Turma, importacaoArquivoRegistro.PropostaId)) ??
                     throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
 
                 var usuario = await ObterUsuarioPorLogin(importacaoInscricaoCursista) ??
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-
-                await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, usuario.Id));
 
                 if (usuario.Tipo.EhInterno() && string.IsNullOrWhiteSpace(importacaoInscricaoCursista.Vinculo))
                     throw new NegocioException(MensagemNegocio.ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA);
@@ -127,7 +125,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 if (cargosProposta.PossuiElementos())
                 {
-                    var cargoFuncaoOutros = await mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia());
+                    var cargoFuncaoOutros = await mediator.Send(new ObterCargoFuncaoOutrosQuery());
                     var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
                     if (!cargoEhOutros && (!inscricao.CargoId.HasValue || !cargosProposta.Any(a => a.CargoFuncaoId == inscricao.CargoId)))
                         temErroCargo = true;
@@ -178,7 +176,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             return ResultadoMapeamento.Ok();
         }
 
-        private async Task<Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDTO inscricaoCursistaDTO)
+        private async Task<Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDto inscricaoCursistaDTO)
         {
             var ehProfissionalRede = inscricaoCursistaDTO.ColaboradorRede.EhColaboradorRede();
             var login = ehProfissionalRede ? inscricaoCursistaDTO.RegistroFuncional : inscricaoCursistaDTO.Cpf;
@@ -207,7 +205,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 if (dadosUsuario is null || string.IsNullOrWhiteSpace(dadosUsuario.Login))
                     return default!;
 
-                usuario = mapper.Map<Dominio.Entidades.Usuario>(dadosUsuario);
+                usuario = mapper.Map<Usuario>(dadosUsuario);
                 usuario.Cpf = inscricaoCursistaDTO.Cpf.SomenteNumeros();
                 usuario.Tipo = TipoUsuario.Interno;
 

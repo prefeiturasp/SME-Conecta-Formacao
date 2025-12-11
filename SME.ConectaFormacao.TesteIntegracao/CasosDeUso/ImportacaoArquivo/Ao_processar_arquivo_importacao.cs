@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeRegistrosImportacaoArquivoInscricaoCursista, "1");
             await InserirNaBase(parametro);
 
-            var conteudo1 =  new InscricaoCursistaImportacaoDTO
+            var conteudo1 =  new InscricaoCursistaImportacaoDto
             {
                 ColaboradorRede = "1",
                 Cpf = usuario.Cpf,

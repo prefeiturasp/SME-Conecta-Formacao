@@ -1,14 +1,16 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
+﻿using SME.ConectaFormacao.Dominio.Entidades;
+
+namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
 {
-    public class InscricaoCursistaImportacaoDTO
+    public class InscricaoCursistaImportacaoDto
     {
-        public string Turma { get; set; }
-        public string ColaboradorRede { get; set; }
-        public string RegistroFuncional { get; set; }
-        public string Cpf { get; set; }
-        public string Nome { get; set; }
+        public required string Turma { get; set; }
+        public required string ColaboradorRede { get; set; }
+        public required string RegistroFuncional { get; set; }
+        public required string Cpf { get; set; }
+        public required string Nome { get; set; }
         public string? Vinculo { get; set; }
 
-        public Dominio.Entidades.Inscricao Inscricao { get; set; }
+        public Inscricao Inscricao { get; set; } = null!;
     }
 }
