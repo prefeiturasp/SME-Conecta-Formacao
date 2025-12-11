@@ -62,6 +62,8 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                 Cpf = usuario.Cpf,
                 RegistroFuncional = usuario.Login,
                 Turma = proposta.Turmas.FirstOrDefault().Nome,
+                Nome = usuario.Nome,
+                Vinculo = "Professor",
                 Inscricao = new Dominio.Entidades.Inscricao()
                 {
                     PropostaTurmaId = 1,

@@ -1,6 +1,6 @@
 ﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
 {
-    public class RegistroDaInscricaoInsconsistenteDTO
+    public class RegistroDaInscricaoInsconsistenteDto
     {
         public int Linha { get; set; }
         public string Turma { get; set; }
@@ -8,7 +8,7 @@
         public string RegistroFuncional { get; set; }
         public string CPF { get; set; }
         public string Nome { get; set; }
-        public string Erro { get; set; }
+        public string? Erro { get; set; }
         public string Vinculo { get; set; }
     }
 }

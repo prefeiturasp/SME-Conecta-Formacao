@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public ImportacaoArquivo ImportacaoArquivo { get; set; } = new();
 
         public int Linha { get; set; }
-        public required string Conteudo { get; set; }
+        public string Conteudo { get; set; } = null!;
         public string? Erro { get; set; }
 
         public SituacaoImportacaoArquivoRegistro Situacao { get; set; }
