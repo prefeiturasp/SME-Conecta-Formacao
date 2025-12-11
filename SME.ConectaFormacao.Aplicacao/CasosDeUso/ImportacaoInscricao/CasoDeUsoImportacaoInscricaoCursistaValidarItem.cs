@@ -57,9 +57,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 {
                     // variável inscricao é alterada aqui
                     var resultado = await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId, tipoVinculo);
-                    alterarImportacaoRegistroDto.Situacao = resultado.Sucesso ?
-                        SituacaoImportacaoArquivoRegistro.Validado :
-                        SituacaoImportacaoArquivoRegistro.Erro;
+                    
+                    if (resultado.Sucesso)
+                    {
+                        alterarImportacaoRegistroDto.Situacao = SituacaoImportacaoArquivoRegistro.Validado;
+                    }
+                    else if (resultado.EhAviso)
+                    {
+                        alterarImportacaoRegistroDto.Situacao = SituacaoImportacaoArquivoRegistro.Aviso;
+                    }
+                    else
+                    {
+                        alterarImportacaoRegistroDto.Situacao = SituacaoImportacaoArquivoRegistro.Erro;
+                    }
+                    
                     alterarImportacaoRegistroDto.Erro = resultado.MensagemErro;
                 }
                 alterarImportacaoRegistroDto.Conteudo = inscricao.ObjetoParaJson();
@@ -171,7 +182,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             }
 
             if (temErroCargo && (temErroFuncao || !funcaoAtividadeProposta.PossuiElementos()))
-                return ResultadoMapeamento.Ok(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
+                return ResultadoMapeamento.Aviso(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
 
             return ResultadoMapeamento.Ok();
         }
@@ -226,10 +237,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         public class ResultadoMapeamento
         {
             public bool Sucesso { get; private set; }
+            public bool EhAviso { get; private set; }
             public string? MensagemErro { get; private set; }
 
-            public static ResultadoMapeamento Ok(string? mensagem = "") => new() { Sucesso = true, MensagemErro = mensagem };
-            public static ResultadoMapeamento Falha(string mensagem) => new() { Sucesso = false, MensagemErro = mensagem };
+            public static ResultadoMapeamento Ok(string? mensagem = "") => new() { Sucesso = true, EhAviso = false, MensagemErro = mensagem };
+            public static ResultadoMapeamento Falha(string mensagem) => new() { Sucesso = false, EhAviso = false, MensagemErro = mensagem };
+            public static ResultadoMapeamento Aviso(string mensagem) => new() { Sucesso = false, EhAviso = true, MensagemErro = mensagem };
         }
     }
 }

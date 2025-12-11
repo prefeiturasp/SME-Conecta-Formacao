@@ -14,6 +14,9 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Processado = 3,
 
         [Display(Name = "Erro")]
-        Erro = 4
+        Erro = 4,
+
+        [Display(Name = "Aviso")]
+        Aviso = 5
     }
 }
