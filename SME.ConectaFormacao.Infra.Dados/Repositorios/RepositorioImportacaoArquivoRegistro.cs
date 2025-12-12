@@ -127,7 +127,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        excluido
                 {sqlBase}
                 ORDER BY linha 
-                OFFSET @quantidadeRegistroIgnorados ROWS FETCH NEXT @numeroRegistros ROWS ONLY;
+                LIMIT @numeroRegistros OFFSET @quantidadeRegistroIgnorados;
                 """;
 
             var registros = await conn.QueryAsync<ImportacaoArquivoRegistro>(sqlSelect, parametros);
