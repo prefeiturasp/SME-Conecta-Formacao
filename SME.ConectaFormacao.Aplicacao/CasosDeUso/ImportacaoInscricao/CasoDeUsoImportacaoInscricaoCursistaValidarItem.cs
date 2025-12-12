@@ -48,21 +48,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                     TipoVinculo = tipoVinculo,
                 };
 
-                var alterarImportacaoRegistroDto = new AlterarImportacaoRegistroDto
-                {
-                    Id = importacaoArquivoRegistro.Id
-                };
+                var alterarImportacaoRegistroDto = new AlterarImportacaoRegistroDto(importacaoArquivoRegistro.Id, importacaoInscricaoCursista.ObjetoParaJson(), SituacaoImportacaoArquivoRegistro.Validado, null);
 
                 if (usuario.Tipo.EhInterno())
                 {
                     // variável inscricao é alterada aqui
                     var resultado = await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId, tipoVinculo);
-                    alterarImportacaoRegistroDto.Situacao = resultado.Sucesso ?
+                    importacaoInscricaoCursista.Inscricao = inscricao;
+                    alterarImportacaoRegistroDto = alterarImportacaoRegistroDto with { Situacao = resultado.Sucesso ?
                         SituacaoImportacaoArquivoRegistro.Validado :
-                        SituacaoImportacaoArquivoRegistro.Erro;
-                    alterarImportacaoRegistroDto.Erro = resultado.MensagemErro;
+                        SituacaoImportacaoArquivoRegistro.Erro,
+                        Erro = resultado.MensagemErro,
+                        Conteudo = importacaoInscricaoCursista.ObjetoParaJson()
+                    };
                 }
-                alterarImportacaoRegistroDto.Conteudo = inscricao.ObjetoParaJson();
 
                 await mediator.Send(new AlterarImportacaoRegistroCommand(alterarImportacaoRegistroDto));
             }
