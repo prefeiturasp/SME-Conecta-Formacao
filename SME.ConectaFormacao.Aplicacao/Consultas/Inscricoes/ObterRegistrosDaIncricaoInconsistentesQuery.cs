@@ -3,21 +3,14 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Consultas.Inscricoes
 {
-    public class ObterRegistrosDaIncricaoInconsistentesQuery : IRequest<PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDTO>>
+    public class ObterRegistrosDaIncricaoInconsistentesQuery(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId) : 
+        IRequest<PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDto>>
     {
-        public ObterRegistrosDaIncricaoInconsistentesQuery(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId)
-        {
-            QuantidadeRegistrosIgnorados = quantidadeRegistroIgnorados;
-            NumeroRegistros = numeroRegistros;
-            ArquivoId = arquivoId;
-
-        }
-
-        public int QuantidadeRegistrosIgnorados { get; set; }
-        public int NumeroRegistros { get; set; }
-        public long ArquivoId { get; set; }
+        public int QuantidadeRegistrosIgnorados { get; set; } = quantidadeRegistroIgnorados;
+        public int NumeroRegistros { get; set; } = numeroRegistros;
+        public long ArquivoId { get; set; } = arquivoId;
     }
 
     public class ObterRegistrosDaIncricaoInconsistentesQueryValidator : AbstractValidator<ObterRegistrosDaIncricaoInconsistentesQuery>

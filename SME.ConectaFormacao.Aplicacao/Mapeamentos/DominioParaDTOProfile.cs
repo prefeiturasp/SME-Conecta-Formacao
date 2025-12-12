@@ -282,7 +282,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ReverseMap();
 
             CreateMap<ImportacaoArquivoDTO, ImportacaoArquivo>().ReverseMap();
-            CreateMap<ImportacaoArquivoRegistroDTO, ImportacaoArquivoRegistro>().ReverseMap();
+            CreateMap<ImportacaoArquivoRegistroDto, ImportacaoArquivoRegistro>().ReverseMap();
 
             CreateMap<RetornoUsuarioCpfNomeDTO, Usuario>().ReverseMap();
             CreateMap<RetornoUsuarioCpfNomeDTO, CursistaResumidoServicoEol>().ReverseMap();

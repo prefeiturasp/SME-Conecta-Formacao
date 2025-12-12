@@ -10,5 +10,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacaoDiferenteDe(int quantidadeRegistroIgnorados, int numeroRegistros, long arquivoId, SituacaoImportacaoArquivoRegistro? ignorarSituacao);
         Task<bool> TodosRegistroForamProcessadosDoArquivo(long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacaoVerificar);
         Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistroPorSituacao(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro situacao);
+        Task<RegistrosPaginados<ImportacaoArquivoRegistro>> ObterRegistrosComMensagemDeErro(int quantidadeRegistroIgnorados, int numeroRegistros, long importacaoArquivoId);
     }
 }

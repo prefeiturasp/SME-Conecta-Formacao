@@ -13,13 +13,8 @@ using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
-    public class CasoDeUsoImportacaoInscricaoCursistaValidar : CasoDeUsoAbstrato, ICasoDeUsoImportacaoInscricaoCursistaValidar
+    public class CasoDeUsoImportacaoInscricaoCursistaValidar(IMediator mediator) : CasoDeUsoAbstrato(mediator), ICasoDeUsoImportacaoInscricaoCursistaValidar
     {
-
-        public CasoDeUsoImportacaoInscricaoCursistaValidar(IMediator mediator) : base(mediator)
-        {
-        }
-
         public async Task<bool> Executar(MensagemRabbit param)
         {
             var importacaoArquivoDto = param.ObterObjetoMensagem<ImportacaoArquivoDTO>()
@@ -31,6 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
             var registrosValidados = 0;
 
+            // TODO: Refatorar para remover o possível loop infinito (Diego Moreno 11/12/2025)
             while (registrosValidados < registrosPaginados.TotalRegistros)
             {
                 foreach (var item in registrosPaginados.Items)
@@ -49,7 +45,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             return true;
         }
 
-        private async Task<PaginacaoResultadoDto<ImportacaoArquivoRegistroDTO>> ObterRegistrosParaValidar(int qtdeRegistros, long importacaoArquivoId, int qtdeRegistroIgnorados = 0)
+        private async Task<PaginacaoResultadoDto<ImportacaoArquivoRegistroDto>> ObterRegistrosParaValidar(int qtdeRegistros, long importacaoArquivoId, int qtdeRegistroIgnorados = 0)
         {
             return await mediator.Send(new ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(
                 qtdeRegistroIgnorados,

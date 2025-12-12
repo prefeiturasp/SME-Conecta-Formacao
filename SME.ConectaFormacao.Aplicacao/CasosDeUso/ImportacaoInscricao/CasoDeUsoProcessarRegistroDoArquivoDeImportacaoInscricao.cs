@@ -24,12 +24,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>()
+            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDto>()
                                             ?? throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
 
             try
             {
-                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDTO>();
+                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDto>();
 
                 var inscricao = importacaoInscricaoCursista.Inscricao;
 

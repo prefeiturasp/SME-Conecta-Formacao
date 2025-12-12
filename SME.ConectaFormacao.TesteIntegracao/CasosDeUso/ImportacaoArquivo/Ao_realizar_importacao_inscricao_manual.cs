@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var count = 0;
             foreach (var item in itensImportacao)
             {
-                item.Conteudo = (new InscricaoCursistaImportacaoDTO()
+                item.Conteudo = (new InscricaoCursistaImportacaoDto()
                 {
                     Turma = propostaTurmas.FirstOrDefault().Nome,
                     ColaboradorRede = "1",
@@ -132,7 +132,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var count = 0;
             foreach (var item in itensImportacao)
             {
-                item.Conteudo = (new InscricaoCursistaImportacaoDTO()
+                item.Conteudo = (new InscricaoCursistaImportacaoDto()
                 {
                     Turma = propostaTurmas.FirstOrDefault().Nome,
                     ColaboradorRede = "1",
@@ -151,7 +151,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
 
             var importacaoArquivosRegistros = ObterTodos<Dominio.Entidades.ImportacaoArquivoRegistro>();
 
-            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDTO>(importacaoArquivosRegistros.FirstOrDefault(f => f.Id == 1));
+            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDto>(importacaoArquivosRegistros.FirstOrDefault(f => f.Id == 1));
             importacaoArquivoRegistroDto.PropostaId = proposta.Id;
 
             // act
@@ -200,7 +200,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var count = 0;
             foreach (var item in itensImportacao)
             {
-                item.Conteudo = (new InscricaoCursistaImportacaoDTO()
+                item.Conteudo = (new InscricaoCursistaImportacaoDto()
                 {
                     Turma = "Conecta",
                     ColaboradorRede = "1",
@@ -218,7 +218,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
 
             var importacaoArquivosRegistros = ObterTodos<Dominio.Entidades.ImportacaoArquivoRegistro>();
 
-            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDTO>(importacaoArquivosRegistros.FirstOrDefault(f => f.Id == 1));
+            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDto>(importacaoArquivosRegistros.FirstOrDefault(f => f.Id == 1));
             importacaoArquivoRegistroDto.PropostaId = proposta.Id;
 
             // act
