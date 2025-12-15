@@ -1842,17 +1842,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             // 3. CTE Principal (Query Base com Distinct)
             // Encapsulamos numa CTE 'BaseConsulta' para que o DISTINCT ocorra ANTES da contagem e paginação
 
-            sql.AppendLine(@"
-            SELECT DISTINCT 
-                p.id, 
-                p.data_realizacao_inicio, 
-                p.data_realizacao_fim
-            FROM proposta p
-            INNER JOIN proposta_tipo_inscricao pti ON pti.proposta_id = p.id AND NOT pti.excluido
-            WHERE NOT p.excluido 
-                AND pti.tipo_inscricao = ANY(@tipoInscricao) 
-                AND p.situacao = @situacao
-                AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date");
+            sql.AppendLine("""
+                SELECT DISTINCT 
+                       p.id,
+                       p.data_realizacao_inicio,
+                       p.data_realizacao_fim
+                FROM proposta p
+                INNER JOIN proposta_tipo_inscricao pti ON pti.proposta_id = p.id AND NOT pti.excluido
+                WHERE NOT p.excluido 
+                      AND pti.tipo_inscricao = ANY(@tipoInscricao)
+                      AND p.situacao = @situacao 
+                      AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date                
+                """);
 
             if (aplicarFiltroPerfil)
             {
@@ -1864,13 +1865,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             sql.AppendLine(")"); // Fecha CTE BaseConsulta
 
             // 4. Select Final com Window Function para Total e Paginação
-            sql.AppendLine(@"
-            SELECT 
-                id,
-                COUNT(*) OVER() AS TotalGeral
-            FROM BaseConsulta
-            ORDER BY data_realizacao_inicio, data_realizacao_fim
-            OFFSET @offset LIMIT @tamanhoPagina;");
+            sql.AppendLine("""
+                SELECT id, COUNT(*) OVER() AS TotalGeral
+                FROM BaseConsulta
+                ORDER BY data_realizacao_inicio, data_realizacao_fim
+                OFFSET @offset LIMIT @tamanhoPagina;
+                """);
 
             // 5. Execução e Mapeamento
             var resultadoDapper = await conexao.Obter().QueryAsync<dynamic>(sql.ToString(), parametros);
@@ -1905,10 +1905,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (f.DataInicial.HasValue && f.DataFinal.HasValue)
             {
-                sql.AppendLine(@" AND (
+                sql.AppendLine(""" 
+                AND (
                     (p.data_realizacao_inicio::date BETWEEN @dataInicial AND @dataFinal) OR 
                     (p.data_realizacao_fim::date BETWEEN @dataInicial AND @dataFinal)
-                )");
+                )
+                """);
                 p.Add("@dataInicial", f.DataInicial.Value.Date);
                 p.Add("@dataFinal", f.DataFinal.Value.Date);
             }
@@ -1921,26 +1923,32 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (f.PublicosAlvosIds?.Length > 0)
             {
-                sql.AppendLine(@" AND EXISTS(SELECT 1 
+                sql.AppendLine("""                    
+                    AND EXISTS(SELECT 1 
                                      FROM proposta_publico_alvo ppa 
                                      WHERE NOT ppa.excluido 
                                        AND ppa.proposta_id = p.id 
-                                       AND ppa.cargo_funcao_id = ANY(@publicosAlvosIds)) ");
+                                       AND ppa.cargo_funcao_id = ANY(@publicosAlvosIds)) 
+                    
+                    """);
                 p.Add("@publicosAlvosIds", f.PublicosAlvosIds);
             }
 
             if (f.PalavrasChavesIds?.Length > 0)
             {
-                sql.AppendLine(@" AND EXISTS(SELECT 1 
+                sql.AppendLine("""                     
+                    AND EXISTS(SELECT 1 
+                    
                                      FROM proposta_palavra_chave ppc 
                                      WHERE NOT ppc.excluido 
                                        AND ppc.proposta_id = p.id 
-                                       AND ppc.palavra_chave_id = ANY(@palavrasChavesIds)) ");
+                                       AND ppc.palavra_chave_id = ANY(@palavrasChavesIds)) 
+                    """);
                 p.Add("@palavrasChavesIds", f.PalavrasChavesIds);
             }
         }
 
-        private static string ObterCteContextoServidor() => @"
+        private static string ObterCteContextoServidor() => """
             WITH ContextoServidor AS (
                 SELECT CD_MODALIDADE, CD_COMPONENTE_CURRICULAR, ano_serie
                 FROM PUBLIC.ATRIBUICOES_SERVIDOR_EOL 
@@ -1957,20 +1965,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 FROM PUBLIC.FUNCOES_ATIVIDADES_EOL AS FE 
                 INNER JOIN PUBLIC.CARGO_FUNCAO_DEPARA_EOL AS CF ON FE.CD_TIPO_FUNCAO = CF.CODIGO_FUNCAO_EOL 
                 WHERE FE.CD_REGISTRO_FUNCIONAL = @rf
-            )";
+            )
+            """;
 
         private static string ObterFiltrosDePermissaoServidor() =>
-            @"
-            -- Público Alvo (Cargos)
+            """
+            -- Público Alvo (Cargos) OU Vaga Remanescente
             AND (
-                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
+                (
+                    NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
+                    AND
+                    NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
+                )
                 OR EXISTS (
                     SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO PPA
                     INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PPA.CARGO_FUNCAO_ID
                     WHERE PPA.PROPOSTA_ID = P.ID AND NOT PPA.EXCLUIDO
                 )
-            )
-            
+                OR EXISTS (
+                    SELECT 1 FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR
+                    INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PVR.CARGO_FUNCAO_ID
+                    WHERE PVR.PROPOSTA_ID = P.ID AND NOT PVR.EXCLUIDO
+                )
+            )            
             --  Etapa/Modalidade
             AND (
                 NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_MODALIDADE WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
@@ -1980,7 +1997,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     WHERE PM.PROPOSTA_ID = P.ID AND NOT PM.EXCLUIDO
                 )
             )
-
             -- Componente Curricular
             AND (
                 NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_COMPONENTE_CURRICULAR WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO AND componente_curricular_id <> 1)
@@ -1990,7 +2006,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     WHERE PCC.PROPOSTA_ID = P.ID AND NOT PCC.EXCLUIDO
                 )
             )
-
             -- Ano/Série
             AND (
                 NOT EXISTS (SELECT 1 
@@ -2003,29 +2018,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     INNER JOIN ContextoServidor CS ON CS.ano_serie = AT.CODIGO_EOL
                     WHERE PAT.PROPOSTA_ID = P.ID AND NOT PAT.EXCLUIDO AND NOT AT.EXCLUIDO
                 )
-            )
-  
-            -- Vaga Remanescente
-            AND (
-                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR WHERE PROPOSTA_ID = P.ID AND NOT PVR.EXCLUIDO)
-                OR EXISTS (
-      	            SELECT 1
-      	            FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR
-                    INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PVR.CARGO_FUNCAO_ID
-                    WHERE PROPOSTA_ID = P.ID AND NOT PVR.EXCLUIDO
-                )
-            )
-
+            ) 
             -- Função
             AND (
-	            NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE WHERE PROPOSTA_ID = P.ID AND NOT PFE.EXCLUIDO)
-	            OR EXISTS (
-		            SELECT 1
-		            FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE 
-		            INNER JOIN ContextoFuncoes CF ON CF.CARGO_FUNCAO_ID = PFE.CARGO_FUNCAO_ID
-		            WHERE PROPOSTA_ID = P.ID AND NOT PFE.EXCLUIDO
-	            )
-            )";
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE WHERE PROPOSTA_ID = P.ID AND NOT PFE.EXCLUIDO)
+                OR EXISTS (
+                    SELECT 1
+                    FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE
+                    INNER JOIN ContextoFuncoes CF ON CF.CARGO_FUNCAO_ID = PFE.CARGO_FUNCAO_ID
+                    WHERE PROPOSTA_ID = P.ID AND NOT PFE.EXCLUIDO
+                )
+            )            
+            """;
 
         #endregion
 

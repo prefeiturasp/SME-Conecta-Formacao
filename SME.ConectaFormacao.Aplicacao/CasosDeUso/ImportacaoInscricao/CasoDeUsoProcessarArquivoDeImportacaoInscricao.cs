@@ -11,15 +11,14 @@ using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
-    public class CasoDeUsoProcessarArquivoDeImportacaoInscricao : CasoDeUsoAbstrato, ICasoDeUsoProcessarArquivoDeImportacaoInscricao
+    public class CasoDeUsoProcessarArquivoDeImportacaoInscricao(IMediator mediator) : CasoDeUsoAbstrato(mediator), ICasoDeUsoProcessarArquivoDeImportacaoInscricao
     {
-        public CasoDeUsoProcessarArquivoDeImportacaoInscricao(IMediator mediator) : base(mediator)
-        {
-        }
-
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var importacaoArquivoId = long.Parse(param.Mensagem.ToString());
+            var mensagem = param.Mensagem?.ToString() ??
+                           throw new ArgumentNullException(nameof(param.Mensagem), "Mensagem do Rabbit não pode ser nula.");
+
+            var importacaoArquivoId = long.Parse(mensagem);
             var qtdeRegistros = await ObterParametroQtdeRegistrosAProcessar();
             var registrosPaginados = await ObterRegistrosParaValidar(qtdeRegistros, importacaoArquivoId);
             var qtdeRegistrosValidados = 0;
@@ -34,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 foreach (var registro in registrosPaginados.Items)
                     await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.ProcessarRegistroDoArquivoDeImportacaoInscricao, registro));
 
-                qtdeRegistrosValidados = registrosPaginados.Items.Count();
+                qtdeRegistrosValidados += registrosPaginados.Items.Count();
 
                 registrosPaginados = await ObterRegistrosParaValidar(qtdeRegistros, importacaoArquivoId, qtdeRegistrosValidados);
             }
