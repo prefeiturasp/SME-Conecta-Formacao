@@ -1,4 +1,3 @@
-using Dapper;
 using Dapper.FluentMap;
 using Dapper.FluentMap.Dommel;
 using FluentValidation;
@@ -70,6 +69,7 @@ using SME.ConectaFormacao.Infra.Servicos.Options;
 using SME.ConectaFormacao.Infra.Servicos.Polly;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.IoC;
 using SME.ConectaFormacao.IoC.Extensions;
+using SME.ConectaFormacao.IoC.Features;
 
 namespace SME.ConectaFormacao.IoC;
 
@@ -102,6 +102,7 @@ public class RegistradorDeDependencia
         RegistrarHttpClients();
         RegistrarServicoArmazenamento();
         RegistrarCacheDistribuido();
+        _serviceCollection.AdicionarModuloCodaf();
     }
 
     protected virtual void RegistrarCacheDistribuido()
@@ -116,11 +117,7 @@ public class RegistradorDeDependencia
 
     protected virtual void RegistrarProfiles()
     {
-        _serviceCollection.AddAutoMapper(cfg =>
-        {
-            cfg.AddProfile<DominioParaDTOProfile>(); 
-            cfg.AddProfile<ServicoParaDTOProfile>();
-        });
+        _serviceCollection.AddAutoMapper(cfg => cfg.AddMaps(typeof(AssemblyProfile).Assembly));
     }
 
     protected virtual void RegistrarMediatr()
@@ -227,6 +224,11 @@ public class RegistradorDeDependencia
             config.AddMap(new NotificacaoMap());
             config.AddMap(new NotificacaoUsuarioMap());
 
+            config.AddMap(new CodafComentarioMap());
+            config.AddMap(new CodafInscricaoMap());
+            config.AddMap(new CodafRetificacaoMap());
+            config.AddMap(new CodafListaPresencaMap());
+
             config.ForDommel();
         });
     }
@@ -282,6 +284,7 @@ public class RegistradorDeDependencia
         _serviceCollection.AddScoped<IRepositorioAtribuicaoAulaServidor, RepositorioAtribuicaoAulaServidor>();
         _serviceCollection.AddScoped<IRepositorioFuncaoAtividadeUsuario, RepositorioFuncaoAtividadeUsuario>();
         _serviceCollection.AddScoped<IRepositorioCargoFuncaoEol, RepositorioCargoFuncaoEol>();
+        _serviceCollection.AddScoped<IRepositorioCodafListaPresenca, RepositorioCodafListaPresenca>();
     }
 
     protected virtual void RegistrarCasosDeUso()
