@@ -22,6 +22,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public IEnumerable<CodafInscricao> CodafInscricoes { get; set; } = [];
         public IEnumerable<CodafRetificacao> CodafRetificacoes { get; set; } = [];
 
+        protected CodafListaPresenca() { }
+
         public CodafListaPresenca(long propostaId, long propostaTurmaId, DateOnly? dataPublicacao, DateOnly? dataPublicacaoDom, short? numeroComunicado, short? paginaComunicadoDom, int? codigoCursoEol, int? codigoNivel, string? observacao, Guid? idPerfilUsuario)
         {
             PropostaId = propostaId;

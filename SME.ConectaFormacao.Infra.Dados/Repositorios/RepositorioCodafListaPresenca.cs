@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
     public class RepositorioCodafListaPresenca(IConectaFormacaoConexao conexao, IContextoAplicacao contexto) :
         RepositorioBaseAuditavel<CodafListaPresenca>(contexto, conexao), IRepositorioCodafListaPresenca
     {
-        public async Task<bool> TurmaJaTemListaDePresencaAsync(long propostaTurmaId, int listaPresencaId = 0)
+        public async Task<bool> TurmaJaTemListaDePresencaAsync(long propostaTurmaId, long listaPresencaId = 0)
         {
             const string query = """
                 SELECT 1

@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
     public interface IRepositorioCodafListaPresenca : IRepositorioBaseAuditavel<CodafListaPresenca>
     {
-        Task<bool> TurmaJaTemListaDePresencaAsync(long propostaTurmaId, int listaPresencaId = 0);
+        Task<bool> TurmaJaTemListaDePresencaAsync(long propostaTurmaId, long listaPresencaId = 0);
     }
 }

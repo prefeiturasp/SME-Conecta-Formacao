@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Codaf
 {
     public interface ICasoDeUsoAtualizarCodafListaPresenca
     {
-        Task<Resultado<CodafListaPresencaDto>> ExecutarAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, int id);
+        Task<Resultado> ExecutarAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, long id);
     }
 }

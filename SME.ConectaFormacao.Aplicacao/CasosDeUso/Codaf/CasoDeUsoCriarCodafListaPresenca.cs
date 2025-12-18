@@ -2,7 +2,6 @@
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
-using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -48,6 +47,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             var propostaTurma = await repositorioProposta.ObterTurmaPorId(codafListaPresencaCadastroDto.PropostaTurmaId);
             if (propostaTurma is null)
                 return Erro.Validacao("Proposta Turma não encontrada.");
+
             if (propostaTurma.PropostaId != proposta.Id)
                 return Erro.Validacao($"A turma não pertence à formação informada");
 
