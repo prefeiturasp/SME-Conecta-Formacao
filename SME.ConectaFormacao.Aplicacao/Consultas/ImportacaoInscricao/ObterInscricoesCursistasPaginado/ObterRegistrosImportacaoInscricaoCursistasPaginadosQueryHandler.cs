@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterRegistrosImportacaoInscricaoCursistasPaginadosQueryHandler : IRequestHandler<ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery, PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>>
+    public class ObterRegistrosImportacaoInscricaoCursistasPaginadosQueryHandler : IRequestHandler<ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery, PaginacaoResultadoDto<ImportacaoArquivoRegistroDto>>
     {
         private readonly IRepositorioImportacaoArquivoRegistro _repositorioInscricaoImportacaoArquivoRegistro;
         private readonly IMapper _mapper;
@@ -17,12 +17,12 @@ namespace SME.ConectaFormacao.Aplicacao
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>> Handle(ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDto<ImportacaoArquivoRegistroDto>> Handle(ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery request, CancellationToken cancellationToken)
         {
             var registrosPaginados = await _repositorioInscricaoImportacaoArquivoRegistro.ObterRegistroPorSituacaoDiferenteDe(
                 request.NumeroPagina, request.NumeroRegistros, request.ImportacaoArquivoId, request.IgnorarSituacao);
 
-            return new PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>(_mapper.Map<IEnumerable<ImportacaoArquivoRegistroDTO>>(
+            return new PaginacaoResultadoDto<ImportacaoArquivoRegistroDto>(_mapper.Map<IEnumerable<ImportacaoArquivoRegistroDto>>(
                 registrosPaginados.Registros), registrosPaginados.TotalRegistros, request.NumeroRegistros);
         }
     }

@@ -3,7 +3,7 @@ using Bogus.Extensions.Brazil;
 using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria.Mock
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuariosRedeParceria.Mock
 {
     public static class UsuarioParceriaMock
     {

@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{propostaId}/arquivos-importados")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<ArquivoInscricaoImportadoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_C, Policy = "Bearer")]
@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{arquivoId}/registros-inconsistencia")]
-        [ProducesResponseType(typeof(PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_C, Policy = "Bearer")]

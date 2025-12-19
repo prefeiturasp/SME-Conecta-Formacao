@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Dominio.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
@@ -123,5 +124,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id);
         Task RemoverParecerista(PropostaParecerista parecerista);
         Task AtualizarIntegrarNoSGA(long propostaId, bool valor);
+        Task<PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros);
     }
 }

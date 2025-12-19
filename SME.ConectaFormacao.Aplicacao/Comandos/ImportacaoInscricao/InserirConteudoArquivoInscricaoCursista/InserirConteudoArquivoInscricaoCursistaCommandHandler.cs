@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 for (int numeroLinha = INICIO_LINHA_DADOS; numeroLinha <= totalLinhas; numeroLinha++)
                 {
-                    var item = new ImportacaoArquivoRegistroDTO()
+                    var item = new ImportacaoArquivoRegistroDto()
                     {
                         Linha = numeroLinha,
                         ImportacaoArquivoId = request.ImportacaoArquivoId,
@@ -91,9 +91,9 @@ namespace SME.ConectaFormacao.Aplicacao
                     nomeDaColuna, numeroDaColuna));
         }
 
-        private static InscricaoCursistaImportacaoDTO ObterInscricaoCursistaDto(IXLWorksheet planilha, int numeroLinha)
+        private static InscricaoCursistaImportacaoDto ObterInscricaoCursistaDto(IXLWorksheet planilha, int numeroLinha)
         {
-            return new InscricaoCursistaImportacaoDTO()
+            return new InscricaoCursistaImportacaoDto()
             {
                 Turma = planilha.ObterValorDaCelula(numeroLinha, COLUNA_TURMA_NUMERO),
                 ColaboradorRede = planilha.ObterValorDaCelula(numeroLinha, COLUNA_COLABORADOR_DA_REDE_NUMERO),

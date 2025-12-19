@@ -7,7 +7,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostaPaginadaQueryHandler : IRequestHandler<ObterPropostaPaginadaQuery, PaginacaoResultadoDTO<PropostaPaginadaDTO>>
+    public class ObterPropostaPaginadaQueryHandler : IRequestHandler<ObterPropostaPaginadaQuery, PaginacaoResultadoDto<PropostaPaginadaDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<PaginacaoResultadoDTO<PropostaPaginadaDTO>> Handle(ObterPropostaPaginadaQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDto<PropostaPaginadaDTO>> Handle(ObterPropostaPaginadaQuery request, CancellationToken cancellationToken)
         {
             var usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery());
             var perfilUsuarioLogado = await _mediator.Send(new ObterGrupoUsuarioLogadoQuery());
@@ -62,7 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             var items = _mapper.Map<IEnumerable<PropostaPaginadaDTO>>(propostas);
-            return new PaginacaoResultadoDTO<PropostaPaginadaDTO>(items, totalRegistrosFiltro, request.NumeroRegistros);
+            return new PaginacaoResultadoDto<PropostaPaginadaDTO>(items, totalRegistrosFiltro, request.NumeroRegistros);
         }
     }
 }

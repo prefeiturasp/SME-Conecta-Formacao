@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
         IMediator mediator, IContextoAplicacao contextoAplicacao, IRepositorioProposta repositorioProposta) :
         CasoDeUsoAbstratoPaginado(mediator, contextoAplicacao), ICasoDeUsoObterListagemFormacaoPaginada
     {
-        public async Task<PaginacaoResultadoDTO<RetornoListagemFormacaoDTO>> Executar(FiltroListagemFormacaoDTO filtroListagemFormacaoDTO)
+        public async Task<PaginacaoResultadoDto<RetornoListagemFormacaoDTO>> Executar(FiltroListagemFormacaoDTO filtroListagemFormacaoDTO)
         {
             var propostasPaginadas = await repositorioProposta.ObterListagemFormacoesPorFiltro(new()
             {
@@ -32,7 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
             if (propostasPaginadas.Itens.Any())
                 formacoes = await mediator.Send(new ObterPropostasPorIdsQuery(propostasPaginadas.Itens));
 
-            return new PaginacaoResultadoDTO<RetornoListagemFormacaoDTO>(formacoes, propostasPaginadas.TotalRegistros, NumeroRegistros);
+            return new PaginacaoResultadoDto<RetornoListagemFormacaoDTO>(formacoes, propostasPaginadas.TotalRegistros, NumeroRegistros);
         }
 
         private bool EhPerfilCursista()

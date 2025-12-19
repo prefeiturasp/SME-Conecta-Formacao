@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.ReativarInscricao
             var inscricao = await repositorioInscricao.ObterPorId(request.Id) ??
                 throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
-            if (!inscricao.Situacao.EhCancelada())
+            if (inscricao.Situacao != SituacaoInscricao.Cancelada)
                 throw new NegocioException(MensagemNegocio.INSCRICAO_SO_PODE_REATIVAR_CANCELADAS);
 
             var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??

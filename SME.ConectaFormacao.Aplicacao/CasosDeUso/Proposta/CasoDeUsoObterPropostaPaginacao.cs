@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<PaginacaoResultadoDTO<PropostaPaginadaDTO>> Executar(PropostaFiltrosDTO propostaFiltrosDTO)
+        public async Task<PaginacaoResultadoDto<PropostaPaginadaDTO>> Executar(PropostaFiltrosDTO propostaFiltrosDTO)
         {
             var areaPromotoraUsuarioLogado = await mediator.Send(ObterAreaPromotoraUsuarioLogadoQuery.Instancia());
             return await mediator.Send(new ObterPropostaPaginadaQuery(propostaFiltrosDTO, NumeroPagina, NumeroRegistros, areaPromotoraUsuarioLogado?.Id));

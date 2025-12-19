@@ -8,56 +8,41 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricaoImportacao
 {
-    public class SalvarInscricaoImportacaoCommandHandler : IRequestHandler<SalvarInscricaoImportacaoCommand, bool>
+    public class SalvarInscricaoImportacaoCommandHandler(IRepositorioInscricao repositorioInscricao, ITransacao transacao) : 
+        IRequestHandler<SalvarInscricaoImportacaoCommand, bool>
     {
-        private readonly IMediator _mediator;
-        private readonly IRepositorioInscricao _repositorioInscricao;
-        private readonly ITransacao _transacao;
-
-        public SalvarInscricaoImportacaoCommandHandler(IMediator mediator, IRepositorioInscricao repositorioInscricao, ITransacao transacao)
-        {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            _repositorioInscricao = repositorioInscricao ?? throw new ArgumentNullException(nameof(repositorioInscricao));
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
-        }
-
         public async Task<bool> Handle(SalvarInscricaoImportacaoCommand request, CancellationToken cancellationToken)
         {
             var inscricao = request.Inscricao;
-            var formacaoHomologada = request.FormacaoHomologada;
 
-            return await PersistirInscricao(formacaoHomologada, inscricao);
+            return await PersistirInscricao(inscricao);
         }
 
-        private async Task<bool> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao)
+        private async Task<bool> PersistirInscricao(Inscricao inscricao)
         {
-            var transacao = _transacao.Iniciar();
+            var transacaoAtual = transacao.Iniciar();
             try
             {
-                await _repositorioInscricao.Inserir(inscricao);
+                await repositorioInscricao.Inserir(inscricao);
+                bool confirmada = await repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
+                if (!confirmada)
+                    throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA);
 
-                if (!formacaoHomologada)
-                {
-                    bool confirmada = await _repositorioInscricao.ConfirmarInscricaoVaga(inscricao);
-                    if (!confirmada)
-                        throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA);
+                inscricao.Situacao = SituacaoInscricao.Confirmada;
+                await repositorioInscricao.Atualizar(inscricao);
 
-                    inscricao.Situacao = SituacaoInscricao.Confirmada;
-                    await _repositorioInscricao.Atualizar(inscricao);
-                }
-
-                transacao.Commit();
+                transacaoAtual.Commit();
 
                 return true;
             }
             catch
             {
-                transacao.Rollback();
+                transacaoAtual.Rollback();
                 throw;
             }
             finally
             {
-                transacao.Dispose();
+                transacaoAtual.Dispose();
             }
         }
     }

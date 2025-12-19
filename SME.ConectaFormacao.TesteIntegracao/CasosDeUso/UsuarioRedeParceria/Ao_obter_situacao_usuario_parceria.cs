@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuariosRedeParceria
 {
     public class Ao_obter_situacao_usuario_parceria : TesteBase
     {

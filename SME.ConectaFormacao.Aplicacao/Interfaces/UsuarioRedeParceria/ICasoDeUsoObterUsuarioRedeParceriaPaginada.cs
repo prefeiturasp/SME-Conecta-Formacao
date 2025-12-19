@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria
 {
     public interface ICasoDeUsoObterUsuarioRedeParceriaPaginada
     {
-        Task<PaginacaoResultadoDTO<UsuarioRedeParceriaPaginadoDTO>> Executar(FiltroUsuarioRedeParceriaDTO filtroUsuarioRedeParceriaDTO);
+        Task<PaginacaoResultadoDto<UsuarioRedeParceriaPaginadoDTO>> Executar(FiltroUsuarioRedeParceriaDTO filtroUsuarioRedeParceriaDTO);
     }
 }

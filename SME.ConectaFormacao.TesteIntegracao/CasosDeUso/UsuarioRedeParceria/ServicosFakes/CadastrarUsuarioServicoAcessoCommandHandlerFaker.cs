@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao;
 
-namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuarioRedeParceria.ServicosFakes
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.UsuariosRedeParceria.ServicosFakes
 {
     internal class CadastrarUsuarioServicoAcessoCommandHandlerFaker : IRequestHandler<CadastrarUsuarioServicoAcessoCommand, bool>
     {

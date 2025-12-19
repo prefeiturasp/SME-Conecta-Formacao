@@ -10,9 +10,9 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -56,12 +56,14 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var parametro = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.QtdeRegistrosImportacaoArquivoInscricaoCursista, "1");
             await InserirNaBase(parametro);
 
-            var conteudo1 =  new InscricaoCursistaImportacaoDTO
+            var conteudo1 =  new InscricaoCursistaImportacaoDto
             {
                 ColaboradorRede = "1",
                 Cpf = usuario.Cpf,
                 RegistroFuncional = usuario.Login,
                 Turma = proposta.Turmas.FirstOrDefault().Nome,
+                Nome = usuario.Nome,
+                Vinculo = "Professor",
                 Inscricao = new Dominio.Entidades.Inscricao()
                 {
                     PropostaTurmaId = 1,

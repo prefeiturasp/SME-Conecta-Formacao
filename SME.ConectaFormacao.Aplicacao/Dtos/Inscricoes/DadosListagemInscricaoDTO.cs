@@ -2,7 +2,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
 {
-    public class DadosListagemInscricaoDTO
+    public class DadosListagemInscricaoDto
     {
         public long InscricaoId { get; set; }
         public string? NomeTurma { get; set; }
@@ -15,12 +15,12 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
         public string? Origem { get; set; }
         public bool IntegrarNoSga { get; set; }
         public bool Iniciado { get; set; }
-        public DadosListagemInscricaoPermissaoDTO Permissao { get; set; }
+        public DadosListagemInscricaoPermissaoDto? Permissao { get; set; }
         public string DataInscricao { get; set; } = string.Empty;        
-        public List<DadosAnexosInscricao> Anexos { get; set; } = new List<DadosAnexosInscricao>();
+        public List<DadosAnexosInscricao> Anexos { get; set; } = [];
     }
 
-    public class DadosListagemInscricaoPermissaoDTO
+    public class DadosListagemInscricaoPermissaoDto
     {
         public bool PodeCancelar { get; set; }
         public bool PodeColocarEmEspera { get; set; }

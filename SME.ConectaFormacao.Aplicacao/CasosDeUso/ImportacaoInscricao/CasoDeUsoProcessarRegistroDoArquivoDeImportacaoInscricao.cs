@@ -14,22 +14,17 @@ using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
-    public class CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao : CasoDeUsoAbstrato, ICasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao
+    public class CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao(IMediator mediator, IConexoesRabbit conexoesRabbit) : 
+        CasoDeUsoAbstrato(mediator), ICasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao
     {
-        private readonly IConexoesRabbit _conexoesRabbit;
-        public CasoDeUsoProcessarRegistroDoArquivoDeImportacaoInscricao(IMediator mediator, IConexoesRabbit conexoesRabbit) : base(mediator)
-        {
-            _conexoesRabbit = conexoesRabbit ?? throw new ArgumentNullException(nameof(conexoesRabbit));
-        }
-
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>()
+            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDto>()
                                             ?? throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
 
             try
             {
-                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDTO>();
+                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDto>()!;
 
                 var inscricao = importacaoInscricaoCursista.Inscricao;
 
@@ -39,9 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId)) ??
                                throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-                await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, inscricao.UsuarioId));
-
-                await mediator.Send(new SalvarInscricaoImportacaoCommand(inscricao, proposta.FormacaoHomologada.EstaHomologada()));
+                await mediator.Send(new SalvarInscricaoImportacaoCommand(inscricao));
                 await mediator.Send(new AlterarSituacaoRegistroImportacaoArquivoCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Processado));
             }
             catch (Exception e)
@@ -58,7 +51,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
         private async Task AlterarSituacaoArquivo(long importacaoArquivoId)
         {
             var possuiRegistroValidado = await mediator.Send(new PossuiRegistroPorArquivoSituacaoQuery(importacaoArquivoId, SituacaoImportacaoArquivoRegistro.Validado));
-            var possuiRegistrosNaFila = _conexoesRabbit.Get().MessageCount(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem) > 0;
+            var possuiRegistrosNaFila = conexoesRabbit.Get().MessageCount(RotasRabbit.RealizarImportacaoInscricaoCursistaValidarItem) > 0;
 
             if (!possuiRegistroValidado || !possuiRegistrosNaFila)
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoId, SituacaoImportacaoArquivo.Processado));

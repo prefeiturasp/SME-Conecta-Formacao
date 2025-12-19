@@ -1,14 +1,4 @@
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
 {
-    public class DadosAnexosInscricao
-    {
-        public DadosAnexosInscricao(string nome, Guid? codigo)
-        {
-            Nome = nome;
-            Codigo = codigo;
-        }
-
-        public string Nome { get; set; }
-        public Guid? Codigo { get; set; }
-    }
+    public record DadosAnexosInscricao(string? Nome, Guid? Codigo);
 }

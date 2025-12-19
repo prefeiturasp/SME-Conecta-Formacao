@@ -16,10 +16,10 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.EmEsperaInscricao
             if (inscricao.EhNulo() || inscricao.Excluido)
                 throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA);
 
-            if (inscricao.Situacao.NaoEhAguardandoAnalise())
+            if (inscricao.Situacao != SituacaoInscricao.AguardandoAnalise)
                 throw new NegocioException(MensagemNegocio.INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_PODE_IR_PARA_EM_ESPERA);
 
-            inscricao.Situacao = Dominio.Enumerados.SituacaoInscricao.EmEspera;
+            inscricao.Situacao = SituacaoInscricao.EmEspera;
             await repositorioInscricao.Atualizar(inscricao);
             await mediator.Send(new EnviarEmailInscricaoEmEsperaCommand(inscricao.Id), cancellationToken);
 

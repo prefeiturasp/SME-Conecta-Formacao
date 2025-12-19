@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.ImportacaoInscricao.AlterarImportacaoRegistro;
 using SME.ConectaFormacao.Aplicacao.Comandos.ImportacaoInscricao.AlterarSituacaoImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -14,23 +16,17 @@ using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
-    public class CasoDeUsoImportacaoInscricaoCursistaValidarItem : CasoDeUsoAbstrato, ICasoDeUsoImportacaoInscricaoCursistaValidarItem
+    public class CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator, IMapper mapper) :
+        CasoDeUsoAbstrato(mediator), ICasoDeUsoImportacaoInscricaoCursistaValidarItem
     {
-        private readonly IMapper _mapper;
-
-        public CasoDeUsoImportacaoInscricaoCursistaValidarItem(IMediator mediator, IMapper mapper) : base(mediator)
-        {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        }
-
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDTO>() ??
+            var importacaoArquivoRegistro = param.ObterObjetoMensagem<ImportacaoArquivoRegistroDto>() ??
                 throw new NegocioException(MensagemNegocio.IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA);
 
             try
             {
-                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDTO>()!;
+                var importacaoInscricaoCursista = importacaoArquivoRegistro.Conteudo.JsonParaObjeto<InscricaoCursistaImportacaoDto>()!;
 
                 var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorNomeQuery(importacaoInscricaoCursista.Turma, importacaoArquivoRegistro.PropostaId)) ??
                     throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
@@ -38,14 +34,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 var usuario = await ObterUsuarioPorLogin(importacaoInscricaoCursista) ??
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-                await mediator.Send(new UsuarioEstaInscritoNaPropostaQuery(propostaTurma.PropostaId, usuario.Id));
-
-                if (usuario.Tipo.EhInterno() && !string.IsNullOrWhiteSpace(importacaoInscricaoCursista.Vinculo))
+                if (usuario.Tipo.EhInterno() && string.IsNullOrWhiteSpace(importacaoInscricaoCursista.Vinculo))
                     throw new NegocioException(MensagemNegocio.ATUALIZACAO_VINCULO_INSCRICAO_NAO_LOCALIZADA);
 
                 var tipoVinculo = usuario.Tipo.EhInterno() ? int.Parse(importacaoInscricaoCursista.Vinculo ?? "0") : default;
 
-                var inscricao = new Dominio.Entidades.Inscricao()
+                var inscricao = new Inscricao()
                 {
                     PropostaTurmaId = propostaTurma.Id,
                     UsuarioId = usuario.Id,
@@ -54,12 +48,22 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                     TipoVinculo = tipoVinculo,
                 };
 
+                var alterarImportacaoRegistroDto = new AlterarImportacaoRegistroDto(importacaoArquivoRegistro.Id, importacaoInscricaoCursista.ObjetoParaJson(), SituacaoImportacaoArquivoRegistro.Validado, null);
+
                 if (usuario.Tipo.EhInterno())
-                    await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId, tipoVinculo);
+                {
+                    // variável inscricao é alterada aqui
+                    var resultado = await MapearValidarCargoFuncao(inscricao, usuario.Login, propostaTurma.PropostaId, tipoVinculo);
+                    importacaoInscricaoCursista.Inscricao = inscricao;
+                    alterarImportacaoRegistroDto = alterarImportacaoRegistroDto with { Situacao = resultado.Sucesso ?
+                        SituacaoImportacaoArquivoRegistro.Validado :
+                        SituacaoImportacaoArquivoRegistro.Erro,
+                        Erro = resultado.MensagemErro,
+                        Conteudo = importacaoInscricaoCursista.ObjetoParaJson()
+                    };
+                }
 
-                importacaoInscricaoCursista.Inscricao = inscricao;
-
-                await mediator.Send(new AlterarImportacaoRegistroCommand(importacaoArquivoRegistro.Id, SituacaoImportacaoArquivoRegistro.Validado, importacaoInscricaoCursista.ObjetoParaJson()));
+                await mediator.Send(new AlterarImportacaoRegistroCommand(alterarImportacaoRegistroDto));
             }
             catch (NegocioException e)
             {
@@ -71,7 +75,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
             return true;
         }
 
-        private async Task MapearValidarCargoFuncao(Dominio.Entidades.Inscricao inscricao, string login, long propostaId, int tipoVinculo)
+        private async Task<ResultadoMapeamento> MapearValidarCargoFuncao(Inscricao inscricao, string login, long propostaId, int tipoVinculo)
         {
             var temErroCargo = false;
             var temErroFuncao = false;
@@ -120,7 +124,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
                 if (cargosProposta.PossuiElementos())
                 {
-                    var cargoFuncaoOutros = await mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia());
+                    var cargoFuncaoOutros = await mediator.Send(new ObterCargoFuncaoOutrosQuery());
                     var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
                     if (!cargoEhOutros && (!inscricao.CargoId.HasValue || !cargosProposta.Any(a => a.CargoFuncaoId == inscricao.CargoId)))
                         temErroCargo = true;
@@ -165,14 +169,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 }
             }
 
-            if (temErroCargo && temErroFuncao)
-                throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
+            if (temErroCargo && (temErroFuncao || !funcaoAtividadeProposta.PossuiElementos()))
+                return ResultadoMapeamento.Ok(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
 
-            if (!funcaoAtividadeProposta.PossuiElementos() && temErroCargo)
-                throw new NegocioException(MensagemNegocio.CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL);
+            return ResultadoMapeamento.Ok();
         }
 
-        private async Task<Dominio.Entidades.Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDTO inscricaoCursistaDTO)
+        private async Task<Usuario> ObterUsuarioPorLogin(InscricaoCursistaImportacaoDto inscricaoCursistaDTO)
         {
             var ehProfissionalRede = inscricaoCursistaDTO.ColaboradorRede.EhColaboradorRede();
             var login = ehProfissionalRede ? inscricaoCursistaDTO.RegistroFuncional : inscricaoCursistaDTO.Cpf;
@@ -201,7 +204,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
                 if (dadosUsuario is null || string.IsNullOrWhiteSpace(dadosUsuario.Login))
                     return default!;
 
-                usuario = _mapper.Map<Dominio.Entidades.Usuario>(dadosUsuario);
+                usuario = mapper.Map<Usuario>(dadosUsuario);
                 usuario.Cpf = inscricaoCursistaDTO.Cpf.SomenteNumeros();
                 usuario.Tipo = TipoUsuario.Interno;
 
@@ -218,6 +221,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 
             if (!possuiRegistroCarregamentoInicial || !possuiRegistrosNaFila)
                 await mediator.Send(new AlterarSituacaoImportacaoArquivoCommand(importacaoArquivoId, SituacaoImportacaoArquivo.Validado));
+        }
+        public class ResultadoMapeamento
+        {
+            public bool Sucesso { get; private set; }
+            public string? MensagemErro { get; private set; }
+
+            public static ResultadoMapeamento Ok(string? mensagem = "") => new() { Sucesso = true, MensagemErro = mensagem };
+            public static ResultadoMapeamento Falha(string mensagem) => new() { Sucesso = false, MensagemErro = mensagem };
         }
     }
 }
