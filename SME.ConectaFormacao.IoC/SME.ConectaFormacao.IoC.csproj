@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 	    <SonarQubeExclude>true</SonarQubeExclude>
+		<LangVersion>14.0</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

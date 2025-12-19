@@ -24,9 +24,9 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
-    public class DominioParaDTOProfile : Profile
+    public class DominioParaDtoProfile : Profile
     {
-        public DominioParaDTOProfile()
+        public DominioParaDtoProfile()
         {
             CreateMap<EntidadeBaseAuditavel, AuditoriaDTO>();
 

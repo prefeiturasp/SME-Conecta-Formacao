@@ -1,9 +1,7 @@
 ﻿using Elastic.Apm;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Log;
-using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
 

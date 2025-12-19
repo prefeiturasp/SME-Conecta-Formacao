@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Webapi.Controllers;
 
 namespace SME.ConectaFormacao.Webapi.Teste
@@ -714,6 +715,20 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Act
             var resultado = await _controller.ObterHorasTotaisProposta(mockUseCase.Object);
 
+            // Assert
+            Assert.IsType<OkObjectResult>(resultado);
+        }
+
+        [Fact]
+        public async Task DadoUmTermoDeBuscaQualquer_QuandoChamarAutocompletarFormacao_DeveRetornarResultadoDeSucesso()
+        {
+            // Arrange
+            var mockUseCase = new Mock<ICasoDeUsoObterAutocompletarFormacao>();
+            var termoDeBusca = _faker.Lorem.Word();
+            var resultadoDto = new PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>(new List<AutocompletarNumeroHomologacaoDto>(), 0, 10);
+            mockUseCase.Setup(x => x.ExecutarAsync(It.IsAny<FiltroAutocompletarNumeroHomologacaoDto>())).ReturnsAsync(resultadoDto);
+            // Act
+            var resultado = await _controller.AutocompletarFormacao(mockUseCase.Object, new() { NumeroPagina = 1, NumeroRegistros = 10, TermoBusca = termoDeBusca });
             // Assert
             Assert.IsType<OkObjectResult>(resultado);
         }

@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
@@ -521,6 +522,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ObterHorasTotaisProposta([FromServices] ICasoDeUsoObterHorasTotaisProposta useCase)
         {
             return Ok(await useCase.Executar());
+        }
+
+        [HttpGet("autocompletar-formacao")]
+        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> AutocompletarFormacao([FromServices] ICasoDeUsoObterAutocompletarFormacao useCase, [FromQuery] FiltroAutocompletarNumeroHomologacaoDto filtro)
+        {
+            return ProcessarResultado(await useCase.ExecutarAsync(filtro));
         }
     }
 }
