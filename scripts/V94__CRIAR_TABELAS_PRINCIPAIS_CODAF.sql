@@ -82,3 +82,9 @@ CREATE TABLE codaf_comentario(
 	CONSTRAINT codaf_comentario_pk PRIMARY KEY (id),
 	CONSTRAINT codaf_comentario_codaf_lista_presenca_id_fk FOREIGN KEY (codaf_lista_presenca_id) REFERENCES CODAF_LISTA_PRESENCA
 );
+
+
+CREATE INDEX idx_proposta_numero_homologacao_autocomplete 
+ON proposta (CAST(NUMERO_HOMOLOGACAO AS TEXT) text_pattern_ops);
+
+CREATE INDEX idx_proposta_numero_homologacao_puro ON proposta (NUMERO_HOMOLOGACAO);

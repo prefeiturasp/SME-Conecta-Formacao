@@ -8,11 +8,14 @@ namespace SME.ConectaFormacao.IoC.Features
 {
     public static class CodafExtensions
     {
-        public static IServiceCollection AdicionarModuloCodaf(this IServiceCollection services) =>
+        extension(IServiceCollection services)
+        {
+            public IServiceCollection AdicionarModuloCodaf() =>
             services
             .AddScoped<IRepositorioCodafListaPresenca, RepositorioCodafListaPresenca>()
             .AddScoped<ICasoDeUsoCriarCodafListaPresenca, CasoDeUsoCriarCodafListaPresenca>()
             .AddScoped<ICasoDeUsoAtualizarCodafListaPresenca, CasoDeUsoAtualizarCodafListaPresenca>()
             ;
+        }
     }
 }

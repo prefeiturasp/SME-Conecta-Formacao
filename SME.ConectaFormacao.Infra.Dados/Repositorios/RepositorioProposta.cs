@@ -1,22 +1,21 @@
 ﻿using Dapper;
 using Dommel;
+using Microsoft.Win32.SafeHandles;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioProposta : RepositorioBaseAuditavel<Proposta>, IRepositorioProposta
+    public class RepositorioProposta(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : 
+        RepositorioBaseAuditavel<Proposta>(contexto, conexao), IRepositorioProposta
     {
-        public RepositorioProposta(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
-        {
-        }
-
         public Task RemoverCriteriosValidacaoInscricao(IEnumerable<PropostaCriterioValidacaoInscricao> criteriosValidacaoInscricao)
         {
             var criterioValidacaoInscricao = criteriosValidacaoInscricao.First();
@@ -2602,6 +2601,49 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
               and proposta_id = @propostaId and registro_funcional = @registroFuncional ";
 
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecerista>(query, new { propostaId, registroFuncional });
+        }
+
+        public async Task<PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros)
+        {
+            termo = $"{termo}%";
+            const string sqlBase = """
+                FROM PUBLIC.PROPOSTA AS P 
+                WHERE NOT P.EXCLUIDO
+                  AND CAST(P.NUMERO_HOMOLOGACAO AS TEXT) ILIKE @termo
+                """;
+            const string sqlSelect = $"""
+                SELECT p.ID AS propostaId,
+                       p.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+                       p.NOME_FORMACAO AS nomeFormacao,
+                       p.ID AS codigoFormacao
+                {sqlBase}
+                ORDER BY numeroHomologacao
+                LIMIT @limit OFFSET @offset;
+                """;
+            const string sqlCount = $"SELECT COUNT(1) {sqlBase}";
+            var conn = conexao.Obter();
+            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, new { termo });
+            if (totalRegistros == 0)
+                return new()
+                {
+                    Itens = [],
+                    TotalRegistros = 0,
+                    PaginaAtual = numeroPagina,
+                    TamanhoPagina = numeroRegistros
+                };
+
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            var dados = await conn.QueryAsync<AutocompletarNumeroHomologacaoDto>(sqlSelect, 
+                new { termo, limit = numeroRegistros, offset = registrosIgnorados });
+
+            return new()
+            {
+                Itens = dados,
+                TotalRegistros = totalRegistros,
+                PaginaAtual = numeroPagina,
+                TamanhoPagina = numeroRegistros
+            };
         }
     }
 }
