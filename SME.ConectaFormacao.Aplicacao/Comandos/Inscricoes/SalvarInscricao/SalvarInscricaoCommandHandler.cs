@@ -38,7 +38,8 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
             if (usuarioLogado.Tipo == TipoUsuario.Interno)
             {
-                await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
+                if(!request.InscricaoDto.VagaRemanescente)
+                    await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
 
                 await ValidarDreUsuarioInterno(usuarioLogado.Login, inscricao, cancellationToken);
             }
@@ -80,7 +81,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
             if (cargosProposta.PossuiElementos())
             {
-                var cargoFuncaoOutros = await mediator.Send(ObterCargoFuncaoOutrosQuery.Instancia(), cancellationToken);
+                var cargoFuncaoOutros = await mediator.Send(new ObterCargoFuncaoOutrosQuery(), cancellationToken);
                 var cargoEhOutros = cargosProposta.Any(t => t.CargoFuncaoId == cargoFuncaoOutros.Id);
 
                 if (cargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
