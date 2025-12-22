@@ -64,7 +64,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             };
             _repositorioPropostaMock
                 .Setup(r => r.ObterAutocompletarNumeroHomologacaoAsync(filtro.TermoBusca, filtro.NumeroPagina, filtro.NumeroRegistros))
-                .ReturnsAsync(new PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>() { Itens = itensMock, PaginaAtual = 1, TamanhoPagina = 10, TotalRegistros = itensMock.Count });
+                .ReturnsAsync(new ResultadoPaginado<AutocompletarNumeroHomologacaoDto>() { Itens = itensMock, PaginaAtual = 1, TamanhoPagina = 10, TotalRegistros = itensMock.Count });
             // Act
             var resultado = await _casoDeUso.ExecutarAsync(filtro);
             // Assert

@@ -1811,7 +1811,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
-        public async Task<PaginacaoResultadoDto<long>> ObterListagemFormacoesPorFiltro(FiltroListaFormacaoPropostaDto filtro)
+        public async Task<ResultadoPaginado<long>> ObterListagemFormacoesPorFiltro(FiltroListaFormacaoPropostaDto filtro)
         {
             var sql = new StringBuilder();
             var parametros = new DynamicParameters();
@@ -1877,7 +1877,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var listaIds = resultadoDapper.Select(x => (long)x.id).ToList();
             var totalRegistros = resultadoDapper.FirstOrDefault()?.totalgeral ?? 0;
 
-            return new PaginacaoResultadoDto<long>
+            return new ResultadoPaginado<long>
             {
                 Itens = listaIds,
                 TotalRegistros = (int)totalRegistros,
@@ -2603,7 +2603,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecerista>(query, new { propostaId, registroFuncional });
         }
 
-        public async Task<PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros)
+        public async Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros)
         {
             termo = $"{termo}%";
             const string sqlBase = """

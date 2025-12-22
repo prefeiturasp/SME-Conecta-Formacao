@@ -12,9 +12,11 @@ namespace SME.ConectaFormacao.IoC.Features
         {
             public IServiceCollection AdicionarModuloCodaf() =>
             services
-            .AddScoped<IRepositorioCodafListaPresenca, RepositorioCodafListaPresenca>()
-            .AddScoped<ICasoDeUsoCriarCodafListaPresenca, CasoDeUsoCriarCodafListaPresenca>()
-            .AddScoped<ICasoDeUsoAtualizarCodafListaPresenca, CasoDeUsoAtualizarCodafListaPresenca>()
+                .AddScoped<IRepositorioCodafListaPresenca, RepositorioCodafListaPresenca>()
+                .AddScoped<ICasoDeUsoCriarCodafListaPresenca, CasoDeUsoCriarCodafListaPresenca>()
+                .AddScoped<ICasoDeUsoAtualizarCodafListaPresenca, CasoDeUsoAtualizarCodafListaPresenca>()
+                .AddScoped<ICasoDeUsoListarCodafListaPresenca, CasoDeUsoListarCodafListaPresenca>()
+                .AddScoped<ICasoDeUsoObterCodafListaPresencaPorId, CasoDeUsoObterCodafListaPresencaPorId>()
             ;
         }
     }

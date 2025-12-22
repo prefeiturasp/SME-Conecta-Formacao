@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var filtro = GerarFiltroValido();
 
             // Simula retorno vazio do repositório (TotalRegistros = 0)
-            var retornoVazio = new Infra.Dados.Dtos.PaginacaoResultadoDto<Inscricao>();
+            var retornoVazio = new Infra.Dados.Dtos.ResultadoPaginado<Inscricao>();
 
             _repositorioInscricaoMock
                 .Setup(r => r.ObterInscricoesPorPropostaPaginadasAsync(filtro))
@@ -78,7 +78,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var inscricaoEntidade = new Inscricao { Id = idInscricao };
             var listaInscricoes = new List<Inscricao> { inscricaoEntidade };
 
-            var retornoPaginado = new Infra.Dados.Dtos.PaginacaoResultadoDto<Inscricao>() { Itens = listaInscricoes, TotalRegistros = 1, TamanhoPagina = 10, PaginaAtual = 1 };
+            var retornoPaginado = new Infra.Dados.Dtos.ResultadoPaginado<Inscricao>() { Itens = listaInscricoes, TotalRegistros = 1, TamanhoPagina = 10, PaginaAtual = 1 };
 
             _repositorioInscricaoMock
                 .Setup(r => r.ObterInscricoesPorPropostaPaginadasAsync(filtro))
@@ -134,7 +134,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var idInscricao = _faker.Random.Long(1, 1000);
 
             var listaInscricoes = new List<Inscricao> { new() { Id = idInscricao } };
-            var retornoPaginado = new Infra.Dados.Dtos.PaginacaoResultadoDto<Inscricao>() { Itens = listaInscricoes, TotalRegistros = 1, TamanhoPagina = 10, PaginaAtual = 1 };
+            var retornoPaginado = new Infra.Dados.Dtos.ResultadoPaginado<Inscricao>() { Itens = listaInscricoes, TotalRegistros = 1, TamanhoPagina = 10, PaginaAtual = 1 };
 
             _repositorioInscricaoMock
                 .Setup(r => r.ObterInscricoesPorPropostaPaginadasAsync(filtro))
