@@ -1,7 +1,7 @@
 TRUNCATE TABLE CARGOS_EOL;
 
 ALTER TABLE CARGOS_EOL 
-ADD COLUMN data_posse DATE NULL,
-ADD COLUMN nome_cargo varchar(200) NULL,
-ADD COLUMN tipo_vinculo INT NULL,
-ADD COLUMN cd_cargo_base_cotic int NOT NULL;
+ADD COLUMN IF NOT EXISTS data_posse DATE NULL,
+ADD COLUMN IF NOT EXISTS nome_cargo varchar(200) NULL,
+ADD COLUMN IF NOT EXISTS tipo_vinculo INT NULL,
+ADD COLUMN IF NOT EXISTS cd_cargo_base_cotic int NOT NULL;

@@ -1,5 +1,4 @@
-
-CREATE TABLE codaf_lista_presenca(
+CREATE TABLE IF NOT EXISTS codaf_lista_presenca(
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	proposta_id int8 NOT NULL,
 	proposta_turma_id int8 NOT NULL,
@@ -10,6 +9,7 @@ CREATE TABLE codaf_lista_presenca(
 	codigo_curso_eol int NULL,
 	codigo_nivel int NULL,
 	observacao text NULL,
+	data_envio_df timestamptz NULL,
 	status int NOT NULL,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE codaf_lista_presenca(
 	CONSTRAINT proposta_turma_id_key UNIQUE (proposta_turma_id)
 );
 
-CREATE TABLE codaf_inscrito(
+CREATE TABLE IF NOT EXISTS codaf_inscrito(
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	codaf_lista_presenca_id int8 NOT NULL,
 	inscricao_id int8 NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE codaf_inscrito(
 	CONSTRAINT codaf_inscrito_inscricao_id_codaf_lista_presenca_id_key UNIQUE(codaf_lista_presenca_id, inscricao_id)
 );
 
-CREATE TABLE codaf_retificacao(
+CREATE TABLE IF NOT EXISTS codaf_retificacao(
 	id int NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	codaf_lista_presenca_id int8 NOT NULL,
 	data_retificacao date NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE codaf_retificacao(
 	CONSTRAINT codaf_retificacao_codaf_lista_presenca_id_fk FOREIGN KEY (codaf_lista_presenca_id) REFERENCES CODAF_LISTA_PRESENCA
 );
 
-CREATE TABLE codaf_comentario(
+CREATE TABLE IF NOT EXISTS codaf_comentario(
 	id int NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	codaf_lista_presenca_id int8 NOT NULL,
 	comentario text NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE codaf_comentario(
 );
 
 
-CREATE INDEX idx_proposta_numero_homologacao_autocomplete 
+CREATE INDEX IF NOT EXISTS idx_proposta_numero_homologacao_autocomplete 
 ON proposta (CAST(NUMERO_HOMOLOGACAO AS TEXT) text_pattern_ops);
 
-CREATE INDEX idx_proposta_numero_homologacao_puro ON proposta (NUMERO_HOMOLOGACAO);
+CREATE INDEX IF NOT EXISTS idx_proposta_numero_homologacao_puro ON proposta (NUMERO_HOMOLOGACAO);

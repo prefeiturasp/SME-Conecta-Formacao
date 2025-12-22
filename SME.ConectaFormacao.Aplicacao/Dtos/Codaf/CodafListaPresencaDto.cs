@@ -4,7 +4,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
 {
     public class CodafListaPresencaDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public long PropostaId { get; set; }
         public long PropostaTurmaId { get; set; }
         public DateOnly? DataPublicacao { get; set; }
@@ -21,5 +21,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
         public DateTime CriadoEm { get; set; }
         public string? CriadoPor { get; set; }
         public string? CriadoLogin { get; set; }
+        public string? NomeFormacao { get; set; }
+        public long? CodigoFormacao { get; set; }
+        public long? NumeroHomologacao { get; set; }
     }
 }
