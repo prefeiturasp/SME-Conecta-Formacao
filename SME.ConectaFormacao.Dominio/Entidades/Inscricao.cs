@@ -28,6 +28,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public CargoFuncao Funcao { get; set; } = new();
         public Usuario Usuario { get; set; } = new();
-        public IEnumerable<CodafInscricao> CodafInscricoes { get; set; } = [];
+        public IEnumerable<CodafInscricaoListaPresenca> CodafInscricoes { get; set; } = [];
     }
 }

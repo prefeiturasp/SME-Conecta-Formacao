@@ -21,6 +21,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.TamanhoPagina, opt => opt.MapFrom(src => src.NumeroRegistros))
                 ;
             CreateMap<ListagemResultadoCodafListaPresencaDto, ListaPresencaCodafResumoDto>();
+
+            CreateMap<ResultadoInscritoTurmaCodafListaPresencaDto, CodafInscritoTurmaListaPresencaRetornoDto>();
+
+            CreateMap<CodafInscritoListaPresencaSalvarDto, CodafInscricaoListaPresenca>();
         }
     }
 }

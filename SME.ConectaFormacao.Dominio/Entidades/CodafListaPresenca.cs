@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public Proposta Proposta { get; set; } = null!;
         public PropostaTurma PropostaTurma { get; set; } = null!;
         public IEnumerable<CodafComentario> CodafComentarios { get; set; } = [];
-        public IEnumerable<CodafInscricao> CodafInscricoes { get; set; } = [];
+        public IEnumerable<CodafInscricaoListaPresenca> CodafInscricoes { get; set; } = [];
         public IEnumerable<CodafRetificacao> CodafRetificacoes { get; set; } = [];
 
         protected CodafListaPresenca() { }
