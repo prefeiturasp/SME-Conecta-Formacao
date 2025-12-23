@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
@@ -13,7 +12,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         ICasoDeUsoCriarCodafListaPresenca casoDeUsoCriarCodafListaPresenca,
         ICasoDeUsoAtualizarCodafListaPresenca casoDeUsoAtualizar,
         ICasoDeUsoListarCodafListaPresenca casoDeUsoListarCodafListaPresenca,
-        ICasoDeUsoObterCodafListaPresencaPorId casoDeUsoObterCodafListaPresencaPorId) : BaseController
+        ICasoDeUsoObterCodafListaPresencaPorId casoDeUsoObterCodafListaPresencaPorId,
+        ICasoDeUsoListarInscritosTurmaCodafListaPresenca casoDeUsoListarInscritosTurmaCodafListaPresenca) : BaseController
     {
         [HttpPost]
         [ProducesResponseType(typeof(Resultado<CodafListaPresencaDto>), 201)]
@@ -53,6 +53,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ObterPorId(long id)
         {
             var resultado = await casoDeUsoObterCodafListaPresencaPorId.ExecutarAsync(id);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpGet("inscritos-turma/{propostaTurmaId:long}")]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>), 200)]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>), 400)]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>), 500)]
+        public async Task<IActionResult> ObterInscritosPorTurma(long propostaTurmaId, [FromQuery] int numeroPagina = 1, [FromQuery] int numeroRegistros = 10)
+        {
+            var resultado = await casoDeUsoListarInscritosTurmaCodafListaPresenca.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros);
             return ProcessarResultado(resultado);
         }
     }

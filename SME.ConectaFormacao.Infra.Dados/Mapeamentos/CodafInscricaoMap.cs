@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 {
-    public class CodafInscricaoMap : BaseMapAuditavel<CodafInscricao>
+    public class CodafInscricaoMap : BaseMapAuditavel<CodafInscricaoListaPresenca>
     {
         public CodafInscricaoMap()
         {

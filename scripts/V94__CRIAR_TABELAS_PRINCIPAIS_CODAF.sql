@@ -25,14 +25,14 @@ CREATE TABLE IF NOT EXISTS codaf_lista_presenca(
 	CONSTRAINT proposta_turma_id_key UNIQUE (proposta_turma_id)
 );
 
-CREATE TABLE IF NOT EXISTS codaf_inscrito(
+CREATE TABLE IF NOT EXISTS codaf_inscricao_lista_presenca(
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	codaf_lista_presenca_id int8 NOT NULL,
 	inscricao_id int8 NOT NULL,
-	percentual_frequencia numeric(5, 2) NOT NULL,
-	atividade_obrigatorio boolean NOT NULL,
-	conceito_final varchar(2) NOT NULL,
-	aprovado boolean NOT NULL,
+	percentual_frequencia numeric(5, 2) NULL,
+	atividade_obrigatorio boolean NULL,
+	conceito_final varchar(2) NULL,
+	aprovado boolean NULL,
 	criado_em timestamp NOT NULL,
 	criado_por varchar(200) NOT NULL,
 	alterado_em timestamp NULL,
@@ -41,13 +41,13 @@ CREATE TABLE IF NOT EXISTS codaf_inscrito(
 	alterado_login varchar(200) NULL,
 	excluido bool NOT NULL,
 	
-	CONSTRAINT codaf_inscrito_pk PRIMARY KEY (id),
-	CONSTRAINT codaf_inscrito_codaf_lista_presenca_id_fk FOREIGN KEY (codaf_lista_presenca_id) REFERENCES CODAF_LISTA_PRESENCA,
-	CONSTRAINT codaf_inscrito_inscricao_id_fk FOREIGN KEY (inscricao_id) REFERENCES INSCRICAO,
-	CONSTRAINT codaf_inscrito_inscricao_id_codaf_lista_presenca_id_key UNIQUE(codaf_lista_presenca_id, inscricao_id)
+	CONSTRAINT codaf_inscricao_lista_presenca_pk PRIMARY KEY (id),
+	CONSTRAINT codaf_inscricao_lista_presenca_codaf_lista_presenca_id_fk FOREIGN KEY (codaf_lista_presenca_id) REFERENCES CODAF_LISTA_PRESENCA,
+	CONSTRAINT codaf_inscricao_lista_presenca_inscricao_id_fk FOREIGN KEY (inscricao_id) REFERENCES INSCRICAO,
+	CONSTRAINT codaf_inscricao_lista_presenca_inscricao_id_codaf_lista_presenca_id_key UNIQUE(codaf_lista_presenca_id, inscricao_id)
 );
 
-CREATE TABLE IF NOT EXISTS codaf_retificacao(
+CREATE TABLE IF NOT EXISTS codaf_retificacao_lista_presenca(
 	id int NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	codaf_lista_presenca_id int8 NOT NULL,
 	data_retificacao date NOT NULL,
@@ -60,11 +60,11 @@ CREATE TABLE IF NOT EXISTS codaf_retificacao(
 	alterado_login varchar(200) NULL,
 	excluido bool NOT NULL,
 	
-	CONSTRAINT codaf_retificacao_pk PRIMARY KEY (id),
-	CONSTRAINT codaf_retificacao_codaf_lista_presenca_id_fk FOREIGN KEY (codaf_lista_presenca_id) REFERENCES CODAF_LISTA_PRESENCA
+	CONSTRAINT codaf_retificacao_lista_presenca_pk PRIMARY KEY (id),
+	CONSTRAINT codaf_retificacao_lista_presenca_codaf_lista_presenca_id_fk FOREIGN KEY (codaf_lista_presenca_id) REFERENCES CODAF_LISTA_PRESENCA
 );
 
-CREATE TABLE IF NOT EXISTS codaf_comentario(
+CREATE TABLE IF NOT EXISTS codaf_comentario_lista_presenca(
 	id int NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	codaf_lista_presenca_id int8 NOT NULL,
 	comentario text NOT NULL,
@@ -79,8 +79,8 @@ CREATE TABLE IF NOT EXISTS codaf_comentario(
 	alterado_login varchar(200) NULL,
 	excluido bool NOT NULL,
 	
-	CONSTRAINT codaf_comentario_pk PRIMARY KEY (id),
-	CONSTRAINT codaf_comentario_codaf_lista_presenca_id_fk FOREIGN KEY (codaf_lista_presenca_id) REFERENCES CODAF_LISTA_PRESENCA
+	CONSTRAINT codaf_comentario_lista_presenca_pk PRIMARY KEY (id),
+	CONSTRAINT codaf_comentario_lista_presenca_codaf_lista_presenca_id_fk FOREIGN KEY (codaf_lista_presenca_id) REFERENCES CODAF_LISTA_PRESENCA
 );
 
 
