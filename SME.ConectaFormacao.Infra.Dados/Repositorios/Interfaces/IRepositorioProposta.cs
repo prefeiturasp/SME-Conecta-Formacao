@@ -87,7 +87,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaTurmaDre>> ObterPropostaTurmasDresPorPropostaTurmaId(params long[] propostaTurmaId);
         Task InserirPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres);
         Task RemoverPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres);
-        Task<PaginacaoResultadoDto<long>> ObterListagemFormacoesPorFiltro(FiltroListaFormacaoPropostaDto filtroListaFormacaoPropostaDto);
+        Task<ResultadoPaginado<long>> ObterListagemFormacoesPorFiltro(FiltroListaFormacaoPropostaDto filtroListaFormacaoPropostaDto);
         Task<IEnumerable<Proposta>> ObterPropostasResumidasPorId(long[] propostaIds);
         Task<IEnumerable<PropostaPublicoAlvo>> ObterPropostasPublicoAlvoPorIdProposta(long propostaId);
         Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId);
@@ -124,6 +124,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id);
         Task RemoverParecerista(PropostaParecerista parecerista);
         Task AtualizarIntegrarNoSGA(long propostaId, bool valor);
-        Task<PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros);
+        Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros);
     }
 }

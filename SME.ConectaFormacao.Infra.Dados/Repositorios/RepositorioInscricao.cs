@@ -158,7 +158,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { usuarioId });
         }
 
-        public async Task<PaginacaoResultadoDto<Inscricao>> ObterInscricoesPorPropostaPaginadasAsync(FiltroListagemInscricaoDto filtro)
+        public async Task<ResultadoPaginado<Inscricao>> ObterInscricoesPorPropostaPaginadasAsync(FiltroListagemInscricaoDto filtro)
         {
             var parametros = new DynamicParameters();
             parametros.Add("propostaId", filtro.PropostaId);
@@ -231,7 +231,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, parametros);
             if (totalRegistros == 0)
             {
-                return new PaginacaoResultadoDto<Inscricao>
+                return new ResultadoPaginado<Inscricao>
                 {
                     Itens = [],
                     TotalRegistros = 0,
@@ -275,7 +275,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 splitOn: "id,proposta_turma_id,usuario_id,cargo_id,proposta_id"
             );
 
-            return new PaginacaoResultadoDto<Inscricao>
+            return new ResultadoPaginado<Inscricao>
             {
                 Itens = dados,
                 TotalRegistros = totalRegistros,

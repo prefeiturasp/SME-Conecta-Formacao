@@ -29,7 +29,7 @@
 
         // Conversão Implícita para ERRO (Erro -> Resultado<T>)
         public static implicit operator Resultado<T>(Erro erro)
-            => new(false, default, erro.Tipo, [erro.Mensagem]);
+            => new(false, default, erro.Tipo, [.. erro.Mensagens]);
     }
 
     public class Resultado : Resultado<bool>
@@ -44,6 +44,6 @@
             => new(false, tipo, [mensagem]);
 
         public static implicit operator Resultado(Erro erro)
-        => new(false, erro.Tipo, [erro.Mensagem]);
+        => new(false, erro.Tipo, [.. erro.Mensagens]);
     }
 }
