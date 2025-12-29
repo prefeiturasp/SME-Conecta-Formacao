@@ -53,7 +53,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (!string.IsNullOrWhiteSpace(filtro.NomeFormacao))
             {
                 condicoesWhere.Append(" AND f_unaccent(P.NOME_FORMACAO) ILIKE f_unaccent(@nomeFormacao) ");
-                parametros.Add("nomeFormacao", $"{filtro.NomeFormacao}%");
+                parametros.Add("nomeFormacao", $"%{filtro.NomeFormacao}%");
             }
 
             if (!string.IsNullOrWhiteSpace(filtro.CodigoFormacao))
