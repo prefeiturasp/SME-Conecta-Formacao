@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.Email.InscricaoEmEspera;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -49,7 +50,11 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            return await PersistirInscricao(proposta.FormacaoHomologada == FormacaoHomologada.Sim, inscricao, proposta.IntegrarNoSGA);
+            var formacaoHomologada = proposta.FormacaoHomologada == FormacaoHomologada.Sim;
+            await PersistirInscricao(formacaoHomologada, inscricao);
+            await EnviarEmailInscricaoAsync(inscricao, cancellationToken);
+            var mensagem = DefinirMensagemInscricao(formacaoHomologada, proposta.IntegrarNoSGA, inscricao);
+            return new RetornoDTO { Mensagem = mensagem, EntidadeId = inscricao.Id };
         }
 
         private async Task MapearCargoFuncao(Inscricao inscricao, CancellationToken cancellationToken)
@@ -146,7 +151,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
         private static string[] ObterCodigosUnidadeAdmEReferencia(UnidadeEol unidade)
             => [unidade.Codigo, unidade.CodigoReferencia];
 
-        private async Task<RetornoDTO> PersistirInscricao(bool formacaoHomologada, Inscricao inscricao, bool integrarNoSGA)
+        private async Task PersistirInscricao(bool formacaoHomologada, Inscricao inscricao)
         {
             var transacao = _transacao.Iniciar();
             try
@@ -164,14 +169,6 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
                 }
 
                 transacao.Commit();
-
-                var mensagem = MensagemNegocio.INSCRICAO_CONFIRMADA;
-                if (!formacaoHomologada && integrarNoSGA)
-                    mensagem = MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA;
-                else if (formacaoHomologada)
-                    mensagem = MensagemNegocio.INSCRICAO_EM_ANALISE;
-
-                return RetornoDTO.RetornarSucesso(mensagem, inscricao.Id);
             }
             catch
             {
@@ -182,6 +179,25 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
             {
                 transacao.Dispose();
             }
+        }
+
+        private async Task EnviarEmailInscricaoAsync(Inscricao inscricao, CancellationToken cancellationToken)
+        {
+            if (inscricao.Situacao == SituacaoInscricao.EmEspera)
+                await mediator.Send(new EnviarEmailInscricaoEmEsperaCommand(inscricao.Id), cancellationToken);
+            else if (inscricao.Situacao == SituacaoInscricao.Confirmada)
+                await mediator.Send(new EnviarEmailConfirmacaoInscricaoCommand(inscricao.Id), cancellationToken);
+        }
+
+        private static string DefinirMensagemInscricao(bool formacaoHomologada, bool integrarNoSGA, Inscricao inscricao)
+        {
+            if(inscricao.Situacao == SituacaoInscricao.EmEspera)
+                return MensagemNegocio.INSCRICAO_EM_ESPERA;
+            if (!formacaoHomologada)
+                return MensagemNegocio.INSCRICAO_CONFIRMADA;
+            if (integrarNoSGA)
+                return MensagemNegocio.INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA;
+            return MensagemNegocio.INSCRICAO_EM_ANALISE;
         }
     }
 }
