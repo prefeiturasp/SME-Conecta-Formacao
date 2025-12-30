@@ -6,8 +6,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
     {
         public long PropostaId { get; set; }
         public long PropostaTurmaId { get; set; }
-        public DateOnly? DataPublicacao { get; set; }
-        public DateOnly? DataPublicacaoDom { get; set; }
+        public DateTime? DataPublicacao { get; set; }
+        public DateTime? DataPublicacaoDom { get; set; }
         public short? NumeroComunicado { get; set; }
         public short? PaginaComunicadoDom { get; set; }
         public int? CodigoCursoEol { get; set; }
