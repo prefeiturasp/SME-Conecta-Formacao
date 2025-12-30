@@ -7,8 +7,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
     {
         public long PropostaId { get; private set; }
         public long PropostaTurmaId { get; private set; }
-        public DateOnly? DataPublicacao { get; private set; }
-        public DateOnly? DataPublicacaoDom { get; private set; }
+        public DateTime? DataPublicacao { get; private set; }
+        public DateTime? DataPublicacaoDom { get; private set; }
         public short? NumeroComunicado { get; private set; }
         public short? PaginaComunicadoDom { get; private set; }
         public int? CodigoCursoEol { get; private set; }
@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         protected CodafListaPresenca() { }
 
-        public CodafListaPresenca(long propostaId, long propostaTurmaId, DateOnly? dataPublicacao, DateOnly? dataPublicacaoDom, short? numeroComunicado, short? paginaComunicadoDom, int? codigoCursoEol, int? codigoNivel, string? observacao, Guid? idPerfilUsuario)
+        public CodafListaPresenca(long propostaId, long propostaTurmaId, DateTime? dataPublicacao, DateTime? dataPublicacaoDom, short? numeroComunicado, short? paginaComunicadoDom, int? codigoCursoEol, int? codigoNivel, string? observacao, Guid? idPerfilUsuario)
         {
             PropostaId = propostaId;
             PropostaTurmaId = propostaTurmaId;
@@ -40,7 +40,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             }
         }
 
-        public void AtualizarInformacoes(DateOnly? dataPublicacao, DateOnly? dataPublicacaoDom, short? numeroComunicado, short? paginaComunicadoDom, int? codigoCursoEol, int? codigoNivel, string? observacao, Guid? idPerfilUsuario)
+        public void AtualizarInformacoes(DateTime? dataPublicacao, DateTime? dataPublicacaoDom, short? numeroComunicado, short? paginaComunicadoDom, int? codigoCursoEol, int? codigoNivel, string? observacao, Guid? idPerfilUsuario)
         {
             DataPublicacao = dataPublicacao;
             DataPublicacaoDom = dataPublicacaoDom;

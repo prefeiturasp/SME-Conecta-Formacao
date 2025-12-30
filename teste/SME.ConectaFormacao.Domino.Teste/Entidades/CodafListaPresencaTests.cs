@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
         {
             // Arrange
             var idPerfilAdmin = Perfis.ADMIN_DF;
-            var dataPublicacao = new DateOnly(2024, 1, 1);
+            var dataPublicacao = new DateTime(2024, 1, 1);
 
             // Act
             var entidade = new CodafListaPresenca(
@@ -75,7 +75,7 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
 
             // Act
             entidade.AtualizarInformacoes(
-                new DateOnly(2024, 2, 1),
+                new(2024, 2, 1),
                 null,
                 2,
                 null,
@@ -110,7 +110,7 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
 
             // Act
             entidade.AtualizarInformacoes(
-                new DateOnly(2024, 3, 1),
+                new (2024, 3, 1),
                 null,
                 null,
                 null,
@@ -145,7 +145,7 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
             return new CodafListaPresenca(
                 PROPOSTA_ID,
                 PROPOSTA_TURMA_ID,
-                DateOnly.FromDateTime(DateTime.Now),
+                DateTime.Now,
                 null,
                 1,
                 null,

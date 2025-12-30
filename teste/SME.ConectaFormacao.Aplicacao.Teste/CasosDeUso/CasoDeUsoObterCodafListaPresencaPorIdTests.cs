@@ -7,9 +7,6 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
@@ -37,8 +34,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var listaPresencaEntidade = new CodafListaPresenca(
                 propostaId: 1,
                 propostaTurmaId: 1,
-                dataPublicacao: DateOnly.FromDateTime(DateTime.Now),
-                dataPublicacaoDom: DateOnly.FromDateTime(DateTime.Now),
+                dataPublicacao: DateTime.Now,
+                dataPublicacaoDom: DateTime.Now,
                 numeroComunicado: 123,
                 paginaComunicadoDom: 12,
                 codigoCursoEol: 1,
