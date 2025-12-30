@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
         public DateTime? DataPublicacaoDom { get; set; }
         public short? NumeroComunicado { get; set; }
         public short? PaginaComunicadoDom { get; set; }
-        public int? CoidgoCursoEol { get; set; }
+        public int? CodigoCursoEol { get; set; }
         public int? CodigoNivel { get; set; }
         public string? Observacao { get; set; }
         public StatusCodafListaPresenca Status { get; set; }
