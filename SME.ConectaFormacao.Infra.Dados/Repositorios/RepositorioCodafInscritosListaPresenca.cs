@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        U.CPF,
                        U.NOME,
                        CI.PERCENTUAL_FREQUENCIA AS percentualFrequencia,
-                       CI.ATIVIDADE_OBRIGATORIO AS atividadeObrigatoria,
+                       CI.ATIVIDADE_OBRIGATORIO AS atividadeObrigatorio,
                        CI.CONCEITO_FINAL AS conceitoFinal,
                        CI.APROVADO
                 {sqlBase}
