@@ -22,6 +22,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoObterCodafListaPresencaPorId, CasoDeUsoObterCodafListaPresencaPorId>()
                 .AddScoped<IRepositorioCodafInscritosListaPresenca, RepositorioCodafInscritosListaPresenca>()
                 .AddScoped<ICasoDeUsoListarInscritosTurmaCodafListaPresenca, CasoDeUsoListarInscritosTurmaCodafListaPresenca>()
+                .AddScoped<ICasoDeUsoTurmaPossuiCodafListaPresenca, CasoDeUsoTurmaPossuiCodafListaPresenca>()
             ;
         }
     }
