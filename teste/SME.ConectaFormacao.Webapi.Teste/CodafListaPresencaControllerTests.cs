@@ -257,5 +257,21 @@ namespace SME.ConectaFormacao.Webapi.Teste
             resultadoValor.Should().NotBeNull();
             resultadoValor.Should().BeEquivalentTo(paginacaoResultadoDto);
         }
+
+        [Fact]
+        public async Task DadoUmaPropostaTurmaId_QuandoChamarTurmaPossuiListaPresenca_EntaoDeveRetornarResultadoSucesso()
+        {
+            // Arrange
+            var propostaTurmaId = _faker.Random.Long(1);
+            var listaPresencaId = _faker.Random.Long(1);
+            _mockCasoDeUsoListarInscritosTurma
+                .Setup(x => x.ExecutarAsync(propostaTurmaId, 1, 10))
+                .ReturnsAsync(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>.DeSucesso(
+                    new PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>([], 0, 0)));
+            // Act
+            await _controller.ObterInscritosPorTurma(propostaTurmaId);
+            // Assert
+            _mockCasoDeUsoListarInscritosTurma.Verify(x => x.ExecutarAsync(propostaTurmaId, 1, 10), Times.Once);
+        }
     }
 }

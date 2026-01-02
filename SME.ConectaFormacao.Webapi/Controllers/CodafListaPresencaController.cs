@@ -13,7 +13,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         ICasoDeUsoAtualizarCodafListaPresenca casoDeUsoAtualizar,
         ICasoDeUsoListarCodafListaPresenca casoDeUsoListarCodafListaPresenca,
         ICasoDeUsoObterCodafListaPresencaPorId casoDeUsoObterCodafListaPresencaPorId,
-        ICasoDeUsoListarInscritosTurmaCodafListaPresenca casoDeUsoListarInscritosTurmaCodafListaPresenca) : BaseController
+        ICasoDeUsoListarInscritosTurmaCodafListaPresenca casoDeUsoListarInscritosTurmaCodafListaPresenca,
+        ICasoDeUsoTurmaPossuiCodafListaPresenca casoDeUsoTurmaPossuiCodafListaPresenca) : BaseController
     {
         [HttpPost]
         [ProducesResponseType(typeof(Resultado<CodafListaPresencaDto>), 201)]
@@ -63,6 +64,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ObterInscritosPorTurma(long propostaTurmaId, [FromQuery] int numeroPagina = 1, [FromQuery] int numeroRegistros = 10)
         {
             var resultado = await casoDeUsoListarInscritosTurmaCodafListaPresenca.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpGet("turmas/{propostaTurmaId:long}/possui-lista")]
+        [ProducesResponseType(typeof(Resultado<bool>), 200)]
+        [ProducesResponseType(typeof(Resultado<bool>), 400)]
+        public async Task<IActionResult> TurmaPossuiListaPresenca(long propostaTurmaId, [FromQuery] long listaPresencaId = 0)
+        {
+            var resultado = await casoDeUsoTurmaPossuiCodafListaPresenca.ExecutarAsync(propostaTurmaId, listaPresencaId);
             return ProcessarResultado(resultado);
         }
     }
