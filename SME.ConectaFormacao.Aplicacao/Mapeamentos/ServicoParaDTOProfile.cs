@@ -6,14 +6,16 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Acessos;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
+    [ExcludeFromCodeCoverage]
     public class ServicoParaDTOProfile : Profile
     {
         public ServicoParaDTOProfile()
         {
-            CreateMap<AcessosUsuarioAutenticacaoRetorno, UsuarioAutenticacaoRetornoDTO>();
+            CreateMap<AcessosUsuarioAutenticacaoRetorno, UsuarioAutenticacaoRetornoDto>();
             CreateMap<AcessosPerfisUsuarioRetorno, UsuarioPerfisRetornoDTO>();
             CreateMap<AcessosPerfilUsuario, PerfilUsuarioDTO>();
 

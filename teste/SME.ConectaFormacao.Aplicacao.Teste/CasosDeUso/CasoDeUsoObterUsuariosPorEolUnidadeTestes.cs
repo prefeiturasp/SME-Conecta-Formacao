@@ -4,7 +4,7 @@ using FluentAssertions;
 using MediatR;
 using Moq;
 using Moq.AutoMock;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuario;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios;
 using SME.ConectaFormacao.Aplicacao.Consultas.Usuario.ObterUsuariosPorUnidadeEol;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Extensoes;

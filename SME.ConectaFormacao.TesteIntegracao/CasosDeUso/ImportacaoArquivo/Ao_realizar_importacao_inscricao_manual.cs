@@ -5,15 +5,15 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.ServicosFakes;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var count = 0;
             foreach (var item in itensImportacao)
             {
-                item.Conteudo = (new InscricaoCursistaImportacaoDTO()
+                item.Conteudo = (new InscricaoCursistaImportacaoDto()
                 {
                     Turma = propostaTurmas.FirstOrDefault().Nome,
                     ColaboradorRede = "1",
@@ -132,7 +132,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var count = 0;
             foreach (var item in itensImportacao)
             {
-                item.Conteudo = (new InscricaoCursistaImportacaoDTO()
+                item.Conteudo = (new InscricaoCursistaImportacaoDto()
                 {
                     Turma = propostaTurmas.FirstOrDefault().Nome,
                     ColaboradorRede = "1",
@@ -151,7 +151,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
 
             var importacaoArquivosRegistros = ObterTodos<Dominio.Entidades.ImportacaoArquivoRegistro>();
 
-            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDTO>(importacaoArquivosRegistros.FirstOrDefault(f => f.Id == 1));
+            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDto>(importacaoArquivosRegistros.FirstOrDefault(f => f.Id == 1));
             importacaoArquivoRegistroDto.PropostaId = proposta.Id;
 
             // act
@@ -200,7 +200,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var count = 0;
             foreach (var item in itensImportacao)
             {
-                item.Conteudo = (new InscricaoCursistaImportacaoDTO()
+                item.Conteudo = (new InscricaoCursistaImportacaoDto()
                 {
                     Turma = "Conecta",
                     ColaboradorRede = "1",
@@ -218,7 +218,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
 
             var importacaoArquivosRegistros = ObterTodos<Dominio.Entidades.ImportacaoArquivoRegistro>();
 
-            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDTO>(importacaoArquivosRegistros.FirstOrDefault(f => f.Id == 1));
+            var importacaoArquivoRegistroDto = mapper.Map<ImportacaoArquivoRegistroDto>(importacaoArquivosRegistros.FirstOrDefault(f => f.Id == 1));
             importacaoArquivoRegistroDto.PropostaId = proposta.Id;
 
             // act

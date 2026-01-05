@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio.Contexto;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria
 {
     public class CasoDeUsoObterUsuarioRedeParceriaPaginada : CasoDeUsoAbstratoPaginado, ICasoDeUsoObterUsuarioRedeParceriaPaginada
     {
@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
         {
         }
 
-        public async Task<PaginacaoResultadoDTO<UsuarioRedeParceriaPaginadoDTO>> Executar(FiltroUsuarioRedeParceriaDTO filtroUsuarioRedeParceriaDTO)
+        public async Task<PaginacaoResultadoDto<UsuarioRedeParceriaPaginadoDTO>> Executar(FiltroUsuarioRedeParceriaDTO filtroUsuarioRedeParceriaDTO)
         {
             return await mediator.Send(new ObterUsuarioRedeParceiraPaginadaQuery(filtroUsuarioRedeParceriaDTO, NumeroPagina, NumeroRegistros));
         }

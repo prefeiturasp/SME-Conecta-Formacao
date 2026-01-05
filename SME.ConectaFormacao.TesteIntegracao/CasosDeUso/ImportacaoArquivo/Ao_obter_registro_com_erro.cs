@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
             var arquivosValidado = ImportacaoArquivoMock.GerarImportacaoArquivo(proposta.Id, SituacaoImportacaoArquivo.Validando, 2);
             await InserirNaBase(arquivosValidado);
 
-            var conteudoErro1 = new InscricaoCursistaImportacaoDTO
+            var conteudoErro1 = new InscricaoCursistaImportacaoDto
             {
                 ColaboradorRede = "Não",
                 Cpf = "99910000000",
@@ -52,7 +52,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                                                     SituacaoImportacaoArquivoRegistro.Erro, 1);
             await InserirNaBase(registroErro1);
 
-            var conteudoErro2 = new InscricaoCursistaImportacaoDTO
+            var conteudoErro2 = new InscricaoCursistaImportacaoDto
             {
                 ColaboradorRede = "Sim",
                 Cpf = "90000000000",
@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.ImportacaoArquivo
                                         SituacaoImportacaoArquivoRegistro.Erro, 1);
             await InserirNaBase(registroErro2);
 
-            var conteudoErro3 = new InscricaoCursistaImportacaoDTO
+            var conteudoErro3 = new InscricaoCursistaImportacaoDto
             {
                 ColaboradorRede = "Sim",
                 Cpf = "90000000001",

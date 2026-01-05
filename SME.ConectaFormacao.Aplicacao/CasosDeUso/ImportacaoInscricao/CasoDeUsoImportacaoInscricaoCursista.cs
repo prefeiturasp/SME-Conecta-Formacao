@@ -12,12 +12,8 @@ using SME.ConectaFormacao.Infra;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao
 {
-    public class CasoDeUsoImportacaoInscricaoCursista : CasoDeUsoAbstrato, ICasoDeUsoImportacaoArquivoInscricaoCursista
+    public class CasoDeUsoImportacaoInscricaoCursista(IMediator mediator) : CasoDeUsoAbstrato(mediator), ICasoDeUsoImportacaoArquivoInscricaoCursista
     {
-        public CasoDeUsoImportacaoInscricaoCursista(IMediator mediator) : base(mediator)
-        {
-        }
-
         public async Task<RetornoDTO> Executar(IFormFile arquivo, long propostaId)
         {
             if (arquivo == null || arquivo.Length == 0)

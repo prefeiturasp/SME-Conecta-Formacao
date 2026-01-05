@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{propostaId}/arquivos-importados")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<ArquivoInscricaoImportadoDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<ArquivoInscricaoImportadoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_C, Policy = "Bearer")]
@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{arquivoId}/registros-inconsistencia")]
-        [ProducesResponseType(typeof(PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoComSucessoDTO<RegistroDaInscricaoInsconsistenteDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_C, Policy = "Bearer")]

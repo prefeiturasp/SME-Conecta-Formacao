@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             };
 
             var idsPropostas = new List<long> { 1, 2, 3 };
-            var retornoRepositorio = new PaginacaoResultadoDto<long>
+            var retornoRepositorio = new Infra.Dados.Dtos.ResultadoPaginado<long>
             {
                 Itens = idsPropostas,
                 TotalRegistros = 10
@@ -92,7 +92,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var filtro = new FiltroListagemFormacaoDTO();
-            var retornoRepositorio = new PaginacaoResultadoDto<long>
+            var retornoRepositorio = new Infra.Dados.Dtos.ResultadoPaginado<long>
             {
                 Itens = [],
                 TotalRegistros = 0
@@ -122,7 +122,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var filtro = new FiltroListagemFormacaoDTO();
-            var retornoRepositorio = new PaginacaoResultadoDto<long>
+            var retornoRepositorio = new Infra.Dados.Dtos.ResultadoPaginado<long>
             {
                 Itens = [],
                 TotalRegistros = 0
@@ -149,7 +149,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var filtro = new FiltroListagemFormacaoDTO();
-            var retornoRepositorio = new PaginacaoResultadoDto<long>
+            var retornoRepositorio = new Infra.Dados.Dtos.ResultadoPaginado<long>
             {
                 Itens = [],
                 TotalRegistros = 0
@@ -176,7 +176,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var filtro = new FiltroListagemFormacaoDTO();
-            var retornoRepositorio = new PaginacaoResultadoDto<long>
+            var retornoRepositorio = new Infra.Dados.Dtos.ResultadoPaginado<long>
             {
                 Itens = [],
                 TotalRegistros = 0

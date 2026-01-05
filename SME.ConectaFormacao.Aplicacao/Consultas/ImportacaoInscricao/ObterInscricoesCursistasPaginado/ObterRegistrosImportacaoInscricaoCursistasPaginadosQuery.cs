@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery : IRequest<PaginacaoResultadoDTO<ImportacaoArquivoRegistroDTO>>
+    public class ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery : IRequest<PaginacaoResultadoDto<ImportacaoArquivoRegistroDto>>
     {
         public ObterRegistrosImportacaoInscricaoCursistasPaginadosQuery(int numeroPagina, int numeroRegistros, long importacaoArquivoId, SituacaoImportacaoArquivoRegistro? ignorarSituacao)
         {

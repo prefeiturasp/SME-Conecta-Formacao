@@ -1,0 +1,344 @@
+﻿using Dapper;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Shouldly;
+using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
+using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricoes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.Setup;
+using Xunit;
+
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes
+{
+    public class Ao_obter_inscricoes_por_id_e_filtro : TestePropostaBase
+    {
+        private FiltroListagemInscricaoDto Filtro = new() { PropostaId = 0, NumeroPagina = 1, NumeroRegistros = 10 };
+        private long PropostaId = 0;
+        public Ao_obter_inscricoes_por_id_e_filtro(CollectionFixture collectionFixture) : base(collectionFixture)
+        {
+        }
+        protected override void RegistrarQueryFakes(IServiceCollection services)
+        {
+            base.RegistrarQueryFakes(services);
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuarioLogadoQuery, Dominio.Entidades.Usuario>), typeof(ObterUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id")]
+        public async Task Deve_ober_dados_somente_com_id()
+        {
+            // arrange
+            await DadosBasico();
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDto() { PropostaId = PropostaId, NumeroPagina = 1, NumeroRegistros = 10 };
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(dtoFiltro);
+
+            // assert 
+
+            retorno.Items.ShouldNotBeEmpty();
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id e CPF")]
+        public async Task Deve_ober_dados_somente_com_id_cpf()
+        {
+            // arrange
+            await DadosBasico();
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDto() { Cpf = Filtro.Cpf, PropostaId = PropostaId, NumeroPagina = 1, NumeroRegistros = 10 };
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(dtoFiltro);
+
+            // assert 
+
+            retorno.Items.ShouldNotBeEmpty();
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id e RF")]
+        public async Task Deve_ober_dados_somente_com_id_rf()
+        {
+            // arrange
+            await DadosBasico();
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDto() { RegistroFuncional = Filtro.RegistroFuncional, PropostaId = PropostaId, NumeroPagina = 1, NumeroRegistros = 10 };
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(dtoFiltro);
+
+            // assert 
+
+            retorno.Items.ShouldNotBeEmpty();
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id e Nome")]
+        public async Task Deve_ober_dados_somente_com_id_nome()
+        {
+            // arrange
+            await DadosBasico();
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDto() { NomeCursista = Filtro.NomeCursista, PropostaId = PropostaId, NumeroPagina = 1, NumeroRegistros = 10 };
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(dtoFiltro);
+
+            // assert 
+
+            retorno.Items.ShouldNotBeEmpty();
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id e Todos Parametros")]
+        public async Task Deve_ober_dados_somente_com_id_todos_parametros()
+        {
+            // arrange
+            await DadosBasico();
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDto() { NomeCursista = Filtro.NomeCursista, Cpf = Filtro.Cpf, RegistroFuncional = Filtro.RegistroFuncional, PropostaId = PropostaId, NumeroPagina = 1, NumeroRegistros = 10 };
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(dtoFiltro);
+
+            // assert 
+
+            retorno.Items.ShouldNotBeEmpty();
+        }
+
+        [Fact(DisplayName = "Inscrição - Não Deve obter inscrição Informando Id que não existe")]
+        public async Task Nao_Deve_ober_dados_informando_id_que_nao_existe()
+        {
+            // arrange
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDto() { PropostaId = PropostaId, NumeroPagina = 1, NumeroRegistros = 10 };
+
+            // act
+            var excecao = await casoDeUso.ExecutarAsync(dtoFiltro);
+
+            // assert 
+            excecao.Items.Count().ShouldBeEquivalentTo(0);
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição aguardando analise validar permissao")]
+        public async Task Deve_obter_inscricao_aguardando_analise_validar_permissao()
+        {
+            // arrange
+            await DadosBasico(SituacaoInscricao.AguardandoAnalise);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDto() { PropostaId = PropostaId, NumeroPagina = 1, NumeroRegistros = 10 };
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(dtoFiltro);
+
+            // assert 
+
+            retorno.Items.ShouldNotBeEmpty();
+
+            var inscricao = retorno.Items.FirstOrDefault();
+
+            inscricao.Permissao.PodeCancelar.ShouldBeTrue();
+            inscricao.Permissao.PodeConfirmar.ShouldBeTrue();
+            inscricao.Permissao.PodeColocarEmEspera.ShouldBeTrue();
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição cancelada validar permissao")]
+        public async Task Deve_obter_inscricao_cancelada_permissao()
+        {
+            // arrange
+            await DadosBasico(SituacaoInscricao.Cancelada);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDto() { PropostaId = PropostaId, NumeroPagina = 1, NumeroRegistros = 10 };
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(dtoFiltro);
+
+            // assert 
+
+            retorno.Items.ShouldNotBeEmpty();
+
+            var inscricao = retorno.Items.FirstOrDefault();
+
+            inscricao.Permissao.PodeCancelar.ShouldBeFalse();
+            inscricao.Permissao.PodeConfirmar.ShouldBeFalse();
+            inscricao.Permissao.PodeColocarEmEspera.ShouldBeFalse();
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição confirmada validar permissao")]
+        public async Task Deve_obter_inscricao_confirmada_permissao()
+        {
+            // arrange
+            await DadosBasico(SituacaoInscricao.Confirmada);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDto() { PropostaId = PropostaId, NumeroPagina = 1, NumeroRegistros = 10 };
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(dtoFiltro);
+
+            // assert 
+
+            retorno.Items.ShouldNotBeEmpty();
+
+            var inscricao = retorno.Items.FirstOrDefault();
+
+            inscricao.Permissao.PodeCancelar.ShouldBeTrue();
+            inscricao.Permissao.PodeConfirmar.ShouldBeFalse();
+            inscricao.Permissao.PodeColocarEmEspera.ShouldBeFalse();
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição em espera validar permissao")]
+        public async Task Deve_obter_inscricao_em_espera_permissao()
+        {
+            // arrange
+            await DadosBasico(SituacaoInscricao.EmEspera);
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            var dtoFiltro = new FiltroListagemInscricaoDto() { PropostaId = PropostaId, NumeroPagina = 1, NumeroRegistros = 10 };
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(dtoFiltro);
+
+            // assert 
+
+            retorno.Items.ShouldNotBeEmpty();
+
+            var inscricao = retorno.Items.FirstOrDefault();
+
+            inscricao.Permissao.PodeCancelar.ShouldBeTrue();
+            inscricao.Permissao.PodeConfirmar.ShouldBeTrue();
+            inscricao.Permissao.PodeColocarEmEspera.ShouldBeFalse();
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição ao filtrar por cargo")]
+        public async Task Deve_obter_inscricao_ao_filtrar_por_cargo()
+        {
+            // arrange
+            var dadosBasicos = await DadosBasico();
+
+            var filtro = new FiltroListagemInscricaoDto()
+            {
+                PropostaId = dadosBasicos.proposta.Id,
+                NumeroPagina = 1,
+                NumeroRegistros = 10,
+                CargoFuncaoId = (int)dadosBasicos.cargosFuncoes.First().Id
+            };
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(filtro);
+            // assert 
+            retorno.Items.ShouldNotBeEmpty();
+        }
+
+        [Fact(DisplayName = "Inscrição - Não Deve obter inscrição ao filtrar por cargo inexistente")]
+        public async Task Deve_nao_obter_inscricao_ao_filtrar_por_cargo_inexistente()
+        {
+            // arrange
+            var dadosBasicos = await DadosBasico();
+
+            var filtro = new FiltroListagemInscricaoDto()
+            {
+                PropostaId = dadosBasicos.proposta.Id,
+                NumeroPagina = 1,
+                NumeroRegistros = 10,
+                CargoFuncaoId = 999 // Cargo inexistente
+            };
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(filtro);
+            // assert
+            retorno.Items.ShouldBeEmpty();
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição ao filtrar por Situação")]
+        public async Task Deve_obter_inscricao_ao_filtrar_por_situacao()
+        {
+            // arrange
+            var dadosBasicos = await DadosBasico(SituacaoInscricao.Confirmada);
+            var filtro = new FiltroListagemInscricaoDto()
+            {
+                PropostaId = dadosBasicos.proposta.Id,
+                NumeroPagina = 1,
+                NumeroRegistros = 10,
+                Situacao = dadosBasicos.inscricao!.Situacao
+            };
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(filtro);
+            // assert 
+            retorno.Items.ShouldNotBeEmpty();
+        }
+
+        [Fact(DisplayName = "Inscrição - Não Deve obter inscrição ao filtrar por Situação inexistente")]
+        public async Task Deve_nao_obter_inscricao_ao_filtrar_por_situacao_inexistente()
+        {
+            // arrange
+            var dadosBasicos = await DadosBasico(SituacaoInscricao.Confirmada);
+            var filtro = new FiltroListagemInscricaoDto()
+            {
+                PropostaId = dadosBasicos.proposta.Id,
+                NumeroPagina = 1,
+                NumeroRegistros = 10,
+                Situacao = SituacaoInscricao.Cancelada
+            };
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterInscricaoPorId>();
+            // act
+            var retorno = await casoDeUso.ExecutarAsync(filtro);
+            // assert
+            retorno.Items.ShouldBeEmpty();
+        }
+
+        private async Task<(Usuario usuario, 
+                           IEnumerable<CargoFuncao> cargosFuncoes,
+                           IEnumerable<CargoFuncaoDeparaEol> depara,
+                           Proposta proposta,
+                           PropostaTurma? propostaTurma,
+                           Inscricao? inscricao,
+                           PropostaTurmaVaga? vaga)>
+                           DadosBasico(SituacaoInscricao? situacaoInscricao = null)
+        {
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            var CargosFuncoes = CargoFuncaoMock.GerarCargoFuncao(10);
+            await InserirNaBase(CargosFuncoes);
+
+            var depara = CargoFuncaoDeparaEolMock.GerarCargoFuncaoDeparaEol(CargosFuncoes);
+            await InserirNaBase(depara);
+
+            AoObterDadosUsuarioInscricaoMock.Usuario = usuario;
+
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.Publicada, FormacaoHomologada.NaoCursosPorIN);
+
+            var propostaTurma = proposta.Turmas.FirstOrDefault();
+
+            var inscricao = InscricaoMock.GerarInscricao(usuario.Id, propostaTurma!.Id, situacaoInscricao);
+            inscricao.CargoId = CargosFuncoes.First().Id;
+            inscricao.FuncaoId = CargosFuncoes.First().Id;
+            await InserirNaBase(inscricao);
+
+            var vaga = PropostaMock.GerarTurmaVaga(propostaTurma.Id, inscricao.Id);
+            await InserirNaBase(vaga);
+
+            PropostaId = proposta.Id;
+            Filtro.Cpf = usuario.Cpf;
+            Filtro.NomeCursista = usuario.Nome;
+            Filtro.RegistroFuncional = usuario.Login;
+
+            return (usuario, CargosFuncoes, depara, proposta, propostaTurma, inscricao, vaga);
+        }
+    }
+}

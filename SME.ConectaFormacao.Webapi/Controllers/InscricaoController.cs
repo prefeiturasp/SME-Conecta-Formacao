@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.DTOS;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricoes;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 using System.Net;
 
@@ -16,13 +17,23 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     public class InscricaoController : BaseController
     {
         [HttpGet("dados-inscricao")]
-        [ProducesResponseType(typeof(DadosInscricaoDTO), 200)]
+        [ProducesResponseType(typeof(DadosInscricaoDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterDadosUsuario(
             [FromServices] ICasoDeUsoObterDadosInscricao casoDeUsoObterDadosInscricao)
         {
             return Ok(await casoDeUsoObterDadosInscricao.Executar());
+        }
+
+        [HttpGet("dados-inscricao-proposta/{propostaId:long}")]
+        [ProducesResponseType(typeof(DadosInscricaoPropostaDto), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterDadosInscricaoProposta([FromRoute] long propostaId,
+            [FromServices] ICasoDeUsoObterDadosInscricaoParaProposta casoDeUsoObterDadosInscricaoParaProposta)
+        {
+            return Ok(await casoDeUsoObterDadosInscricaoParaProposta.ExecutarAsync(propostaId));
         }
 
         [HttpGet("turmas/{propostaId}")]
@@ -38,7 +49,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<InscricaoPaginadaDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<InscricaoPaginadaDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterInscricoesPaginada(
@@ -53,7 +64,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> SalvarInscricao(
             [FromServices] ICasoDeUsoSalvarInscricao casoDeUsoSalvarInscricao,
-            [FromBody] InscricaoDTO inscricaoDTO)
+            [FromBody] InscricaoDto inscricaoDTO)
         {
             return Ok(await casoDeUsoSalvarInscricao.Executar(inscricaoDTO));
         }
@@ -135,19 +146,20 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(resultado);
         }
 
-        [HttpGet("{propostaId}")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemInscricaoDTO>), 200)]
+        [HttpGet("{propostaId:long}")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<DadosListagemInscricaoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
-        public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long propostaId, [FromQuery] FiltroListagemInscricaoDTO filtroListagemInscricaoDTO,
-    [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
+        public async Task<IActionResult> ObterInscricaoPorIdPaginado([FromRoute] long propostaId, [FromQuery] FiltroListagemInscricaoDto filtroListagemInscricaoDto,
+            [FromServices] ICasoDeUsoObterInscricaoPorId casoDeUsoObterInscricaoPorId)
         {
-            return Ok(await casoDeUsoObterInscricaoPorId.Executar(propostaId, filtroListagemInscricaoDTO));
+            filtroListagemInscricaoDto.PropostaId = propostaId;
+            return Ok(await casoDeUsoObterInscricaoPorId.ExecutarAsync(filtroListagemInscricaoDto));
         }
 
         [HttpGet("formacao-turmas")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<DadosListagemFormacaoComTurmaDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<DadosListagemFormacaoComTurmaDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]

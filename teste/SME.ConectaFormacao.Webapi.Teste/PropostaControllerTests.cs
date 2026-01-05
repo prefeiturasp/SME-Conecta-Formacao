@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Webapi.Controllers;
 
 namespace SME.ConectaFormacao.Webapi.Teste
@@ -204,7 +205,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterPropostaPaginacao>();
             var filtro = new PropostaFiltrosDTO();
-            var paginacao = new PaginacaoResultadoDTO<PropostaPaginadaDTO>(new List<PropostaPaginadaDTO>(), 10, 10);
+            var paginacao = new PaginacaoResultadoDto<PropostaPaginadaDTO>(new List<PropostaPaginadaDTO>(), 10, 10);
             mockUseCase.Setup(x => x.Executar(filtro)).ReturnsAsync(paginacao);
 
             // Act
@@ -284,7 +285,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterPropostaEncontroPaginacao>();
             var id = _faker.Random.Long();
-            var paginacao = new PaginacaoResultadoDTO<PropostaEncontroDTO>(new List<PropostaEncontroDTO>(), 0, 10);
+            var paginacao = new PaginacaoResultadoDto<PropostaEncontroDTO>(new List<PropostaEncontroDTO>(), 0, 10);
             mockUseCase.Setup(x => x.Executar(id)).ReturnsAsync(paginacao);
 
             // Act
@@ -378,7 +379,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterPropostaRegentePaginacao>();
             var id = _faker.Random.Long();
-            var paginacao = new PaginacaoResultadoDTO<PropostaRegenteDTO>(new List<PropostaRegenteDTO>(), 0, 10);
+            var paginacao = new PaginacaoResultadoDto<PropostaRegenteDTO>(new List<PropostaRegenteDTO>(), 0, 10);
             mockUseCase.Setup(x => x.Executar(id)).ReturnsAsync(paginacao);
 
             // Act
@@ -456,7 +457,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterPropostaTutorPaginacao>();
             var id = _faker.Random.Long();
-            var paginacao = new PaginacaoResultadoDTO<PropostaTutorDTO>(new List<PropostaTutorDTO>(), 0, 10);
+            var paginacao = new PaginacaoResultadoDto<PropostaTutorDTO>(new List<PropostaTutorDTO>(), 0, 10);
             mockUseCase.Setup(x => x.Executar(id)).ReturnsAsync(paginacao);
 
             // Act
@@ -714,6 +715,20 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Act
             var resultado = await _controller.ObterHorasTotaisProposta(mockUseCase.Object);
 
+            // Assert
+            Assert.IsType<OkObjectResult>(resultado);
+        }
+
+        [Fact]
+        public async Task DadoUmTermoDeBuscaQualquer_QuandoChamarAutocompletarFormacao_DeveRetornarResultadoDeSucesso()
+        {
+            // Arrange
+            var mockUseCase = new Mock<ICasoDeUsoObterAutocompletarFormacao>();
+            var termoDeBusca = _faker.Lorem.Word();
+            var resultadoDto = new PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>(new List<AutocompletarNumeroHomologacaoDto>(), 0, 10);
+            mockUseCase.Setup(x => x.ExecutarAsync(It.IsAny<FiltroAutocompletarNumeroHomologacaoDto>())).ReturnsAsync(resultadoDto);
+            // Act
+            var resultado = await _controller.AutocompletarFormacao(mockUseCase.Object, new() { NumeroPagina = 1, NumeroRegistros = 10, TermoBusca = termoDeBusca });
             // Assert
             Assert.IsType<OkObjectResult>(resultado);
         }

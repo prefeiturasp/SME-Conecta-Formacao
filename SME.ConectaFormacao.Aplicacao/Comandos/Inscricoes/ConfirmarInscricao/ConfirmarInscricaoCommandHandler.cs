@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.ConfirmarInscricao
             if (inscricao.EhNulo() || inscricao.Excluido)
                 throw new NegocioException(MensagemNegocio.INSCRICAO_NAO_ENCONTRADA);
 
-            if (inscricao.Situacao.NaoEhAguardandoAnaliseEEmEspera())
+            if (inscricao.Situacao != SituacaoInscricao.AguardandoAnalise && inscricao.Situacao != SituacaoInscricao.EmEspera)
                 throw new NegocioException(MensagemNegocio.INSCRICAO_SOMENTE_INSCRICAO_AGUARDANDO_ANALISE_OE_EM_ESPERA_PODE_IR_PARA_CONFIRMADA);
 
             var dBtransacao = transacao.Iniciar();

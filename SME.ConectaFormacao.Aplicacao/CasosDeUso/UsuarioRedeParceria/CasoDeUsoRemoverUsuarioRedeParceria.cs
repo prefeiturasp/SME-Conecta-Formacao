@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuarioRedeParceria
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria
 {
     public class CasoDeUsoRemoverUsuarioRedeParceria : CasoDeUsoAbstrato, ICasoDeUsoRemoverUsuarioRedeParceria
     {

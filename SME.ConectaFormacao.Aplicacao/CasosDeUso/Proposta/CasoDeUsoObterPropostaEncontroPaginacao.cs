@@ -12,9 +12,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<PaginacaoResultadoDTO<PropostaEncontroDTO>> Executar(long id)
+        public async Task<PaginacaoResultadoDto<PropostaEncontroDTO>> Executar(long id)
         {
-            if (id == 0) return new PaginacaoResultadoDTO<PropostaEncontroDTO>(new List<PropostaEncontroDTO>(), 0, 0);
+            if (id == 0) return new PaginacaoResultadoDto<PropostaEncontroDTO>(new List<PropostaEncontroDTO>(), 0, 0);
 
             return await mediator.Send(new ObterEncontrosPaginadoQuery(id, NumeroPagina, NumeroRegistros));
         }

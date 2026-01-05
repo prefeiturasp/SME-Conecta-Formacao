@@ -48,29 +48,30 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public AreaPromotora? AreaPromotora { get; set; }
         public Arquivo? ArquivoImagemDivulgacao { get; set; }
-        public IEnumerable<PropostaDre> Dres { get; set; }
-        public IEnumerable<PropostaPublicoAlvo> PublicosAlvo { get; set; }
-        public IEnumerable<PropostaFuncaoEspecifica> FuncoesEspecificas { get; set; }
-        public IEnumerable<PropostaCriterioValidacaoInscricao> CriteriosValidacaoInscricao { get; set; }
-        public IEnumerable<PropostaVagaRemanecente> VagasRemanecentes { get; set; }
-        public IEnumerable<PropostaEncontro> Encontros { get; set; }
-        public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; }
-        public IEnumerable<PropostaCriterioCertificacao> CriterioCertificacao { get; set; }
-        public IEnumerable<PropostaRegente> Regentes { get; set; }
-        public IEnumerable<PropostaParecerista>? Pareceristas { get; set; }
-        public IEnumerable<PropostaTutor> Tutores { get; set; }
-        public IEnumerable<PropostaTurma> Turmas { get; set; }
-        public IEnumerable<PropostaTurmaDre> TurmasDres { get; set; }
-        public IEnumerable<PropostaModalidade> Modalidades { get; set; }
-        public IEnumerable<PropostaAnoTurma> AnosTurmas { get; set; }
-        public IEnumerable<PropostaComponenteCurricular> ComponentesCurriculares { get; set; }
-        public PropostaMovimentacao Movimentacao { get; set; }
+        public IEnumerable<PropostaDre> Dres { get; set; } = [];
+        public IEnumerable<PropostaPublicoAlvo> PublicosAlvo { get; set; } = [];
+        public IEnumerable<PropostaFuncaoEspecifica> FuncoesEspecificas { get; set; } = [];
+        public IEnumerable<PropostaCriterioValidacaoInscricao> CriteriosValidacaoInscricao { get; set; } = [];
+        public IEnumerable<PropostaVagaRemanecente> VagasRemanecentes { get; set; } = [];
+        public IEnumerable<PropostaEncontro> Encontros { get; set; } = [];
+        public IEnumerable<PropostaPalavraChave> PalavrasChaves { get; set; } = [];
+        public IEnumerable<PropostaCriterioCertificacao> CriterioCertificacao { get; set; } = [];
+        public IEnumerable<PropostaRegente> Regentes { get; set; } = [];
+        public IEnumerable<PropostaParecerista>? Pareceristas { get; set; } = [];
+        public IEnumerable<PropostaTutor> Tutores { get; set; } = [];
+        public IEnumerable<PropostaTurma> Turmas { get; set; } = [];
+        public IEnumerable<PropostaTurmaDre> TurmasDres { get; set; } = [];
+        public IEnumerable<PropostaModalidade> Modalidades { get; set; } = [];
+        public IEnumerable<PropostaAnoTurma> AnosTurmas { get; set; } = [];
+        public IEnumerable<PropostaComponenteCurricular> ComponentesCurriculares { get; set; } = [];
+        public PropostaMovimentacao Movimentacao { get; set; } = new();
+        public IEnumerable<CodafListaPresenca> CodafListaPresencas { get; set; } = [];
         public IEnumerable<PropostaTurmaDre> ObterPropostaTurmasDres
         {
             get
             {
                 if (Turmas.EhNulo())
-                    return default;
+                    return default!;
 
                 return from propostaTurma in Turmas
                        from dreId in propostaTurma.DresIds
@@ -81,7 +82,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
                        };
             }
         }
-        public IEnumerable<PropostaTipoInscricao> TiposInscricao { get; set; }
+        public IEnumerable<PropostaTipoInscricao> TiposInscricao { get; set; } = [];
 
         public bool EstaEmPeriodoDeInscricao
         {

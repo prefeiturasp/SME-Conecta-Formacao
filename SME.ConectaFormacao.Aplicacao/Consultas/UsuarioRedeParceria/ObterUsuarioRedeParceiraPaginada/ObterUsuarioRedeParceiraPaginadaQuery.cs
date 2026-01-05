@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUsuarioRedeParceiraPaginadaQuery : IRequest<PaginacaoResultadoDTO<UsuarioRedeParceriaPaginadoDTO>>
+    public class ObterUsuarioRedeParceiraPaginadaQuery : IRequest<PaginacaoResultadoDto<UsuarioRedeParceriaPaginadoDTO>>
     {
         public ObterUsuarioRedeParceiraPaginadaQuery(FiltroUsuarioRedeParceriaDTO filtros, int numeroPagina, int numeroRegistros)
         {

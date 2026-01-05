@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     public class PublicoController : BaseController
     {
         [HttpGet("cargo-funcao/tipo/{tipo}")]
-        [ProducesResponseType(typeof(IEnumerable<CargoFuncaoDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<CargoFuncaoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterListaCargoFuncao(
@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("formacao-listagem")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDTO<IEnumerable<RetornoListagemFormacaoDTO>>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<IEnumerable<RetornoListagemFormacaoDTO>>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterListagemFormacao([FromQuery] FiltroListagemFormacaoDTO filtroListagemFormacaoDTO, [FromServices] ICasoDeUsoObterListagemFormacaoPaginada casoDeUsoObterListagemFormacaoPaginada)

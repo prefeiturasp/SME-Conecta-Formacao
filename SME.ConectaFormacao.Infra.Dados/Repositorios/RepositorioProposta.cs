@@ -1,22 +1,21 @@
 ﻿using Dapper;
 using Dommel;
+using Microsoft.Win32.SafeHandles;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioProposta : RepositorioBaseAuditavel<Proposta>, IRepositorioProposta
+    public class RepositorioProposta(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : 
+        RepositorioBaseAuditavel<Proposta>(contexto, conexao), IRepositorioProposta
     {
-        public RepositorioProposta(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
-        {
-        }
-
         public Task RemoverCriteriosValidacaoInscricao(IEnumerable<PropostaCriterioValidacaoInscricao> criteriosValidacaoInscricao)
         {
             var criterioValidacaoInscricao = criteriosValidacaoInscricao.First();
@@ -1812,7 +1811,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
-        public async Task<PaginacaoResultadoDto<long>> ObterListagemFormacoesPorFiltro(FiltroListaFormacaoPropostaDto filtro)
+        public async Task<ResultadoPaginado<long>> ObterListagemFormacoesPorFiltro(FiltroListaFormacaoPropostaDto filtro)
         {
             var sql = new StringBuilder();
             var parametros = new DynamicParameters();
@@ -1842,17 +1841,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             // 3. CTE Principal (Query Base com Distinct)
             // Encapsulamos numa CTE 'BaseConsulta' para que o DISTINCT ocorra ANTES da contagem e paginação
 
-            sql.AppendLine(@"
-            SELECT DISTINCT 
-                p.id, 
-                p.data_realizacao_inicio, 
-                p.data_realizacao_fim
-            FROM proposta p
-            INNER JOIN proposta_tipo_inscricao pti ON pti.proposta_id = p.id AND NOT pti.excluido
-            WHERE NOT p.excluido 
-                AND pti.tipo_inscricao = ANY(@tipoInscricao) 
-                AND p.situacao = @situacao
-                AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date");
+            sql.AppendLine("""
+                SELECT DISTINCT 
+                       p.id,
+                       p.data_realizacao_inicio,
+                       p.data_realizacao_fim
+                FROM proposta p
+                INNER JOIN proposta_tipo_inscricao pti ON pti.proposta_id = p.id AND NOT pti.excluido
+                WHERE NOT p.excluido 
+                      AND pti.tipo_inscricao = ANY(@tipoInscricao)
+                      AND p.situacao = @situacao 
+                      AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date                
+                """);
 
             if (aplicarFiltroPerfil)
             {
@@ -1864,13 +1864,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             sql.AppendLine(")"); // Fecha CTE BaseConsulta
 
             // 4. Select Final com Window Function para Total e Paginação
-            sql.AppendLine(@"
-            SELECT 
-                id,
-                COUNT(*) OVER() AS TotalGeral
-            FROM BaseConsulta
-            ORDER BY data_realizacao_inicio, data_realizacao_fim
-            OFFSET @offset LIMIT @tamanhoPagina;");
+            sql.AppendLine("""
+                SELECT id, COUNT(*) OVER() AS TotalGeral
+                FROM BaseConsulta
+                ORDER BY data_realizacao_inicio, data_realizacao_fim
+                OFFSET @offset LIMIT @tamanhoPagina;
+                """);
 
             // 5. Execução e Mapeamento
             var resultadoDapper = await conexao.Obter().QueryAsync<dynamic>(sql.ToString(), parametros);
@@ -1878,7 +1877,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var listaIds = resultadoDapper.Select(x => (long)x.id).ToList();
             var totalRegistros = resultadoDapper.FirstOrDefault()?.totalgeral ?? 0;
 
-            return new PaginacaoResultadoDto<long>
+            return new ResultadoPaginado<long>
             {
                 Itens = listaIds,
                 TotalRegistros = (int)totalRegistros,
@@ -1905,10 +1904,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (f.DataInicial.HasValue && f.DataFinal.HasValue)
             {
-                sql.AppendLine(@" AND (
+                sql.AppendLine(""" 
+                AND (
                     (p.data_realizacao_inicio::date BETWEEN @dataInicial AND @dataFinal) OR 
                     (p.data_realizacao_fim::date BETWEEN @dataInicial AND @dataFinal)
-                )");
+                )
+                """);
                 p.Add("@dataInicial", f.DataInicial.Value.Date);
                 p.Add("@dataFinal", f.DataFinal.Value.Date);
             }
@@ -1921,26 +1922,32 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (f.PublicosAlvosIds?.Length > 0)
             {
-                sql.AppendLine(@" AND EXISTS(SELECT 1 
+                sql.AppendLine("""                    
+                    AND EXISTS(SELECT 1 
                                      FROM proposta_publico_alvo ppa 
                                      WHERE NOT ppa.excluido 
                                        AND ppa.proposta_id = p.id 
-                                       AND ppa.cargo_funcao_id = ANY(@publicosAlvosIds)) ");
+                                       AND ppa.cargo_funcao_id = ANY(@publicosAlvosIds)) 
+                    
+                    """);
                 p.Add("@publicosAlvosIds", f.PublicosAlvosIds);
             }
 
             if (f.PalavrasChavesIds?.Length > 0)
             {
-                sql.AppendLine(@" AND EXISTS(SELECT 1 
+                sql.AppendLine("""                     
+                    AND EXISTS(SELECT 1 
+                    
                                      FROM proposta_palavra_chave ppc 
                                      WHERE NOT ppc.excluido 
                                        AND ppc.proposta_id = p.id 
-                                       AND ppc.palavra_chave_id = ANY(@palavrasChavesIds)) ");
+                                       AND ppc.palavra_chave_id = ANY(@palavrasChavesIds)) 
+                    """);
                 p.Add("@palavrasChavesIds", f.PalavrasChavesIds);
             }
         }
 
-        private static string ObterCteContextoServidor() => @"
+        private static string ObterCteContextoServidor() => """
             WITH ContextoServidor AS (
                 SELECT CD_MODALIDADE, CD_COMPONENTE_CURRICULAR, ano_serie
                 FROM PUBLIC.ATRIBUICOES_SERVIDOR_EOL 
@@ -1954,23 +1961,32 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             ),
             ContextoFuncoes AS (
                 SELECT DISTINCT CF.CARGO_FUNCAO_ID
-                FROM PUBLIC.FUNCAOATIVIDADE_EOL AS FE 
+                FROM PUBLIC.FUNCOES_ATIVIDADES_EOL AS FE 
                 INNER JOIN PUBLIC.CARGO_FUNCAO_DEPARA_EOL AS CF ON FE.CD_TIPO_FUNCAO = CF.CODIGO_FUNCAO_EOL 
                 WHERE FE.CD_REGISTRO_FUNCIONAL = @rf
-            )";
+            )
+            """;
 
         private static string ObterFiltrosDePermissaoServidor() =>
-            @"
-            -- Público Alvo (Cargos)
+            """
+            -- Público Alvo (Cargos) OU Vaga Remanescente
             AND (
-                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
+                (
+                    NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
+                    AND
+                    NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
+                )
                 OR EXISTS (
                     SELECT 1 FROM PUBLIC.PROPOSTA_PUBLICO_ALVO PPA
                     INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PPA.CARGO_FUNCAO_ID
                     WHERE PPA.PROPOSTA_ID = P.ID AND NOT PPA.EXCLUIDO
                 )
-            )
-            
+                OR EXISTS (
+                    SELECT 1 FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR
+                    INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PVR.CARGO_FUNCAO_ID
+                    WHERE PVR.PROPOSTA_ID = P.ID AND NOT PVR.EXCLUIDO
+                )
+            )            
             --  Etapa/Modalidade
             AND (
                 NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_MODALIDADE WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO)
@@ -1980,7 +1996,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     WHERE PM.PROPOSTA_ID = P.ID AND NOT PM.EXCLUIDO
                 )
             )
-
             -- Componente Curricular
             AND (
                 NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_COMPONENTE_CURRICULAR WHERE PROPOSTA_ID = P.ID AND NOT EXCLUIDO AND componente_curricular_id <> 1)
@@ -1990,7 +2005,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     WHERE PCC.PROPOSTA_ID = P.ID AND NOT PCC.EXCLUIDO
                 )
             )
-
             -- Ano/Série
             AND (
                 NOT EXISTS (SELECT 1 
@@ -2003,29 +2017,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     INNER JOIN ContextoServidor CS ON CS.ano_serie = AT.CODIGO_EOL
                     WHERE PAT.PROPOSTA_ID = P.ID AND NOT PAT.EXCLUIDO AND NOT AT.EXCLUIDO
                 )
-            )
-  
-            -- Vaga Remanescente
-            AND (
-                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR WHERE PROPOSTA_ID = P.ID AND NOT PVR.EXCLUIDO)
-                OR EXISTS (
-      	            SELECT 1
-      	            FROM PUBLIC.PROPOSTA_VAGA_REMANECENTE PVR
-                    INNER JOIN ContextoCargos CC ON CC.CARGO_FUNCAO_ID = PVR.CARGO_FUNCAO_ID
-                    WHERE PROPOSTA_ID = P.ID AND NOT PVR.EXCLUIDO
-                )
-            )
-
+            ) 
             -- Função
             AND (
-	            NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE WHERE PROPOSTA_ID = P.ID AND NOT PFE.EXCLUIDO)
-	            OR EXISTS (
-		            SELECT 1
-		            FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE 
-		            INNER JOIN ContextoFuncoes CF ON CF.CARGO_FUNCAO_ID = PFE.CARGO_FUNCAO_ID
-		            WHERE PROPOSTA_ID = P.ID AND NOT PFE.EXCLUIDO
-	            )
-            )";
+                NOT EXISTS (SELECT 1 FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE WHERE PROPOSTA_ID = P.ID AND NOT PFE.EXCLUIDO)
+                OR EXISTS (
+                    SELECT 1
+                    FROM PUBLIC.PROPOSTA_FUNCAO_ESPECIFICA AS PFE
+                    INNER JOIN ContextoFuncoes CF ON CF.CARGO_FUNCAO_ID = PFE.CARGO_FUNCAO_ID
+                    WHERE PROPOSTA_ID = P.ID AND NOT PFE.EXCLUIDO
+                )
+            )            
+            """;
 
         #endregion
 
@@ -2598,6 +2601,49 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
               and proposta_id = @propostaId and registro_funcional = @registroFuncional ";
 
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecerista>(query, new { propostaId, registroFuncional });
+        }
+
+        public async Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros)
+        {
+            termo = $"{termo}%";
+            const string sqlBase = """
+                FROM PUBLIC.PROPOSTA AS P 
+                WHERE NOT P.EXCLUIDO
+                  AND CAST(P.NUMERO_HOMOLOGACAO AS TEXT) ILIKE @termo
+                """;
+            const string sqlSelect = $"""
+                SELECT p.ID AS propostaId,
+                       p.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+                       p.NOME_FORMACAO AS nomeFormacao,
+                       p.ID AS codigoFormacao
+                {sqlBase}
+                ORDER BY numeroHomologacao
+                LIMIT @limit OFFSET @offset;
+                """;
+            const string sqlCount = $"SELECT COUNT(1) {sqlBase}";
+            var conn = conexao.Obter();
+            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, new { termo });
+            if (totalRegistros == 0)
+                return new()
+                {
+                    Itens = [],
+                    TotalRegistros = 0,
+                    PaginaAtual = numeroPagina,
+                    TamanhoPagina = numeroRegistros
+                };
+
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            var dados = await conn.QueryAsync<AutocompletarNumeroHomologacaoDto>(sqlSelect, 
+                new { termo, limit = numeroRegistros, offset = registrosIgnorados });
+
+            return new()
+            {
+                Itens = dados,
+                TotalRegistros = totalRegistros,
+                PaginaAtual = numeroPagina,
+                TamanhoPagina = numeroRegistros
+            };
         }
     }
 }

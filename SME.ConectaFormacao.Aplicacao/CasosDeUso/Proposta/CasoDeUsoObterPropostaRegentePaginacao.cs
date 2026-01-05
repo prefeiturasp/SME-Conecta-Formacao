@@ -13,9 +13,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
         }
 
-        public async Task<PaginacaoResultadoDTO<PropostaRegenteDTO>> Executar(long id)
+        public async Task<PaginacaoResultadoDto<PropostaRegenteDTO>> Executar(long id)
         {
-            if (id == 0) return new PaginacaoResultadoDTO<PropostaRegenteDTO>(new List<PropostaRegenteDTO>(), 0, 0);
+            if (id == 0) return new PaginacaoResultadoDto<PropostaRegenteDTO>(new List<PropostaRegenteDTO>(), 0, 0);
             return await mediator.Send(new ObterRegentesPaginadoQuery(id, NumeroPagina, NumeroRegistros));
         }
     }

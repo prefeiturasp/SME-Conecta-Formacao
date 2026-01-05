@@ -8,6 +8,7 @@
 
         public IEnumerable<PropostaTurmaDre> Dres { get; set; } = [];
         public Proposta Proposta { get; set; } = new();
+        public CodafListaPresenca? CodafListaPresencas { get; set; }
 
         public object Clone()
         {

@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterAreasPromotorasPaginadasQuery : IRequest<PaginacaoResultadoDTO<AreaPromotoraPaginadaDTO>>
+    public class ObterAreasPromotorasPaginadasQuery : IRequest<PaginacaoResultadoDto<AreaPromotoraPaginadaDTO>>
     {
         public ObterAreasPromotorasPaginadasQuery(AreaPromotoraFiltrosDTO filtros, int numeroPagina, int numeroRegistros)
         {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricao.Mocks;
-using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas;
 using SME.ConectaFormacao.TesteIntegracao.Mocks;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;

@@ -1,24 +1,14 @@
 ﻿using Elastic.Apm;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Dominio.Excecoes;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Log;
-using System.Diagnostics;
 using System.Net;
+using System.Text.Json;
 
 namespace SME.ConectaFormacao.Webapi.Middlewares
 {
-    public class TratamentoExcecaoGlobalMiddleware
+    public class TratamentoExcecaoGlobalMiddleware(RequestDelegate next, IServicoLogs servicoLogs, IWebHostEnvironment env)
     {
-        private readonly RequestDelegate next;
-        private readonly IServicoLogs servicoLogs;
-
-        public TratamentoExcecaoGlobalMiddleware(RequestDelegate next, IServicoLogs servicoLogs)
-        {
-            this.next = next;
-            this.servicoLogs = servicoLogs ?? throw new ArgumentNullException(nameof(servicoLogs));
-        }
-
         public async Task Invoke(HttpContext context)
         {
             try
@@ -27,13 +17,17 @@ namespace SME.ConectaFormacao.Webapi.Middlewares
             }
             catch (NegocioException nex)
             {
-                var mensagem = nex.Mensagens.Any() ? string.Join(" - ", nex.Mensagens) : nex.Message;
+                var mensagem = nex.Mensagens.Count != 0 ? string.Join(" - ", nex.Mensagens) : nex.Message;
 
                 await servicoLogs.Enviar(mensagem, observacao: nex.Message, rastreamento: nex.StackTrace);
                 await TratarExcecao(context, nex, nex.StatusCode, nex.Mensagens.ToArray());
             }
             catch (Exception ex)
             {
+                if (env.IsDevelopment())
+                {
+                    throw;
+                }
                 var mensagem = "Houve um comportamento inesperado do Conecta Formação. Por favor, contate a SME.";
 
                 await servicoLogs.Enviar(mensagem, observacao: ex.Message, rastreamento: ex.StackTrace);
@@ -45,15 +39,12 @@ namespace SME.ConectaFormacao.Webapi.Middlewares
 
         private static async Task TratarExcecao(HttpContext context, Exception exception, int statusCode = (int)HttpStatusCode.InternalServerError, params string[] mensagens)
         {
-
-#if DEBUG
-            if (exception != null)
-                Debug.WriteLine(exception);
-#endif
-
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
-            await context.Response.WriteAsync(new RetornoBaseDTO(mensagens.ToList()).ObjetoParaJson());
+            await context.Response.WriteAsJsonAsync(new RetornoBaseDTO(mensagens.ToList()), new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
         }
     }
 

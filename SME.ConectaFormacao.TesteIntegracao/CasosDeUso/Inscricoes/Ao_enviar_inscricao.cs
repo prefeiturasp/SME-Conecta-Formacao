@@ -1,0 +1,148 @@
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Shouldly;
+using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes.ServicosFakes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas;
+using SME.ConectaFormacao.TesteIntegracao.Mocks;
+using SME.ConectaFormacao.TesteIntegracao.Setup;
+using Xunit;
+
+namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes
+{
+    public class Ao_enviar_inscricao : TestePropostaBase
+    {
+        public Ao_enviar_inscricao(CollectionFixture collectionFixture) : base(collectionFixture)
+        {
+        }
+
+        protected override void RegistrarQueryFakes(IServiceCollection services)
+        {
+            base.RegistrarQueryFakes(services);
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterUsuarioLogadoQuery, Dominio.Entidades.Usuario>), typeof(ObterUsuarioLogadoQueryHandlerFaker), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterCargosFuncoesDresFuncionarioServicoEolQuery, IEnumerable<CursistaCargoServicoEol>>), typeof(ObterCargosFuncoesDresFuncionarioServicoEolQueryHandlerFaker), ServiceLifetime.Scoped));
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve realizar inscrição com sucesso")]
+        public async Task Deve_realizar_inscricao_com_sucesso()
+        {
+            // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.Publicada, FormacaoHomologada.NaoCursosPorIN);
+
+            var CargosFuncoes = ObterTodos<Dominio.Entidades.CargoFuncao>();
+
+            var depara = CargoFuncaoDeparaEolMock.GerarCargoFuncaoDeparaEol(CargosFuncoes);
+            await InserirNaBase(depara);
+
+            var vagas = PropostaMock.GerarTurmaVagas(proposta.Turmas, proposta.QuantidadeVagasTurma.GetValueOrDefault());
+            await InserirNaBase(vagas);
+
+            AoObterDadosUsuarioInscricaoMock.Usuario = usuario;
+            AoObterDadosUsuarioInscricaoMock.CodigoCargos = depara.Where(t => t.CodigoCargoEol.HasValue).Select(s => s.CodigoCargoEol.GetValueOrDefault()).ToArray();
+            AoObterDadosUsuarioInscricaoMock.CodigoFuncoes = depara.Where(t => t.CodigoFuncaoEol.HasValue).Select(s => s.CodigoFuncaoEol.GetValueOrDefault()).ToArray();
+
+            var inscricao = new InscricaoDto
+            {
+                PropostaTurmaId = proposta.Turmas.First().Id,
+                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
+                CargoDreCodigo = proposta.Turmas.First().Dres.First().Dre.Codigo,
+                CargoUeCodigo = "094765",
+                VagaRemanescente = false
+            };
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarInscricao>();
+
+            // act
+            await casoDeUso.Executar(inscricao);
+            var inscricaoInserida = ObterTodos<Dominio.Entidades.Inscricao>().FirstOrDefault();
+            inscricaoInserida.CargoCodigo.ShouldBe(inscricao.CargoCodigo);
+            inscricaoInserida.CargoDreCodigo.ShouldBe(inscricao.CargoDreCodigo);
+            inscricaoInserida.CargoUeCodigo.ShouldBe(inscricao.CargoUeCodigo);
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve retornar exceção vagas indisponivel")]
+        public async Task Deve_retornar_excecao_vagas_indisponivel()
+        {
+            // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.Publicada, FormacaoHomologada.NaoCursosPorIN);
+
+            var CargosFuncoes = ObterTodos<Dominio.Entidades.CargoFuncao>();
+
+            var depara = CargoFuncaoDeparaEolMock.GerarCargoFuncaoDeparaEol(CargosFuncoes);
+            await InserirNaBase(depara);
+
+            AoObterDadosUsuarioInscricaoMock.Usuario = usuario;
+            AoObterDadosUsuarioInscricaoMock.CodigoCargos = depara.Where(t => t.CodigoCargoEol.HasValue).Select(s => s.CodigoCargoEol.GetValueOrDefault()).ToArray();
+            AoObterDadosUsuarioInscricaoMock.CodigoFuncoes = depara.Where(t => t.CodigoFuncaoEol.HasValue).Select(s => s.CodigoFuncaoEol.GetValueOrDefault()).ToArray();
+
+            var inscricao = new InscricaoDto
+            {
+                PropostaTurmaId = proposta.Turmas.First().Id,
+                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
+                CargoDreCodigo = string.Empty,
+                CargoUeCodigo = string.Empty,
+                VagaRemanescente = false
+            };
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarInscricao>();
+
+            // act
+            var excecao = await Should.ThrowAsync<NegocioException>(() => casoDeUso.Executar(inscricao));
+
+            // assert
+            excecao.Mensagens.Contains(MensagemNegocio.INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA).ShouldBeTrue();
+        }
+
+        [Fact(DisplayName = "Inscrição - Deve persistir com status em espera para vagas remanescentes")]
+        public async Task Deve_persistir_com_status_em_espera_para_vagas_remanescentes()
+        {
+            // arrange
+            var usuario = UsuarioMock.GerarUsuario();
+            await InserirNaBase(usuario);
+
+            var proposta = await InserirNaBaseProposta(SituacaoProposta.Publicada);
+
+            var CargosFuncoes = ObterTodos<Dominio.Entidades.CargoFuncao>();
+
+            var depara = CargoFuncaoDeparaEolMock.GerarCargoFuncaoDeparaEol(CargosFuncoes);
+            await InserirNaBase(depara);
+
+            var vagas = PropostaMock.GerarTurmaVagas(proposta.Turmas, proposta.QuantidadeVagasTurma.GetValueOrDefault());
+            await InserirNaBase(vagas);
+
+            AoObterDadosUsuarioInscricaoMock.Usuario = usuario;
+            AoObterDadosUsuarioInscricaoMock.CodigoCargos = depara.Where(t => t.CodigoCargoEol.HasValue).Select(s => s.CodigoCargoEol.GetValueOrDefault()).ToArray();
+            AoObterDadosUsuarioInscricaoMock.CodigoFuncoes = depara.Where(t => t.CodigoFuncaoEol.HasValue).Select(s => s.CodigoFuncaoEol.GetValueOrDefault()).ToArray();
+
+            var inscricao = new InscricaoDto
+            {
+                PropostaTurmaId = proposta.Turmas.First().Id,
+                CargoCodigo = AoObterDadosUsuarioInscricaoMock.CodigoCargos.FirstOrDefault().ToString(),
+                CargoDreCodigo = proposta.Turmas.First().Dres.First().Dre.Codigo,
+                CargoUeCodigo = "094765",
+                VagaRemanescente = true
+            };
+
+            var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarInscricao>();
+
+            // act
+            await casoDeUso.Executar(inscricao);
+            var inscricaoInserida = ObterTodos<Dominio.Entidades.Inscricao>().First();
+            inscricaoInserida.Situacao.ShouldBe(SituacaoInscricao.EmEspera);
+        }
+    }
+}

@@ -16,16 +16,22 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
             var codigoDre = param.ObterObjetoMensagem<string>()
                 ?? throw new ArgumentNullException(nameof(param), "Parâmetro código DRE não pode ser nulo.");
 
-            var dataUltimaAtualizacao = await repositorioFuncaoAtividadeUsuario.ObterDataUltimaAtualizacaoAsync();
+            var dataUltimaAtualizacao = await repositorioFuncaoAtividadeUsuario.ObterDataUltimaAtualizacaoAsync(codigoDre);
 
             var origem = await servicoEol.ObterFuncaoAtividadeEolPorDre(codigoDre, dataUltimaAtualizacao);
 
             var destino = origem?
-                .Select(c => new FuncaoAtividadeUsuario
-                {
-                    CdRegistroFuncional = c.CdRegistroFuncional,
-                    CdTipoFuncao = Convert.ToInt32(c.CdTipoFuncao),
-                    CdUe = c.CdUe
+                .Select(c => new FuncaoAtividadeServidorEol(
+                    c.CdCargoBaseServidor,
+                    c.CdRegistroFuncional,
+                    Convert.ToInt32(c.CdTipoFuncao),
+                    codigoDre,
+                    c.CdUe
+                )
+                { 
+                    DataPosse = c.DataPosse is not null ? DateOnly.FromDateTime(c.DataPosse.Value) : null,
+                    NomeFuncao = c.NomeFuncao,
+                    TipoVinculo = c.TipoVinculo
                 })
                 .DistinctBy(x => new { x.CdRegistroFuncional, x.CdTipoFuncao, x.CdUe }) // remove duplicados
                 .ToList() ?? [];

@@ -1,5 +1,3 @@
-using SME.ConectaFormacao.Dominio.Entidades;
-
 namespace SME.ConectaFormacao.Dominio.Constantes;
 
 public class MensagemNegocio
@@ -14,6 +12,7 @@ public class MensagemNegocio
     public const string INSCRICAO_CONFIRMADA_NA_DATA_INICIO_DA_SUA_TURMA = "Sua inscrição foi confirmada. Na data de início da sua turma acesse o SGA para iniciar a formação.";
     public const string INSCRICAO_CONFIRMADA = "Sua inscrição foi confirmada.";
     public const string INSCRICAO_EM_ANALISE = "Sua inscrição foi enviada com sucesso. Em breve você receberá a devolutiva por e-mail. Certifique-se que seu e-mail está atualizado no sistema em \"Meus dados\".";
+    public const string INSCRICAO_EM_ESPERA = "Sua inscrição foi colocada em lista de espera. Você será notificado por e-mail caso uma vaga seja disponibilizada. Certifique-se que seu e-mail está atualizado no sistema em \"Meus dados\".";
     public const string PARAMETRO_QTDE_CURSISTAS_SUPORTADOS_POR_TURMA_NAO_ENCONTRADO = "Parâmetro de QtdeCursistasSuportadosPorTurma ausente para o ano {0}.";
     public const string FORMACAO_NAO_ENCONTRADA = "Formação não encontrada";
     public const string PERIODO_REALIZACAO_NAO_INFORMADO = "É necessário informar as datas do período de realização";
@@ -107,7 +106,7 @@ public class MensagemNegocio
     public const string USUARIO_SEM_LOTACAO_NA_DRE_DA_TURMA_AUTOMATICO = "Sua lotação/local de trabalho não corresponde com a DRE desta turma, sendo assim, não será possível inserir sua inscrição. {0}";
     public const string USUARIO_JA_INSCRITO_NA_PROPOSTA = "Este cursista já está matriculado nesta formação. Confira mais detalhes na lista de inscrição dessa formação.";
     public const string USUARIO_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO = "Cargo/Função selecionado não definido no público alvo da formação, sendo assim, não será possível inserir a sua inscrição.";
-    public const string CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL = "Este cursista não possui cargo/vinculo compatível com o público alvo da formação, não será possível realizar a sua inscrição.";
+    public const string CURSISTA_NAO_POSSUI_CARGO_PUBLI_ALVO_FORMACAO_INSCRICAO_MANUAL = "Este cursista não possui cargo/vinculo compatível com o público alvo da formação.";
     public const string INSCRICAO_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar a inscrição, a turma selecionada não possui mais vagas disponíveis.";
     public const string INSCRICAO_AUTOMATICA_NAO_CONFIRMADA_POR_FALTA_DE_VAGA = "Não foi possível confirmar sua inscrição automática, a turma selecionada não possui mais vagas disponível. {0}";
     public const string INSCRICAO_TRANSFERENCIA_CARGOS_DIFERENTES = "O cargo da inscrição de origem deve ser o mesmo da inscrição destino";
