@@ -14,8 +14,8 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
 
         public ServicoArmazenamento(IOptions<ConfiguracaoArmazenamentoOptions> configuracaoArmazenamentoOptions, IConfiguration configuration)
         {
-            this._configuracaoArmazenamentoOptions = configuracaoArmazenamentoOptions?.Value ?? throw new ArgumentNullException(nameof(configuracaoArmazenamentoOptions));
-            this._configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _configuracaoArmazenamentoOptions = configuracaoArmazenamentoOptions?.Value ?? throw new ArgumentNullException(nameof(configuracaoArmazenamentoOptions));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
             _minioClient = new MinioClient()
                .WithEndpoint(_configuracaoArmazenamentoOptions.EndPoint, _configuracaoArmazenamentoOptions.Port)

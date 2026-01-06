@@ -21,6 +21,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoListarInscritosTurmaCodafListaPresenca> _mockCasoDeUsoListarInscritosTurma;
         private readonly Mock<ICasoDeUsoTurmaPossuiCodafListaPresenca> _mockCasoDeUsoTurmaPossuiCodafListaPresenca;
         private readonly Mock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca> _mockCasoDeUsoRemoverRetificacao;
+        private readonly Mock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf> _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf;
         private readonly CodafListaPresencaController _controller;
         private readonly Faker _faker;
 
@@ -34,6 +35,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _mockCasoDeUsoListarInscritosTurma = mocker.GetMock<ICasoDeUsoListarInscritosTurmaCodafListaPresenca>();
             _mockCasoDeUsoTurmaPossuiCodafListaPresenca = mocker.GetMock<ICasoDeUsoTurmaPossuiCodafListaPresenca>();
             _mockCasoDeUsoRemoverRetificacao = mocker.GetMock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca>();
+            _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf = mocker.GetMock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf>();
             _controller = mocker.CreateInstance<CodafListaPresencaController>();
             _faker = new Faker("pt_BR");
         }
@@ -304,6 +306,57 @@ namespace SME.ConectaFormacao.Webapi.Teste
             await _controller.RemoverRetificacao(retificacaoId);
             // Assert
             _mockCasoDeUsoRemoverRetificacao.Verify(x => x.ExecutarAsync(retificacaoId), Times.Once);
+        }
+
+        [Fact]
+        public async Task Dado_SolicitacaoDeModelo_Quando_ArquivoExistir_Entao_DeveRetornarFileStreamResult()
+        {
+            // Arrange
+            var nomeArquivo = "TermoResponsabilidadeModelo.pdf";
+            var contentType = "application/pdf";
+            var memoryStream = new MemoryStream([1, 2, 3]);
+
+            var arquivoDto = new ArquivoDto(nomeArquivo, contentType, memoryStream);
+            var resultadoSucesso = Resultado<ArquivoDto>.DeSucesso(arquivoDto);
+
+            _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf
+                .Setup(x => x.Executar())
+                .Returns(resultadoSucesso);
+
+            // Act
+            var resultado = await _controller.ObterModeloTermoResponsabilidade();
+
+            // Assert
+            var fileResult = resultado.Should().BeOfType<FileStreamResult>().Subject;
+
+            fileResult.ContentType.Should().Be(contentType);
+            fileResult.FileDownloadName.Should().Be(nomeArquivo);
+            fileResult.FileStream.Should().BeSameAs(memoryStream);
+
+            _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf
+                .Verify(x => x.Executar(), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoSolicitacaoDeModelo_QuandoArquivoNaoForEncontrado_EntaoDeveRetornarNotFound()
+        {
+            // Arrange
+            var erro = Erro.NaoEncontrado("Modelo não encontrado.");
+
+            _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf
+                .Setup(x => x.Executar())
+                .Returns(erro);
+
+            // Act
+            var resultado = await _controller.ObterModeloTermoResponsabilidade();
+
+            // Assert
+            var notFoundResult = resultado.Should().BeOfType<NotFoundObjectResult>().Subject;
+
+            notFoundResult.StatusCode.Should().Be(404);
+
+            var valorRetorno = notFoundResult.Value;
+            valorRetorno.Should().NotBeNull();
         }
     }
 }

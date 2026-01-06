@@ -15,7 +15,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         ICasoDeUsoObterCodafListaPresencaPorId casoDeUsoObterCodafListaPresencaPorId,
         ICasoDeUsoListarInscritosTurmaCodafListaPresenca casoDeUsoListarInscritosTurmaCodafListaPresenca,
         ICasoDeUsoTurmaPossuiCodafListaPresenca casoDeUsoTurmaPossuiCodafListaPresenca,
-        ICasoDeUsoRemoverCodafRetificacaoListaPresenca casoDeUsoRemoverCodafRetificacaoListaPresenca) : BaseController
+        ICasoDeUsoRemoverCodafRetificacaoListaPresenca casoDeUsoRemoverCodafRetificacaoListaPresenca,
+        ICasoDeUsoObterModeloTermoResponsabilidadeCodaf casoDeUsoObterModeloTermoResponsabilidadeCodaf) : BaseController
     {
         [HttpPost]
         [ProducesResponseType(typeof(Resultado<CodafListaPresencaDto>), 201)]
@@ -83,6 +84,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> RemoverRetificacao(long retificacaoId)
         {
             var resultado = await casoDeUsoRemoverCodafRetificacaoListaPresenca.ExecutarAsync(retificacaoId);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpGet("termo-responsabilidade/modelo")]
+        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 200)]
+        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 404)]
+        public async Task<IActionResult> ObterModeloTermoResponsabilidade()
+        {
+            var resultado = casoDeUsoObterModeloTermoResponsabilidadeCodaf.Executar();
+
+            if (resultado.Sucesso)
+                return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
+
             return ProcessarResultado(resultado);
         }
     }
