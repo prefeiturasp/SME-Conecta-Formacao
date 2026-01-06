@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 """
                 SELECT *
                 FROM PUBLIC.CODAF_RETIFICACAO_LISTA_PRESENCA AS CRLP 
-                WHERE CRLP.CODAF_LISTA_PRESENCA_ID = @codafListaPresencaId
+                WHERE CRLP.CODAF_LISTA_PRESENCA_ID = @codafListaPresencaId AND NOT EXCLUIDO
                 ORDER BY Id DESC
                 """;
 

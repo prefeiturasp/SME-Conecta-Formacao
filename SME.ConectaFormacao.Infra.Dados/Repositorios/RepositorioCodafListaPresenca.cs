@@ -166,30 +166,51 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        P.NOME_FORMACAO AS nomeFormacao,
                        P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
                        PT.ID, --Split de proposta turma
-                       PT.NOME 
+                       PT.NOME,
+
+                       CRLP.ID, -- Split 3
+                       CRLP.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
+                       CRLP.DATA_RETIFICACAO AS DataRetificacao,
+                       CRLP.PAGINA_RETIFICACAO_DOM AS PaginaRetificacaoDom,
+                       CRLP.ALTERADO_EM AS AlteradoEm,
+                       CRLP.ALTERADO_POR AS AlteradoPor,
+                       CRLP.ALTERADO_LOGIN AS AlteradoLogin,
+                       CRLP.CRIADO_EM AS CriadoEm,
+                       CRLP.CRIADO_POR AS CriadoPor,
+                       CRLP.CRIADO_LOGIN AS CriadoLogin 
                 FROM PUBLIC.CODAF_LISTA_PRESENCA AS CLP
                 INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
-                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID 
+                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
+                LEFT JOIN PUBLIC.CODAF_RETIFICACAO_LISTA_PRESENCA AS CRLP ON CRLP.CODAF_LISTA_PRESENCA_ID = CLP.ID AND NOT CRLP.EXCLUIDO
                 WHERE NOT CLP.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO AND CLP.ID = @id
                 """;
 
-            var parametros = new { id };
-            CodafListaPresenca? listaPresenca = null;
-            await conn.QueryAsync<CodafListaPresenca, Proposta, PropostaTurma, CodafListaPresenca>(
+            var parametros = new { id }; 
+            var listaPresencaDict = new Dictionary<long, CodafListaPresenca>();
+            await conn.QueryAsync<CodafListaPresenca, Proposta, PropostaTurma, CodafRetificacaoListaPresenca, CodafListaPresenca>(
                 sql,
-                (clp, p, pt) =>
+                (clp, p, pt, crlp) =>
                 {
-                    if (listaPresenca is null)
+                    if (!listaPresencaDict.TryGetValue(clp.Id, out var listaPresencaEntry))
                     {
-                        listaPresenca = clp;
-                        listaPresenca.Proposta = p;
-                        listaPresenca.PropostaTurma = pt;
+                        listaPresencaEntry = clp;
+                        listaPresencaEntry.Proposta = p;
+                        listaPresencaEntry.PropostaTurma = pt;
+                        listaPresencaEntry.CodafRetificacoes = new List<CodafRetificacaoListaPresenca>();
+                        listaPresencaDict.Add(listaPresencaEntry.Id, listaPresencaEntry);
                     }
-                    return listaPresenca;
+
+                    if (crlp != null)
+                    {
+                        var listaRetificacoes = (List<CodafRetificacaoListaPresenca>)listaPresencaEntry.CodafRetificacoes;
+                        listaRetificacoes.Add(crlp);
+                    }
+
+                    return listaPresencaEntry;
                 },
                 parametros,
-                splitOn: "ID,ID");
-            return listaPresenca;
+                splitOn: "ID,ID,ID");
+            return listaPresencaDict.Values.FirstOrDefault();
         }
     }
 }
