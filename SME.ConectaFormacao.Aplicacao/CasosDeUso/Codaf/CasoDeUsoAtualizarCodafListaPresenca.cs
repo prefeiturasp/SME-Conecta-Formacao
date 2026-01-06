@@ -53,10 +53,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 transacaoDb.Commit();
                 return Resultado.DeSucesso();
             }
-            catch (Exception e)
+            catch
             {
                 transacaoDb.Rollback();
-                return Resultado.DeFalha(TipoFalha.ErroInterno, $"Erro ao atualizar a lista de presença: {e.Message}");
+                return Resultado.DeFalha(TipoFalha.ErroInterno, $"Erro ao atualizar a lista de presença.");
             }
         }
 
