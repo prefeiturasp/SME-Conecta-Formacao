@@ -25,6 +25,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<ResultadoInscritoTurmaCodafListaPresencaDto, CodafInscritoTurmaListaPresencaRetornoDto>();
 
             CreateMap<CodafInscritoListaPresencaSalvarDto, CodafInscricaoListaPresenca>();
+
+            CreateMap<CodafRetificacaoListaPresencaSalvarDto, CodafRetificacaoListaPresenca>();
         }
     }
 }
