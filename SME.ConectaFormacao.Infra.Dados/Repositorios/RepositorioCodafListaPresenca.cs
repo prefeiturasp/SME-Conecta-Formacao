@@ -196,14 +196,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         listaPresencaEntry = clp;
                         listaPresencaEntry.Proposta = p;
                         listaPresencaEntry.PropostaTurma = pt;
-                        listaPresencaEntry.CodafRetificacoes = new List<CodafRetificacaoListaPresenca>();
+                        listaPresencaEntry.CodafRetificacoes = [];
                         listaPresencaDict.Add(listaPresencaEntry.Id, listaPresencaEntry);
                     }
 
                     if (crlp != null)
                     {
-                        var listaRetificacoes = (List<CodafRetificacaoListaPresenca>)listaPresencaEntry.CodafRetificacoes;
-                        listaRetificacoes.Add(crlp);
+                        listaPresencaEntry.CodafRetificacoes.Add(crlp);
                     }
 
                     return listaPresencaEntry;
