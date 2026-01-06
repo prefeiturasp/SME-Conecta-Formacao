@@ -19,6 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
     {
         private readonly Mock<IRepositorioCodafListaPresenca> _repositorioCodafListaPresencaMock;
         private readonly Mock<IRepositorioCodafInscritosListaPresenca> _repositorioCodafInscritosListaPresencaMock;
+        private readonly Mock<IRepositorioCodafRetificacaoListaPresenca> _repositorioCodafRetificacaoListaPresencaMock;
         private readonly Mock<IValidadorCodafListaPresencaService> _validadorCodafListaPresencaServiceMock;
         private readonly Mock<IValidator<CodafListaPresencaEdicaoDto>> _validatorMock;
         private readonly Mock<IMapper> _mapperMock;
@@ -31,6 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var mocker = new AutoMocker();
             _repositorioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
             _repositorioCodafInscritosListaPresencaMock = mocker.GetMock<IRepositorioCodafInscritosListaPresenca>();
+            _repositorioCodafRetificacaoListaPresencaMock = mocker.GetMock<IRepositorioCodafRetificacaoListaPresenca>();
             _validadorCodafListaPresencaServiceMock = mocker.GetMock<IValidadorCodafListaPresencaService>();
             _mapperMock = mocker.GetMock<IMapper>();
             _validatorMock = mocker.GetMock<IValidator<CodafListaPresencaEdicaoDto>>();
@@ -276,6 +278,179 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             )), Times.Once);
             transacaoMock.Verify(t => t.Commit(), Times.Once);
             transacaoMock.Verify(t => t.Rollback(), Times.Never);
+        }
+
+        [Fact]
+        public async Task DadoEdicaoComNovasRetificacoes_QuandoExecutar_EntaoDeveAtualizarDadosDaListaDePresencaERetificacoes()
+        {
+            // Arrange
+            var propostaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var propostaTurmaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var codafListaPresencaEdicaoDto = new CodafListaPresencaEdicaoDto
+            {
+                PropostaId = propostaIdValido,
+                PropostaTurmaId = propostaTurmaIdValido,
+                Retificacoes = [
+                    new (){
+                        DataRetificacao = DateTime.Now,
+                        PaginaRetificacaoDom = 5,
+                    }
+                ]
+            };
+            var codafRetificacoes = new List<CodafRetificacaoListaPresenca>
+            {
+                new() {
+                    DataRetificacao = codafListaPresencaEdicaoDto.Retificacoes[0].DataRetificacao,
+                    PaginaRetificacaoDom = codafListaPresencaEdicaoDto.Retificacoes[0].PaginaRetificacaoDom
+                }
+            };
+            var codafListaPresencaExistente = new CodafListaPresenca(propostaIdValido, propostaTurmaIdValido, null, null, null, null, null, null, null, null)
+            {
+                Id = _faker.Random.Long(1, long.MaxValue)
+            };
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .ReturnsAsync(codafListaPresencaExistente);
+            _validatorMock
+                .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+            _mapperMock
+                .Setup(m => m.Map<CodafRetificacaoListaPresenca>(It.IsAny<CodafRetificacaoListaPresencaSalvarDto>()))
+                .Returns(codafRetificacoes[0]);
+
+            // Act
+            await _casoDeUso.ExecutarAsync(codafListaPresencaEdicaoDto, _faker.Random.Long(1, long.MaxValue));
+
+            // Assert
+            _repositorioCodafRetificacaoListaPresencaMock.Verify(r => r.Inserir(It.Is<CodafRetificacaoListaPresenca>(i =>
+                i.DataRetificacao == codafRetificacoes.First().DataRetificacao &&
+                i.PaginaRetificacaoDom == codafRetificacoes.First().PaginaRetificacaoDom
+            )), Times.Once);
+            _repositorioCodafRetificacaoListaPresencaMock.Verify(r => r.Remover(It.IsAny<long>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task DadoEdicaoComRetificacoesAtualizadas_QuandoExecutar_EntaoDeveAtualizarDadosDaListaDePresencaERetificacoes()
+        {
+            // Arrange
+            var propostaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var propostaTurmaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var codafListaPresencaEdicaoDto = new CodafListaPresencaEdicaoDto
+            {
+                PropostaId = propostaIdValido,
+                PropostaTurmaId = propostaTurmaIdValido,
+                Retificacoes = [
+                    new (){
+                        Id = _faker.Random.Long(1, long.MaxValue),
+                        DataRetificacao = DateTime.Now,
+                        PaginaRetificacaoDom = 10,
+                    }
+                ]
+            };
+            var codafRetificacoes = new List<CodafRetificacaoListaPresenca>
+            {
+                new() {
+                    Id = codafListaPresencaEdicaoDto.Retificacoes[0].Id,
+                    DataRetificacao = codafListaPresencaEdicaoDto.Retificacoes[0].DataRetificacao,
+                    PaginaRetificacaoDom = codafListaPresencaEdicaoDto.Retificacoes[0].PaginaRetificacaoDom
+                }
+            };
+            var codafListaPresencaExistente = new CodafListaPresenca(propostaIdValido, propostaTurmaIdValido, null, null, null, null, null, null, null, null)
+            {
+                Id = _faker.Random.Long(1, long.MaxValue)
+            };
+            var codafRetificacoesExistentes = new List<CodafRetificacaoListaPresenca>
+            {
+                new()
+                {
+                    Id = codafListaPresencaEdicaoDto.Retificacoes[0].Id,
+                    CodafListaPresencaId = codafListaPresencaExistente.Id,
+                    DataRetificacao = DateTime.Now.AddDays(-10),
+                    PaginaRetificacaoDom = 3
+                }
+            };
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .ReturnsAsync(codafListaPresencaExistente);
+            _validatorMock
+                .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+            _mapperMock
+                .Setup(m => m.Map<CodafRetificacaoListaPresenca>(It.IsAny<CodafRetificacaoListaPresencaSalvarDto>()))
+                .Returns(codafRetificacoes[0]);
+            _repositorioCodafRetificacaoListaPresencaMock
+                .Setup(r => r.ObterPorListaPresencaIdAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafRetificacoesExistentes);
+
+            // Act
+            await _casoDeUso.ExecutarAsync(codafListaPresencaEdicaoDto, _faker.Random.Long(1, long.MaxValue));
+
+            // Assert
+            _validatorMock
+                .Verify(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default), Times.Once);
+            _repositorioCodafRetificacaoListaPresencaMock.Verify(r => r.Atualizar(It.Is<CodafRetificacaoListaPresenca>(i =>
+                i.Id == codafRetificacoes.First().Id &&
+                i.DataRetificacao == codafRetificacoes.First().DataRetificacao &&
+                i.PaginaRetificacaoDom == codafRetificacoes.First().PaginaRetificacaoDom
+            )), Times.Once);
+            _repositorioCodafRetificacaoListaPresencaMock.Verify(r => r.Inserir(It.IsAny<CodafRetificacaoListaPresenca>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task DadoEdicaoComRetificacoesRemovidas_QuandoExecutar_EntaoDeveAtualizarDadosDaListaDePresencaERetificacoes()
+        {
+            // Arrange
+            var propostaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var propostaTurmaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var codafListaPresencaEdicaoDto = new CodafListaPresencaEdicaoDto
+            {
+                PropostaId = propostaIdValido,
+                PropostaTurmaId = propostaTurmaIdValido,
+                Retificacoes = []
+            };
+            var codafListaPresencaExistente = new CodafListaPresenca(propostaIdValido, propostaTurmaIdValido, null, null, null, null, null, null, null, null)
+            {
+                Id = _faker.Random.Long(1, long.MaxValue)
+            };
+            var codafRetificacoesExistentes = new List<CodafRetificacaoListaPresenca>
+            {
+                new()
+                {
+                    Id = _faker.Random.Long(1, long.MaxValue),
+                    CodafListaPresencaId = codafListaPresencaExistente.Id,
+                    DataRetificacao = DateTime.Now.AddDays(-10),
+                    PaginaRetificacaoDom = 3
+                }
+            };
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .ReturnsAsync(codafListaPresencaExistente);
+            _validatorMock
+                .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+            _repositorioCodafRetificacaoListaPresencaMock
+                .Setup(r => r.ObterPorListaPresencaIdAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafRetificacoesExistentes);
+         
+            // Act
+            await _casoDeUso.ExecutarAsync(codafListaPresencaEdicaoDto, _faker.Random.Long(1, long.MaxValue));
+
+            // Assert
+            _repositorioCodafRetificacaoListaPresencaMock.Verify(r => r.Remover(It.Is<CodafRetificacaoListaPresenca>(id =>
+                id == codafRetificacoesExistentes.First()
+            )), Times.Once);
         }
 
         [Fact]

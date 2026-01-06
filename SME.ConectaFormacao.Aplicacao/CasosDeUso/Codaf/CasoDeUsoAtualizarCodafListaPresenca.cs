@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
     public class CasoDeUsoAtualizarCodafListaPresenca(
         IRepositorioCodafListaPresenca repositorioCodafListaPresenca,
         IRepositorioCodafInscritosListaPresenca repositorioCodafInscritosListaPresenca,
+        IRepositorioCodafRetificacaoListaPresenca repositorioCodafRetificacaoListaPresenca,
         IValidadorCodafListaPresencaService validadorCodafListaPresencaService,
         IValidator<CodafListaPresencaEdicaoDto> validator,
         IMapper mapper,
@@ -41,18 +42,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 codafListaPresencaEdicaoDto.Observacao,
                 contextoAplicacao.IdPerfilUsuario);
 
-            var inscritos = mapper.Map<List<CodafInscricaoListaPresenca>>(codafListaPresencaEdicaoDto.Inscritos);
-            if(inscritos is not null)
-                inscritos.ForEach(i => i.CodafListaPresencaId = codafListaPresencaExistente.Id);
-
             using var transacaoDb = transacao.Iniciar();
 
             try
             {
                 await repositorioCodafListaPresenca.Atualizar(codafListaPresencaExistente);
-                await repositorioCodafInscritosListaPresenca.ExcluirPorListaPresencaIdAsync(codafListaPresencaExistente.Id);
-                if (inscritos is not null && inscritos.Count != 0)
-                    await repositorioCodafInscritosListaPresenca.InserirVariosAsync(inscritos);
+                await SalvarInscritosAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente);
+                await SalvarRetificacoesAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente.Id);
 
                 transacaoDb.Commit();
                 return Resultado.DeSucesso();
@@ -60,7 +56,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             catch
             {
                 transacaoDb.Rollback();
-                return Resultado.DeFalha(TipoFalha.ErroInterno, "Erro ao atualizar a lista de presença.");
+                return Resultado.DeFalha(TipoFalha.ErroInterno, $"Erro ao atualizar a lista de presença.");
             }
         }
 
@@ -84,6 +80,53 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 return erroUnicidadeTurma;
 
             return null;
+        }
+
+        private async Task SalvarInscritosAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, CodafListaPresenca codafListaPresenca)
+        {
+            await repositorioCodafInscritosListaPresenca.ExcluirPorListaPresencaIdAsync(codafListaPresenca.Id);
+            var inscritos = mapper.Map<List<CodafInscricaoListaPresenca>>(codafListaPresencaEdicaoDto.Inscritos);
+            if (inscritos is not null && inscritos.Count != 0)
+            {
+                inscritos.ForEach(i => i.CodafListaPresencaId = codafListaPresenca.Id);
+                await repositorioCodafInscritosListaPresenca.InserirVariosAsync(inscritos);
+            }
+        }
+
+        private async Task SalvarRetificacoesAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, long codafListaPresencaId)
+        {
+            var retificacoesExistentes = await repositorioCodafRetificacaoListaPresenca.ObterPorListaPresencaIdAsync(codafListaPresencaId);
+            var retificacoesEnviadas = codafListaPresencaEdicaoDto.Retificacoes ?? [];
+            var retificacoesEnviadasIds = retificacoesEnviadas.Where(r => r.Id > 0).Select(r => r.Id).ToHashSet();
+
+            foreach (var retificacaoExistente in retificacoesExistentes)
+            {
+                if (!retificacoesEnviadasIds.Contains(retificacaoExistente.Id))
+                {
+                    await repositorioCodafRetificacaoListaPresenca.Remover(retificacaoExistente);
+                }
+            }
+
+            foreach (var retificacaoDto in retificacoesEnviadas)
+            {
+                if (retificacaoDto.Id > 0)
+                {
+                    var retificacaoExistente = retificacoesExistentes.FirstOrDefault(r => r.Id == retificacaoDto.Id);
+                    if (retificacaoExistente != null)
+                    {
+                        retificacaoExistente.AtualizarInformacoes(
+                            retificacaoDto.DataRetificacao,
+                            retificacaoDto.PaginaRetificacaoDom);
+                        await repositorioCodafRetificacaoListaPresenca.Atualizar(retificacaoExistente);
+                    }
+                }
+                else
+                {
+                    var novaRetificacao = mapper.Map<CodafRetificacaoListaPresenca>(retificacaoDto);
+                    novaRetificacao.CodafListaPresencaId = codafListaPresencaId;
+                    await repositorioCodafRetificacaoListaPresenca.Inserir(novaRetificacao);
+                }
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(src => src.Proposta.NomeFormacao))
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(src => src.Proposta.Id))
                 .ForMember(dest => dest.NumeroHomologacao, opt => opt.MapFrom(src => src.Proposta.NumeroHomologacao))
+                .ForMember(dest => dest.Retificacoes, opt => opt.MapFrom(src => src.CodafRetificacoes))
                 ;
             CreateMap<FiltroListaPresencaCodafDto, FiltroListagemResultadoCodafListaPresencaDto>()
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(src => src.CodigoFormacao.ToString()))
@@ -25,6 +26,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<ResultadoInscritoTurmaCodafListaPresencaDto, CodafInscritoTurmaListaPresencaRetornoDto>();
 
             CreateMap<CodafInscritoListaPresencaSalvarDto, CodafInscricaoListaPresenca>();
+            CreateMap<CodafRetificacaoListaPresencaSalvarDto, CodafRetificacaoListaPresenca>();
+            CreateMap<CodafRetificacaoListaPresenca, CodafRetificacaoListaPresencaDto>();
         }
     }
 }
