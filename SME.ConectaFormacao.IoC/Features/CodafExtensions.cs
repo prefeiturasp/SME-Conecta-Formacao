@@ -26,6 +26,9 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<IRepositorioCodafRetificacaoListaPresenca, RepositorioCodafRetificacaoListaPresenca>()
                 .AddScoped<ICasoDeUsoRemoverCodafRetificacaoListaPresenca, CasoDeUsoRemoverCodafRetificacaoListaPresenca>()
                 .AddScoped<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf, CasoDeUsoObterModeloTermoResponsabilidadeCodaf>()
+                .AddScoped<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca, CasoDeUsoUploadAnexoTemporarioCodafListaPresenca>()
+                .AddScoped<IRepositorioCodafAnexo, RepositorioCodafAnexo>()
+                .AddScoped<IGerenciadorAnexosCodafService, GerenciadorAnexosCodafService>()
             ;
         }
     }

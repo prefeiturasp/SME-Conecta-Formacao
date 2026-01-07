@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(src => src.Proposta.Id))
                 .ForMember(dest => dest.NumeroHomologacao, opt => opt.MapFrom(src => src.Proposta.NumeroHomologacao))
                 .ForMember(dest => dest.Retificacoes, opt => opt.MapFrom(src => src.CodafRetificacoes))
-                ;
+                .ForMember(dest => dest.Anexos, opt => opt.MapFrom(src => src.CodafAnexos));
             CreateMap<FiltroListaPresencaCodafDto, FiltroListagemResultadoCodafListaPresencaDto>()
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(src => src.CodigoFormacao.ToString()))
                 .ForMember(dest => dest.NumeroHomologacao, opt => opt.MapFrom(src => src.NumeroHomologacao.ToString()))
@@ -28,6 +28,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<CodafInscritoListaPresencaSalvarDto, CodafInscricaoListaPresenca>();
             CreateMap<CodafRetificacaoListaPresencaSalvarDto, CodafRetificacaoListaPresenca>();
             CreateMap<CodafRetificacaoListaPresenca, CodafRetificacaoListaPresencaDto>();
+            CreateMap<CodafAnexoSalvarDto, CodafAnexo>()
+                .ForMember(dest => dest.Extensao, opt => opt.MapFrom(src => src.NomeArquivo.Substring(src.NomeArquivo.LastIndexOf('.') + 1)))
+                ;
+            CreateMap<CodafAnexo, CodafAnexoDto>().ForMember(dest => dest.UrlDownload, opt => opt.Ignore());
         }
     }
 }

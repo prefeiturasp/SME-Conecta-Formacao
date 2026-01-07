@@ -177,19 +177,33 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        CRLP.ALTERADO_LOGIN AS AlteradoLogin,
                        CRLP.CRIADO_EM AS CriadoEm,
                        CRLP.CRIADO_POR AS CriadoPor,
-                       CRLP.CRIADO_LOGIN AS CriadoLogin 
+                       CRLP.CRIADO_LOGIN AS CriadoLogin,
+
+                       CA.ID, -- Split 4 (Anexos)
+                       CA.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
+                       CA.ARQUIVO_CODIGO AS ArquivoCodigo,
+                       CA.NOME_ARQUIVO AS NomeArquivo,
+                       CA.EXTENSAO AS Extensao,
+                       CA.TIPO_ANEXO_ID AS TipoAnexoId,
+                       CA.ALTERADO_EM AS AlteradoEm,
+                       CA.ALTERADO_POR AS AlteradoPor,
+                       CA.ALTERADO_LOGIN AS AlteradoLogin,
+                       CA.CRIADO_EM AS CriadoEm,
+                       CA.CRIADO_POR AS CriadoPor,
+                       CA.CRIADO_LOGIN AS CriadoLogin
                 FROM PUBLIC.CODAF_LISTA_PRESENCA AS CLP
                 INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
                 INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
                 LEFT JOIN PUBLIC.CODAF_RETIFICACAO_LISTA_PRESENCA AS CRLP ON CRLP.CODAF_LISTA_PRESENCA_ID = CLP.ID AND NOT CRLP.EXCLUIDO
+                LEFT JOIN PUBLIC.CODAF_ANEXO AS CA ON CA.CODAF_LISTA_PRESENCA_ID = CLP.ID AND NOT CA.EXCLUIDO
                 WHERE NOT CLP.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO AND CLP.ID = @id
                 """;
 
             var parametros = new { id }; 
             var listaPresencaDict = new Dictionary<long, CodafListaPresenca>();
-            await conn.QueryAsync<CodafListaPresenca, Proposta, PropostaTurma, CodafRetificacaoListaPresenca, CodafListaPresenca>(
+            await conn.QueryAsync<CodafListaPresenca, Proposta, PropostaTurma, CodafRetificacaoListaPresenca, CodafAnexo, CodafListaPresenca>(
                 sql,
-                (clp, p, pt, crlp) =>
+                (clp, p, pt, crlp, ca) =>
                 {
                     if (!listaPresencaDict.TryGetValue(clp.Id, out var listaPresencaEntry))
                     {
@@ -197,6 +211,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         listaPresencaEntry.Proposta = p;
                         listaPresencaEntry.PropostaTurma = pt;
                         listaPresencaEntry.CodafRetificacoes = [];
+                        listaPresencaEntry.CodafAnexos = [];
                         listaPresencaDict.Add(listaPresencaEntry.Id, listaPresencaEntry);
                     }
 
@@ -205,10 +220,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         listaPresencaEntry.CodafRetificacoes.Add(crlp);
                     }
 
+                    if (ca != null)
+                    {
+                        listaPresencaEntry.CodafAnexos!.Add(ca);
+                    }
+
                     return listaPresencaEntry;
                 },
                 parametros,
-                splitOn: "ID,ID,ID");
+                splitOn: "ID,ID,ID,ID");
             return listaPresencaDict.Values.FirstOrDefault();
         }
     }

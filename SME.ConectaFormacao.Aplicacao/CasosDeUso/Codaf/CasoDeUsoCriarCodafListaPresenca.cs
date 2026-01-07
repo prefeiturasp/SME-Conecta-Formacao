@@ -19,7 +19,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         IContextoAplicacao contextoAplicacao,
         IMapper mapper,
         ITransacao transacao,
-        IValidator<CodafListaPresencaCadastroDto> validator) :
+        IValidator<CodafListaPresencaCadastroDto> validator,
+        IGerenciadorAnexosCodafService gerenciadorAnexosCodafService) :
         ICasoDeUsoCriarCodafListaPresenca
     {
         public async Task<Resultado<CodafListaPresencaDto>> ExecutarAsync(CodafListaPresencaCadastroDto codafListaPresencaCadastroDto)
@@ -48,6 +49,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 codafListaPresenca.Id = idListaPresenca;
                 await SalvarInscritosAsync(codafListaPresencaCadastroDto, idListaPresenca);
                 await SalvarRetificacoesAsync(codafListaPresencaCadastroDto, idListaPresenca);
+                var anexos = mapper.Map<IEnumerable<CodafAnexo>>(codafListaPresencaCadastroDto.Anexos);
+                await gerenciadorAnexosCodafService.ProcessarAnexosAsync(idListaPresenca, anexos);
                 transacaoDb.Commit();
                 return mapper.Map<CodafListaPresencaDto>(codafListaPresenca);
             }

@@ -21,6 +21,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public ICollection<CodafComentario> CodafComentarios { get; set; } = [];
         public ICollection<CodafInscricaoListaPresenca> CodafInscricoes { get; set; } = [];
         public ICollection<CodafRetificacaoListaPresenca> CodafRetificacoes { get; set; } = [];
+        public ICollection<CodafAnexo>? CodafAnexos { get; set; }
 
         protected CodafListaPresenca() { }
 
