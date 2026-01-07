@@ -1,4 +1,4 @@
-CREATE TABLE codaf_anexo (
+CREATE TABLE IF NOT EXISTS codaf_anexo (
     id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
     codaf_lista_presenca_id int8 NOT NULL,    
     arquivo_codigo UUID NOT NULL, 
@@ -18,4 +18,4 @@ CREATE TABLE codaf_anexo (
 );
 
 -- Índice para busca rápida pelos anexos de um CODAF
-CREATE INDEX IX_codaf_anexo_codaf_lista_presenca_id ON codaf_anexo(codaf_lista_presenca_id) WHERE excluido IS FALSE;
+CREATE INDEX IF NOT EXISTS IX_codaf_anexo_codaf_lista_presenca_id ON codaf_anexo(codaf_lista_presenca_id) WHERE excluido IS FALSE;
