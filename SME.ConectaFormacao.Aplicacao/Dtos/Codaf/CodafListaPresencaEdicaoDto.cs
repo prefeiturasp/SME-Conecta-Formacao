@@ -15,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
         public string? Observacao { get; set; }
         public IList<CodafInscritoListaPresencaSalvarDto>? Inscritos { get; set; }
         public IList<CodafRetificacaoListaPresencaSalvarDto>? Retificacoes { get; set; }
+        public IList<CodafAnexoSalvarDto>? Anexos { get; set; }
     }
 
     public class CodafListaPresencaEdicaoValidator : AbstractValidator<CodafListaPresencaEdicaoDto>
