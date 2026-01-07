@@ -18,9 +18,9 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public Proposta Proposta { get; set; } = null!;
         public PropostaTurma PropostaTurma { get; set; } = null!;
-        public IEnumerable<CodafComentario> CodafComentarios { get; set; } = [];
-        public IEnumerable<CodafInscricaoListaPresenca> CodafInscricoes { get; set; } = [];
-        public IEnumerable<CodafRetificacao> CodafRetificacoes { get; set; } = [];
+        public ICollection<CodafComentario> CodafComentarios { get; set; } = [];
+        public ICollection<CodafInscricaoListaPresenca> CodafInscricoes { get; set; } = [];
+        public ICollection<CodafRetificacaoListaPresenca> CodafRetificacoes { get; set; } = [];
 
         protected CodafListaPresenca() { }
 

@@ -19,6 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
     {
         private readonly Mock<IRepositorioCodafListaPresenca> _repositorioCodafListaPresencaMock;
         private readonly Mock<IRepositorioCodafInscritosListaPresenca> _repositorioCodafInscritosListaPresencaMock;
+        private readonly Mock<IRepositorioCodafRetificacaoListaPresenca> _repositorioCodafRetificacaoListaPresencaMock;
         private readonly Mock<IValidadorCodafListaPresencaService> _validadorCodafListaPresencaServiceMock;
         private readonly Mock<ITransacao> _transacaoMock;
         private readonly Mock<IMapper> _mapperMock;
@@ -31,6 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var mocker = new AutoMocker();
             _repositorioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
             _repositorioCodafInscritosListaPresencaMock = mocker.GetMock<IRepositorioCodafInscritosListaPresenca>();
+            _repositorioCodafRetificacaoListaPresencaMock = mocker.GetMock<IRepositorioCodafRetificacaoListaPresenca>();
             _validadorCodafListaPresencaServiceMock = mocker.GetMock<IValidadorCodafListaPresencaService>();
             _transacaoMock = mocker.GetMock<ITransacao>();
             _validatorMock = mocker.GetMock<IValidator<CodafListaPresencaCadastroDto>>();
@@ -226,6 +228,59 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 inscritos.Any(i => i.InscricaoId == inscritosDto[0].InscricaoId) &&
                 inscritos.Any(i => i.InscricaoId == inscritosDto[1].InscricaoId)
             )), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoCriacaoComRetificacoes_QuandoExecutar_EntaoDeveChamarInserirRetificacoesERetornarSucesso()
+        {
+            // Arrange
+            var propostaIdValido = _faker.Random.Long(1);
+            var propostaTurmaIdValido = _faker.Random.Long(1);
+            var retificacoesDto = new List<CodafRetificacaoListaPresencaSalvarDto>
+            {
+                new () { DataRetificacao = _faker.Date.Past() },
+                new () { DataRetificacao = _faker.Date.Recent() }
+            };
+            var codafListaPresencaCadastroDto = new CodafListaPresencaCadastroDto
+            {
+                PropostaId = propostaIdValido,
+                PropostaTurmaId = propostaTurmaIdValido,
+                Retificacoes = retificacoesDto
+            };
+            _validatorMock
+                .Setup(v => v.ValidateAsync(codafListaPresencaCadastroDto, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.TurmaJaTemListaDePresencaAsync(propostaTurmaIdValido))
+                .ReturnsAsync(false);
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.Inserir(It.IsAny<CodafListaPresenca>()))
+                .ReturnsAsync(1L);
+            _mapperMock
+                .Setup(m => m.Map<CodafListaPresencaDto>(It.IsAny<CodafListaPresenca>()))
+                .Returns(new CodafListaPresencaDto());
+            _mapperMock
+                .Setup(m => m.Map<IEnumerable<CodafRetificacaoListaPresenca>>(retificacoesDto))
+                .Returns(
+                [
+                    new() { DataRetificacao = retificacoesDto[0].DataRetificacao },
+                    new() { DataRetificacao = retificacoesDto[1].DataRetificacao }
+                ]);
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(codafListaPresencaCadastroDto);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            resultado.Dados.Should().NotBeNull();
+            _repositorioCodafRetificacaoListaPresencaMock.Verify(r => r.Inserir(It.Is<CodafRetificacaoListaPresenca>(retificacao =>
+                retificacao.DataRetificacao == retificacoesDto[0].DataRetificacao)), Times.Once);
+            _repositorioCodafRetificacaoListaPresencaMock.Verify(r => r.Inserir(It.Is<CodafRetificacaoListaPresenca>(retificacao =>
+                retificacao.DataRetificacao == retificacoesDto[1].DataRetificacao)), Times.Once);
         }
 
         [Fact]
