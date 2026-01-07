@@ -14,7 +14,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         ICasoDeUsoListarCodafListaPresenca casoDeUsoListarCodafListaPresenca,
         ICasoDeUsoObterCodafListaPresencaPorId casoDeUsoObterCodafListaPresencaPorId,
         ICasoDeUsoListarInscritosTurmaCodafListaPresenca casoDeUsoListarInscritosTurmaCodafListaPresenca,
-        ICasoDeUsoTurmaPossuiCodafListaPresenca casoDeUsoTurmaPossuiCodafListaPresenca) : BaseController
+        ICasoDeUsoTurmaPossuiCodafListaPresenca casoDeUsoTurmaPossuiCodafListaPresenca,
+        ICasoDeUsoRemoverCodafRetificacaoListaPresenca casoDeUsoRemoverCodafRetificacaoListaPresenca) : BaseController
     {
         [HttpPost]
         [ProducesResponseType(typeof(Resultado<CodafListaPresencaDto>), 201)]
@@ -73,6 +74,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> TurmaPossuiListaPresenca(long propostaTurmaId, [FromQuery] long listaPresencaId = 0)
         {
             var resultado = await casoDeUsoTurmaPossuiCodafListaPresenca.ExecutarAsync(propostaTurmaId, listaPresencaId);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpDelete("retificacoes/{retificacaoId:long}")]
+        [ProducesResponseType(typeof(Resultado<bool>), 204)]
+        [ProducesResponseType(typeof(Resultado<bool>), 404)]
+        public async Task<IActionResult> RemoverRetificacao(long retificacaoId)
+        {
+            var resultado = await casoDeUsoRemoverCodafRetificacaoListaPresenca.ExecutarAsync(retificacaoId);
             return ProcessarResultado(resultado);
         }
     }

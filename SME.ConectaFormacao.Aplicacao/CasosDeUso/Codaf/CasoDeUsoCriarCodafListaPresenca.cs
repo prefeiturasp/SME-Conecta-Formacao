@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
     public class CasoDeUsoCriarCodafListaPresenca(
         IRepositorioCodafListaPresenca repositorioCodafListaPresenca,
         IRepositorioCodafInscritosListaPresenca repositorioCodafInscritosListaPresenca,
+        IRepositorioCodafRetificacaoListaPresenca repositorioCodafRetificacaoListaPresenca,
         IValidadorCodafListaPresencaService validadorCodafListaPresencaService,
         IContextoAplicacao contextoAplicacao,
         IMapper mapper,
@@ -45,15 +46,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             {
                 var idListaPresenca = await repositorioCodafListaPresenca.Inserir(codafListaPresenca);
                 codafListaPresenca.Id = idListaPresenca;
-                if (codafListaPresencaCadastroDto.Inscritos is not null && codafListaPresencaCadastroDto.Inscritos.Any())
-                {
-                    var inscritosListaPresenca = mapper.Map<IEnumerable<CodafInscricaoListaPresenca>>(codafListaPresencaCadastroDto.Inscritos);
-                    foreach (var inscrito in inscritosListaPresenca)
-                    {
-                        inscrito.CodafListaPresencaId = idListaPresenca;
-                    }
-                    await repositorioCodafInscritosListaPresenca.InserirVariosAsync(inscritosListaPresenca);
-                }
+                await SalvarInscritosAsync(codafListaPresencaCadastroDto, idListaPresenca);
+                await SalvarRetificacoesAsync(codafListaPresencaCadastroDto, idListaPresenca);
                 transacaoDb.Commit();
                 return mapper.Map<CodafListaPresencaDto>(codafListaPresenca);
             }
@@ -83,6 +77,32 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 return erroUnicidadeTurma;
 
             return null;
+        }
+
+        private async Task SalvarInscritosAsync(CodafListaPresencaCadastroDto codafListaPresencaCadastroDto, long codafListaPresencaId)
+        {
+            if (codafListaPresencaCadastroDto.Inscritos is not null && codafListaPresencaCadastroDto.Inscritos.Any())
+            {
+                var inscritosListaPresenca = mapper.Map<IEnumerable<CodafInscricaoListaPresenca>>(codafListaPresencaCadastroDto.Inscritos);
+                foreach (var inscrito in inscritosListaPresenca)
+                {
+                    inscrito.CodafListaPresencaId = codafListaPresencaId;
+                }
+                await repositorioCodafInscritosListaPresenca.InserirVariosAsync(inscritosListaPresenca);
+            }
+        }
+
+        private async Task SalvarRetificacoesAsync(CodafListaPresencaCadastroDto codafListaPresencaCadastroDto, long codafListaPresencaId)
+        {
+            if (codafListaPresencaCadastroDto.Retificacoes is null || !codafListaPresencaCadastroDto.Retificacoes.Any())
+                return;
+
+            var retificacoes = mapper.Map<IEnumerable<CodafRetificacaoListaPresenca>>(codafListaPresencaCadastroDto.Retificacoes);
+            foreach (var retificacao in retificacoes)
+            {
+                retificacao.CodafListaPresencaId = codafListaPresencaId;
+                await repositorioCodafRetificacaoListaPresenca.Inserir(retificacao);
+            }
         }
     }
 }
