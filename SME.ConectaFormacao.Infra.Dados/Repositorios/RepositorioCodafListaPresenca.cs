@@ -145,11 +145,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             var conn = conexao.Obter();
             var sql = $"""
+                -- 1. Dados do Cabeçalho (CODAF + Proposta + Turma)
                 SELECT CLP.ID,
                        CLP.PROPOSTA_ID AS propostaId,
                        CLP.PROPOSTA_TURMA_ID AS propostaTurmaId,
-                       CLP.DATA_PUBLICACAO  AS dataPublicacao,
-                       CLP.DATA_PUBLICACAO_DOM  AS dataPublicacaoDom,
+                       CLP.DATA_PUBLICACAO AS dataPublicacao,
+                       CLP.DATA_PUBLICACAO_DOM AS dataPublicacaoDom,
                        CLP.NUMERO_COMUNICADO AS numeroComunicado,
                        CLP.PAGINA_COMUNICADO_DOM AS paginaComunicadoDom,
                        CLP.CODIGO_CURSO_EOL AS codigoCursoEol,
@@ -162,74 +163,74 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        CLP.CRIADO_EM AS criadoEm,
                        CLP.CRIADO_POR AS criadoPor,
                        CLP.CRIADO_LOGIN AS criadoLogin,
-                       P.ID, --Split de proposta 
+               
+                       P.ID, 
                        P.NOME_FORMACAO AS nomeFormacao,
                        P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
-                       PT.ID, --Split de proposta turma
-                       PT.NOME,
+               
+                       PT.ID, 
+                       PT.NOME
+                FROM PUBLIC.CODAF_LISTA_PRESENCA AS CLP
+                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
+                WHERE NOT CLP.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
+                  AND CLP.ID = @id;
 
-                       CRLP.ID, -- Split 3
+                -- 2. Retificações
+                SELECT CRLP.ID, 
                        CRLP.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
                        CRLP.DATA_RETIFICACAO AS DataRetificacao,
                        CRLP.PAGINA_RETIFICACAO_DOM AS PaginaRetificacaoDom,
-                       CRLP.ALTERADO_EM AS AlteradoEm,
-                       CRLP.ALTERADO_POR AS AlteradoPor,
-                       CRLP.ALTERADO_LOGIN AS AlteradoLogin,
                        CRLP.CRIADO_EM AS CriadoEm,
-                       CRLP.CRIADO_POR AS CriadoPor,
-                       CRLP.CRIADO_LOGIN AS CriadoLogin,
+                       CRLP.CRIADO_POR AS CriadoPor
+                FROM PUBLIC.CODAF_RETIFICACAO_LISTA_PRESENCA AS CRLP 
+                WHERE NOT CRLP.EXCLUIDO AND CRLP.CODAF_LISTA_PRESENCA_ID = @id;
 
-                       CA.ID, -- Split 4 (Anexos)
+                -- 3. Anexos
+                SELECT CA.ID, 
                        CA.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
                        CA.ARQUIVO_CODIGO AS ArquivoCodigo,
                        CA.NOME_ARQUIVO AS NomeArquivo,
                        CA.EXTENSAO AS Extensao,
                        CA.TIPO_ANEXO_ID AS TipoAnexoId,
-                       CA.ALTERADO_EM AS AlteradoEm,
-                       CA.ALTERADO_POR AS AlteradoPor,
-                       CA.ALTERADO_LOGIN AS AlteradoLogin,
                        CA.CRIADO_EM AS CriadoEm,
-                       CA.CRIADO_POR AS CriadoPor,
-                       CA.CRIADO_LOGIN AS CriadoLogin
-                FROM PUBLIC.CODAF_LISTA_PRESENCA AS CLP
-                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
-                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
-                LEFT JOIN PUBLIC.CODAF_RETIFICACAO_LISTA_PRESENCA AS CRLP ON CRLP.CODAF_LISTA_PRESENCA_ID = CLP.ID AND NOT CRLP.EXCLUIDO
-                LEFT JOIN PUBLIC.CODAF_ANEXO AS CA ON CA.CODAF_LISTA_PRESENCA_ID = CLP.ID AND NOT CA.EXCLUIDO
-                WHERE NOT CLP.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO AND CLP.ID = @id
+                       CA.CRIADO_POR AS CriadoPor
+                FROM PUBLIC.CODAF_ANEXO AS CA 
+                WHERE NOT CA.EXCLUIDO AND CA.CODAF_LISTA_PRESENCA_ID = @id;
+
+                -- 4. Inscritos (A lista grande)
+                SELECT CILP.ID, 
+                       CILP.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
+                       CILP.INSCRICAO_ID AS InscricaoId,
+                       CILP.PERCENTUAL_FREQUENCIA AS PercentualFrequencia,
+                       CILP.ATIVIDADE_OBRIGATORIO AS AtividadeObrigatorio,
+                       CILP.CONCEITO_FINAL AS ConceitoFinal,
+                       CILP.APROVADO AS Aprovado,
+                       CILP.CRIADO_EM AS CriadoEm,
+                       CILP.CRIADO_POR AS CriadoPor
+                FROM PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP 
+                WHERE NOT CILP.EXCLUIDO AND CILP.CODAF_LISTA_PRESENCA_ID = @id;
                 """;
 
-            var parametros = new { id }; 
-            var listaPresencaDict = new Dictionary<long, CodafListaPresenca>();
-            await conn.QueryAsync<CodafListaPresenca, Proposta, PropostaTurma, CodafRetificacaoListaPresenca, CodafAnexo, CodafListaPresenca>(
-                sql,
-                (clp, p, pt, crlp, ca) =>
-                {
-                    if (!listaPresencaDict.TryGetValue(clp.Id, out var listaPresencaEntry))
-                    {
-                        listaPresencaEntry = clp;
-                        listaPresencaEntry.Proposta = p;
-                        listaPresencaEntry.PropostaTurma = pt;
-                        listaPresencaEntry.CodafRetificacoes = [];
-                        listaPresencaEntry.CodafAnexos = [];
-                        listaPresencaDict.Add(listaPresencaEntry.Id, listaPresencaEntry);
-                    }
+            var parametros = new { id };
 
-                    if (crlp != null)
-                    {
-                        listaPresencaEntry.CodafRetificacoes.Add(crlp);
-                    }
+            using var multi = await conn.QueryMultipleAsync(sql, parametros);
+            var codafListaPresenca = multi.Read<CodafListaPresenca, Proposta, PropostaTurma, CodafListaPresenca>(
+            (clp, p, pt) =>
+            {
+                clp.Proposta = p;
+                clp.PropostaTurma = pt;
+                return clp;
+            },
+            splitOn: "ID,ID").SingleOrDefault();
 
-                    if (ca != null)
-                    {
-                        listaPresencaEntry.CodafAnexos!.Add(ca);
-                    }
+            if (codafListaPresenca == null)
+                return null;
 
-                    return listaPresencaEntry;
-                },
-                parametros,
-                splitOn: "ID,ID,ID,ID");
-            return listaPresencaDict.Values.FirstOrDefault();
+            codafListaPresenca.CodafRetificacoes = [.. multi.Read<CodafRetificacaoListaPresenca>()];
+            codafListaPresenca.CodafAnexos = [.. multi.Read<CodafAnexo>()];
+            codafListaPresenca.CodafInscricoes = [.. multi.Read<CodafInscricaoListaPresenca>()];
+            return codafListaPresenca;
         }
     }
 }

@@ -25,6 +25,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca> _mockCasoDeUsoRemoverRetificacao;
         private readonly Mock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf> _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf;
         private readonly Mock<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca> _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca;
+        private readonly Mock<ICasoDeUsoEnviarParaDfCodafListaPresenca> _mockCasoDeUsoEnviarParaDfCodafListaPresenca;
         private readonly CodafListaPresencaController _controller;
         private readonly Faker _faker;
 
@@ -40,6 +41,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _mockCasoDeUsoRemoverRetificacao = mocker.GetMock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca>();
             _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf = mocker.GetMock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf>();
             _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca = mocker.GetMock<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca>();
+            _mockCasoDeUsoEnviarParaDfCodafListaPresenca = mocker.GetMock<ICasoDeUsoEnviarParaDfCodafListaPresenca>();
             _controller = mocker.CreateInstance<CodafListaPresencaController>();
             _faker = new Faker("pt_BR");
         }
@@ -373,14 +375,28 @@ namespace SME.ConectaFormacao.Webapi.Teste
             arquivoMock.Setup(a => a.ContentType).Returns("application/pdf");
             arquivoMock.Setup(a => a.OpenReadStream()).Returns(new MemoryStream([1, 2, 3]));
             var arquivoDto = arquivoMock.Object;
-            var arquivoTemporarioDto = new ArquivoTemporarioDto(Guid.NewGuid(), "documento.pdf", "application/pdf", 1024);
+            var arquivoTemporarioDto = new CodafAnexoTemporarioDto { ArquivoCodigo = Guid.NewGuid(), NomeArquivo = "documento.pdf", ContentType = "application/pdf", TamanhoBytes = 1024 };
             _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca
                 .Setup(x => x.ExecutarAsync(arquivoDto))
-                .ReturnsAsync(Resultado<ArquivoTemporarioDto>.DeSucesso(arquivoTemporarioDto));
+                .ReturnsAsync(Resultado<CodafAnexoTemporarioDto>.DeSucesso(arquivoTemporarioDto));
             // Act
             await _controller.UploadAnexoTemporario(arquivoDto);
             // Assert
             _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca.Verify(x => x.ExecutarAsync(arquivoDto), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmIdCodafListaPresenca_QuandoChamarEnviarParaDf_EntaoDeveChamarCasoDeUsoEnviarParaDfCodafListaPresenca()
+        {
+            // Arrange
+            var codafListaPresencaId = _faker.Random.Long(1);
+            _mockCasoDeUsoEnviarParaDfCodafListaPresenca
+                .Setup(x => x.ExecutarAsync(codafListaPresencaId))
+                .ReturnsAsync(Resultado<bool>.DeSucesso(true));
+            // Act
+            await _controller.EnviarParaDf(codafListaPresencaId);
+            // Assert
+            _mockCasoDeUsoEnviarParaDfCodafListaPresenca.Verify(x => x.ExecutarAsync(codafListaPresencaId), Times.Once);
         }
     }
 }
