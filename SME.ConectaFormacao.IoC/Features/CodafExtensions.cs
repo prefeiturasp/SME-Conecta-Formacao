@@ -29,6 +29,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca, CasoDeUsoUploadAnexoTemporarioCodafListaPresenca>()
                 .AddScoped<IRepositorioCodafAnexo, RepositorioCodafAnexo>()
                 .AddScoped<IGerenciadorAnexosCodafService, GerenciadorAnexosCodafService>()
+                .AddScoped<ICasoDeUsoEnviarParaDfCodafListaPresenca, CasoDeUsoEnviarParaDfCodafListaPresenca>()
             ;
         }
     }

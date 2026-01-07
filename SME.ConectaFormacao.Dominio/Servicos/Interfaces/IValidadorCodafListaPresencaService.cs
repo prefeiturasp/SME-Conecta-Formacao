@@ -1,4 +1,5 @@
 ﻿using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Dominio.Servicos.Interfaces
 {
@@ -6,5 +7,6 @@ namespace SME.ConectaFormacao.Dominio.Servicos.Interfaces
     {
         Task<Erro?> ValidarVinculoPropostaTurmaAsync(long propostaId, long propostaTurmaId);
         Task<Erro?> ValidarUnicidadeTurmaListaDePresencaAsync(long propostaTurmaId, long listaPresencaId = 0);
+        Task<Erro?> ValidarParaEnvioAoDfAsync(CodafListaPresenca codafListaPresenca);
     }
 }

@@ -59,5 +59,16 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         {
             Status = StatusCodafListaPresenca.Iniciado;
         }
+
+        public void MarcarComoEnviadaParaDf()
+        {
+            if (PodeSerEnviadaParaDf())
+                Status = StatusCodafListaPresenca.AguardandoDf;
+        }
+
+        public bool PodeSerEnviadaParaDf()
+        {
+            return Status == StatusCodafListaPresenca.Iniciado || Status == StatusCodafListaPresenca.DevolvidoParaCorrecao;
+        }
     }
 }

@@ -84,10 +84,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         }
 
-        public async Task ExcluirPorListaPresencaIdAsync(long codafListaPresencaId) =>
-            await conexao.Obter().ExecuteAsync(@"
+        public async Task ExcluirPorListaPresencaIdAsync(long codafListaPresencaId)
+        {
+            await conexao.Obter().ExecuteAsync(
+                """
                 DELETE FROM PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA 
-                WHERE CODAF_LISTA_PRESENCA_ID = @codafListaPresencaId;",
-                new { codafListaPresencaId });
+                WHERE CODAF_LISTA_PRESENCA_ID = @codafListaPresencaId;
+
+                SELECT SETVAL('public.codaf_inscricao_lista_presenca_id_seq', COALESCE((SELECT MAX(ID) FROM PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA), 1));
+                """, new { codafListaPresencaId });
+        }
     }
 }

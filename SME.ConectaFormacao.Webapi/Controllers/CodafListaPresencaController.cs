@@ -18,7 +18,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         ICasoDeUsoTurmaPossuiCodafListaPresenca casoDeUsoTurmaPossuiCodafListaPresenca,
         ICasoDeUsoRemoverCodafRetificacaoListaPresenca casoDeUsoRemoverCodafRetificacaoListaPresenca,
         ICasoDeUsoObterModeloTermoResponsabilidadeCodaf casoDeUsoObterModeloTermoResponsabilidadeCodaf,
-        ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca casoDeUsoUploadAnexoTemporarioCodafListaPresenca) : BaseController
+        ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca casoDeUsoUploadAnexoTemporarioCodafListaPresenca,
+        ICasoDeUsoEnviarParaDfCodafListaPresenca casoDeUsoEnviarParaDfCodafListaPresenca) : BaseController
     {
         [HttpPost]
         [ProducesResponseType(typeof(Resultado<CodafListaPresencaDto>), 201)]
@@ -109,6 +110,13 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> UploadAnexoTemporario([FromForm] IFormFile arquivo)
         {
             var resultado = await casoDeUsoUploadAnexoTemporarioCodafListaPresenca.ExecutarAsync(arquivo);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpPatch("{codafListaPresencaId:long}/enviar-para-df")]
+        public async Task<IActionResult> EnviarParaDf(long codafListaPresencaId)
+        {
+            var resultado = await casoDeUsoEnviarParaDfCodafListaPresenca.ExecutarAsync(codafListaPresencaId);
             return ProcessarResultado(resultado);
         }
     }
