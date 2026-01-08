@@ -1,6 +1,7 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -8,8 +9,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 {
     public class CasoDeUsoDevolverParaCorrecaoCodafListaPresenca(
         IRepositorioCodafListaPresenca repositorioCodafListaPresenca,
-        IRepositorioComentarioCodafListaPresenca repositorioComentarioCodafListaPresenca,
-        ITransacao transacao) :
+        IRepositorioCodafComentarioListaPresenca repositorioComentarioCodafListaPresenca,
+        ITransacao transacao,
+        IGerenciadorMovimentacaoCodafService gerenciadorMovimentacaoCodafService) :
         ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca
     {
         public async Task<Resultado<bool>> ExecutarAsync(long codafListaPresencaId, string justificativa)
@@ -32,7 +34,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 codafListaPresenca.MarcarComoDevolvidaParaCorrecao();
                 await repositorioCodafListaPresenca.Atualizar(codafListaPresenca);
                 var comentario = new CodafComentarioListaPresenca { Comentario = justificativa, CodafListaPresencaId = codafListaPresenca.Id };
-                await repositorioComentarioCodafListaPresenca.Inserir(comentario);
+                var idComentario = await repositorioComentarioCodafListaPresenca.Inserir(comentario);
+                await gerenciadorMovimentacaoCodafService.RegistrarMovimentacaoAsync(codafListaPresenca, idComentario);
                 transacaoDb.Commit();
                 return true;
             }

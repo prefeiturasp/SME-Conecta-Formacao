@@ -14,6 +14,9 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 
     public static class FormacaoHomologadaExtensao
     {
+
+
+
         public static bool EstaHomologada(this FormacaoHomologada? valor)
         {
             if (valor is null)

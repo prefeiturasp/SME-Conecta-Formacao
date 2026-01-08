@@ -7,7 +7,9 @@ using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
+using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Data;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
@@ -15,6 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
     {
         private readonly Mock<IValidadorCodafListaPresencaService> _validadorCodafListaPresencaServiceMock;
         private readonly Mock<IRepositorioCodafListaPresenca> _repositorioCodafListaPresencaMock;
+        private readonly Mock<ITransacao> _transacaoMock;
         private readonly CasoDeUsoEnviarParaDfCodafListaPresenca _casoDeUsoEnviarParaDfCodafListaPresenca;
         private readonly Faker _faker;
 
@@ -24,6 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _validadorCodafListaPresencaServiceMock = mocker.GetMock<IValidadorCodafListaPresencaService>();
             _repositorioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
             _casoDeUsoEnviarParaDfCodafListaPresenca = mocker.CreateInstance<CasoDeUsoEnviarParaDfCodafListaPresenca>();
+            _transacaoMock = mocker.GetMock<ITransacao>();
             _faker = new();
         }
 
@@ -96,6 +100,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _validadorCodafListaPresencaServiceMock
                 .Setup(v => v.ValidarParaEnvioAoDfAsync(codafListPresenca))
                 .ReturnsAsync((Erro?)null);
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
 
             // Act
             var resultado = await _casoDeUsoEnviarParaDfCodafListaPresenca.ExecutarAsync(codafListPresenca.Id);
@@ -106,6 +114,37 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _repositorioCodafListaPresencaMock
                 .Verify(r => r.Atualizar(It.Is<CodafListaPresenca>(c => c.Id == codafListPresenca.Id && c.Status == StatusCodafListaPresenca.AguardandoDf))
                 , Times.Once);
+        }
+
+
+        [Fact]
+        public async Task DadoErroAoAtualizar_QuandoExecutar_EntaoDeveRetornarErroInternoERollbackTransacao()
+        {
+            // Arrange
+            var codafListPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null);
+            codafListPresenca.Iniciar();
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterPorIdDetalhadoAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafListPresenca);
+            _validadorCodafListaPresencaServiceMock
+                .Setup(v => v.ValidarParaEnvioAoDfAsync(codafListPresenca))
+                .ReturnsAsync((Erro?)null);
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.Atualizar(It.IsAny<CodafListaPresenca>()))
+                .ThrowsAsync(new Exception("Erro ao atualizar"));
+
+            // Act
+            var resultado = await _casoDeUsoEnviarParaDfCodafListaPresenca.ExecutarAsync(codafListPresenca.Id);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.ErroInterno);
+            transacaoMock.Verify(t => t.Rollback(), Times.Once);
         }
     }
 }
