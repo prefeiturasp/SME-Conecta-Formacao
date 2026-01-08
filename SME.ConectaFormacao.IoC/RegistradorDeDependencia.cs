@@ -216,7 +216,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new NotificacaoMap());
             config.AddMap(new NotificacaoUsuarioMap());
 
-            config.AddMap(new CodafComentarioMap());
+            config.AddMap(new CodafComentarioListaPresencaMap());
             config.AddMap(new CodafInscricaoMap());
             config.AddMap(new CodafRetificacaoMap());
             config.AddMap(new CodafListaPresencaMap());

@@ -2,11 +2,11 @@
 
 namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 {
-    public class CodafComentarioMap : BaseMapAuditavel<CodafComentario>
+    public class CodafComentarioListaPresencaMap : BaseMapAuditavel<CodafComentarioListaPresenca>
     {
-        public CodafComentarioMap()
+        public CodafComentarioListaPresencaMap()
         {
-            ToTable("codaf_comentario");
+            ToTable("codaf_comentario_lista_presenca");
             Map(c => c.CodafListaPresencaId).ToColumn("codaf_lista_presenca_id");
             Map(c => c.Comentario).ToColumn("comentario");
             Map(c => c.NotificacaoEnviada).ToColumn("notificacao_enviada");

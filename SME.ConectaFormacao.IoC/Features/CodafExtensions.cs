@@ -30,6 +30,8 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<IRepositorioCodafAnexo, RepositorioCodafAnexo>()
                 .AddScoped<IGerenciadorAnexosCodafService, GerenciadorAnexosCodafService>()
                 .AddScoped<ICasoDeUsoEnviarParaDfCodafListaPresenca, CasoDeUsoEnviarParaDfCodafListaPresenca>()
+                .AddScoped<IRepositorioComentarioCodafListaPresenca, RepositorioComentarioCodafListaPresenca>()
+                .AddScoped<ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca, CasoDeUsoDevolverParaCorrecaoCodafListaPresenca>()
             ;
         }
     }

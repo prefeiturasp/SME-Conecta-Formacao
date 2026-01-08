@@ -1,3 +1,6 @@
 ALTER TABLE CODAF_RETIFICACAO_LISTA_PRESENCA
 ALTER COLUMN id TYPE int8,
 ALTER COLUMN data_retificacao TYPE timestamp;
+
+ALTER TABLE codaf_comentario_lista_presenca
+ALTER COLUMN id TYPE int8;

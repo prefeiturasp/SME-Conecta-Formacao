@@ -19,7 +19,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         ICasoDeUsoRemoverCodafRetificacaoListaPresenca casoDeUsoRemoverCodafRetificacaoListaPresenca,
         ICasoDeUsoObterModeloTermoResponsabilidadeCodaf casoDeUsoObterModeloTermoResponsabilidadeCodaf,
         ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca casoDeUsoUploadAnexoTemporarioCodafListaPresenca,
-        ICasoDeUsoEnviarParaDfCodafListaPresenca casoDeUsoEnviarParaDfCodafListaPresenca) : BaseController
+        ICasoDeUsoEnviarParaDfCodafListaPresenca casoDeUsoEnviarParaDfCodafListaPresenca,
+        ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca casoDeUsoDevolverParaCorrecaoCodafListaPresenca) : BaseController
     {
         [HttpPost]
         [ProducesResponseType(typeof(Resultado<CodafListaPresencaDto>), 201)]
@@ -117,6 +118,13 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> EnviarParaDf(long codafListaPresencaId)
         {
             var resultado = await casoDeUsoEnviarParaDfCodafListaPresenca.ExecutarAsync(codafListaPresencaId);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpPatch("{codafListaPresencaId:long}/devolver-para-correcao")]
+        public async Task<IActionResult> DevolverParaCorrecao(long codafListaPresencaId, [FromBody] string justificativa)
+        {
+            var resultado = await casoDeUsoDevolverParaCorrecaoCodafListaPresenca.ExecutarAsync(codafListaPresencaId, justificativa);
             return ProcessarResultado(resultado);
         }
     }
