@@ -15,7 +15,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         {
             var resultado = await repositorioCodafInscritosListaPresenca.ObterInscritosPorTurmaAsync(propostaTurmaId, numeroPagina, numeroRegistros);
 
-            var inscritosDto = mapper.Map<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>(resultado);
+            var inscritosDto = new PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>(
+                mapper.Map<List<CodafInscritoTurmaListaPresencaRetornoDto>>(resultado.Itens),
+                resultado.TotalRegistros,
+                resultado.TamanhoPagina);
             return inscritosDto;
         }
     }

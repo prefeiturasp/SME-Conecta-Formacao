@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
     public class CasoDeUsoDevolverParaCorrecaoCodafListaPresencaTests
     {
         private readonly Mock<IRepositorioCodafListaPresenca> _repositorioCodafListaPresencaMock;
-        private readonly Mock<IRepositorioComentarioCodafListaPresenca> _repositorioComentarioCodafListaPresencaMock;
+        private readonly Mock<IRepositorioCodafComentarioListaPresenca> _repositorioComentarioCodafListaPresencaMock;
         private readonly Mock<ITransacao> _transacaoMock;
         private readonly CasoDeUsoDevolverParaCorrecaoCodafListaPresenca _casoDeUso;
         private readonly Faker _faker;
@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             var mocker = new AutoMocker();
             _repositorioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
-            _repositorioComentarioCodafListaPresencaMock = mocker.GetMock<IRepositorioComentarioCodafListaPresenca>();
+            _repositorioComentarioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafComentarioListaPresenca>();
             _transacaoMock = mocker.GetMock<ITransacao>();
             _casoDeUso = mocker.CreateInstance<CasoDeUsoDevolverParaCorrecaoCodafListaPresenca>();
             _faker = new();
