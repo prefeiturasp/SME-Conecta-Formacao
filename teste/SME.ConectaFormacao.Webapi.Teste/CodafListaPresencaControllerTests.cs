@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
@@ -26,6 +25,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf> _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf;
         private readonly Mock<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca> _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca;
         private readonly Mock<ICasoDeUsoEnviarParaDfCodafListaPresenca> _mockCasoDeUsoEnviarParaDfCodafListaPresenca;
+        private readonly Mock<ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca> _mockCasoDeUsoDevolverParaCorrecaoCodafListaPresenca;
         private readonly CodafListaPresencaController _controller;
         private readonly Faker _faker;
 
@@ -42,6 +42,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf = mocker.GetMock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf>();
             _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca = mocker.GetMock<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca>();
             _mockCasoDeUsoEnviarParaDfCodafListaPresenca = mocker.GetMock<ICasoDeUsoEnviarParaDfCodafListaPresenca>();
+            _mockCasoDeUsoDevolverParaCorrecaoCodafListaPresenca = mocker.GetMock<ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca>();
             _controller = mocker.CreateInstance<CodafListaPresencaController>();
             _faker = new Faker("pt_BR");
         }
@@ -397,6 +398,21 @@ namespace SME.ConectaFormacao.Webapi.Teste
             await _controller.EnviarParaDf(codafListaPresencaId);
             // Assert
             _mockCasoDeUsoEnviarParaDfCodafListaPresenca.Verify(x => x.ExecutarAsync(codafListaPresencaId), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmIdCodafListaPresencaEJustificativa_QuandoChamarDevolverParaCorrecao_EntaoDeveChamarCasoDeUsoDevolverParaCorrecaoCodafListaPresenca()
+        {
+            // Arrange
+            var codafListaPresencaId = _faker.Random.Long(1);
+            var justificativa = _faker.Lorem.Sentence();
+            _mockCasoDeUsoDevolverParaCorrecaoCodafListaPresenca
+                .Setup(x => x.ExecutarAsync(codafListaPresencaId, justificativa))
+                .ReturnsAsync(Resultado<bool>.DeSucesso(true));
+            // Act
+            await _controller.DevolverParaCorrecao(codafListaPresencaId, justificativa);
+            // Assert
+            _mockCasoDeUsoDevolverParaCorrecaoCodafListaPresenca.Verify(x => x.ExecutarAsync(codafListaPresencaId, justificativa), Times.Once);
         }
     }
 }

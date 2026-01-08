@@ -1,8 +1,8 @@
 ﻿namespace SME.ConectaFormacao.Dominio.Entidades
 {
-    public class CodafComentario : EntidadeBaseAuditavel
+    public class CodafComentarioListaPresenca : EntidadeBaseAuditavel
     {
-        public int CodafListaPresencaId { get; set; }
+        public long CodafListaPresencaId { get; set; }
         public virtual CodafListaPresenca? CodafListaPresenca { get; set; }
         public required string Comentario { get; set; }
         public bool NotificacaoEnviada { get; set; }

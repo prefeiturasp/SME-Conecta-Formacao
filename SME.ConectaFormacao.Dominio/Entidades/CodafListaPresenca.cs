@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public Proposta Proposta { get; set; } = null!;
         public PropostaTurma PropostaTurma { get; set; } = null!;
-        public ICollection<CodafComentario> CodafComentarios { get; set; } = [];
+        public ICollection<CodafComentarioListaPresenca> CodafComentarios { get; set; } = [];
         public ICollection<CodafInscricaoListaPresenca> CodafInscricoes { get; set; } = [];
         public ICollection<CodafRetificacaoListaPresenca> CodafRetificacoes { get; set; } = [];
         public ICollection<CodafAnexo>? CodafAnexos { get; set; }
@@ -69,6 +69,17 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public bool PodeSerEnviadaParaDf()
         {
             return Status == StatusCodafListaPresenca.Iniciado || Status == StatusCodafListaPresenca.DevolvidoParaCorrecao;
+        }
+
+        public void MarcarComoDevolvidaParaCorrecao()
+        {
+            if (PodeSerDevolvidaParaCorrecao())
+                Status = StatusCodafListaPresenca.DevolvidoParaCorrecao;
+        }
+
+        public bool PodeSerDevolvidaParaCorrecao()
+        {
+            return Status == StatusCodafListaPresenca.AguardandoDf;
         }
     }
 }
