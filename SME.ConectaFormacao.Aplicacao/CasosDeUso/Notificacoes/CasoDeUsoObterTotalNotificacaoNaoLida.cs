@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacoes
 {
     public class CasoDeUsoObterTotalNotificacaoNaoLida : CasoDeUsoAbstrato, ICasoDeUsoObterTotalNotificacaoNaoLida
     {

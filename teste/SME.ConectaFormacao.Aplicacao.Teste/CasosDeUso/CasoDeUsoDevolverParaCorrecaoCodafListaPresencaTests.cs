@@ -1,8 +1,12 @@
-﻿using Bogus;
+﻿using AutoMapper;
+using Bogus;
+using Bogus.Extensions.Brazil;
 using FluentAssertions;
+using MediatR;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
+using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -17,6 +21,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<IRepositorioCodafListaPresenca> _repositorioCodafListaPresencaMock;
         private readonly Mock<IRepositorioCodafComentarioListaPresenca> _repositorioComentarioCodafListaPresencaMock;
         private readonly Mock<ITransacao> _transacaoMock;
+        private readonly Mock<IRepositorioCodafMovimentacaoListaPresenca> _repositorioCodafMovimentacaoMock;
+        private readonly Mock<IRepositorioUsuario> _repositorioUsuarioMock;
+        private readonly Mock<IMediator> _mediatorMock;
+        private readonly Mock<IMapper> _mapperMock;
         private readonly CasoDeUsoDevolverParaCorrecaoCodafListaPresenca _casoDeUso;
         private readonly Faker _faker;
 
@@ -26,6 +34,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _repositorioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
             _repositorioComentarioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafComentarioListaPresenca>();
             _transacaoMock = mocker.GetMock<ITransacao>();
+            _repositorioCodafMovimentacaoMock = mocker.GetMock<IRepositorioCodafMovimentacaoListaPresenca>();
+            _repositorioUsuarioMock = mocker.GetMock<IRepositorioUsuario>();
+            _mediatorMock = mocker.GetMock<IMediator>();
+            _mapperMock = mocker.GetMock<IMapper>();
             _casoDeUso = mocker.CreateInstance<CasoDeUsoDevolverParaCorrecaoCodafListaPresenca>();
             _faker = new();
         }
@@ -117,6 +129,24 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _transacaoMock
                 .Setup(t => t.Iniciar())
                 .Returns(transacaoMock.Object);
+            _repositorioCodafMovimentacaoMock
+                .Setup(r => r.ObterUltimaMovimentacaoPorListaPresencaStatusAsync(It.IsAny<long>(), It.IsAny<StatusCodafListaPresenca>()))
+                .ReturnsAsync(new CodafMovimentacaoListaPresenca() { CriadoLogin = _faker.Person.Cpf(false)});
+            _repositorioUsuarioMock
+                .Setup(r => r.ObterPorLogin(It.IsAny<string>()))
+                .ReturnsAsync(new Usuario(_faker.Person.Cpf(false), _faker.Person.FullName, _faker.Person.Email));
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<ObterUsuarioLogadoQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Usuario(_faker.Person.Cpf(false), _faker.Person.FullName, _faker.Person.Email));
+            _mapperMock
+                .Setup(m => m.Map<EnviarEmailDto>(It.IsAny<NotificacaoUsuario>()))
+                .Returns(new EnviarEmailDto
+                {
+                    EmailDestinatario = _faker.Person.Email,
+                    NomeDestinatario = _faker.Person.FullName,
+                    Texto = _faker.Lorem.Paragraph(),
+                });
+
             // Act
             var resultado = await _casoDeUso.ExecutarAsync(codafListaPresencaId, justificativa);
             // Assert

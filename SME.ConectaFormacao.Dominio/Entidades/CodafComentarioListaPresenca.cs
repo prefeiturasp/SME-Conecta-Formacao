@@ -8,5 +8,6 @@
         public bool NotificacaoEnviada { get; set; }
         public DateTime? DataNotificacao { get; set; }
         public bool Ativo { get; set; }
+        public Guid? NotificacaoCorrelacaoId { get; set; }
     }
 }

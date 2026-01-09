@@ -2,9 +2,6 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Servicos
 {

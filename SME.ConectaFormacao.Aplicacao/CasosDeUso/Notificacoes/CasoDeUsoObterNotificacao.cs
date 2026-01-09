@@ -2,7 +2,7 @@
 using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacoes
 {
     public class CasoDeUsoObterNotificacao : CasoDeUsoAbstrato, ICasoDeUsoObterNotificacao
     {
