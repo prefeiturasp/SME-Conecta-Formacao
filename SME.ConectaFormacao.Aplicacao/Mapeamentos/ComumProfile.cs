@@ -8,9 +8,6 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
     {
         public ComumProfile()
         {
-            CreateMap(typeof(ResultadoPaginado<>), typeof(PaginacaoResultadoDto<>))
-                .ForMember("Items", opt => opt.MapFrom("Itens"))
-                ;
         }
     }
 }

@@ -4,7 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Notificacao;
 using SME.ConectaFormacao.Dominio.Contexto;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacoes
 {
     public class CasoDeUsoObterNotificacaoPaginada : CasoDeUsoAbstratoPaginado, ICasoDeUsoObterNotificacaoPaginada
     {

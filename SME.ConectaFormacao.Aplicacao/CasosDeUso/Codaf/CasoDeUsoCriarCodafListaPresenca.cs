@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Dados.Servicos;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 {
@@ -19,7 +20,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         IContextoAplicacao contextoAplicacao,
         IMapper mapper,
         ITransacao transacao,
-        IValidator<CodafListaPresencaCadastroDto> validator) :
+        IValidator<CodafListaPresencaCadastroDto> validator,
+        IGerenciadorAnexosCodafService gerenciadorAnexosCodafService,
+        IGerenciadorMovimentacaoCodafService gerenciadorMovimentacaoCodafService) :
         ICasoDeUsoCriarCodafListaPresenca
     {
         public async Task<Resultado<CodafListaPresencaDto>> ExecutarAsync(CodafListaPresencaCadastroDto codafListaPresencaCadastroDto)
@@ -48,6 +51,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 codafListaPresenca.Id = idListaPresenca;
                 await SalvarInscritosAsync(codafListaPresencaCadastroDto, idListaPresenca);
                 await SalvarRetificacoesAsync(codafListaPresencaCadastroDto, idListaPresenca);
+                var anexos = mapper.Map<IEnumerable<CodafAnexo>>(codafListaPresencaCadastroDto.Anexos);
+                await gerenciadorAnexosCodafService.ProcessarAnexosAsync(idListaPresenca, anexos);
+                await gerenciadorMovimentacaoCodafService.RegistrarMovimentacaoAsync(codafListaPresenca);
                 transacaoDb.Commit();
                 return mapper.Map<CodafListaPresencaDto>(codafListaPresenca);
             }

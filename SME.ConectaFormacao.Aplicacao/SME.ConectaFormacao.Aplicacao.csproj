@@ -47,6 +47,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="Assets\TermoResponsabilidadeModelo.pdf" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Assets\TermoResponsabilidadeModelo.pdf" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Folder Include="Consultas\Funcionario\" />
     </ItemGroup>
 

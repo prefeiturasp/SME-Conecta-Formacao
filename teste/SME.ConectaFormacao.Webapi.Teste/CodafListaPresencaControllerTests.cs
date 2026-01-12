@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Moq.AutoMock;
@@ -21,6 +22,10 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoListarInscritosTurmaCodafListaPresenca> _mockCasoDeUsoListarInscritosTurma;
         private readonly Mock<ICasoDeUsoTurmaPossuiCodafListaPresenca> _mockCasoDeUsoTurmaPossuiCodafListaPresenca;
         private readonly Mock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca> _mockCasoDeUsoRemoverRetificacao;
+        private readonly Mock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf> _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf;
+        private readonly Mock<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca> _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca;
+        private readonly Mock<ICasoDeUsoEnviarParaDfCodafListaPresenca> _mockCasoDeUsoEnviarParaDfCodafListaPresenca;
+        private readonly Mock<ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca> _mockCasoDeUsoDevolverParaCorrecaoCodafListaPresenca;
         private readonly CodafListaPresencaController _controller;
         private readonly Faker _faker;
 
@@ -34,6 +39,10 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _mockCasoDeUsoListarInscritosTurma = mocker.GetMock<ICasoDeUsoListarInscritosTurmaCodafListaPresenca>();
             _mockCasoDeUsoTurmaPossuiCodafListaPresenca = mocker.GetMock<ICasoDeUsoTurmaPossuiCodafListaPresenca>();
             _mockCasoDeUsoRemoverRetificacao = mocker.GetMock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca>();
+            _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf = mocker.GetMock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf>();
+            _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca = mocker.GetMock<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca>();
+            _mockCasoDeUsoEnviarParaDfCodafListaPresenca = mocker.GetMock<ICasoDeUsoEnviarParaDfCodafListaPresenca>();
+            _mockCasoDeUsoDevolverParaCorrecaoCodafListaPresenca = mocker.GetMock<ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca>();
             _controller = mocker.CreateInstance<CodafListaPresencaController>();
             _faker = new Faker("pt_BR");
         }
@@ -304,6 +313,106 @@ namespace SME.ConectaFormacao.Webapi.Teste
             await _controller.RemoverRetificacao(retificacaoId);
             // Assert
             _mockCasoDeUsoRemoverRetificacao.Verify(x => x.ExecutarAsync(retificacaoId), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoSolicitacaoDeModelo_QuandoArquivoExistir_EntaoDeveRetornarFileStreamResult()
+        {
+            // Arrange
+            var nomeArquivo = "TermoResponsabilidadeModelo.pdf";
+            var contentType = "application/pdf";
+            var memoryStream = new MemoryStream([1, 2, 3]);
+
+            var arquivoDto = new ArquivoDto(nomeArquivo, contentType, memoryStream);
+            var resultadoSucesso = Resultado<ArquivoDto>.DeSucesso(arquivoDto);
+
+            _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf
+                .Setup(x => x.Executar())
+                .Returns(resultadoSucesso);
+
+            // Act
+            var resultado = await _controller.ObterModeloTermoResponsabilidade();
+
+            // Assert
+            var fileResult = resultado.Should().BeOfType<FileStreamResult>().Subject;
+
+            fileResult.ContentType.Should().Be(contentType);
+            fileResult.FileDownloadName.Should().Be(nomeArquivo);
+            fileResult.FileStream.Should().BeSameAs(memoryStream);
+
+            _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf
+                .Verify(x => x.Executar(), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoSolicitacaoDeModelo_QuandoArquivoNaoForEncontrado_EntaoDeveRetornarNotFound()
+        {
+            // Arrange
+            var erro = Erro.NaoEncontrado("Modelo não encontrado.");
+
+            _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf
+                .Setup(x => x.Executar())
+                .Returns(erro);
+
+            // Act
+            var resultado = await _controller.ObterModeloTermoResponsabilidade();
+
+            // Assert
+            var notFoundResult = resultado.Should().BeOfType<NotFoundObjectResult>().Subject;
+
+            notFoundResult.StatusCode.Should().Be(404);
+
+            var valorRetorno = notFoundResult.Value;
+            valorRetorno.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task DadoUmArquivoValido_QuandoChamarUploadAnexoTemporario_EntaoDeveChamarCasoDeUsoUploadAnexoTemporarioCodafListaPresenca()
+        {
+            // Arrange
+            var arquivoMock = new Mock<IFormFile>();
+            arquivoMock.Setup(a => a.Length).Returns(1024); // 1 KB
+            arquivoMock.Setup(a => a.FileName).Returns("documento.pdf");
+            arquivoMock.Setup(a => a.ContentType).Returns("application/pdf");
+            arquivoMock.Setup(a => a.OpenReadStream()).Returns(new MemoryStream([1, 2, 3]));
+            var arquivoDto = arquivoMock.Object;
+            var arquivoTemporarioDto = new CodafAnexoTemporarioDto { ArquivoCodigo = Guid.NewGuid(), NomeArquivo = "documento.pdf", ContentType = "application/pdf", TamanhoBytes = 1024 };
+            _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca
+                .Setup(x => x.ExecutarAsync(arquivoDto))
+                .ReturnsAsync(Resultado<CodafAnexoTemporarioDto>.DeSucesso(arquivoTemporarioDto));
+            // Act
+            await _controller.UploadAnexoTemporario(arquivoDto);
+            // Assert
+            _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca.Verify(x => x.ExecutarAsync(arquivoDto), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmIdCodafListaPresenca_QuandoChamarEnviarParaDf_EntaoDeveChamarCasoDeUsoEnviarParaDfCodafListaPresenca()
+        {
+            // Arrange
+            var codafListaPresencaId = _faker.Random.Long(1);
+            _mockCasoDeUsoEnviarParaDfCodafListaPresenca
+                .Setup(x => x.ExecutarAsync(codafListaPresencaId))
+                .ReturnsAsync(Resultado<bool>.DeSucesso(true));
+            // Act
+            await _controller.EnviarParaDf(codafListaPresencaId);
+            // Assert
+            _mockCasoDeUsoEnviarParaDfCodafListaPresenca.Verify(x => x.ExecutarAsync(codafListaPresencaId), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmIdCodafListaPresencaEJustificativa_QuandoChamarDevolverParaCorrecao_EntaoDeveChamarCasoDeUsoDevolverParaCorrecaoCodafListaPresenca()
+        {
+            // Arrange
+            var codafListaPresencaId = _faker.Random.Long(1);
+            var justificativa = _faker.Lorem.Sentence();
+            _mockCasoDeUsoDevolverParaCorrecaoCodafListaPresenca
+                .Setup(x => x.ExecutarAsync(codafListaPresencaId, justificativa))
+                .ReturnsAsync(Resultado<bool>.DeSucesso(true));
+            // Act
+            await _controller.DevolverParaCorrecao(codafListaPresencaId, justificativa);
+            // Assert
+            _mockCasoDeUsoDevolverParaCorrecaoCodafListaPresenca.Verify(x => x.ExecutarAsync(codafListaPresencaId, justificativa), Times.Once);
         }
     }
 }

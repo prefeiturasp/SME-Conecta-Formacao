@@ -8,5 +8,9 @@
         Task<bool> Excluir(string nomeArquivo, string nomeBucket = "");
         Task<IEnumerable<string>> ObterBuckets();
         Task<string> Obter(string nomeArquivo, bool ehPastaTemp);
+        Task<Guid> ArmazenarTemporariaGuid(Stream stream, string contentType);
+        Task<Guid> MoverGuid(Guid arquivoId);
+        string ObterUrlPorGuid(Guid arquivoId, bool ehPastaTemp = false);
+        Task<string> ObterUrlPorGuidAsync(Guid arquivoId, bool ehPastaTemp = false);
     }
 }

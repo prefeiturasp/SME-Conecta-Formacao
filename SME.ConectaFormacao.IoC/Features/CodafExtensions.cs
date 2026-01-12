@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.IoC.Features
         {
             public IServiceCollection AdicionarModuloCodaf() =>
             services
+                .AddScoped<IRepositorioCodafMovimentacaoListaPresenca, RepositorioCodafMovimentacaoListaPresenca>()
                 .AddScoped<IRepositorioCodafListaPresenca, RepositorioCodafListaPresenca>()
                 .AddScoped<IValidadorCodafListaPresencaService, ValidadorCodafListaPresencaService>()
                 .AddScoped<ICasoDeUsoCriarCodafListaPresenca, CasoDeUsoCriarCodafListaPresenca>()
@@ -25,6 +26,14 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoTurmaPossuiCodafListaPresenca, CasoDeUsoTurmaPossuiCodafListaPresenca>()
                 .AddScoped<IRepositorioCodafRetificacaoListaPresenca, RepositorioCodafRetificacaoListaPresenca>()
                 .AddScoped<ICasoDeUsoRemoverCodafRetificacaoListaPresenca, CasoDeUsoRemoverCodafRetificacaoListaPresenca>()
+                .AddScoped<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf, CasoDeUsoObterModeloTermoResponsabilidadeCodaf>()
+                .AddScoped<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca, CasoDeUsoUploadAnexoTemporarioCodafListaPresenca>()
+                .AddScoped<IRepositorioCodafAnexo, RepositorioCodafAnexo>()
+                .AddScoped<IGerenciadorAnexosCodafService, GerenciadorAnexosCodafService>()
+                .AddScoped<IGerenciadorMovimentacaoCodafService, GerenciadorMovimentacaoCodafService>()
+                .AddScoped<ICasoDeUsoEnviarParaDfCodafListaPresenca, CasoDeUsoEnviarParaDfCodafListaPresenca>()
+                .AddScoped<IRepositorioCodafComentarioListaPresenca, RepositorioCodafComentarioListaPresenca>()
+                .AddScoped<ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca, CasoDeUsoDevolverParaCorrecaoCodafListaPresenca>()
             ;
         }
     }
