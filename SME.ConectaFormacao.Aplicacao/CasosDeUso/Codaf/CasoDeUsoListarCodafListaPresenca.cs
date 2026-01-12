@@ -16,7 +16,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         {
             var filtroRepositorio = mapper.Map<FiltroListagemResultadoCodafListaPresencaDto>(filtro);
             var resultado = await repositorioCodafListaPresenca.ObterListagemResultadoCodafListaPresencaPorFiltroAsync(filtroRepositorio);
-            var resultadoDto = mapper.Map<PaginacaoResultadoDto<ListaPresencaCodafResumoDto>>(resultado);
+            var resultadoDto = new PaginacaoResultadoDto<ListaPresencaCodafResumoDto>(
+                mapper.Map<List<ListaPresencaCodafResumoDto>>(resultado.Itens),
+                resultado.TotalRegistros,
+                resultado.TamanhoPagina);
             return resultadoDto;
         }
     }

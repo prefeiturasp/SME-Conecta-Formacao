@@ -24,7 +24,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacoes;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue;

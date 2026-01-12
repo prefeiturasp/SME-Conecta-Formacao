@@ -1,8 +1,13 @@
-﻿using Bogus;
+﻿using AutoMapper;
+using Bogus;
+using Bogus.Extensions.Brazil;
 using FluentAssertions;
+using MediatR;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
+using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Aplicacao.Eventos.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -17,6 +22,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<IRepositorioCodafListaPresenca> _repositorioCodafListaPresencaMock;
         private readonly Mock<IRepositorioCodafComentarioListaPresenca> _repositorioComentarioCodafListaPresencaMock;
         private readonly Mock<ITransacao> _transacaoMock;
+        private readonly Mock<IRepositorioCodafMovimentacaoListaPresenca> _repositorioCodafMovimentacaoMock;
+        private readonly Mock<IMediator> _mediatorMock;
         private readonly CasoDeUsoDevolverParaCorrecaoCodafListaPresenca _casoDeUso;
         private readonly Faker _faker;
 
@@ -26,6 +33,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _repositorioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
             _repositorioComentarioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafComentarioListaPresenca>();
             _transacaoMock = mocker.GetMock<ITransacao>();
+            _repositorioCodafMovimentacaoMock = mocker.GetMock<IRepositorioCodafMovimentacaoListaPresenca>();
+            _mediatorMock = mocker.GetMock<IMediator>();
             _casoDeUso = mocker.CreateInstance<CasoDeUsoDevolverParaCorrecaoCodafListaPresenca>();
             _faker = new();
         }
@@ -117,6 +126,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _transacaoMock
                 .Setup(t => t.Iniciar())
                 .Returns(transacaoMock.Object);
+
             // Act
             var resultado = await _casoDeUso.ExecutarAsync(codafListaPresencaId, justificativa);
             // Assert
@@ -132,7 +142,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         }
 
         [Fact]
-        public async Task DadoErroAoAtualizar_QuandoExecutar_EntaoDeveRetornarErroInternoERolarbackTransacao()
+        public async Task DadoErroAoAtualizar_QuandoExecutar_EntaoDeveRetornarErroInternoERollbackTransacao()
         {
             // Arrange
             long codafListaPresencaId = _faker.Random.Long(1);
@@ -161,5 +171,28 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             transacaoMock.Verify(t => t.Commit(), Times.Never);
         }
 
+        [Fact]
+        public async Task DadoUmaExecucaoBemSucedida_QuandoExecutar_EntaoDevePublicarEvento()
+        {
+            // Arrange
+            long codafListaPresencaId = _faker.Random.Long(1);
+            string justificativa = _faker.Lorem.Sentence();
+            var codafListaPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null) { Id = codafListaPresencaId };
+            codafListaPresenca.Iniciar();
+            codafListaPresenca.MarcarComoEnviadaParaDf();
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterPorId(codafListaPresencaId))
+                .ReturnsAsync(codafListaPresenca);
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(codafListaPresencaId, justificativa);
+
+            // Assert
+            _mediatorMock.Verify(m => m.Publish(It.Is<CodafListaPresencaDevolvidaEvento>(e => e.CodafListaPresencaId == codafListaPresencaId), It.IsAny<CancellationToken>()), Times.Once);
+        }
     }
 }

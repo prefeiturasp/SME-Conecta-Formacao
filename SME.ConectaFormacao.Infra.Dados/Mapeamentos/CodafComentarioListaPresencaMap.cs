@@ -13,6 +13,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.DataNotificacao).ToColumn("data_notificacao");
             Map(c => c.Ativo).ToColumn("ativo");
             Map(c => c.CodafListaPresenca).Ignore();
+            Map(c => c.NotificacaoCorrelacaoId).ToColumn("notificacao_correlacao_id");
         }
     }
 }

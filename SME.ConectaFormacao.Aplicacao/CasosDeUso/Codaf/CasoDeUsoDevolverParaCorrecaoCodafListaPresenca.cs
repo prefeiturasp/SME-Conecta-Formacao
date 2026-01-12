@@ -1,4 +1,6 @@
-﻿using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Eventos.Codaf;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
@@ -9,9 +11,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 {
     public class CasoDeUsoDevolverParaCorrecaoCodafListaPresenca(
         IRepositorioCodafListaPresenca repositorioCodafListaPresenca,
-        IRepositorioCodafComentarioListaPresenca repositorioComentarioCodafListaPresenca,
+        IRepositorioCodafComentarioListaPresenca repositorioComentario,
         ITransacao transacao,
-        IGerenciadorMovimentacaoCodafService gerenciadorMovimentacaoCodafService) :
+        IGerenciadorMovimentacaoCodafService gerenciadorMovimentacao,
+        IMediator mediator) :
         ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca
     {
         public async Task<Resultado<bool>> ExecutarAsync(long codafListaPresencaId, string justificativa)
@@ -33,10 +36,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             {
                 codafListaPresenca.MarcarComoDevolvidaParaCorrecao();
                 await repositorioCodafListaPresenca.Atualizar(codafListaPresenca);
-                var comentario = new CodafComentarioListaPresenca { Comentario = justificativa, CodafListaPresencaId = codafListaPresenca.Id };
-                var idComentario = await repositorioComentarioCodafListaPresenca.Inserir(comentario);
-                await gerenciadorMovimentacaoCodafService.RegistrarMovimentacaoAsync(codafListaPresenca, idComentario);
+                var correlacaoId = Guid.NewGuid();
+                var comentario = new CodafComentarioListaPresenca
+                {
+                    Comentario = justificativa,
+                    CodafListaPresencaId = codafListaPresenca.Id,
+                    NotificacaoCorrelacaoId = correlacaoId
+                };
+                var idComentario = await repositorioComentario.Inserir(comentario);
+                await gerenciadorMovimentacao.RegistrarMovimentacaoAsync(codafListaPresenca, idComentario);
                 transacaoDb.Commit();
+
+                await mediator.Publish(new CodafListaPresencaDevolvidaEvento(codafListaPresenca.Id, comentario));
                 return true;
             }
             catch
