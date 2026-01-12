@@ -17,14 +17,15 @@ public class ContextoHttp : ContextoBase
 
     private void CapturarVariaveis()
     {
-        Variaveis.Add("RF", httpContextAccessor.HttpContext?.User?.FindFirst("RF")?.Value ?? "0");
+        var userContext = httpContextAccessor.HttpContext?.User;
+        Variaveis.Add("RF", userContext?.FindFirst("RF")?.Value ?? "0");
         Variaveis.Add("Claims", GetInternalClaim());
-        Variaveis.Add("login", httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == "login")?.Value ?? string.Empty);
-        Variaveis.Add("UsuarioLogado", httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Sistema");
-        Variaveis.Add("NomeUsuario", httpContextAccessor.HttpContext?.User?.FindFirst("Nome")?.Value ?? "Sistema");
+        Variaveis.Add("login", userContext?.Claims?.FirstOrDefault(a => a.Type == "login")?.Value ?? string.Empty);
+        Variaveis.Add("UsuarioLogado", userContext?.Identity?.Name ?? "Sistema");
+        Variaveis.Add("NomeUsuario", userContext?.FindFirst("Nome")?.Value ?? userContext?.FindFirst("nome")?.Value ?? "Sistema");
         Variaveis.Add("PerfilUsuario", ObterPerfilAtual());
-        Variaveis.Add("EmailUsuario", httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == "email")?.Value ?? string.Empty);
-        Variaveis.Add("Dres", httpContextAccessor.HttpContext?.User?.Claims?.Where(a => a.Type == "dres").Select(s => s.Value).ToArray());
+        Variaveis.Add("EmailUsuario", userContext?.Claims?.FirstOrDefault(a => a.Type == "email")?.Value ?? string.Empty);
+        Variaveis.Add("Dres", userContext?.Claims?.Where(a => a.Type == "dres").Select(s => s.Value).ToArray());
 
         var authorizationHeader = httpContextAccessor.HttpContext?.Request?.Headers["authorization"];
 

@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
 {
@@ -18,13 +19,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
                 AreasPromotorasIds = filtroListagemFormacaoDTO.AreasPromotorasIds,
                 DataFinal = filtroListagemFormacaoDTO.DataFinal,
                 DataInicial = filtroListagemFormacaoDTO.DataInicial,
-                EhPerfilCursista = EhPerfilCursista(),
+                FiltrarPorPerfil = FiltrarPorPerfil(),
                 FormatosIds = filtroListagemFormacaoDTO.FormatosIds,
                 Pagina = NumeroPagina,
                 PalavrasChavesIds = filtroListagemFormacaoDTO.PalavrasChavesIds,
                 TamanhoPagina = NumeroRegistros,
                 PublicosAlvosIds = filtroListagemFormacaoDTO.PublicosAlvosIds,
-                RfServidor = contextoAplicacao.UsuarioLogado,
+                RfServidor = contextoAplicacao.LoginUsuario,
                 Titulo = filtroListagemFormacaoDTO.Titulo
             });
 
@@ -35,10 +36,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
             return new PaginacaoResultadoDto<RetornoListagemFormacaoDTO>(formacoes, propostasPaginadas.TotalRegistros, NumeroRegistros);
         }
 
-        private bool EhPerfilCursista()
+        private bool FiltrarPorPerfil()
         {
             var perfilCursista = PerfilAutomatico.PERIL_CURSISTA_CODIGO;
-            return contextoAplicacao.IdPerfilUsuario == perfilCursista;
+            if (contextoAplicacao.IdPerfilUsuario != perfilCursista) return false;
+            if (string.IsNullOrWhiteSpace(contextoAplicacao.LoginUsuario)) return false;
+            if (UtilValidacoes.CpfEhValido(contextoAplicacao.LoginUsuario)) return false;
+            return true;
         }
     }
 }

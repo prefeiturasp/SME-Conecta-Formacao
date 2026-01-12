@@ -10,7 +10,7 @@
         public int[]? FormatosIds { get; set; }
         public long[]? PalavrasChavesIds { get; set; }
         public string? RfServidor { get; set; }
-        public required bool EhPerfilCursista { get; set; }
+        public required bool FiltrarPorPerfil { get; set; }
         public required int Pagina { get; set; }
         public required int TamanhoPagina { get; set; }
     }

@@ -1817,7 +1817,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var parametros = new DynamicParameters();
 
             // 1. Configuração Básica e Paginação
-            var aplicarFiltroPerfil = filtro.EhPerfilCursista && !string.IsNullOrWhiteSpace(filtro.RfServidor);
             var offset = (filtro.Pagina - 1) * filtro.TamanhoPagina;
 
             parametros.Add("@dataAtual", DateTimeExtension.HorarioBrasilia().Date);
@@ -1829,7 +1828,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             parametros.Add("@tamanhoPagina", filtro.TamanhoPagina);
 
             // 2. CTEs de Contexto (Se necessário)
-            if (aplicarFiltroPerfil)
+            if (filtro.FiltrarPorPerfil)
             {
                 sql.AppendLine(ObterCteContextoServidor());
                 parametros.Add("@rf", filtro.RfServidor);
@@ -1854,7 +1853,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                       AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date                
                 """);
 
-            if (aplicarFiltroPerfil)
+            if (filtro.FiltrarPorPerfil)
             {
                 sql.AppendLine(ObterFiltrosDePermissaoServidor());
             }
