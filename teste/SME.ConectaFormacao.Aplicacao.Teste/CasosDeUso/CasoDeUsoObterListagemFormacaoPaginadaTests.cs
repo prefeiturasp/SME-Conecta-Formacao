@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.Extensions.Brazil;
 using MediatR;
 using Moq;
 using Moq.AutoMock;
@@ -79,7 +80,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _repositorioPropostaMock.Verify(x => x.ObterListagemFormacoesPorFiltro(It.Is<FiltroListaFormacaoPropostaDto>(f =>
                 f.Titulo == filtro.Titulo &&
-                f.EhPerfilCursista == false
+                !f.FiltrarPorPerfil
             )), Times.Once);
 
             _mediatorMock.Verify(x => x.Send(It.Is<ObterPropostasPorIdsQuery>(q =>
@@ -118,11 +119,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         }
 
         [Fact]
-        public async Task DadoUsuarioPerfilCursista_QuandoExecutar_EntaoDevePassarFlagVerdadeiraParaRepositorio()
+        public async Task DadoUsuarioPerfilCursista_QuandoExecutar_EntaoDeveFiltrarPorPerfil()
         {
             // Arrange
             var filtro = new FiltroListagemFormacaoDTO();
-            var retornoRepositorio = new Infra.Dados.Dtos.ResultadoPaginado<long>
+            var retornoRepositorio = new ResultadoPaginado<long>
             {
                 Itens = [],
                 TotalRegistros = 0
@@ -130,6 +131,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Setup Contexto com GUID do Perfil Cursista
             _contextoAplicacaoMock.Setup(x => x.IdPerfilUsuario).Returns(PerfilAutomatico.PERIL_CURSISTA_CODIGO);
+            _contextoAplicacaoMock.Setup(x => x.LoginUsuario).Returns("cursista");
 
             _repositorioPropostaMock
                 .Setup(x => x.ObterListagemFormacoesPorFiltro(It.IsAny<FiltroListaFormacaoPropostaDto>()))
@@ -140,16 +142,16 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             _repositorioPropostaMock.Verify(x => x.ObterListagemFormacoesPorFiltro(It.Is<FiltroListaFormacaoPropostaDto>(f =>
-                f.EhPerfilCursista == true
+                f.FiltrarPorPerfil
             )), Times.Once);
         }
 
         [Fact]
-        public async Task DadoUsuarioPerfilNaoCursista_QuandoExecutar_EntaoDevePassarFlagFalsaParaRepositorio()
+        public async Task DadoUsuarioPerfilNaoCursista_QuandoExecutar_EntaoDeveObterListagemComFiltrarPorPerfilIgualFalso()
         {
             // Arrange
             var filtro = new FiltroListagemFormacaoDTO();
-            var retornoRepositorio = new Infra.Dados.Dtos.ResultadoPaginado<long>
+            var retornoRepositorio = new ResultadoPaginado<long>
             {
                 Itens = [],
                 TotalRegistros = 0
@@ -167,16 +169,64 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             _repositorioPropostaMock.Verify(x => x.ObterListagemFormacoesPorFiltro(It.Is<FiltroListaFormacaoPropostaDto>(f =>
-                f.EhPerfilCursista == false
+                !f.FiltrarPorPerfil
             )), Times.Once);
         }
 
         [Fact]
-        public async Task DadoContextoSemPerfilUsuario_QuandoExecutar_EntaoDevePassarFlagFalsaParaRepositorio()
+        public async Task DadoUmPerilCursistaSemLogin_QuandoExecutar_EntaoDeveObterListagemComFiltrarPorPerfilIgualFalso()
         {
             // Arrange
             var filtro = new FiltroListagemFormacaoDTO();
-            var retornoRepositorio = new Infra.Dados.Dtos.ResultadoPaginado<long>
+            var retornoRepositorio = new ResultadoPaginado<long>
+            {
+                Itens = [],
+                TotalRegistros = 0
+            };
+            // Setup Contexto com Perfil Cursista, mas Login Nulo/Vazio
+            _contextoAplicacaoMock.Setup(x => x.IdPerfilUsuario).Returns(PerfilAutomatico.PERIL_CURSISTA_CODIGO);
+            _contextoAplicacaoMock.Setup(x => x.LoginUsuario).Returns(string.Empty);
+            _repositorioPropostaMock
+                .Setup(x => x.ObterListagemFormacoesPorFiltro(It.IsAny<FiltroListaFormacaoPropostaDto>()))
+                .ReturnsAsync(retornoRepositorio);
+            // Act
+            await _useCase.Executar(filtro);
+            // Assert
+            _repositorioPropostaMock.Verify(x => x.ObterListagemFormacoesPorFiltro(It.Is<FiltroListaFormacaoPropostaDto>(f =>
+                !f.FiltrarPorPerfil
+            )), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmPerilCursistaComCpfNoLogin_QuandoExecutar_EntaoDeveObterListagemComFiltrarPorPerfilIgualFalso()
+        {
+            // Arrange
+            var filtro = new FiltroListagemFormacaoDTO();
+            var retornoRepositorio = new ResultadoPaginado<long>
+            {
+                Itens = [],
+                TotalRegistros = 0
+            };
+            // Setup Contexto com Perfil Cursista, mas Login Nulo/Vazio
+            _contextoAplicacaoMock.Setup(x => x.IdPerfilUsuario).Returns(PerfilAutomatico.PERIL_CURSISTA_CODIGO);
+            _contextoAplicacaoMock.Setup(x => x.LoginUsuario).Returns(_faker.Person.Cpf(false));
+            _repositorioPropostaMock
+                .Setup(x => x.ObterListagemFormacoesPorFiltro(It.IsAny<FiltroListaFormacaoPropostaDto>()))
+                .ReturnsAsync(retornoRepositorio);
+            // Act
+            await _useCase.Executar(filtro);
+            // Assert
+            _repositorioPropostaMock.Verify(x => x.ObterListagemFormacoesPorFiltro(It.Is<FiltroListaFormacaoPropostaDto>(f =>
+                !f.FiltrarPorPerfil
+            )), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoContextoSemPerfilUsuario_QuandoExecutar_EntaoDeveObterListagemComFiltrarPorPerfilIgualFalso()
+        {
+            // Arrange
+            var filtro = new FiltroListagemFormacaoDTO();
+            var retornoRepositorio = new ResultadoPaginado<long>
             {
                 Itens = [],
                 TotalRegistros = 0
@@ -194,7 +244,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             _repositorioPropostaMock.Verify(x => x.ObterListagemFormacoesPorFiltro(It.Is<FiltroListaFormacaoPropostaDto>(f =>
-                f.EhPerfilCursista == false
+                !f.FiltrarPorPerfil
             )), Times.Once);
         }
     }
