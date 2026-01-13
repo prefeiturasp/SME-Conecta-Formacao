@@ -34,6 +34,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoEnviarParaDfCodafListaPresenca, CasoDeUsoEnviarParaDfCodafListaPresenca>()
                 .AddScoped<IRepositorioCodafComentarioListaPresenca, RepositorioCodafComentarioListaPresenca>()
                 .AddScoped<ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca, CasoDeUsoDevolverParaCorrecaoCodafListaPresenca>()
+                .AddScoped<ICasoDeUsoExcluirCodafListaPresenca, CasoDeUsoExcluirCodafListaPresenca>()
             ;
         }
     }

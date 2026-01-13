@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
-    [Route("api/v1/codaf-lista-presenca")]
+    [Route("api/v1/CodafListaPresenca")]
     public class CodafWorkflowController(ICasoDeUsoEnviarParaDfCodafListaPresenca casoDeUsoEnviarParaDfCodafListaPresenca,
         ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca casoDeUsoDevolverParaCorrecaoCodafListaPresenca) : BaseController
     {
