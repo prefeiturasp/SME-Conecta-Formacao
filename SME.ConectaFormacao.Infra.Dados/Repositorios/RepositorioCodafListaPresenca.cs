@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -231,6 +232,84 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             codafListaPresenca.CodafAnexos = [.. multi.Read<CodafAnexo>()];
             codafListaPresenca.CodafInscricoes = [.. multi.Read<CodafInscricaoListaPresenca>()];
             return codafListaPresenca;
+        }
+
+        public async Task ExcluirAsync(long id)
+        {
+            var conn = conexao.Obter();
+            using var transaction = conn.BeginTransaction();
+
+            try
+            {
+                var parametrosAtualizacao = new
+                {
+                    Id = id,
+                    Excluido = true,
+                    AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                    AlteradoPor = contexto.NomeUsuario,
+                    AlteradoLogin = contexto.UsuarioLogado
+                };
+
+                const string sqlListaPresenca = """
+                    UPDATE PUBLIC.CODAF_LISTA_PRESENCA
+                    SET    EXCLUIDO = @Excluido,
+                           ALTERADO_EM = @AlteradoEm,
+                           ALTERADO_POR = @AlteradoPor,
+                           ALTERADO_LOGIN = @AlteradoLogin
+                    WHERE  ID = @Id
+                    """;
+                await conn.ExecuteAsync(sqlListaPresenca, parametrosAtualizacao, transaction);
+
+                const string sqlInscricoes = """
+                    UPDATE PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA
+                    SET    EXCLUIDO = @Excluido,
+                           ALTERADO_EM = @AlteradoEm,
+                           ALTERADO_POR = @AlteradoPor,
+                           ALTERADO_LOGIN = @AlteradoLogin
+                    WHERE  CODAF_LISTA_PRESENCA_ID = @Id and NOT EXCLUIDO
+                    """;
+
+                await conn.ExecuteAsync(sqlInscricoes, parametrosAtualizacao, transaction);
+
+                const string sqlAnexos = """
+                    UPDATE PUBLIC.CODAF_ANEXO
+                    SET    EXCLUIDO = @Excluido,
+                           ALTERADO_EM = @AlteradoEm,
+                           ALTERADO_POR = @AlteradoPor,
+                           ALTERADO_LOGIN = @AlteradoLogin
+                    WHERE  CODAF_LISTA_PRESENCA_ID = @Id and NOT EXCLUIDO
+                    """;
+
+                await conn.ExecuteAsync(sqlAnexos, parametrosAtualizacao, transaction);
+
+                const string sqlRetificacoes = """
+                    UPDATE PUBLIC.CODAF_RETIFICACAO_LISTA_PRESENCA
+                    SET    EXCLUIDO = @Excluido,
+                           ALTERADO_EM = @AlteradoEm,
+                           ALTERADO_POR = @AlteradoPor,
+                           ALTERADO_LOGIN = @AlteradoLogin
+                    WHERE  CODAF_LISTA_PRESENCA_ID = @Id and NOT EXCLUIDO
+                    """;
+
+                await conn.ExecuteAsync(sqlRetificacoes, parametrosAtualizacao, transaction);
+
+                const string sqlComentarios = """
+                    UPDATE PUBLIC.CODAF_COMENTARIO_LISTA_PRESENCA
+                    SET    EXCLUIDO = @Excluido,
+                           ALTERADO_EM = @AlteradoEm,
+                           ALTERADO_POR = @AlteradoPor,
+                           ALTERADO_LOGIN = @AlteradoLogin
+                    WHERE  CODAF_LISTA_PRESENCA_ID = @Id and NOT EXCLUIDO
+                    """;
+
+                await conn.ExecuteAsync(sqlComentarios, parametrosAtualizacao, transaction);
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
     }
 }

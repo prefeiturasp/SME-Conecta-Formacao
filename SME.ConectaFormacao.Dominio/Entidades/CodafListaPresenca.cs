@@ -81,5 +81,12 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         {
             return Status == StatusCodafListaPresenca.AguardandoDf;
         }
+
+        public bool PodeSerExcluido(Guid? idPerfilUsuario)
+        {
+            if (idPerfilUsuario == Perfis.ADMIN_DF)
+                return Status != StatusCodafListaPresenca.Finalizado;
+            return Status == StatusCodafListaPresenca.Iniciado;
+        }
     }
 }
