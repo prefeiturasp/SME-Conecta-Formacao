@@ -8,7 +8,7 @@ using SME.ConectaFormacao.Dominio.Comum;
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
-    [Route("api/v1/codaf-lista-presenca")]
+    [Route("api/v1/CodafListaPresenca")]
     public class CodafConsultaAuxiliarController(
         ICasoDeUsoListarInscritosTurmaCodafListaPresenca casoDeUsoListarInscritosTurmaCodafListaPresenca,
         ICasoDeUsoTurmaPossuiCodafListaPresenca casoDeUsoTurmaPossuiCodafListaPresenca) : BaseController
