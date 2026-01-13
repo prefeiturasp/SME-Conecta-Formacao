@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             };
 
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(new CodafListaPresenca(propostaIdInvalido + 1, codafListaPresencaEdicaoDto.PropostaTurmaId, null, null, null, null, null, null, null, null));
 
             _validatorMock
@@ -109,7 +109,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var mensagemErroVinculo = _faker.Lorem.Sentence();
 
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(new CodafListaPresenca(propostaIdInvalido + 1, codafListaPresencaEdicaoDto.PropostaTurmaId, null, null, null, null, null, null, null, null));
 
             _validatorMock
@@ -144,7 +144,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var mensagemErroVinculo = _faker.Lorem.Sentence();
 
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(new CodafListaPresenca(propostaIdValido + 1, codafListaPresencaEdicaoDto.PropostaTurmaId, null, null, null, null, null, null, null, null));
 
             _validatorMock
@@ -180,7 +180,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Id = _faker.Random.Long(1, long.MaxValue)
             };
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(codafListaPresencaExistente);
 
             _validatorMock
@@ -246,7 +246,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 }
             };
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(codafListaPresencaExistente);
             _validatorMock
                 .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
@@ -309,7 +309,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Id = _faker.Random.Long(1, long.MaxValue)
             };
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(codafListaPresencaExistente);
             _validatorMock
                 .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
@@ -374,7 +374,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 }
             };
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(codafListaPresencaExistente);
             _validatorMock
                 .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
@@ -431,7 +431,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 }
             };
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(codafListaPresencaExistente);
             _validatorMock
                 .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
@@ -466,7 +466,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             };
 
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(It.IsAny<long>()))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(new CodafListaPresenca(propostaIdValido, propostaTurmaIdValido, null, null, null, null, null, null, null, null));
             _validatorMock
                 .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))

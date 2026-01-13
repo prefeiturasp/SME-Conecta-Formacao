@@ -1,12 +1,9 @@
-﻿using AutoMapper;
-using Bogus;
-using Bogus.Extensions.Brazil;
+﻿using Bogus;
 using FluentAssertions;
 using MediatR;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
-using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Eventos.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -95,7 +92,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             codafListaPresenca.Iniciar();
 
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(codafListaPresencaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(codafListaPresencaId))
                 .ReturnsAsync(codafListaPresenca);
 
             // Act
@@ -120,7 +117,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             codafListaPresenca.Iniciar();
             codafListaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(codafListaPresencaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(codafListaPresencaId))
                 .ReturnsAsync(codafListaPresenca);
             var transacaoMock = new Mock<IDbTransaction>();
             _transacaoMock
@@ -151,7 +148,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             codafListaPresenca.Iniciar();
             codafListaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(codafListaPresencaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(codafListaPresencaId))
                 .ReturnsAsync(codafListaPresenca);
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.Atualizar(It.IsAny<CodafListaPresenca>()))
@@ -181,7 +178,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             codafListaPresenca.Iniciar();
             codafListaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(codafListaPresencaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(codafListaPresencaId))
                 .ReturnsAsync(codafListaPresenca);
             var transacaoMock = new Mock<IDbTransaction>();
             _transacaoMock

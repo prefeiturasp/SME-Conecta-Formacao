@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             const string sqlBase = """
                 FROM   PUBLIC.INSCRICAO AS I
                        INNER JOIN PUBLIC.USUARIO AS U  ON U.ID = I.USUARIO_ID 
-                       LEFT JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CI ON CI.INSCRICAO_ID = I.ID
+                       LEFT JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CI ON CI.INSCRICAO_ID = I.ID AND NOT CI.EXCLUIDO
                 WHERE NOT U.EXCLUIDO
                 AND NOT I.EXCLUIDO 
                 AND I.SITUACAO = @situacao

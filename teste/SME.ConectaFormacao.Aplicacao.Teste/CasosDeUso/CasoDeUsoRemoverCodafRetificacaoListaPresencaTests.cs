@@ -5,9 +5,6 @@ using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
@@ -37,7 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 PaginaRetificacaoDom = _faker.Random.Short(1)
             };
             _repositorioCodafRetificacaoListaPresencaMock
-                .Setup(r => r.ObterPorId(retificacaoId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(retificacaoId))
                 .ReturnsAsync(retificacao);
             // Act
             var resultado = await _casoDeUsoRemoverCodafRetificacaoListaPresenca.ExecutarAsync(retificacaoId);
