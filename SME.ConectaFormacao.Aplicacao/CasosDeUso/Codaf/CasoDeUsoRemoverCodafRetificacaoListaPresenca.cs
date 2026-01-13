@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
     {
         public async Task<Resultado<bool>> ExecutarAsync(long codafRetificacaoListaPresencaId)
         {
-            var retificacao = await repositorioCodafRetificacaoListaPresenca.ObterPorId(codafRetificacaoListaPresencaId);
+            var retificacao = await repositorioCodafRetificacaoListaPresenca.ObterNaoExcluidosPorIdAsync(codafRetificacaoListaPresencaId);
             if (retificacao is not null) await repositorioCodafRetificacaoListaPresenca.Remover(retificacao);
             return true;
         }

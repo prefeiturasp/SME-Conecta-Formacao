@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             if (string.IsNullOrWhiteSpace(justificativa))
                 return Erro.Validacao("A justificativa para devolução da lista de presença Codaf deve ser informada.");
 
-            var codafListaPresenca = await repositorioCodafListaPresenca.ObterPorId(codafListaPresencaId);
+            var codafListaPresenca = await repositorioCodafListaPresenca.ObterNaoExcluidosPorIdAsync(codafListaPresencaId);
             if (codafListaPresenca == null)
                 return Erro.NaoEncontrado("Lista de presença Codaf não encontrada para o Id informado.");
 

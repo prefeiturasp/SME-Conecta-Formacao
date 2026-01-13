@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Dommel;
-using Microsoft.Win32.SafeHandles;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -9,11 +8,13 @@ using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioProposta(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : 
+    [ExcludeFromCodeCoverage]
+    public class RepositorioProposta(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) :
         RepositorioBaseAuditavel<Proposta>(contexto, conexao), IRepositorioProposta
     {
         public Task RemoverCriteriosValidacaoInscricao(IEnumerable<PropostaCriterioValidacaoInscricao> criteriosValidacaoInscricao)
@@ -2202,6 +2203,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return await conexao.Obter().GetAsync<PropostaTurma>(propostaTurmaId);
         }
 
+        public async Task<PropostaTurma?> ObterTurmaNaoExcluidaPorIdAsync(long propostaTurmaId)
+        {
+            return await conexao.Obter().FirstOrDefaultAsync<PropostaTurma>(PropostaTurma => PropostaTurma.Id == propostaTurmaId && !PropostaTurma.Excluido);
+        }
+
         public async Task<IEnumerable<PropostaTurma>> ObterTurmasComVagaPorId(long propostaId, string? codigoDre = null)
         {
             var query = $@"select 
@@ -2633,7 +2639,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
-            var dados = await conn.QueryAsync<AutocompletarNumeroHomologacaoDto>(sqlSelect, 
+            var dados = await conn.QueryAsync<AutocompletarNumeroHomologacaoDto>(sqlSelect,
                 new { termo, limit = numeroRegistros, offset = registrosIgnorados });
 
             return new()

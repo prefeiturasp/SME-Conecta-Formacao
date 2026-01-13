@@ -103,10 +103,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId + 1 });
 
             // Act
@@ -125,10 +125,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             // Act
             var resultado = await _validadorService.ValidarVinculoPropostaTurmaAsync(propostaId, propostaTurmaId);

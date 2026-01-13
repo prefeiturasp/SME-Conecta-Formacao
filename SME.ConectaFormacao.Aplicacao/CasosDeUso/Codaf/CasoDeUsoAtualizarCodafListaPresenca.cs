@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
     {
         public async Task<Resultado> ExecutarAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, long id)
         {
-            var codafListaPresencaExistente = await repositorioCodafListaPresenca.ObterPorId(id);
+            var codafListaPresencaExistente = await repositorioCodafListaPresenca.ObterNaoExcluidosPorIdAsync(id);
             if (codafListaPresencaExistente is null)
                 return Erro.NaoEncontrado("Lista de presença não encontrada.");
 

@@ -8,7 +8,6 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using SME.ConectaFormacao.Infra.Dados.Servicos;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 {

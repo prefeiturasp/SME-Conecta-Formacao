@@ -23,11 +23,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
 
         public async Task<Erro?> ValidarVinculoPropostaTurmaAsync(long propostaId, long propostaTurmaId)
         {
-            var proposta = await repositorioProposta.ObterPorId(propostaId);
+            var proposta = await repositorioProposta.ObterNaoExcluidosPorIdAsync(propostaId);
             if (proposta is null)
                 return Erro.Validacao("Proposta não encontrada.");
 
-            var turma = await repositorioProposta.ObterTurmaPorId(propostaTurmaId);
+            var turma = await repositorioProposta.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId);
             if (turma is null)
                 return Erro.Validacao("Turma não encontrada.");
 
@@ -75,7 +75,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
 
         private static Erro? ValidarAnexosAsync(CodafListaPresenca codafListaPresenca)
         {
-            if (codafListaPresenca.CodafAnexos is null || !codafListaPresenca.CodafAnexos.Any())
+            if (codafListaPresenca.CodafAnexos is null || codafListaPresenca.CodafAnexos.Count == 0)
                 return Erro.Negocio("É obrigatório o envio de ao menos um anexo para a lista de presença.");
             return null;
         }
@@ -102,7 +102,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
             var inscritosFaltantes = todosInscritosDaTurma.Itens
                 .Where(t => !codafListaPresenca.CodafInscricoes.Any(i => i.InscricaoId == t.Id))
                 .ToList();
-            if (inscritosFaltantes.Any())
+            if (inscritosFaltantes.Count != 0)
                 return Erro.Negocio($"Há divergência entre a quantidade de inscritos na formação {codafListaPresenca.Proposta?.NomeFormacao} e a lista de presença.");
 
             return null;

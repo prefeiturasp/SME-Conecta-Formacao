@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             listaPresenca.Iniciar();
             listaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(idLista))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(idLista))
                 .ReturnsAsync(listaPresenca);
             _contextoAplicacaoMock
                 .Setup(c => c.IdPerfilUsuario)
@@ -70,7 +70,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var listaPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null);
             listaPresenca.Iniciar();
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterPorId(idLista))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(idLista))
                 .ReturnsAsync(listaPresenca);
             _contextoAplicacaoMock
                 .Setup(c => c.IdPerfilUsuario)
