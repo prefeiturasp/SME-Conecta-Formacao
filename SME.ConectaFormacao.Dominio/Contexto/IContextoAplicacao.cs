@@ -5,6 +5,7 @@ public interface IContextoAplicacao
     IDictionary<string, object> Variaveis { get; set; }
 
     string UsuarioLogado { get; }
+    string LoginUsuario { get; }
     string NomeUsuario { get; }
     string PerfilUsuario { get; }
     Guid? IdPerfilUsuario => !string.IsNullOrWhiteSpace(PerfilUsuario) ? Guid.Parse(PerfilUsuario) : null;
