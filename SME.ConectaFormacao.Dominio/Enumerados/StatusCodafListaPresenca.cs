@@ -3,8 +3,7 @@
     public enum StatusCodafListaPresenca
     {
         Novo,
-        Iniciado,
-        EmAndamento,
+        Iniciado = 1,
         AguardandoDf,
         DevolvidoParaCorrecao,
         Finalizado

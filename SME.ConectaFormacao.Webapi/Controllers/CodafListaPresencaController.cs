@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
@@ -9,18 +8,14 @@ using SME.ConectaFormacao.Dominio.Comum;
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
+    [Route("api/v1/codaf-lista-presenca")]
     public class CodafListaPresencaController(
         ICasoDeUsoCriarCodafListaPresenca casoDeUsoCriarCodafListaPresenca,
         ICasoDeUsoAtualizarCodafListaPresenca casoDeUsoAtualizar,
         ICasoDeUsoListarCodafListaPresenca casoDeUsoListarCodafListaPresenca,
         ICasoDeUsoObterCodafListaPresencaPorId casoDeUsoObterCodafListaPresencaPorId,
-        ICasoDeUsoListarInscritosTurmaCodafListaPresenca casoDeUsoListarInscritosTurmaCodafListaPresenca,
-        ICasoDeUsoTurmaPossuiCodafListaPresenca casoDeUsoTurmaPossuiCodafListaPresenca,
         ICasoDeUsoRemoverCodafRetificacaoListaPresenca casoDeUsoRemoverCodafRetificacaoListaPresenca,
-        ICasoDeUsoObterModeloTermoResponsabilidadeCodaf casoDeUsoObterModeloTermoResponsabilidadeCodaf,
-        ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca casoDeUsoUploadAnexoTemporarioCodafListaPresenca,
-        ICasoDeUsoEnviarParaDfCodafListaPresenca casoDeUsoEnviarParaDfCodafListaPresenca,
-        ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca casoDeUsoDevolverParaCorrecaoCodafListaPresenca) : BaseController
+        ICasoDeUsoExcluirCodafListaPresenca casoDeUsoExcluirCodafListaPresenca) : BaseController
     {
         [HttpPost]
         [ProducesResponseType(typeof(Resultado<CodafListaPresencaDto>), 201)]
@@ -63,25 +58,6 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return ProcessarResultado(resultado);
         }
 
-        [HttpGet("inscritos-turma/{propostaTurmaId:long}")]
-        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>), 200)]
-        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>), 400)]
-        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>), 500)]
-        public async Task<IActionResult> ObterInscritosPorTurma(long propostaTurmaId, [FromQuery] int numeroPagina = 1, [FromQuery] int numeroRegistros = 10)
-        {
-            var resultado = await casoDeUsoListarInscritosTurmaCodafListaPresenca.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros);
-            return ProcessarResultado(resultado);
-        }
-
-        [HttpGet("turmas/{propostaTurmaId:long}/possui-lista")]
-        [ProducesResponseType(typeof(Resultado<bool>), 200)]
-        [ProducesResponseType(typeof(Resultado<bool>), 400)]
-        public async Task<IActionResult> TurmaPossuiListaPresenca(long propostaTurmaId, [FromQuery] long listaPresencaId = 0)
-        {
-            var resultado = await casoDeUsoTurmaPossuiCodafListaPresenca.ExecutarAsync(propostaTurmaId, listaPresencaId);
-            return ProcessarResultado(resultado);
-        }
-
         [HttpDelete("retificacoes/{retificacaoId:long}")]
         [ProducesResponseType(typeof(Resultado<bool>), 204)]
         [ProducesResponseType(typeof(Resultado<bool>), 404)]
@@ -91,40 +67,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return ProcessarResultado(resultado);
         }
 
-        [HttpGet("termo-responsabilidade/modelo")]
-        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 200)]
-        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 404)]
-        public async Task<IActionResult> ObterModeloTermoResponsabilidade()
+        [HttpDelete("{codafListaPresencaId:long}")]
+        public async Task<IActionResult> Excluir(long codafListaPresencaId)
         {
-            var resultado = casoDeUsoObterModeloTermoResponsabilidadeCodaf.Executar();
-
-            if (resultado.Sucesso)
-                return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
-
-            return ProcessarResultado(resultado);
-        }
-
-        [HttpPost("anexos/temporarios")]
-        [Consumes("multipart/form-data")]
-        [ProducesResponseType(typeof(Resultado<CodafAnexoTemporarioDto>), 201)]
-        [ProducesResponseType(typeof(Resultado<CodafAnexoTemporarioDto>), 404)]
-        public async Task<IActionResult> UploadAnexoTemporario([FromForm] IFormFile arquivo)
-        {
-            var resultado = await casoDeUsoUploadAnexoTemporarioCodafListaPresenca.ExecutarAsync(arquivo);
-            return ProcessarResultado(resultado);
-        }
-
-        [HttpPatch("{codafListaPresencaId:long}/enviar-para-df")]
-        public async Task<IActionResult> EnviarParaDf(long codafListaPresencaId)
-        {
-            var resultado = await casoDeUsoEnviarParaDfCodafListaPresenca.ExecutarAsync(codafListaPresencaId);
-            return ProcessarResultado(resultado);
-        }
-
-        [HttpPatch("{codafListaPresencaId:long}/devolver-para-correcao")]
-        public async Task<IActionResult> DevolverParaCorrecao(long codafListaPresencaId, [FromBody] string justificativa)
-        {
-            var resultado = await casoDeUsoDevolverParaCorrecaoCodafListaPresenca.ExecutarAsync(codafListaPresencaId, justificativa);
+            var resultado = await casoDeUsoExcluirCodafListaPresenca.ExecutarAsync(codafListaPresencaId);
             return ProcessarResultado(resultado);
         }
     }
