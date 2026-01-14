@@ -22,6 +22,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 FROM CODAF_LISTA_PRESENCA
                 WHERE PROPOSTA_TURMA_ID = @propostaTurmaId
                   AND ID <> @listaPresencaId
+                  AND NOT EXCLUIDO
                 """;
 
             var parametros = new
