@@ -149,70 +149,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var conn = conexao.Obter();
             var sql = $"""
                 -- 1. Dados do Cabeçalho (CODAF + Proposta + Turma)
-                SELECT CLP.ID,
-                       CLP.PROPOSTA_ID AS propostaId,
-                       CLP.PROPOSTA_TURMA_ID AS propostaTurmaId,
-                       CLP.DATA_PUBLICACAO AS dataPublicacao,
-                       CLP.DATA_PUBLICACAO_DOM AS dataPublicacaoDom,
-                       CLP.NUMERO_COMUNICADO AS numeroComunicado,
-                       CLP.PAGINA_COMUNICADO_DOM AS paginaComunicadoDom,
-                       CLP.CODIGO_CURSO_EOL AS codigoCursoEol,
-                       CLP.CODIGO_NIVEL AS codigoNivel,
-                       CLP.OBSERVACAO,
-                       CLP.STATUS,
-                       CLP.ALTERADO_EM AS alteradoEm,
-                       CLP.ALTERADO_POR AS alteradoPor,
-                       CLP.ALTERADO_LOGIN AS alteradoLogin,
-                       CLP.CRIADO_EM AS criadoEm,
-                       CLP.CRIADO_POR AS criadoPor,
-                       CLP.CRIADO_LOGIN AS criadoLogin,
-               
-                       P.ID, 
-                       P.NOME_FORMACAO AS nomeFormacao,
-                       P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
-               
-                       PT.ID, 
-                       PT.NOME
-                FROM PUBLIC.CODAF_LISTA_PRESENCA AS CLP
-                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
-                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
-                WHERE NOT CLP.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
-                  AND CLP.ID = @id;
+                {sqlObterCodafPorIdComPropostaEPropostaTurma}
 
                 -- 2. Retificações
-                SELECT CRLP.ID, 
-                       CRLP.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
-                       CRLP.DATA_RETIFICACAO AS DataRetificacao,
-                       CRLP.PAGINA_RETIFICACAO_DOM AS PaginaRetificacaoDom,
-                       CRLP.CRIADO_EM AS CriadoEm,
-                       CRLP.CRIADO_POR AS CriadoPor
-                FROM PUBLIC.CODAF_RETIFICACAO_LISTA_PRESENCA AS CRLP 
-                WHERE NOT CRLP.EXCLUIDO AND CRLP.CODAF_LISTA_PRESENCA_ID = @id;
+                {sqlObterRetificacoesPorIdCodaf}
 
                 -- 3. Anexos
-                SELECT CA.ID, 
-                       CA.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
-                       CA.ARQUIVO_CODIGO AS ArquivoCodigo,
-                       CA.NOME_ARQUIVO AS NomeArquivo,
-                       CA.EXTENSAO AS Extensao,
-                       CA.TIPO_ANEXO_ID AS TipoAnexoId,
-                       CA.CRIADO_EM AS CriadoEm,
-                       CA.CRIADO_POR AS CriadoPor
-                FROM PUBLIC.CODAF_ANEXO AS CA 
-                WHERE NOT CA.EXCLUIDO AND CA.CODAF_LISTA_PRESENCA_ID = @id;
+                {sqlObterAnexosPorIdCodaf}
 
                 -- 4. Inscritos (A lista grande)
-                SELECT CILP.ID, 
-                       CILP.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
-                       CILP.INSCRICAO_ID AS InscricaoId,
-                       CILP.PERCENTUAL_FREQUENCIA AS PercentualFrequencia,
-                       CILP.ATIVIDADE_OBRIGATORIO AS AtividadeObrigatorio,
-                       CILP.CONCEITO_FINAL AS ConceitoFinal,
-                       CILP.APROVADO AS Aprovado,
-                       CILP.CRIADO_EM AS CriadoEm,
-                       CILP.CRIADO_POR AS CriadoPor
-                FROM PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP 
-                WHERE NOT CILP.EXCLUIDO AND CILP.CODAF_LISTA_PRESENCA_ID = @id;
+                {sqlObterInscricoesDaListaPorIdCodaf}
                 """;
 
             var parametros = new { id };
@@ -313,5 +259,92 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 throw;
             }
         }
+
+        public async Task<CodafListaPresenca?> ObterPorIdComPropostaEPropostaTurmaAsync(long id)
+        {
+            var conn = conexao.Obter();
+            var parametros = new { id };
+            var codafListaPresenca = await conn.QueryAsync<CodafListaPresenca, Proposta, PropostaTurma, CodafListaPresenca>(
+                sqlObterCodafPorIdComPropostaEPropostaTurma,
+                (clp, p, pt) =>
+                {
+                    clp.Proposta = p;
+                    clp.PropostaTurma = pt;
+                    return clp;
+                },
+                parametros,
+                splitOn: "ID,ID");
+            return codafListaPresenca.SingleOrDefault();
+        }
+
+        private const string sqlObterCodafPorIdComPropostaEPropostaTurma = """
+            SELECT CLP.ID,
+                   CLP.PROPOSTA_ID AS propostaId,
+                   CLP.PROPOSTA_TURMA_ID AS propostaTurmaId,
+                   CLP.DATA_PUBLICACAO AS dataPublicacao,
+                   CLP.DATA_PUBLICACAO_DOM AS dataPublicacaoDom,
+                   CLP.NUMERO_COMUNICADO AS numeroComunicado,
+                   CLP.PAGINA_COMUNICADO_DOM AS paginaComunicadoDom,
+                   CLP.CODIGO_CURSO_EOL AS codigoCursoEol,
+                   CLP.CODIGO_NIVEL AS codigoNivel,
+                   CLP.OBSERVACAO,
+                   CLP.STATUS,
+                   CLP.ALTERADO_EM AS alteradoEm,
+                   CLP.ALTERADO_POR AS alteradoPor,
+                   CLP.ALTERADO_LOGIN AS alteradoLogin,
+                   CLP.CRIADO_EM AS criadoEm,
+                   CLP.CRIADO_POR AS criadoPor,
+                   CLP.CRIADO_LOGIN AS criadoLogin,
+           
+                   P.ID, 
+                   P.NOME_FORMACAO AS nomeFormacao,
+                   P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+           
+                   PT.ID, 
+                   PT.NOME
+            FROM PUBLIC.CODAF_LISTA_PRESENCA AS CLP
+            INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
+            INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
+            WHERE NOT CLP.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
+              AND CLP.ID = @id;
+            """;
+
+        private const string sqlObterRetificacoesPorIdCodaf = """
+            SELECT CRLP.ID, 
+                   CRLP.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
+                   CRLP.DATA_RETIFICACAO AS DataRetificacao,
+                   CRLP.PAGINA_RETIFICACAO_DOM AS PaginaRetificacaoDom,
+                   CRLP.CRIADO_EM AS CriadoEm,
+                   CRLP.CRIADO_POR AS CriadoPor
+            FROM PUBLIC.CODAF_RETIFICACAO_LISTA_PRESENCA AS CRLP
+            WHERE NOT CRLP.EXCLUIDO AND CRLP.CODAF_LISTA_PRESENCA_ID = @id;
+            """;
+
+        private const string sqlObterAnexosPorIdCodaf = """
+            SELECT CA.ID, 
+                   CA.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
+                   CA.ARQUIVO_CODIGO AS ArquivoCodigo,
+                   CA.NOME_ARQUIVO AS NomeArquivo,
+                   CA.EXTENSAO AS Extensao,
+                   CA.TIPO_ANEXO_ID AS TipoAnexoId,
+                   CA.CRIADO_EM AS CriadoEm,
+                   CA.CRIADO_POR AS CriadoPor
+            FROM PUBLIC.CODAF_ANEXO AS CA 
+            WHERE NOT CA.EXCLUIDO AND CA.CODAF_LISTA_PRESENCA_ID = @id;
+            """;
+
+        private const string sqlObterInscricoesDaListaPorIdCodaf = """
+            SELECT CILP.ID, 
+                   CILP.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
+                   CILP.INSCRICAO_ID AS InscricaoId,
+                   CILP.PERCENTUAL_FREQUENCIA AS PercentualFrequencia,
+                   CILP.ATIVIDADE_OBRIGATORIO AS AtividadeObrigatorio,
+                   CILP.CONCEITO_FINAL AS ConceitoFinal,
+                   CILP.APROVADO AS Aprovado,
+                   CILP.CRIADO_EM AS CriadoEm,
+                   CILP.CRIADO_POR AS CriadoPor
+            FROM PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP 
+            WHERE NOT CILP.EXCLUIDO AND CILP.CODAF_LISTA_PRESENCA_ID = @id;
+            """;
     }
 }

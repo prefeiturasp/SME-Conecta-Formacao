@@ -92,7 +92,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             codafListaPresenca.Iniciar();
 
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterNaoExcluidosPorIdAsync(codafListaPresencaId))
+                .Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(codafListaPresencaId))
                 .ReturnsAsync(codafListaPresenca);
 
             // Act
@@ -117,7 +117,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             codafListaPresenca.Iniciar();
             codafListaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterNaoExcluidosPorIdAsync(codafListaPresencaId))
+                .Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(codafListaPresencaId))
                 .ReturnsAsync(codafListaPresenca);
             var transacaoMock = new Mock<IDbTransaction>();
             _transacaoMock
@@ -148,7 +148,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             codafListaPresenca.Iniciar();
             codafListaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterNaoExcluidosPorIdAsync(codafListaPresencaId))
+                .Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(codafListaPresencaId))
                 .ReturnsAsync(codafListaPresenca);
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.Atualizar(It.IsAny<CodafListaPresenca>()))
@@ -178,7 +178,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             codafListaPresenca.Iniciar();
             codafListaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
-                .Setup(r => r.ObterNaoExcluidosPorIdAsync(codafListaPresencaId))
+                .Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(codafListaPresencaId))
                 .ReturnsAsync(codafListaPresenca);
             var transacaoMock = new Mock<IDbTransaction>();
             _transacaoMock
@@ -189,7 +189,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var resultado = await _casoDeUso.ExecutarAsync(codafListaPresencaId, justificativa);
 
             // Assert
-            _mediatorMock.Verify(m => m.Publish(It.Is<CodafListaPresencaDevolvidaEvento>(e => e.CodafListaPresencaId == codafListaPresencaId), It.IsAny<CancellationToken>()), Times.Once);
+            _mediatorMock.Verify(m => m.Publish(It.Is<CodafListaPresencaDevolvidaEvento>(e => e.CodafListaPresenca == codafListaPresenca), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

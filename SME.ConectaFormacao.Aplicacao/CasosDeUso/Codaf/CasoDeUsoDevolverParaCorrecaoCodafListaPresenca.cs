@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using SME.ConectaFormacao.Aplicacao.Eventos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
@@ -14,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         IRepositorioCodafComentarioListaPresenca repositorioComentario,
         ITransacao transacao,
         IGerenciadorMovimentacaoCodafService gerenciadorMovimentacao,
+        ILogger<CasoDeUsoDevolverParaCorrecaoCodafListaPresenca> logger,
         IMediator mediator) :
         ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca
     {
@@ -24,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             if (string.IsNullOrWhiteSpace(justificativa))
                 return Erro.Validacao("A justificativa para devolução da lista de presença Codaf deve ser informada.");
 
-            var codafListaPresenca = await repositorioCodafListaPresenca.ObterNaoExcluidosPorIdAsync(codafListaPresencaId);
+            var codafListaPresenca = await repositorioCodafListaPresenca.ObterPorIdComPropostaEPropostaTurmaAsync(codafListaPresencaId);
             if (codafListaPresenca == null)
                 return Erro.NaoEncontrado("Lista de presença Codaf não encontrada para o Id informado.");
 
@@ -47,11 +49,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 await gerenciadorMovimentacao.RegistrarMovimentacaoAsync(codafListaPresenca, idComentario);
                 transacaoDb.Commit();
 
-                await mediator.Publish(new CodafListaPresencaDevolvidaEvento(codafListaPresenca.Id, comentario));
+                await mediator.Publish(new CodafListaPresencaDevolvidaEvento(codafListaPresenca, comentario));
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                logger.LogError(ex, "Erro ao devolver lista de presença CODAF {Id}", codafListaPresencaId);
                 transacaoDb.Rollback();
                 return new Erro(TipoFalha.ErroInterno, "Ocorreu um erro ao devolver a lista de presença Codaf para a área promotora.");
             }

@@ -10,6 +10,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<bool> TurmaJaTemListaDePresencaAsync(long propostaTurmaId, long listaPresencaId = 0);
         Task<ResultadoPaginado<ListagemResultadoCodafListaPresencaDto>> ObterListagemResultadoCodafListaPresencaPorFiltroAsync(FiltroListagemResultadoCodafListaPresencaDto filtro);
         Task<CodafListaPresenca?> ObterPorIdDetalhadoAsync(long id);
+        Task<CodafListaPresenca?> ObterPorIdComPropostaEPropostaTurmaAsync(long id);
         Task ExcluirAsync(long id);
     }
 }
