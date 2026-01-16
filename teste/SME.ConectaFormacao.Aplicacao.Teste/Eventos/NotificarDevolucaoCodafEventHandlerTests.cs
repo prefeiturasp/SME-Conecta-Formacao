@@ -111,7 +111,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Eventos
             // Assert
             // 1. Verifica persistência da notificação
             _mocker.Verify<IRepositorioNotificacao>(x => x.Inserir(It.Is<Notificacao>(n =>
-                n.Titulo.Contains(evento.CodafListaPresencaId.ToString()) &&
+                n.Titulo.Contains($"O CODAF para a formação {evento.CodafListaPresenca.Proposta.NumeroHomologacao} - {evento.CodafListaPresenca.Proposta.NomeFormacao}, turma {evento.CodafListaPresenca.PropostaTurma.Nome} foi devolvida pela DF pelo usuário {usuarioLogado.Nome}") &&
                 n.TipoOrigem == NotificacaoTipoOrigem.DevolucaoParaCorrecaoCodaf
             )), Times.Once);
 
@@ -141,7 +141,14 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Eventos
                 Comentario = _faker.Lorem.Sentence(),
                 NotificacaoCorrelacaoId = Guid.NewGuid()
             };
-            return new CodafListaPresencaDevolvidaEvento(_faker.Random.Long(1, 100), comentario);
+
+            var codaf = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null)
+            {
+                Id = _faker.Random.Long(1, 100),
+                Proposta = new() { NumeroHomologacao = _faker.Random.Long(1000, 9999), NomeFormacao = _faker.Lorem.Sentence() },
+                PropostaTurma = new() { Nome = _faker.Lorem.Word() }
+            };
+            return new CodafListaPresencaDevolvidaEvento(codaf, comentario);
         }
 
         private void ConfigurarMocksDeDadosBasicos(out Usuario usuarioAlvo, out Usuario usuarioLogado)
