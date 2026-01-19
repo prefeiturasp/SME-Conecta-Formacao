@@ -85,7 +85,7 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta());
 
             // Act
@@ -205,10 +205,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
                  null, 2, 5, null, null, null, null);
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId + 1 });
             // Act
             var resultado = await _validadorService.ValidarParaEnvioAoDfAsync(codafListaPresenca);
@@ -227,10 +227,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
                  null, 2, 5, null, null, null, null);
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             // Act
             var resultado = await _validadorService.ValidarParaEnvioAoDfAsync(codafListaPresenca);
@@ -256,10 +256,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             };
 
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -292,10 +292,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
                 Proposta = new() { NomeFormacao = _faker.Lorem.Sentence() }
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -328,10 +328,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
                 CodafInscricoes = [new() { PercentualFrequencia = null }]
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -364,10 +364,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
                 CodafInscricoes = [new() { PercentualFrequencia = _faker.Random.Decimal(decimal.MinValue, -0.001m) }]
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -400,10 +400,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
                 CodafInscricoes = [new() { PercentualFrequencia = _faker.Random.Decimal(100.001m, decimal.MaxValue) }]
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -436,10 +436,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
                 CodafInscricoes = [new() { PercentualFrequencia = _faker.Random.Decimal(0, 100), AtividadeObrigatorio = null }]
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -472,10 +472,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
                 CodafInscricoes = [new() { PercentualFrequencia = _faker.Random.Decimal(0, 100), AtividadeObrigatorio = false, ConceitoFinal = null }]
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -508,10 +508,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
                 CodafInscricoes = [new() { PercentualFrequencia = _faker.Random.Decimal(0, 100), AtividadeObrigatorio = false, ConceitoFinal = "a" }]
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -544,10 +544,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
                 CodafInscricoes = [new() { PercentualFrequencia = _faker.Random.Decimal(0, 100), AtividadeObrigatorio = false, ConceitoFinal = "P", Aprovado = null }]
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -580,10 +580,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
                 CodafInscricoes = [new() { PercentualFrequencia = _faker.Random.Decimal(0, 100), AtividadeObrigatorio = false, ConceitoFinal = "S", Aprovado = true }]
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -617,10 +617,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
                 CodafInscricoes = [new() { Id = inscritoId, PercentualFrequencia = _faker.Random.Decimal(0, 100), AtividadeObrigatorio = false, ConceitoFinal = "NS", Aprovado = true }]
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterPorId(propostaId))
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
             _repositorioPropostaMock
-                .Setup(r => r.ObterTurmaPorId(propostaTurmaId))
+                .Setup(r => r.ObterTurmaNaoExcluidaPorIdAsync(propostaTurmaId))
                 .ReturnsAsync(new PropostaTurma { PropostaId = propostaId });
             _repositorioInscritosMock
                 .Setup(r => r.ObterInscritosPorTurmaAsync(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))

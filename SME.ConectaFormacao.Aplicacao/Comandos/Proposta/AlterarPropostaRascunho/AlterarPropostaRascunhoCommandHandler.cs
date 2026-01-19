@@ -26,7 +26,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<RetornoDTO> Handle(AlterarPropostaRascunhoCommand request, CancellationToken cancellationToken)
         {
-            var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
+            var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? 
+                           throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
 
