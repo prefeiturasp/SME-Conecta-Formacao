@@ -2,21 +2,14 @@
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterPropostaPaginada
 {
-    public class ObterPropostaPaginadaQuery : IRequest<PaginacaoResultadoDto<PropostaPaginadaDTO>>
+    public class ObterPropostaPaginadaQuery(PropostaFiltrosDTO propostaFiltrosDTO, int numeroPagina, int numeroRegistros, long? areaPromotoraIdUsuarioLogado) : 
+        IRequest<PaginacaoResultadoDto<PropostaPaginadaDTO>>
     {
-        public ObterPropostaPaginadaQuery(PropostaFiltrosDTO propostaFiltrosDTO, int numeroPagina, int numeroRegistros, long? areaPromotoraIdUsuarioLogado)
-        {
-            PropostaFiltrosDTO = propostaFiltrosDTO;
-            NumeroPagina = numeroPagina;
-            NumeroRegistros = numeroRegistros;
-            AreaPromotoraIdUsuarioLogado = areaPromotoraIdUsuarioLogado;
-        }
-
-        public PropostaFiltrosDTO PropostaFiltrosDTO { get; }
-        public int NumeroPagina { get; }
-        public int NumeroRegistros { get; }
-        public long? AreaPromotoraIdUsuarioLogado { get; }
+        public PropostaFiltrosDTO PropostaFiltrosDTO { get; } = propostaFiltrosDTO;
+        public int NumeroPagina { get; } = numeroPagina;
+        public int NumeroRegistros { get; } = numeroRegistros;
+        public long? AreaPromotoraIdUsuarioLogado { get; } = areaPromotoraIdUsuarioLogado;
     }
 }
