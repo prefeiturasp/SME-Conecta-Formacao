@@ -315,61 +315,152 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return query.ToString();
         }
 
-        public async Task<int> ObterTotalRegistrosPorFiltros(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, string loginUsuarioLogado, Guid perfilUsuarioLogado)
+        public async Task<ResultadoPaginado<Proposta>> ObterPropostaPorFiltroAsync(FiltroListagemPropostaDto filtro)
         {
-            string query = string.Concat("select count(1) from (", MontarQueryPaginacao(areaPromotoraIdUsuarioLogado, propostaId, areaPromotoraId, formato, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, loginUsuarioLogado, perfilUsuarioLogado), ") tb");
-            return await conexao.Obter().ExecuteScalarAsync<int>(query, new
+            const string sqlBaseJoins = """
+                FROM proposta p
+                INNER JOIN area_promotora ap ON ap.id = p.area_promotora_id AND NOT ap.excluido
+                """;
+            const string sqlBaseOrderBy = " ORDER BY p.criado_em DESC ";
+
+            var condicoesWhere = new StringBuilder(" WHERE NOT p.excluido ");
+            var parametros = new DynamicParameters();
+
+            if (filtro.AreaPromotoraIdUsuarioLogado.GetValueOrDefault() > 0)
             {
-                areaPromotoraIdUsuarioLogado,
-                propostaId,
-                areaPromotoraId,
-                formato,
-                publicoAlvoIds,
-                nomeFormacao,
-                numeroHomologacao,
-                periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
-                periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
-                situacao,
-                formacaoHomologada,
-                situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnalisePeloParecerista,
-                loginUsuarioLogado
-            });
-        }
+                condicoesWhere.AppendLine(" and p.area_promotora_id = @areaPromotoraIdUsuarioLogado");
+                parametros.Add("areaPromotoraIdUsuarioLogado", filtro.AreaPromotoraIdUsuarioLogado);
+            }
 
-        public async Task<IEnumerable<Proposta>> ObterDadosPaginados(long? areaPromotoraIdUsuarioLogado, int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds,
-            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, string loginUsuarioLogado, Guid perfilUsuarioLogado)
-        {
-            var registrosIgnorados = numeroPagina > 1 ? (numeroPagina - 1) * numeroRegistros : 0;
+            if (filtro.PropostaId.GetValueOrDefault() > 0)
+            {
+                condicoesWhere.AppendLine(" and p.id = @propostaId");
+                parametros.Add("propostaId", filtro.PropostaId);
+            }
 
-            string query = MontarQueryPaginacao(areaPromotoraIdUsuarioLogado, propostaId, areaPromotoraId, formato, publicoAlvoIds, ref nomeFormacao, numeroHomologacao, periodoRealizacaoInicio, periodoRealizacaoFim, situacao, formacaoHomologada, loginUsuarioLogado, perfilUsuarioLogado);
+            if (filtro.AreaPromotoraId.GetValueOrDefault() > 0)
+            {
+                condicoesWhere.AppendLine(" and p.area_promotora_id = @areaPromotoraId");
+                parametros.Add("areaPromotoraId", filtro.AreaPromotoraId);
+            }
 
-            query += " order by p.criado_em desc";
-            query += " limit @numeroRegistros offset @registrosIgnorados";
+            if (filtro.Formato.GetValueOrDefault() > 0)
+            {
+                condicoesWhere.AppendLine(" and p.formato = @formato");
+                parametros.Add("formato", filtro.Formato);
+            }
 
-            return await conexao.Obter().QueryAsync<Proposta, AreaPromotora, Proposta>(query, (proposta, areaPromotora) =>
+            if (filtro.PublicoAlvoIds != null && filtro.PublicoAlvoIds.Any())
+            {
+                condicoesWhere.AppendLine(" and exists(select 1 from proposta_publico_alvo ppa where not ppa.excluido and ppa.proposta_id = p.id and ppa.cargo_funcao_id = any(@publicoAlvoIds) limit 1)");
+                parametros.Add("publicoAlvoIds", filtro.PublicoAlvoIds);
+            }
+
+            if (!string.IsNullOrEmpty(filtro.NomeFormacao))
+            {
+                condicoesWhere.AppendLine(" and f_unaccent(p.nome_formacao) ILIKE f_unaccent(@nomeFormacao)");
+                parametros.Add("nomeFormacao", $"{filtro.NomeFormacao.Trim()}%");
+            }
+
+            if (filtro.PeriodoRealizacaoInicio.HasValue)
+            {
+                condicoesWhere.AppendLine(" and data_realizacao_inicio::date >= @periodoRealizacaoInicio");
+                parametros.Add("periodoRealizacaoInicio", filtro.PeriodoRealizacaoInicio);
+            }
+
+            if (filtro.PeriodoRealizacaoFim.HasValue)
+            {
+                condicoesWhere.AppendLine(" and data_realizacao_fim::date <= @periodoRealizacaoFim");
+                parametros.Add("periodoRealizacaoFim", filtro.PeriodoRealizacaoFim);
+            }
+
+            if (filtro.Situacao.GetValueOrDefault() > 0)
+            {
+                condicoesWhere.AppendLine(" and p.situacao = @situacao");
+                parametros.Add("situacao", filtro.Situacao);
+            }
+
+            if (filtro.FormacaoHomologada.HasValue)
+            {
+                condicoesWhere.AppendLine(" and p.formacao_homologada = @formacaoHomologada");
+                parametros.Add("formacaoHomologada", filtro.FormacaoHomologada);
+            }
+
+            if (filtro.NumeroHomologacao.HasValue)
+            {
+                condicoesWhere.AppendLine(" and p.numero_homologacao = @numeroHomologacao");
+                parametros.Add("numeroHomologacao", filtro.NumeroHomologacao);
+            }
+
+            if (filtro.PerfilUsuarioLogado.EhPerfilParecerista())
+            {
+                condicoesWhere.AppendLine(@" and p.situacao = @situacaoAguardandoParecerista 
+                                    and p.id in (select proposta_id 
+                                                 from proposta_parecerista 
+                                                 where not excluido 
+                                                   and registro_funcional = @loginUsuarioLogado)");
+                parametros.Add("situacaoAguardandoParecerista", SituacaoProposta.AguardandoAnalisePeloParecerista);
+                parametros.Add("loginUsuarioLogado", filtro.LoginUsuarioLogado);
+            }
+
+            if (filtro.Revalidacao is not null)
+            {
+                condicoesWhere.AppendLine(" and p.revalidacao = @revalidacao");
+                parametros.Add("revalidacao", filtro.Revalidacao);
+            }
+
+            var conn = conexao.Obter();
+            var sqlCount = $"SELECT COUNT(1) {sqlBaseJoins} {condicoesWhere}";
+
+            var totalRegistros = await conn.QueryFirstAsync<int>(sqlCount, parametros);
+            if (totalRegistros == 0)
+                return new ResultadoPaginado<Proposta>
+                {
+                    Itens = [],
+                    PaginaAtual = filtro.Pagina,
+                    TamanhoPagina = filtro.TamanhoPagina,
+                    TotalRegistros = totalRegistros
+                };
+
+            var registrosIgnorados = (filtro.Pagina - 1) * filtro.TamanhoPagina;
+            parametros.Add("limite", filtro.TamanhoPagina);
+            parametros.Add("registrosIgnorados", registrosIgnorados);
+
+            var sqlConsulta = $"""
+                SELECT p.id, 
+                       p.tipo_formacao, 
+                       p.formato, 
+                       p.nome_formacao, 
+                       p.data_realizacao_inicio, 
+                       p.data_realizacao_fim, 
+                       p.situacao, 
+                       p.formacao_homologada, 
+                       p.numero_homologacao, 
+                       p.revalidacao, 
+                       p.justificativa_revalidacao, 
+                       ap.id, -- Split 
+                       ap.nome
+                {sqlBaseJoins}
+                {condicoesWhere}
+                {sqlBaseOrderBy}
+                LIMIT @limite OFFSET @registrosIgnorados
+                """;
+
+            var itens = await conn.QueryAsync<Proposta, AreaPromotora, Proposta>(sqlConsulta, (proposta, areaPromotora) =>
                 {
                     proposta.AreaPromotora = areaPromotora;
                     return proposta;
                 },
-                new
-                {
-                    areaPromotoraIdUsuarioLogado,
-                    propostaId,
-                    numeroRegistros,
-                    registrosIgnorados,
-                    areaPromotoraId,
-                    formato,
-                    publicoAlvoIds,
-                    nomeFormacao,
-                    numeroHomologacao,
-                    periodoRealizacaoInicio = periodoRealizacaoInicio.GetValueOrDefault(),
-                    periodoRealizacaoFim = periodoRealizacaoFim.GetValueOrDefault(),
-                    situacao,
-                    formacaoHomologada,
-                    situacaoAguardandoParecerista = SituacaoProposta.AguardandoAnalisePeloParecerista,
-                    loginUsuarioLogado
-                },
+                parametros,
                 splitOn: "id, id");
+
+            return new ResultadoPaginado<Proposta>
+            {
+                Itens = itens,
+                PaginaAtual = filtro.Pagina,
+                TamanhoPagina = filtro.TamanhoPagina,
+                TotalRegistros = totalRegistros
+            };
         }
 
         public Task<IEnumerable<Proposta>> ObterPropostasIdsDashBoard(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId,
