@@ -7,15 +7,12 @@ using SME.ConectaFormacao.Dominio.Contexto;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
-    public class CasoDeUsoObterPropostaPaginacao : CasoDeUsoAbstratoPaginado, ICasoDeUsoObterPropostaPaginacao
+    public class CasoDeUsoObterPropostaPaginacao(IMediator mediator, IContextoAplicacao contextoAplicacao) : 
+        CasoDeUsoAbstratoPaginado(mediator, contextoAplicacao), ICasoDeUsoObterPropostaPaginacao
     {
-        public CasoDeUsoObterPropostaPaginacao(IMediator mediator, IContextoAplicacao contextoAplicacao) : base(mediator, contextoAplicacao)
-        {
-        }
-
         public async Task<PaginacaoResultadoDto<PropostaPaginadaDTO>> Executar(PropostaFiltrosDTO propostaFiltrosDTO)
         {
-            var areaPromotoraUsuarioLogado = await mediator.Send(ObterAreaPromotoraUsuarioLogadoQuery.Instancia());
+            var areaPromotoraUsuarioLogado = await mediator.Send(new ObterAreaPromotoraUsuarioLogadoQuery());
             return await mediator.Send(new ObterPropostaPaginadaQuery(propostaFiltrosDTO, NumeroPagina, NumeroRegistros, areaPromotoraUsuarioLogado?.Id));
         }
     }
