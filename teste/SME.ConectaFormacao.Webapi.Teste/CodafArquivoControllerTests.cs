@@ -1,5 +1,4 @@
-﻿using Bogus;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -9,7 +8,6 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Webapi.Controllers;
-using System.Net;
 
 namespace SME.ConectaFormacao.Webapi.Teste
 {
@@ -17,6 +15,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
     {
         private readonly Mock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf> _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf;
         private readonly Mock<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca> _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca;
+        private readonly Mock<ICasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol> _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol;
         private readonly CodafArquivoController _controller;
 
         public CodafArquivoControllerTests()
@@ -24,6 +23,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var mocker = new AutoMocker();
             _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf = mocker.GetMock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf>();
             _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca = mocker.GetMock<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca>();
+            _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol = mocker.GetMock<ICasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol>();
             _controller = mocker.CreateInstance<CodafArquivoController>();
         }
 
@@ -97,6 +97,50 @@ namespace SME.ConectaFormacao.Webapi.Teste
             await _controller.UploadAnexoTemporario(arquivoDto);
             // Assert
             _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca.Verify(x => x.ExecutarAsync(arquivoDto), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmCodafListaPresencaIdValido_QuandoGerarArquivoDeInscricoesParaEol_EntaoDeveRetornarFileStreamResult()
+        {
+            // Arrange
+            long codafListaPresencaId = 1;
+            var nomeArquivo = "HOM2023001TurmaAAvancada.txt";
+            var contentType = "application/octet-stream";
+            var memoryStream = new MemoryStream([1, 2, 3]);
+            var arquivoDto = new ArquivoDto(nomeArquivo, contentType, memoryStream);
+            var resultadoSucesso = Resultado<ArquivoDto>.DeSucesso(arquivoDto);
+            _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol
+                .Setup(x => x.ExecutarAsync(codafListaPresencaId))
+                .ReturnsAsync(resultadoSucesso);
+            // Act
+            var resultado = await _controller.GerarArquivoDeInscricoesParaEol(codafListaPresencaId);
+            // Assert
+            var fileResult = resultado.Should().BeOfType<FileStreamResult>().Subject;
+            fileResult.ContentType.Should().Be(contentType);
+            fileResult.FileDownloadName.Should().Be(nomeArquivo);
+            fileResult.FileStream.Should().BeSameAs(memoryStream);
+            _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol
+                .Verify(x => x.ExecutarAsync(codafListaPresencaId), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmCodafListaPresencaIdInvalido_QuandoGerarArquivoDeInscricoesParaEol_EntaoDeveRetornarNotFound()
+        {
+            // Arrange
+            long codafListaPresencaId = 1;
+            var erro = Erro.NaoEncontrado("Dados não encontrados para o CodafListaPresencaId informado.");
+            _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol
+                .Setup(x => x.ExecutarAsync(codafListaPresencaId))
+                .ReturnsAsync(erro);
+            // Act
+            var resultado = await _controller.GerarArquivoDeInscricoesParaEol(codafListaPresencaId);
+            // Assert
+            var notFoundResult = resultado.Should().BeOfType<NotFoundObjectResult>().Subject;
+            notFoundResult.StatusCode.Should().Be(404);
+            var valorRetorno = notFoundResult.Value;
+            valorRetorno.Should().NotBeNull();
+            _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol
+                .Verify(x => x.ExecutarAsync(codafListaPresencaId), Times.Once);
         }
     }
 }
