@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Buffers;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -75,6 +76,48 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             texto = RegexEspacosEmBranco.Replace(texto, " ").Trim();
             return texto.Trim();
         }
+
+        public static string RemoverCaracteresEspeciais(this string texto)
+        {
+            if (string.IsNullOrEmpty(texto)) return string.Empty;
+
+            var textoNormalizado = texto.Normalize(NormalizationForm.FormD);
+            var spanNormalizado = textoNormalizado.AsSpan(); 
+            
+            char[]? arrayAlugado = null;
+            Span<char> buffer = spanNormalizado.Length <= 256
+                ? stackalloc char[spanNormalizado.Length]
+                : (arrayAlugado = ArrayPool<char>.Shared.Rent(spanNormalizado.Length));
+
+            try
+            {
+                int indiceDestino = 0;
+
+                foreach (char c in spanNormalizado)
+                {
+                    var categoriaUnicode = CharUnicodeInfo.GetUnicodeCategory(c);
+
+                    if (categoriaUnicode == UnicodeCategory.NonSpacingMark)
+                        continue;
+
+                    if (EhCaracterValido(c))
+                    {
+                        buffer[indiceDestino++] = c;
+                    }
+                }
+
+                return new string(buffer.Slice(0, indiceDestino));
+            }
+            finally
+            {
+                if (arrayAlugado != null)
+                {
+                    ArrayPool<char>.Shared.Return(arrayAlugado);
+                }
+            }
+        }
+
+        private static bool EhCaracterValido(char caracter) => char.IsLetterOrDigit(caracter) || char.IsWhiteSpace(caracter);
 
         public static string RemoverAcentosECaracteresEspeciais(this string str)
         {
@@ -179,6 +222,19 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         public static bool EhColaboradorRede(this string valor)
         {
             return valor.Equals("1");
+        }
+        public static int ConverterHoraMinutoParaInteiro(this string? horasTexto)
+        {
+            if (string.IsNullOrWhiteSpace(horasTexto)) return 0;
+
+            var partes = horasTexto.Split(':');
+            if (partes.Length != 2) return 0;
+
+            if (int.TryParse(partes[0], out int horas) && int.TryParse(partes[1], out int minutos))
+            {
+                return (horas * 60 + minutos) / 60;
+            }
+            return 0;
         }
     }
 }

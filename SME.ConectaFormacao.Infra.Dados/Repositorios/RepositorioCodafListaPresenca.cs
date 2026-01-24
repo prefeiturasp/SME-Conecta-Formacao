@@ -176,9 +176,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (codafListaPresenca == null)
                 return null;
 
-            codafListaPresenca.CodafRetificacoes = [.. multi.Read<CodafRetificacaoListaPresenca>()];
-            codafListaPresenca.CodafAnexos = [.. multi.Read<CodafAnexo>()];
-            codafListaPresenca.CodafInscricoes = [.. multi.Read<CodafInscricaoListaPresenca>()];
+            codafListaPresenca.CodafRetificacoes = [.. await multi.ReadAsync<CodafRetificacaoListaPresenca>()];
+            codafListaPresenca.CodafAnexos = [.. await multi.ReadAsync<CodafAnexo>()];
+            codafListaPresenca.CodafInscricoes = [.. await multi.ReadAsync<CodafInscricaoListaPresenca>()];
             return codafListaPresenca;
         }
 
@@ -275,6 +275,33 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 parametros,
                 splitOn: "ID,ID");
             return codafListaPresenca.SingleOrDefault();
+        }
+
+        public async Task<IEnumerable<DadosConsultaParaTxtEolDto>?> ObterDadosInscritosCodafParaEolPorIdAsync(long id)
+        {
+            var conn = conexao.Obter();
+            const string query = """
+                SELECT U.LOGIN registroFuncional,
+                       CLP.CODIGO_CURSO_EOL codigoCursoEol,
+                       P.DATA_REALIZACAO_FIM dataFimCurso,
+                       CLP.CODIGO_NIVEL codigoNivel,
+                       P.NUMERO_HOMOLOGACAO numeroHomologacao,
+                       P.HORAS_TOTAIS horasTotais,
+                       P.CARGA_HORARIA_TOTAL_OUTRA cargaHorariaTotalOutra,
+                       PT.NOME nomeTurma
+                FROM   PUBLIC.CODAF_LISTA_PRESENCA AS CLP
+                       INNER JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP  ON CILP.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                       INNER JOIN PUBLIC.INSCRICAO AS INSCR ON INSCR.ID = CILP.INSCRICAO_ID
+                       INNER JOIN PUBLIC.USUARIO AS U ON U.ID = INSCR.USUARIO_ID
+                       INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.ID = CLP.PROPOSTA_TURMA_ID
+                       INNER JOIN PUBLIC.PROPOSTA AS P ON P.ID = PT.PROPOSTA_ID
+                WHERE NOT CLP.EXCLUIDO AND NOT CILP.EXCLUIDO AND NOT INSCR.EXCLUIDO 
+                  AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
+                  AND CLP.ID = @id;
+                """;
+            var parametros = new { id };
+            var resultado = await conn.QueryAsync<DadosConsultaParaTxtEolDto>(query, parametros);
+            return resultado;
         }
 
         private const string sqlObterCodafPorIdComPropostaEPropostaTurma = """
