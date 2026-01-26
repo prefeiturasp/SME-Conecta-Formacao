@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
     {
         private readonly Mock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf> _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf;
         private readonly Mock<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca> _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca;
-        private readonly Mock<ICasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol> _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol;
+        private readonly Mock<ICasoDeUsoGerarArquivoRemessaConclusaoCodaf> _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol;
         private readonly CodafArquivoController _controller;
 
         public CodafArquivoControllerTests()
@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var mocker = new AutoMocker();
             _mockCasoDeUsoObterModeloTermoResponsabilidadeCodaf = mocker.GetMock<ICasoDeUsoObterModeloTermoResponsabilidadeCodaf>();
             _mockCasoDeUsoUploadAnexoTemporarioCodafListaPresenca = mocker.GetMock<ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca>();
-            _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol = mocker.GetMock<ICasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol>();
+            _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol = mocker.GetMock<ICasoDeUsoGerarArquivoRemessaConclusaoCodaf>();
             _controller = mocker.CreateInstance<CodafArquivoController>();
         }
 
@@ -113,7 +113,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(codafListaPresencaId))
                 .ReturnsAsync(resultadoSucesso);
             // Act
-            var resultado = await _controller.GerarArquivoDeInscricoesParaEol(codafListaPresencaId);
+            var resultado = await _controller.GerarArquivoRemessaConclusaoCodaf(codafListaPresencaId);
             // Assert
             var fileResult = resultado.Should().BeOfType<FileStreamResult>().Subject;
             fileResult.ContentType.Should().Be(contentType);
@@ -133,7 +133,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(codafListaPresencaId))
                 .ReturnsAsync(erro);
             // Act
-            var resultado = await _controller.GerarArquivoDeInscricoesParaEol(codafListaPresencaId);
+            var resultado = await _controller.GerarArquivoRemessaConclusaoCodaf(codafListaPresencaId);
             // Assert
             var notFoundResult = resultado.Should().BeOfType<NotFoundObjectResult>().Subject;
             notFoundResult.StatusCode.Should().Be(404);

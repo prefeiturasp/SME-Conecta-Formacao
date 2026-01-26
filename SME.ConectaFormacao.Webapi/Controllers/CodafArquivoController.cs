@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     public class CodafArquivoController(
         ICasoDeUsoObterModeloTermoResponsabilidadeCodaf casoDeUsoObterModeloTermoResponsabilidadeCodaf,
         ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca casoDeUsoUploadAnexoTemporarioCodafListaPresenca,
-        ICasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol casoDeUsoGerarArquivoDeInscricoesDoCodafParaEol) : BaseController
+        ICasoDeUsoGerarArquivoRemessaConclusaoCodaf casoDeUsoGerarArquivoRemessaConclusaoCodaf) : BaseController
     {
 
         [HttpGet("termo-responsabilidade/modelo")]
@@ -38,12 +38,12 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return ProcessarResultado(resultado);
         }
 
-        [HttpGet("{codafListaPresencaId}/arquivo-eol")]
+        [HttpPost("{codafListaPresencaId}/gerar-remessa-conclusao")]
         [ProducesResponseType(typeof(FileResult), 200)]
         [ProducesResponseType(typeof(Resultado<ArquivoDto>), 404)]
-        public async Task<IActionResult> GerarArquivoDeInscricoesParaEol(long codafListaPresencaId)
+        public async Task<IActionResult> GerarArquivoRemessaConclusaoCodaf(long codafListaPresencaId)
         {
-            var resultado = await casoDeUsoGerarArquivoDeInscricoesDoCodafParaEol.ExecutarAsync(codafListaPresencaId);
+            var resultado = await casoDeUsoGerarArquivoRemessaConclusaoCodaf.ExecutarAsync(codafListaPresencaId);
             if (resultado.Sucesso)
                 return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
             return ProcessarResultado(resultado);

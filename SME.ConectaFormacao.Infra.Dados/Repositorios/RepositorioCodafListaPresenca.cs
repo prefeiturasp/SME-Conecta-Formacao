@@ -124,8 +124,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        pt.NOME AS nomeTurma,
                        ap.NOME AS nomeAreaPromotora,
                        CLP.STATUS,
-                       CASE WHEN NOT P.CURSO_COM_CERTIFICADO THEN 0
-                            ELSE 1 END AS statusCertificacaoTurma,
+                       CASE 
+                            WHEN P.CURSO_COM_CERTIFICADO = FALSE THEN 0
+                            WHEN NOT EXISTS (
+                                SELECT 1 
+                                FROM PUBLIC.CODAF_LOG_REMESSA_CONCLUSAO L 
+                                WHERE L.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                            ) THEN 1
+                            ELSE 2 END AS statusCertificacaoTurma,
                        CLP.CODIGO_CURSO_EOL codigoCursoEol,
                        CLP.CODIGO_NIVEL codigoNivel
                 {sqlBaseJoins}
@@ -277,7 +283,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return codafListaPresenca.SingleOrDefault();
         }
 
-        public async Task<IEnumerable<DadosConsultaParaTxtEolDto>?> ObterDadosInscritosCodafParaEolPorIdAsync(long id)
+        public async Task<IEnumerable<DadosConsultaParaTxtEolDto>?> ObterDadosRemessaConclusaoCodafAsync(long id)
         {
             var conn = conexao.Obter();
             const string query = """

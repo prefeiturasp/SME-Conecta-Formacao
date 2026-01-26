@@ -3,7 +3,7 @@ using SME.ConectaFormacao.Dominio.Comum;
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Codaf
 {
-    public interface ICasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol
+    public interface ICasoDeUsoGerarArquivoRemessaConclusaoCodaf
     {
         Task<Resultado<ArquivoDto>> ExecutarAsync(long codafListaPresencaId);
     }

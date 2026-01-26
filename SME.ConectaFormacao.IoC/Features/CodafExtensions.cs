@@ -35,7 +35,8 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<IRepositorioCodafComentarioListaPresenca, RepositorioCodafComentarioListaPresenca>()
                 .AddScoped<ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca, CasoDeUsoDevolverParaCorrecaoCodafListaPresenca>()
                 .AddScoped<ICasoDeUsoExcluirCodafListaPresenca, CasoDeUsoExcluirCodafListaPresenca>()
-                .AddScoped<ICasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol, CasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol>()
+                .AddScoped<IRepositorioCodafLogRemessaConclusao, RepositorioCodafLogRemessaConclusao>()
+                .AddScoped<ICasoDeUsoGerarArquivoRemessaConclusaoCodaf, CasoDeUsoGerarArquivoRemessaConclusaoCodaf>()
             ;
         }
     }
