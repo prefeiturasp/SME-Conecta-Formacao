@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
+using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
@@ -8,15 +9,16 @@ using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
-    public class CasoDeUsoGerarArquivoDeInscricoesDoCodafParaEolTests
+    public class CasoDeUsoGerarArquivoRemessaConclusaoCodafTests
     {
         private readonly Mock<IRepositorioCodafListaPresenca> _repositorioMock;
-        private readonly CasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol _casoDeUso;
+        private readonly CasoDeUsoGerarArquivoRemessaConclusaoCodaf _casoDeUso;
 
-        public CasoDeUsoGerarArquivoDeInscricoesDoCodafParaEolTests()
+        public CasoDeUsoGerarArquivoRemessaConclusaoCodafTests()
         {
-            _repositorioMock = new Mock<IRepositorioCodafListaPresenca>();
-            _casoDeUso = new CasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol(_repositorioMock.Object);
+            var mocker = new AutoMocker();
+            _repositorioMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
+            _casoDeUso = mocker.CreateInstance<CasoDeUsoGerarArquivoRemessaConclusaoCodaf>();
         }
 
         [Fact]
@@ -53,7 +55,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 }
             };
 
-            _repositorioMock.Setup(x => x.ObterDadosInscritosCodafParaEolPorIdAsync(codafId))
+            _repositorioMock.Setup(x => x.ObterDadosRemessaConclusaoCodafAsync(codafId))
                 .ReturnsAsync(dadosBanco);
 
             // Act
@@ -91,7 +93,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 }
             };
 
-            _repositorioMock.Setup(x => x.ObterDadosInscritosCodafParaEolPorIdAsync(codafId))
+            _repositorioMock.Setup(x => x.ObterDadosRemessaConclusaoCodafAsync(codafId))
                 .ReturnsAsync(dadosBanco);
 
             // Act
@@ -130,7 +132,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 }
             };
 
-            _repositorioMock.Setup(x => x.ObterDadosInscritosCodafParaEolPorIdAsync(codafId))
+            _repositorioMock.Setup(x => x.ObterDadosRemessaConclusaoCodafAsync(codafId))
                 .ReturnsAsync(dadosBanco);
 
             // Act
@@ -165,7 +167,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 }
             };
 
-            _repositorioMock.Setup(x => x.ObterDadosInscritosCodafParaEolPorIdAsync(codafId))
+            _repositorioMock.Setup(x => x.ObterDadosRemessaConclusaoCodafAsync(codafId))
                 .ReturnsAsync(dadosBanco);
 
             // Act
