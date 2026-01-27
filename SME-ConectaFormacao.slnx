@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="SME.Conecta.Notificacao.Worker/SME.Conecta.Notificacao.Worker.csproj" />
+    <Project Path="SME.Conecta.Worker.Rabbbit/SME.Conecta.Worker.Rabbbit.csproj" />
+    <Project Path="SME.ConectaFormacao.Acessorio/SME.ConectaFormacao.Acessorio.csproj" />
+    <Project Path="SME.ConectaFormacao.Aplicacao/SME.ConectaFormacao.Aplicacao.csproj" />
+    <Project Path="SME.ConectaFormacao.Dominio/SME.ConectaFormacao.Dominio.csproj" />
+    <Project Path="SME.ConectaFormacao.Infra.Dados/SME.ConectaFormacao.Infra.Dados.csproj" />
+    <Project Path="SME.ConectaFormacao.Infra.Servicos/SME.ConectaFormacao.Infra.Servicos.csproj" />
+    <Project Path="SME.ConectaFormacao.IoC/SME.ConectaFormacao.IoC.csproj" />
+    <Project Path="SME.ConectaFormacao.Webapi/SME.ConectaFormacao.Webapi.csproj" />
+  </Folder>
+  <Folder Name="/testes/">
+    <Project Path="SME.ConectaFormacao.TesteIntegracao/SME.ConectaFormacao.TesteIntegracao.csproj" />
+    <Project Path="teste/SME.ConectaFormacao.Aplicacao.Teste/SME.ConectaFormacao.Aplicacao.Teste.csproj" />
+    <Project Path="teste/SME.ConectaFormacao.Domino.Teste/SME.ConectaFormacao.Domino.Teste.csproj" />
+    <Project Path="teste/SME.ConectaFormacao.Infra.Servicos.Teste/SME.ConectaFormacao.Infra.Servicos.Teste.csproj" />
+    <Project Path="teste/SME.ConectaFormacao.Webapi.Teste/SME.ConectaFormacao.Webapi.Teste.csproj" />
+  </Folder>
+</Solution>
