@@ -12,5 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
         public required string NomeAreaPromotora { get; set; }
         public StatusCodafListaPresenca Status { get; set; }
         public StatusCertificacaoTurma StatusCertificacaoTurma { get; set; }
+        public string? CodigoCursoEol { get; set; }
+        public string? CodigoNivel { get; set; }
     }
 }
