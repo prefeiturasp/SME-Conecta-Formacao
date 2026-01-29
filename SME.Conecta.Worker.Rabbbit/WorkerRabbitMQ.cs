@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
@@ -73,6 +74,7 @@ namespace SME.Conecta.Worker
 
             Comandos.Add(RotasRabbit.EnviarEmail, new ComandoRabbit("Enviar e-mail", typeof(ICasoDeUsoEnviarEmail), true));
             Comandos.Add(RotasRabbit.EnviarNotificacao, new ComandoRabbit("Enviar notificação via SignalR", typeof(ICasoDeUsoEnviarNotificacao), true));
+            Comandos.Add(RotasRabbit.GerarArquivoCertificadosCodaf, new ComandoRabbit("Gerar arquivo de certificados CODAF", typeof(ICasoDeUsoGerarArquivoCertificadosCodaf), true));
         }
     }
 }

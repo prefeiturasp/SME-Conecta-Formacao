@@ -11,7 +11,7 @@
 
         public override string ToString()
         {
-            return $"{RegistroFuncional}|{CodigoCursoEol}|{CodigoNivel}|{DataFimCurso}|{NumeroHomologacao}|{CargaHoraria}";
+            return $"{RegistroFuncional}|{CodigoCursoEol}|{DataFimCurso}|{CodigoNivel}|{NumeroHomologacao}|{CargaHoraria}";
         }
     }
 }

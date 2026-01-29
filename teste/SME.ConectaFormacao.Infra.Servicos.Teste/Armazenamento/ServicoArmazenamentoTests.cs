@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Teste.Armazenamento
             mocker.Use(optionsMock.Object);
 
             // Configuração fake para URL legado
-            _configurationMock.Setup(x => x["UrlFrontEnd"]).Returns("http://localhost");
+            _configurationMock.Setup(x => x["UrlBucket"]).Returns("http://localhost");
 
             _servico = mocker.CreateInstance<ServicoArmazenamento>();
         }

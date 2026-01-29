@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Dominio.Extensoes
 {
-    public static class StringExtensao
+    public static partial class StringExtensao
     {
         public static readonly Regex RegexTagsBR = new("<br[^>]*>", RegexOptions.Compiled);
         public static readonly Regex RegexTagsP = new("<p[^>]*>", RegexOptions.Compiled);
@@ -13,6 +13,17 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         public static readonly Regex RegexTagsDIV = new("<div[^>]*>", RegexOptions.Compiled);
         public static readonly Regex RegexTagsHTMLQualquer = new("<[^>]*>", RegexOptions.Compiled);
         public static readonly Regex RegexEspacosEmBranco = new("&nbsp;", RegexOptions.Compiled);
+        [GeneratedRegex(@">\s+<", RegexOptions.Compiled)]
+        private static partial Regex RegexEspacosEntreTags();
+        [GeneratedRegex(@"\s+", RegexOptions.Compiled)]
+        private static partial Regex RegexEspacosDuplos();
+        public static string MinificarHtml(this string html)
+        {
+            if (string.IsNullOrEmpty(html)) return html;
+            var htmlSemEspacosTags = RegexEspacosEntreTags().Replace(html, "><");
+            var htmlLimpo = RegexEspacosDuplos().Replace(htmlSemEspacosTags, " ");
+            return htmlLimpo.Trim();
+        }
 
         public static string SomenteNumeros(this string valor)
         {
@@ -235,6 +246,13 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
                 return (horas * 60 + minutos) / 60;
             }
             return 0;
+        }
+        public static string AplicarMascaraCpf(this string cpf)
+        {
+            cpf = cpf.SomenteNumeros();
+            if (cpf.Length != 11)
+                return cpf;
+            return Convert.ToUInt64(cpf).ToString("000\\.000\\.000\\-00");
         }
     }
 }

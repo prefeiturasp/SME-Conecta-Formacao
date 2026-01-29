@@ -83,7 +83,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             {
                 RegistroFuncional = dado.RegistroFuncional,
                 CodigoCursoEol = dado.CodigoCursoEol.ToString(),
-                CodigoNivel = dado.CodigoNivel.ToString("00"),
+                CodigoNivel = $"{dado.CodigoNivel:00}",
                 DataFimCurso = dado.DataFimCurso?.ToString("dd/MM/yyyy") ?? string.Empty,
                 NumeroHomologacao = $"HOM{dado.NumeroHomologacao}",
                 CargaHoraria = (dado.HorasTotais ?? dado.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro()).ToString("00")

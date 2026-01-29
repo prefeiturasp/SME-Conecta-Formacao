@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <title>Certificado</title>
+    <style>
+        /* Reset básico para garantir que ocuparemos a folha toda */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: "Roboto", sans-serif;
+            -webkit-print-color-adjust: exact; /* Força impressão de background */
+        }
+
+        /* Container principal A4 Landscape */
+        .container {
+            position: relative;
+            width: 1392px; /* Largura aproximada A4 Landscape em 96dpi */
+            height: 991px; /* Altura aproximada A4 Landscape em 96dpi */
+            overflow: hidden;
+        }
+
+        /* 1. MOLDURA ESQUERDA */
+        .sidebar-art {
+            position: absolute;
+            top: 0;
+            left: -1px; /* Ajuste fino para garantir que não haja borda branca */
+            width: 167px;
+            height: 100%;
+            z-index: 10;
+        }
+
+        /* 2. CABEÇALHO (Brasão SME) */
+        .content-area {
+            margin-left: 180px; /* Espaço para a barra lateral + respiro */
+            padding-top: 70px;
+            padding-right: 50px;
+            text-align: center;
+        }
+
+        .header-logo {
+            width: 490px;
+            height: auto;
+            display: block;
+            margin: 0 auto; /* Centraliza horizontalmente na content-area */
+        }
+
+        /* TÍTULO CERTIFICADO */
+        h1.titulo {
+            margin-top: 60px;
+            font-size: 24pt;
+            font-weight: bold;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            color: #333;
+        }
+
+        /* TEXTO DO CORPO */
+        .texto-certificado {
+            margin-top: 50px;
+            margin-left: 80px;
+            margin-right: 80px;
+            font-size: 16pt;
+            line-height: 1.5;
+            text-align: center;
+            color: #444;
+        }
+
+        .destaque {
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* DATA E LOCAL */
+        .data-local {
+            margin-top: 50px;
+            font-size: 14pt;
+            color: #444;
+        }
+
+        /* 3. ASSINATURA */
+        .assinatura-container {
+            margin-top: 30px;
+            position: relative;
+            width: 100%;
+            text-align: center;
+        }
+
+        .img-assinatura {
+            width: 300px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            padding-bottom: 5px;
+        }
+
+        .linha-assinatura {
+            width: 278px;
+            height: 2px;
+            background-color: #000;
+            margin: 0 auto;
+            margin-top: -33px;
+        }
+
+        .nome-assinatura {
+            margin-top: 5px;
+            font-size: 10pt;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .cargo-assinatura {
+            font-size: 9pt;
+            font-weight: normal;
+        }
+
+        /* RODAPÉ E LOGO PREFEITURA */
+        .footer {
+            position: absolute;
+            bottom: 30px;
+            left: 180px; /* Alinhado com content-area */
+            width: 900px; /* Largura restante */
+            font-size: 8pt;
+            color: #666;
+        }
+
+        /* Tabela para alinhar texto legal à esquerda e logo à direita (Old School Layout) */
+        .footer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .footer-text {
+            text-align: left;
+            vertical-align: bottom;
+            width: 70%;
+        }
+
+        .footer-logo-cell {
+            text-align: right;
+            vertical-align: bottom;
+            width: 30%;
+        }
+
+        /* 4. LOGO PREFEITURA */
+        .logo-prefeitura {
+            width: 150px; /* Ajuste visual */
+            height: auto;
+        }
+
+        .rotacao-lateral {
+            /* Caso precise de texto na lateral direita conforme a imagem de exemplo */
+            position: absolute;
+            right: -50px;
+            top: 50%;
+            transform: rotate(-90deg);
+            font-size: 8px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="data:image/png;base64,{{IMG_MOLDURA_LATERAL}}"
+             class="sidebar-art"
+             alt="Arte Lateral" />
+
+        <div class="content-area">
+            <img src="data:image/png;base64,{{IMG_BRASAO_TITULO_SME}}"
+                 class="header-logo"
+                 alt="SME Logo" />
+
+            <h1 class="titulo">CERTIFICADO</h1>
+
+            <div class="texto-certificado">{{TEXTO_CERTIFICADO}}</div>
+
+            <div class="data-local">São Paulo, {{DATA_ATUAL_ASSINATURA}}</div>
+
+            <div class="assinatura-container">
+                <img src="data:image/png;base64,{{IMG_ASSINATURA_SECRETARIO}}"
+                     class="img-assinatura"
+                     alt="Assinatura" />
+
+                <div class="linha-assinatura"></div>
+                <div class="nome-assinatura">Fernando Padula</div>
+                <div class="cargo-assinatura">Secretário Municipal de Educação</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <table class="footer-table">
+                <tr>
+                    <td class="footer-text">
+                        PMSP/SME - Certificado registrado sob nº{{NUM_SEQ}}, do ano
+                        {{ANO_ATUAL}}, Comunicado nº {{NUM_COMUNICADO}}, DOC
+                        {{DATA_PUBLICACAO_CODAF}} (informado no CODAF) Homologação
+                        {{NUM_HOM_FORMACAO}}.
+                    </td>
+                    <td class="footer-logo-cell">
+                        <img src="data:image/png;base64,{{IMG_BRASAO_PREFEITURA}}"
+                             class="logo-prefeitura"
+                             alt="Prefeitura SP" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="rotacao-lateral">Cadastro automático. Sistema EOL.</div>
+    </div>
+</body>
+</html>
