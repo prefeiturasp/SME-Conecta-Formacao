@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             {
                 foreach (var anexo in listaPresencaDto.Anexos)
                 {
-                    anexo.UrlDownload = await servicoArmazenamento.ObterUrlPorGuidAsync(anexo.ArquivoCodigo);
+                    anexo.UrlDownload = await servicoArmazenamento.ObterUrlPorChaveObjetoAsync(anexo.ArquivoCodigo.ToString());
                 }
             }
             await ObterComentarioDfAsync(listaPresencaDto);

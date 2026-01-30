@@ -58,6 +58,7 @@ using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Dados.Templates;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
 using SME.ConectaFormacao.Infra.Servicos.CacheDistribuido.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
@@ -92,6 +93,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         RegistrarServicoArmazenamento();
         RegistrarCacheDistribuido();
         serviceCollection
+            .AddSingleton<ITemplateService, TemplateService>()
             .AdicionarModuloCodaf()
             .AdicionarModuloProposta()
             ;

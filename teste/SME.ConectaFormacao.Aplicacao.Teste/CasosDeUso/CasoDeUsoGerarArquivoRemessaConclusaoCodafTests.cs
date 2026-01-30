@@ -105,9 +105,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             using var reader = new StreamReader(resultado.Dados.Stream!, Encoding.UTF8);
             var conteudo = await reader.ReadToEndAsync();
 
-            // Layout esperado: RF|CodCurso|Nivel(00)|Data|HOM+Num|Carga(00)
-            // 7777777|54321|02|01/12/2023|HOM999|08
-            var linhaEsperada = "7777777|54321|02|01/12/2023|HOM999|08";
+            // Layout esperado: RF|CodCurso|Data|Nivel(00)|HOM+Num|Carga(00)
+            // 7777777|54321|01/12/2023|02|HOM999|08
+            var linhaEsperada = "7777777|54321|01/12/2023|02|HOM999|08";
 
             conteudo.Trim().Should().Be(linhaEsperada);
         }

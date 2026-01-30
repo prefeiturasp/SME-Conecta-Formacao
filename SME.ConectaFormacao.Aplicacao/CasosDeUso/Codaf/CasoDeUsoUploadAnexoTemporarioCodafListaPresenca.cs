@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 ArquivoCodigo = arquivoId,
                 NomeArquivo = arquivoDto.FileName,
                 Extensao = Path.GetExtension(arquivoDto.FileName),
-                UrlDownload = await servicoArmazenamento.ObterUrlPorGuidAsync(arquivoId, true),
+                UrlDownload = await servicoArmazenamento.ObterUrlPorChaveObjetoAsync(arquivoId.ToString(), true),
                 ContentType = arquivoDto.ContentType,
                 TamanhoBytes = arquivoDto.Length
             };

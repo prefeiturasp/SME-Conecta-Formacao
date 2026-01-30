@@ -108,7 +108,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
 
         private async Task<string> ObterUrl(string nomeArquivo, string bucketName)
         {
-            var hostAplicacao = _configuration["UrlFrontEnd"];
+            var hostAplicacao = _configuration["UrlBucket"];
             return $"{hostAplicacao}{bucketName}/{nomeArquivo}";
         }
         public async Task<Guid> ArmazenarTemporariaGuid(Stream stream, string contentType)
@@ -142,11 +142,11 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
             return MontarUrl(arquivoId.ToString(), bucketNome);
         }
 
-        public async Task<string> ObterUrlPorGuidAsync(Guid arquivoId, bool ehPastaTemp = false)
+        public async Task<string> ObterUrlPorChaveObjetoAsync(string chaveObjeto, bool ehPastaTemp = false)
         {
             var bucketNome = ObterNomeDoBucket(ehPastaTemp);
 
-            var nomeObjeto = arquivoId.ToString();
+            var nomeObjeto = chaveObjeto;
 
             var args = new PresignedGetObjectArgs()
                 .WithBucket(bucketNome)
@@ -184,7 +184,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
         }
         private string MontarUrl(string nomeArquivo, string bucketName)
         {
-            var hostAplicacao = _configuration["UrlFrontEnd"];
+            var hostAplicacao = _configuration["UrlBucket"];
             var host = hostAplicacao?.TrimEnd('/');
             return $"{host}/{bucketName}/{nomeArquivo}";
         }
@@ -193,5 +193,18 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
             ehPastaTemp
                 ? _configuracaoArmazenamentoOptions.BucketTemp
                 : _configuracaoArmazenamentoOptions.BucketArquivos;
+
+        public async Task<string> UploadCertificadoCodafAsync(string nomeArquivo, byte[] conteudoPdf)
+        {
+            using var stream = new MemoryStream(conteudoPdf);
+            await _minioClient.PutObjectAsync(new PutObjectArgs()
+                .WithBucket(_configuracaoArmazenamentoOptions.BucketArquivos)
+                .WithObject(nomeArquivo)
+                .WithStreamData(stream)
+                .WithObjectSize(stream.Length)
+                .WithContentType("application/pdf"));
+
+            return nomeArquivo;
+        }
     }
 }
