@@ -1,5 +1,5 @@
 ﻿using SME.ConectaFormacao.Dominio.Extensoes;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Base;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Templates;

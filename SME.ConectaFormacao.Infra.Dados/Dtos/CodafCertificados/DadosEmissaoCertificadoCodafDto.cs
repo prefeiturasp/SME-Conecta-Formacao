@@ -1,6 +1,6 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
 
-namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas
+namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
 {
     public class DadosEmissaoCertificadoCodafDto
     {

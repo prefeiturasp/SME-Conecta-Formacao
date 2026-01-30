@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Estrategias;
 using SME.ConectaFormacao.Infra.Dados.Templates;

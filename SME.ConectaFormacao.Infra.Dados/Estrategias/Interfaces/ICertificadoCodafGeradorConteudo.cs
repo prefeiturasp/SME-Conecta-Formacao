@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
+﻿using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 
 namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces
 {

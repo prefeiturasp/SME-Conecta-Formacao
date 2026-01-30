@@ -142,11 +142,11 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
             return MontarUrl(arquivoId.ToString(), bucketNome);
         }
 
-        public async Task<string> ObterUrlPorGuidAsync(Guid arquivoId, bool ehPastaTemp = false)
+        public async Task<string> ObterUrlPorChaveObjetoAsync(string chaveObjeto, bool ehPastaTemp = false)
         {
             var bucketNome = ObterNomeDoBucket(ehPastaTemp);
 
-            var nomeObjeto = arquivoId.ToString();
+            var nomeObjeto = chaveObjeto;
 
             var args = new PresignedGetObjectArgs()
                 .WithBucket(bucketNome)

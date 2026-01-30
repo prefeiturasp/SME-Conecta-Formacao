@@ -17,6 +17,7 @@ namespace SME.ConectaFormacao.IoC.Features
         {
             public IServiceCollection AdicionarModuloCodaf() =>
             services
+                .AddScoped(sp => (IKeyedServiceProvider)sp)
                 .AddScoped<IRepositorioCodafMovimentacaoListaPresenca, RepositorioCodafMovimentacaoListaPresenca>()
                 .AddScoped<IRepositorioCodafListaPresenca, RepositorioCodafListaPresenca>()
                 .AddScoped<IValidadorCodafListaPresencaService, ValidadorCodafListaPresencaService>()
@@ -47,6 +48,8 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoEmitirCertificadoCodaf, CasoDeUsoEmitirCertificadoCodaf>()
                 .AddScoped<ICasoDeUsoGerarArquivoCertificadosCodaf, CasoDeUsoGerarArquivoCertificadosCodaf>()
                 .AddScoped<ICasoDeUsoRecuperarCertificadosTravadosCodafResiliencia, CasoDeUsoRecuperarCertificadosTravadosCodafResiliencia>()
+                .AddScoped<ICasoDeUsoListarCertificadoCodafUsuario, CasoDeUsoListarCertificadoCodafUsuario>()
+                .AddScoped<ICasoDeUsoObterCertificadoCodafParaDownload, CasoDeUsoObterCertificadoCodafParaDownload>()
             ;
         }
     }

@@ -6,7 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         IRepositorioCodafCertificado repositorioCodafCertificado,
         IServicoArmazenamento servicoArmazenamento,
         IMediator mediator,
-        IServiceProvider serviceProvider,
+        IKeyedServiceProvider serviceProvider,
         IConfiguration configuration) :
         ICasoDeUsoGerarArquivoCertificadosCodaf
     {

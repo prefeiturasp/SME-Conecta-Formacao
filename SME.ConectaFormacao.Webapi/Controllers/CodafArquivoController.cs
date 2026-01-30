@@ -12,8 +12,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     public class CodafArquivoController(
         ICasoDeUsoObterModeloTermoResponsabilidadeCodaf casoDeUsoObterModeloTermoResponsabilidadeCodaf,
         ICasoDeUsoUploadAnexoTemporarioCodafListaPresenca casoDeUsoUploadAnexoTemporarioCodafListaPresenca,
-        ICasoDeUsoGerarArquivoRemessaConclusaoCodaf casoDeUsoGerarArquivoRemessaConclusaoCodaf,
-        ICasoDeUsoEmitirCertificadoCodaf casoDeUsoEmitirCertificadoCodaf) : BaseController
+        ICasoDeUsoGerarArquivoRemessaConclusaoCodaf casoDeUsoGerarArquivoRemessaConclusaoCodaf) : BaseController
     {
 
         [HttpGet("termo-responsabilidade/modelo")]
@@ -48,17 +47,6 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             if (resultado.Sucesso)
                 return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
             return ProcessarResultado(resultado);
-        }
-
-        [HttpPost("{codafListaPresencaId}/emitir-certificados")]
-        [ProducesResponseType(typeof(Resultado<bool>), 200)]
-        [ProducesResponseType(typeof(Resultado<bool>), 404)]
-        // Para facilitar dev e não precisar ficar autenticando toda hora, desabilitei o authorize nessa rota
-        [AllowAnonymous]
-        public async Task<IActionResult> EmitirCertificadosCodaf(long codafListaPresencaId)
-        {
-            var resultado = await casoDeUsoEmitirCertificadoCodaf.ExecutarAsync(codafListaPresencaId);
-            return Ok(resultado);
         }
     }
 }

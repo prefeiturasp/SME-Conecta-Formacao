@@ -2,10 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -13,16 +14,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 {
     public class CasoDeUsoEmitirCertificadoCodaf(
         IRepositorioCodafCertificado repositorioCodafCertificado,
-        IServiceProvider serviceProvider,
+        IKeyedServiceProvider serviceProvider,
         IMediator mediator) :
         ICasoDeUsoEmitirCertificadoCodaf
     {
-        public async Task<bool> ExecutarAsync(long codafListaPresencaId)
+        public async Task<Resultado> ExecutarAsync(long codafListaPresencaId)
         {
             var listaDadosCertificado = await repositorioCodafCertificado.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId);
 
             if (!listaDadosCertificado.Any())
-                return false;
+                return Erro.NaoEncontrado();
 
             var entidadesParaSalvar = new List<CodafCertificado>();
 
@@ -54,7 +55,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 await repositorioCodafCertificado.InserirLoteAsync(entidadesParaSalvar);
 
             await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarArquivoCertificadosCodaf, codafListaPresencaId));
-            return true;
+            return Resultado.DeSucesso();
         }
 
         private static TipoEstrategiaCertificadoCodaf DefinirEstrategia(DadosEmissaoCertificadoCodafDto dto)

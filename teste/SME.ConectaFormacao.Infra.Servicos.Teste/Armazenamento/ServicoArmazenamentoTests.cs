@@ -94,7 +94,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Teste.Armazenamento
                 .ReturnsAsync(urlEsperada);
 
             // Act
-            var urlRetornada = await _servico.ObterUrlPorGuidAsync(guid);
+            var urlRetornada = await _servico.ObterUrlPorChaveObjetoAsync(guid.ToString());
 
             // Assert
             Assert.Equal(urlEsperada, urlRetornada);
