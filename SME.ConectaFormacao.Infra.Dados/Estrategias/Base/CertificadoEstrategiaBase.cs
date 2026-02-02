@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
                 .Replace("{{IMG_ASSINATURA_SECRETARIO}}", imgAssinaturaSecretario)
                 .Replace("{{DATA_ATUAL_ASSINATURA}}", dataAtualAssinatura)
                 .Replace("{{ANO_ATUAL}}", anoAtual)
-                .Replace("{{NUMERO_COMUNICADO}}", numComunicado)
+                .Replace("{{NUM_COMUNICADO}}", numComunicado)
                 .Replace("{{DATA_PUBLICACAO_CODAF}}", dataPublicacao)
                 .Replace("{{NUM_HOM_FORMACAO}}", numHomologacao);
         }
