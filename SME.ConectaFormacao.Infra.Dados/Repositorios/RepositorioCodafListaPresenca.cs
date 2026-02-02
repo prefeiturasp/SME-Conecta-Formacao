@@ -128,7 +128,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        p.ID AS codigoFormacao,
                        pt.NOME AS nomeTurma,
                        ap.NOME AS nomeAreaPromotora,
-                       CLP.STATUS,                       
+                       CLP.STATUS,
                        CASE 
                 	        -- 0: Sem Cetificado
                            WHEN P.CURSO_COM_CERTIFICADO = FALSE THEN 0

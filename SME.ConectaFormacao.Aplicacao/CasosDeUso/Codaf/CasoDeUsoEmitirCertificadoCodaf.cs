@@ -43,6 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 };
 
                 var novoCertificado = new CodafCertificado(
+                    codafListaPresencaId,
                     dados.TipoParticipacao,
                     dados.IdReferencia,
                     htmlCertificado,

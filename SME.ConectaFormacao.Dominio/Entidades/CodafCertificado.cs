@@ -5,6 +5,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class CodafCertificado : EntidadeBaseAuditavel
     {
+        public long CodafListaPresencaId { get; set; }
         public long CodigoCertificado { get; init; }
         public long? CodafInscricaoListaPresencaId { get; private set; }
         public CodafInscricaoListaPresenca? CodafInscricaoListaPresenca { get; set; }
@@ -22,8 +23,9 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         {
             HtmlContentSnapshot = null!;
         }
-        public CodafCertificado(TipoParticipacaoCodaf tipoParticipacao, long idReferencia, string htmlContentSnapshot, object metadadosJson)
+        public CodafCertificado(long codafListaPresencaId, TipoParticipacaoCodaf tipoParticipacao, long idReferencia, string htmlContentSnapshot, object metadadosJson)
         {
+            CodafListaPresencaId = codafListaPresencaId;
             if (string.IsNullOrWhiteSpace(htmlContentSnapshot))
                 throw new ArgumentException("O snapshot do HTML do certificado é obrigatório.", nameof(htmlContentSnapshot));
             if (idReferencia <= 0)
