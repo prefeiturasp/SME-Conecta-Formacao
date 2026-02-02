@@ -12,6 +12,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
                 .ToColumn("codigo_certificado")
                 .IsIdentity();
 
+            Map(p => p.CodafListaPresencaId).ToColumn("codaf_lista_presenca_id");
             Map(p => p.CodafInscricaoListaPresencaId).ToColumn("codaf_inscricao_lista_presenca_id");
             Map(p => p.PropostaRegenteTurmaId).ToColumn("proposta_regente_turma_id");
             Map(p => p.TipoParticipacao).ToColumn("tipo_participacao");

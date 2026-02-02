@@ -88,6 +88,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             const string copyCommand = """
                 COPY public.codaf_certificados (
+                    codaf_lista_presenca_id,
                     codaf_inscricao_lista_presenca_id,
                     proposta_regente_turma_id,
                     tipo_participacao,
@@ -105,6 +106,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             foreach (var cert in certificados)
             {
                 await writer.StartRowAsync();
+                await writer.WriteAsync(cert.CodafListaPresencaId, NpgsqlDbType.Bigint);
 
                 if (cert.CodafInscricaoListaPresencaId.HasValue)
                     await writer.WriteAsync(cert.CodafInscricaoListaPresencaId.Value, NpgsqlDbType.Bigint);
