@@ -122,28 +122,34 @@
             position: absolute;
             bottom: 30px;
             left: 180px; /* Alinhado com content-area */
-            width: 900px; /* Largura restante */
+			right: 50px;   /* mesmo recuo do padding-right */
+            /*width: 900px;  Largura restante */
             font-size: 8pt;
             color: #666;
+			/*background-color:orange*/
         }
 
         /* Tabela para alinhar texto legal à esquerda e logo à direita (Old School Layout) */
         .footer-table {
             width: 100%;
             border-collapse: collapse;
+			/*background-color:purple;*/
         }
 
         .footer-text {
-            text-align: left;
-            vertical-align: bottom;
-            width: 70%;
-        }
+			text-align: center;          /* centraliza horizontalmente o texto */
+			vertical-align: middle;
+			width: auto;                 /* ocupa o espaço restante */
+			/*background-color: blue;*/
+		}
 
         .footer-logo-cell {
-            text-align: right;
-            vertical-align: bottom;
-            width: 30%;
-        }
+			width: 1%;                   /* força a célula a colapsar */
+			white-space: nowrap;         /* impede expansão */
+			text-align: right;
+			vertical-align: bottom;
+			/*background-color: red;*/
+		}
 
         /* 4. LOGO PREFEITURA */
         .logo-prefeitura {
@@ -152,14 +158,21 @@
         }
 
         .rotacao-lateral {
-            /* Caso precise de texto na lateral direita conforme a imagem de exemplo */
-            position: absolute;
-            right: -50px;
-            top: 50%;
-            transform: rotate(-90deg);
-            font-size: 8px;
-            color: #999;
-        }
+			position: absolute;
+			right: 0;
+			top: 50%;
+			
+			vertical-align: middle;
+
+			/* OLD SCHOOL rotation */
+			filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+
+			font-size: 8px;
+			color: #999;
+
+			/* ajuste fino de posição */
+			margin-top: -40px;
+		}
     </style>
 </head>
 <body>
@@ -194,8 +207,9 @@
             <table class="footer-table">
                 <tr>
                     <td class="footer-text">
+					<br><br>
                         PMSP/SME - Certificado registrado sob nº{{NUM_SEQ}}, do ano
-                        {{ANO_ATUAL}}, Comunicado nº {{NUM_COMUNICADO}}, DOC
+                        {{ANO_ATUAL}}, Comunicado nº {{NUM_COMUNICADO}}, <br>DOC
                         {{DATA_PUBLICACAO_CODAF}} (informado no CODAF) Homologação
                         {{NUM_HOM_FORMACAO}}.
                     </td>
@@ -208,7 +222,7 @@
             </table>
         </div>
 
-        <div class="rotacao-lateral">Cadastro automático. Sistema EOL.</div>
+        <div class="rotacao-lateral">C<br>a<br>d<br>a<br>s<br>t<br>r<br>o<br><br> a<br>u<br>t<br>o<br>m<br>á<br>t<br>i<br>c<br>o<br>. <br><br>S<br>i<br>s<br>t<br>e<br>m<br>a<br> <br>E<br>O<br>L<br>.</div>
     </div>
 </body>
 </html>
