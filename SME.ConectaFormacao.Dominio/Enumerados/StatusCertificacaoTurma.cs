@@ -13,7 +13,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Description("Emitir certificados")]
         DisponivelParaEmissao = 2,
 
+        [Description("Certificados em processamento")]
+        EmProcessamento = 3,
+
         [Description("Certificados emitidos")]
-        Emitido = 3
+        Emitido = 4
     }
 }
