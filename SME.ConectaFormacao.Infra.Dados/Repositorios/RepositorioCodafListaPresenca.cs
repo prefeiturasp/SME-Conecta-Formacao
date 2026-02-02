@@ -2,6 +2,7 @@
 using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
@@ -44,7 +45,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             const string sqlBaseOrderBy = """
                 ORDER  BY
                         CASE WHEN CLP.DATA_ENVIO_DF IS NULL THEN 0
-                             ELSE 0
+                             ELSE 1
                         END DESC,
                         CLP.DATA_ENVIO_DF ASC,
                         CLP.CRIADO_EM DESC
@@ -115,6 +116,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var registrosIgnorados = (filtro.Pagina - 1) * filtro.TamanhoPagina;
             parametros.Add("limite", filtro.TamanhoPagina);
             parametros.Add("registrosIgnorados", registrosIgnorados);
+            parametros.Add("statusPendente", StatusProcessamentoCertificadoCodaf.Pendente);
+            parametros.Add("statusEmProcessamento", StatusProcessamentoCertificadoCodaf.EmProcessamento);
+            parametros.Add("statusProcessadoComSucesso", StatusProcessamentoCertificadoCodaf.ProcessadoComSucesso);
+            parametros.Add("statusProcessadoComErro", StatusProcessamentoCertificadoCodaf.ProcessadoComErro);
 
             var sqlConsulta = new StringBuilder($"""
                 SELECT CLP.ID,
@@ -123,15 +128,35 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        p.ID AS codigoFormacao,
                        pt.NOME AS nomeTurma,
                        ap.NOME AS nomeAreaPromotora,
-                       CLP.STATUS,
+                       CLP.STATUS,                       
                        CASE 
-                            WHEN P.CURSO_COM_CERTIFICADO = FALSE THEN 0
-                            WHEN NOT EXISTS (
-                                SELECT 1 
-                                FROM PUBLIC.CODAF_LOG_REMESSA_CONCLUSAO L 
-                                WHERE L.CODAF_LISTA_PRESENCA_ID = CLP.ID
-                            ) THEN 1
-                            ELSE 2 END AS statusCertificacaoTurma,
+                	        -- 0: Sem Cetificado
+                           WHEN P.CURSO_COM_CERTIFICADO = FALSE THEN 0
+
+                           -- 1: Pendente Emissão
+                           WHEN NOT EXISTS (
+                               SELECT 1 
+                               FROM PUBLIC.CODAF_LOG_REMESSA_CONCLUSAO AS L 
+                               WHERE L.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                           ) THEN 1
+
+                           -- 3: Em Processamento
+                           WHEN EXISTS (
+                           	SELECT 1
+                           	FROM  PUBLIC.CODAF_CERTIFICADOS AS CC
+                           	WHERE CC.CODAF_LISTA_PRESENCA_ID = CLP.ID AND CC.STATUS_PROCESSAMENTO IN (@statusPendente, @statusEmProcessamento)
+                           ) THEN 3
+
+                           -- 4: Emitido
+                           WHEN EXISTS (
+                           	SELECT 1
+                           	FROM  PUBLIC.CODAF_CERTIFICADOS AS CC
+                           	WHERE CC.CODAF_LISTA_PRESENCA_ID = CLP.ID AND CC.STATUS_PROCESSAMENTO IN (@statusProcessadoComSucesso, @statusProcessadoComErro)
+                           ) THEN 4
+
+                           -- 2: Disponível para Emissão
+                           ELSE 2
+                       END AS statusCertificacaoTurma,
                        CLP.CODIGO_CURSO_EOL codigoCursoEol,
                        CLP.CODIGO_NIVEL codigoNivel
                 {sqlBaseJoins}
