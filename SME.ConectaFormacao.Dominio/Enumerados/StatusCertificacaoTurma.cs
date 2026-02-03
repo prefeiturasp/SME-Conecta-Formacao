@@ -4,14 +4,17 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
 {
     public enum StatusCertificacaoTurma
     {
-        [Description("Não emitidos")]
-        NaoEmitido = 1,
+        [Description("Sem certificados")]
+        SemCertificado = 0,
+
+        [Description("Pendente emissão remessa")]
+        PendenteEmissaoRemessa = 1,
 
         [Description("Emitir certificados")]
         DisponivelParaEmissao = 2,
 
-        [Description("Sem certificados")]
-        SemCertificacao = 3,
+        [Description("Certificados em processamento")]
+        EmProcessamento = 3,
 
         [Description("Certificados emitidos")]
         Emitido = 4

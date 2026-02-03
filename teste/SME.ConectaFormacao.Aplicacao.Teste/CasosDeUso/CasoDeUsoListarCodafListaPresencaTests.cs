@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Bogus;
 using FluentAssertions;
+using MediatR;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
@@ -57,8 +58,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .Returns(filtroRepositorioDto);
             _repositorioCodafListaPresencaMock.Setup(r => r.ObterListagemResultadoCodafListaPresencaPorFiltroAsync(filtroRepositorioDto))
                 .ReturnsAsync(resultadoRepositorio);
-            _mapperMock.Setup(m => m.Map<PaginacaoResultadoDto<ListaPresencaCodafResumoDto>>(resultadoRepositorio))
-                .Returns(resultadoEsperado);
+            _mapperMock.Setup(m => m.Map<List<ListaPresencaCodafResumoDto>>(resultadoRepositorio.Itens))
+                .Returns([]);
 
             // Act
             var resultado = await _casoDeUsoListarCodafListaPresenca.ExecutarAsync(filtroDto);

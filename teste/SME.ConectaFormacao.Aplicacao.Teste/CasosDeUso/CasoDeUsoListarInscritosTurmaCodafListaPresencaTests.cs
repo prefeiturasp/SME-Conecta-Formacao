@@ -47,8 +47,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 });
             var inscritosDto = new PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>(
                 [], 0, 1);
-            mapperMock.Setup(m => m.Map<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>(It.IsAny<ResultadoPaginado<ResultadoInscritoTurmaCodafListaPresencaDto>>()))
-                .Returns(inscritosDto);
+            mapperMock.Setup(m => m.Map<List<CodafInscritoTurmaListaPresencaRetornoDto>>(It.IsAny<IEnumerable<ResultadoInscritoTurmaCodafListaPresencaDto>>()))
+                .Returns([]);
 
             // Act
             var resultado = await casoDeUsoListarInscritosTurmaCodafListaPresenca.ExecutarAsync(propostaTurmaId, 1, 10);

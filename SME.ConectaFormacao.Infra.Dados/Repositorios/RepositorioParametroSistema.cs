@@ -6,13 +6,10 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
-    public class RepositorioParametroSistema : RepositorioBaseAuditavel<ParametroSistema>, IRepositorioParametroSistema
+    public class RepositorioParametroSistema(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : 
+        RepositorioBaseAuditavel<ParametroSistema>(contexto, conexao), IRepositorioParametroSistema
     {
-        public RepositorioParametroSistema(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
-        {
-        }
-
-        public async Task<ParametroSistema?> ObterParametroPorTipoEAno(TipoParametroSistema tipoParametroSistema, int ano = 0)
+        public async Task<ParametroSistema?> ObterParametroPorTipoEAnoAsync(TipoParametroSistema tipoParametroSistema, int ano = 0)
         {
             const string query = """
                 SELECT *
@@ -33,7 +30,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 });
         }
 
-        public async Task<IEnumerable<string>> ObterDominiosPermitidosParaUesParceiras()
+        public async Task<IEnumerable<string>> ObterDominiosPermitidosParaUesParceirasAsync()
         {
             var tipo = TipoParametroSistema.DominioPermitidoCadastroUsuarioExterno;
             var query = @"select 
@@ -43,6 +40,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         and tipo = @tipo ";
 
             return await conexao.Obter().QueryAsync<string>(query, new { tipo });
+        }
+
+        public async Task<ParametroSistema?> ObterParametroPorTipoMaisRecenteAsync(TipoParametroSistema tipoParametroSistema)
+        {
+            var query = @"select *
+                            from parametro_sistema ps
+                           where tipo = @tipo
+                             and not excluido
+                             and ativo
+                           order by ano desc
+                           limit 1";
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<ParametroSistema>(query, new { tipo = tipoParametroSistema });
         }
     }
 }

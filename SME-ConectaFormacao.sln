@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.ConectaFormacao.Webapi.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.ConectaFormacao.Domino.Teste", "teste\SME.ConectaFormacao.Domino.Teste\SME.ConectaFormacao.Domino.Teste.csproj", "{5BF1BE38-BCB1-4235-B273-68D99D42874F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.ConectaFormacao.Infra.Dados.Teste", "teste\SME.ConectaFormacao.Infra.Dados.Teste\SME.ConectaFormacao.Infra.Dados.Teste.csproj", "{2E7859A9-AEE1-4EDB-AA08-242AB2A1420B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,10 @@ Global
 		{5BF1BE38-BCB1-4235-B273-68D99D42874F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BF1BE38-BCB1-4235-B273-68D99D42874F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BF1BE38-BCB1-4235-B273-68D99D42874F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E7859A9-AEE1-4EDB-AA08-242AB2A1420B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E7859A9-AEE1-4EDB-AA08-242AB2A1420B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E7859A9-AEE1-4EDB-AA08-242AB2A1420B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E7859A9-AEE1-4EDB-AA08-242AB2A1420B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +122,7 @@ Global
 		{25F2AAC4-B84E-45A9-A111-61B1E24E8A39} = {085C79CC-4DEB-42E1-93A5-D85858E8F5E3}
 		{AD38592E-6B09-478B-B58F-34D03097AE5D} = {085C79CC-4DEB-42E1-93A5-D85858E8F5E3}
 		{5BF1BE38-BCB1-4235-B273-68D99D42874F} = {085C79CC-4DEB-42E1-93A5-D85858E8F5E3}
+		{2E7859A9-AEE1-4EDB-AA08-242AB2A1420B} = {085C79CC-4DEB-42E1-93A5-D85858E8F5E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C8BFE3B-BC28-4781-A67F-86F9898E68E7}

@@ -138,7 +138,7 @@ namespace SME.Conecta.Notificacao.Worker
                     var metodo = ObterMetodo(_notificacao.GetType(), comando);
 
                     await _servicoTelemetria.RegistrarAsync(
-                        () => (Task)metodo.Invoke(_notificacao, new object[] { mensagemRabbit }),
+                        () => (Task)metodo.Invoke(_notificacao, [mensagemRabbit])!,
                         "RabbitMQ",
                         rota,
                         comando,

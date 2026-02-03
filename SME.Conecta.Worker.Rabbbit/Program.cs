@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using SME.Conecta.Worker;
+using SME.Conecta.Worker.Rabbbit;
 using SME.Conecta.Worker.Rabbbit.Contexto;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Infra.Servicos.Options;
@@ -41,6 +42,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 builder.Services.AddHostedService<WorkerRabbitMQ>();
+builder.Services.AddHostedService<WorkerResilienciaCodaf>();
 builder.Services.AddHealthChecks();
 builder.Services.AddSingleton(registradorDeDependencia);
 

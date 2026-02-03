@@ -14,5 +14,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string DataRealizacaoFim { get; set; } = null!;
         public string Situacao { get; set; } = null!;
         public FormacaoHomologada FormacaoHomologada { get; set; }
+        public string Revalidacao { get; set; } = null!;
     }
 }

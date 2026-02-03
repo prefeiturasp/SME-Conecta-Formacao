@@ -5,7 +5,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public abstract class BaseController : Controller
+public abstract class BaseController : ControllerBase
 {
     protected IActionResult ProcessarResultado<T>(Resultado<T> resultado)
     {

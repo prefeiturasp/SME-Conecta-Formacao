@@ -18,9 +18,10 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public Proposta Proposta { get; set; } = null!;
         public PropostaTurma PropostaTurma { get; set; } = null!;
-        public ICollection<CodafComentario> CodafComentarios { get; set; } = [];
+        public ICollection<CodafComentarioListaPresenca> CodafComentarios { get; set; } = [];
         public ICollection<CodafInscricaoListaPresenca> CodafInscricoes { get; set; } = [];
         public ICollection<CodafRetificacaoListaPresenca> CodafRetificacoes { get; set; } = [];
+        public ICollection<CodafAnexo>? CodafAnexos { get; set; }
 
         protected CodafListaPresenca() { }
 
@@ -57,6 +58,35 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public void Iniciar()
         {
             Status = StatusCodafListaPresenca.Iniciado;
+        }
+
+        public void MarcarComoEnviadaParaDf()
+        {
+            if (PodeSerEnviadaParaDf())
+                Status = StatusCodafListaPresenca.AguardandoDf;
+        }
+
+        public bool PodeSerEnviadaParaDf()
+        {
+            return Status == StatusCodafListaPresenca.Iniciado || Status == StatusCodafListaPresenca.DevolvidoParaCorrecao;
+        }
+
+        public void MarcarComoDevolvidaParaCorrecao()
+        {
+            if (PodeSerDevolvidaParaCorrecao())
+                Status = StatusCodafListaPresenca.DevolvidoParaCorrecao;
+        }
+
+        public bool PodeSerDevolvidaParaCorrecao()
+        {
+            return Status == StatusCodafListaPresenca.AguardandoDf;
+        }
+
+        public bool PodeSerExcluido(Guid? idPerfilUsuario)
+        {
+            if (idPerfilUsuario == Perfis.ADMIN_DF)
+                return Status != StatusCodafListaPresenca.Finalizado;
+            return Status == StatusCodafListaPresenca.Iniciado;
         }
     }
 }
