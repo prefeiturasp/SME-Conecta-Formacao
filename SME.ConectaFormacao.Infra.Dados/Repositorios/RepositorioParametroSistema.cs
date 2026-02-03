@@ -9,16 +9,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
     public class RepositorioParametroSistema(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : 
         RepositorioBaseAuditavel<ParametroSistema>(contexto, conexao), IRepositorioParametroSistema
     {
-        public async Task<ParametroSistema?> ObterParametroPorTipoEAnoAsync(TipoParametroSistema tipo, int ano = 0)
+        public async Task<ParametroSistema?> ObterParametroPorTipoEAnoAsync(TipoParametroSistema tipoParametroSistema, int ano = 0)
         {
-            var query = @"select *
-                            from parametro_sistema ps
-                           where ano = @ano
-                             and tipo = @tipo
-                             and not excluido
-                             and ativo";
+            const string query = """
+                SELECT *
+                FROM  parametro_sistema
+                WHERE tipo = @Tipo
+                  AND ativo = true
+                ORDER BY
+                    CASE WHEN ano = @Ano THEN 0 ELSE 1 END ASC, -- Prioridade 0: Ano solicitado
+                    ano DESC                                    -- Prioridade 1: Maior ano (fallback)
+                LIMIT 1
+                """;
 
-            return await conexao.Obter().QueryFirstOrDefaultAsync<ParametroSistema>(query, new { tipo, ano });
+            return await conexao.Obter().QueryFirstOrDefaultAsync<ParametroSistema>(query,
+                new
+                {
+                    Tipo = (int)tipoParametroSistema,
+                    Ano = ano
+                });
         }
 
         public async Task<IEnumerable<string>> ObterDominiosPermitidosParaUesParceirasAsync()

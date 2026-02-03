@@ -6,7 +6,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
     public interface IRepositorioParametroSistema : IRepositorioBaseAuditavel<ParametroSistema>
     {
-        Task<ParametroSistema?> ObterParametroPorTipoEAnoAsync(TipoParametroSistema tipoParametroSistema, int ano);
+        Task<ParametroSistema?> ObterParametroPorTipoEAnoAsync(TipoParametroSistema tipoParametroSistema, int ano = 0);
         Task<ParametroSistema?> ObterParametroPorTipoMaisRecenteAsync(TipoParametroSistema tipoParametroSistema);
         Task<IEnumerable<string>> ObterDominiosPermitidosParaUesParceirasAsync();
     }
