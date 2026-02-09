@@ -1,6 +1,5 @@
 ﻿using Bogus;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Moq.AutoMock;
@@ -21,6 +20,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoObterCodafListaPresencaPorId> _mockCasoDeUsoObterPorId;
         private readonly Mock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca> _mockCasoDeUsoRemoverRetificacao;
         private readonly Mock<ICasoDeUsoExcluirCodafListaPresenca> _mockCasoDeUsoExcluirCodafListaPresenca;
+        private readonly Mock<ICasoDeUsoGerarRelatorioCodaf> _mockCasoDeUsoGerarRelatorioCodaf;
         private readonly CodafListaPresencaController _controller;
         private readonly Faker _faker;
 
@@ -33,6 +33,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _mockCasoDeUsoObterPorId = mocker.GetMock<ICasoDeUsoObterCodafListaPresencaPorId>();
             _mockCasoDeUsoRemoverRetificacao = mocker.GetMock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca>();
             _mockCasoDeUsoExcluirCodafListaPresenca = mocker.GetMock<ICasoDeUsoExcluirCodafListaPresenca>();
+            _mockCasoDeUsoGerarRelatorioCodaf = mocker.GetMock<ICasoDeUsoGerarRelatorioCodaf>();
             _controller = mocker.CreateInstance<CodafListaPresencaController>();
             _faker = new Faker("pt_BR");
         }
@@ -249,6 +250,48 @@ namespace SME.ConectaFormacao.Webapi.Teste
             await _controller.Excluir(codafListaPresencaId);
             // Assert
             _mockCasoDeUsoExcluirCodafListaPresenca.Verify(x => x.ExecutarAsync(codafListaPresencaId), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoImprimirRelatorioCodaf_QuandoRetornarSucesso__EntaoDeveRetornarFileStreamResult()
+        {
+            // Arrange
+            var codafId = _faker.Random.Long(1);
+            var nomeArquivo = $"CODAF_{_faker.Random.Int(10000, 99999)}-Turma {_faker.Random.Word()}.xlsx";
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var memoryStream = new MemoryStream([1, 2, 3]);
+
+            var arquivoDto = new ArquivoDto(nomeArquivo, contentType, memoryStream);
+            var resultadoSucesso = Resultado<ArquivoDto>.DeSucesso(arquivoDto);
+
+            _mockCasoDeUsoGerarRelatorioCodaf
+                .Setup(x => x.ExecutarAsync(codafId))
+                .ReturnsAsync(resultadoSucesso);
+
+            // Act
+            var resultado = await _controller.ImprimirRelatorioCodafAsync(codafId) as FileStreamResult;
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.FileStream.Should().BeSameAs(memoryStream);
+            resultado.ContentType.Should().Be(contentType);
+            resultado.FileDownloadName.Should().Be(nomeArquivo);
+        }
+
+        [Fact]
+        public async Task DadoImprimirRelatorioCodaf_QuandoRetornarErroNaoEncontrado__EntaoDeveRetornarNotFound()
+        {
+            // Arrange
+            var codafId = _faker.Random.Long(1);
+            var erro = Erro.NaoEncontrado("Lista de presença CODAF não encontrada.");
+            _mockCasoDeUsoGerarRelatorioCodaf
+                .Setup(x => x.ExecutarAsync(codafId))
+                .ReturnsAsync(erro);
+            // Act
+            var resultado = await _controller.ImprimirRelatorioCodafAsync(codafId) as NotFoundObjectResult;
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
     }
 }

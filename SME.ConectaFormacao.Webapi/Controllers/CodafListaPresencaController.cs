@@ -15,7 +15,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         ICasoDeUsoListarCodafListaPresenca casoDeUsoListarCodafListaPresenca,
         ICasoDeUsoObterCodafListaPresencaPorId casoDeUsoObterCodafListaPresencaPorId,
         ICasoDeUsoRemoverCodafRetificacaoListaPresenca casoDeUsoRemoverCodafRetificacaoListaPresenca,
-        ICasoDeUsoExcluirCodafListaPresenca casoDeUsoExcluirCodafListaPresenca) : BaseController
+        ICasoDeUsoExcluirCodafListaPresenca casoDeUsoExcluirCodafListaPresenca,
+        ICasoDeUsoGerarRelatorioCodaf casoDeUsoGerarRelatorioCodaf) : BaseController
     {
         [HttpPost]
         [ProducesResponseType(typeof(Resultado<CodafListaPresencaDto>), 201)]
@@ -71,6 +72,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> Excluir(long codafListaPresencaId)
         {
             var resultado = await casoDeUsoExcluirCodafListaPresenca.ExecutarAsync(codafListaPresencaId);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpGet("{codafId:long}/imprimir")]
+        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 200)]
+        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 404)]
+        public async Task<IActionResult> ImprimirRelatorioCodafAsync(long codafId)
+        {
+            var resultado = await casoDeUsoGerarRelatorioCodaf.ExecutarAsync(codafId);
+
+            if (resultado.Sucesso)
+                return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
+
             return ProcessarResultado(resultado);
         }
     }
