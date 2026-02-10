@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             const string sqlBase = """
                 FROM   PUBLIC.INSCRICAO AS I
                        INNER JOIN PUBLIC.USUARIO AS U  ON U.ID = I.USUARIO_ID 
-                       LEFT JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CI ON CI.INSCRICAO_ID = I.ID
+                       LEFT JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CI ON CI.INSCRICAO_ID = I.ID AND NOT CI.EXCLUIDO
                 WHERE NOT U.EXCLUIDO
                 AND NOT I.EXCLUIDO 
                 AND I.SITUACAO = @situacao
@@ -84,10 +84,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         }
 
-        public async Task ExcluirPorListaPresencaIdAsync(long codafListaPresencaId) =>
-            await conexao.Obter().ExecuteAsync(@"
+        public async Task ExcluirPorListaPresencaIdAsync(long codafListaPresencaId)
+        {
+            await conexao.Obter().ExecuteAsync(
+                """
                 DELETE FROM PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA 
-                WHERE CODAF_LISTA_PRESENCA_ID = @codafListaPresencaId;",
-                new { codafListaPresencaId });
+                WHERE CODAF_LISTA_PRESENCA_ID = @codafListaPresencaId;
+
+                SELECT SETVAL('public.codaf_inscricao_lista_presenca_id_seq', COALESCE((SELECT MAX(ID) FROM PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA), 1));
+                """, new { codafListaPresencaId });
+        }
     }
 }

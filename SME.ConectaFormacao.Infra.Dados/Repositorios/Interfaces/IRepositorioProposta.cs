@@ -21,9 +21,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaVagaRemanecente>> ObterVagasRemacenentesPorId(long propostaId);
         Task RemoverFuncoesEspecificas(IEnumerable<PropostaFuncaoEspecifica> funcoesEspecificas);
         Task RemoverPublicosAlvo(IEnumerable<PropostaPublicoAlvo> publicoAlvo);
-        Task<int> ObterTotalRegistrosPorFiltros(long? areaPromotoraIdUsuarioLogado, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds, string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, string loginUsuarioLogado, Guid perfilUsuarioLogado);
-        Task<IEnumerable<Proposta>> ObterDadosPaginados(long? areaPromotoraIdUsuarioLogado, int numeroPagina, int numeroRegistros, long? propostaId, long? areaPromotoraId, Formato? formato, long[] publicoAlvoIds,
-            string? nomeFormacao, long? numeroHomologacao, DateTime? periodoRealizacaoInicio, DateTime? periodoRealizacaoFim, SituacaoProposta? situacao, bool? formacaoHomologada, string loginUsuarioLogado, Guid perfilUsuarioLogado);
+        Task<ResultadoPaginado<Proposta>> ObterPropostaPorFiltroAsync(FiltroListagemPropostaDto filtro);
         Task<PropostaEncontro> ObterEncontroPorId(long encontroId);
         Task InserirEncontro(long propostaId, PropostaEncontro encontro);
         Task InserirEncontroTurmas(long propostaId, IEnumerable<PropostaEncontroTurma> turmaIds);
@@ -94,6 +92,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaTurma>> ObterTurmasComVagaPorId(long propostaId, string? codigoDre = null);
         Task<int> InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga, int quantidade);
         Task<PropostaTurma> ObterTurmaPorId(long propostaTurmaId);
+        Task<PropostaTurma?> ObterTurmaNaoExcluidaPorIdAsync(long propostaTurmaId);
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorPropostaTurmaId(long turmaId);
         Task<PropostaInscricaoAutomatica> ObterPropostaInscricaoPorId(long propostaId);
         Task InserirTurma(PropostaTurma propostaTurma);

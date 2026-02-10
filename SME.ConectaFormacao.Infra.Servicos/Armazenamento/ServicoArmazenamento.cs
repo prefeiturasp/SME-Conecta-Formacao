@@ -8,20 +8,17 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
 {
     public class ServicoArmazenamento : IServicoArmazenamento
     {
-        private readonly MinioClient _minioClient;
+        private readonly IMinioClient _minioClient;
         private readonly ConfiguracaoArmazenamentoOptions _configuracaoArmazenamentoOptions;
         private readonly IConfiguration _configuration;
+        // Tempo de expiração da URL em segundos - TODO: tornar configurável no rancher o tabela de parametros (by Diego Moreno - 1/2026)
+        private readonly int _urlExpiracaoEmSegundos = 48 * 60 * 60; // 48 horas
 
-        public ServicoArmazenamento(IOptions<ConfiguracaoArmazenamentoOptions> configuracaoArmazenamentoOptions, IConfiguration configuration)
+        public ServicoArmazenamento(IOptions<ConfiguracaoArmazenamentoOptions> configuracaoArmazenamentoOptions, IConfiguration configuration, IMinioClient minioClient)
         {
-            this._configuracaoArmazenamentoOptions = configuracaoArmazenamentoOptions?.Value ?? throw new ArgumentNullException(nameof(configuracaoArmazenamentoOptions));
-            this._configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-
-            _minioClient = new MinioClient()
-               .WithEndpoint(_configuracaoArmazenamentoOptions.EndPoint, _configuracaoArmazenamentoOptions.Port)
-               .WithCredentials(_configuracaoArmazenamentoOptions.AccessKey, _configuracaoArmazenamentoOptions.SecretKey)
-               .WithSSL()
-               .Build();
+            _configuracaoArmazenamentoOptions = configuracaoArmazenamentoOptions?.Value ?? throw new ArgumentNullException(nameof(configuracaoArmazenamentoOptions));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _minioClient = minioClient;
         }
 
         public async Task<string> ArmazenarTemporaria(string nomeArquivo, Stream stream, string contentType)
@@ -98,29 +95,116 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
 
         public async Task<IEnumerable<string>> ObterBuckets()
         {
-            var nomesBuckets = new List<string>();
-
             var buckets = await _minioClient.ListBucketsAsync();
-
-            foreach (var bucket in buckets.Buckets)
-                nomesBuckets.Add(bucket.Name);
-
-            return nomesBuckets;
+            return buckets.Buckets.Select(b => b.Name).ToList();
         }
 
         public async Task<string> Obter(string nomeArquivo, bool ehPastaTemp)
         {
-            var bucketNome = ehPastaTemp
-                ? _configuracaoArmazenamentoOptions.BucketTemp
-                : _configuracaoArmazenamentoOptions.BucketArquivos;
+            var bucketNome = ObterNomeDoBucket(ehPastaTemp);
 
             return await ObterUrl(nomeArquivo, bucketNome);
         }
 
         private async Task<string> ObterUrl(string nomeArquivo, string bucketName)
         {
-            var hostAplicacao = _configuration["UrlFrontEnd"];
+            var hostAplicacao = _configuration["UrlBucket"];
             return $"{hostAplicacao}{bucketName}/{nomeArquivo}";
+        }
+        public async Task<Guid> ArmazenarTemporariaGuid(Stream stream, string contentType)
+        {
+            var arquivoId = Guid.NewGuid();
+            var nomeObjeto = arquivoId.ToString();
+
+            await ExecutarUploadInterno(nomeObjeto, stream, contentType, _configuracaoArmazenamentoOptions.BucketTemp);
+
+            return arquivoId;
+        }
+        public async Task<Guid> MoverGuid(Guid arquivoId)
+        {
+            var nomeObjeto = arquivoId.ToString();
+
+            if (!_configuracaoArmazenamentoOptions.BucketTemp.Equals(_configuracaoArmazenamentoOptions.BucketArquivos))
+            {
+                // 1. Copia mantendo o mesmo nome (GUID)
+                await CopiarInterno(nomeObjeto, nomeObjeto, _configuracaoArmazenamentoOptions.BucketTemp, _configuracaoArmazenamentoOptions.BucketArquivos);
+
+                // 2. Remove da origem
+                await Excluir(nomeObjeto, _configuracaoArmazenamentoOptions.BucketTemp);
+            }
+
+            return arquivoId;
+        }
+        public string ObterUrlPorGuid(Guid arquivoId, bool ehPastaTemp = false)
+        {
+            var bucketNome = ObterNomeDoBucket(ehPastaTemp);
+
+            return MontarUrl(arquivoId.ToString(), bucketNome);
+        }
+
+        public async Task<string> ObterUrlPorChaveObjetoAsync(string chaveObjeto, bool ehPastaTemp = false)
+        {
+            var bucketNome = ObterNomeDoBucket(ehPastaTemp);
+
+            var nomeObjeto = chaveObjeto;
+
+            var args = new PresignedGetObjectArgs()
+                .WithBucket(bucketNome)
+                .WithObject(nomeObjeto)
+                .WithExpiry(_urlExpiracaoEmSegundos);
+
+            return await _minioClient.PresignedGetObjectAsync(args);
+        }
+
+        private async Task ExecutarUploadInterno(string nomeObjeto, Stream stream, string contentType, string bucket)
+        {
+            if (stream.Position > 0) stream.Position = 0;
+
+            var args = new PutObjectArgs()
+                .WithBucket(bucket)
+                .WithObject(nomeObjeto)
+                .WithStreamData(stream)
+                .WithObjectSize(stream.Length)
+                .WithContentType(contentType);
+
+            await _minioClient.PutObjectAsync(args);
+        }
+        private async Task CopiarInterno(string nomeOrigem, string nomeDestino, string bucketOrigem, string bucketDestino)
+        {
+            var cpSrcArgs = new CopySourceObjectArgs()
+                .WithBucket(bucketOrigem)
+                .WithObject(nomeOrigem);
+
+            var args = new CopyObjectArgs()
+                .WithBucket(bucketDestino)
+                .WithObject(nomeDestino)
+                .WithCopyObjectSource(cpSrcArgs);
+
+            await _minioClient.CopyObjectAsync(args);
+        }
+        private string MontarUrl(string nomeArquivo, string bucketName)
+        {
+            var hostAplicacao = _configuration["UrlBucket"];
+            var host = hostAplicacao?.TrimEnd('/');
+            return $"{host}/{bucketName}/{nomeArquivo}";
+        }
+
+        private string ObterNomeDoBucket(bool ehPastaTemp) =>
+            ehPastaTemp
+                ? _configuracaoArmazenamentoOptions.BucketTemp
+                : _configuracaoArmazenamentoOptions.BucketArquivos;
+
+        public async Task<string> UploadCertificadoCodafAsync(string nomeArquivo, byte[] conteudoPdf)
+        {
+            using var stream = new MemoryStream(conteudoPdf);
+            await _minioClient.PutObjectAsync(new PutObjectArgs()
+                .WithBucket(_configuracaoArmazenamentoOptions.BucketArquivos)
+                .WithObject(nomeArquivo)
+                .WithStreamData(stream)
+                .WithObjectSize(stream.Length)
+                .WithContentType("application/pdf"));
+
+            return nomeArquivo;
         }
     }
 }

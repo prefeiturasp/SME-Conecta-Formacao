@@ -8,7 +8,25 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Templates\Assets\assinatura_secretario.png" />
+      <None Remove="Templates\Assets\barra_lateral_padrao_certificado_codaf.png" />
+      <None Remove="Templates\Assets\brasao_prefeitura.png" />
+      <None Remove="Templates\Assets\brasao_sme.png" />
+      <None Remove="Templates\layout-certificado-codaf.html" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Templates\Assets\assinatura_secretario.png" />
+      <EmbeddedResource Include="Templates\Assets\barra_lateral_padrao_certificado_codaf.png" />
+      <EmbeddedResource Include="Templates\Assets\barra_lateral_semrf_certificado_codaf.png" />
+      <EmbeddedResource Include="Templates\Assets\brasao_prefeitura.png" />
+      <EmbeddedResource Include="Templates\Assets\brasao_sme.png" />
+      <EmbeddedResource Include="Templates\layout-certificado-codaf.html" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\SME.ConectaFormacao.Dominio\SME.ConectaFormacao.Dominio.csproj" />
+      <ProjectReference Include="..\SME.ConectaFormacao.Infra.Servicos\SME.ConectaFormacao.Infra.Servicos.csproj" />
     </ItemGroup>
 
     <ItemGroup>

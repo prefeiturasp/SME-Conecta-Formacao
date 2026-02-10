@@ -21,7 +21,7 @@ public abstract class RepositorioBaseAuditavel<TEntidade> : IRepositorioBaseAudi
     public Task<TEntidade> ObterPorId(long id)
         => conexao.Obter().GetAsync<TEntidade>(id);
 
-    public async Task<IList<TEntidade>> ObterTodos()
+    public async virtual Task<IList<TEntidade>> ObterTodos()
         => (await conexao.Obter().GetAllAsync<TEntidade>())
             .ToList();
 
@@ -63,5 +63,16 @@ public abstract class RepositorioBaseAuditavel<TEntidade> : IRepositorioBaseAudi
         entidade.AlteradoEm = DateTimeExtension.HorarioBrasilia();
         entidade.AlteradoPor = contexto.NomeUsuario;
         entidade.AlteradoLogin = contexto.UsuarioLogado;
+    }
+
+    public async Task<TEntidade?> ObterNaoExcluidosPorIdAsync(long id)
+    {
+        return await conexao.Obter().FirstOrDefaultAsync<TEntidade>(e => e.Id == id && !e.Excluido);
+    }
+
+    public async Task<IList<TEntidade>> ObterTodosNaoExcluidosAsync()
+    {
+        var resultado = await conexao.Obter().SelectAsync<TEntidade>(e => !e.Excluido);
+        return resultado.ToList();
     }
 }

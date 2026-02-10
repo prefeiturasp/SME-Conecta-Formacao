@@ -45,6 +45,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? OutrosCriterios { get; set; }
         public int? HorasTotais { get; set; }
         public string? CargaHorariaTotalOutra { get; set; }
+        public bool Revalidacao { get; set; }
+        public string? JustificativaRevalidacao { get; set; }
 
         public IEnumerable<PropostaDreDTO> Dres { get; set; } = [];
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; } = [];

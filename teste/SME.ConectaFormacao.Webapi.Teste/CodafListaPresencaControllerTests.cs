@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Moq.AutoMock;
@@ -18,9 +19,8 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoAtualizarCodafListaPresenca> _mockCasoDeUsoAtualizar;
         private readonly Mock<ICasoDeUsoListarCodafListaPresenca> _mockCasoDeUsoListar;
         private readonly Mock<ICasoDeUsoObterCodafListaPresencaPorId> _mockCasoDeUsoObterPorId;
-        private readonly Mock<ICasoDeUsoListarInscritosTurmaCodafListaPresenca> _mockCasoDeUsoListarInscritosTurma;
-        private readonly Mock<ICasoDeUsoTurmaPossuiCodafListaPresenca> _mockCasoDeUsoTurmaPossuiCodafListaPresenca;
         private readonly Mock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca> _mockCasoDeUsoRemoverRetificacao;
+        private readonly Mock<ICasoDeUsoExcluirCodafListaPresenca> _mockCasoDeUsoExcluirCodafListaPresenca;
         private readonly CodafListaPresencaController _controller;
         private readonly Faker _faker;
 
@@ -31,9 +31,8 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _mockCasoDeUsoAtualizar = mocker.GetMock<ICasoDeUsoAtualizarCodafListaPresenca>();
             _mockCasoDeUsoListar = mocker.GetMock<ICasoDeUsoListarCodafListaPresenca>();
             _mockCasoDeUsoObterPorId = mocker.GetMock<ICasoDeUsoObterCodafListaPresencaPorId>();
-            _mockCasoDeUsoListarInscritosTurma = mocker.GetMock<ICasoDeUsoListarInscritosTurmaCodafListaPresenca>();
-            _mockCasoDeUsoTurmaPossuiCodafListaPresenca = mocker.GetMock<ICasoDeUsoTurmaPossuiCodafListaPresenca>();
             _mockCasoDeUsoRemoverRetificacao = mocker.GetMock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca>();
+            _mockCasoDeUsoExcluirCodafListaPresenca = mocker.GetMock<ICasoDeUsoExcluirCodafListaPresenca>();
             _controller = mocker.CreateInstance<CodafListaPresencaController>();
             _faker = new Faker("pt_BR");
         }
@@ -225,74 +224,6 @@ namespace SME.ConectaFormacao.Webapi.Teste
         }
 
         [Fact]
-        public async Task DadoUmaPropostaTurmaId_QuandoChamarObterInscritosPorTurma_EntaoDeveChamarCasoDeUsoListarInscritosTurma()
-        {
-            // Arrange
-            var propostaTurmaId = _faker.Random.Long(1);
-            var numeroPagina = 1;
-            var numeroRegistros = 10;
-            _mockCasoDeUsoListarInscritosTurma
-                .Setup(x => x.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros))
-                .ReturnsAsync(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>.DeSucesso(
-                    new PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>([], 0, 0)));
-            // Act
-            await _controller.ObterInscritosPorTurma(propostaTurmaId, numeroPagina, numeroRegistros);
-            // Assert
-            _mockCasoDeUsoListarInscritosTurma.Verify(x => x.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros), Times.Once);
-        }
-
-        [Fact]
-        public async Task DadoUmaPropostaTurmaId_QuandoChamarObterInscritosPorTurma_EntaoDeveRetornarResultadoSucesso()
-        {
-            // Arrange
-            var propostaTurmaId = _faker.Random.Long(1);
-            var numeroPagina = 1;
-            var numeroRegistros = 10;
-            var paginacaoResultadoDto = new PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>([], 0, 0);
-            _mockCasoDeUsoListarInscritosTurma
-                .Setup(x => x.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros))
-                .ReturnsAsync(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>.DeSucesso(paginacaoResultadoDto));
-            // Act
-            var resultado = await _controller.ObterInscritosPorTurma(propostaTurmaId, numeroPagina, numeroRegistros) as ObjectResult;
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var resultadoValor = resultado.Value as PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>;
-            resultadoValor.Should().NotBeNull();
-            resultadoValor.Should().BeEquivalentTo(paginacaoResultadoDto);
-        }
-
-        [Fact]
-        public async Task DadoUmaPropostaTurmaId_QuandoChamarTurmaPossuiListaPresenca_EntaoDeveRetornarResultadoSucesso()
-        {
-            // Arrange
-            var propostaTurmaId = _faker.Random.Long(1);
-            var listaPresencaId = _faker.Random.Long(1);
-            _mockCasoDeUsoListarInscritosTurma
-                .Setup(x => x.ExecutarAsync(propostaTurmaId, 1, 10))
-                .ReturnsAsync(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>.DeSucesso(
-                    new PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>([], 0, 0)));
-            // Act
-            await _controller.ObterInscritosPorTurma(propostaTurmaId);
-            // Assert
-            _mockCasoDeUsoListarInscritosTurma.Verify(x => x.ExecutarAsync(propostaTurmaId, 1, 10), Times.Once);
-        }
-
-        [Fact]
-        public async Task DadoUmaPropostaTurmaId_QuandoChamarTurmaPossuiListaPresenca_EntaoDeveChamarCasoDeUsoTurmaPossuiCodafListaPresenca()
-        {
-            // Arrange
-            var propostaTurmaId = _faker.Random.Long(1);
-            _mockCasoDeUsoTurmaPossuiCodafListaPresenca
-                .Setup(x => x.ExecutarAsync(propostaTurmaId))
-                .ReturnsAsync(Resultado<bool>.DeSucesso(true));
-            // Act
-            await _controller.TurmaPossuiListaPresenca(propostaTurmaId);
-            // Assert
-            _mockCasoDeUsoTurmaPossuiCodafListaPresenca.Verify(x => x.ExecutarAsync(propostaTurmaId), Times.Once);
-        }
-
-        [Fact]
         public async Task DadoUmaRetificacaoId_QuandoRemoverRetificacao_EnaoDeveChamarCasoDeUsoRemoverCodafRetificacaoListaPresenca()
         {
             // Arrange
@@ -304,6 +235,20 @@ namespace SME.ConectaFormacao.Webapi.Teste
             await _controller.RemoverRetificacao(retificacaoId);
             // Assert
             _mockCasoDeUsoRemoverRetificacao.Verify(x => x.ExecutarAsync(retificacaoId), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmIdCodafListaPresenca_QuandoChamarExcluir_EntaoDeveChamarCasoDeUso()
+        {
+            // Arrange
+            var codafListaPresencaId = _faker.Random.Long(1);
+            _mockCasoDeUsoExcluirCodafListaPresenca
+                .Setup(x => x.ExecutarAsync(codafListaPresencaId))
+                .ReturnsAsync(Resultado.DeSucesso());
+            // Act
+            await _controller.Excluir(codafListaPresencaId);
+            // Assert
+            _mockCasoDeUsoExcluirCodafListaPresenca.Verify(x => x.ExecutarAsync(codafListaPresencaId), Times.Once);
         }
     }
 }

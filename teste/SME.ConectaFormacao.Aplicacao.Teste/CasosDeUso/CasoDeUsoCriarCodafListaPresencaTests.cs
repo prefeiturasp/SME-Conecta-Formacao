@@ -284,7 +284,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         }
 
         [Fact]
-        public async Task DadoErroAoInserir_QuandoExecutar_EntaoDeveRetornarErroInternoERolarbackTransacao()
+        public async Task DadoErroAoInserir_QuandoExecutar_EntaoDeveRetornarErroInternoERollbackTransacao()
         {
             // Arrange
             var propostaIdValido = _faker.Random.Long(1, long.MaxValue);

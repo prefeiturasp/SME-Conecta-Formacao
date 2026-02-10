@@ -8,14 +8,14 @@ using SME.ConectaFormacao.Dominio.Comum;
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
+    [Route("api/v1/CodafListaPresenca")]
     public class CodafListaPresencaController(
         ICasoDeUsoCriarCodafListaPresenca casoDeUsoCriarCodafListaPresenca,
         ICasoDeUsoAtualizarCodafListaPresenca casoDeUsoAtualizar,
         ICasoDeUsoListarCodafListaPresenca casoDeUsoListarCodafListaPresenca,
         ICasoDeUsoObterCodafListaPresencaPorId casoDeUsoObterCodafListaPresencaPorId,
-        ICasoDeUsoListarInscritosTurmaCodafListaPresenca casoDeUsoListarInscritosTurmaCodafListaPresenca,
-        ICasoDeUsoTurmaPossuiCodafListaPresenca casoDeUsoTurmaPossuiCodafListaPresenca,
-        ICasoDeUsoRemoverCodafRetificacaoListaPresenca casoDeUsoRemoverCodafRetificacaoListaPresenca) : BaseController
+        ICasoDeUsoRemoverCodafRetificacaoListaPresenca casoDeUsoRemoverCodafRetificacaoListaPresenca,
+        ICasoDeUsoExcluirCodafListaPresenca casoDeUsoExcluirCodafListaPresenca) : BaseController
     {
         [HttpPost]
         [ProducesResponseType(typeof(Resultado<CodafListaPresencaDto>), 201)]
@@ -58,31 +58,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return ProcessarResultado(resultado);
         }
 
-        [HttpGet("inscritos-turma/{propostaTurmaId:long}")]
-        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>), 200)]
-        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>), 400)]
-        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>), 500)]
-        public async Task<IActionResult> ObterInscritosPorTurma(long propostaTurmaId, [FromQuery] int numeroPagina = 1, [FromQuery] int numeroRegistros = 10)
-        {
-            var resultado = await casoDeUsoListarInscritosTurmaCodafListaPresenca.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros);
-            return ProcessarResultado(resultado);
-        }
-
-        [HttpGet("turmas/{propostaTurmaId:long}/possui-lista")]
-        [ProducesResponseType(typeof(Resultado<bool>), 200)]
-        [ProducesResponseType(typeof(Resultado<bool>), 400)]
-        public async Task<IActionResult> TurmaPossuiListaPresenca(long propostaTurmaId, [FromQuery] long listaPresencaId = 0)
-        {
-            var resultado = await casoDeUsoTurmaPossuiCodafListaPresenca.ExecutarAsync(propostaTurmaId, listaPresencaId);
-            return ProcessarResultado(resultado);
-        }
-
         [HttpDelete("retificacoes/{retificacaoId:long}")]
         [ProducesResponseType(typeof(Resultado<bool>), 204)]
         [ProducesResponseType(typeof(Resultado<bool>), 404)]
         public async Task<IActionResult> RemoverRetificacao(long retificacaoId)
         {
             var resultado = await casoDeUsoRemoverCodafRetificacaoListaPresenca.ExecutarAsync(retificacaoId);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpDelete("{codafListaPresencaId:long}")]
+        public async Task<IActionResult> Excluir(long codafListaPresencaId)
+        {
+            var resultado = await casoDeUsoExcluirCodafListaPresenca.ExecutarAsync(codafListaPresencaId);
             return ProcessarResultado(resultado);
         }
     }

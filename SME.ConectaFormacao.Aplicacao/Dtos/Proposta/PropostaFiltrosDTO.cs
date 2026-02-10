@@ -14,5 +14,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public DateTime? PeriodoRealizacaoFim { get; set; }
         public SituacaoProposta? Situacao { get; set; }
         public bool? FormacaoHomologada { get; set; }
+        public bool? Revalidacao { get; set; }
     }
 }
