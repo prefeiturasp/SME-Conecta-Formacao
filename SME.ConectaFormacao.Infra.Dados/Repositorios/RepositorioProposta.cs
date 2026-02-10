@@ -1920,6 +1920,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             parametros.Add("@tamanhoPagina", filtro.TamanhoPagina);
 
             // 2. CTEs de Contexto (Se necessário)
+            //TODO: ESPERAR ALTERAÇÂO DA API EOL
+            filtro.FiltrarPorPerfil = false;
             if (filtro.FiltrarPorPerfil)
             {
                 sql.AppendLine(ObterCteContextoServidor());
