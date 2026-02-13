@@ -7,6 +7,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Codaf
 {
     public interface ICasoDeUsoListarCertificadoCodafUsuario
     {
-        Task<Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafDto>>> ExecutarAsync(FiltroListaCertificadoCodafDto filtro);
+        Task<Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafUsuarioDto>>> ExecutarAsync(FiltroListaCertificadoCodafDto filtro);
     }
 }

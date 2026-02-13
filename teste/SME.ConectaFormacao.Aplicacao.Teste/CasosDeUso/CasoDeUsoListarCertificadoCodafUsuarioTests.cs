@@ -47,7 +47,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 DataEmissaoInicio = _faker.Date.Past(),
                 DataEmissaoFim = _faker.Date.Recent()
             };
-            var filtroRepositorioDto = new FiltroListagemResultadoCertificadoCodafDto
+            var filtroRepositorioDto = new FiltroListagemResultadoCertificadoCodafUsuarioDto
             {
                 Pagina = filtroDto.NumeroPagina,
                 TamanhoPagina = filtroDto.NumeroRegistros,
@@ -58,11 +58,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 DataEmissaoInicio = filtroDto.DataEmissaoInicio,
                 DataEmissaoFim = filtroDto.DataEmissaoFim
             };
-            var certificadosRepositorio = new ResultadoPaginado<ListagemResultadoCertificadoCodafDto>
+            var certificadosRepositorio = new ResultadoPaginado<ListagemResultadoCertificadoCodafUsuarioDto>
             {
                 Itens =
                 [
-                    new ListagemResultadoCertificadoCodafDto
+                    new ListagemResultadoCertificadoCodafUsuarioDto
                     {
                         Id = 1,
                         NumeroHomologacao = 1234,
@@ -77,10 +77,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 TamanhoPagina = 10
             };
             _mockMapper
-                .Setup(m => m.Map<FiltroListagemResultadoCertificadoCodafDto>(filtroDto))
+                .Setup(m => m.Map<FiltroListagemResultadoCertificadoCodafUsuarioDto>(filtroDto))
                 .Returns(filtroRepositorioDto);
             _mockRepositorio
-                .Setup(r => r.ObterListagemCertificadoPorFiltroAsync(filtroRepositorioDto))
+                .Setup(r => r.ObterListagemCertificadoDoUsuarioPorFiltroAsync(filtroRepositorioDto))
                 .ReturnsAsync(certificadosRepositorio);
 
             // Act

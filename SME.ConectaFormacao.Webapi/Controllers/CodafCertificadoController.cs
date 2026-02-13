@@ -24,8 +24,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("certificados-usuario")]
-        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafDto>>), 200)]
-        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafDto>>), 404)]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafUsuarioDto>>), 200)]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafUsuarioDto>>), 404)]
         public async Task<IActionResult> ListarCertificadosUsuario([FromQuery] FiltroListaCertificadoCodafDto filtro)
         {
             var resultado = await casoDeUsoListarCertificadoCodafUsuario.ExecutarAsync(filtro);

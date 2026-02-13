@@ -12,11 +12,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         IRepositorioCodafCertificado repositorioCodafCertificado,
         IMapper mapper) : ICasoDeUsoListarCertificadoCodafUsuario
     {
-        public async Task<Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafDto>>> ExecutarAsync(FiltroListaCertificadoCodafDto filtro)
+        public async Task<Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafUsuarioDto>>> ExecutarAsync(FiltroListaCertificadoCodafDto filtro)
         {
-            var filtroRepositorio = mapper.Map<FiltroListagemResultadoCertificadoCodafDto>(filtro);
-            var resultado = await repositorioCodafCertificado.ObterListagemCertificadoPorFiltroAsync(filtroRepositorio);
-            var resultadoDto = new PaginacaoResultadoDto<ListagemResultadoCertificadoCodafDto>(
+            var filtroRepositorio = mapper.Map<FiltroListagemResultadoCertificadoCodafUsuarioDto>(filtro);
+            var resultado = await repositorioCodafCertificado.ObterListagemCertificadoDoUsuarioPorFiltroAsync(filtroRepositorio);
+            var resultadoDto = new PaginacaoResultadoDto<ListagemResultadoCertificadoCodafUsuarioDto>(
                 resultado.Itens,
                 resultado.TotalRegistros,
                 resultado.TamanhoPagina);

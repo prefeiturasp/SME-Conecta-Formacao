@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 ;
             CreateMap<CodafAnexo, CodafAnexoDto>().ForMember(dest => dest.UrlDownload, opt => opt.Ignore());
 
-            CreateMap<FiltroListaCertificadoCodafDto, FiltroListagemResultadoCertificadoCodafDto>()
+            CreateMap<FiltroListaCertificadoCodafDto, FiltroListagemResultadoCertificadoCodafUsuarioDto>()
                 .ForMember(dest => dest.Pagina, opt => opt.MapFrom(src => src.NumeroPagina))
                 .ForMember(dest => dest.TamanhoPagina, opt => opt.MapFrom(src => src.NumeroRegistros));
         }

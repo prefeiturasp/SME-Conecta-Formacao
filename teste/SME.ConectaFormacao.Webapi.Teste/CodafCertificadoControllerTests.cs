@@ -50,8 +50,8 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var filtro = new FiltroListaCertificadoCodafDto() { NumeroPagina = 1, NumeroRegistros = 10 };
             _mockCasoDeUsoListarCertificadoCodafUsuario
                 .Setup(x => x.ExecutarAsync(filtro))
-                .ReturnsAsync(Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafDto>>.DeSucesso(
-                    new PaginacaoResultadoDto<ListagemResultadoCertificadoCodafDto>([], 0, 0)));
+                .ReturnsAsync(Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafUsuarioDto>>.DeSucesso(
+                    new PaginacaoResultadoDto<ListagemResultadoCertificadoCodafUsuarioDto>([], 0, 0)));
             // Act
             await _controller.ListarCertificadosUsuario(filtro);
             // Assert
