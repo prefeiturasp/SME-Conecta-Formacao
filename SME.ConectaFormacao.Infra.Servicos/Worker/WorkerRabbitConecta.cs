@@ -55,7 +55,10 @@ namespace SME.ConectaFormacao.Infra
             this.retryAutomatico = retryAutomatico;
             conexaoRabbit = factory.CreateConnection();
             canalRabbit = conexaoRabbit.CreateModel();
-            canalRabbit.BasicQos(0, consumoFilasOptions.Value.Qos, false);
+
+            const ushort PREFETCH_PADRAO = 2;
+            ushort precetchCount = consumoFilasOptions.Value.Qos <= 0 ? PREFETCH_PADRAO : consumoFilasOptions.Value.Qos;
+            canalRabbit.BasicQos(0, precetchCount, false);
             canalRabbit.ExchangeDeclare(ExchangeRabbit.Conecta, ExchangeType.Direct, true, false);
             canalRabbit.ExchangeDeclare(ExchangeRabbit.ConectaDeadLetter, ExchangeType.Direct, true, false);
             canalRabbit.ExchangeDeclare(ExchangeRabbit.Logs, ExchangeType.Direct, true, false);
