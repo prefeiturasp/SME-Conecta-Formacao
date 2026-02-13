@@ -5,5 +5,6 @@
         Task<string> ObterRelatorioPropostaLaudaDePublicacao(long propostaId);
         Task<string> ObterRelatorioPropostaLaudaCompleta(long propostaId);
         Task<byte[]> ConveterHtmlCertificadoCodafParaPdfAsync(HtmlCertificadoCodafDto htmlCertificadoCodafDto);
+        Task<byte[]> GerarRelatorioCodafAsync(long codafId);
     }
 }
