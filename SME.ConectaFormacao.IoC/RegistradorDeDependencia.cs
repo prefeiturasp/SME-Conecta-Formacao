@@ -229,6 +229,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
 
             config.AddMap(new CodafAnexoMap());
 
+            config.AddMap(new UsuarioAcessibilidadeMap());
+
             config.ForDommel();
         });
     }

@@ -2,18 +2,23 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.Email.InscricaoEmEspera;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 {
-    public class SalvarInscricaoCommandHandler(IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao, ITransacao transacao) : IRequestHandler<SalvarInscricaoCommand, RetornoDTO>
+    public class SalvarInscricaoCommandHandler(
+        IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao, 
+        ITransacao transacao, IUsuarioAcessibilidadeService usuarioAcessibilidadeService) : 
+        IRequestHandler<SalvarInscricaoCommand, RetornoDTO>
     {
         private readonly ITransacao _transacao = transacao;
 
@@ -153,9 +158,10 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
         private async Task PersistirInscricao(bool formacaoHomologada, Inscricao inscricao)
         {
-            var transacao = _transacao.Iniciar();
+            var transacaoDb = _transacao.Iniciar();
             try
             {
+                await SalvaAcessibilidadeAsync(inscricao, inscricao.UsuarioAcessibilidade);
                 await repositorioInscricao.Inserir(inscricao);
 
                 if (!formacaoHomologada)
@@ -168,17 +174,26 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
                     await repositorioInscricao.Atualizar(inscricao);
                 }
 
-                transacao.Commit();
+                transacaoDb.Commit();
             }
             catch
             {
-                transacao.Rollback();
+                transacaoDb.Rollback();
                 throw;
             }
             finally
             {
-                transacao.Dispose();
+                transacaoDb.Dispose();
             }
+        }
+
+        private async Task SalvaAcessibilidadeAsync(Inscricao inscricao, UsuarioAcessibilidade? usuarioAcessibilidade)
+        {
+            //var usuarioAcessibilidade = mapper.Map<UsuarioAcessibilidade>(usuarioAcessibilidadeDto);
+            usuarioAcessibilidade ??= new();
+            usuarioAcessibilidade.UsuarioId = inscricao.UsuarioId;
+            inscricao.UsuarioAcessibilidadeId = 
+                await usuarioAcessibilidadeService.SalvarAcessibilidadeDaInscricaoAsync(usuarioAcessibilidade);
         }
 
         private async Task EnviarEmailInscricaoAsync(Inscricao inscricao, CancellationToken cancellationToken)
