@@ -95,6 +95,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         RegistrarCacheDistribuido();
         serviceCollection
             .AddSingleton<ITemplateService, TemplateService>()
+            .AdicionarModuloComum()
             .AdicionarModuloCodaf()
             .AdicionarModuloProposta()
             ;
@@ -255,7 +256,6 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
 
     protected virtual void RegistrarRepositorios()
     {
-        serviceCollection.TryAddScoped<IRepositorioUsuario, RepositorioUsuario>();
         serviceCollection.TryAddScoped<IRepositorioCriterioValidacaoInscricao, RepositorioCriterioValidacaoInscricao>();
         serviceCollection.TryAddScoped<IRepositorioRoteiroPropostaFormativa, RepositorioRoteiroPropostaFormativa>();
         serviceCollection.TryAddScoped<IRepositorioCargoFuncao, RepositorioCargoFuncao>();        
