@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
+using SME.ConectaFormacao.Dominio.Entidades;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
@@ -8,6 +8,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
     {
         public ComumProfile()
         {
+            CreateMap<UsuarioAcessibilidade, UsuarioAcessibilidadeDto>()
+                .ForMember(dest => dest.Salvar, opt => opt.MapFrom(x => !x.Excluido))
+                .ReverseMap();
         }
     }
 }
