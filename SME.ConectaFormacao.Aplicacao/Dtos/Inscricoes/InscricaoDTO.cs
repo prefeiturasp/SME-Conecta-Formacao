@@ -16,6 +16,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
 
         public int? TipoVinculo { get; set; }
         public required bool VagaRemanescente { get; set; }
-        public UsuarioAcessibilidadeDto? UsuarioAcessibilidadeDto { get; set; }
+        public UsuarioAcessibilidadeDto? UsuarioAcessibilidade { get; set; }
     }
 }

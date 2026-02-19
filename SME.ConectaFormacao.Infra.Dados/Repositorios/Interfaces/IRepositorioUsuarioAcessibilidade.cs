@@ -6,5 +6,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
     public interface IRepositorioUsuarioAcessibilidade : IRepositorioBaseAuditavel<UsuarioAcessibilidade>
     {
         Task<UsuarioAcessibilidade?> ObterPorUsuarioIdAsync(long usuarioId);
+        Task<UsuarioAcessibilidade?> ObterAcessibilidadeAtualDoUsuarioAsync();
     }
 }

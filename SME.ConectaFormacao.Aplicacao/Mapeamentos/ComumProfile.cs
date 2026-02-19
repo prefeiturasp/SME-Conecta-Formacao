@@ -10,7 +10,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
         {
             CreateMap<UsuarioAcessibilidade, UsuarioAcessibilidadeDto>()
                 .ForMember(dest => dest.Salvar, opt => opt.MapFrom(x => !x.Excluido))
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(dest => dest.Excluido, opt => opt.MapFrom(x => !x.Salvar));
         }
     }
 }
