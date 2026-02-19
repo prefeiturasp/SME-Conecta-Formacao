@@ -69,8 +69,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 
             var acessibilidadeDto = new UsuarioAcessibilidadeDto
             {
-                Id = acessibilidade.Id,
-                UsuarioId = acessibilidade.UsuarioId,
                 PossuiDeficiencia = acessibilidade.PossuiDeficiencia
             };
 

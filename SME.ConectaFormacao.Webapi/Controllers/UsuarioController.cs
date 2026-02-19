@@ -170,5 +170,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
                                                                          [FromQuery] string? login = null,
                                                                          [FromQuery] string? nome = null) =>
             Ok(await useCase.ExecutarAsync(codigoEolUnidade, login, nome));
+
+        [HttpPatch("{login}/acessibilidade")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> SalvarAcessibilidadeDaInscricao([FromRoute] string login,
+                                                                         [FromBody] UsuarioAcessibilidadeDto usuarioAcessibilidadeDto,
+                                                                         [FromServices] ICasoDeUsoSalvarUsuarioAcessibilidade casoDeUsoSalvarUsuarioAcessibilidade)
+        {
+            return Ok(await casoDeUsoSalvarUsuarioAcessibilidade.ExecutarAsync(login, usuarioAcessibilidadeDto));
+        }
     }
 }

@@ -160,7 +160,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
             var transacaoDb = _transacao.Iniciar();
             try
             {
-                await SalvaAcessibilidadeAsync(inscricao, inscricao.UsuarioAcessibilidade);
+                await SalvarAcessibilidadeAsync(inscricao, inscricao.UsuarioAcessibilidade);
                 await repositorioInscricao.Inserir(inscricao);
 
                 if (!formacaoHomologada)
@@ -186,7 +186,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
             }
         }
 
-        private async Task SalvaAcessibilidadeAsync(Inscricao inscricao, UsuarioAcessibilidade? usuarioAcessibilidade)
+        private async Task SalvarAcessibilidadeAsync(Inscricao inscricao, UsuarioAcessibilidade? usuarioAcessibilidade)
         {
             usuarioAcessibilidade ??= new();
             usuarioAcessibilidade.UsuarioId = inscricao.UsuarioId;
