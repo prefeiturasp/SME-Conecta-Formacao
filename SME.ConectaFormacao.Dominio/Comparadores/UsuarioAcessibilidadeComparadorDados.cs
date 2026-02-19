@@ -13,7 +13,6 @@ namespace SME.ConectaFormacao.Dominio.Comparadores
             if (ReferenceEquals(x, y)) return true;
             if (x is null || y is null) return false;
 
-            // Compara APENAS os dados de negócio, ignorando 'Excluido' e IDs se necessário
             return x.UsuarioId == y.UsuarioId &&
                    x.PossuiDeficiencia == y.PossuiDeficiencia &&
                    x.DescricaoDeficiencia.SaoStringsIguais(y.DescricaoDeficiencia) &&

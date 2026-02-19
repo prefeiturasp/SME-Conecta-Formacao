@@ -79,40 +79,6 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
         }
 
         [Fact]
-        public async Task DadoRegistroExistenteMasUsuarioQuerExcluir_QuandoSalvar_EntaoDeveAtualizarParaExcluido()
-        {
-            // Arrange
-            var usuarioId = _faker.Random.Long(1);
-            var idExistente = _faker.Random.Long(1);
-
-            var acessibilidadeExistente = GerarAcessibilidade(usuarioId);
-            acessibilidadeExistente.Id = idExistente;
-
-            var novaAcessibilidade = new UsuarioAcessibilidade
-            {
-                UsuarioId = usuarioId,
-                PossuiDeficiencia = acessibilidadeExistente.PossuiDeficiencia,
-                DescricaoDeficiencia = acessibilidadeExistente.DescricaoDeficiencia,
-                NecessitaAdaptacao = acessibilidadeExistente.NecessitaAdaptacao,
-                DescricaoAdaptacao = acessibilidadeExistente.DescricaoAdaptacao,
-                Excluido = true
-            };
-
-            _mockRepositorio.Setup(r => r.ObterPorUsuarioIdAsync(usuarioId))
-                .ReturnsAsync(acessibilidadeExistente);
-
-            // Act
-            var idGerado = await _servico.SalvarAcessibilidadeDaInscricaoAsync(novaAcessibilidade);
-
-            // Assert
-            _mockRepositorio
-                .Verify(r => r.Atualizar(It.Is<UsuarioAcessibilidade>(a => a.Id == idExistente && 
-                                                                           a.Excluido))
-                , Times.Once);
-            idGerado.Should().Be(idExistente);
-        }
-
-        [Fact]
         public async Task DadoAlteracaoDeDados_QuandoSalvar_EntaoDeveExcluirAnteriorEInserirNovo()
         {
             // Arrange

@@ -2,7 +2,6 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.Email.InscricaoEmEspera;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
-using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -16,8 +15,8 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 {
     public class SalvarInscricaoCommandHandler(
-        IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao, 
-        ITransacao transacao, IUsuarioAcessibilidadeService usuarioAcessibilidadeService) : 
+        IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao,
+        ITransacao transacao, IUsuarioAcessibilidadeService usuarioAcessibilidadeService) :
         IRequestHandler<SalvarInscricaoCommand, RetornoDTO>
     {
         private readonly ITransacao _transacao = transacao;
@@ -44,7 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
             if (usuarioLogado.Tipo == TipoUsuario.Interno)
             {
-                if(!request.InscricaoDto.VagaRemanescente)
+                if (!request.InscricaoDto.VagaRemanescente)
                     await ValidarCargoFuncao(propostaTurma.PropostaId, inscricao.CargoId, inscricao.FuncaoId, cancellationToken);
 
                 await ValidarDreUsuarioInterno(usuarioLogado.Login, inscricao, cancellationToken);
@@ -121,7 +120,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
                 var dreUeAtribuicoes = await mediator.Send(new ObterDreUeAtribuicaoPorRegistroFuncionalCodigoCargoQuery(registroFuncional, inscricao.CargoCodigo), cancellationToken);
                 if (dreUeAtribuicoes.PossuiElementos())
                 {
-                    var dreUeAtribuicao = dreUeAtribuicoes.FirstOrDefault(f => dres.Any(d => d.DreCodigo == f.DreCodigo)) ?? 
+                    var dreUeAtribuicao = dreUeAtribuicoes.FirstOrDefault(f => dres.Any(d => d.DreCodigo == f.DreCodigo)) ??
                                           dreUeAtribuicoes.First();
                     inscricao.CargoDreCodigo = dreUeAtribuicao.DreCodigo;
                     inscricao.CargoUeCodigo = dreUeAtribuicao.UeCodigo;
@@ -140,7 +139,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
             if (dres.PossuiElementos())
             {
                 var unidade = await mediator.Send(new ObterUnidadePorCodigoEOLQuery(codigoEolUnidade), cancellationToken);
-                var codigosUndAdmReferencia = ObterCodigoUnidadeAdmReferenciaEscola(unidade) 
+                var codigosUndAdmReferencia = ObterCodigoUnidadeAdmReferenciaEscola(unidade)
                                               ?? ObterCodigosUnidadeAdmEReferencia(unidade);
 
                 if (!dres.Any(t => codigosUndAdmReferencia.Contains(t.Dre.Codigo)))
@@ -150,7 +149,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
         private static string[]? ObterCodigoUnidadeAdmReferenciaEscola(UnidadeEol unidade)
             => unidade.Tipo == UnidadeEolTipo.Escola
-               ? [unidade.CodigoReferencia] 
+               ? [unidade.CodigoReferencia]
                : null;
 
         private static string[] ObterCodigosUnidadeAdmEReferencia(UnidadeEol unidade)
@@ -189,10 +188,9 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
         private async Task SalvaAcessibilidadeAsync(Inscricao inscricao, UsuarioAcessibilidade? usuarioAcessibilidade)
         {
-            //var usuarioAcessibilidade = mapper.Map<UsuarioAcessibilidade>(usuarioAcessibilidadeDto);
             usuarioAcessibilidade ??= new();
             usuarioAcessibilidade.UsuarioId = inscricao.UsuarioId;
-            inscricao.UsuarioAcessibilidadeId = 
+            inscricao.UsuarioAcessibilidadeId =
                 await usuarioAcessibilidadeService.SalvarAcessibilidadeDaInscricaoAsync(usuarioAcessibilidade);
         }
 
@@ -206,7 +204,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
         private static string DefinirMensagemInscricao(bool formacaoHomologada, bool integrarNoSGA, Inscricao inscricao)
         {
-            if(inscricao.Situacao == SituacaoInscricao.EmEspera)
+            if (inscricao.Situacao == SituacaoInscricao.EmEspera)
                 return MensagemNegocio.INSCRICAO_EM_ESPERA;
             if (!formacaoHomologada)
                 return MensagemNegocio.INSCRICAO_CONFIRMADA;

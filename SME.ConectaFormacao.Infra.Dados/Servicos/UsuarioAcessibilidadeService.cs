@@ -1,12 +1,12 @@
-﻿using SME.ConectaFormacao.Dominio.Comparadores;
-using SME.ConectaFormacao.Dominio.Entidades;
+﻿using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Linq.Expressions;
 
 namespace SME.ConectaFormacao.Infra.Dados.Servicos
 {
-    public class UsuarioAcessibilidadeService(IRepositorioUsuarioAcessibilidade repositorioUsuarioAcessibilidade) :
+    public class UsuarioAcessibilidadeService(
+        IRepositorioUsuarioAcessibilidade repositorioUsuarioAcessibilidade) :
         IUsuarioAcessibilidadeService
     {
         public async Task<long?> SalvarAcessibilidadeDaInscricaoAsync(UsuarioAcessibilidade usuarioAcessibilidade)
@@ -15,21 +15,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
 
             if (acessibilidadeAtual == usuarioAcessibilidade)
             {
-                return acessibilidadeAtual?.Id;
-            }
-
-            var dadosSaoIguais = 
-                acessibilidadeAtual is not null &&
-                UsuarioAcessibilidadeComparadorDados.Instancia.Equals(acessibilidadeAtual, usuarioAcessibilidade);
-
-            if (dadosSaoIguais && usuarioAcessibilidade.Excluido)
-            {
-                acessibilidadeAtual!.Excluido = usuarioAcessibilidade.Excluido;
-                await repositorioUsuarioAcessibilidade.Atualizar(acessibilidadeAtual);
                 return acessibilidadeAtual.Id;
             }
 
-            if (acessibilidadeAtual is not null && !acessibilidadeAtual.Excluido)
+            if (acessibilidadeAtual is not null && !usuarioAcessibilidade.Excluido)
             {
                 acessibilidadeAtual.Excluido = true;
                 await repositorioUsuarioAcessibilidade.Atualizar(acessibilidadeAtual);
