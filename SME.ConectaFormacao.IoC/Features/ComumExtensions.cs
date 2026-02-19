@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -14,7 +16,9 @@ namespace SME.ConectaFormacao.IoC.Features
                 services
                 .AddScoped<IRepositorioUsuario, RepositorioUsuario>()
                 .AddScoped<IRepositorioUsuarioAcessibilidade, RepositorioUsuarioAcessibilidade>()
-                .AddScoped<IUsuarioAcessibilidadeService, UsuarioAcessibilidadeService>();
+                .AddScoped<IUsuarioAcessibilidadeService, UsuarioAcessibilidadeService>()
+                .AddScoped<ICasoDeUsoSalvarUsuarioAcessibilidade, CasoDeUsoSalvarUsuarioAcessibilidade>()
+                ;
         }
     }
 }

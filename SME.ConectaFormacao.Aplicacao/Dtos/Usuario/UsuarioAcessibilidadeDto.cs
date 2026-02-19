@@ -2,8 +2,7 @@
 {
     public class UsuarioAcessibilidadeDto
     {
-        public long Id { get; set; }
-        public long UsuarioId { get; set; }
+        public long? UsuarioId { get; set; }
         public bool? PossuiDeficiencia { get; set; }
         public string? DescricaoDeficiencia { get; set; }
         public bool? NecessitaAdaptacao { get; set; }
