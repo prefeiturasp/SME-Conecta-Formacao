@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos
 {
@@ -22,5 +23,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public string? LinkParaInscricoesExterna { get; set; }
         public bool PodeEnviarInscricao { get; set; }
         public IEnumerable<RetornoTurmaDetalheDTO> Turmas { get; set; } = [];
+        public UsuarioAcessibilidadeDto? UsuarioAcessibilidade { get; set; }
     }
 }

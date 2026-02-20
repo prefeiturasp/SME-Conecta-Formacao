@@ -12,5 +12,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
         public TipoUsuario Tipo { get; set; }
         public TipoEmail TipoEmail { get; set; }
         public string EmailEducacional { get; set; }
+        public UsuarioAcessibilidadeDto? UsuarioAcessibilidade { get; set; }
     }
 }
