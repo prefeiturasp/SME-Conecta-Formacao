@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;

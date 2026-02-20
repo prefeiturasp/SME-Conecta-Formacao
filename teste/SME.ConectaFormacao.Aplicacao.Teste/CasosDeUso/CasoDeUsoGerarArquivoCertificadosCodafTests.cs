@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Moq.AutoMock;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio;

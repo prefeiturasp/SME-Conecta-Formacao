@@ -13,8 +13,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<DadosProcessamentoCertificadoCodafDto>> ObterCertificadosParaProcessamentoAsync();
         Task AtualizarStatusProcessamentoAsync(long id, StatusProcessamentoCertificadoCodaf statusProcessamento, string? chaveObjetoArmazenamento, string? erroProcessamento);
         Task RecuperarCertificadosTravadosAsync();
-        Task<ResultadoPaginado<ListagemResultadoCertificadoCodafUsuarioDto>> ObterListagemCertificadoDoUsuarioPorFiltroAsync(FiltroListagemResultadoCertificadoCodafUsuarioDto filtro);
+        Task<ResultadoPaginado<MeusCertificadosCodafDto>> ObterMeusCertificadosPorFiltroAsync(FiltroMeusCertificadosCodafDto filtro);
         Task<DadosCertificadoUsuarioParaDownloadDto?> ObterCertificadoDisponivelDoUsuarioAsync(long codafCertificadoId);
-        Task<ResultadoPaginado<ListagemResultadoCertificadoCodafAdminDto>> ObterListagemCertificadoPorFiltroAsync(FiltroListagemResultadoCertificadoCodafAdminDto filtro);
+        Task<ResultadoPaginado<ListagemCertificadosCodafDto>> ObterTodosCertificadosAsync(FiltroListagemTodosCertificadosCodafDto filtro);
     }
 }

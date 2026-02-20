@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Npgsql;
 using NpgsqlTypes;
+using Org.BouncyCastle.Tls;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -99,9 +100,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             });
         }
 
-        public async Task<ResultadoPaginado<ListagemResultadoCertificadoCodafUsuarioDto>> ObterListagemCertificadoDoUsuarioPorFiltroAsync(FiltroListagemResultadoCertificadoCodafUsuarioDto filtro)
+        public async Task<ResultadoPaginado<MeusCertificadosCodafDto>> ObterMeusCertificadosPorFiltroAsync(FiltroMeusCertificadosCodafDto filtro)
         {
-            const string sqlCteBase = CodafCertificadoQueries.ObterCertificadosDoUsuarioCteBase;
+            const string sqlCteBase = CodafCertificadoQueries.ObterMeusCertificadosCteBase;
 
             var condicoesWhere = new StringBuilder("WHERE LOGIN = @login ");
             var parametros = new DynamicParameters();
@@ -154,13 +155,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             {condicoesWhere}
             """);
 
-            var qq = sqlCount.ToString();
-
             var totalRegistros = await conn.QueryFirstAsync<int>(sqlCount.ToString(), parametros);
 
             if (totalRegistros == 0)
             {
-                return new ResultadoPaginado<ListagemResultadoCertificadoCodafUsuarioDto>
+                return new ResultadoPaginado<MeusCertificadosCodafDto>
                 {
                     Itens = [],
                     PaginaAtual = filtro.Pagina,
@@ -191,9 +190,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             LIMIT @limite OFFSET @registrosIgnorados
             """);
 
-            var itens = await conn.QueryAsync<ListagemResultadoCertificadoCodafUsuarioDto>(sqlConsulta.ToString(), parametros);
+            var itens = await conn.QueryAsync<MeusCertificadosCodafDto>(sqlConsulta.ToString(), parametros);
 
-            return new ResultadoPaginado<ListagemResultadoCertificadoCodafUsuarioDto>
+            return new ResultadoPaginado<MeusCertificadosCodafDto>
             {
                 Itens = itens,
                 PaginaAtual = filtro.Pagina,
@@ -213,54 +212,129 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         login = contexto.UsuarioLogado
                     });
 
-        public async Task<ResultadoPaginado<ListagemResultadoCertificadoCodafAdminDto>> 
-            ObterListagemCertificadoPorFiltroAsync(FiltroListagemResultadoCertificadoCodafAdminDto filtro)
+        public async Task<ResultadoPaginado<ListagemCertificadosCodafDto>>
+            ObterTodosCertificadosAsync(FiltroListagemTodosCertificadosCodafDto filtro)
         {
-            const string sqlJoinsBase = """
-                 FROM   PUBLIC.CODAF_CERTIFICADOS AS CC 
-                        INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.id = CC.codaf_lista_presenca_id
-                        INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.id = CLP.proposta_turma_id
-                        INNER JOIN PUBLIC.PROPOSTA AS P ON P.id = PT.proposta_id
-                        INNER JOIN PUBLIC.PROPOSTA_DRE AS PD ON PD.PROPOSTA_ID = P.ID
-                        LEFT JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP ON CILP.ID = CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID
-                        LEFT JOIN PUBLIC.INSCRICAO AS INSCR ON INSCR.ID = CILP.INSCRICAO_ID
-                        LEFT JOIN PUBLIC.USUARIO AS U_Cursista  ON U_Cursista.ID = INSCR.USUARIO_ID
-                        LEFT JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
-                        LEFT JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
-                        LEFT JOIN PUBLIC.USUARIO AS U_Regente ON U_Regente.CPF = PR.REGISTRO_FUNCIONAL OR U_Regente.LOGIN = PR.REGISTRO_FUNCIONAL
-                """;
-            const string sqlSelect = """
-                SELECT CC.ID,
-                         CC.CODIGO_CERTIFICADO AS codigoCertificado,
-                         coalesce(U_Cursista.NOME, U_Regente.NOME) AS nomeParticipante,
-                         CASE
-             	            WHEN CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID IS NOT NULL THEN 1 --Cursista
-             	            WHEN CC.PROPOSTA_REGENTE_TURMA_ID IS NOT NULL THEN 2 --Regente
-             	            ELSE 0 -- Não definido
-                         END AS tipoCertificado,
-                         coalesce(U_Cursista.LOGIN, U_Regente.LOGIN) AS documento,
-                         CC.DATA_EMISSAO AS dataEmissao,
-                         P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
-                         P.ID AS codigoFormacao,
-                         P.NOME_FORMACAO AS nomeFormacao
-             """;
-            
-            const string sqlWhereBase = """
-             WHERE  NOT CC.EXCLUIDO 
-                AND  CC.STATUS_PROCESSAMENTO = 3 --ProcessadoComSucesso
-                AND  P.ID = @codigoFormacao
-                AND  P.NUMERO_HOMOLOGACAO = @numeroHomologacao
-                AND  P.NOME_FORMACAO ILIKE @nomeFormacao
-                AND  CLP.PROPOSTA_TURMA_ID = @propostaTurmaId
-                AND  CC.CODIGO_CERTIFICADO = @codigoCertificado
-                AND  CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID  IS NOT NULL --Tipo do certificado - Cursista
-                AND  CC.PROPOSTA_REGENTE_TURMA_ID IS NOT NULL --Tipo do certificado - Regente
-                AND  U_Cursista.LOGIN = @documentoCursista
-                AND  U_Regente.LOGIN = @rfRegente
-                AND  U_Regente.NOME ILIKE @nomeRegente
-                AND  CC.DATA_EMISSAO = @dataEmissao
-                AND  PD.DRE_ID = @dreId
-            """;
+            const string sqlBaseJoins = CodafCertificadoQueries.ObterTodosCertificadosBaseJoins;
+            const string sqlSelect = CodafCertificadoQueries.ObterTodosCertificadosSelect;
+            const string sqlOrderBy = "ORDER BY CC.DATA_EMISSAO DESC, CC.CODIGO_CERTIFICADO ASC";
+
+            var condicoesWhere = new StringBuilder("WHERE NOT CC.EXCLUIDO AND  CC.STATUS_PROCESSAMENTO = @processadoComSucesso");
+            var parametros = new DynamicParameters();
+            parametros.Add("processadoComSucesso", (int)StatusProcessamentoCertificadoCodaf.ProcessadoComSucesso);
+
+            if (!string.IsNullOrWhiteSpace(filtro.CodigoFormacao))
+            {
+                condicoesWhere.Append(" AND CAST(P.ID AS TEXT) ILIKE @codigoFormacao ");
+                parametros.Add("codigoFormacao", $"{filtro.CodigoFormacao.Trim()}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.NumeroHomologacao))
+            {
+                condicoesWhere.Append(" AND CAST(P.NUMERO_HOMOLOGACAO AS TEXT) ILIKE @numeroHomologacao ");
+                parametros.Add("numeroHomologacao", $"{filtro.NumeroHomologacao.Trim()}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.NomeFormacao))
+            {
+                condicoesWhere.Append(" AND f_unaccent(P.NOME_FORMACAO) ILIKE f_unaccent(@nomeFormacao) ");
+                parametros.Add("nomeFormacao", $"%{filtro.NomeFormacao.Trim()}%");
+            }
+
+            if (filtro.PropostaTurmaId.HasValue)
+            {
+                condicoesWhere.Append(" AND CLP.PROPOSTA_TURMA_ID = @propostaTurmaId ");
+                parametros.Add("propostaTurmaId", filtro.PropostaTurmaId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.CodigoCertificado))
+            {
+                condicoesWhere.Append(" AND CAST(CC.CODIGO_CERTIFICADO AS TEXT) ILIKE @codigoCertificado ");
+                parametros.Add("codigoCertificado", $"{filtro.CodigoCertificado.Trim()}%");
+            }
+
+            if (filtro.TipoCertificado == TipoCertificadoCodaf.Cursista)
+            {
+                condicoesWhere.Append(" AND CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID IS NOT NULL ");
+            }
+            else if (filtro.TipoCertificado == TipoCertificadoCodaf.Regente)
+            {
+                condicoesWhere.Append(" AND CC.PROPOSTA_REGENTE_TURMA_ID IS NOT NULL ");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.DocumentoCursista))
+            {
+                condicoesWhere.Append(" AND U_Cursista.LOGIN = @documentoCursista ");
+                parametros.Add("documentoCursista", filtro.DocumentoCursista.Trim());
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.DocumentoRegente))
+            {
+                condicoesWhere.Append(" AND U_Regente.LOGIN = @rfRegente ");
+                parametros.Add("rfRegente", filtro.DocumentoRegente.Trim());
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.NomeRegente))
+            {
+                condicoesWhere.Append(" AND f_unaccent(U_Regente.NOME) ILIKE f_unaccent(@nomeRegente) ");
+                parametros.Add("nomeRegente", $"%{filtro.NomeRegente.Trim()}%");
+            }
+
+            if (filtro.DataEmissao.HasValue)
+            {
+                // Ajuste para pegar até o final do dia selecionado
+                condicoesWhere.Append(" AND CC.DATA_EMISSAO >= @dataEmissaoInicio AND CC.DATA_EMISSAO <= @dataEmissaoFim ");
+                parametros.Add("dataEmissaoInicio", filtro.DataEmissao.Value.Date);
+                parametros.Add("dataEmissaoFim", filtro.DataEmissao.Value.Date.AddDays(1).AddTicks(-1));
+            }
+
+            if (filtro.DreId.HasValue)
+            {
+                condicoesWhere.Append(" AND PD.DRE_ID = @dreId ");
+                parametros.Add("dreId", filtro.DreId.Value);
+            }
+
+            var conn = conexao.Obter();
+            var sqlCount = new StringBuilder($"""
+                SELECT COUNT(1)
+                {sqlBaseJoins}
+                {condicoesWhere}
+                """);
+
+            var totalRegistros = await conn.QueryFirstAsync<int>(sqlCount.ToString(), parametros);
+            if (totalRegistros == 0)
+                return new ResultadoPaginado<ListagemCertificadosCodafDto>
+                {
+                    Itens = [],
+                    PaginaAtual = filtro.Pagina,
+                    TamanhoPagina = filtro.TamanhoPagina,
+                    TotalRegistros = totalRegistros
+                };
+
+            var registrosIgnorados = (filtro.Pagina - 1) * filtro.TamanhoPagina;
+            parametros.Add("limite", filtro.TamanhoPagina);
+            parametros.Add("registrosIgnorados", registrosIgnorados);
+            parametros.Add("Cursista", (int)TipoCertificadoCodaf.Cursista);
+            parametros.Add("Regente", (int)TipoCertificadoCodaf.Regente);
+            parametros.Add("NaoDefinido", (int)TipoCertificadoCodaf.NaoDefinido);
+
+            var sqlConsulta = new StringBuilder($"""
+                {sqlSelect}
+                {sqlBaseJoins}
+                {condicoesWhere}
+                {sqlOrderBy}
+                LIMIT @limite OFFSET @registrosIgnorados
+                """);
+
+            var itens =
+                await conn.QueryAsync<ListagemCertificadosCodafDto>(sqlConsulta.ToString(), parametros);
+            return new ResultadoPaginado<ListagemCertificadosCodafDto>
+            {
+                Itens = itens,
+                PaginaAtual = filtro.Pagina,
+                TamanhoPagina = filtro.TamanhoPagina,
+                TotalRegistros = totalRegistros
+            };
         }
     }
 }

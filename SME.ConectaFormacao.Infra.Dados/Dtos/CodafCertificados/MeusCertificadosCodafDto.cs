@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
 {
-    public class ListagemResultadoCertificadoCodafUsuarioDto
+    public class MeusCertificadosCodafDto
     {
         public long Id { get; set; }
         public long NumeroHomologacao { get; set; }

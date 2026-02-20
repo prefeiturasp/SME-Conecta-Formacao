@@ -3,32 +3,28 @@ using Bogus;
 using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
-using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
-    public class CasoDeUsoListarCertificadoCodafUsuarioTests
+    public class CasoDeUsoListarMeusCertificadosCodafTests
     {
         private readonly Mock<IRepositorioCodafCertificado> _mockRepositorio;
         private readonly Mock<IMapper> _mockMapper;
-        private readonly CasoDeUsoListarCertificadoCodafUsuario _sut;
+        private readonly CasoDeUsoListarMeusCertificadosCodaf _sut;
         private readonly Faker _faker;
 
-        public CasoDeUsoListarCertificadoCodafUsuarioTests()
+        public CasoDeUsoListarMeusCertificadosCodafTests()
         {
             var mocker = new AutoMocker();
             _mockRepositorio = mocker.GetMock<IRepositorioCodafCertificado>();
             _mockMapper = mocker.GetMock<IMapper>();
-            _sut = mocker.CreateInstance<CasoDeUsoListarCertificadoCodafUsuario>();
+            _sut = mocker.CreateInstance<CasoDeUsoListarMeusCertificadosCodaf>();
             _faker = new();
         }
 
@@ -36,7 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         public async Task DadoUmFiltroValido_QuandoExecutarAsync_EntaoDeveRetornarResultadoEsperado()
         {
             // Arrange
-            var filtroDto = new FiltroListaCertificadoCodafDto
+            var filtroDto = new FiltroListaMeusCertificadosCodafDto
             {
                 NumeroPagina = 1,
                 NumeroRegistros = 10,
@@ -47,7 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 DataEmissaoInicio = _faker.Date.Past(),
                 DataEmissaoFim = _faker.Date.Recent()
             };
-            var filtroRepositorioDto = new FiltroListagemResultadoCertificadoCodafUsuarioDto
+            var filtroRepositorioDto = new FiltroMeusCertificadosCodafDto
             {
                 Pagina = filtroDto.NumeroPagina,
                 TamanhoPagina = filtroDto.NumeroRegistros,
@@ -58,11 +54,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 DataEmissaoInicio = filtroDto.DataEmissaoInicio,
                 DataEmissaoFim = filtroDto.DataEmissaoFim
             };
-            var certificadosRepositorio = new ResultadoPaginado<ListagemResultadoCertificadoCodafUsuarioDto>
+            var certificadosRepositorio = new ResultadoPaginado<MeusCertificadosCodafDto>
             {
                 Itens =
                 [
-                    new ListagemResultadoCertificadoCodafUsuarioDto
+                    new MeusCertificadosCodafDto
                     {
                         Id = 1,
                         NumeroHomologacao = 1234,
@@ -77,10 +73,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 TamanhoPagina = 10
             };
             _mockMapper
-                .Setup(m => m.Map<FiltroListagemResultadoCertificadoCodafUsuarioDto>(filtroDto))
+                .Setup(m => m.Map<FiltroMeusCertificadosCodafDto>(filtroDto))
                 .Returns(filtroRepositorioDto);
             _mockRepositorio
-                .Setup(r => r.ObterListagemCertificadoDoUsuarioPorFiltroAsync(filtroRepositorioDto))
+                .Setup(r => r.ObterMeusCertificadosPorFiltroAsync(filtroRepositorioDto))
                 .ReturnsAsync(certificadosRepositorio);
 
             // Act

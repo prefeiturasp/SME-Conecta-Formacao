@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SME.ConectaFormacao.Infra.Dados.Queries
+﻿namespace SME.ConectaFormacao.Infra.Dados.Queries
 {
     public static class CodafCertificadoQueries
     {
@@ -166,7 +162,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Queries
                   AND ALTERADO_EM < (NOW() - INTERVAL '30 minutes'); -- Mas faz tempo demais, uai!;
                 """;
 
-        public const string ObterCertificadosDoUsuarioCteBase = """
+        public const string ObterMeusCertificadosCteBase = """
             WITH BaseCertificados AS (
                 SELECT 
                     CC.ID,
@@ -231,5 +227,35 @@ namespace SME.ConectaFormacao.Infra.Dados.Queries
                     AND NOT CC.EXCLUIDO
                     AND (U_ALUNO.LOGIN = @login OR U_PROF.LOGIN = @login)
                 """;
+
+        public const string ObterTodosCertificadosBaseJoins = """
+                 FROM   PUBLIC.CODAF_CERTIFICADOS AS CC 
+                        INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.id = CC.codaf_lista_presenca_id
+                        INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.id = CLP.proposta_turma_id
+                        INNER JOIN PUBLIC.PROPOSTA AS P ON P.id = PT.proposta_id
+                        INNER JOIN PUBLIC.PROPOSTA_DRE AS PD ON PD.PROPOSTA_ID = P.ID
+                        LEFT JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP ON CILP.ID = CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID
+                        LEFT JOIN PUBLIC.INSCRICAO AS INSCR ON INSCR.ID = CILP.INSCRICAO_ID
+                        LEFT JOIN PUBLIC.USUARIO AS U_Cursista  ON U_Cursista.ID = INSCR.USUARIO_ID
+                        LEFT JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
+                        LEFT JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
+                        LEFT JOIN PUBLIC.USUARIO AS U_Regente ON U_Regente.CPF = PR.REGISTRO_FUNCIONAL OR U_Regente.LOGIN = PR.REGISTRO_FUNCIONAL
+                """;
+
+        public const string ObterTodosCertificadosSelect = """
+                SELECT CC.ID,
+                         CC.CODIGO_CERTIFICADO AS codigoCertificado,
+                         coalesce(U_Cursista.NOME, U_Regente.NOME) AS nomeParticipante,
+                         CASE
+             	            WHEN CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID IS NOT NULL THEN @Cursista
+             	            WHEN CC.PROPOSTA_REGENTE_TURMA_ID IS NOT NULL THEN @Regente
+             	            ELSE @NaoDefinido
+                         END AS tipoCertificado,
+                         coalesce(U_Cursista.LOGIN, U_Regente.LOGIN) AS documento,
+                         CC.DATA_EMISSAO AS dataEmissao,
+                         P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+                         P.ID AS codigoFormacao,
+                         P.NOME_FORMACAO AS nomeFormacao
+             """;
     }
 }
