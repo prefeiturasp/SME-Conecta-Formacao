@@ -274,10 +274,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 parametros.Add("rfRegente", filtro.DocumentoRegente.Trim());
             }
 
-            if (!string.IsNullOrWhiteSpace(filtro.NomeRegente))
+            if (!string.IsNullOrWhiteSpace(filtro.NomeCursista))
             {
-                condicoesWhere.Append(" AND f_unaccent(U_Regente.NOME) ILIKE f_unaccent(@nomeRegente) ");
-                parametros.Add("nomeRegente", $"%{filtro.NomeRegente.Trim()}%");
+                condicoesWhere.Append(" AND f_unaccent(U_Cursista.NOME) ILIKE f_unaccent(@nomeCursista) ");
+                parametros.Add("nomeCursista", $"%{filtro.NomeCursista.Trim()}%");
             }
 
             if (filtro.DataEmissao.HasValue)

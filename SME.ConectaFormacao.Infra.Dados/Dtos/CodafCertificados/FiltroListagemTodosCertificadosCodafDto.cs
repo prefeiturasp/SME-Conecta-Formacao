@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
         public TipoCertificadoCodaf TipoCertificado { get; set; }
         public string? DocumentoCursista { get; set; }
         public string? DocumentoRegente { get; set; }
-        public string? NomeRegente { get; set; }
+        public string? NomeCursista { get; set; }
         public DateTime? DataEmissao { get; set; }
         public long? DreId { get; set; }
         public required int Pagina { get; set; }
