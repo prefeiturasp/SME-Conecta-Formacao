@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 {

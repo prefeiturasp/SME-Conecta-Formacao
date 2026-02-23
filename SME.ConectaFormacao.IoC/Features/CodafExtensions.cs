@@ -57,7 +57,9 @@ namespace SME.ConectaFormacao.IoC.Features
                     .AddScoped<ICasoDeUsoListarMeusCertificadosCodaf, CasoDeUsoListarMeusCertificadosCodaf>()
                     .AddScoped<ICasoDeUsoObterCertificadoCodafParaDownload, CasoDeUsoObterCertificadoCodafParaDownload>()
                     .AddScoped<ICasoDeUsoGerarRelatorioCodaf, CasoDeUsoGerarRelatorioCodaf>()
-                    .AddScoped<ICasoDeUsoListarTodosCertificadosCodaf, CasoDeUsoListarTodosCertificadosCodaf>();
+                    .AddScoped<ICasoDeUsoListarTodosCertificadosCodaf, CasoDeUsoListarTodosCertificadosCodaf>()
+                    .AddScoped<ICasoDeUsoDownloadLoteCertificados, CasoDeUsoDownloadLoteCertificados>()
+                ;
         }
     }
 }

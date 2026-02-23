@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
@@ -15,7 +16,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         ICasoDeUsoEmitirCertificadoCodaf casoDeUsoEmitirCertificadoCodaf,
         ICasoDeUsoListarMeusCertificadosCodaf casoDeUsoListarMeusCertificadosCodaf,
         ICasoDeUsoObterCertificadoCodafParaDownload casoDeUsoObterCertificadoCodafParaDownload,
-        ICasoDeUsoListarTodosCertificadosCodaf casoDeUsoListarTodosCertificadosCodaf) : BaseController
+        ICasoDeUsoListarTodosCertificadosCodaf casoDeUsoListarTodosCertificadosCodaf,
+        ICasoDeUsoDownloadLoteCertificados casoDeUsoDownloadLoteCertificados) : BaseController
     {
         [HttpPost("{codafListaPresencaId}/emitir-certificados")]
         [ProducesResponseType(typeof(Resultado), 200)]
@@ -52,6 +54,23 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             var resultado = await casoDeUsoListarTodosCertificadosCodaf.ExecutarAsync(filtro);
             return ProcessarResultado(resultado);
+        }
+
+        [HttpPost("download-lote")]
+        [ProducesResponseType(typeof(FileStreamResult), 200)]
+        [ProducesResponseType(typeof(Resultado), 404)]
+        [Permissao(Permissao.Codaf_I, Policy = "Bearer")]
+        public async Task DownloadLoteCertificados([FromBody] List<long> ids, CancellationToken cancellationToken)
+        {
+            var syncIoFeature = HttpContext.Features.Get<IHttpBodyControlFeature>();
+            syncIoFeature?.AllowSynchronousIO = true;
+            var dataHoraAtual = DateTime.Now.ToString("ddMMyyyy_HHmmss");
+            var nomeArquivo = $"CERTIFICADOS_{dataHoraAtual}.zip";
+
+            Response.ContentType = "application/zip";
+            Response.Headers.Append("Content-Disposition", $"attachment; filename={nomeArquivo}");
+
+            await casoDeUsoDownloadLoteCertificados.ExecutarAsync(ids, Response.Body, cancellationToken);            
         }
     }
 }
