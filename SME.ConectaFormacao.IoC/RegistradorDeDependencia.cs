@@ -61,6 +61,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Templates;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
 using SME.ConectaFormacao.Infra.Servicos.CacheDistribuido.IoC;
+using SME.ConectaFormacao.Infra.Servicos.Compactacao.Ioc;
 using SME.ConectaFormacao.Infra.Servicos.Emails.IoC;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria.IoC;
@@ -98,6 +99,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             .AdicionarModuloComum()
             .AdicionarModuloCodaf()
             .AdicionarModuloProposta()
+            .ConfigurarServicoCompactacao()
             ;
     }
 
