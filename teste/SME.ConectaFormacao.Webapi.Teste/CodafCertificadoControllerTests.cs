@@ -1,4 +1,6 @@
 ﻿using Bogus;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Moq.AutoMock;
@@ -17,6 +19,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoListarMeusCertificadosCodaf> _mockCasoDeUsoListarMeusCertificadosCodaf;
         private readonly Mock<ICasoDeUsoObterCertificadoCodafParaDownload> _mockCasoDeUsoObterCertificadoCodafParaDownload;
         private readonly Mock<ICasoDeUsoListarTodosCertificadosCodaf> _mockCasoDeUsoListarTodosCertificadosCodaf;
+        private readonly Mock<ICasoDeUsoDownloadLoteCertificados> _mockCasoDeUsoDownloadLoteCertificados;
         private readonly CodafCertificadoController _controller;
         private readonly Faker _faker;
 
@@ -27,6 +30,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _mockCasoDeUsoListarMeusCertificadosCodaf = mocker.GetMock<ICasoDeUsoListarMeusCertificadosCodaf>();
             _mockCasoDeUsoObterCertificadoCodafParaDownload = mocker.GetMock<ICasoDeUsoObterCertificadoCodafParaDownload>();
             _mockCasoDeUsoListarTodosCertificadosCodaf = mocker.GetMock<ICasoDeUsoListarTodosCertificadosCodaf>();
+            _mockCasoDeUsoDownloadLoteCertificados = mocker.GetMock<ICasoDeUsoDownloadLoteCertificados>();
 
             _controller = mocker.CreateInstance<CodafCertificadoController>();
             _faker = new Faker();
@@ -105,6 +109,62 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Assert
             _mockCasoDeUsoListarTodosCertificadosCodaf.Verify(x => x.ExecutarAsync(filtro), Times.Once);
             Assert.IsType<OkObjectResult>(resultado);
+        }
+
+        [Fact]
+        public async Task DadoIdsValidos_QuandoDownloadLoteCertificados_EntaoDeveConfigurarResponseEChamarCasoDeUso()
+        {
+            // Arrange
+            var ids = new List<long> { _faker.Random.Long(1, 100), _faker.Random.Long(1, 100) };
+            var cancellationToken = CancellationToken.None;
+
+            var httpContext = new DefaultHttpContext();
+            var featureMock = new Mock<IHttpBodyControlFeature>();
+            httpContext.Features.Set(featureMock.Object);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            _mockCasoDeUsoDownloadLoteCertificados
+                .Setup(x => x.ExecutarAsync(ids, It.IsAny<Stream>(), cancellationToken))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await _controller.DownloadLoteCertificados(ids, cancellationToken);
+
+            // Assert
+            featureMock.VerifySet(f => f.AllowSynchronousIO = true, Times.Once);
+            Assert.Equal("application/zip", _controller.Response.ContentType);
+            Assert.True(_controller.Response.Headers.ContainsKey("Content-Disposition"));
+            _mockCasoDeUsoDownloadLoteCertificados.Verify(x => x.ExecutarAsync(ids, It.IsAny<Stream>(), cancellationToken), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoHttpBodyControlFeatureNulo_QuandoDownloadLoteCertificados_EntaoDeveConfigurarResponseSemErroEChamarCasoDeUso()
+        {
+            // Arrange
+            var ids = new List<long> { _faker.Random.Long(1, 100) };
+            var cancellationToken = CancellationToken.None;
+
+            var httpContext = new DefaultHttpContext();
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            _mockCasoDeUsoDownloadLoteCertificados
+                .Setup(x => x.ExecutarAsync(ids, It.IsAny<Stream>(), cancellationToken))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await _controller.DownloadLoteCertificados(ids, cancellationToken);
+
+            // Assert
+            Assert.Equal("application/zip", _controller.Response.ContentType);
+            Assert.True(_controller.Response.Headers.ContainsKey("Content-Disposition"));
+            _mockCasoDeUsoDownloadLoteCertificados.Verify(x => x.ExecutarAsync(ids, It.IsAny<Stream>(), cancellationToken), Times.Once);
         }
     }
 }
