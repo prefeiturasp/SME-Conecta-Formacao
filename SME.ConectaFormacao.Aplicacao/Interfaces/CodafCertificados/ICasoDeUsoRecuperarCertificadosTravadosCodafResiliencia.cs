@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Interfaces.Codaf
+﻿namespace SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados
 {
     public interface ICasoDeUsoRecuperarCertificadosTravadosCodafResiliencia
     {

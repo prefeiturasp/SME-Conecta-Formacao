@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;

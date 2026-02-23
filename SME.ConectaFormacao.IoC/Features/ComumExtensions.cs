@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.IoC.Features
         {
             public IServiceCollection AdicionarModuloComum() =>
                 services
+                .AddScoped(sp => (IKeyedServiceProvider)sp)
                 .AddScoped<IRepositorioUsuario, RepositorioUsuario>()
                 .AddScoped<IRepositorioUsuarioAcessibilidade, RepositorioUsuarioAcessibilidade>()
                 .AddScoped<IUsuarioAcessibilidadeService, UsuarioAcessibilidadeService>()

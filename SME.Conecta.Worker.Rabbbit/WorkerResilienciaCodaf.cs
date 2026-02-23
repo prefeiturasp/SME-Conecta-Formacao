@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+﻿using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 
 namespace SME.Conecta.Worker.Rabbbit
 {
