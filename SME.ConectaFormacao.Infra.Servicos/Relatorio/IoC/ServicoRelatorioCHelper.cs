@@ -10,10 +10,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio.IoC
 {
     public static class ServicoRelatorioCHelper
     {
-        public static void ConfigurarServicoRelatorio(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigurarServicoRelatorio(this IServiceCollection services, IConfiguration configuration)
         {
             if (configuration == null)
-                return;
+                return services;
             var relatorioOptions = new RelatorioOptions();
             configuration.GetSection(RelatorioOptions.Secao).Bind(relatorioOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(relatorioOptions);
@@ -27,6 +27,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio.IoC
                 if (configuration.GetSection("HttpClientTimeoutSecond").Value.NaoEhNulo())
                     c.Timeout = TimeSpan.FromSeconds(double.Parse(configuration.GetSection("HttpClientTimeoutSecond").Value));
             }).AddPolicyHandler(GetRetryPolicy());
+            return services;
         }
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         {

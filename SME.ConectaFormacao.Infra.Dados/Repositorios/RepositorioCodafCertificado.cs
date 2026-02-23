@@ -336,5 +336,43 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 TotalRegistros = totalRegistros
             };
         }
+
+        public async Task<IList<CodafCertificado>> ObterCertificadosDisponiveisPorListaDeIdAsync(List<long> certificadosId)
+        {
+            const string sql = """
+                SELECT id, 
+                       codigo_certificado AS codigoCertificado,
+                       codaf_inscricao_lista_presenca_id AS codafInscricaoListaPresencaId,
+                       proposta_regente_turma_id AS propostaRegenteTurmaId,
+                       tipo_participacao AS tipoParticipacao,
+                       data_emissao AS dataEmissao,
+                       html_content_snapshot AS htmlContentSnapshot,
+                       metadados_json AS metadadosJson,
+                       criado_em AS criadoEm,
+                       criado_por AS criadoPor,
+                       alterado_em AS alteradoEm,
+                       alterado_por AS alteradoPor,
+                       criado_login AS criadoLogin,
+                       alterado_login AS alteradoLogin,
+                       excluido AS excluido,
+                       status_processamento AS statusProcessamento,
+                       chave_objeto_armazenamento AS chaveObjetoArmazenamento,
+                       erro_processamento AS erroProcessamento,
+                       tentativas_processamento AS tentativasProcessamento,
+                       codaf_lista_presenca_id AS codafListaPresencaId
+                FROM codaf_certificados
+                WHERE id = ANY(@certificadosId) 
+                    AND status_processamento = @statusProcessamento 
+                    AND NOT excluido
+                """;
+
+            var certificados = await conexao.Obter().QueryAsync<CodafCertificado>(sql, new
+            {
+                certificadosId = certificadosId.ToArray(),
+                statusProcessamento = (int)StatusProcessamentoCertificadoCodaf.ProcessadoComSucesso
+            });
+
+            return certificados.ToList();
+        }
     }
 }

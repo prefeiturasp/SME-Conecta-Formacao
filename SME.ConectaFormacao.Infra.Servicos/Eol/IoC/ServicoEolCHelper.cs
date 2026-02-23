@@ -10,10 +10,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol.IoC
 {
     public static class ServicoEolCHelper
     {
-        public static void ConfigurarServicoEol(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigurarServicoEol(this IServiceCollection services, IConfiguration configuration)
         {
             if (configuration == null)
-                return;
+                return services;
             var servicoEolOptions = new ServicoEolOptions();
             configuration.GetSection(ServicoEolOptions.Secao).Bind(servicoEolOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(servicoEolOptions);
@@ -26,6 +26,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol.IoC
                 if (configuration.GetSection("HttpClientTimeoutSecond").Value.NaoEhNulo())
                     c.Timeout = TimeSpan.FromSeconds(double.Parse(configuration.GetSection("HttpClientTimeoutSecond").Value));
             }).AddPolicyHandler(GetRetryPolicy());
+            return services;
         }
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         {
