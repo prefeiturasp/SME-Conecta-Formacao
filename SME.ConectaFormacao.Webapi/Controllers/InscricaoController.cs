@@ -58,7 +58,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterInscricaoPaginada.Executar());
         }
 
-        [HttpGet("incricoes-proximas")]
+        [HttpGet("proximas")]
         [ProducesResponseType(typeof(PaginacaoResultadoDto<InscricaoPaginadaDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
@@ -68,7 +68,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterInscricaoPaginada.Executar());
         }
 
-        [HttpGet("incricoes-finalizadas")]
+        [HttpGet("finalizadas")]
         [ProducesResponseType(typeof(PaginacaoResultadoDto<InscricaoPaginadaDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
