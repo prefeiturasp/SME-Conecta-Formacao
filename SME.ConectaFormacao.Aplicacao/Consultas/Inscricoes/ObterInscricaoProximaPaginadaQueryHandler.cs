@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var registros = Enumerable.Empty<Dominio.Entidades.Inscricao>();
             if (totalRegistrosFiltro > 0)
-                registros = await _repositorioInscricao.ObterDadosPaginadosPorUsuarioId(request.UsuarioId, request.NumeroPagina, request.NumeroRegistros);
+                registros = await _repositorioInscricao.ObterDadosPaginadosPorInscricoesProximas(request.UsuarioId, request.NumeroPagina, request.NumeroRegistros);
 
             var items = _mapper.Map<IEnumerable<InscricaoPaginadaDTO>>(registros);
             foreach (var item in items)

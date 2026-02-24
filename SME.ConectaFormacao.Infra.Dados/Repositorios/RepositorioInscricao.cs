@@ -146,6 +146,76 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }, new { usuarioId, numeroRegistros, registrosIgnorados }, splitOn: "id, proposta_turma_id, proposta_id");
         }
 
+        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesProximas(long usuarioId, int numeroPagina, int numeroRegistros)
+        {
+            var query = @"
+                select i.id,
+                       i.situacao,
+                       i.origem,
+                       i.criado_em,
+                       i.proposta_turma_id,
+                       pt.nome,
+                       pt.proposta_id,
+                       p.nome_formacao,
+                       p.data_realizacao_inicio,
+                       p.data_realizacao_fim,
+                       p.id as Id,
+                       p.integrar_no_sga 
+                from inscricao i 
+                inner join proposta_turma pt on pt.id = i.proposta_turma_id 
+                inner join proposta p on p.id = pt.proposta_id 
+                where not i.excluido 
+                    and not p.excluido 
+	                and i.usuario_id = @usuarioId
+                    and p.data_realizacao_fim >= CURRENT_DATE
+                order by pt.nome, i.criado_em
+                limit @numeroRegistros offset @registrosIgnorados";
+
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Proposta, Inscricao>(query, (inscricao, propostaTurma, proposta) =>
+            {
+                propostaTurma.Proposta = proposta;
+                inscricao.PropostaTurma = propostaTurma;
+                return inscricao;
+            }, new { usuarioId, numeroRegistros, registrosIgnorados }, splitOn: "id, proposta_turma_id, proposta_id");
+        }
+
+        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesFinalizadas(long usuarioId, int numeroPagina, int numeroRegistros)
+        {
+            var query = @"
+                select i.id,
+                       i.situacao,
+                       i.origem,
+                       i.criado_em,
+                       i.proposta_turma_id,
+                       pt.nome,
+                       pt.proposta_id,
+                       p.nome_formacao,
+                       p.data_realizacao_inicio,
+                       p.data_realizacao_fim,
+                       p.id as Id,
+                       p.integrar_no_sga 
+                from inscricao i 
+                inner join proposta_turma pt on pt.id = i.proposta_turma_id 
+                inner join proposta p on p.id = pt.proposta_id 
+                where not i.excluido 
+                    and not p.excluido 
+	                and i.usuario_id = @usuarioId
+                    and p.data_realizacao_fim < CURRENT_DATE
+                order by pt.nome, i.criado_em
+                limit @numeroRegistros offset @registrosIgnorados";
+
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Proposta, Inscricao>(query, (inscricao, propostaTurma, proposta) =>
+            {
+                propostaTurma.Proposta = proposta;
+                inscricao.PropostaTurma = propostaTurma;
+                return inscricao;
+            }, new { usuarioId, numeroRegistros, registrosIgnorados }, splitOn: "id, proposta_turma_id, proposta_id");
+        }
+
         public Task<int> ObterTotalRegistrosPorUsuarioId(long usuarioId)
         {
             var query = @$"select count(1) 

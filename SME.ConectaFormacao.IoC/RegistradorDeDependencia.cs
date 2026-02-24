@@ -353,6 +353,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPorId, CasoDeUsoObterInscricaoPorId>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterTurmasInscricao, CasoDeUsoObterTurmasInscricao>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPaginada, CasoDeUsoObterInscricaoPaginada>();
+        serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoProximaPaginada, CasoDeUsoObterInscricaoProximaPaginada>();
+        serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoFinalizadaPaginada, CasoDeUsoObterInscricaoFinalizadaPaginada>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterDadosPaginadosComFiltros, CasoDeUsoObterDadosPaginadosComFiltros>();
         serviceCollection.TryAddScoped<ICasoDeUsoAlterarVinculoInscricao, CasoDeUsoAlterarVinculoInscricao>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId, CasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId>();
