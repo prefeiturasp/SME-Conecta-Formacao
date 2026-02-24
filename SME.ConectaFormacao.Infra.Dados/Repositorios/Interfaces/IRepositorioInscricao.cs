@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> LiberarInscricaoVaga(Inscricao inscricao);
         Task<CargoFuncaoDTO> ObterCargoFuncaoPorId(long id);
         Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorUsuarioId(long usuarioId, int numeroPagina, int numeroRegistros);
-        Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesProximas(long usuarioId, int numeroPagina, int numeroRegistros);
+        Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesProximas(long usuarioId, int numeroPagina, int numeroRegistros, InscricaoProximaFiltro filtro);
         Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesFinalizadas(long usuarioId, int numeroPagina, int numeroRegistros);
         Task<int> ObterTotalRegistrosPorUsuarioId(long usuarioId);
         Task<ResultadoPaginado<Inscricao>> ObterInscricoesPorPropostaPaginadasAsync(FiltroListagemInscricaoDto filtro);

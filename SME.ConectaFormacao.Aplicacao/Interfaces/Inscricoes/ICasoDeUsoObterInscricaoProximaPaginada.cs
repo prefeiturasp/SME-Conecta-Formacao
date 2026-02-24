@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes
 {
     public interface ICasoDeUsoObterInscricaoProximaPaginada
     {
-        Task<PaginacaoResultadoDto<InscricaoPaginadaDTO>> Executar();
+        Task<PaginacaoResultadoDto<InscricaoPaginadaDTO>> Executar(InscricaoProximaFiltroDTO inscricaoDTO);
     }
 }
