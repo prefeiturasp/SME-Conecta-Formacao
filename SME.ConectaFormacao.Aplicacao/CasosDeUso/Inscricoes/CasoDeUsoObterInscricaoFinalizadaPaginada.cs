@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
         {
             var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
 
-            return await mediator.Send(new ObterInscricaoPaginadaPorUsuarioIdQuery(usuarioLogado.Id, NumeroPagina, NumeroRegistros));
+            return await mediator.Send(new ObterInscricaoFinalizadaPaginadaQuery(usuarioLogado.Id, NumeroPagina, NumeroRegistros));
         }
     }
 }
