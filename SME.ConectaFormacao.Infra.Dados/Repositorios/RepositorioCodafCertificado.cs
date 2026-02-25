@@ -209,7 +209,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     {
                         certificadoId = codafCertificadoId,
                         statusProcessado = (int)StatusProcessamentoCertificadoCodaf.ProcessadoComSucesso,
-                        login = contexto.UsuarioLogado
+                        login = contexto.Permissoes.Any(p => p == Permissao.Codaf_I) ? null : contexto.UsuarioLogado
                     });
 
         public async Task<ResultadoPaginado<ListagemCertificadosCodafDto>>

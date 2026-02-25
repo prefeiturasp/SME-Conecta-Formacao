@@ -225,7 +225,7 @@
                     CC.ID = @certificadoId
                     AND CC.STATUS_PROCESSAMENTO = @statusProcessado
                     AND NOT CC.EXCLUIDO
-                    AND (U_ALUNO.LOGIN = @login OR U_PROF.LOGIN = @login)
+                    AND (@login IS NULL OR U_ALUNO.LOGIN = @login OR U_PROF.LOGIN = @login)
                 """;
 
         public const string ObterTodosCertificadosBaseJoins = """
