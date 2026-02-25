@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<CargoFuncaoDTO> ObterCargoFuncaoPorId(long id);
         Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorUsuarioId(long usuarioId, int numeroPagina, int numeroRegistros);
         Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesProximas(long usuarioId, int numeroPagina, int numeroRegistros, InscricaoProximaFiltro filtro);
-        Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesFinalizadas(long usuarioId, int numeroPagina, int numeroRegistros);
+        Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesFinalizadas(long usuarioId, int numeroPagina, int numeroRegistros, InscricaoFinalizadaFiltro filtro);
         Task<int> ObterTotalRegistrosPorUsuarioId(long usuarioId);
         Task<ResultadoPaginado<Inscricao>> ObterInscricoesPorPropostaPaginadasAsync(FiltroListagemInscricaoDto filtro);
         Task<IEnumerable<Proposta>> ObterDadosPaginadosComFiltros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, int numeroPagina, int numeroRegistros, long? numeroHomologacao);

@@ -4,13 +4,11 @@ using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
 {
-    public class InscricaoProximaFiltroDTO
+    public class InscricaoFinalizadaFiltroDTO
     {
-        public long? CodigoFormacao { get; set; }
         public string? NomeFormacao { get; set; }
-        public string? NomeTurma { get; set; }
-        public int? Situacao { get; set; }
-        public DateTime? DataInscricao { get; set; }
+        public string? SituacaoInscricao { get; set; }
+        public string? SituacaoAprovacao { get; set; }
         public DateTime? DataInicial { get; set; }
         public DateTime? DataFinal { get; set; }
     }

@@ -20,7 +20,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
         {
             var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
 
-
             var filtro = MapearParaFiltroDominio(inscricaoDTO);
 
             return await mediator.Send(new ObterInscricaoProximaPaginadaQuery(usuarioLogado.Id, NumeroPagina, NumeroRegistros, filtro));

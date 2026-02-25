@@ -74,9 +74,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterInscricoesFinalizadasPaginada(
-            [FromServices] ICasoDeUsoObterInscricaoFinalizadaPaginada casoDeUsoObterInscricaoPaginada)
+            [FromServices] ICasoDeUsoObterInscricaoFinalizadaPaginada casoDeUsoObterInscricaoPaginada,
+            [FromQuery] InscricaoFinalizadaFiltroDTO inscricaoDTO)
         {
-            return Ok(await casoDeUsoObterInscricaoPaginada.Executar());
+            return Ok(await casoDeUsoObterInscricaoPaginada.Executar(inscricaoDTO));
         }
 
         [HttpPost]

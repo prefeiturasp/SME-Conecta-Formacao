@@ -146,11 +146,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }, new { usuarioId, numeroRegistros, registrosIgnorados }, splitOn: "id, proposta_turma_id, proposta_id");
         }
 
-        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesProximas(
-            long usuarioId,
-            int numeroPagina,
-            int numeroRegistros,
-            InscricaoProximaFiltro filtro)
+        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesProximas(long usuarioId, int numeroPagina, int numeroRegistros, InscricaoProximaFiltro filtro)
         {
             var sql = new StringBuilder(@"
         select i.id,
@@ -199,7 +195,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 parametros.Add("NomeTurma", $"%{filtro.NomeTurma}%");
             }
 
-            if (!string.IsNullOrWhiteSpace(filtro?.Situacao))
+            if (filtro?.Situacao != null)
             {
                 sql.Append(" and i.situacao = @Situacao ");
                 parametros.Add("Situacao", filtro.Situacao);
@@ -247,7 +243,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 splitOn: "proposta_turma_id,proposta_id");
         }
 
-        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesFinalizadas(long usuarioId, int numeroPagina, int numeroRegistros)
+        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesFinalizadas(long usuarioId, int numeroPagina, int numeroRegistros, InscricaoFinalizadaFiltro filtro)
         {
             var query = @"
                 select i.id,
