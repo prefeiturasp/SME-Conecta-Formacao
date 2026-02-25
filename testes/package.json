@@ -1,0 +1,28 @@
+{
+  "name": "conecta-formacao-testesautomatizados",
+  "version": "1.0.0",
+  "description": "Testes automatizados com Cypress + Allure + Cucumber",
+  "main": "cypress.config.js",  
+  "scripts": {
+    "test": "npm run test:allure",
+    "test:ui": "cypress run --spec 'cypress/e2e/ui/**/*.cy.js' --reporter mocha-allure-reporter",
+    "test:api": "cypress run --spec 'cypress/e2e/api/**/*.cy.js' --reporter mocha-allure-reporter",
+    "e2e": "cypress run --reporter mocha-allure-reporter",
+    "report:allure": "allure generate allure-results --clean -o allure-report && allure open allure-report",
+    "test:allure": "npm run e2e && npm run report:allure",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "supportFile": "./support/e2e.js",
+  "dependencies": {
+    "cypress-real-events": "^1.7.4",
+    "cypress-xpath": "^2.0.1",
+    "hasha": "^6.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "cypress": "^15.11.0"
+  }
+}
