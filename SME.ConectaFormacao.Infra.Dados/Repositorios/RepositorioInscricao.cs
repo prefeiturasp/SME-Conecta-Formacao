@@ -149,38 +149,34 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesProximas(long usuarioId, int numeroPagina, int numeroRegistros, InscricaoProximaFiltro filtro)
         {
             var sql = new StringBuilder(@"
-        select i.id,
-               i.situacao,
-               i.origem,
-               i.criado_em,
-               i.proposta_turma_id,
-               pt.nome,
-               pt.proposta_id,
-               p.nome_formacao,
-               p.data_realizacao_inicio,
-               p.data_realizacao_fim,
-               p.id as Id,
-               p.integrar_no_sga 
-        from inscricao i 
-        inner join proposta_turma pt on pt.id = i.proposta_turma_id 
-        inner join proposta p on p.id = pt.proposta_id 
-        where not i.excluido 
-          and not p.excluido 
-          and i.usuario_id = @usuarioId
-          and p.data_realizacao_fim >= CURRENT_DATE
-    ");
+                select i.id,
+                       i.situacao,
+                       i.origem,
+                       i.criado_em,
+                       i.proposta_turma_id,
+                       pt.nome,
+                       pt.proposta_id,
+                       p.nome_formacao,
+                       p.data_realizacao_inicio,
+                       p.data_realizacao_fim,
+                       p.id as Id,
+                       p.integrar_no_sga 
+                from inscricao i 
+                inner join proposta_turma pt on pt.id = i.proposta_turma_id 
+                inner join proposta p on p.id = pt.proposta_id 
+                where not i.excluido 
+                  and not p.excluido 
+                  and i.usuario_id = @usuarioId
+                  and p.data_realizacao_fim >= CURRENT_DATE
+                ");
 
             var parametros = new DynamicParameters();
             parametros.Add("usuarioId", usuarioId);
 
-            // =========================
-            // FILTROS DINÂMICOS
-            // =========================
-
             if (filtro?.CodigoFormacao != null)
             {
-                sql.Append(" and p.id = @CodigoFormacao ");
-                parametros.Add("CodigoFormacao", filtro.CodigoFormacao);
+                sql.Append(" AND CAST(p.id AS VARCHAR) LIKE @CodigoFormacao ");
+                parametros.Add("CodigoFormacao", $"{filtro.CodigoFormacao}%");
             }
 
             if (!string.IsNullOrWhiteSpace(filtro?.NomeFormacao))
@@ -219,11 +215,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 parametros.Add("DataFinal", filtro.DataFinal.Value.Date);
             }
 
-            // =========================
-            // PAGINAÇÃO
-            // =========================
-
-            sql.Append(" order by pt.nome, i.criado_em ");
+            sql.Append(" order by i.criado_em, pt.nome");
             sql.Append(" limit @numeroRegistros offset @registrosIgnorados ");
 
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
@@ -243,9 +235,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 splitOn: "proposta_turma_id,proposta_id");
         }
 
-        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesFinalizadas(long usuarioId, int numeroPagina, int numeroRegistros, InscricaoFinalizadaFiltro filtro)
-        {
-            var query = @"
+        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesFinalizadas(
+        long usuarioId,
+        int numeroPagina,
+        int numeroRegistros,
+        InscricaoFinalizadaFiltro filtro)
+            {
+            var sql = new StringBuilder(@"
                 select i.id,
                        i.situacao,
                        i.origem,
@@ -262,20 +258,171 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 inner join proposta_turma pt on pt.id = i.proposta_turma_id 
                 inner join proposta p on p.id = pt.proposta_id 
                 where not i.excluido 
-                    and not p.excluido 
-	                and i.usuario_id = @usuarioId
-                    and p.data_realizacao_fim < CURRENT_DATE
-                order by pt.nome, i.criado_em
-                limit @numeroRegistros offset @registrosIgnorados";
+                  and not p.excluido 
+                  and i.usuario_id = @usuarioId
+                  and p.data_realizacao_fim < CURRENT_DATE
+              ");
+
+            var parametros = new DynamicParameters();
+            parametros.Add("usuarioId", usuarioId);
+
+            if (!string.IsNullOrWhiteSpace(filtro?.NomeFormacao))
+            {
+                sql.Append(" and upper(p.nome_formacao) like upper(@NomeFormacao) ");
+                parametros.Add("NomeFormacao", $"%{filtro.NomeFormacao}%");
+            }
+
+            if (filtro?.SituacaoInscricao != null)
+            {
+                sql.Append(" and i.situacao = @SituacaoInscricao ");
+                parametros.Add("SituacaoInscricao", filtro.SituacaoInscricao);
+            }
+
+            //if (filtro?.SituacaoAprovacao != null)
+            //{
+            //    sql.Append(" and i.situacao = @SituacaoAprovacao ");
+            //    parametros.Add("SituacaoAprovacao", filtro.SituacaoAprovacao);
+            //}
+
+            if (filtro?.DataInicial != null)
+            {
+                sql.Append(" and p.data_realizacao_inicio >= @DataInicial ");
+                parametros.Add("DataInicial", filtro.DataInicial.Value.Date);
+            }
+
+            if (filtro?.DataFinal != null)
+            {
+                sql.Append(" and p.data_realizacao_fim <= @DataFinal ");
+                parametros.Add("DataFinal", filtro.DataFinal.Value.Date);
+            }
+
+            sql.Append(" order by i.criado_em, pt.nome");
+            sql.Append(" limit @numeroRegistros offset @registrosIgnorados ");
 
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
-            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Proposta, Inscricao>(query, (inscricao, propostaTurma, proposta) =>
+            parametros.Add("numeroRegistros", numeroRegistros);
+            parametros.Add("registrosIgnorados", registrosIgnorados);
+
+            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Proposta, Inscricao>(
+                sql.ToString(),
+                (inscricao, propostaTurma, proposta) =>
+                {
+                    propostaTurma.Proposta = proposta;
+                    inscricao.PropostaTurma = propostaTurma;
+                    return inscricao;
+                },
+                parametros,
+                splitOn: "proposta_turma_id,proposta_id");
+        }
+        public Task<int> ObterTotalRegistrosPorInscricoesFinalizadas(long usuarioId, InscricaoFinalizadaFiltro filtro)
+        {
+            var sql = new StringBuilder(@"
+        select count(*)
+        from inscricao i
+        inner join proposta_turma pt on pt.id = i.proposta_turma_id
+        inner join proposta p on p.id = pt.proposta_id
+        where not i.excluido
+          and not p.excluido
+          and i.usuario_id = @usuarioId
+          and p.data_realizacao_fim < CURRENT_DATE
+    ");
+
+            var parametros = new DynamicParameters();
+            parametros.Add("usuarioId", usuarioId);
+
+            if (!string.IsNullOrWhiteSpace(filtro?.NomeFormacao))
             {
-                propostaTurma.Proposta = proposta;
-                inscricao.PropostaTurma = propostaTurma;
-                return inscricao;
-            }, new { usuarioId, numeroRegistros, registrosIgnorados }, splitOn: "id, proposta_turma_id, proposta_id");
+                sql.Append(" and upper(p.nome_formacao) like upper(@NomeFormacao) ");
+                parametros.Add("NomeFormacao", $"%{filtro.NomeFormacao}%");
+            }
+
+            if (filtro?.SituacaoInscricao != null)
+            {
+                sql.Append(" and i.situacao = @SituacaoInscricao ");
+                parametros.Add("SituacaoInscricao", filtro.SituacaoInscricao);
+            }
+
+            //if (filtro?.SituacaoAprovacao != null)
+            //{
+            //    sql.Append(" and i.situacao = @SituacaoAprovacao ");
+            //    parametros.Add("SituacaoAprovacao", filtro.SituacaoAprovacao);
+            //}
+
+            if (filtro?.DataInicial != null)
+            {
+                sql.Append(" and p.data_realizacao_inicio >= @DataInicial ");
+                parametros.Add("DataInicial", filtro.DataInicial.Value.Date);
+            }
+
+            if (filtro?.DataFinal != null)
+            {
+                sql.Append(" and p.data_realizacao_fim <= @DataFinal ");
+                parametros.Add("DataFinal", filtro.DataFinal.Value.Date);
+            }
+
+            return conexao.Obter().ExecuteScalarAsync<int>(sql.ToString(), parametros);
+        }
+
+        public Task<int> ObterTotalRegistrosPorInscricoesProximas(long usuarioId, InscricaoProximaFiltro filtro)
+        {
+            var sql = new StringBuilder(@"
+                select count(*) 
+                from inscricao i
+                inner join proposta_turma pt on pt.id = i.proposta_turma_id
+                inner join proposta p on p.id = pt.proposta_id
+                where not i.excluido
+                  and not p.excluido
+                  and i.usuario_id = @usuarioId
+                  and p.data_realizacao_fim >= CURRENT_DATE
+            ");
+
+            var parametros = new DynamicParameters();
+            parametros.Add("usuarioId", usuarioId);
+
+            if (filtro?.CodigoFormacao != null)
+            {
+                sql.Append(" AND CAST(p.id AS VARCHAR) LIKE @CodigoFormacao ");
+                parametros.Add("CodigoFormacao", $"{filtro.CodigoFormacao}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro?.NomeFormacao))
+            {
+                sql.Append(" and upper(p.nome_formacao) like upper(@NomeFormacao) ");
+                parametros.Add("NomeFormacao", $"%{filtro.NomeFormacao}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro?.NomeTurma))
+            {
+                sql.Append(" and upper(pt.nome) like upper(@NomeTurma) ");
+                parametros.Add("NomeTurma", $"%{filtro.NomeTurma}%");
+            }
+
+            if (filtro?.Situacao != null)
+            {
+                sql.Append(" and i.situacao = @Situacao ");
+                parametros.Add("Situacao", filtro.Situacao);
+            }
+
+            if (filtro?.DataInscricao != null)
+            {
+                sql.Append(" and date(i.criado_em) = @DataInscricao ");
+                parametros.Add("DataInscricao", filtro.DataInscricao.Value.Date);
+            }
+
+            if (filtro?.DataInicial != null)
+            {
+                sql.Append(" and p.data_realizacao_inicio >= @DataInicial ");
+                parametros.Add("DataInicial", filtro.DataInicial.Value.Date);
+            }
+
+            if (filtro?.DataFinal != null)
+            {
+                sql.Append(" and p.data_realizacao_fim <= @DataFinal ");
+                parametros.Add("DataFinal", filtro.DataFinal.Value.Date);
+            }
+
+            return conexao.Obter().ExecuteScalarAsync<int>(sql.ToString(), parametros);
         }
 
         public Task<int> ObterTotalRegistrosPorUsuarioId(long usuarioId)

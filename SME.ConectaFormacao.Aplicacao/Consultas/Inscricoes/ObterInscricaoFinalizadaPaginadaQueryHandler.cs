@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<PaginacaoResultadoDto<InscricaoPaginadaDTO>> Handle(ObterInscricaoFinalizadaPaginadaQuery request, CancellationToken cancellationToken)
         {
-            var totalRegistrosFiltro = await _repositorioInscricao.ObterTotalRegistrosPorUsuarioId(request.UsuarioId);
+            var totalRegistrosFiltro = await _repositorioInscricao.ObterTotalRegistrosPorInscricoesFinalizadas(request.UsuarioId, request.Filtro);
 
             var registros = Enumerable.Empty<Dominio.Entidades.Inscricao>();
             if (totalRegistrosFiltro > 0)
