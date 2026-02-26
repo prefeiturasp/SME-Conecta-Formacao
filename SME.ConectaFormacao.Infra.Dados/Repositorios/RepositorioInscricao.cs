@@ -158,6 +158,241 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { usuarioId });
         }
 
+        private (string sql, DynamicParameters parametros) ConstruirSqlInscricoesProximas(
+                long usuarioId, InscricaoProximaFiltro filtro, bool paraContagem = false)
+        {
+            var sql = new StringBuilder();
+            var parametros = new DynamicParameters();
+            parametros.Add("usuarioId", usuarioId);
+
+            if (paraContagem)
+            {
+                sql.Append(@"
+            select count(*)
+            from inscricao i
+            inner join proposta_turma pt on pt.id = i.proposta_turma_id
+            inner join proposta p on p.id = pt.proposta_id
+            where not i.excluido
+              and not p.excluido
+              and i.usuario_id = @usuarioId
+              and p.data_realizacao_fim >= CURRENT_DATE
+        ");
+            }
+            else
+            {
+                sql.Append(@"
+            select i.id,
+                   i.situacao,
+                   i.origem,
+                   i.criado_em,
+                   i.proposta_turma_id,
+                   pt.nome,
+                   pt.proposta_id,
+                   p.nome_formacao,
+                   p.data_realizacao_inicio,
+                   p.data_realizacao_fim,
+                   p.id as Id,
+                   p.integrar_no_sga 
+            from inscricao i
+            inner join proposta_turma pt on pt.id = i.proposta_turma_id
+            inner join proposta p on p.id = pt.proposta_id
+            where not i.excluido
+              and not p.excluido
+              and i.usuario_id = @usuarioId
+              and p.data_realizacao_fim >= CURRENT_DATE
+        ");
+            }
+
+            // Aplicando filtros do InscricaoProximaFiltro
+            if (filtro?.CodigoFormacao != null)
+            {
+                sql.Append(" AND CAST(p.id AS VARCHAR) LIKE @CodigoFormacao ");
+                parametros.Add("CodigoFormacao", $"{filtro.CodigoFormacao}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro?.NomeFormacao))
+            {
+                sql.Append(" and upper(p.nome_formacao) like upper(@NomeFormacao) ");
+                parametros.Add("NomeFormacao", $"%{filtro.NomeFormacao}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro?.NomeTurma))
+            {
+                sql.Append(" and upper(pt.nome) like upper(@NomeTurma) ");
+                parametros.Add("NomeTurma", $"%{filtro.NomeTurma}%");
+            }
+
+            if (filtro?.Situacao != null)
+            {
+                sql.Append(" and i.situacao = @Situacao ");
+                parametros.Add("Situacao", filtro.Situacao);
+            }
+
+            if (filtro?.DataInscricao != null)
+            {
+                sql.Append(" and date(i.criado_em) = @DataInscricao ");
+                parametros.Add("DataInscricao", filtro.DataInscricao.Value.Date);
+            }
+
+            if (filtro?.DataInicial != null)
+            {
+                sql.Append(" and p.data_realizacao_inicio >= @DataInicial ");
+                parametros.Add("DataInicial", filtro.DataInicial.Value.Date);
+            }
+
+            if (filtro?.DataFinal != null)
+            {
+                sql.Append(" and p.data_realizacao_fim <= @DataFinal ");
+                parametros.Add("DataFinal", filtro.DataFinal.Value.Date);
+            }
+
+            if (!paraContagem)
+                sql.Append(" order by i.criado_em, pt.nome ");
+
+            return (sql.ToString(), parametros);
+        }
+
+        // Métodos públicos do repositório
+        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesProximas(
+            long usuarioId, int numeroPagina, int numeroRegistros, InscricaoProximaFiltro filtro)
+        {
+            var (sql, parametros) = ConstruirSqlInscricoesProximas(usuarioId, filtro);
+
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+            parametros.Add("numeroRegistros", numeroRegistros);
+            parametros.Add("registrosIgnorados", registrosIgnorados);
+
+            sql += " limit @numeroRegistros offset @registrosIgnorados ";
+
+            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Proposta, Inscricao>(
+                sql,
+                (inscricao, propostaTurma, proposta) =>
+                {
+                    propostaTurma.Proposta = proposta;
+                    inscricao.PropostaTurma = propostaTurma;
+                    return inscricao;
+                },
+                parametros,
+                splitOn: "proposta_turma_id,proposta_id");
+        }
+
+        public Task<int> ObterTotalRegistrosPorInscricoesProximas(long usuarioId, InscricaoProximaFiltro filtro)
+        {
+            var (sql, parametros) = ConstruirSqlInscricoesProximas(usuarioId, filtro, paraContagem: true);
+            return conexao.Obter().ExecuteScalarAsync<int>(sql, parametros);
+        }
+
+        private (string sql, DynamicParameters parametros) ConstruirSqlInscricoesFinalizadas(
+                long usuarioId,
+                InscricaoFinalizadaFiltro filtro,
+                bool paraContagem = false)
+        {
+            var sql = new StringBuilder();
+            var parametros = new DynamicParameters();
+            parametros.Add("usuarioId", usuarioId);
+
+            if (paraContagem)
+            {
+                sql.Append(@"
+            select count(*)
+            from inscricao i
+            inner join proposta_turma pt on pt.id = i.proposta_turma_id
+            inner join proposta p on p.id = pt.proposta_id
+            where not i.excluido
+              and not p.excluido
+              and i.usuario_id = @usuarioId
+              and p.data_realizacao_fim < CURRENT_DATE
+        ");
+            }
+            else
+            {
+                sql.Append(@"
+            select i.id,
+                   i.situacao,
+                   i.origem,
+                   i.criado_em,
+                   i.proposta_turma_id,
+                   pt.nome,
+                   pt.proposta_id,
+                   p.nome_formacao,
+                   p.data_realizacao_inicio,
+                   p.data_realizacao_fim,
+                   p.id as Id,
+                   p.integrar_no_sga 
+            from inscricao i
+            inner join proposta_turma pt on pt.id = i.proposta_turma_id
+            inner join proposta p on p.id = pt.proposta_id
+            where not i.excluido
+              and not p.excluido
+              and i.usuario_id = @usuarioId
+              and p.data_realizacao_fim < CURRENT_DATE
+        ");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro?.NomeFormacao))
+            {
+                sql.Append(" and upper(p.nome_formacao) like upper(@NomeFormacao) ");
+                parametros.Add("NomeFormacao", $"%{filtro.NomeFormacao}%");
+            }
+
+            if (filtro?.SituacaoInscricao != null)
+            {
+                sql.Append(" and i.situacao = @SituacaoInscricao ");
+                parametros.Add("SituacaoInscricao", filtro.SituacaoInscricao);
+            }
+
+            if (filtro?.DataInicial != null)
+            {
+                sql.Append(" and p.data_realizacao_inicio >= @DataInicial ");
+                parametros.Add("DataInicial", filtro.DataInicial.Value.Date);
+            }
+
+            if (filtro?.DataFinal != null)
+            {
+                sql.Append(" and p.data_realizacao_fim <= @DataFinal ");
+                parametros.Add("DataFinal", filtro.DataFinal.Value.Date);
+            }
+
+            if (!paraContagem)
+            {
+                sql.Append(" order by i.criado_em, pt.nome ");
+            }
+
+            return (sql.ToString(), parametros);
+        }
+
+        public Task<IEnumerable<Inscricao>> ObterDadosPaginadosPorInscricoesFinalizadas(
+            long usuarioId,
+            int numeroPagina,
+            int numeroRegistros,
+            InscricaoFinalizadaFiltro filtro)
+        {
+            var (sql, parametros) = ConstruirSqlInscricoesFinalizadas(usuarioId, filtro);
+
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+            parametros.Add("numeroRegistros", numeroRegistros);
+            parametros.Add("registrosIgnorados", registrosIgnorados);
+
+            sql += " limit @numeroRegistros offset @registrosIgnorados ";
+
+            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Proposta, Inscricao>(
+                sql,
+                (inscricao, propostaTurma, proposta) =>
+                {
+                    propostaTurma.Proposta = proposta;
+                    inscricao.PropostaTurma = propostaTurma;
+                    return inscricao;
+                },
+                parametros,
+                splitOn: "proposta_turma_id,proposta_id");
+        }
+
+        public Task<int> ObterTotalRegistrosPorInscricoesFinalizadas(long usuarioId, InscricaoFinalizadaFiltro filtro)
+        {
+            var (sql, parametros) = ConstruirSqlInscricoesFinalizadas(usuarioId, filtro, paraContagem: true);
+            return conexao.Obter().ExecuteScalarAsync<int>(sql, parametros);
+        }
+
         public async Task<ResultadoPaginado<Inscricao>> ObterInscricoesPorPropostaPaginadasAsync(FiltroListagemInscricaoDto filtro)
         {
             var parametros = new DynamicParameters();
