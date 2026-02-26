@@ -58,6 +58,28 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoObterInscricaoPaginada.Executar());
         }
 
+        [HttpGet("proximas")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<InscricaoPaginadaDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterInscricoesProximasPaginada(
+            [FromServices] ICasoDeUsoObterInscricaoProximaPaginada casoDeUsoObterInscricaoPaginada,
+            [FromQuery] InscricaoProximaFiltroDTO inscricaoDTO)
+        {
+            return Ok(await casoDeUsoObterInscricaoPaginada.Executar(inscricaoDTO));
+        }
+
+        [HttpGet("finalizadas")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<InscricaoPaginadaDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterInscricoesFinalizadasPaginada(
+            [FromServices] ICasoDeUsoObterInscricaoFinalizadaPaginada casoDeUsoObterInscricaoPaginada,
+            [FromQuery] InscricaoFinalizadaFiltroDTO inscricaoDTO)
+        {
+            return Ok(await casoDeUsoObterInscricaoPaginada.Executar(inscricaoDTO));
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(RetornoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
