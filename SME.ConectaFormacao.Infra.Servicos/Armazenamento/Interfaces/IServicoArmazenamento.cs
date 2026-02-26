@@ -1,4 +1,6 @@
-﻿namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces
+﻿using SME.ConectaFormacao.Dominio.Comum;
+
+namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces
 {
     public interface IServicoArmazenamento
     {
@@ -13,5 +15,6 @@
         string ObterUrlPorGuid(Guid arquivoId, bool ehPastaTemp = false);
         Task<string> ObterUrlPorChaveObjetoAsync(string chaveObjeto, bool ehPastaTemp = false);
         Task<string> UploadCertificadoCodafAsync(string nomeArquivo, byte[] conteudoPdf);
+        Task<Resultado<Stream>> ObterArquivoPorChaveAsync(string chaveObjeto, CancellationToken cancellationToken = default);
     }
 }

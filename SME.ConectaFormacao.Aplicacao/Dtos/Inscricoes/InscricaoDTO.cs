@@ -1,4 +1,6 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
+
+namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
 {
     public class InscricaoDto
     {
@@ -14,5 +16,6 @@
 
         public int? TipoVinculo { get; set; }
         public required bool VagaRemanescente { get; set; }
+        public UsuarioAcessibilidadeDto? UsuarioAcessibilidade { get; set; }
     }
 }

@@ -1,8 +1,7 @@
-﻿using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
 
-namespace SME.ConectaFormacao.Aplicacao.Interfaces.Codaf
+namespace SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados
 {
     public interface ICasoDeUsoObterCertificadoCodafParaDownload
     {

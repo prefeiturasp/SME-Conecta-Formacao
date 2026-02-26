@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 {
     public class CasoDeUsoRecuperarCertificadosTravadosCodafResiliencia(
         IRepositorioCodafCertificado repositorioCodafCertificado,

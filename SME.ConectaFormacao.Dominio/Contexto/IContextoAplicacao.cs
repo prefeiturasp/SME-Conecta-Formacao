@@ -1,4 +1,6 @@
-﻿namespace SME.ConectaFormacao.Dominio.Contexto;
+﻿using SME.ConectaFormacao.Dominio.Enumerados;
+
+namespace SME.ConectaFormacao.Dominio.Contexto;
 
 public interface IContextoAplicacao
 {
@@ -8,9 +10,10 @@ public interface IContextoAplicacao
     string LoginUsuario { get; }
     string NomeUsuario { get; }
     string PerfilUsuario { get; }
+    Permissao[] Permissoes { get; }
     Guid? IdPerfilUsuario => !string.IsNullOrWhiteSpace(PerfilUsuario) ? Guid.Parse(PerfilUsuario) : null;
     string Administrador { get; }
-    T ObterVariavel<T>(string nome);
+    T? ObterVariavel<T>(string nome);
 
     IContextoAplicacao AtribuirContexto(IContextoAplicacao contexto);
     void AdicionarVariaveis(IDictionary<string, object> variaveis);

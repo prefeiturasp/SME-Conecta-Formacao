@@ -51,7 +51,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             Email = email;
             UltimoLogin = dataHora;
             Nome = nome;
-            if (cpf.EstaPreenchido())
+            if (!string.IsNullOrWhiteSpace(cpf))
                 Cpf = cpf;
 
             TipoEmail ??= Enumerados.TipoEmail.FuncionarioUnidadeParceira;

@@ -1,9 +1,13 @@
+using System.Linq.Expressions;
+
 namespace SME.ConectaFormacao.Dominio.Repositorios;
 
 public interface IRepositorioBaseAuditavel<TEntidade>
     where TEntidade : EntidadeBaseAuditavel
 {
     Task<TEntidade> ObterPorId(long id);
+    Task<TEntidade?> ObterPorExpressaoAsync(Expression<Func<TEntidade, bool>> predicado);
+    Task<IList<TEntidade>> ObterListaPorExpressaoAsync(Expression<Func<TEntidade, bool>> predicado);
     Task<TEntidade?> ObterNaoExcluidosPorIdAsync(long id);
     Task<IList<TEntidade>> ObterTodos();
     Task<IList<TEntidade>> ObterTodosNaoExcluidosAsync();

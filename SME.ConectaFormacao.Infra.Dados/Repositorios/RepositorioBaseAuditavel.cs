@@ -3,20 +3,17 @@ using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.Repositorios;
+using System.Linq.Expressions;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios;
 
-public abstract class RepositorioBaseAuditavel<TEntidade> : IRepositorioBaseAuditavel<TEntidade>
+public abstract class RepositorioBaseAuditavel<TEntidade>(
+    IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : 
+    IRepositorioBaseAuditavel<TEntidade>
     where TEntidade : EntidadeBaseAuditavel
 {
-    protected readonly IContextoAplicacao contexto;
-    protected readonly IConectaFormacaoConexao conexao;
-
-    public RepositorioBaseAuditavel(IContextoAplicacao contexto, IConectaFormacaoConexao conexao)
-    {
-        this.contexto = contexto;
-        this.conexao = conexao;
-    }
+    protected readonly IContextoAplicacao contexto = contexto;
+    protected readonly IConectaFormacaoConexao conexao = conexao;
 
     public Task<TEntidade> ObterPorId(long id)
         => conexao.Obter().GetAsync<TEntidade>(id);
@@ -24,6 +21,17 @@ public abstract class RepositorioBaseAuditavel<TEntidade> : IRepositorioBaseAudi
     public async virtual Task<IList<TEntidade>> ObterTodos()
         => (await conexao.Obter().GetAllAsync<TEntidade>())
             .ToList();
+
+    public Task<TEntidade?> ObterPorExpressaoAsync(Expression<Func<TEntidade, bool>> predicado)
+    {
+        return conexao.Obter().FirstOrDefaultAsync(predicado);
+    }
+
+    public async Task<IList<TEntidade>> ObterListaPorExpressaoAsync(Expression<Func<TEntidade, bool>> predicado)
+    {
+        var resultado = await conexao.Obter().SelectAsync(predicado);
+        return [.. resultado];
+    }
 
     public async Task<long> Inserir(TEntidade entidade)
     {

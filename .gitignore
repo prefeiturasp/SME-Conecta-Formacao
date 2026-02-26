@@ -402,3 +402,6 @@ FodyWeavers.xsd
 .mono/registry/CurrentUser/software/microsoft/sqmclient/values.xml
 flyway.conf
 SME.Conecta.Notificacao.Worker/.env
+
+.github/*
+.github/copilot-instructions.md
