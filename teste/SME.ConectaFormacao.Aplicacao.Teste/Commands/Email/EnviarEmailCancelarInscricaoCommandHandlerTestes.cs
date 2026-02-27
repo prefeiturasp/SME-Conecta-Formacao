@@ -7,7 +7,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
+namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Email
 {
     public class EnviarEmailCancelarInscricaoCommandHandlerTestes
     {
