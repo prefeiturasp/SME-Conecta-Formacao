@@ -245,7 +245,7 @@
         public const string ObterTodosCertificadosSelect = """
                 SELECT CC.ID,
                          CC.CODIGO_CERTIFICADO AS codigoCertificado,
-                         coalesce(U_Cursista.NOME, U_Regente.NOME) AS nomeParticipante,
+                         coalesce(U_Cursista.NOME, U_Regente.NOME, PR.nome_regente) AS nomeParticipante,
                          CASE
              	            WHEN CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID IS NOT NULL THEN @Cursista
              	            WHEN CC.PROPOSTA_REGENTE_TURMA_ID IS NOT NULL THEN @Regente
