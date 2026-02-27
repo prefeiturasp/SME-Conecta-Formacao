@@ -107,8 +107,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             // Arrange
             var comando = CriarComandoValido();
             var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
-            encontroDepois.Turmas = [new PropostaEncontroTurma { Id = 1 }];
-            encontroDepois.Datas = [new PropostaEncontroData { Id = 1 }];
+            encontroDepois.Turmas = [new() { Id = 1 }];
+            encontroDepois.Datas = [new() { Id = 1 }];
 
             var transacaoDbMock = ConfigurarTransacaoComSucesso();
 
@@ -140,7 +140,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             // Arrange
             var comando = CriarComandoValido();
             var encontroAntes = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
-            encontroAntes.HoraInicio = "10:00"; // Diferente do DTO
+            encontroAntes.HoraInicio = "10:00";
 
             var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
             encontroDepois.HoraInicio = "11:00";
@@ -169,7 +169,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             var encontroAntes = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
             var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
 
-            // Ambos iguais
             encontroAntes.HoraInicio = "10:00"; encontroDepois.HoraInicio = "10:00";
             encontroAntes.HoraFim = "12:00"; encontroDepois.HoraFim = "12:00";
             encontroAntes.Local = "Sala 1"; encontroDepois.Local = "Sala 1";
@@ -197,24 +196,22 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             var comando = CriarComandoValido();
             var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
 
-            // Preparação Turmas: Tinha 1, DTO manda 2. Resultado esperado -> Deletar 1, Inserir 2.
-            var turmasAntes = new List<PropostaEncontroTurma> { new PropostaEncontroTurma { Id = 1, TurmaId = 100 } };
-            encontroDepois.Turmas = [new PropostaEncontroTurma { Id = 2, TurmaId = 200 }];
+            var turmasAntes = new List<PropostaEncontroTurma> { new() { Id = 1, TurmaId = 100 } };
+            encontroDepois.Turmas = [new() { Id = 2, TurmaId = 200 }];
 
-            // Preparação Datas: Tinha 10 e 20. DTO manda 20 (modificada) e 30. Resultado esperado -> Deletar 10, Alterar 20, Inserir 30.
             var datasAntes = new List<PropostaEncontroData>
             {
-                new PropostaEncontroData { Id = 10, DataInicio = new DateTime(2023, 1, 1) },
-                new PropostaEncontroData { Id = 20, DataInicio = new DateTime(2023, 2, 2) }
+                new() { Id = 10, DataInicio = new(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new() { Id = 20, DataInicio = new(2023, 2, 2, 0, 0, 0, DateTimeKind.Utc) }
             };
 
             encontroDepois.Datas =
             [
-                new PropostaEncontroData { Id = 20, DataInicio = new DateTime(2023, 2, 3) }, // Alterado
-                new PropostaEncontroData { Id = 30, DataInicio = new DateTime(2023, 3, 3) }  // Novo
+                new() { Id = 20, DataInicio = new(2023, 2, 3, 0, 0, 0, DateTimeKind.Utc) },
+                new() { Id = 30, DataInicio = new(2023, 3, 3, 0, 0, 0, DateTimeKind.Utc) }
             ];
 
-            var transacaoDbMock = ConfigurarTransacaoComSucesso();
+            ConfigurarTransacaoComSucesso();
 
             _repositorioProposta.Setup(r => r.ObterEncontroPorId(comando.EncontroDTO.Id)).ReturnsAsync(encontroDepois);
             _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDTO)).Returns(encontroDepois);
@@ -224,16 +221,14 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             // Act
             await _sut.Handle(comando, CancellationToken.None);
 
-            // Assert Turmas
+            // Assert
             _repositorioProposta.Verify(r => r.InserirEncontroTurmas(encontroDepois.Id, It.Is<IEnumerable<PropostaEncontroTurma>>(t => t.First().Id == 2)), Times.Once);
             _repositorioProposta.Verify(r => r.RemoverEncontroTurmas(It.Is<IEnumerable<PropostaEncontroTurma>>(t => t.First().Id == 1)), Times.Once);
 
-            // Assert Datas
             _repositorioProposta.Verify(r => r.InserirEncontroDatas(encontroDepois.Id, It.Is<IEnumerable<PropostaEncontroData>>(d => d.First().Id == 30)), Times.Once);
             _repositorioProposta.Verify(r => r.AtualizarEncontroData(It.Is<PropostaEncontroData>(d => d.Id == 20)), Times.Once);
             _repositorioProposta.Verify(r => r.RemoverEncontroDatas(It.Is<IEnumerable<PropostaEncontroData>>(d => d.First().Id == 10)), Times.Once);
 
-            // Assert Caches da Turma Antes
             _cacheDistribuido.Verify(c => c.RemoverAsync(CacheDistribuidoNomes.PropostaTurmaEncontro.Parametros(100)), Times.Once);
         }
 
@@ -265,7 +260,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
         #region Factory Methods
 
-        private SalvarPropostaEncontroCommand CriarComandoValido()
+        private static SalvarPropostaEncontroCommand CriarComandoValido()
         {
             return new SalvarPropostaEncontroCommand(999, new PropostaEncontroDTO { Id = 1 });
         }
