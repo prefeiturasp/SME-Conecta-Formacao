@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
@@ -14,7 +14,7 @@ using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 {
     public class CasoDeUsoGerarArquivoCertificadosCodaf(
         IServicoRelatorio servicoRelatorio,

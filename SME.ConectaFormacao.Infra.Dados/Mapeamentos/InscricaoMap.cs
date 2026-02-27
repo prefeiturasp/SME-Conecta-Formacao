@@ -28,6 +28,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 
             Map(c => c.SituacaoAnterior).ToColumn("situacao_anterior");
 
+            Map(c => c.UsuarioAcessibilidadeId).ToColumn("usuario_acessibilidade_id");
+
             Map(c => c.PropostaTurma).Ignore();
             Map(c => c.Cargo).Ignore();
             Map(c => c.Funcao).Ignore();

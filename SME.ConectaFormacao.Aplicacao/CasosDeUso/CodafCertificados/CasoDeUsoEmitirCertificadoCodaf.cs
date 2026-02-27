@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -10,7 +10,7 @@ using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 {
     public class CasoDeUsoEmitirCertificadoCodaf(
         IRepositorioCodafCertificado repositorioCodafCertificado,

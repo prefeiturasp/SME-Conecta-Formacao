@@ -1,15 +1,17 @@
-﻿using Elastic.Apm.Api;
+﻿using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Constantes;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Options;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Json;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Relatorio
 {
+    [ExcludeFromCodeCoverage]
     public class ServicoRelatorio : IServicoRelatorio
     {
         private readonly HttpClient _httpClient;
@@ -27,6 +29,39 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio
             resposta.EnsureSuccessStatusCode();
             var arquivoBytes = await resposta.Content.ReadAsByteArrayAsync();
             return arquivoBytes;
+        }
+
+        public async Task<Resultado<Stream>> ConveterHtmlCertificadoCodafParaPdfAsync(HtmlCertificadoCodafDto htmlCertificadoCodafDto, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var resposta = await _httpClient.PostAsJsonAsync(
+                    EndpointRelatoriosConstants.RELATORIO_CERTIFICADO_CODAF,
+                    htmlCertificadoCodafDto,
+                    cancellationToken);
+
+                if (!resposta.IsSuccessStatusCode)
+                {
+                    var erroDetalhe = await resposta.Content.ReadAsStringAsync(cancellationToken);
+                    return new Erro(TipoFalha.ErroInterno, $"A API de relatórios retornou {resposta.StatusCode}. Detalhe: {erroDetalhe}");
+                }
+
+                if (resposta.StatusCode == HttpStatusCode.NoContent)
+                {
+                    return Erro.NaoEncontrado(MensagemNegocio.ARQUIVO_NAO_ENCONTRADO);
+                }
+
+                using var stream = await resposta.Content.ReadAsStreamAsync(cancellationToken);
+                var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream, cancellationToken);
+                memoryStream.Position = 0;
+
+                return memoryStream;
+            }
+            catch (Exception ex)
+            {
+                return new Erro(TipoFalha.ErroInterno, $"Ocorreu um erro ao converter o certificado Codaf para PDF: {ex.Message}");
+            }
         }
 
         public async Task<byte[]> GerarRelatorioCodafAsync(long codafId)

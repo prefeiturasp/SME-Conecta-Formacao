@@ -9,10 +9,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos.IoC
 {
     public static class ServicoAcessosCHelper
     {
-        public static void ConfigurarServicoAcessos(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigurarServicoAcessos(this IServiceCollection services, IConfiguration configuration)
         {
             if (configuration == null)
-                return;
+                return services;
 
             var servicoAcessosOptions = new ServicoAcessosOptions();
             configuration.GetSection(ServicoAcessosOptions.Secao).Bind(servicoAcessosOptions, c => c.BindNonPublicProperties = true);
@@ -24,6 +24,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos.IoC
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
                 c.DefaultRequestHeaders.Add("x-api-acessos-key", servicoAcessosOptions.KeyApi);
             }).AddPolicyHandler(GetRetryPolicy());
+            return services;
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

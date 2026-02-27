@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Primitives;
 using SME.ConectaFormacao.Dominio.Contexto;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using System.Security.Claims;
 
 namespace SME.ConectaFormacao.Webapi.Contexto;
@@ -26,6 +27,7 @@ public class ContextoHttp : ContextoBase
         Variaveis.Add("PerfilUsuario", ObterPerfilAtual());
         Variaveis.Add("EmailUsuario", userContext?.Claims?.FirstOrDefault(a => a.Type == "email")?.Value ?? string.Empty);
         Variaveis.Add("Dres", userContext?.Claims?.Where(a => a.Type == "dres").Select(s => s.Value).ToArray());
+        Variaveis.Add("Permissoes", ObterPermissoes());
 
         var authorizationHeader = httpContextAccessor.HttpContext?.Request?.Headers["authorization"];
 
@@ -67,5 +69,14 @@ public class ContextoHttp : ContextoBase
     public override void AdicionarVariaveis(IDictionary<string, object> variaveis)
     {
         this.Variaveis = variaveis;
+    }
+    private Permissao[] ObterPermissoes()
+    {
+        return [.. (httpContextAccessor.HttpContext?.User?.Claims ?? [])
+                .Where(x => x.Type == ClaimTypes.Role)
+                .Select(x => Enum.TryParse<Permissao>(x.Value, out var permissao) && Enum.IsDefined(permissao)
+                        ? permissao
+                        : (Permissao?)null)
+                .OfType<Permissao>()];
     }
 }

@@ -1,6 +1,6 @@
 ﻿using SME.ConectaFormacao.Dominio.Comum;
 
-namespace SME.ConectaFormacao.Aplicacao.Interfaces.Codaf
+namespace SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados
 {
     public interface ICasoDeUsoEmitirCertificadoCodaf
     {

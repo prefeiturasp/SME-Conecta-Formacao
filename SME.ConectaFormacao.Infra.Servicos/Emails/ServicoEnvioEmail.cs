@@ -1,0 +1,80 @@
+﻿using MailKit.Net.Smtp;
+using Microsoft.Extensions.Logging;
+using MimeKit;
+using Polly;
+using Polly.Retry;
+using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Emails.Interfaces;
+using System.Net.Sockets;
+
+namespace SME.ConectaFormacao.Infra.Servicos.Emails
+{
+    public class ServicoEnvioEmail : IServicoEnvioEmail
+    {
+        private readonly IServicoAcessos _servicoAcessos;
+        private readonly ILogger<ServicoEnvioEmail> _logger;
+        private readonly AsyncRetryPolicy _retryPolicy;
+        private readonly ISmtpClientFactory _smtpClientFactory;
+        private static readonly SemaphoreSlim _semaphore = new(2, 2);
+
+        public ServicoEnvioEmail(IServicoAcessos servicoAcessos, ISmtpClientFactory smtpClientFactory, ILogger<ServicoEnvioEmail> logger)
+        {
+            _servicoAcessos = servicoAcessos;
+            _logger = logger;
+            _smtpClientFactory = smtpClientFactory;
+
+            _retryPolicy = Policy
+                .Handle<SmtpCommandException>(ex => ex.StatusCode == SmtpStatusCode.TransactionFailed || ex.ErrorCode == SmtpErrorCode.UnexpectedStatusCode)
+                .Or<SocketException>()
+                .Or<IOException>()
+                .WaitAndRetryAsync(
+                    retryCount: 3,
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)), // 2s, 4s, 8s
+                    onRetry: (exception, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogWarning(exception,
+                            "Falha temporária no envio de e-mail. Tentativa {Tentativa}/3. Aguardando {Segundos}s. Erro: {MensagemErro}",
+                            retryCount,
+                            timeSpan.TotalSeconds,
+                            exception.Message);
+                    }
+                );
+        }
+
+        public async Task EnviarAsync(MimeMessage mensagem, CancellationToken cancellationToken)
+        {
+            // Aguarda até que haja uma vaga para enviar o email, garantindo que no máximo 2 envios ocorram simultaneamente
+            await _semaphore.WaitAsync(cancellationToken);
+            try
+            {
+                var configuracaoEmail = await _servicoAcessos.ObterConfiguracaoEmail();
+                await _retryPolicy.ExecuteAsync(async (token) =>
+                {
+                    using var client = _smtpClientFactory.Criar();
+                    try
+                    {
+                        client.Timeout = 10000; // Define um timeout de 10 segundos para as operações SMTP
+
+                        await client.ConnectAsync(configuracaoEmail.Smtp, configuracaoEmail.Porta, configuracaoEmail.TLS,
+                            token);
+                        await client.AuthenticateAsync(configuracaoEmail.Usuario, configuracaoEmail.Senha, token);
+
+                        await client.SendAsync(mensagem, token);
+                        await client.DisconnectAsync(true, token);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Erro ao enviar e-mail para {Destinatario}. Tentativa falhou.", mensagem.To);
+                        if (client.IsConnected)
+                            await client.DisconnectAsync(false, token);
+                        throw;
+                    }
+                }, cancellationToken);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+    }
+}
