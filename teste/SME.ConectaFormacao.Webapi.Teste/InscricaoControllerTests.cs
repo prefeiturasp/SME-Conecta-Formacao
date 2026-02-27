@@ -105,6 +105,48 @@ namespace SME.ConectaFormacao.Webapi.Teste
         }
 
         [Fact]
+        public async Task Dado_SolicitacaoValida_Quando_ObterInscricoesProximasPaginada_Entao_RetornarPaginacao()
+        {
+            // Arrange
+            var mockUseCase = new Mock<ICasoDeUsoObterInscricaoProximaPaginada>();
+            var resultadoEsperado = new PaginacaoResultadoDto<InscricaoPaginadaDTO>([], 0, 10);
+
+            var dto = new Faker<InscricaoProximaFiltroDTO>()
+                .RuleFor(x => x.CodigoFormacao, f => f.Random.Long(1, 100))
+                .Generate();
+
+            mockUseCase.Setup(x => x.Executar(dto)).ReturnsAsync(resultadoEsperado);
+
+            // Act
+            var resultado = await _controller.ObterInscricoesProximasPaginada(mockUseCase.Object, dto);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(resultado);
+            Assert.Equal(resultadoEsperado, okResult.Value);
+        }
+
+        [Fact]
+        public async Task Dado_SolicitacaoValida_Quando_ObterInscricoesFinalizadasPaginada_Entao_RetornarPaginacao()
+        {
+            // Arrange
+            var mockUseCase = new Mock<ICasoDeUsoObterInscricaoFinalizadaPaginada>();
+            var resultadoEsperado = new PaginacaoResultadoDto<InscricaoPaginadaDTO>([], 0, 10);
+
+            var dto = new Faker<InscricaoFinalizadaFiltroDTO>()
+                .RuleFor(x => x.NomeFormacao, f => f.Random.AlphaNumeric(7))
+                .Generate();
+
+            mockUseCase.Setup(x => x.Executar(dto)).ReturnsAsync(resultadoEsperado);
+
+            // Act
+            var resultado = await _controller.ObterInscricoesFinalizadasPaginada(mockUseCase.Object, dto);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(resultado);
+            Assert.Equal(resultadoEsperado, okResult.Value);
+        }
+
+        [Fact]
         public async Task Dado_InscricaoValida_Quando_SalvarInscricao_Entao_RetornarSucesso()
         {
             // Arrange
