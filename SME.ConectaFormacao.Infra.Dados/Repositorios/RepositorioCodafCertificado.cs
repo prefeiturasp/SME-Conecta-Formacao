@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Npgsql;
 using NpgsqlTypes;
-using Org.BouncyCastle.Tls;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -20,18 +19,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         RepositorioBaseAuditavel<CodafCertificado>(contexto, conexao),
         IRepositorioCodafCertificado
     {
-        public async Task<IEnumerable<DadosEmissaoCertificadoCodafDto>> 
-            ObterDadosParaEmissaoCertificadosCodafAsync(long codafListaPresencaId) => 
+        public async Task<IEnumerable<DadosEmissaoCertificadoCodafDto>>
+            ObterDadosParaEmissaoCertificadosCodafAsync(long codafListaPresencaId) =>
             await conexao.Obter()
-                .QueryAsync<DadosEmissaoCertificadoCodafDto>(CodafCertificadoQueries.ObterDadosParaEmissao, 
-                new { idCodaf = codafListaPresencaId });        
+                .QueryAsync<DadosEmissaoCertificadoCodafDto>(CodafCertificadoQueries.ObterDadosParaEmissao,
+                new { idCodaf = codafListaPresencaId });
 
         public async Task InserirLoteAsync(IEnumerable<CodafCertificado> certificados)
         {
             if (certificados is null || !certificados.Any())
                 return;
 
-            using var writer = await ((NpgsqlConnection) conexao.Obter())
+            using var writer = await ((NpgsqlConnection)conexao.Obter())
                 .BeginBinaryImportAsync(CodafCertificadoQueries.InserirLoteCopy);
             foreach (var cert in certificados)
             {
@@ -65,22 +64,22 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             await writer.CompleteAsync();
         }
 
-        public async Task<IEnumerable<DadosProcessamentoCertificadoCodafDto>> 
-            ObterCertificadosParaProcessamentoAsync() => 
+        public async Task<IEnumerable<DadosProcessamentoCertificadoCodafDto>>
+            ObterCertificadosParaProcessamentoAsync() =>
             await conexao.Obter().QueryAsync<DadosProcessamentoCertificadoCodafDto>(
                 CodafCertificadoQueries.ObterParaProcessamento, new
-            {
-                statusPendente = (int)StatusProcessamentoCertificadoCodaf.Pendente,
-                statusProcessando = (int)StatusProcessamentoCertificadoCodaf.EmProcessamento,
-                tamanhoLote = 10
-            });
+                {
+                    statusPendente = (int)StatusProcessamentoCertificadoCodaf.Pendente,
+                    statusProcessando = (int)StatusProcessamentoCertificadoCodaf.EmProcessamento,
+                    tamanhoLote = 10
+                });
 
         public async Task AtualizarStatusProcessamentoAsync
-            (long id, StatusProcessamentoCertificadoCodaf statusProcessamento, 
+            (long id, StatusProcessamentoCertificadoCodaf statusProcessamento,
             string? chaveObjetoArmazenamento, string? erroProcessamento)
         {
             await conexao.Obter().ExecuteAsync(
-                CodafCertificadoQueries.AtualizarStatusProcessamento, 
+                CodafCertificadoQueries.AtualizarStatusProcessamento,
                 new
                 {
                     id,
@@ -121,7 +120,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 parametros.Add("numeroHomologacao", $"{filtro.NumeroHomologacao.Trim()}%");
             }
 
-            if(!string.IsNullOrWhiteSpace(filtro.NomeFormacao))
+            if (!string.IsNullOrWhiteSpace(filtro.NomeFormacao))
             {
                 condicoesWhere.Append(" AND nomeFormacao ILIKE @nomeFormacao ");
                 parametros.Add("nomeFormacao", $"%{filtro.NomeFormacao.Trim()}%");
@@ -201,10 +200,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             };
         }
 
-        public async Task<DadosCertificadoUsuarioParaDownloadDto?> 
-            ObterCertificadoDisponivelDoUsuarioAsync(long codafCertificadoId) => 
+        public async Task<DadosCertificadoUsuarioParaDownloadDto?>
+            ObterCertificadoDisponivelDoUsuarioAsync(long codafCertificadoId) =>
                 await conexao.Obter().QueryFirstOrDefaultAsync<DadosCertificadoUsuarioParaDownloadDto>(
-                    CodafCertificadoQueries.ObterCertificadoDisponivelDoUsuario, 
+                    CodafCertificadoQueries.ObterCertificadoDisponivelDoUsuario,
                     new
                     {
                         certificadoId = codafCertificadoId,
@@ -270,7 +269,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (!string.IsNullOrWhiteSpace(filtro.DocumentoRegente))
             {
-                condicoesWhere.Append(" AND U_Regente.LOGIN = @rfRegente ");
+                condicoesWhere.Append(" AND PR.REGISTRO_FUNCIONAL = @rfRegente ");
                 parametros.Add("rfRegente", filtro.DocumentoRegente.Trim());
             }
 

@@ -251,7 +251,7 @@
              	            WHEN CC.PROPOSTA_REGENTE_TURMA_ID IS NOT NULL THEN @Regente
              	            ELSE @NaoDefinido
                          END AS tipoCertificado,
-                         coalesce(U_Cursista.LOGIN, U_Regente.LOGIN) AS documento,
+                         coalesce(U_Cursista.LOGIN, PR.REGISTRO_FUNCIONAL) AS documento,
                          CC.DATA_EMISSAO AS dataEmissao,
                          P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
                          P.ID AS codigoFormacao,
