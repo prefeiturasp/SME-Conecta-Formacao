@@ -1,28 +1,15 @@
 {
-  "name": "conecta-formacao-testesautomatizados",
-  "version": "1.0.0",
-  "description": "Testes automatizados com Cypress + Allure + Cucumber",
-  "main": "cypress.config.js",  
-  "scripts": {
-    "test": "npm run test:allure",
-    "test:ui": "cypress run --spec 'cypress/e2e/ui/**/*.cy.js' --reporter mocha-allure-reporter",
-    "test:api": "cypress run --spec 'cypress/e2e/api/**/*.cy.js' --reporter mocha-allure-reporter",
-    "e2e": "cypress run --reporter mocha-allure-reporter",
-    "report:allure": "allure generate allure-results --clean -o allure-report && allure open allure-report",
-    "test:allure": "npm run e2e && npm run report:allure",
-    "preinstall": "npx npm-force-resolutions"
-  },
-  "supportFile": "./support/e2e.js",
-  "dependencies": {
-    "cypress-real-events": "^1.7.4",
-    "cypress-xpath": "^2.0.1",
-    "hasha": "^6.0.0"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
-    "cypress": "^15.11.0"
+    "@badeball/cypress-cucumber-preprocessor": "^24.0.1",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
+    "@shelex/cypress-allure-plugin": "^2.41.2",
+    "axios": "^1.13.6",
+    "cypress": "^15.11.0",
+    "cypress-postgresql": "^1.0.8",
+    "dotenv": "^17.3.1",
+    "esbuild": "^0.27.3",
+    "esbuild-loader": "^4.4.2",
+    "form-data": "^4.0.5",
+    "pg": "^8.19.0"
   }
 }

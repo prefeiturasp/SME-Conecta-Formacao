@@ -1,12 +1,16 @@
-// Plugin do Allure (deve vir primeiro)
+// ALLURE (sempre primeiro)
 import '@shelex/cypress-allure-plugin'
-import "cypress-cloud/support";
 
-// Comandos personalizados - API
+// CUCUMBER (necessário para registrar steps corretamente)
+import '@badeball/cypress-cucumber-preprocessor'
 
-// Comandos personalizados - UI
+// COMANDOS CUSTOM - API
+import './commands_api/commands_login'
 
-// Evita falhas silenciosas caso algum comando seja removido ou renomeado
-Cypress.on('uncaught:exception', (err, runnable) => {
+// COMANDOS CUSTOM - UI
+import './commands_ui/commands_login'
+
+// Evita quebra por erro de front
+Cypress.on('uncaught:exception', () => {
   return false
 })
