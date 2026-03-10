@@ -200,8 +200,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.TipoFormacaoDescricao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
                 .ForMember(dest => dest.FormatoDescricao, opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
                 .ForMember(dest => dest.InscricaoEncerrada, opt => opt.MapFrom(o => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim))
-                .ForMember(dest => dest.Periodo, opt => opt.MapFrom(o => $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"))
-                .ForMember(dest => dest.PeriodoInscricao, opt => opt.MapFrom(o => $"{o.DataInscricaoInicio.GetValueOrDefault():dd/MM} até {o.DataInscricaoFim.GetValueOrDefault():dd/MM}"));
+                .ForMember(dest => dest.Periodo, opt => opt.MapFrom(o => $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM/yyyy} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM/yyyy}"))
+                .ForMember(dest => dest.PeriodoInscricao, opt => opt.MapFrom(o => $"{o.DataInscricaoInicio.GetValueOrDefault():dd/MM/yyyy} até {o.DataInscricaoFim.GetValueOrDefault():dd/MM/yyyy}"));
 
             CreateMap<FormacaoDetalhada, RetornoFormacaoDetalhadaDTO>()
                 .ForMember(dest => dest.Titulo, opt => opt.MapFrom(x => x.NomeFormacao))
@@ -213,17 +213,17 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.DataInscricaoFim, opt => opt.MapFrom(o => o.DataInscricaoFim))
                 .ForMember(dest => dest.Periodo,
                     opt => opt.MapFrom(o =>
-                        $"De {o.DataRealizacaoInicio.GetValueOrDefault():dd/MM} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM}"))
+                        $"De {o.DataRealizacaoInicio.GetValueOrDefault():dd/MM/yyyy} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM/yyyy}"))
                 .ForMember(dest => dest.PeriodoInscricao,
                 opt => opt.MapFrom(o =>
-                        $"De {o.DataInscricaoInicio.GetValueOrDefault():dd/MM} até {o.DataInscricaoFim.GetValueOrDefault():dd/MM}"));
+                        $"De {o.DataInscricaoInicio.GetValueOrDefault():dd/MM/yyyy} até {o.DataInscricaoFim.GetValueOrDefault():dd/MM/yyyy}"));
 
             CreateMap<FormacaoTurma, RetornoTurmaDetalheDTO>()
                 .ForMember(dest => dest.Horario,
                     opt => opt.MapFrom(o => $"{o.HoraInicio} até {o.HoraFim}"))
                 .ForMember(dest => dest.Periodos,
                     opt =>
-                        opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"De {s.DataInicio:dd/MM} até {s.DataFim.Value:dd/MM}" : $"{s.DataInicio:dd/MM}")));
+                        opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"De {s.DataInicio:dd/MM/yyyy} até {s.DataFim.Value:dd/MM/yyyy}" : $"{s.DataInicio:dd/MM/yyyy}")));
 
             CreateMap<Inscricao, InscricaoDto>()
                 .ForMember(dest => dest.UsuarioAcessibilidade, opt => opt.MapFrom(o => o.UsuarioAcessibilidade))
