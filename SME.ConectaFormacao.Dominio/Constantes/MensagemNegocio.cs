@@ -1,6 +1,6 @@
 namespace SME.ConectaFormacao.Dominio.Constantes;
 
-public class MensagemNegocio
+public static class MensagemNegocio
 {
     public const string IMPORTACAO_ARQUIVO_REGISTRO_NAO_LOCALIZADA = "Importação arquivo registro não localizada";
     public const string IMPORTACAO_ARQUIVO_NAO_LOCALIZADA = "Importação arquivo não localizada";
@@ -215,4 +215,5 @@ public class MensagemNegocio
     public const string ERRO_OBTER_ATRIBUICOES_SERVIDOR_EOL = "Não foi possível obter as atribuições de aula do servidor no EOL";
 
     public const string ERRO_FUNCAO_ATIVIDADE_EOL_POR_DRE = "Não foi possivel obter os dados de funcao atividade";
+    public const string ERRO_OBTER_TODAS_AS_UES = "Não foi possível obter as unidades escolares do EOL";
 }

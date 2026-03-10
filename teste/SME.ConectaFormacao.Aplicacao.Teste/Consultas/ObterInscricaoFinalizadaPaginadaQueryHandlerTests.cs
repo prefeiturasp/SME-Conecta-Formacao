@@ -1,18 +1,13 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Moq;
-using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
+
+namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas;
 
 public class ObterInscricaoFinalizadaPaginadaQueryHandlerTests
 {

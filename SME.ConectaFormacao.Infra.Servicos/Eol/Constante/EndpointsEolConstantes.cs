@@ -1,6 +1,6 @@
 ﻿namespace SME.ConectaFormacao.Infra.Servicos.Eol.Constante
 {
-    public class EndpointsEolConstantes
+    public static class EndpointsEolConstantes
     {
         public const string OBTER_NOME_PROFISSIONAL = "funcionarios/nome-servidor/{0}";
         public const string OBTER_NOME_ABREVIACAO_DRE = "abrangencia/nome-abreviacao-dres";
@@ -16,5 +16,6 @@
         public const string OBTER_CARGOS_EOL_POR_DRE_SYNC = "sync/cargos/dre/{0}";
         public const string OBTER_ATRIBUICOES_SERVIDOR_EOL_SYNC = "sync/atribuicoes-aula/servidor";
         public const string OBTER_FUNCAO_ATIVIDADE_EOL_POR_DRE_SYNC = "sync/funcoes-atividade/dre/{0}";
+        public const string OBTER_TODAS_AS_UES = "escolas/todas-unidades";
     }
 }

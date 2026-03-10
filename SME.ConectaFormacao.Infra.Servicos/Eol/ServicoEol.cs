@@ -3,11 +3,13 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Constante;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Eol
 {
+    [ExcludeFromCodeCoverage]
     public class ServicoEol(HttpClient httpClient) : IServicoEol
     {
         public async Task<CursistaResumidoServicoEol> ObterNomeCpfProfissionalPorRegistroFuncional(string registroFuncional)
@@ -186,6 +188,17 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<IEnumerable<FuncaoAtividadeDto>>();
+        }
+
+        public async Task<IEnumerable<UeEol>?> ObterTodasAsUesAsync()
+        {
+            var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_TODAS_AS_UES);
+
+            if (!resposta.IsSuccessStatusCode)
+                throw new NegocioException(MensagemNegocio.ERRO_OBTER_TODAS_AS_UES, resposta.StatusCode);
+
+            var json = await resposta.Content.ReadAsStringAsync();
+            return json.JsonParaObjeto<IEnumerable<UeEol>>();
         }
     }
 }
