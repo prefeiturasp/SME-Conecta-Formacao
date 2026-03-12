@@ -32,7 +32,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             MapAreaPromotora();
             MapDre();
             MapProposta();
+            MapPropostaParceista();
             MapPropostaDiversas();
+            MapPropostaTurma();
             MapArquivo();
             MapInscricao();
             MapUsuarios();
@@ -97,78 +99,6 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<Dre, DreServicoEol>().ReverseMap();
         }
 
-        private void MapPropostaDiversas() { 
-            CreateMap<PropostaEncontro, PropostaEncontroDTO>()
-                .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
-                .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => o.Datas))
-                .ReverseMap();
-
-            CreateMap<PropostaRegente, PropostaRegenteDTO>()
-                .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
-                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
-                .ReverseMap()
-                .ForMember(dest => dest.NomeRegente, opt => opt.MapFrom(o => o.NomeRegente.NaoEhNulo() ? o.NomeRegente.Trim().ToUpper() : null))
-                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf.NaoEhNulo() ? o.Cpf.SomenteNumeros() : null));
-
-            CreateMap<PropostaTutor, PropostaTutorDTO>()
-                .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
-                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
-                .ReverseMap()
-                .ForMember(dest => dest.NomeTutor, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.NomeTutor) ? null : o.NomeTutor.Trim().ToUpper()))
-                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.Cpf) ? null : o.Cpf.SomenteNumeros()));
-
-            CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>()
-                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
-                .ReverseMap();
-            CreateMap<PropostaEncontroData, PropostaEncontroDataDTO>().ReverseMap();
-
-            CreateMap<PropostaRegenteTurma, PropostaRegenteTurmaDTO>()
-                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
-                .ReverseMap();
-
-            CreateMap<PropostaTutorTurma, PropostaTutorTurmaDTO>()
-                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
-                .ReverseMap();
-
-            CreateMap<PropostaTipoInscricao, PropostaTipoInscricaoDTO>().ReverseMap();
-
-            CreateMap<PropostaPareceristaConsideracao, PropostaPareceristaConsideracaoCadastroDTO>().ReverseMap();
-
-            CreateMap<PropostaParecerista, PropostaPareceristaSugestaoDTO>()
-                .ForMember(dest => dest.Parecerista, opt => opt.MapFrom(o => o.NomeParecerista));
-
-            CreateMap<PropostaMovimentacao, PropostaMovimentacaoDTO>().ReverseMap();
-
-            CreateMap<PropostaTurma, PropostaTurmaDTO>()
-                .ReverseMap();
-
-            CreateMap<PropostaTurma, PropostaTurmaCompletoDTO>()
-                .ReverseMap();
-
-            CreateMap<PropostaTurma, RetornoListagemDTO>()
-                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome));
-            CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
-            CreateMap<PropostaParecerista, PropostaPareceristaDTO>();
-            CreateMap<PropostaCriterioCertificacao, PropostaCriterioCertificacaoDto>();
-            CreateMap<PropostaCriterioValidacaoInscricao, PropostaCriterioValidacaoInscricaoDTO>().ReverseMap();
-            CreateMap<PropostaFuncaoEspecifica, PropostaFuncaoEspecificaDTO>().ReverseMap();
-            CreateMap<PropostaVagaRemanecente, PropostaVagaRemanecenteDTO>().ReverseMap();
-            CreateMap<PropostaPublicoAlvo, PropostaPublicoAlvoDTO>().ReverseMap();
-            CreateMap<PropostaPalavraChave, PropostaPalavraChaveDTO>().ReverseMap();
-            CreateMap<PropostaParecerista, PropostaPareceristaDTO>().ReverseMap();
-            CreateMap<PropostaModalidade, PropostaModalidadeDTO>().ReverseMap();
-            CreateMap<PropostaAnoTurma, PropostaAnoTurmaDTO>().ReverseMap();
-            CreateMap<PropostaComponenteCurricular, PropostaComponenteCurricularDTO>().ReverseMap();
-            CreateMap<PropostaCriterioCertificacao, CriterioCertificacaoDTO>().ReverseMap();
-
-            CreateMap<PropostaPareceristaConsideracao, PropostaPareceristaConsideracaoCompletoDTO>().ReverseMap();
-
-            CreateMap<PropostaPareceristaConsideracao, AuditoriaDTO>().ReverseMap();
-
-            CreateMap<PropostaPareceristaConsideracao, PropostaPareceristaConsideracaoDTO>()
-                .ForMember(dest => dest.Auditoria, opt => opt.MapFrom(o => o))
-                .ReverseMap();       
-        }
 
         private void MapProposta()
         {
@@ -211,6 +141,89 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(o => o.Id))
                 .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.NomeFormacao))
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
+        }
+
+        private void MapPropostaParceista()
+        {
+            CreateMap<PropostaParecerista, PropostaPareceristaDTO>().ReverseMap();
+
+            CreateMap<PropostaParecerista, PropostaPareceristaSugestaoDTO>()
+                .ForMember(dest => dest.Parecerista, opt => opt.MapFrom(o => o.NomeParecerista));
+
+            CreateMap<PropostaPareceristaConsideracao, PropostaPareceristaConsideracaoCadastroDTO>().ReverseMap();
+
+
+            CreateMap<PropostaParecerista, PropostaPareceristaDTO>();
+
+            CreateMap<PropostaPareceristaConsideracao, PropostaPareceristaConsideracaoCompletoDTO>().ReverseMap();
+
+            CreateMap<PropostaPareceristaConsideracao, AuditoriaDTO>().ReverseMap();
+
+            CreateMap<PropostaPareceristaConsideracao, PropostaPareceristaConsideracaoDTO>()
+                .ForMember(dest => dest.Auditoria, opt => opt.MapFrom(o => o))
+                .ReverseMap();
+        }
+
+        private void MapPropostaTurma()
+        {
+            CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
+                .ReverseMap();
+
+            CreateMap<PropostaRegenteTurma, PropostaRegenteTurmaDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
+                .ReverseMap();
+
+            CreateMap<PropostaTutorTurma, PropostaTutorTurmaDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
+                .ReverseMap();
+
+            CreateMap<PropostaTurma, PropostaTurmaDTO>()
+                .ReverseMap();
+
+            CreateMap<PropostaTurma, PropostaTurmaCompletoDTO>()
+                .ReverseMap();
+
+            CreateMap<PropostaTurma, RetornoListagemDTO>()
+                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(o => o.Nome));
+
+            CreateMap<PropostaAnoTurma, PropostaAnoTurmaDTO>().ReverseMap();
+        }
+
+        private void MapPropostaDiversas()
+        {
+            CreateMap<PropostaEncontro, PropostaEncontroDTO>()
+                .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => o.Datas))
+                .ReverseMap();
+
+            CreateMap<PropostaRegente, PropostaRegenteDTO>()
+                .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
+                .ReverseMap()
+                .ForMember(dest => dest.NomeRegente, opt => opt.MapFrom(o => o.NomeRegente.NaoEhNulo() ? o.NomeRegente.Trim().ToUpper() : null))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Cpf.NaoEhNulo() ? o.Cpf.SomenteNumeros() : null));
+
+            CreateMap<PropostaTutor, PropostaTutorDTO>()
+                .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
+                .ForMember(dest => dest.NomesTurmas, opt => opt.MapFrom(o => string.Join(", ", o.Turmas.Select(x => x.Turma.Nome))))
+                .ReverseMap()
+                .ForMember(dest => dest.NomeTutor, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.NomeTutor) ? null : o.NomeTutor.Trim().ToUpper()))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.Cpf) ? null : o.Cpf.SomenteNumeros()));
+
+            CreateMap<PropostaEncontroData, PropostaEncontroDataDTO>().ReverseMap();
+            CreateMap<PropostaTipoInscricao, PropostaTipoInscricaoDTO>().ReverseMap();
+            CreateMap<PropostaMovimentacao, PropostaMovimentacaoDTO>().ReverseMap();
+            CreateMap<PropostaCriterioCertificacao, PropostaCriterioCertificacaoDto>();
+            CreateMap<PropostaCriterioValidacaoInscricao, PropostaCriterioValidacaoInscricaoDTO>().ReverseMap();
+            CreateMap<PropostaFuncaoEspecifica, PropostaFuncaoEspecificaDTO>().ReverseMap();
+            CreateMap<PropostaVagaRemanecente, PropostaVagaRemanecenteDTO>().ReverseMap();
+            CreateMap<PropostaPublicoAlvo, PropostaPublicoAlvoDTO>().ReverseMap();
+            CreateMap<PropostaPalavraChave, PropostaPalavraChaveDTO>().ReverseMap();
+            CreateMap<PropostaModalidade, PropostaModalidadeDTO>().ReverseMap();
+            CreateMap<PropostaComponenteCurricular, PropostaComponenteCurricularDTO>().ReverseMap();
+            CreateMap<PropostaCriterioCertificacao, CriterioCertificacaoDTO>().ReverseMap();
+
         }
 
         private void MapArquivo()
@@ -339,6 +352,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
         private void MapOutros()
         {
+
+            CreateMap<RoteiroPropostaFormativa, RoteiroPropostaFormativaDTO>();
 
             CreateMap<PalavraChave, RetornoListagemDTO>()
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(x => x.Nome));
