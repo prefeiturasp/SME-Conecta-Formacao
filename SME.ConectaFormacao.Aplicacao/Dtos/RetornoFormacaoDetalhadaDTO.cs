@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public string? PeriodoInscricao { get; set; }
         public string? Justificativa { get; set; }
         public string[]? PublicosAlvo { get; set; }
-        public string[]? PalavrasChaves { get; set; }
+        public string[]? PalavrasChaves { get; set; } //Publicos Alvo para vagas remanescentes
         public bool InscricaoEncerrada { get; set; }
         public string? ImagemUrl { get; set; }
         public FormacaoHomologada FormacaoHomologada { get; set; }
