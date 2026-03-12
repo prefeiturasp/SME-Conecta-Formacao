@@ -16,7 +16,7 @@ using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
 {
     public class CasoDeUsoGerarRelatorioInscritosPorFormacao(
-        IMediator mediator, 
+        IMediator mediator,
         IGeradorRelatorioInscritosExcelService geradorRelatorio,
         IRepositorioUsuario repositorioUsuario,
         IRepositorioRelatorios repositorioRelatorios,
@@ -44,32 +44,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
             {
                 var dadosInscritos = await repositorioRelatorios.ObterDadosRelatorioInscritosPorFormacaoAsync(solicitacaoMensagem.Filtros);
 
-                var inscritosFormatados = dadosInscritos.Select(d => new InscritoFormacaoDto(
-                    d.CodigoFormacao,
-                    d.CodigoHomologacao,
-                    d.NomeFormacao,
-                    d.AreaPromotora,
-                    d.Dre ?? "N/A",
-                    d.Ue ?? "N/A",
-                    Periodo: FormatarDataPeriodo(d.DataRealizacaoInicio, d.DataRealizacaoFim) ?? "N/A",
-                    d.SituacaoFormacao?.Nome() ?? "N/A",
-                    d.ModalidadeFormativa?.Nome() ?? "N/A",
-                    d.PublicoAlvo ?? "N/A",
-                    d.FuncaoEspecifica ?? "N/A",
-                    d.EtapaModalidade?.Nome() ?? "N/A",
-                    d.AnoEtapa ?? "N/A",
-                    d.ComponenteCurricular ?? "N/A",
-                    d.Turma ?? "N/A",
-                    d.RfCpf?.AplicarMascaraCpf().AplicarMascaraRf() ?? "N/A",
-                    d.NomeCursista ?? "N/A",
-                    d.SituacaoInscricao?.Nome() ?? "N/A",
-                    d.SituacaoConclusaoCursista ?? "N/A",
-                    d.Email ?? "N/A",
-                    FormatarBoolean(d.Pcd),
-                    d.DescricaoDeficiencia ?? "N/A",
-                    d.Pcd.HasValue && d.Pcd.Value ? FormatarBoolean(d.NecessitaAdaptacao) : "",
-                    d.Pcd.HasValue && d.Pcd.Value ? d.DescricaoAdaptacao ?? "N/A" : ""
-                ));
+                var inscritosFormatados = dadosInscritos.Select(MapearInscrito);
 
                 var dadosRelatorio = new RelatorioInscritosFormacaoDto(
                     solicitacaoMensagem.Solicitante.Nome,
@@ -77,13 +52,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
                     solicitacaoMensagem.DataSolicitacao,
                     inscritosFormatados
                 );
-                
+
                 var urlAcessoRelatorio = await geradorRelatorio.GerarEArmazenarRelatorioAsync(dadosRelatorio);
 
                 await mediator.Publish(new NotificarRelatorioEmitidoEvento(MontarNotificacao(urlAcessoRelatorio), [dadosUsuario!]));
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await servicoLogs.Enviar(ex, $"Erro ao gerar relatório de inscritos por formação", LogContexto.Relatorio, LogNivel.Critico);
                 return false;
@@ -98,7 +73,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
         {
             return new NotificacaoDTO
             {
-                
+
                 Titulo = "Relatório de inscritos por formação (.xlsx)",
                 Mensagem = MontarHtmlNotificacao(urlAcessoRelatorio),
                 MensagemAposExpiracao = "O link para acesso ao relatório expirou. Por favor, solicite novamente se precisar acessar o relatório.",
@@ -118,7 +93,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
                     <br/>
                     <a href="{urlDownload}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 127px; height: 38px; background-color: #FF9A52; color: #FFFFFF; font-weight: 700; font-size: 14px; text-decoration: none; border-radius: 4px;">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
-                            <path d="M14 11V14H2V11H0V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V11H14ZM13 7L11.59 5.59L9 8.17V0H7V8.17L4.41 5.59L3 7L8 12L13 7Z" fill="white"/>
+                            <path model="M14 11V14H2V11H0V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V11H14ZM13 7L11.59 5.59L9 8.17V0H7V8.17L4.41 5.59L3 7L8 12L13 7Z" fill="white"/>
                         </svg>
                         Download
                     </a>                
@@ -129,6 +104,32 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
                 </div>
                 """;
         }
+
+        private static InscritoFormacaoDto MapearInscrito(InscritoFormacaoQueryModel model) =>
+            new(model.CodigoFormacao,
+                model.CodigoHomologacao,
+                model.NomeFormacao,
+                model.AreaPromotora,
+                model.Dre ?? "N/A",
+                model.Ue ?? "N/A",
+                Periodo: FormatarDataPeriodo(model.DataRealizacaoInicio, model.DataRealizacaoFim) ?? "N/A",
+                model.SituacaoFormacao?.Nome() ?? "N/A",
+                model.ModalidadeFormativa?.Nome() ?? "N/A",
+                model.PublicoAlvo ?? "N/A",
+                model.FuncaoEspecifica ?? "N/A",
+                model.EtapaModalidade?.Nome() ?? "N/A",
+                model.AnoEtapa ?? "N/A",
+                model.ComponenteCurricular ?? "N/A",
+                model.Turma ?? "N/A",
+                model.RfCpf?.AplicarMascaraCpf().AplicarMascaraRf() ?? "N/A",
+                model.NomeCursista ?? "N/A",
+                model.SituacaoInscricao?.Nome() ?? "N/A",
+                model.SituacaoConclusaoCursista ?? "N/A",
+                model.Email ?? "N/A",
+                FormatarBoolean(model.Pcd),
+                model.DescricaoDeficiencia ?? "N/A",
+                model.Pcd.HasValue && model.Pcd.Value ? FormatarBoolean(model.NecessitaAdaptacao) : "",
+                model.Pcd.HasValue && model.Pcd.Value ? model.DescricaoAdaptacao ?? "N/A" : "");
 
         private static string? FormatarDataPeriodo(DateTime? inicio, DateTime? fim)
         {

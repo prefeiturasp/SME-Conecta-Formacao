@@ -15,7 +15,6 @@ namespace SME.ConectaFormacao.IoC.Features
             services
             .AddScoped<ICasoDeUsoObterAutocompletarFormacao, CasoDeUsoObterAutocompletarFormacao>()
             .AddScoped<IRepositorioProposta, RepositorioProposta>()
-            .AddScoped<IRepositorioProposta, RepositorioProposta>()
             .AddScoped<IRepositorioPropostaTutor, RepositorioPropostaTutor>()
             .AddScoped<IRepositorioPropostaRegente, RepositorioPropostaRegente>()
             .AddScoped<IRepositorioPropostaMovimentacao, RepositorioPropostaMovimentacao>()

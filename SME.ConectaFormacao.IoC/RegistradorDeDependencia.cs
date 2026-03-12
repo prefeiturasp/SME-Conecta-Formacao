@@ -102,6 +102,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             .AdicionarModuloProposta()
             .ConfigurarServicoCompactacao()
             .AdicionarModuloRelatorio()
+            .AdicionarModuloUe()
             ;
     }
 
