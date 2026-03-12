@@ -9,6 +9,7 @@ namespace SME.ConectaFormacao.Infra
         public const string SincronizaAtribuicoesServidoresEol = "conecta.sincronizacao.atribuicoes.servidores.eol";
         public const string SincronizaFuncaoAtividade = "conecta.sincronizacao.funcao.atividade.eol";
         public const string SincronizaFuncaoAtividadeDre = "conecta.sincronizacao.funcao.atividade.eol.dre";
+        public const string SincronizaUesEol = "conecta.sincronizacao.ues.eol";
 
         public const string SincronizaComponentesCurricularesEAnosTurmaEOL = "conecta.sincronizacao.componentes.curriculares.ano.turma.eol";
 
@@ -43,5 +44,7 @@ namespace SME.ConectaFormacao.Infra
         public const string EnviarNotificacao = "conecta.enviar.notificacao";
 
         public const string GerarArquivoCertificadosCodaf = "conecta.gerar.arquivo.certificados.codaf";
+
+        public const string GerarRelatorioInscritosExcel = "conecta.gerar.relatorio.inscritos.excel";
     }
 }

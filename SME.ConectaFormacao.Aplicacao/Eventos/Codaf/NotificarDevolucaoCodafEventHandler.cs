@@ -30,28 +30,28 @@ namespace SME.ConectaFormacao.Aplicacao.Eventos.Codaf
                 var ultimaMovimentacao = await repositorioMovimentacao.ObterUltimaMovimentacaoPorListaPresencaStatusAsync(
                 eventoNotificacao.CodafListaPresenca.Id, StatusCodafListaPresenca.AguardandoDf);
 
-            if (ultimaMovimentacao == null) return;
+                if (ultimaMovimentacao == null) return;
 
-            var usuarioAlvo = await repositorioUsuario.ObterPorLogin(ultimaMovimentacao.CriadoLogin);
-            var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery(), cancellationToken);
+                var usuarioAlvo = await repositorioUsuario.ObterPorLogin(ultimaMovimentacao.CriadoLogin);
+                var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery(), cancellationToken);
 
-            if (usuarioAlvo == null || usuarioLogado == null) return;
+                if (usuarioAlvo == null || usuarioLogado == null) return;
 
-            var notificacao = MontarNotificacao(eventoNotificacao, usuarioAlvo, usuarioLogado);
+                var notificacao = MontarNotificacao(eventoNotificacao, usuarioAlvo, usuarioLogado);
 
-            using var scope = transacao.Iniciar();
-                await repositorioNotificacao.Inserir(notificacao);
-                await repositorioNotificacaoUsuario.InserirUsuarios(scope, notificacao.Usuarios, notificacao.Id);
-                eventoNotificacao.Comentario.MarcarNotificacaoEnviada();
-                await repositorioCodafComentario.Atualizar(eventoNotificacao.Comentario);
-                scope.Commit();
+                using var scope = transacao.Iniciar();
+                    await repositorioNotificacao.Inserir(notificacao);
+                    await repositorioNotificacaoUsuario.InserirUsuarios(scope, notificacao.Usuarios, notificacao.Id);
+                    eventoNotificacao.Comentario.MarcarNotificacaoEnviada();
+                    await repositorioCodafComentario.Atualizar(eventoNotificacao.Comentario);
+                    scope.Commit();
 
-            foreach (var usuario in notificacao.Usuarios.Where(u => !string.IsNullOrWhiteSpace(u.Email)))
-            {
-                var emailDto = mapper.Map<EnviarEmailDto>(usuario);
-                emailDto.Titulo = notificacao.Titulo;
-                emailDto.Texto = notificacao.Mensagem;
-                await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, emailDto), cancellationToken);
+                foreach (var usuario in notificacao.Usuarios.Where(u => !string.IsNullOrWhiteSpace(u.Email)))
+                {
+                    var emailDto = mapper.Map<EnviarEmailDto>(usuario);
+                    emailDto.Titulo = notificacao.Titulo;
+                    emailDto.Texto = notificacao.Mensagem;
+                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, emailDto), cancellationToken);
                 }
             }
             catch (Exception ex)

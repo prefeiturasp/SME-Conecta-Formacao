@@ -7,6 +7,8 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Proposta")]
         Proposta = 1,
         [Display(Name = "Codaf")]
-        Codaf = 2
+        Codaf = 2,
+        [Display(Name = "Relatório")]
+        Relatorio = 3
     }
 }

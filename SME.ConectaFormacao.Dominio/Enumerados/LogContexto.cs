@@ -5,6 +5,9 @@
         Geral,
         SincronizacaoInstitucional,
         Cache,
-        SincronizacaoCargosEol
+        SincronizacaoCargosEol,
+        SincronizacaoUesEol,
+        Notificacao,
+        Relatorio
     }
 }

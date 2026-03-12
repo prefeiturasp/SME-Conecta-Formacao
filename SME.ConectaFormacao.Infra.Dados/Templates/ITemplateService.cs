@@ -2,7 +2,8 @@
 {
     public interface ITemplateService
     {
-        string ObterTemplateCertificado(string nomeArquivo);
+        string ObterTemplate(string nomeArquivo);
         string ObterImagemBase64(string nomeArquivoImagem);
+        byte[] ObterTemplateBytes(string nomeArquivo);
     }
 }

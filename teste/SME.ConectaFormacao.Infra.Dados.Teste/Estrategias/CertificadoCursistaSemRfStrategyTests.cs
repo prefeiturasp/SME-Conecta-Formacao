@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 PercentualFrequencia = 100
             };
 
-            _mockTemplateService.Setup(x => x.ObterTemplateCertificado(It.IsAny<string>()))
+            _mockTemplateService.Setup(x => x.ObterTemplate(It.IsAny<string>()))
                 .Returns("Base: {{TEXTO_CERTIFICADO}} - Lateral: {{IMG_MOLDURA_LATERAL}}");
 
             _mockTemplateService.Setup(x => x.ObterImagemBase64("barra_lateral_semrf_certificado_codaf.png"))

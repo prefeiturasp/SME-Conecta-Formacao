@@ -2,7 +2,7 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ue;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Ues
 {
     public class CasoDeUsoObterUnidadePorCodigoEol : CasoDeUsoAbstrato, ICasoDeUsoObterUnidadePorCodigoEol
     {

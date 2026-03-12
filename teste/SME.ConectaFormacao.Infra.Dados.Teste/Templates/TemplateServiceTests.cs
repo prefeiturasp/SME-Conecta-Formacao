@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Templates
             var nomeArquivo = "teste_template.html";
 
             // Act
-            var resultado = _sut.ObterTemplateCertificado(nomeArquivo);
+            var resultado = _sut.ObterTemplate(nomeArquivo);
 
             // Assert
             resultado.Should().Be("<h1>Ola Mundo</h1>");
@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Templates
             var nomeArquivo = "arquivo_fantasma.html";
 
             // Act
-            Action act = () => _sut.ObterTemplateCertificado(nomeArquivo);
+            Action act = () => _sut.ObterTemplate(nomeArquivo);
 
             // Assert
             act.Should().Throw<FileNotFoundException>()
@@ -49,8 +49,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Templates
             var nomeArquivo = "teste_template.html";
 
             // Act
-            var resultado1 = _sut.ObterTemplateCertificado(nomeArquivo);
-            var resultado2 = _sut.ObterTemplateCertificado(nomeArquivo);
+            var resultado1 = _sut.ObterTemplate(nomeArquivo);
+            var resultado2 = _sut.ObterTemplate(nomeArquivo);
 
             // Assert
             resultado1.Should().Be(resultado2);
@@ -91,7 +91,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Templates
         {
             var sutProducao = new TemplateService(); // Sem parametros
 
-            Action act = () => sutProducao.ObterTemplateCertificado("teste_template.html");
+            Action act = () => sutProducao.ObterTemplate("teste_template.html");
 
             act.Should().Throw<FileNotFoundException>();
         }

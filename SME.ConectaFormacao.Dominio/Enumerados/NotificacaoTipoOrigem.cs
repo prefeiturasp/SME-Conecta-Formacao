@@ -2,6 +2,7 @@
 {
     public enum NotificacaoTipoOrigem
     {
-        DevolucaoParaCorrecaoCodaf = 1
+        DevolucaoParaCorrecaoCodaf = 1,
+        Relatorio = 2,
     }
 }

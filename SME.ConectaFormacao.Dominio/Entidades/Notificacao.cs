@@ -13,5 +13,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public NotificacaoTipoEnvio? TipoEnvio { get; set; }
         public string Parametros { get; set; } = null!;
         public IEnumerable<NotificacaoUsuario> Usuarios { get; set; } = [];
+        public DateTimeOffset? DataExpiracao { get; set; }
+        public string? MensagemAposExpiracao { get; set; }
     }
 }
