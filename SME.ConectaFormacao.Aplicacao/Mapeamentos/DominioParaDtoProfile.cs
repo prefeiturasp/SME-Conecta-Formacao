@@ -145,9 +145,18 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(x => x.AreaPromotora.Nome))
                 .ForMember(dest => dest.DataRealizacaoInicio, opt => opt.MapFrom(x => x.DataRealizacaoInicio.HasValue ? x.DataRealizacaoInicio.Value.ToString("dd/MM/yyyy") : string.Empty))
                 .ForMember(dest => dest.DataRealizacaoFim, opt => opt.MapFrom(x => x.DataRealizacaoFim.HasValue ? x.DataRealizacaoFim.Value.ToString("dd/MM/yyyy") : string.Empty))
-                .ForMember(dest => dest.Revalidacao, opt => opt.MapFrom(x => !x.Revalidacao.HasValue ? "-" : x.Revalidacao.HasValue && x.Revalidacao.Value ? "Sim" : "Não"));
+                .ForMember(dest => dest.Revalidacao,
+                    opt => opt.MapFrom(x => MapRevalidacao(x.Revalidacao)));
+        }
 
-
+        private static string MapRevalidacao(bool? revalidacao)
+        {
+            return revalidacao switch
+            {
+                null => "-",
+                true => "Sim",
+                false => "Não"
+            };
         }
 
         private void MapPropostaParceista()
