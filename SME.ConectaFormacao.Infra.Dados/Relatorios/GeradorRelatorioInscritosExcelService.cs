@@ -39,9 +39,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Relatorios
 
                 var nomeArquiboBucket = $"relatorios/inscritos_formacao/{DateTime.Now:yyyy/MM}/{nomeArquivo}";
 
-                var chaveAcesso = await servicoArmazenamento.Armazenar(nomeArquiboBucket, filestream, CONTENT_TYPE_EXCEL);
+                await servicoArmazenamento.Armazenar(nomeArquiboBucket, filestream, CONTENT_TYPE_EXCEL);
 
-                return chaveAcesso;
+                var urlAcesso = await servicoArmazenamento.ObterUrlPorChaveObjetoAsync(nomeArquiboBucket);
+
+                return urlAcesso;
             }
             finally
             {

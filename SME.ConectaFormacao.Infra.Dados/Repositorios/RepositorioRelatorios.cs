@@ -1,0 +1,87 @@
+﻿using Dapper;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Relatorios;
+using SME.ConectaFormacao.Infra.Dados.Queries;
+using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+
+namespace SME.ConectaFormacao.Infra.Dados.Repositorios
+{
+    [ExcludeFromCodeCoverage]
+    public class RepositorioRelatorios(IConectaFormacaoConexao conexao) : IRepositorioRelatorios
+    {
+        public async Task<IEnumerable<InscritoFormacaoQueryModel>> ObterDadosRelatorioInscritosPorFormacaoAsync(
+            FiltroRelatorioInscritosPorFormacaoDto filtro)
+        {
+            var parametros = new DynamicParameters();
+            var condicoesWhere = ConstruirCondicoesFiltro(filtro, parametros);
+
+            var sqlConsulta = new StringBuilder(
+            $"""
+            {RelatoriosInscritosQueries.ObterInscritosPorFormacao}
+            {condicoesWhere}
+            {RelatoriosInscritosQueries.QueryOrderbyInscritosPorFormacao}
+            """);
+
+            var conn = conexao.Obter();
+            return await conn.QueryAsync<InscritoFormacaoQueryModel>(sqlConsulta.ToString(), parametros);
+        }
+
+        private static string ConstruirCondicoesFiltro(FiltroRelatorioInscritosPorFormacaoDto filtro, DynamicParameters parametros)
+        {
+            var condicoes = new StringBuilder();
+
+            if (filtro.PeriodoDeRealizacaoInicial.Year >= 2000 && filtro.PeriodoDeRealizacaoFinal.Year >= 2000)
+            {
+                AdicionarFiltroOpcional<DateTime>(condicoes, parametros, filtro.PeriodoDeRealizacaoInicial, " AND P.DATA_REALIZACAO_FIM >= @periodoDeRealizacaoInicial ", "periodoDeRealizacaoInicial");
+                AdicionarFiltroOpcional<DateTime>(condicoes, parametros, filtro.PeriodoDeRealizacaoFinal, " AND P.DATA_REALIZACAO_INICIO <= @periodoDeRealizacaoFinal ", "periodoDeRealizacaoFinal");
+            }
+
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.PropostaId, " AND P.ID = @propostaId ", "propostaId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.NumeroHomologacao, " AND P.NUMERO_HOMOLOGACAO = @numeroHomologacao ", "numeroHomologacao");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.PropostaTurmaId, " AND PT.ID = @propostaTurmaId ", "propostaTurmaId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.AreaPromotoraId, " AND AP.ID = @areaPromotoraId ", "areaPromotoraId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.DreId, " AND D.ID = @dreId ", "dreId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.UeId, " AND UE.ID = @ueId ", "ueId");
+
+            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoProposta, " AND P.SITUACAO = @situacaoFormacao ", "situacaoFormacao");
+            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoInscricao, " AND I.SITUACAO = @situacaoInscricao ", "situacaoInscricao");
+            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.Formato, " AND P.FORMATO = @formato ", "formato");
+            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.Modalidade, " AND PM.MODALIDADE = @modalidade ", "modalidade");
+
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.CargoPublicoAlvoId, " AND CF_PUBLICO.ID = @cargoPublicoAlvoId ", "cargoPublicoAlvoId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.FuncaoId, " AND CF_FUNC_PROP.ID = @funcaoId ", "funcaoId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.AnoTurmaId, " AND AT.ID = @anoTurmaId ", "anoTurmaId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.ComponenteCurricularId, " AND CC.ID = @componenteCurricularId ", "componenteCurricularId");
+
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.Pcd, " AND UA.POSSUI_DEFICIENCIA = @pcd ", "pcd");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.NecessitaAdaptacao, " AND UA.NECESSITA_ADAPTACAO = @necessitaAdaptacao ", "necessitaAdaptacao");
+
+            
+            AdicionarFiltroTexto(condicoes, parametros, filtro.NomeFormacao, " AND f_unaccent(P.NOME_FORMACAO) ILIKE f_unaccent(@nomeFormacao) ", "nomeFormacao");
+            AdicionarFiltroTexto(condicoes, parametros, filtro.Email, " AND f_unaccent(U.EMAIL_EDUCACIONAL) ILIKE f_unaccent(@email) ", "email");
+            AdicionarFiltroTexto(condicoes, parametros, filtro.DocumentoCursista, " AND U.LOGIN = @documentoCursista ", "documentoCursista", buscaParcial: false);
+
+            return condicoes.ToString();
+        }
+
+        private static void AdicionarFiltroOpcional<T>(StringBuilder query, DynamicParameters parametros, T? valor, string sql, string nomeParametro) where T : struct
+        {
+            if (valor.HasValue)
+            {
+                query.Append(sql);
+                parametros.Add(nomeParametro, valor.Value);
+            }
+        }
+
+        private static void AdicionarFiltroTexto(StringBuilder query, DynamicParameters parametros, string? valor, string sql, string nomeParametro, bool buscaParcial = true)
+        {
+            if (!string.IsNullOrWhiteSpace(valor))
+            {
+                query.Append(sql);
+                var valorTratado = buscaParcial ? $"%{valor.Trim()}%" : valor.Trim();
+                parametros.Add(nomeParametro, valorTratado);
+            }
+        }
+    }
+}

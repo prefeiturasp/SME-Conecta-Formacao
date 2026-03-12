@@ -78,7 +78,7 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.EnviarNotificacao, new ComandoRabbit("Enviar notificação via SignalR", typeof(ICasoDeUsoEnviarNotificacao), true));
             Comandos.Add(RotasRabbit.GerarArquivoCertificadosCodaf, new ComandoRabbit("Gerar arquivo de certificados CODAF", typeof(ICasoDeUsoGerarArquivoCertificadosCodaf), true));
 
-            Comandos.Add(RotasRabbit.GerarRelatorioInscritosExcel, new ComandoRabbit("Gerar relatório de inscritos em Excel", typeof(ICasoDeUsoGerarRelatorioInscritosUseCase), true));
+            Comandos.Add(RotasRabbit.GerarRelatorioInscritosExcel, new ComandoRabbit("Gerar relatório de inscritos em Excel", typeof(ICasoDeUsoGerarRelatorioInscritosPorFormacao), true));
         }
     }
 }

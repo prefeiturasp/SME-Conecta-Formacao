@@ -78,6 +78,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
 {
     public virtual void Registrar()
     {
+        serviceCollection.AddSingleton(TimeProvider.System);
         RegistrarMediatr();
         RegistrarValidadoresFluentValidation();
         RegistrarTelemetria();
