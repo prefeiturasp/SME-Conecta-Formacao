@@ -106,7 +106,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<Proposta, RetornoListagemFormacaoDTO>()
                 .ForMember(dest => dest.Titulo, opt => opt.MapFrom(o => o.NomeFormacao))
-                .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(o => o.AreaPromotora.Nome))
+                .ForMember(dest => dest.AreaPromotora,
+                    opt => opt.MapFrom(o => o.AreaPromotora != null
+                        ? o.AreaPromotora.Nome
+                        : null))
                 .ForMember(dest => dest.TipoFormacaoDescricao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
                 .ForMember(dest => dest.FormatoDescricao, opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
                 .ForMember(dest => dest.InscricaoEncerrada, opt => opt.MapFrom(o => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim))
