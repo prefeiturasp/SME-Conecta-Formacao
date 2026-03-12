@@ -35,6 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             MapPropostaParceista();
             MapPropostaDiversas();
             MapPropostaTurma();
+            MapPropostaParaDTO();
             MapArquivo();
             MapInscricao();
             MapUsuarios();
@@ -99,10 +100,29 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<Dre, DreServicoEol>().ReverseMap();
         }
 
+
         private void MapProposta()
         {
+
+            CreateMap<Proposta, RetornoListagemFormacaoDTO>()
+                .ForMember(dest => dest.Titulo, opt => opt.MapFrom(o => o.NomeFormacao))
+                .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(o => o.AreaPromotora.Nome))
+                .ForMember(dest => dest.TipoFormacaoDescricao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
+                .ForMember(dest => dest.FormatoDescricao, opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
+                .ForMember(dest => dest.InscricaoEncerrada, opt => opt.MapFrom(o => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim))
+                .ForMember(dest => dest.Periodo, opt => opt.MapFrom(o => $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM/yyyy} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM/yyyy}"))
+                .ForMember(dest => dest.PeriodoInscricao, opt => opt.MapFrom(o => $"{o.DataInscricaoInicio.GetValueOrDefault():dd/MM/yyyy} até {o.DataInscricaoFim.GetValueOrDefault():dd/MM/yyyy}"));
+
+            CreateMap<Proposta, DadosListagemFormacaoComTurmaDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(o => o.Id))
+                .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.NomeFormacao))
+                .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
+        }
+
+        private void MapPropostaParaDTO()
+        {
             CreateMap<Proposta, PropostaCompletoDTO>()
-                .ForMember(dest => dest.NomeSituacao, opt => opt.MapFrom(x => GetSituacaoNome(x)));
+                .ForMember(dest => dest.NomeSituacao, opt => opt.MapFrom(x => x.Situacao.Nome()));
 
             CreateMap<Proposta, PropostaDTO>()
                 .ForMember(dest => dest.PublicosAlvo, opt => opt.MapFrom(o => o.PublicosAlvo))
@@ -119,27 +139,15 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ReverseMap();
 
             CreateMap<Proposta, PropostaPaginadaDTO>()
-                .ForMember(dest => dest.TipoFormacao, opt => opt.MapFrom(x => GetTipoFormacao(x)))
-                .ForMember(dest => dest.Formato, opt => opt.MapFrom(x => GetFormato(x)))
-                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(x => GetSituacaoNome(x)))
+                .ForMember(dest => dest.TipoFormacao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
+                .ForMember(dest => dest.Formato, opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
+                .ForMember(dest => dest.Situacao, opt => opt.MapFrom(x => x.Situacao.Nome()))
                 .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(x => x.AreaPromotora.Nome))
-                .ForMember(dest => dest.DataRealizacaoInicio, opt => opt.MapFrom(x => FormatDate(x.DataRealizacaoInicio)))
-                .ForMember(dest => dest.DataRealizacaoFim, opt => opt.MapFrom(x => FormatDate(x.DataRealizacaoFim)))
-                .ForMember(dest => dest.Revalidacao, opt => opt.MapFrom(x => GetRevalidacao(x)));
+                .ForMember(dest => dest.DataRealizacaoInicio, opt => opt.MapFrom(x => x.DataRealizacaoInicio.HasValue ? x.DataRealizacaoInicio.Value.ToString("dd/MM/yyyy") : string.Empty))
+                .ForMember(dest => dest.DataRealizacaoFim, opt => opt.MapFrom(x => x.DataRealizacaoFim.HasValue ? x.DataRealizacaoFim.Value.ToString("dd/MM/yyyy") : string.Empty))
+                .ForMember(dest => dest.Revalidacao, opt => opt.MapFrom(x => !x.Revalidacao.HasValue ? "-" : x.Revalidacao.HasValue && x.Revalidacao.Value ? "Sim" : "Não"));
 
-            CreateMap<Proposta, RetornoListagemFormacaoDTO>()
-                .ForMember(dest => dest.Titulo, opt => opt.MapFrom(o => o.NomeFormacao))
-                .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(o => o.AreaPromotora.Nome))
-                .ForMember(dest => dest.TipoFormacaoDescricao, opt => opt.MapFrom(x => GetTipoFormacao(x)))
-                .ForMember(dest => dest.FormatoDescricao, opt => opt.MapFrom(x => GetFormato(x)))
-                .ForMember(dest => dest.InscricaoEncerrada, opt => opt.MapFrom(o => IsInscricaoEncerrada(o)))
-                .ForMember(dest => dest.Periodo, opt => opt.MapFrom(o => GetPeriodoRealizacao(o)))
-                .ForMember(dest => dest.PeriodoInscricao, opt => opt.MapFrom(o => GetPeriodoInscricao(o)));
 
-            CreateMap<Proposta, DadosListagemFormacaoComTurmaDTO>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(o => o.Id))
-                .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(o => o.NomeFormacao))
-                .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(o => o.Id));
         }
 
         private void MapPropostaParceista()
@@ -417,34 +425,5 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista));
         }
-
-        private static string GetSituacaoNome(Proposta x)
-    => x.Situacao.Nome();
-
-        private static string GetTipoFormacao(Proposta x)
-            => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null;
-
-        private static string GetFormato(Proposta x)
-            => x.Formato.HasValue ? x.Formato.Nome() : null;
-
-        private static string FormatDate(DateTime? date)
-            => date.HasValue ? date.Value.ToString("dd/MM/yyyy") : string.Empty;
-
-        private static string GetRevalidacao(Proposta x)
-        {
-            if (!x.Revalidacao.HasValue)
-                return "-";
-
-            return x.Revalidacao.Value ? "Sim" : "Não";
-        }
-
-        private static bool IsInscricaoEncerrada(Proposta o)
-            => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim;
-
-        private static string GetPeriodoRealizacao(Proposta o)
-            => $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM/yyyy} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM/yyyy}";
-
-        private static string GetPeriodoInscricao(Proposta o)
-            => $"{o.DataInscricaoInicio.GetValueOrDefault():dd/MM/yyyy} até {o.DataInscricaoFim.GetValueOrDefault():dd/MM/yyyy}";
     }
 }
