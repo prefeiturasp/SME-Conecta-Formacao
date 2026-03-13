@@ -33,6 +33,8 @@ module.exports = defineConfig({
     env: {
 
       LOGIN_ADM_GERAL: process.env.LOGIN_ADM_GERAL,
+      LOGIN_CURSISTA: process.env.LOGIN_CURSISTA,
+      LOGIN_EXTERNO: process.env.LOGIN_EXTERNO,
       SENHA: process.env.SENHA,
 
       cucumber: {
