@@ -10,10 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Ues
     {
         public async Task<Resultado<PaginacaoResultadoDto<AutocompletarNomeUeDto>>> ExecutarAsync(FiltroAutocompletarNomeUeDto filtro)
         {
-            if (string.IsNullOrWhiteSpace(filtro.TermoBusca))
-                return new PaginacaoResultadoDto<AutocompletarNomeUeDto>([], 0, 0);
-
-            var resultado = await repositorioUe.AutocompletarNomeAsync(filtro.TermoBusca, filtro.DreId, filtro.NumeroPagina, filtro.NumeroRegistros);
+            var resultado = await repositorioUe.AutocompletarNomeAsync(filtro.TermoBusca ?? "", filtro.DreId, filtro.NumeroPagina, filtro.NumeroRegistros);
             return new PaginacaoResultadoDto<AutocompletarNomeUeDto>(resultado.Itens, resultado.TotalRegistros, resultado.TotalPaginas);
         }
     }
