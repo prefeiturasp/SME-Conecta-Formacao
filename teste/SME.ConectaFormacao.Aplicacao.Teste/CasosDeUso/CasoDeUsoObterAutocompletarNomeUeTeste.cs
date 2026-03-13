@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         }
 
         [Fact]
-        public async Task DadoUmTermoBuscaVazio_QuandoChamarExecutarAsync_EntaoDeveRetornarDadosVazio()
+        public async Task DadoUmTermoBuscaVazio_QuandoChamarExecutarAsync_EntaoDeveRetornarDados()
         {
             // Arrange
             var filtro = new FiltroAutocompletarNomeUeDto
@@ -34,30 +34,48 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 NumeroPagina = 1,
                 NumeroRegistros = 10
             };
+
+            var itensMock = new List<AutocompletarNomeUeDto>
+            {
+                new() { Id = Guid.NewGuid(), Nome = "UE 1" },
+                new() { Id = Guid.NewGuid(), Nome = "UE 2" },
+                new() { Id = Guid.NewGuid(), Nome = "UE 3" }
+            };
+
+            var resultadoMock = new ResultadoPaginado<AutocompletarNomeUeDto>
+            {
+                Itens = itensMock,
+                TotalRegistros = itensMock.Count,
+                PaginaAtual = filtro.NumeroPagina,
+                TamanhoPagina = filtro.NumeroRegistros
+            };
+            _repositorioUeMock.Setup(r => r.AutocompletarNomeAsync(filtro.TermoBusca, filtro.DreId, filtro.NumeroPagina, filtro.NumeroRegistros))
+                .ReturnsAsync(resultadoMock);
             // Act
             var resultado = await _casoDeUso.ExecutarAsync(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Sucesso.Should().BeTrue();
             resultado.Dados.Should().NotBeNull();
-            resultado.Dados!.Items.Should().BeEmpty();
+            resultado.Dados!.Items.Should().HaveCount(itensMock.Count);
         }
 
         [Fact]
         public async Task DadoUmTermoBuscaValido_QuandoChamarExecutarAsync_EntaoDeveRetornarDados()
         {
             // Arrange
+            var termo = _faker.Random.Word();
             var filtro = new FiltroAutocompletarNomeUeDto
             {
-                TermoBusca = _faker.Random.Word(),
+                TermoBusca = termo,
                 DreId = 1,
                 NumeroPagina = 1,
                 NumeroRegistros = 10
             };
             var itensMock = new List<AutocompletarNomeUeDto>
             {
-                new() { Id = Guid.NewGuid(), Nome = "UE 1" },
-                new() { Id = Guid.NewGuid(), Nome = "UE 2" }
+                new() { Id = Guid.NewGuid(), Nome = $"{termo} UE 1" },
+                new() { Id = Guid.NewGuid(), Nome = $"{termo} UE 2" }
             };
             var resultadoMock = new ResultadoPaginado<AutocompletarNomeUeDto>
             {
