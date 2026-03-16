@@ -103,7 +103,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
                         Download
                     </a>
 
-                    <br/><br/>
+                    <br/> <br/>
 
                     <p style="font-weight: 400; font-size: 14px; line-height: 1.5; margin-top: 20px;">
                         Observação: O Download deve ser realizado em até 24 horas, após este prazo o arquivo será excluído e caso necessite você deve solicitar um novo relatório.
