@@ -90,14 +90,21 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
                     <p style="font-weight: 400; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">
                         O relatório de inscritos por formação está disponível, clique no botão "download" para baixar o arquivo.
                     </p>
+
                     <br/>
-                    <a href="{urlDownload}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 127px; height: 38px; background-color: #FF9A52; color: #FFFFFF; font-weight: 700; font-size: 14px; text-decoration: none; border-radius: 4px;">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
-                            <path model="M14 11V14H2V11H0V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V11H14ZM13 7L11.59 5.59L9 8.17V0H7V8.17L4.41 5.59L3 7L8 12L13 7Z" fill="white"/>
+
+                    <a href="{urlDownload}" target="_blank"
+                    style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 127px; height: 38px; background-color: #FF9A52; color: #FFFFFF; font-weight: 700; font-size: 14px; text-decoration: none; border-radius: 4px;">
+                        
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 11.575C7.86667 11.575 7.74167 11.5543 7.625 11.513C7.50833 11.4717 7.4 11.4007 7.3 11.3L3.7 7.7C3.5 7.5 3.404 7.26667 3.412 7C3.42 6.73334 3.516 6.5 3.7 6.3C3.9 6.1 4.13767 5.996 4.413 5.988C4.68833 5.98 4.92567 6.07567 5.125 6.275L7 8.15V1C7 0.71667 7.096 0.479337 7.288 0.288004C7.48 0.0966702 7.71733 0.000670115 8 3.44827e-06C8.28267 -0.000663218 8.52033 0.0953369 8.713 0.288004C8.90567 0.48067 9.00133 0.718003 9 1V8.15L10.875 6.275C11.075 6.075 11.3127 5.979 11.588 5.987C11.8633 5.995 12.1007 6.09934 12.3 6.3C12.4833 6.5 12.5793 6.73334 12.588 7C12.5967 7.26667 12.5007 7.5 12.3 7.7L8.7 11.3C8.6 11.4 8.49167 11.471 8.375 11.513C8.25833 11.555 8.13333 11.5757 8 11.575ZM2 16C1.45 16 0.979333 15.8043 0.588 15.413C0.196666 15.0217 0.000666667 14.5507 0 14V12C0 11.7167 0.0960001 11.4793 0.288 11.288C0.48 11.0967 0.717333 11.0007 1 11C1.28267 10.9993 1.52033 11.0953 1.713 11.288C1.90567 11.4807 2.00133 11.718 2 12V14H14V12C14 11.7167 14.096 11.4793 14.288 11.288C14.48 11.0967 14.7173 11.0007 15 11C15.2827 10.9993 15.5203 11.0953 15.713 11.288C15.9057 11.4807 16.0013 11.718 16 12V14C16 14.55 15.8043 15.021 15.413 15.413C15.0217 15.805 14.5507 16.0007 14 16H2Z" fill="white"/>
                         </svg>
+
                         Download
-                    </a>                
-                    <br/>
+                    </a>
+
+                    <br/><br/>
+
                     <p style="font-weight: 400; font-size: 14px; line-height: 1.5; margin-top: 20px;">
                         Observação: O Download deve ser realizado em até 24 horas, após este prazo o arquivo será excluído e caso necessite você deve solicitar um novo relatório.
                     </p>
