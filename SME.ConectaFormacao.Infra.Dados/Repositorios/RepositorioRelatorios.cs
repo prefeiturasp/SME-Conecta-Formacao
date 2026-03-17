@@ -33,8 +33,21 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (filtro.PeriodoDeRealizacaoInicial.Year >= 2000 && filtro.PeriodoDeRealizacaoFinal.Year >= 2000)
             {
-                AdicionarFiltroOpcional<DateTime>(condicoes, parametros, filtro.PeriodoDeRealizacaoInicial, " AND P.DATA_REALIZACAO_FIM >= @periodoDeRealizacaoInicial ", "periodoDeRealizacaoInicial");
-                AdicionarFiltroOpcional<DateTime>(condicoes, parametros, filtro.PeriodoDeRealizacaoFinal, " AND P.DATA_REALIZACAO_INICIO <= @periodoDeRealizacaoFinal ", "periodoDeRealizacaoFinal");
+                AdicionarFiltroOpcional<DateTime>(
+                    condicoes,
+                    parametros,
+                    filtro.PeriodoDeRealizacaoInicial.Date,
+                    " AND P.DATA_REALIZACAO_INICIO::date >= @periodoDeRealizacaoInicial ",
+                    "periodoDeRealizacaoInicial"
+                );
+
+                AdicionarFiltroOpcional<DateTime>(
+                    condicoes,
+                    parametros,
+                    filtro.PeriodoDeRealizacaoFinal.Date,
+                    " AND P.DATA_REALIZACAO_FIM::date <= @periodoDeRealizacaoFinal ",
+                    "periodoDeRealizacaoFinal"
+                );
             }
 
             AdicionarFiltroOpcional(condicoes, parametros, filtro.PropostaId, " AND P.ID = @propostaId ", "propostaId");
