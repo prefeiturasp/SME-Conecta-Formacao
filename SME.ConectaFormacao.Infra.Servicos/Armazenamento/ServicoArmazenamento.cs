@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Minio;
+using Minio.DataModel.Args;
 using Minio.Exceptions;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
