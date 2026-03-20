@@ -285,7 +285,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterPropostaEncontroPaginacao>();
             var id = _faker.Random.Long();
-            var paginacao = new PaginacaoResultadoDto<PropostaEncontroDTO>(new List<PropostaEncontroDTO>(), 0, 10);
+            var paginacao = new PaginacaoResultadoDto<PropostaEncontroDto>(new List<PropostaEncontroDto>(), 0, 10);
             mockUseCase.Setup(x => x.Executar(id)).ReturnsAsync(paginacao);
 
             // Act
@@ -301,7 +301,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoSalvarPropostaEncontro>();
             var propostaId = _faker.Random.Long();
-            var dto = new PropostaEncontroDTO();
+            var dto = new PropostaEncontroDto();
             mockUseCase.Setup(x => x.Executar(propostaId, dto)).ReturnsAsync(1);
 
             // Act

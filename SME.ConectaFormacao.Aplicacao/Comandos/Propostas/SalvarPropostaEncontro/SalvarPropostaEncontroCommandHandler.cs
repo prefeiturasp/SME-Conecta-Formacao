@@ -7,7 +7,7 @@ using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontro
 {
     public class SalvarPropostaEncontroCommandHandler : IRequestHandler<SalvarPropostaEncontroCommand, long>
     {
@@ -26,9 +26,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<long> Handle(SalvarPropostaEncontroCommand request, CancellationToken cancellationToken)
         {
-            var encontroAntes = await _repositorioProposta.ObterEncontroPorId(request.EncontroDTO.Id);
+            var encontroAntes = await _repositorioProposta.ObterEncontroPorId(request.EncontroDto.Id);
 
-            var encontroDepois = _mapper.Map<PropostaEncontro>(request.EncontroDTO);
+            var encontroDepois = _mapper.Map<PropostaEncontro>(request.EncontroDto);
 
             var transacao = _transacao.Iniciar();
             try

@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             ValidarPropostaEncontro(encontroDTO, proposta.Id);
         }
 
-        protected void ValidarPropostaEncontro(PropostaEncontroDTO encontroDTO, long id)
+        protected void ValidarPropostaEncontro(PropostaEncontroDto encontroDTO, long id)
         {
             var encontros = ObterTodos<PropostaEncontro>();
             var turmas = ObterTodos<PropostaEncontroTurma>();

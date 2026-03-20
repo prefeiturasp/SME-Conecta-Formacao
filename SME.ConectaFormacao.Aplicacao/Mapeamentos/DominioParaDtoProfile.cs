@@ -211,7 +211,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
         private void MapPropostaDiversas()
         {
-            CreateMap<PropostaEncontro, PropostaEncontroDTO>()
+            CreateMap<PropostaEncontro, PropostaEncontroDto>()
                 .ForMember(dest => dest.Turmas, opt => opt.MapFrom(o => o.Turmas))
                 .ForMember(dest => dest.Datas, opt => opt.MapFrom(o => o.Datas))
                 .ReverseMap();
@@ -230,7 +230,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.NomeTutor, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.NomeTutor) ? null : o.NomeTutor.Trim().ToUpper()))
                 .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.Cpf) ? null : o.Cpf.SomenteNumeros()));
 
-            CreateMap<PropostaEncontroData, PropostaEncontroDataDTO>().ReverseMap();
+            CreateMap<PropostaEncontroData, PropostaEncontroDataDto>().ReverseMap();
             CreateMap<PropostaTipoInscricao, PropostaTipoInscricaoDTO>().ReverseMap();
             CreateMap<PropostaMovimentacao, PropostaMovimentacaoDTO>().ReverseMap();
             CreateMap<PropostaCriterioCertificacao, PropostaCriterioCertificacaoDto>();

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
-    public class PropostaEncontroDTO
+    public class PropostaEncontroDto
     {
         public long Id { get; set; }
         public string? HoraInicio { get; set; }
@@ -13,6 +13,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? Local { get; set; }
 
         public IEnumerable<PropostaEncontroTurmaDTO> Turmas { get; set; } = [];
-        public IEnumerable<PropostaEncontroDataDTO> Datas { get; set; } = [];
+        public IEnumerable<PropostaEncontroDataDto> Datas { get; set; } = [];
     }
 }

@@ -7,7 +7,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterEncontrosPaginadoQueryHandler : IRequestHandler<ObterEncontrosPaginadoQuery, PaginacaoResultadoDto<PropostaEncontroDTO>>
+    public class ObterEncontrosPaginadoQueryHandler : IRequestHandler<ObterEncontrosPaginadoQuery, PaginacaoResultadoDto<PropostaEncontroDto>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositorioProposta _repositorioProposta;
@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
         }
 
-        public async Task<PaginacaoResultadoDto<PropostaEncontroDTO>> Handle(ObterEncontrosPaginadoQuery request, CancellationToken cancellationToken)
+        public async Task<PaginacaoResultadoDto<PropostaEncontroDto>> Handle(ObterEncontrosPaginadoQuery request, CancellationToken cancellationToken)
         {
             var totalRegistros = await _repositorioProposta.ObterTotalEncontros(request.PropostaId);
 
@@ -38,8 +38,8 @@ namespace SME.ConectaFormacao.Aplicacao
                 }
             }
 
-            var items = _mapper.Map<IEnumerable<PropostaEncontroDTO>>(encontros);
-            return new PaginacaoResultadoDto<PropostaEncontroDTO>(items, totalRegistros, request.NumeroRegistros);
+            var items = _mapper.Map<IEnumerable<PropostaEncontroDto>>(encontros);
+            return new PaginacaoResultadoDto<PropostaEncontroDto>(items, totalRegistros, request.NumeroRegistros);
         }
     }
 }

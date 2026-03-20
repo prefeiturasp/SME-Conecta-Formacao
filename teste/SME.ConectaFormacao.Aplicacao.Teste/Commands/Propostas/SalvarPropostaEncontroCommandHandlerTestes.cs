@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
+using SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontro;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -106,14 +107,14 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
         {
             // Arrange
             var comando = CriarComandoValido();
-            var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
+            var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDto.Id);
             encontroDepois.Turmas = [new() { Id = 1 }];
             encontroDepois.Datas = [new() { Id = 1 }];
 
             var transacaoDbMock = ConfigurarTransacaoComSucesso();
 
             _repositorioProposta.Setup(r => r.ObterEncontroPorId(It.IsAny<long>())).ReturnsAsync((PropostaEncontro)null!);
-            _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDTO)).Returns(encontroDepois);
+            _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDto)).Returns(encontroDepois);
 
             ConfigurarRetornoListasVazias(encontroDepois.Id);
 
@@ -139,16 +140,16 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
         {
             // Arrange
             var comando = CriarComandoValido();
-            var encontroAntes = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
+            var encontroAntes = CriarPropostaEncontroMap(comando.EncontroDto.Id);
             encontroAntes.HoraInicio = "10:00";
 
-            var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
+            var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDto.Id);
             encontroDepois.HoraInicio = "11:00";
 
             var transacaoDbMock = ConfigurarTransacaoComSucesso();
 
-            _repositorioProposta.Setup(r => r.ObterEncontroPorId(comando.EncontroDTO.Id)).ReturnsAsync(encontroAntes);
-            _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDTO)).Returns(encontroDepois);
+            _repositorioProposta.Setup(r => r.ObterEncontroPorId(comando.EncontroDto.Id)).ReturnsAsync(encontroAntes);
+            _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDto)).Returns(encontroDepois);
 
             ConfigurarRetornoListasVazias(encontroDepois.Id);
 
@@ -166,8 +167,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
         {
             // Arrange
             var comando = CriarComandoValido();
-            var encontroAntes = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
-            var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
+            var encontroAntes = CriarPropostaEncontroMap(comando.EncontroDto.Id);
+            var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDto.Id);
 
             encontroAntes.HoraInicio = "10:00"; encontroDepois.HoraInicio = "10:00";
             encontroAntes.HoraFim = "12:00"; encontroDepois.HoraFim = "12:00";
@@ -175,8 +176,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var transacaoDbMock = ConfigurarTransacaoComSucesso();
 
-            _repositorioProposta.Setup(r => r.ObterEncontroPorId(comando.EncontroDTO.Id)).ReturnsAsync(encontroAntes);
-            _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDTO)).Returns(encontroDepois);
+            _repositorioProposta.Setup(r => r.ObterEncontroPorId(comando.EncontroDto.Id)).ReturnsAsync(encontroAntes);
+            _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDto)).Returns(encontroDepois);
 
             ConfigurarRetornoListasVazias(encontroDepois.Id);
 
@@ -194,7 +195,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
         {
             // Arrange
             var comando = CriarComandoValido();
-            var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
+            var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDto.Id);
 
             var turmasAntes = new List<PropostaEncontroTurma> { new() { Id = 1, TurmaId = 100 } };
             encontroDepois.Turmas = [new() { Id = 2, TurmaId = 200 }];
@@ -213,8 +214,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             ConfigurarTransacaoComSucesso();
 
-            _repositorioProposta.Setup(r => r.ObterEncontroPorId(comando.EncontroDTO.Id)).ReturnsAsync(encontroDepois);
-            _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDTO)).Returns(encontroDepois);
+            _repositorioProposta.Setup(r => r.ObterEncontroPorId(comando.EncontroDto.Id)).ReturnsAsync(encontroDepois);
+            _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDto)).Returns(encontroDepois);
             _repositorioProposta.Setup(r => r.ObterEncontroTurmasPorEncontroId(encontroDepois.Id)).ReturnsAsync(turmasAntes);
             _repositorioProposta.Setup(r => r.ObterEncontroDatasPorEncontroId(encontroDepois.Id)).ReturnsAsync(datasAntes);
 
@@ -237,11 +238,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
         {
             // Arrange
             var comando = CriarComandoValido();
-            var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDTO.Id);
+            var encontroDepois = CriarPropostaEncontroMap(comando.EncontroDto.Id);
             var transacaoDbMock = ConfigurarTransacaoComSucesso();
 
             _repositorioProposta.Setup(r => r.ObterEncontroPorId(It.IsAny<long>())).ReturnsAsync((PropostaEncontro)null!);
-            _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDTO)).Returns(encontroDepois);
+            _mapper.Setup(m => m.Map<PropostaEncontro>(comando.EncontroDto)).Returns(encontroDepois);
 
             _repositorioProposta
                 .Setup(r => r.InserirEncontro(It.IsAny<long>(), It.IsAny<PropostaEncontro>()))
@@ -262,7 +263,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
         private static SalvarPropostaEncontroCommand CriarComandoValido()
         {
-            return new SalvarPropostaEncontroCommand(999, new PropostaEncontroDTO { Id = 1 });
+            return new SalvarPropostaEncontroCommand(999, new PropostaEncontroDto { Id = 1 });
         }
 
         private static PropostaEncontro CriarPropostaEncontroMap(long id)

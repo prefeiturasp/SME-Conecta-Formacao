@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterEncontrosPaginadoQuery : IRequest<PaginacaoResultadoDto<PropostaEncontroDTO>>
+    public class ObterEncontrosPaginadoQuery : IRequest<PaginacaoResultadoDto<PropostaEncontroDto>>
     {
         public ObterEncontrosPaginadoQuery(long propostaId, int numeroPagina, int numeroRegistros)
         {

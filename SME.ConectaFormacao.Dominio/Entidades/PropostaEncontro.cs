@@ -8,9 +8,9 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? HoraInicio { get; set; }
         public string? HoraFim { get; set; }
         public TipoEncontro? Tipo { get; set; }
-        public string Local { get; set; }
+        public string Local { get; set; } = null!;
 
-        public IEnumerable<PropostaEncontroTurma> Turmas { get; set; }
-        public IEnumerable<PropostaEncontroData> Datas { get; set; }
+        public IEnumerable<PropostaEncontroTurma> Turmas { get; set; } = [];
+        public IEnumerable<PropostaEncontroData> Datas { get; set; } = [];
     }
 }
