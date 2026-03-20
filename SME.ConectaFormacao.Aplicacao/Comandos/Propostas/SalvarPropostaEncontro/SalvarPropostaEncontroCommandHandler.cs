@@ -9,98 +9,111 @@ using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontro
 {
-    public class SalvarPropostaEncontroCommandHandler : IRequestHandler<SalvarPropostaEncontroCommand, long>
+    public class SalvarPropostaEncontroCommandHandler(
+        IMapper mapper,
+        IRepositorioProposta repositorioProposta,
+        ITransacao transacao,
+        ICacheDistribuido cacheDistribuido) : IRequestHandler<SalvarPropostaEncontroCommand, long>
     {
-        private readonly IMapper _mapper;
-        private readonly IRepositorioProposta _repositorioProposta;
-        private readonly ITransacao _transacao;
-        private readonly ICacheDistribuido _cacheDistribuido;
-
-        public SalvarPropostaEncontroCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao, ICacheDistribuido cacheDistribuido)
-        {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
-            _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
-        }
+        private readonly ITransacao _transacao = transacao;
 
         public async Task<long> Handle(SalvarPropostaEncontroCommand request, CancellationToken cancellationToken)
         {
-            var encontroAntes = await _repositorioProposta.ObterEncontroPorId(request.EncontroDto.Id);
+            var encontroAntes = await repositorioProposta.ObterEncontroPorId(request.EncontroDto.Id);
+            var encontroDepois = mapper.Map<PropostaEncontro>(request.EncontroDto);
+            encontroDepois.PropostaId = request.PropostaId;
 
-            var encontroDepois = _mapper.Map<PropostaEncontro>(request.EncontroDto);
-
-            var transacao = _transacao.Iniciar();
+            using var transacaoAtiva = _transacao.Iniciar();
             try
             {
-                if (encontroAntes != null)
-                {
-                    if (encontroAntes.HoraInicio != encontroDepois.HoraInicio ||
-                        encontroAntes.HoraFim != encontroDepois.HoraFim ||
-                        encontroAntes.Local != encontroDepois.Local)
-                    {
-                        encontroDepois.PropostaId = request.PropostaId;
-                        encontroDepois.ManterCriador(encontroAntes);
-                        await _repositorioProposta.AtualizarEncontro(encontroDepois);
-                    }
-                }
-                else
-                    await _repositorioProposta.InserirEncontro(request.PropostaId, encontroDepois);
+                await ProcessarEncontroAsync(encontroAntes, encontroDepois);
 
-                var turmasAntes = await _repositorioProposta.ObterEncontroTurmasPorEncontroId(encontroDepois.Id);
+                await ProcessarTurmasAsync(encontroDepois.Id, encontroDepois.Turmas);
 
-                var turmasInserir = encontroDepois.Turmas.Where(w => !turmasAntes.Any(a => a.Id == w.Id));
-                var turmasExcluir = turmasAntes.Where(w => !encontroDepois.Turmas.Any(a => a.Id == w.Id));
+                await ProcessarDatasAsync(encontroDepois.Id, encontroDepois.Datas);
 
-                if (turmasInserir.Any())
-                    await _repositorioProposta.InserirEncontroTurmas(encontroDepois.Id, turmasInserir);
+                transacaoAtiva.Commit();
 
-                if (turmasExcluir.Any())
-                    await _repositorioProposta.RemoverEncontroTurmas(turmasExcluir);
+                await LimparCacheAsync(encontroDepois.Id, request.PropostaId);
 
-                var datasAntes = await _repositorioProposta.ObterEncontroDatasPorEncontroId(encontroDepois.Id);
-
-                var datasInserir = encontroDepois.Datas.Where(w => !datasAntes.Any(a => a.Id == w.Id));
-                var datasAlterar = encontroDepois.Datas.Where(w => datasAntes.Any(a => a.Id == w.Id));
-                var datasExcluir = datasAntes.Where(w => !encontroDepois.Datas.Any(a => a.Id == w.Id));
-
-                if (datasInserir.Any())
-                    await _repositorioProposta.InserirEncontroDatas(encontroDepois.Id, datasInserir);
-
-                if (datasAlterar.Any())
-                {
-                    foreach (var dataAlterar in datasAlterar)
-                    {
-                        var dataAntes = datasAntes.FirstOrDefault(t => t.Id == dataAlterar.Id);
-
-                        if (dataAlterar.DataInicio.GetValueOrDefault() != dataAntes.DataInicio.GetValueOrDefault() ||
-                            dataAlterar.DataFim.GetValueOrDefault() != dataAntes.DataFim.GetValueOrDefault())
-                        {
-                            dataAlterar.ManterCriador(dataAntes);
-                            await _repositorioProposta.AtualizarEncontroData(dataAlterar);
-                        }
-                    }
-                }
-
-                if (datasExcluir.Any())
-                    await _repositorioProposta.RemoverEncontroDatas(datasExcluir);
-
-                transacao.Commit();
-
-                foreach (var turma in turmasAntes)
-                    await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.PropostaTurmaEncontro.Parametros(turma.TurmaId));
-                await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.FormacaoDetalhada.Parametros(request.PropostaId));
                 return encontroDepois.Id;
             }
             catch
             {
-                transacao.Rollback();
+                transacaoAtiva.Rollback();
                 throw;
             }
-            finally
+        }
+
+        private async Task ProcessarEncontroAsync(PropostaEncontro encontroAntes, PropostaEncontro encontroDepois)
+        {
+            if (encontroAntes == null)
             {
-                transacao.Dispose();
+                await repositorioProposta.InserirEncontro(encontroDepois.PropostaId, encontroDepois);
+                return;
             }
+
+            if (encontroAntes.HoraInicio != encontroDepois.HoraInicio ||
+                encontroAntes.HoraFim != encontroDepois.HoraFim ||
+                encontroAntes.Local != encontroDepois.Local)
+            {
+                encontroDepois.ManterCriador(encontroAntes);
+                await repositorioProposta.AtualizarEncontro(encontroDepois);
+            }
+        }
+
+        private async Task ProcessarTurmasAsync(long encontroId, IEnumerable<PropostaEncontroTurma> turmasDepois)
+        {
+            var turmasAntes = await repositorioProposta.ObterEncontroTurmasPorEncontroId(encontroId);
+
+            var turmasInserir = turmasDepois.Where(w => !turmasAntes.Any(a => a.TurmaId == w.TurmaId));
+            var turmasExcluir = turmasAntes.Where(w => !turmasDepois.Any(a => a.TurmaId == w.TurmaId));
+
+            if (turmasInserir.Any())
+                await repositorioProposta.InserirEncontroTurmas(encontroId, turmasInserir);
+
+            if (turmasExcluir.Any())
+                await repositorioProposta.RemoverEncontroTurmas(turmasExcluir);
+        }
+
+        private async Task ProcessarDatasAsync(long encontroId, IEnumerable<PropostaEncontroData> datasDepois)
+        {
+            var datasAntes = await repositorioProposta.ObterEncontroDatasPorEncontroId(encontroId);
+
+            var datasInserir = datasDepois.Where(w => !datasAntes.Any(a => a.Id == w.Id));
+            var datasExcluir = datasAntes.Where(w => !datasDepois.Any(a => a.Id == w.Id));
+            var datasAlterar = datasDepois.Where(w => datasAntes.Any(a => a.Id == w.Id));
+
+            if (datasInserir.Any())
+                await repositorioProposta.InserirEncontroDatas(encontroId, datasInserir);
+
+            if (datasExcluir.Any())
+                await repositorioProposta.RemoverEncontroDatas(datasExcluir);
+
+            foreach (var dataAlterar in datasAlterar)
+            {
+                var dataAntes = datasAntes.First(t => t.Id == dataAlterar.Id);
+
+                if (dataAlterar.DataInicio != dataAntes.DataInicio ||
+                    dataAlterar.DataFim != dataAntes.DataFim)
+                {
+                    dataAlterar.PropostaEncontroId = encontroId;
+                    dataAlterar.ManterCriador(dataAntes);
+                    await repositorioProposta.AtualizarEncontroData(dataAlterar);
+                }
+            }
+        }
+
+        private async Task LimparCacheAsync(long encontroId, long propostaId)
+        {
+            var turmasAntes = await repositorioProposta.ObterEncontroTurmasPorEncontroId(encontroId);
+
+            foreach (var turma in turmasAntes)
+            {
+                await cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.PropostaTurmaEncontro.Parametros(turma.TurmaId));
+            }
+
+            await cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.FormacaoDetalhada.Parametros(propostaId));
         }
     }
 }
