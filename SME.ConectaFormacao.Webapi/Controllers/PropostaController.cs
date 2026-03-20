@@ -203,7 +203,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("{propostaId}/encontro")]
-        [ProducesResponseType(typeof(PaginacaoResultadoDto<PropostaEncontroDTO>), 200)]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<PropostaEncontroDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterPropostaEncontrosPaginado(
@@ -221,7 +221,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> SalvarPropostaEncontro(
             [FromServices] ICasoDeUsoSalvarPropostaEncontro casoDeUsoSalvarPropostaEncontro,
             [FromRoute] long propostaId,
-            [FromBody] PropostaEncontroDTO propostaEncontroDTO)
+            [FromBody] PropostaEncontroDto propostaEncontroDTO)
         {
             return Ok(await casoDeUsoSalvarPropostaEncontro.Executar(propostaId, propostaEncontroDTO));
         }

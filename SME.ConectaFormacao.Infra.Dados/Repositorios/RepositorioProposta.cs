@@ -723,7 +723,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             await conexao.Obter().UpdateAsync(encontro);
         }
 
-        public async Task<IEnumerable<PropostaEncontroData>> ObterEncontroDatasPorEncontroId(params long[] encontroIds)
+        public async Task<IEnumerable<PropostaEncontroData>> ObterEncontroDatasPorEncontroId(params long[] encontroId)
         {
             var query = @"select 
                             id, 
@@ -738,11 +738,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_encontro_data 
-                        where proposta_encontro_id = any(@encontroIds) and not excluido";
-            return await conexao.Obter().QueryAsync<PropostaEncontroData>(query, new { encontroIds });
+                        where proposta_encontro_id = any(@encontroId) and not excluido";
+            return await conexao.Obter().QueryAsync<PropostaEncontroData>(query, new { encontroId });
         }
 
-        public async Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(params long[] encontroIds)
+        public async Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(params long[] encontroId)
         {
             var query = @"select 
                             id, 
@@ -756,7 +756,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                        alterado_por,
 	                        alterado_login
                         from proposta_encontro_turma 
-                        where proposta_encontro_id = any(@encontroIds) and not excluido;
+                        where proposta_encontro_id = any(@encontroId) and not excluido;
 
                         SELECT 
                                pt.id,
@@ -771,16 +771,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                           pt.alterado_login
                         FROM proposta_encontro_turma pet
                         INNER JOIN proposta_turma pt on pt.id = pet.turma_id and not pt.excluido
-                        WHERE pet.proposta_encontro_id = any(@encontroIds) 
+                        WHERE pet.proposta_encontro_id = any(@encontroId) 
                           and not pet.excluido;";
 
-            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { encontroIds });
+            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { encontroId });
 
             var encontroTurmas = await queryMultiple.ReadAsync<PropostaEncontroTurma>();
             var turmas = await queryMultiple.ReadAsync<PropostaTurma>();
 
             foreach (var encontroTurma in encontroTurmas)
-                encontroTurma.Turma = turmas.FirstOrDefault(t => t.Id == encontroTurma.TurmaId);
+                encontroTurma.Turma = turmas.First(t => t.Id == encontroTurma.TurmaId);
 
             return encontroTurmas;
         }
