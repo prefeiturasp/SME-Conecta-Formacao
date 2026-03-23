@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.Infra
             conexaoRabbit = factory.CreateConnection();
             canalRabbit = conexaoRabbit.CreateModel();
 
-            const ushort PREFETCH_PADRAO = 2;
+            const ushort PREFETCH_PADRAO = 10;
             ushort precetchCount = consumoFilasOptions.Value.Qos <= 0 ? PREFETCH_PADRAO : consumoFilasOptions.Value.Qos;
             canalRabbit.BasicQos(0, precetchCount, false);
             canalRabbit.ExchangeDeclare(ExchangeRabbit.Conecta, ExchangeType.Direct, true, false);

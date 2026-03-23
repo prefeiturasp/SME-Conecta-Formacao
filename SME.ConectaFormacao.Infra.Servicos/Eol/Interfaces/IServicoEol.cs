@@ -19,5 +19,6 @@
         Task<IEnumerable<CargoEolDto>?> ObterCargosEolPorDreAsync(string codigoDre);
         Task<IEnumerable<AtribuicaoServidorEolDto>?> ObterAtribuicoesServidorEolPorDataAtualizacaoAsync(DateTime? dataUltimaAtualizacao);
         Task<IEnumerable<FuncaoAtividadeDto>?> ObterFuncaoAtividadeEolPorDre(string codigoDre, DateTime? dataUltimaAtualizacao);
+        Task<IEnumerable<UeEol>?> ObterTodasAsUesAsync();
     }
 }

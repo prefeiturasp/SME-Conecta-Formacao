@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos
 {
@@ -14,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public string? PeriodoInscricao { get; set; }
         public string? Justificativa { get; set; }
         public string[]? PublicosAlvo { get; set; }
-        public string[]? PalavrasChaves { get; set; }
+        public string[]? PalavrasChaves { get; set; } //Publicos Alvo para vagas remanescentes
         public bool InscricaoEncerrada { get; set; }
         public string? ImagemUrl { get; set; }
         public FormacaoHomologada FormacaoHomologada { get; set; }
@@ -22,5 +23,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public string? LinkParaInscricoesExterna { get; set; }
         public bool PodeEnviarInscricao { get; set; }
         public IEnumerable<RetornoTurmaDetalheDTO> Turmas { get; set; } = [];
+        public UsuarioAcessibilidadeDto? UsuarioAcessibilidade { get; set; }
     }
 }

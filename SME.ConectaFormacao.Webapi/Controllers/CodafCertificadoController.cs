@@ -1,18 +1,23 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
+using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
     public class CodafCertificadoController(
         ICasoDeUsoEmitirCertificadoCodaf casoDeUsoEmitirCertificadoCodaf,
-        ICasoDeUsoListarCertificadoCodafUsuario casoDeUsoListarCertificadoCodafUsuario,
-        ICasoDeUsoObterCertificadoCodafParaDownload casoDeUsoObterCertificadoCodafParaDownload) : BaseController
+        ICasoDeUsoListarMeusCertificadosCodaf casoDeUsoListarMeusCertificadosCodaf,
+        ICasoDeUsoObterCertificadoCodafParaDownload casoDeUsoObterCertificadoCodafParaDownload,
+        ICasoDeUsoListarTodosCertificadosCodaf casoDeUsoListarTodosCertificadosCodaf,
+        ICasoDeUsoDownloadLoteCertificados casoDeUsoDownloadLoteCertificados) : BaseController
     {
         [HttpPost("{codafListaPresencaId}/emitir-certificados")]
         [ProducesResponseType(typeof(Resultado), 200)]
@@ -23,12 +28,12 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return ProcessarResultado(resultado);
         }
 
-        [HttpGet("certificados-usuario")]
-        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafDto>>), 200)]
-        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemResultadoCertificadoCodafDto>>), 404)]
-        public async Task<IActionResult> ListarCertificadosUsuario([FromQuery] FiltroListaCertificadoCodafDto filtro)
+        [HttpGet("meus")]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<MeusCertificadosCodafDto>>), 200)]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<MeusCertificadosCodafDto>>), 404)]
+        public async Task<IActionResult> ListarMeusCertificados([FromQuery] FiltroListaMeusCertificadosCodafDto filtro)
         {
-            var resultado = await casoDeUsoListarCertificadoCodafUsuario.ExecutarAsync(filtro);
+            var resultado = await casoDeUsoListarMeusCertificadosCodaf.ExecutarAsync(filtro);
             return ProcessarResultado(resultado);
         }
 
@@ -39,6 +44,33 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             var resultado = await casoDeUsoObterCertificadoCodafParaDownload.ExecutarAsync(certificadoCodafId);
             return ProcessarResultado(resultado);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemCertificadosCodafDto>>), 200)]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemCertificadosCodafDto>>), 404)]
+        [Permissao(Permissao.Codaf_I, Policy = "Bearer")]
+        public async Task<IActionResult> ListarTodosCertificados([FromQuery] FiltroListaTodosCertificadosCodafDto filtro)
+        {
+            var resultado = await casoDeUsoListarTodosCertificadosCodaf.ExecutarAsync(filtro);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpPost("download-lote")]
+        [ProducesResponseType(typeof(FileStreamResult), 200)]
+        [ProducesResponseType(typeof(Resultado), 404)]
+        [Permissao(Permissao.Codaf_I, Policy = "Bearer")]
+        public async Task DownloadLoteCertificados([FromBody] List<long> ids, CancellationToken cancellationToken)
+        {
+            var syncIoFeature = HttpContext.Features.Get<IHttpBodyControlFeature>();
+            syncIoFeature?.AllowSynchronousIO = true;
+            var dataHoraAtual = DateTime.Now.ToString("ddMMyyyy_HHmmss");
+            var nomeArquivo = $"CERTIFICADOS_{dataHoraAtual}.zip";
+
+            Response.ContentType = "application/zip";
+            Response.Headers.Append("Content-Disposition", $"attachment; filename={nomeArquivo}");
+
+            await casoDeUsoDownloadLoteCertificados.ExecutarAsync(ids, Response.Body, cancellationToken);            
         }
     }
 }

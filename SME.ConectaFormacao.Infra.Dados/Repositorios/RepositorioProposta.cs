@@ -2216,12 +2216,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           and not cf.excluido;
 
                         select 
-                               pc.nome
-                        from proposta_palavra_chave ppc
-                        join palavra_chave pc on pc.id = ppc.palavra_chave_id
-                        where ppc.proposta_id = @propostaId
-                          and not ppc.excluido 
-                          and not pc.excluido;
+                               cf.nome
+                        from proposta_vaga_remanecente pvr
+                        join cargo_funcao cf on cf.id = pvr.cargo_funcao_id
+                        where pvr.proposta_id = @propostaId
+                          and not pvr.excluido
+                          and not cf.excluido;
 
                         select distinct pt.id,
                                pt.nome,
@@ -2261,7 +2261,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             if (formacaoDetalhe.NaoEhNulo())
             {
                 formacaoDetalhe.AreaPromotora = await queryMultiple.ReadFirstOrDefaultAsync<string>();
-                formacaoDetalhe.PublicosAlvo = await queryMultiple.ReadAsync<string>();
+                formacaoDetalhe.PublicosAlvo = await queryMultiple.ReadAsync<string>();  
                 formacaoDetalhe.PalavrasChaves = await queryMultiple.ReadAsync<string>();
                 formacaoDetalhe.Turmas = await queryMultiple.ReadAsync<FormacaoTurma>();
                 var formacaoDatasTurmas = await queryMultiple.ReadAsync<FormacaoTurmaData>();

@@ -1,25 +1,22 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Minio;
+using Minio.Exceptions;
+using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Opcoes;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
 {
-    public class ServicoArmazenamento : IServicoArmazenamento
+    [ExcludeFromCodeCoverage]
+    public class ServicoArmazenamento(IOptions<ConfiguracaoArmazenamentoOptions> configuracaoArmazenamentoOptions, IConfiguration configuration, IMinioClient minioClient) : IServicoArmazenamento
     {
-        private readonly IMinioClient _minioClient;
-        private readonly ConfiguracaoArmazenamentoOptions _configuracaoArmazenamentoOptions;
-        private readonly IConfiguration _configuration;
+        private readonly ConfiguracaoArmazenamentoOptions _configuracaoArmazenamentoOptions = configuracaoArmazenamentoOptions?.Value ??
+                                                           throw new ArgumentNullException(nameof(configuracaoArmazenamentoOptions));
+        private readonly IConfiguration _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         // Tempo de expiração da URL em segundos - TODO: tornar configurável no rancher o tabela de parametros (by Diego Moreno - 1/2026)
         private readonly int _urlExpiracaoEmSegundos = 48 * 60 * 60; // 48 horas
-
-        public ServicoArmazenamento(IOptions<ConfiguracaoArmazenamentoOptions> configuracaoArmazenamentoOptions, IConfiguration configuration, IMinioClient minioClient)
-        {
-            _configuracaoArmazenamentoOptions = configuracaoArmazenamentoOptions?.Value ?? throw new ArgumentNullException(nameof(configuracaoArmazenamentoOptions));
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _minioClient = minioClient;
-        }
 
         public async Task<string> ArmazenarTemporaria(string nomeArquivo, Stream stream, string contentType)
         {
@@ -43,7 +40,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
                 .WithVersionId("1.0")
                 .WithContentType(contentType);
 
-            await _minioClient.PutObjectAsync(args);
+            await minioClient.PutObjectAsync(args);
 
             return await ObterUrl(nomeArquivo, bucket);
         }
@@ -61,7 +58,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
                     .WithObject(nomeArquivo)
                     .WithCopyObjectSource(cpSrcArgs);
 
-                await _minioClient.CopyObjectAsync(args);
+                await minioClient.CopyObjectAsync(args);
             }
 
             return $"{_configuracaoArmazenamentoOptions.BucketArquivos}/{nomeArquivo}";
@@ -89,13 +86,13 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
                 .WithBucket(nomeBucket)
                 .WithObject(nomeArquivo);
 
-            await _minioClient.RemoveObjectAsync(args);
+            await minioClient.RemoveObjectAsync(args);
             return true;
         }
 
         public async Task<IEnumerable<string>> ObterBuckets()
         {
-            var buckets = await _minioClient.ListBucketsAsync();
+            var buckets = await minioClient.ListBucketsAsync();
             return buckets.Buckets.Select(b => b.Name).ToList();
         }
 
@@ -153,7 +150,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
                 .WithObject(nomeObjeto)
                 .WithExpiry(_urlExpiracaoEmSegundos);
 
-            return await _minioClient.PresignedGetObjectAsync(args);
+            return await minioClient.PresignedGetObjectAsync(args);
         }
 
         private async Task ExecutarUploadInterno(string nomeObjeto, Stream stream, string contentType, string bucket)
@@ -167,7 +164,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
                 .WithObjectSize(stream.Length)
                 .WithContentType(contentType);
 
-            await _minioClient.PutObjectAsync(args);
+            await minioClient.PutObjectAsync(args);
         }
         private async Task CopiarInterno(string nomeOrigem, string nomeDestino, string bucketOrigem, string bucketDestino)
         {
@@ -180,7 +177,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
                 .WithObject(nomeDestino)
                 .WithCopyObjectSource(cpSrcArgs);
 
-            await _minioClient.CopyObjectAsync(args);
+            await minioClient.CopyObjectAsync(args);
         }
         private string MontarUrl(string nomeArquivo, string bucketName)
         {
@@ -197,7 +194,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
         public async Task<string> UploadCertificadoCodafAsync(string nomeArquivo, byte[] conteudoPdf)
         {
             using var stream = new MemoryStream(conteudoPdf);
-            await _minioClient.PutObjectAsync(new PutObjectArgs()
+            await minioClient.PutObjectAsync(new PutObjectArgs()
                 .WithBucket(_configuracaoArmazenamentoOptions.BucketArquivos)
                 .WithObject(nomeArquivo)
                 .WithStreamData(stream)
@@ -205,6 +202,34 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
                 .WithContentType("application/pdf"));
 
             return nomeArquivo;
+        }
+
+        public async Task<Resultado<Stream>> ObterArquivoPorChaveAsync(string chaveObjeto, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var memoryStream = new MemoryStream();
+
+                var args = new GetObjectArgs()
+                    .WithBucket(_configuracaoArmazenamentoOptions.BucketArquivos)
+                    .WithObject(chaveObjeto)
+                    .WithCallbackStream((stream) =>
+                    {
+                        stream.CopyTo(memoryStream);
+                    });
+
+                await minioClient.GetObjectAsync(args, cancellationToken);
+                memoryStream.Position = 0;
+                return memoryStream;
+            }
+            catch (ObjectNotFoundException)
+            {
+                return Erro.NaoEncontrado("Arquivo não encontrado no storage.");
+            }
+            catch (Exception ex)
+            {
+                return new Erro(TipoFalha.ErroInterno, $"Erro ao obter arquivo: {ex.Message}");
+            }
         }
     }
 }

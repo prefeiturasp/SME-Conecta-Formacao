@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Relatorios;
 using SME.ConectaFormacao.Aplicacao.Interfaces.SincronizacaoEOL;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria;
@@ -37,6 +38,7 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.SincronizaAtribuicoesServidoresEol, new ComandoRabbit("Sincronização de Atribuições dos Servidores EOL", typeof(ISincronizarAtribuicoesServidoresEolUseCase), false));
             Comandos.Add(RotasRabbit.SincronizaFuncaoAtividade, new ComandoRabbit("Sincronização por Função Atividade", typeof(ISincronizarFuncaoAtividadeEolUseCase), false));
             Comandos.Add(RotasRabbit.SincronizaFuncaoAtividadeDre, new ComandoRabbit("Sincronização por Função Atividade DRE/SME", typeof(ISincronizarFuncaoAtividadeEolPorDreUseCase), true));
+            Comandos.Add(RotasRabbit.SincronizaUesEol , new ComandoRabbit("Sincronização de UEs do EOL", typeof(ISincronizarUesEolUseCase)));
 
 
             Comandos.Add(RotasRabbit.SincronizaComponentesCurricularesEAnosTurmaEOL, new ComandoRabbit("Sincronização de Componentes Curriculares e Anos da Turma do EOL", typeof(IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase), true));
@@ -75,6 +77,8 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.EnviarEmail, new ComandoRabbit("Enviar e-mail", typeof(ICasoDeUsoEnviarEmail), true));
             Comandos.Add(RotasRabbit.EnviarNotificacao, new ComandoRabbit("Enviar notificação via SignalR", typeof(ICasoDeUsoEnviarNotificacao), true));
             Comandos.Add(RotasRabbit.GerarArquivoCertificadosCodaf, new ComandoRabbit("Gerar arquivo de certificados CODAF", typeof(ICasoDeUsoGerarArquivoCertificadosCodaf), true));
+
+            Comandos.Add(RotasRabbit.GerarRelatorioInscritosExcel, new ComandoRabbit("Gerar relatório de inscritos em Excel", typeof(ICasoDeUsoGerarRelatorioInscritosPorFormacao), true));
         }
     }
 }

@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
         protected ITemplateService templateService = templateService;
         protected string ObterLayoutBase(DadosEmissaoCertificadoCodafDto dados)
         {
-            var layout = templateService.ObterTemplateCertificado("layout-certificado-codaf.html");
+            var layout = templateService.ObterTemplate("layout-certificado-codaf.html");
             var imgBrasaoTituloSme = templateService.ObterImagemBase64("brasao_sme.png");
             var imgAssinaturaSecretario = templateService.ObterImagemBase64("assinatura_secretario.png");
             var imgBrasaoPrefeitura = templateService.ObterImagemBase64("brasao_prefeitura.png");

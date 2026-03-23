@@ -12,5 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Notificacao
         public NotificacaoTipo Tipo { get; set; }
         public string TipoDescricao { get; set; }
         public string Parametros { get; set; }
+        public DateTimeOffset? DataExpiracao { get; set; }
+        public string? MensagemAposExpiracao { get; set; }
     }
 }

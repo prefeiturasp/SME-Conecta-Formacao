@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Primitives;
 using SME.ConectaFormacao.Dominio.Contexto;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using System.Security.Claims;
 
 namespace SME.Conecta.Worker.Rabbbit.Contexto
@@ -26,6 +27,7 @@ namespace SME.Conecta.Worker.Rabbbit.Contexto
             Variaveis.Add("NomeUsuario", httpContextAccessor.HttpContext?.User?.FindFirst("Nome")?.Value ?? "Sistema");
             Variaveis.Add("PerfilUsuario", ObterPerfilAtual());
             Variaveis.Add("EmailUsuario", httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == "email")?.Value ?? string.Empty);
+            Variaveis.Add("Permissoes", ObterPermissoes());
 
             var authorizationHeader = httpContextAccessor.HttpContext?.Request?.Headers["authorization"];
 
@@ -59,6 +61,15 @@ namespace SME.Conecta.Worker.Rabbbit.Contexto
         public override IContextoAplicacao AtribuirContexto(IContextoAplicacao contexto)
         {
             throw new Exception("Este tipo de conexto não permite atribuição");
+        }
+        private Permissao[] ObterPermissoes()
+        {
+            return [.. (httpContextAccessor.HttpContext?.User?.Claims ?? [])
+                .Where(x => x.Type == ClaimTypes.Role)
+                .Select(x => Enum.TryParse<Permissao>(x.Value, out var permissao) && Enum.IsDefined(permissao)
+                        ? permissao
+                        : (Permissao?)null)
+                .OfType<Permissao>()];
         }
     }
 }

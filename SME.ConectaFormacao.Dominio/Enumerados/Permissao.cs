@@ -21,5 +21,10 @@
         RedeParceria_I = 304,
         RedeParceria_E = 305,
         RedeParceria_A = 306,
+
+        Codaf_C = 289,
+        Codaf_I = 290,
+        Codaf_E = 291,
+        Codaf_A = 292,
     }
 }
