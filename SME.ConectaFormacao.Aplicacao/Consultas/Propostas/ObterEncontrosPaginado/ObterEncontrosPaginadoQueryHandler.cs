@@ -7,21 +7,23 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterEncontrosPaginado
 {
-    public class ObterEncontrosPaginadoQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta) : 
+    public class ObterEncontrosPaginadoQueryHandler(
+        IMapper mapper,
+        IRepositorioPropostaEncontro repositorioPropostaEncontro) : 
         IRequestHandler<ObterEncontrosPaginadoQuery, PaginacaoResultadoDto<PropostaEncontroDto>>
     {
         public async Task<PaginacaoResultadoDto<PropostaEncontroDto>> Handle(ObterEncontrosPaginadoQuery request, CancellationToken cancellationToken)
         {
-            var totalRegistros = await repositorioProposta.ObterTotalEncontros(request.PropostaId);
+            var totalRegistros = await repositorioPropostaEncontro.ObterTotalEncontrosAsync(request.PropostaId);
 
-            IEnumerable<PropostaEncontro> encontros = new List<PropostaEncontro>();
+            IEnumerable<PropostaEncontro> encontros = [];
             if (totalRegistros > 0)
             {
-                encontros = await repositorioProposta.ObterEncontrosPaginados(request.NumeroPagina, request.NumeroRegistros, request.PropostaId);
+                encontros = await repositorioPropostaEncontro.ObterEncontrosPorPropostaAsync(request.PropostaId, request.NumeroPagina, request.NumeroRegistros);
 
                 var ids = encontros.Select(t => t.Id).ToArray();
-                var datas = await repositorioProposta.ObterEncontroDatasPorEncontroId(ids);
-                var turmas = await repositorioProposta.ObterEncontroTurmasPorEncontroId(ids);
+                var datas = await repositorioPropostaEncontro.ObterEncontroDatasPorEncontroIdAsync(ids);
+                var turmas = await repositorioPropostaEncontro.ObterEncontroTurmasPorEncontroIdAsync(ids);
 
                 foreach (var encontro in encontros)
                 {

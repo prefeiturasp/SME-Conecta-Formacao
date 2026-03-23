@@ -6,84 +6,79 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class RemoverPropostaCommandHandler : IRequestHandler<RemoverPropostaCommand, bool>
+    public class RemoverPropostaCommandHandler(
+        ITransacao transacao,
+        IRepositorioProposta repositorioProposta,
+        IRepositorioPropostaEncontro repositorioPropostaEncontro) : 
+        IRequestHandler<RemoverPropostaCommand, bool>
     {
-        private readonly ITransacao _transacao;
-        private readonly IRepositorioProposta _repositorioProposta;
-
-        public RemoverPropostaCommandHandler(ITransacao transacao, IRepositorioProposta repositorioProposta)
-        {
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
-            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-        }
-
         public async Task<bool> Handle(RemoverPropostaCommand request, CancellationToken cancellationToken)
         {
-            var proposta = await _repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
+            var proposta = await repositorioProposta.ObterPorId(request.Id) ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            proposta.Dres = await _repositorioProposta.ObterDrePorId(request.Id);
-            proposta.PublicosAlvo = await _repositorioProposta.ObterPublicoAlvoPorId(request.Id);
-            proposta.FuncoesEspecificas = await _repositorioProposta.ObterFuncoesEspecificasPorId(request.Id);
-            proposta.CriteriosValidacaoInscricao = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
-            proposta.VagasRemanecentes = await _repositorioProposta.ObterVagasRemacenentesPorId(request.Id);
-            proposta.Encontros = await _repositorioProposta.ObterEncontrosPorId(request.Id);
-            proposta.PalavrasChaves = await _repositorioProposta.ObterPalavrasChavesPorId(request.Id);
-            proposta.Turmas = await _repositorioProposta.ObterTurmasPorId(request.Id);
-            proposta.Modalidades = await _repositorioProposta.ObterModalidadesPorId(request.Id);
-            proposta.AnosTurmas = await _repositorioProposta.ObterAnosTurmasPorId(request.Id);
-            proposta.ComponentesCurriculares = await _repositorioProposta.ObterComponentesCurricularesPorId(request.Id);
+            proposta.Dres = await repositorioProposta.ObterDrePorId(request.Id);
+            proposta.PublicosAlvo = await repositorioProposta.ObterPublicoAlvoPorId(request.Id);
+            proposta.FuncoesEspecificas = await repositorioProposta.ObterFuncoesEspecificasPorId(request.Id);
+            proposta.CriteriosValidacaoInscricao = await repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
+            proposta.VagasRemanecentes = await repositorioProposta.ObterVagasRemacenentesPorId(request.Id);
+            proposta.Encontros = await repositorioPropostaEncontro.ObterEncontrosPorPropostaAsync(request.Id);
+            proposta.PalavrasChaves = await repositorioProposta.ObterPalavrasChavesPorId(request.Id);
+            proposta.Turmas = await repositorioProposta.ObterTurmasPorId(request.Id);
+            proposta.Modalidades = await repositorioProposta.ObterModalidadesPorId(request.Id);
+            proposta.AnosTurmas = await repositorioProposta.ObterAnosTurmasPorId(request.Id);
+            proposta.ComponentesCurriculares = await repositorioProposta.ObterComponentesCurricularesPorId(request.Id);
 
-            var transacao = _transacao.Iniciar();
+            var transacaoAtual = transacao.Iniciar();
             try
             {
                 if (proposta.Dres.Any())
-                    await _repositorioProposta.RemoverDres(proposta.Dres);
+                    await repositorioProposta.RemoverDres(proposta.Dres);
 
                 if (proposta.PublicosAlvo.Any())
-                    await _repositorioProposta.RemoverPublicosAlvo(proposta.PublicosAlvo);
+                    await repositorioProposta.RemoverPublicosAlvo(proposta.PublicosAlvo);
 
                 if (proposta.FuncoesEspecificas.Any())
-                    await _repositorioProposta.RemoverFuncoesEspecificas(proposta.FuncoesEspecificas);
+                    await repositorioProposta.RemoverFuncoesEspecificas(proposta.FuncoesEspecificas);
 
                 if (proposta.CriteriosValidacaoInscricao.Any())
-                    await _repositorioProposta.RemoverCriteriosValidacaoInscricao(proposta.CriteriosValidacaoInscricao);
+                    await repositorioProposta.RemoverCriteriosValidacaoInscricao(proposta.CriteriosValidacaoInscricao);
 
                 if (proposta.VagasRemanecentes.Any())
-                    await _repositorioProposta.RemoverVagasRemanecentes(proposta.VagasRemanecentes);
+                    await repositorioProposta.RemoverVagasRemanecentes(proposta.VagasRemanecentes);
 
                 if (proposta.Encontros.Any())
-                    await _repositorioProposta.RemoverEncontros(proposta.Encontros);
+                    await repositorioPropostaEncontro.RemoverEncontrosAsync(proposta.Encontros);
 
                 if (proposta.PalavrasChaves.Any())
-                    await _repositorioProposta.RemoverPalavrasChaves(proposta.PalavrasChaves);
+                    await repositorioProposta.RemoverPalavrasChaves(proposta.PalavrasChaves);
 
                 if (proposta.Turmas.Any())
-                    await _repositorioProposta.RemoverTurmas(proposta.Turmas);
+                    await repositorioProposta.RemoverTurmas(proposta.Turmas);
 
                 if (proposta.Modalidades.Any())
-                    await _repositorioProposta.RemoverModalidades(proposta.Modalidades);
+                    await repositorioProposta.RemoverModalidades(proposta.Modalidades);
 
                 if (proposta.AnosTurmas.Any())
-                    await _repositorioProposta.RemoverAnosTurmas(proposta.AnosTurmas);
+                    await repositorioProposta.RemoverAnosTurmas(proposta.AnosTurmas);
 
                 if (proposta.ComponentesCurriculares.Any())
-                    await _repositorioProposta.RemoverComponentesCurriculares(proposta.ComponentesCurriculares);
+                    await repositorioProposta.RemoverComponentesCurriculares(proposta.ComponentesCurriculares);
 
-                await _repositorioProposta.RemoverPropostaMovimentacao(proposta.Id);
-                await _repositorioProposta.Remover(proposta);
+                await repositorioProposta.RemoverPropostaMovimentacao(proposta.Id);
+                await repositorioProposta.Remover(proposta);
 
-                transacao.Commit();
+                transacaoAtual.Commit();
 
                 return true;
             }
             catch
             {
-                transacao.Rollback();
+                transacaoAtual.Rollback();
                 throw;
             }
             finally
             {
-                transacao.Dispose();
+                transacaoAtual.Dispose();
             }
         }
     }

@@ -12,6 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
     {
         private readonly Mock<ITransacao> _transacao;
         private readonly Mock<IRepositorioProposta> _repositorioProposta;
+        private readonly Mock<IRepositorioPropostaEncontro> _repositorioPropostaEncontro;
         private readonly InserirPropostaTurmaAdicionalCommandHandler _sut;
 
         public InserirPropostaTurmaAdicionalCommandHandlerTestes()
@@ -20,34 +21,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             _transacao = mocker.GetMock<ITransacao>();
             _repositorioProposta = mocker.GetMock<IRepositorioProposta>();
+            _repositorioPropostaEncontro = mocker.GetMock<IRepositorioPropostaEncontro>();
 
             _sut = mocker.CreateInstance<InserirPropostaTurmaAdicionalCommandHandler>();
-        }
-
-        [Fact]
-        public void DadoTransacaoNula_QuandoInstanciarHandler_EntaoDeveLancarArgumentNullException()
-        {
-            // Arrange
-            ITransacao transacaoNula = null!;
-
-            // Act
-            var act = () => new InserirPropostaTurmaAdicionalCommandHandler(transacaoNula, _repositorioProposta.Object);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>().WithParameterName("transacao");
-        }
-
-        [Fact]
-        public void DadoRepositorioPropostaNulo_QuandoInstanciarHandler_EntaoDeveLancarArgumentNullException()
-        {
-            // Arrange
-            IRepositorioProposta repositorioPropostaNulo = null!;
-
-            // Act
-            var act = () => new InserirPropostaTurmaAdicionalCommandHandler(_transacao.Object, repositorioPropostaNulo);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>().WithParameterName("repositorioProposta");
         }
 
         [Fact]
@@ -68,7 +44,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             _repositorioProposta.Verify(r => r.InserirTurma(It.Is<PropostaTurma>(t => t.Nome == "Turma Inicial - Parte 2")), Times.Once);
             _repositorioProposta.Verify(r => r.InserirPropostaTurmasDres(It.IsAny<IEnumerable<PropostaTurmaDre>>()), Times.Never);
-            _repositorioProposta.Verify(r => r.InserirEncontroTurmas(It.IsAny<long>(), It.IsAny<IEnumerable<PropostaEncontroTurma>>()), Times.Never);
+            _repositorioPropostaEncontro.Verify(r => r.InserirEncontroTurmasAsync(It.IsAny<long>(), It.IsAny<IEnumerable<PropostaEncontroTurma>>()), Times.Never);
             _repositorioProposta.Verify(r => r.InserirPropostaRegenteTurma(It.IsAny<long>(), It.IsAny<IEnumerable<PropostaRegenteTurma>>()), Times.Never);
             _repositorioProposta.Verify(r => r.InserirPropostaTutorTurma(It.IsAny<long>(), It.IsAny<IEnumerable<PropostaTutorTurma>>()), Times.Never);
 
@@ -116,7 +92,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             // Assert
             _repositorioProposta.Verify(r => r.InserirPropostaTurmasDres(dres), Times.Once);
-            _repositorioProposta.Verify(r => r.InserirEncontroTurmas(encontros[0].Id, It.IsAny<IEnumerable<PropostaEncontroTurma>>()), Times.Once);
+            _repositorioPropostaEncontro.Verify(r => r.InserirEncontroTurmasAsync(encontros[0].Id, It.IsAny<IEnumerable<PropostaEncontroTurma>>()), Times.Once);
             _repositorioProposta.Verify(r => r.InserirPropostaRegenteTurma(regentes[0].Id, It.IsAny<IEnumerable<PropostaRegenteTurma>>()), Times.Once);
             _repositorioProposta.Verify(r => r.InserirPropostaTutorTurma(tutores[0].Id, It.IsAny<IEnumerable<PropostaTutorTurma>>()), Times.Once);
 
@@ -170,12 +146,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
         {
             _repositorioProposta.Setup(r => r.ObterTurmaPorId(It.IsAny<long>())).ReturnsAsync(turma);
             _repositorioProposta.Setup(r => r.ObterPropostaTurmasDresPorPropostaTurmaId(It.IsAny<long>())).ReturnsAsync(dres);
-            _repositorioProposta.Setup(r => r.ObterEncontrosPorPropostaTurmaId(It.IsAny<long>())).ReturnsAsync(encontros);
+            _repositorioPropostaEncontro.Setup(r => r.ObterEncontrosPorPropostaTurmaAsync(It.IsAny<long>())).ReturnsAsync(encontros);
             _repositorioProposta.Setup(r => r.ObterRegentesPorPropostaTurmaId(It.IsAny<long>())).ReturnsAsync(regentes);
             _repositorioProposta.Setup(r => r.ObterTutoresPorPropostaTurmaId(It.IsAny<long>())).ReturnsAsync(tutores);
         }
 
-        private PropostaTurma CriarTurmaComNomeECriador(string nome, string criadoPor)
+        private static PropostaTurma CriarTurmaComNomeECriador(string nome, string criadoPor)
         {
             return new PropostaTurma
             {
@@ -185,22 +161,22 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             };
         }
 
-        private List<PropostaTurmaDre> CriarListaDres()
+        private static List<PropostaTurmaDre> CriarListaDres()
         {
             return [new PropostaTurmaDre { Id = 1, DreId = 10 }];
         }
 
-        private List<PropostaEncontro> CriarListaEncontros()
+        private static List<PropostaEncontro> CriarListaEncontros()
         {
             return [new PropostaEncontro { Id = 1, Local = "Local 1" }];
         }
 
-        private List<PropostaRegente> CriarListaRegentes()
+        private static List<PropostaRegente> CriarListaRegentes()
         {
             return [new PropostaRegente { Id = 1, NomeRegente = "Regente 1" }];
         }
 
-        private List<PropostaTutor> CriarListaTutores()
+        private static List<PropostaTutor> CriarListaTutores()
         {
             return [new PropostaTutor { Id = 1, NomeTutor = "Tutor 1" }];
         }

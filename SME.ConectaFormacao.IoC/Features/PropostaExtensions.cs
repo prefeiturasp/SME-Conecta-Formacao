@@ -13,6 +13,7 @@ namespace SME.ConectaFormacao.IoC.Features
         {
             public IServiceCollection AdicionarModuloProposta() =>
             services
+            .AdicionarModuloPropostaEncontro()
             .AddScoped<ICasoDeUsoObterAutocompletarFormacao, CasoDeUsoObterAutocompletarFormacao>()
             .AddScoped<IRepositorioProposta, RepositorioProposta>()
             .AddScoped<IRepositorioPropostaTutor, RepositorioPropostaTutor>()
@@ -30,8 +31,6 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoObterPropostaPaginacao, CasoDeUsoObterPropostaPaginacao>()
             .AddScoped<ICasoDeUsoObterInformacoesCadastrante, CasoDeUsoObterInformacoesCadastrante>()
             .AddScoped<ICasoDeUsoObterTurmasProposta, CasoDeUsoObterTurmasProposta>()
-            .AddScoped<ICasoDeUsoObterTipoEncontro, CasoDeUsoObterTipoEncontro>()
-            .AddScoped<ICasoDeUsoObterPropostaEncontroPaginacao, CasoDeUsoObterPropostaEncontroPaginacao>()
             .AddScoped<ICasoDeUsoObterComunicadoAcaoFormativa, CasoDeUsoObterComunicadoComunicadoAcaoFormativa>()
             .AddScoped<ICasoDeUsoObterNomeRegenteTutor, CasoDeUsoObterNomeRegenteTutor>()
             .AddScoped<ICasoDeUsoSalvarPropostaRegente, CasoDeUsoSalvarPropostaRegente>()
@@ -51,8 +50,6 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoRecusarProposta, CasoDeUsoRecusarProposta>()
             .AddScoped<ICasoDeUsoObterRelatorioPropostaLaudaPublicacao, CasoDeUsoObterRelatorioPropostaLaudaPublicacao>()
             .AddScoped<ICasoDeUsoObterRelatorioPropostaLaudaCompleta, CasoDeUsoObterRelatorioPropostaLaudaCompleta>()
-            .AddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>()
-            .AddScoped<ICasoDeUsoRemoverPropostaEncontro, CasoDeUsoRemoverPropostaEncontro>()
             .AddScoped<ICasoDeUsoEnviarProposta, CasoDeUsoEnviarProposta>()
             .AddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>()
             .AddScoped<ICasoDeUsoObterTodosFormatos, CasoDeUsoObterTodosFormatos>()
@@ -71,6 +68,14 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>()
             .AddScoped<ICasoDeUsoObterCriterioValidacaoInscricao, CasoDeUsoObterCriterioValidacaoInscricao>()
             ;
+
+            public IServiceCollection AdicionarModuloPropostaEncontro() =>
+            services
+                .AddScoped<IRepositorioPropostaEncontro, RepositorioPropostaEncontro>()
+                .AddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>()
+                .AddScoped<ICasoDeUsoRemoverPropostaEncontro, CasoDeUsoRemoverPropostaEncontro>()
+                .AddScoped<ICasoDeUsoObterTipoEncontro, CasoDeUsoObterTipoEncontro>()
+                .AddScoped<ICasoDeUsoObterPropostaEncontroPaginacao, CasoDeUsoObterPropostaEncontroPaginacao>();
         }
     }
 }
