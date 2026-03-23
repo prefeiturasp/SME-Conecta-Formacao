@@ -3,20 +3,14 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterEncontrosPaginado
 {
-    public class ObterEncontrosPaginadoQuery : IRequest<PaginacaoResultadoDto<PropostaEncontroDto>>
+    public class ObterEncontrosPaginadoQuery(long propostaId, int numeroPagina, int numeroRegistros) : 
+        IRequest<PaginacaoResultadoDto<PropostaEncontroDto>>
     {
-        public ObterEncontrosPaginadoQuery(long propostaId, int numeroPagina, int numeroRegistros)
-        {
-            PropostaId = propostaId;
-            NumeroPagina = numeroPagina;
-            NumeroRegistros = numeroRegistros;
-        }
-
-        public long PropostaId { get; set; }
-        public int NumeroPagina { get; }
-        public int NumeroRegistros { get; }
+        public long PropostaId { get; set; } = propostaId;
+        public int NumeroPagina { get; } = numeroPagina;
+        public int NumeroRegistros { get; } = numeroRegistros;
     }
 
     public class ObterEncontrosPaginadoQueryValidator : AbstractValidator<ObterEncontrosPaginadoQuery>
