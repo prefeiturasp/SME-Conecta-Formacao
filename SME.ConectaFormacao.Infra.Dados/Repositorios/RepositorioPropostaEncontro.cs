@@ -120,31 +120,105 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             """;
             return await conexao.Obter().QueryAsync<PropostaEncontro>(query, new { propostaId });
         }
-        public async Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorPropostaAsync(long propostaId, int numeroPagina, int numeroRegistros)
+        public async Task<ResultadoPaginado<PropostaEncontro>> ObterEncontrosPorPropostaAsync(long propostaId, int numeroPagina, int numeroRegistros)
         {
+            var conn = conexao.Obter();
+            const string sqlCount =
+                """
+                SELECT COUNT(1)
+                FROM proposta_encontro
+                WHERE not excluido
+                  AND proposta_id = @propostaId
+                """;
+            var totalRegistros = await conn.QueryFirstAsync<int>(sqlCount, new { propostaId });
+
+            if (totalRegistros == 0)
+                return new ResultadoPaginado<PropostaEncontro>
+                {
+                    Itens = [],
+                    PaginaAtual = numeroPagina,
+                    TamanhoPagina = numeroRegistros,
+                    TotalRegistros = totalRegistros
+                };
+
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
-            var query = @"select 
-                            id, 
-                            proposta_id, 
-                            hora_inicio,
-                            hora_fim,
-                            tipo,
-                            local,
-                            excluido,
-                            criado_em,
-	                        criado_por,
-                            criado_login,
-                        	alterado_em,    
-	                        alterado_por,
-	                        alterado_login
-                        from proposta_encontro 
-                        where not excluido and proposta_id = @propostaId";
+            const string sqlEncontros =
+            """
+            SELECT            
+                 id, proposta_id as PropostaId, hora_inicio as HoraInicio, hora_fim as HoraFim, tipo, local,
+                 excluido, criado_em as CriadoEm, criado_por as CriadoPor, criado_login as CriadoLogin,
+                 alterado_em as AlteradoEm, alterado_por as AlteradoPor, alterado_login as AlteradoLogin
+            FROM proposta_encontro 
+            WHERE not excluido and proposta_id = @propostaId
+            ORDER BY id
+            LIMIT @numeroRegistros OFFSET @registrosIgnorados
+            """;
 
-            query += " order by id";
-            query += " limit @numeroRegistros offset @registrosIgnorados";
+            var encontros = (await conn.QueryAsync<PropostaEncontro>(sqlEncontros, new { propostaId, numeroRegistros, registrosIgnorados }))
+                .AsList();
 
-            return await conexao.Obter().QueryAsync<PropostaEncontro>(query, new { numeroRegistros, registrosIgnorados, propostaId });
+            if (encontros.Count == 0)
+                return new ResultadoPaginado<PropostaEncontro>
+                {
+                    Itens = [],
+                    PaginaAtual = numeroPagina,
+                    TamanhoPagina = numeroRegistros,
+                    TotalRegistros = totalRegistros
+                };
+
+            var idsEncontros = encontros.Select(e => e.Id).ToArray();
+
+            const string sqlDetalhes =
+            """
+            -- Query 1: Datas
+            SELECT 
+                id as Id, proposta_encontro_id as PropostaEncontroId, data_inicio as DataInicio, data_fim as DataFim,
+                excluido as Excluido, criado_em as CriadoEm, criado_por as CriadoPor, criado_login as CriadoLogin,
+                alterado_em as AlteradoEm, alterado_por as AlteradoPor, alterado_login as AlteradoLogin
+            FROM proposta_encontro_data
+            WHERE not excluido AND proposta_encontro_id = ANY(@IdsEncontros)
+            ORDER BY data_inicio;
+
+            -- Query 2: Turmas + PropostaTurma
+            SELECT 
+                pet.id as Id, pet.proposta_encontro_id as PropostaEncontroId, pet.turma_id as TurmaId,
+                pet.excluido as Excluido, pet.criado_em as CriadoEm, pet.criado_por as CriadoPor, pet.criado_login as CriadoLogin,
+                pet.alterado_em as AlteradoEm, pet.alterado_por as AlteradoPor, pet.alterado_login as AlteradoLogin,
+
+                pt.id as Id, pt.proposta_id as PropostaId, pt.nome as Nome,
+                pt.excluido as Excluido, pt.criado_em as CriadoEm, pt.criado_por as CriadoPor, pt.criado_login as CriadoLogin,
+                pt.alterado_em as AlteradoEm, pt.alterado_por as AlteradoPor, pt.alterado_login as AlteradoLogin
+            FROM proposta_encontro_turma pet
+            INNER JOIN proposta_turma pt ON pt.id = pet.turma_id AND not pt.excluido
+            WHERE not pet.excluido AND pet.proposta_encontro_id = ANY(@IdsEncontros)
+            ORDER BY pt.nome;
+            """;
+
+            using var multi = await conn.QueryMultipleAsync(sqlDetalhes, new { IdsEncontros = idsEncontros });
+
+            var datas = (await multi.ReadAsync<PropostaEncontroData>()).AsList();
+            var turmas = multi.Read<PropostaEncontroTurma, PropostaTurma, PropostaEncontroTurma>(
+                (pet, pt) =>
+                {
+                    pet.Turma = pt;
+                    return pet;
+                },
+                splitOn: "Id"
+            ).AsList();
+            foreach (var encontro in encontros)
+            {
+                encontro.Datas = datas.Where(d => d.PropostaEncontroId == encontro.Id).AsList();
+                encontro.Turmas = turmas.Where(t => t.PropostaEncontroId == encontro.Id).AsList();
+            }
+
+            return new ResultadoPaginado<PropostaEncontro>
+            {
+                Itens = encontros,
+                PaginaAtual = numeroPagina,
+                TamanhoPagina = numeroRegistros,
+                TotalRegistros = totalRegistros
+            };
         }
 
         public async Task InserirEncontroAsync(long propostaId, PropostaEncontro encontro)

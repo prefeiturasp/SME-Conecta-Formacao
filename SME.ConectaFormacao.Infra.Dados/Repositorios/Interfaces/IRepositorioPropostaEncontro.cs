@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
     public interface IRepositorioPropostaEncontro : IRepositorioBaseAuditavel<PropostaEncontro>
     {
         Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorPropostaAsync(long propostaId);
-        Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorPropostaAsync(long propostaId, int numeroPagina, int numeroRegistros);
+        Task<ResultadoPaginado<PropostaEncontro>> ObterEncontrosPorPropostaAsync(long propostaId, int numeroPagina, int numeroRegistros);
         Task<IEnumerable<PropostaEncontroData>> ObterEncontroDatasPorEncontroIdAsync(params long[] encontroId);
         Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroIdAsync(params long[] encontroId);
         Task<PropostaEncontro?> ObterEncontroPorIdAsync(long encontroId); 
