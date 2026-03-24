@@ -13,7 +13,7 @@ using System.Net;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
-    [Authorize("Bearer")]
+    //[Authorize("Bearer")]
     public class InscricaoController : BaseController
     {
         [HttpGet("dados-inscricao")]

@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
         public string? FuncaoDreCodigo { get; set; }
         public string? FuncaoUeCodigo { get; set; }
 
+        public string? UsuarioLogin { get; set; }
         public int? TipoVinculo { get; set; }
         public required bool VagaRemanescente { get; set; }
         public UsuarioAcessibilidadeDto? UsuarioAcessibilidade { get; set; }

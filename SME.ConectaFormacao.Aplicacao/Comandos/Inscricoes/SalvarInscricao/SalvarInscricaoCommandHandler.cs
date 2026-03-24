@@ -23,8 +23,15 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
         public async Task<RetornoDTO> Handle(SalvarInscricaoCommand request, CancellationToken cancellationToken)
         {
-            var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery(), cancellationToken) ??
+            var usuarioLogado = await mediator.Send(new ObterUsuarioPorLoginQuery(request.InscricaoDto.UsuarioLogin), cancellationToken);
+
+            if(usuarioLogado == null)
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+
+            /*var usuarioLogado = string.IsNullOrWhiteSpace(request.InscricaoDto.UsuarioLogin)
+                ? await mediator.Send(new ObterUsuarioLogadoQuery(), cancellationToken)
+                : await mediator.Send(new ObterUsuarioPorLoginQuery(request.InscricaoDto.UsuarioLogin), cancellationToken)
+                ?? throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);*/
 
             if (usuarioLogado.Tipo.EhInterno() && string.IsNullOrWhiteSpace(request.InscricaoDto.CargoCodigo))
                 throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
