@@ -6,25 +6,20 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class InserirPropostaTurmaAdicionalCommandHandler : IRequestHandler<InserirPropostaTurmaAdicionalCommand, long>
+    public class InserirPropostaTurmaAdicionalCommandHandler(
+        ITransacao transacao, 
+        IRepositorioProposta repositorioProposta,
+        IRepositorioPropostaEncontro repositorioPropostaEncontro) : 
+        IRequestHandler<InserirPropostaTurmaAdicionalCommand, long>
     {
-        private readonly IRepositorioProposta _repositorioProposta;
-        private readonly ITransacao _transacao;
-
-        public InserirPropostaTurmaAdicionalCommandHandler(ITransacao transacao, IRepositorioProposta repositorioProposta)
-        {
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
-            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-        }
-
         public async Task<long> Handle(InserirPropostaTurmaAdicionalCommand request, CancellationToken cancellationToken)
         {
-            var propostaTurma = await _repositorioProposta.ObterTurmaPorId(request.PropostaTurmaOrigemId);
+            var propostaTurma = await repositorioProposta.ObterTurmaPorId(request.PropostaTurmaOrigemId);
 
-            var dres = await _repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(request.PropostaTurmaOrigemId);
-            var encontros = await _repositorioProposta.ObterEncontrosPorPropostaTurmaId(request.PropostaTurmaOrigemId);
-            var regentes = await _repositorioProposta.ObterRegentesPorPropostaTurmaId(request.PropostaTurmaOrigemId);
-            var tutores = await _repositorioProposta.ObterTutoresPorPropostaTurmaId(request.PropostaTurmaOrigemId);
+            var dres = await repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(request.PropostaTurmaOrigemId);
+            var encontros = await repositorioPropostaEncontro.ObterEncontrosPorPropostaTurmaAsync(request.PropostaTurmaOrigemId);
+            var regentes = await repositorioProposta.ObterRegentesPorPropostaTurmaId(request.PropostaTurmaOrigemId);
+            var tutores = await repositorioProposta.ObterTutoresPorPropostaTurmaId(request.PropostaTurmaOrigemId);
 
             var propostaTurmaAdicional = (PropostaTurma)propostaTurma.Clone();
 
@@ -36,24 +31,24 @@ namespace SME.ConectaFormacao.Aplicacao
             contador++;
             propostaTurmaAdicional.Nome += $" - Parte {contador}";
 
-            var transacao = _transacao.Iniciar();
+            var transacaoAtual = transacao.Iniciar();
             try
             {
-                await _repositorioProposta.InserirTurma(propostaTurmaAdicional);
+                await repositorioProposta.InserirTurma(propostaTurmaAdicional);
 
                 if (dres.PossuiElementos())
                 {
                     foreach (var propostaTurmaDre in dres)
                         propostaTurmaDre.PropostaTurmaId = propostaTurmaAdicional.Id;
 
-                    await _repositorioProposta.InserirPropostaTurmasDres(dres);
+                    await repositorioProposta.InserirPropostaTurmasDres(dres);
                 }
 
                 if (encontros.PossuiElementos())
                 {
                     foreach (var encontro in encontros)
                     {
-                        await _repositorioProposta.InserirEncontroTurmas(encontro.Id,
+                        await repositorioPropostaEncontro.InserirEncontroTurmasAsync(encontro.Id,
                             new List<PropostaEncontroTurma>
                             {
                                 new PropostaEncontroTurma
@@ -69,7 +64,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     foreach (var regente in regentes)
                     {
-                        await _repositorioProposta.InserirPropostaRegenteTurma(regente.Id,
+                        await repositorioProposta.InserirPropostaRegenteTurma(regente.Id,
                             new List<PropostaRegenteTurma>
                             {
                                 new PropostaRegenteTurma
@@ -85,7 +80,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 {
                     foreach (var tutor in tutores)
                     {
-                        await _repositorioProposta.InserirPropostaTutorTurma(tutor.Id,
+                        await repositorioProposta.InserirPropostaTutorTurma(tutor.Id,
                             new List<PropostaTutorTurma>
                             {
                                 new PropostaTutorTurma
@@ -97,23 +92,23 @@ namespace SME.ConectaFormacao.Aplicacao
                     }
                 }
 
-                await _repositorioProposta.InserirPropostaTurmaVagas(new PropostaTurmaVaga
+                await repositorioProposta.InserirPropostaTurmaVagas(new PropostaTurmaVaga
                 {
                     PropostaTurmaId = propostaTurmaAdicional.Id
                 }, request.QuantidadeVagasTurma);
 
-                transacao.Commit();
+                transacaoAtual.Commit();
 
                 return propostaTurmaAdicional.Id;
             }
             catch
             {
-                transacao.Rollback();
+                transacaoAtual.Rollback();
                 throw;
             }
             finally
             {
-                transacao.Dispose();
+                transacaoAtual.Dispose();
             }
         }
     }

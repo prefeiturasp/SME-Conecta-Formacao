@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Aplicacao.Dtos.PropostaEncontros;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -285,8 +286,8 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterPropostaEncontroPaginacao>();
             var id = _faker.Random.Long();
-            var paginacao = new PaginacaoResultadoDto<PropostaEncontroDto>(new List<PropostaEncontroDto>(), 0, 10);
-            mockUseCase.Setup(x => x.Executar(id)).ReturnsAsync(paginacao);
+            var paginacao = new PaginacaoResultadoDto<CronogramaEncontroDto>([], 0, 10);
+            mockUseCase.Setup(x => x.ExecutarAsync(id)).ReturnsAsync(paginacao);
 
             // Act
             var resultado = await _controller.ObterPropostaEncontrosPaginado(mockUseCase.Object, id);

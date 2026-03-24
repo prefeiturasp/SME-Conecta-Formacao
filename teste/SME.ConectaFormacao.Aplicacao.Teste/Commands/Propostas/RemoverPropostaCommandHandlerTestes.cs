@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
     {
         private readonly Mock<ITransacao> _transacao;
         private readonly Mock<IRepositorioProposta> _repositorioProposta;
+        private readonly Mock<IRepositorioPropostaEncontro> _repositorioPropostaEncontro;
         private readonly RemoverPropostaCommandHandler _sut;
 
         public RemoverPropostaCommandHandlerTestes()
@@ -22,34 +23,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             _transacao = mocker.GetMock<ITransacao>();
             _repositorioProposta = mocker.GetMock<IRepositorioProposta>();
+            _repositorioPropostaEncontro = mocker.GetMock<IRepositorioPropostaEncontro>();
 
             _sut = mocker.CreateInstance<RemoverPropostaCommandHandler>();
-        }
-
-        [Fact]
-        public void DadoTransacaoNula_QuandoInstanciarHandler_EntaoDeveLancarArgumentNullException()
-        {
-            // Arrange
-            ITransacao transacaoNula = null!;
-
-            // Act
-            var act = () => new RemoverPropostaCommandHandler(transacaoNula, _repositorioProposta.Object);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>().WithParameterName("transacao");
-        }
-
-        [Fact]
-        public void DadoRepositorioPropostaNulo_QuandoInstanciarHandler_EntaoDeveLancarArgumentNullException()
-        {
-            // Arrange
-            IRepositorioProposta repositorioNulo = null!;
-
-            // Act
-            var act = () => new RemoverPropostaCommandHandler(_transacao.Object, repositorioNulo);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>().WithParameterName("repositorioProposta");
         }
 
         [Fact]
@@ -92,7 +68,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             _repositorioProposta.Verify(r => r.RemoverFuncoesEspecificas(It.IsAny<IEnumerable<PropostaFuncaoEspecifica>>()), Times.Never);
             _repositorioProposta.Verify(r => r.RemoverCriteriosValidacaoInscricao(It.IsAny<IEnumerable<PropostaCriterioValidacaoInscricao>>()), Times.Never);
             _repositorioProposta.Verify(r => r.RemoverVagasRemanecentes(It.IsAny<IEnumerable<PropostaVagaRemanecente>>()), Times.Never);
-            _repositorioProposta.Verify(r => r.RemoverEncontros(It.IsAny<IEnumerable<PropostaEncontro>>()), Times.Never);
+            _repositorioPropostaEncontro.Verify(r => r.RemoverEncontrosAsync(It.IsAny<IEnumerable<PropostaEncontro>>()), Times.Never);
             _repositorioProposta.Verify(r => r.RemoverPalavrasChaves(It.IsAny<IEnumerable<PropostaPalavraChave>>()), Times.Never);
             _repositorioProposta.Verify(r => r.RemoverTurmas(It.IsAny<IEnumerable<PropostaTurma>>()), Times.Never);
             _repositorioProposta.Verify(r => r.RemoverModalidades(It.IsAny<IEnumerable<PropostaModalidade>>()), Times.Never);
@@ -128,7 +104,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             _repositorioProposta.Verify(r => r.RemoverFuncoesEspecificas(It.Is<IEnumerable<PropostaFuncaoEspecifica>>(x => x.Any())), Times.Once);
             _repositorioProposta.Verify(r => r.RemoverCriteriosValidacaoInscricao(It.Is<IEnumerable<PropostaCriterioValidacaoInscricao>>(x => x.Any())), Times.Once);
             _repositorioProposta.Verify(r => r.RemoverVagasRemanecentes(It.Is<IEnumerable<PropostaVagaRemanecente>>(x => x.Any())), Times.Once);
-            _repositorioProposta.Verify(r => r.RemoverEncontros(It.Is<IEnumerable<PropostaEncontro>>(x => x.Any())), Times.Once);
+            _repositorioPropostaEncontro.Verify(r => r.RemoverEncontrosAsync(It.Is<IEnumerable<PropostaEncontro>>(x => x.Any())), Times.Once);
             _repositorioProposta.Verify(r => r.RemoverPalavrasChaves(It.Is<IEnumerable<PropostaPalavraChave>>(x => x.Any())), Times.Once);
             _repositorioProposta.Verify(r => r.RemoverTurmas(It.Is<IEnumerable<PropostaTurma>>(x => x.Any())), Times.Once);
             _repositorioProposta.Verify(r => r.RemoverModalidades(It.Is<IEnumerable<PropostaModalidade>>(x => x.Any())), Times.Once);
@@ -179,38 +155,17 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
         private void ConfigurarRetornoDasListas(long propostaId, bool comItens)
         {
-            _repositorioProposta.Setup(r => r.ObterDrePorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaDre>());
-
-            _repositorioProposta.Setup(r => r.ObterPublicoAlvoPorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaPublicoAlvo>());
-
-            _repositorioProposta.Setup(r => r.ObterFuncoesEspecificasPorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaFuncaoEspecifica>());
-
-            _repositorioProposta.Setup(r => r.ObterCriteriosValidacaoInscricaoPorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaCriterioValidacaoInscricao>());
-
-            _repositorioProposta.Setup(r => r.ObterVagasRemacenentesPorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaVagaRemanecente>());
-
-            _repositorioProposta.Setup(r => r.ObterEncontrosPorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaEncontro>());
-
-            _repositorioProposta.Setup(r => r.ObterPalavrasChavesPorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaPalavraChave>());
-
-            _repositorioProposta.Setup(r => r.ObterTurmasPorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaTurma>());
-
-            _repositorioProposta.Setup(r => r.ObterModalidadesPorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaModalidade>());
-
-            _repositorioProposta.Setup(r => r.ObterAnosTurmasPorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaAnoTurma>());
-
-            _repositorioProposta.Setup(r => r.ObterComponentesCurricularesPorId(propostaId))
-                .ReturnsAsync(comItens ? [new()] : Enumerable.Empty<PropostaComponenteCurricular>());
+            _repositorioProposta.Setup(r => r.ObterDrePorId(propostaId)).ReturnsAsync(comItens ? [new()] : []);
+            _repositorioProposta.Setup(r => r.ObterPublicoAlvoPorId(propostaId)).ReturnsAsync(comItens ? [new()] : []);
+            _repositorioProposta.Setup(r => r.ObterFuncoesEspecificasPorId(propostaId)).ReturnsAsync(comItens ? [new()] : []);
+            _repositorioProposta.Setup(r => r.ObterCriteriosValidacaoInscricaoPorId(propostaId)).ReturnsAsync(comItens ? [new()] : []);
+            _repositorioProposta.Setup(r => r.ObterVagasRemacenentesPorId(propostaId)).ReturnsAsync(comItens ? [new()] : []);
+            _repositorioPropostaEncontro.Setup(r => r.ObterEncontrosPorPropostaAsync(propostaId)).ReturnsAsync(comItens ? [new()] : []);
+            _repositorioProposta.Setup(r => r.ObterPalavrasChavesPorId(propostaId)).ReturnsAsync(comItens ? [new()] : []);
+            _repositorioProposta.Setup(r => r.ObterTurmasPorId(propostaId)).ReturnsAsync(comItens ? [new()] : []);
+            _repositorioProposta.Setup(r => r.ObterModalidadesPorId(propostaId)).ReturnsAsync(comItens ? [new()] : []);
+            _repositorioProposta.Setup(r => r.ObterAnosTurmasPorId(propostaId)).ReturnsAsync(comItens ? [new()] : []);
+            _repositorioProposta.Setup(r => r.ObterComponentesCurricularesPorId(propostaId)).ReturnsAsync(comItens ? [new()] : []);
         }
 
         #endregion
