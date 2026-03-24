@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
     public class SalvarPropostaEncontroCommandHandlerTestes
     {
         private readonly Mock<IMapper> _mapper;
-        private readonly Mock<IRepositorioProposta> _repositorioProposta;
+        private readonly Mock<IRepositorioPropostaEncontro> _repositorioPropostaEncontro;
         private readonly Mock<ITransacao> _transacao;
         private readonly Mock<ICacheDistribuido> _cacheDistribuido;
         private readonly Mock<IDbTransaction> _dbTransactionMock;
@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             var mocker = new AutoMocker();
 
             _mapper = mocker.GetMock<IMapper>();
-            _repositorioProposta = mocker.GetMock<IRepositorioProposta>();
+            _repositorioPropostaEncontro = mocker.GetMock<IRepositorioPropostaEncontro>();
             _transacao = mocker.GetMock<ITransacao>();
             _cacheDistribuido = mocker.GetMock<ICacheDistribuido>();
             _dbTransactionMock = new Mock<IDbTransaction>();
@@ -51,12 +51,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
                 .Setup(m => m.Map<PropostaEncontro>(comando.EncontroDto))
                 .Returns(encontroDepois);
 
-            _repositorioProposta
-                .Setup(r => r.ObterEncontroTurmasPorEncontroId(It.IsAny<long>()))
+            _repositorioPropostaEncontro
+                .Setup(r => r.ObterEncontroTurmasPorEncontroIdAsync(It.IsAny<long>()))
                 .ReturnsAsync([]);
 
-            _repositorioProposta
-                .Setup(r => r.ObterEncontroDatasPorEncontroId(It.IsAny<long>()))
+            _repositorioPropostaEncontro
+                .Setup(r => r.ObterEncontroDatasPorEncontroIdAsync(It.IsAny<long>()))
                 .ReturnsAsync([]);
 
             // Act
@@ -65,8 +65,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             // Assert
             resultado.Should().Be(encontroDepois.Id);
 
-            _repositorioProposta.Verify(r => r.InserirEncontro(comando.PropostaId, encontroDepois), Times.Once);
-            _repositorioProposta.Verify(r => r.AtualizarEncontro(It.IsAny<PropostaEncontro>()), Times.Never);
+            _repositorioPropostaEncontro.Verify(r => r.InserirEncontroAsync(comando.PropostaId, encontroDepois), Times.Once);
+            _repositorioPropostaEncontro.Verify(r => r.AtualizarEncontroAsync(It.IsAny<PropostaEncontro>()), Times.Never);
 
             _dbTransactionMock.Verify(t => t.Commit(), Times.Once);
             _dbTransactionMock.Verify(t => t.Dispose(), Times.Once);
@@ -91,20 +91,20 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             encontroDepois.Turmas = [new PropostaEncontroTurma { TurmaId = 2 }];
             encontroDepois.Datas = [new PropostaEncontroData { Id = 1, DataInicio = DateTime.Now }];
 
-            _repositorioProposta
-                .Setup(r => r.ObterEncontroPorId(comando.EncontroDto.Id))
+            _repositorioPropostaEncontro
+                .Setup(r => r.ObterEncontroPorIdAsync(comando.EncontroDto.Id))
                 .ReturnsAsync(encontroAntes);
 
             _mapper
                 .Setup(m => m.Map<PropostaEncontro>(comando.EncontroDto))
                 .Returns(encontroDepois);
 
-            _repositorioProposta
-                .Setup(r => r.ObterEncontroTurmasPorEncontroId(It.IsAny<long>()))
+            _repositorioPropostaEncontro
+                .Setup(r => r.ObterEncontroTurmasPorEncontroIdAsync(It.IsAny<long>()))
                 .ReturnsAsync([turmaAntes]);
 
-            _repositorioProposta
-                .Setup(r => r.ObterEncontroDatasPorEncontroId(It.IsAny<long>()))
+            _repositorioPropostaEncontro
+                .Setup(r => r.ObterEncontroDatasPorEncontroIdAsync(It.IsAny<long>()))
                 .ReturnsAsync([dataAntes]);
 
             // Act
@@ -113,10 +113,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             // Assert
             resultado.Should().Be(encontroDepois.Id);
 
-            _repositorioProposta.Verify(r => r.AtualizarEncontro(encontroDepois), Times.Once);
-            _repositorioProposta.Verify(r => r.InserirEncontroTurmas(encontroDepois.Id, It.Is<IEnumerable<PropostaEncontroTurma>>(t => t.Any(x => x.TurmaId == 2))), Times.Once);
-            _repositorioProposta.Verify(r => r.RemoverEncontroTurmas(It.Is<IEnumerable<PropostaEncontroTurma>>(t => t.Any(x => x.TurmaId == 1))), Times.Once);
-            _repositorioProposta.Verify(r => r.AtualizarEncontroData(It.Is<PropostaEncontroData>(d => d.Id == 1)), Times.Once);
+            _repositorioPropostaEncontro.Verify(r => r.AtualizarEncontroAsync(encontroDepois), Times.Once);
+            _repositorioPropostaEncontro.Verify(r => r.InserirEncontroTurmasAsync(encontroDepois.Id, It.Is<IEnumerable<PropostaEncontroTurma>>(t => t.Any(x => x.TurmaId == 2))), Times.Once);
+            _repositorioPropostaEncontro.Verify(r => r.RemoverEncontroTurmasAsync(It.Is<IEnumerable<PropostaEncontroTurma>>(t => t.Any(x => x.TurmaId == 1))), Times.Once);
+            _repositorioPropostaEncontro.Verify(r => r.AtualizarEncontroDataAsync(It.Is<PropostaEncontroData>(d => d.Id == 1)), Times.Once);
 
             _dbTransactionMock.Verify(t => t.Commit(), Times.Once);
         }
@@ -132,8 +132,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
                 .Setup(m => m.Map<PropostaEncontro>(comando.EncontroDto))
                 .Returns(encontroDepois);
 
-            _repositorioProposta
-                .Setup(r => r.ObterEncontroTurmasPorEncontroId(It.IsAny<long>()))
+            _repositorioPropostaEncontro
+                .Setup(r => r.ObterEncontroTurmasPorEncontroIdAsync(It.IsAny<long>()))
                 .ThrowsAsync(new Exception("Erro forçado na transação"));
 
             // Act
@@ -160,9 +160,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             return new SalvarPropostaEncontroCommand(_faker.Random.Long(1, 50), encontroDto);
         }
 
-        private PropostaEncontro GerarPropostaEncontroMock(long id, long propostaId)
-        {
-            return new PropostaEncontro
+        private PropostaEncontro GerarPropostaEncontroMock(long id, long propostaId) => new()
             {
                 Id = id,
                 PropostaId = propostaId,
@@ -172,7 +170,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
                 Turmas = [],
                 Datas = []
             };
-        }
 
         #endregion
     }

@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterPropostaEncontroPaginacao>();
 
             // act
-            var retorno = await casoDeUso.Executar(proposta.Id);
+            var retorno = await casoDeUso.ExecutarAsync(proposta.Id);
 
             // assert
             retorno.Items.Any().ShouldBeTrue();

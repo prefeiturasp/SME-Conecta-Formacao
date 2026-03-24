@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Dommel;
+using Minio.DataModel.Notification;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -663,206 +664,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                            public.proposta_tutor
 	                        where not excluido and id = @id;";
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaTutor>(query, new { id });
-        }
-
-        public async Task InserirEncontro(long propostaId, PropostaEncontro encontro)
-        {
-            PreencherAuditoriaCriacao(encontro);
-
-            encontro.PropostaId = propostaId;
-            encontro.Id = (long)await conexao.Obter().InsertAsync(encontro);
-        }
-
-        public async Task InserirEncontroTurmas(long propostaEncontroId, IEnumerable<PropostaEncontroTurma> turmas)
-        {
-            foreach (var turma in turmas)
-            {
-                PreencherAuditoriaCriacao(turma);
-
-                turma.PropostaEncontroId = propostaEncontroId;
-                turma.Id = (long)await conexao.Obter().InsertAsync(turma);
-            }
-        }
-
-        public async Task InserirEncontroDatas(long propostaEncontroId, IEnumerable<PropostaEncontroData> datas)
-        {
-            foreach (var data in datas)
-            {
-                PreencherAuditoriaCriacao(data);
-
-                data.PropostaEncontroId = propostaEncontroId;
-                data.Id = (long)await conexao.Obter().InsertAsync(data);
-            }
-        }
-
-        public Task RemoverEncontros(IEnumerable<PropostaEncontro> encontros)
-        {
-            var encontro = encontros.First();
-            PreencherAuditoriaAlteracao(encontro);
-
-            var parametros = new
-            {
-                ids = encontros.Select(t => t.Id).ToArray(),
-                encontro.AlteradoEm,
-                encontro.AlteradoPor,
-                encontro.AlteradoLogin
-            };
-
-            var query = @"
-                    update proposta_encontro_turma set excluido = true, alterado_em = @AlteradoEm, alterado_por = @AlteradoPor, alterado_login = @AlteradoLogin where not excluido and proposta_encontro_id = any(@ids);
-                    update proposta_encontro_data set excluido = true, alterado_em = @AlteradoEm, alterado_por = @AlteradoPor, alterado_login = @AlteradoLogin where not excluido and proposta_encontro_id = any(@ids);
-                    update proposta_encontro set excluido = true, alterado_em = @AlteradoEm, alterado_por = @AlteradoPor, alterado_login = @AlteradoLogin where  not excluido and id = any(@ids);
-                    ";
-
-            return conexao.Obter().ExecuteAsync(query, parametros);
-        }
-
-        public async Task AtualizarEncontro(PropostaEncontro encontro)
-        {
-            PreencherAuditoriaAlteracao(encontro);
-            await conexao.Obter().UpdateAsync(encontro);
-        }
-
-        public async Task<IEnumerable<PropostaEncontroData>> ObterEncontroDatasPorEncontroId(params long[] encontroId)
-        {
-            var query = @"select 
-                            id, 
-                            proposta_encontro_id, 
-                            data_inicio,
-                            data_fim,
-                            excluido,
-                            criado_em,
-	                        criado_por,
-                            criado_login,
-                        	alterado_em,    
-	                        alterado_por,
-	                        alterado_login
-                        from proposta_encontro_data 
-                        where proposta_encontro_id = any(@encontroId) and not excluido";
-            return await conexao.Obter().QueryAsync<PropostaEncontroData>(query, new { encontroId });
-        }
-
-        public async Task<IEnumerable<PropostaEncontroTurma>> ObterEncontroTurmasPorEncontroId(params long[] encontroId)
-        {
-            var query = @"select 
-                            id, 
-                            proposta_encontro_id, 
-                            turma_id,
-                            excluido,
-                            criado_em,
-	                        criado_por,
-                            criado_login,
-                        	alterado_em,    
-	                        alterado_por,
-	                        alterado_login
-                        from proposta_encontro_turma 
-                        where proposta_encontro_id = any(@encontroId) and not excluido;
-
-                        SELECT 
-                               pt.id,
-                               pt.proposta_id,
-                               pt.nome,
-                               pt.excluido,   
-                               pt.criado_em,
-	                           pt.criado_por,
-                               pt.criado_login,
-                        	   pt.alterado_em,    
-	                           pt.alterado_por,
-	                           pt.alterado_login
-                        FROM proposta_encontro_turma pet
-                        INNER JOIN proposta_turma pt on pt.id = pet.turma_id and not pt.excluido
-                        WHERE pet.proposta_encontro_id = any(@encontroId) 
-                          and not pet.excluido;";
-
-            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { encontroId });
-
-            var encontroTurmas = await queryMultiple.ReadAsync<PropostaEncontroTurma>();
-            var turmas = await queryMultiple.ReadAsync<PropostaTurma>();
-
-            foreach (var encontroTurma in encontroTurmas)
-                encontroTurma.Turma = turmas.First(t => t.Id == encontroTurma.TurmaId);
-
-            return encontroTurmas;
-        }
-
-        public Task RemoverEncontroTurmas(IEnumerable<PropostaEncontroTurma> turmas)
-        {
-            var turma = turmas.First();
-            PreencherAuditoriaAlteracao(turma);
-
-            var parametros = new
-            {
-                ids = turmas.Select(t => t.Id).ToArray(),
-                turma.AlteradoEm,
-                turma.AlteradoPor,
-                turma.AlteradoLogin
-            };
-
-            var query = @"update proposta_encontro_turma
-                          set 
-                            excluido = true, 
-                            alterado_em = @AlteradoEm, 
-                            alterado_por = @AlteradoPor, 
-                            alterado_login = @AlteradoLogin 
-                          where not excluido and id = any(@ids)";
-
-            return conexao.Obter().ExecuteAsync(query, parametros);
-        }
-
-        public Task RemoverEncontroDatas(IEnumerable<PropostaEncontroData> datas)
-        {
-            var data = datas.First();
-            PreencherAuditoriaAlteracao(data);
-
-            var parametros = new
-            {
-                ids = datas.Select(t => t.Id).ToArray(),
-                data.AlteradoEm,
-                data.AlteradoPor,
-                data.AlteradoLogin
-            };
-
-            var query = @"update proposta_encontro_data
-                          set 
-                            excluido = true, 
-                            alterado_em = @AlteradoEm, 
-                            alterado_por = @AlteradoPor, 
-                            alterado_login = @AlteradoLogin 
-                          where not excluido and id = any(@ids)";
-
-            return conexao.Obter().ExecuteAsync(query, parametros);
-        }
-
-        public async Task AtualizarEncontroData(PropostaEncontroData datas)
-        {
-            PreencherAuditoriaAlteracao(datas);
-            await conexao.Obter().UpdateAsync(datas);
-        }
-
-        public async Task<IEnumerable<PropostaEncontro>> ObterEncontrosPorId(long propostaId)
-        {
-            var query = @"select 
-                            id, 
-                            proposta_id, 
-                            hora_inicio,
-                            hora_fim,
-                            excluido,
-                            criado_em,
-	                        criado_por,
-                            criado_login,
-                        	alterado_em,    
-	                        alterado_por,
-	                        alterado_login
-                        from proposta_encontro 
-                        where proposta_id = @propostaId and not excluido";
-            return await conexao.Obter().QueryAsync<PropostaEncontro>(query, new { propostaId });
-        }
-
-        public async Task<int> ObterTotalEncontros(long propostaId)
-        {
-            var query = @"select count(1) from proposta_encontro where not excluido and proposta_id = @propostaId";
-            return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
-        }
+        }        
 
         public async Task<int> ObterTotalRegentes(long propostaId)
         {
@@ -885,33 +687,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             var query = @"select count(1) from proposta_tutor where not excluido and proposta_id = @propostaId";
             return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
-        }
-
-        public async Task<IEnumerable<PropostaEncontro>> ObterEncontrosPaginados(int numeroPagina, int numeroRegistros, long propostaId)
-        {
-            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
-
-            var query = @"select 
-                            id, 
-                            proposta_id, 
-                            hora_inicio,
-                            hora_fim,
-                            tipo,
-                            local,
-                            excluido,
-                            criado_em,
-	                        criado_por,
-                            criado_login,
-                        	alterado_em,    
-	                        alterado_por,
-	                        alterado_login
-                        from proposta_encontro 
-                        where not excluido and proposta_id = @propostaId";
-
-            query += " order by id";
-            query += " limit @numeroRegistros offset @registrosIgnorados";
-
-            return await conexao.Obter().QueryAsync<PropostaEncontro>(query, new { numeroRegistros, registrosIgnorados, propostaId });
         }
 
         public async Task<IEnumerable<PropostaRegente>> ObterRegentesPaginado(int numeroPagina, int numeroRegistros, long propostaId)
@@ -969,15 +744,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             query += " limit @numeroRegistros offset @registrosIgnorados";
 
             return await conexao.Obter().QueryAsync<PropostaTutor>(query, new { numeroRegistros, registrosIgnorados, propostaId });
-        }
-
-        public async Task<int> ObterQuantidadeDeTurmasComEncontro(long propostaId)
-        {
-            var query = @"select  count(distinct pet.turma_id)  
-	                         from proposta_encontro_turma pet
-	                         inner join proposta_encontro pe on pet.proposta_encontro_id = pe.id 
-	                         where not pet.excluido and not pe.excluido and pe.proposta_id = @propostaId ";
-            return await conexao.Obter().ExecuteScalarAsync<int>(query, new { propostaId });
         }
 
         public async Task<IEnumerable<PropostaTurma>> ObterTurmasJaExistenteParaRegente(string? registroFuncional, string? cpf, string? nomeRegente, long[] turmaIds)
