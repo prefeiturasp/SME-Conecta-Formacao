@@ -29,6 +29,11 @@
         /// </summary>
         public const string CargosFuncoesDresEolFuncionario = "cargos-funcao-dre-eol-funcionario:{0}";
         /// <summary>
+        /// 0 - Registro funcional
+        /// 1 - Código do cargo
+        /// </summary>
+        public const string DreUeAtribuicaoFuncionarioCargo = "dre-ue-atribuicao:{0}:cargo:{1}";
+        /// <summary>
         /// 0 - Código da proposta
         /// </summary>
         public const string Proposta = "proposta:{0}";
