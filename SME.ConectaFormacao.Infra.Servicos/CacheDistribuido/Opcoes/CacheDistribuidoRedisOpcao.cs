@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.CacheDistribuido.Opcoes
 
         public string Endpoint { get; set; }
         public Proxy Proxy { get; set; }
-        public int SyncTimeout { get; set; } = 5000;
+        public int SyncTimeout { get; set; } = 200;
         public string Prefixo { get; set; } = "CONECTA:";
     }
 }
