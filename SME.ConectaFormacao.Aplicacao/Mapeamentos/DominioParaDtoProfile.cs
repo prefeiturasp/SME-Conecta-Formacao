@@ -13,6 +13,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaCriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.Dtos.PropostaEncontros;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
 using SME.ConectaFormacao.Dominio;
@@ -185,7 +186,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
         private void MapPropostaTurma()
         {
-            CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDTO>()
+            CreateMap<PropostaEncontroTurma, PropostaEncontroTurmaDto>()
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Turma.Nome))
                 .ReverseMap();
 
