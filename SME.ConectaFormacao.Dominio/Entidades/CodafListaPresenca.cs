@@ -88,5 +88,11 @@ namespace SME.ConectaFormacao.Dominio.Entidades
                 return Status != StatusCodafListaPresenca.Finalizado;
             return Status == StatusCodafListaPresenca.Iniciado;
         }
+
+        public void Finalizar()
+        {
+            if (Status == StatusCodafListaPresenca.AguardandoDf)
+                Status = StatusCodafListaPresenca.Finalizado;
+        }
     }
 }

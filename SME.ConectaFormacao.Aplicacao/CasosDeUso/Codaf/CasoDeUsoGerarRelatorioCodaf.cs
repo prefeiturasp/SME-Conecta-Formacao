@@ -1,6 +1,8 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
 
@@ -17,12 +19,27 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             if (listaPresenca == null)
                 return Erro.NaoEncontrado();
 
-            var arquivoBytes = await servicoRelatorio.GerarRelatorioCodafAsync(codafId);
-            var nomeArquivo = $"CODAF_{listaPresenca.Proposta.NumeroHomologacao}-{listaPresenca.PropostaTurma.Nome}.xlsx";
-            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var arquivoDto = await GerarRelatorioCodafAsync(codafId);
+            await AtualizarStatusParaFinalizadoAsync(listaPresenca);
+            return arquivoDto;
+        }
 
-            var stream = new MemoryStream(arquivoBytes, writable: false);
-            return new ArquivoDto(nomeArquivo, contentType, stream);
+        private async Task<ArquivoDto> GerarRelatorioCodafAsync(long codafId)
+        {
+            var arquivoBytes = await servicoRelatorio.GerarRelatorioCodafAsync(codafId);
+            var nomeArquivo = $"CODAF_{codafId}.xlsx";
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            return new ArquivoDto(nomeArquivo, contentType, new MemoryStream(arquivoBytes, writable: false));
+        }
+
+        private async Task AtualizarStatusParaFinalizadoAsync(CodafListaPresenca listaPresenca)
+        {
+            if (listaPresenca.Status == StatusCodafListaPresenca.Finalizado)
+                return;
+
+            listaPresenca.Finalizar();
+            await repositorioCodafListaPresenca.Atualizar(listaPresenca);
+         
         }
     }
 }
