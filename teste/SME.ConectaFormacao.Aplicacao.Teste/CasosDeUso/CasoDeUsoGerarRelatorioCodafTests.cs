@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             long codafId = 1;
-            var listaPresenca = new CodafListaPresenca(codafId, 1, null, null, null, null, null, null, null, null)
+            var listaPresenca = new CodafListaPresenca(codafId, 1, new(null, null, null, null, null, null, null), null)
             {
                 Proposta = new Proposta { NumeroHomologacao = 12345 },
                 PropostaTurma = new PropostaTurma { Nome = "Turma A" }
@@ -71,7 +71,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             long codafId = 1;
-            var listaPresenca = new CodafListaPresenca(codafId, 1, null, null, null, null, null, null, null, null)
+            var listaPresenca = new CodafListaPresenca(codafId, 1, new(null, null, null, null, null, null, null), null)
             {
                 Proposta = new Proposta { NumeroHomologacao = 12345 },
                 PropostaTurma = new PropostaTurma { Nome = "Turma A" }
@@ -94,7 +94,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             long codafId = 1;
-            var listaPresenca = new CodafListaPresenca(codafId, 1, null, null, null, null, null, null, null, null)
+            var listaPresenca = new CodafListaPresenca(codafId, 1, new(null, null, null, null, null, null, null), null)
             {
                 Proposta = new Proposta { NumeroHomologacao = 12345 },
                 PropostaTurma = new PropostaTurma { Nome = "Turma A" }

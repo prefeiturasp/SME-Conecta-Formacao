@@ -34,13 +34,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var listaPresencaEntidade = new CodafListaPresenca(
                 propostaId: 1,
                 propostaTurmaId: 1,
-                dataPublicacao: DateTime.Now,
-                dataPublicacaoDom: DateTime.Now,
-                numeroComunicado: 123,
-                paginaComunicadoDom: 12,
-                codigoCursoEol: 1,
-                codigoNivel: 2,
-                observacao: "Observação teste",
+                new(DataPublicacao: DateTime.Now,
+                DataPublicacaoDom: DateTime.Now,
+                NumeroComunicado: 123,
+                PaginaComunicadoDom: 12,
+                CodigoCursoEol: 1,
+                CodigoNivel: 2,
+                Observacao: "Observação teste"),
                 Perfis.ADMIN_DF);
             var listaPresencaDto = new CodafListaPresencaDto
             {

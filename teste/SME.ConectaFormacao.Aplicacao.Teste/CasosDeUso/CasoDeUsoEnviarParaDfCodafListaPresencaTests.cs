@@ -49,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         public async Task DadoUmaListaInvalida_QuandoExecutar_EntaoDeveRetornarErroDeValidacao()
         {
             // Arrange
-            var codafListPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null);
+            var codafListPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null);
             codafListPresenca.Iniciar();
 
             _repositorioCodafListaPresencaMock
@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         public async Task DadoUmaListaQueNaoPodeSerEnviadaParaDf_QuandoExecutar_EntaoDeveRetornarErroDeValidacao()
         {
             // Arrange
-            var codafListPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null);
+            var codafListPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null);
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(It.IsAny<long>()))
                 .ReturnsAsync(codafListPresenca);
@@ -92,7 +92,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         public async Task DadoUmaListaValida_QuandoExecutar_EntaoDeveRetornarSucesso()
         {
             // Arrange
-            var codafListPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null);
+            var codafListPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null);
             codafListPresenca.Iniciar();
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(It.IsAny<long>()))
@@ -121,7 +121,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         public async Task DadoErroAoAtualizar_QuandoExecutar_EntaoDeveRetornarErroInternoERollbackTransacao()
         {
             // Arrange
-            var codafListPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null);
+            var codafListPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null);
             codafListPresenca.Iniciar();
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(It.IsAny<long>()))

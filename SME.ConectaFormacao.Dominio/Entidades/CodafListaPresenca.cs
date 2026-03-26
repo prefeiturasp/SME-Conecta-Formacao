@@ -1,5 +1,6 @@
 ﻿using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
@@ -25,33 +26,28 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         protected CodafListaPresenca() { }
 
-        public CodafListaPresenca(long propostaId, long propostaTurmaId, DateTime? dataPublicacao, DateTime? dataPublicacaoDom, short? numeroComunicado, short? paginaComunicadoDom, int? codigoCursoEol, int? codigoNivel, string? observacao, Guid? idPerfilUsuario)
+        public CodafListaPresenca(long propostaId, long propostaTurmaId, DadosPublicacaoLista dadosPublicacao, Guid? idPerfilUsuario)
         {
             PropostaId = propostaId;
-            PropostaTurmaId = propostaTurmaId;
-            DataPublicacao = dataPublicacao;
-            DataPublicacaoDom = dataPublicacaoDom;
-            NumeroComunicado = numeroComunicado;
-            PaginaComunicadoDom = paginaComunicadoDom;
-            Observacao = observacao;
-            if (idPerfilUsuario == Perfis.ADMIN_DF)
-            {
-                CodigoNivel = codigoNivel;
-                CodigoCursoEol = codigoCursoEol;
-            }
+            PropostaTurmaId = propostaTurmaId; 
+            AtribuirDadosPublicacao(dadosPublicacao, idPerfilUsuario);
         }
-
-        public void AtualizarInformacoes(DateTime? dataPublicacao, DateTime? dataPublicacaoDom, short? numeroComunicado, short? paginaComunicadoDom, int? codigoCursoEol, int? codigoNivel, string? observacao, Guid? idPerfilUsuario)
+        public void AtualizarInformacoes(DadosPublicacaoLista dadosPublicacao, Guid? idPerfilUsuario)
         {
-            DataPublicacao = dataPublicacao;
-            DataPublicacaoDom = dataPublicacaoDom;
-            NumeroComunicado = numeroComunicado;
-            PaginaComunicadoDom = paginaComunicadoDom;
-            Observacao = observacao;
+            AtribuirDadosPublicacao(dadosPublicacao, idPerfilUsuario);
+        }
+        private void AtribuirDadosPublicacao(DadosPublicacaoLista dados, Guid? idPerfilUsuario)
+        {
+            DataPublicacao = dados.DataPublicacao;
+            DataPublicacaoDom = dados.DataPublicacaoDom;
+            NumeroComunicado = dados.NumeroComunicado;
+            PaginaComunicadoDom = dados.PaginaComunicadoDom;
+            Observacao = dados.Observacao;
+
             if (idPerfilUsuario == Perfis.ADMIN_DF)
             {
-                CodigoNivel = codigoNivel;
-                CodigoCursoEol = codigoCursoEol;
+                CodigoNivel = dados.CodigoNivel;
+                CodigoCursoEol = dados.CodigoCursoEol;
             }
         }
 

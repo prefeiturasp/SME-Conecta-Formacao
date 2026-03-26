@@ -45,7 +45,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var idLista = _faker.Random.Long(1);
-            var listaPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null);
+            var listaPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null);
             listaPresenca.Iniciar();
             listaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var idLista = _faker.Random.Long(1);
-            var listaPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null);
+            var listaPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null);
             listaPresenca.Iniciar();
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterNaoExcluidosPorIdAsync(idLista))
