@@ -17,8 +17,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             const string query =
             """
             SELECT 
-                id, proposta_id, hora_inicio, hora_fim, excluido, criado_em, criado_por, criado_login,
-                alterado_em, alterado_por, alterado_login
+                id, proposta_id as propostaId, hora_inicio as horaInicio, hora_fim as horaFim, local,
+                excluido, criado_em, criado_por, criado_login, alterado_em, alterado_por, alterado_login
             FROM proposta_encontro 
             WHERE id = @encontroId AND NOT excluido
             """;
@@ -31,8 +31,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             """
             SELECT 
                 id as Id, proposta_encontro_id as PropostaEncontroId, data_inicio as DataInicio, data_fim as DataFim,
-                excluido as Excluido, criado_em as CriadoEm, criado_por as CriadoPor, criado_login as CriadoLogin,
-                alterado_em as AlteradoEm, alterado_por as AlteradoPor, alterado_login as AlteradoLogin
+                hora_inicio as horaInicio, hora_fim as horaFim, excluido as Excluido, criado_em as CriadoEm, 
+                criado_por as CriadoPor, criado_login as CriadoLogin, alterado_em as AlteradoEm, 
+                alterado_por as AlteradoPor, alterado_login as AlteradoLogin
             FROM proposta_encontro_data
             WHERE not excluido AND proposta_encontro_id = ANY(@encontroId)
             ORDER BY data_inicio;
@@ -174,8 +175,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             -- Query 1: Datas
             SELECT 
                 id as Id, proposta_encontro_id as PropostaEncontroId, data_inicio as DataInicio, data_fim as DataFim,
-                excluido as Excluido, criado_em as CriadoEm, criado_por as CriadoPor, criado_login as CriadoLogin,
-                alterado_em as AlteradoEm, alterado_por as AlteradoPor, alterado_login as AlteradoLogin
+                hora_inicio as horaInicio, hora_fim as horaFim, excluido as Excluido, criado_em as CriadoEm, 
+                criado_por as CriadoPor, criado_login as CriadoLogin, alterado_em as AlteradoEm, 
+                alterado_por as AlteradoPor, alterado_login as AlteradoLogin
             FROM proposta_encontro_data
             WHERE not excluido AND proposta_encontro_id = ANY(@IdsEncontros)
             ORDER BY data_inicio;

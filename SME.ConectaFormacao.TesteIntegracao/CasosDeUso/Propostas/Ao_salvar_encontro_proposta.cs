@@ -8,12 +8,9 @@ using Xunit;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
 {
-    public class Ao_salvar_encontro_proposta : TestePropostaBase
+    public class Ao_Salvar_Encontro_Proposta(CollectionFixture collectionFixture) : 
+        TestePropostaBase(collectionFixture)
     {
-        public Ao_salvar_encontro_proposta(CollectionFixture collectionFixture) : base(collectionFixture)
-        {
-        }
-
         [Fact(DisplayName = "Proposta Encontro - Deve inserir encontro da proposta válido")]
         public async Task Deve_inserir_encontro_proposta_valido()
         {
@@ -25,7 +22,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarPropostaEncontro>();
 
             // act
-            var retorno = await casoDeUso.Executar(proposta.Id, encontroDTO);
+            await casoDeUso.Executar(proposta.Id, encontroDTO);
 
             // assert
             ValidarPropostaEncontro(encontroDTO, proposta.Id);
@@ -38,12 +35,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var proposta = await InserirNaBaseProposta();
 
             var encontroDTO = PropostaSalvarMock.GerarEncontro(proposta.QuantidadeTurmas.GetValueOrDefault());
-            encontroDTO.Id = proposta.Encontros.FirstOrDefault().Id;
+            encontroDTO.Id = proposta.Encontros.First().Id;
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoSalvarPropostaEncontro>();
 
             // act
-            var retorno = await casoDeUso.Executar(proposta.Id, encontroDTO);
+            await casoDeUso.Executar(proposta.Id, encontroDTO);
 
             // assert
             ValidarPropostaEncontro(encontroDTO, proposta.Id);
@@ -52,13 +49,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
         protected void ValidarPropostaEncontro(PropostaEncontroDto encontroDTO, long id)
         {
             var encontros = ObterTodos<PropostaEncontro>();
-            var turmas = ObterTodos<PropostaEncontroTurma>();
             var datas = ObterTodos<PropostaEncontroData>();
 
             var encontro = encontros.FirstOrDefault(t =>
                 t.PropostaId == id &&
-                t.HoraInicio == encontroDTO.HoraInicio &&
-                t.HoraFim == encontroDTO.HoraFim &&
                 t.Local == encontroDTO.Local
                 );
             encontro.ShouldNotBeNull();

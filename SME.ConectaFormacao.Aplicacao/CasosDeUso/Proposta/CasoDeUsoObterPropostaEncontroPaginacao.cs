@@ -28,7 +28,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 Id = e.Id,
                 QuantidadeDiasEncontro = e.Datas.Count(),
                 Tipo = e.Tipo,
-                NomeTurmas = [.. e.Turmas.Select(t => t.Turma.Nome)],
+                Local = e.Local,
+                Turmas = [.. e.Turmas.Select(t => new PropostaEncontroTurmaDto { TurmaId = t.TurmaId, Nome = t.Turma.Nome })],
                 CronogramaDatas = ExpandirDatasEncontro(e)
             });
 
@@ -37,6 +38,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
         private static List<CronogramaDataEncontroDto> ExpandirDatasEncontro(PropostaEncontro encontro)
         {
+            encontro.MigrarHorariosLegadoParaDatas();
+
             var datas = encontro.Datas;
             if (datas == null || !datas.Any())
                 return [];
@@ -44,19 +47,19 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             foreach (var data in datas)
             {
-                if (!data.DataFim.HasValue || data.DataInicio == data.DataFim)
+                if (data.SemDataFim())
                 {
-                    cronogramaDatas.Add(new (data.DataInicio!.Value.Date, encontro.HoraInicio, encontro.HoraFim));
+                    cronogramaDatas.Add(new (data.Id, data.DataInicio!.Value.Date, data.HoraInicio, data.HoraFim));
                     continue;
                 }
 
                 var dataInicio = data.DataInicio!.Value.Date;
-                var dataFim = data.DataFim.Value.Date;
+                var dataFim = data.DataFim!.Value.Date;
                 for (var dataAtual = dataInicio; dataAtual <= dataFim; dataAtual = dataAtual.AddDays(1))
                 {
                     if (dataAtual.DayOfWeek == DayOfWeek.Saturday || dataAtual.DayOfWeek == DayOfWeek.Sunday)
                         continue;
-                    cronogramaDatas.Add(new (dataAtual, encontro.HoraInicio, encontro.HoraFim));
+                    cronogramaDatas.Add(new (data.Id, dataAtual, data.HoraInicio, data.HoraFim));
                 }
             }
             return [.. cronogramaDatas.Distinct().OrderBy(d => d.Data)];

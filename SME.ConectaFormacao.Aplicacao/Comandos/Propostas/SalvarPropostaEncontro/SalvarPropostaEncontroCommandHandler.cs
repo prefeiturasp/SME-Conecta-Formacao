@@ -22,6 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontr
             var encontroAntes = await repositorioPropostaEncontro.ObterEncontroPorIdAsync(request.EncontroDto.Id);
             var encontroDepois = mapper.Map<PropostaEncontro>(request.EncontroDto);
             encontroDepois.PropostaId = request.PropostaId;
+            encontroDepois.MigrarHorariosLegadoParaDatas();
 
             using var transacaoAtiva = _transacao.Iniciar();
             try
@@ -30,7 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontr
 
                 await ProcessarTurmasAsync(encontroDepois.Id, encontroDepois.Turmas);
 
-                await ProcessarDatasAsync(encontroDepois.Id, encontroDepois.Datas);
+                await ProcessarDatasAsync(encontroDepois);
 
                 transacaoAtiva.Commit();
 
@@ -53,9 +54,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontr
                 return;
             }
 
-            if (encontroAntes.HoraInicio != encontroDepois.HoraInicio ||
-                encontroAntes.HoraFim != encontroDepois.HoraFim ||
-                encontroAntes.Local != encontroDepois.Local)
+            if (encontroAntes.HouveAlteracao(encontroDepois))
             {
                 encontroDepois.ManterCriador(encontroAntes);
                 await repositorioPropostaEncontro.AtualizarEncontroAsync(encontroDepois);
@@ -76,16 +75,17 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontr
                 await repositorioPropostaEncontro.RemoverEncontroTurmasAsync(turmasExcluir);
         }
 
-        private async Task ProcessarDatasAsync(long encontroId, IEnumerable<PropostaEncontroData> datasDepois)
+        private async Task ProcessarDatasAsync(PropostaEncontro encontro)
         {
-            var datasAntes = await repositorioPropostaEncontro.ObterEncontroDatasPorEncontroIdAsync(encontroId);
+            var datasAntes = await repositorioPropostaEncontro.ObterEncontroDatasPorEncontroIdAsync(encontro.Id);
+            var datasDepois = encontro.Datas.ToList();
 
             var datasInserir = datasDepois.Where(w => !datasAntes.Any(a => a.Id == w.Id));
             var datasExcluir = datasAntes.Where(w => !datasDepois.Any(a => a.Id == w.Id));
             var datasAlterar = datasDepois.Where(w => datasAntes.Any(a => a.Id == w.Id));
 
             if (datasInserir.Any())
-                await repositorioPropostaEncontro.InserirEncontroDatasAsync(encontroId, datasInserir);
+                await repositorioPropostaEncontro.InserirEncontroDatasAsync(encontro.Id, datasInserir);
 
             if (datasExcluir.Any())
                 await repositorioPropostaEncontro.RemoverEncontroDatasAsync(datasExcluir);
@@ -94,10 +94,9 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontr
             {
                 var dataAntes = datasAntes.First(t => t.Id == dataAlterar.Id);
 
-                if (dataAlterar.DataInicio != dataAntes.DataInicio ||
-                    dataAlterar.DataFim != dataAntes.DataFim)
+                if (dataAlterar.HouveAlteracao(dataAntes))
                 {
-                    dataAlterar.PropostaEncontroId = encontroId;
+                    dataAlterar.PropostaEncontroId = encontro.Id;
                     dataAlterar.ManterCriador(dataAntes);
                     await repositorioPropostaEncontro.AtualizarEncontroDataAsync(dataAlterar);
                 }

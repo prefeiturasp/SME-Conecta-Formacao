@@ -84,6 +84,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             var encontro = CriarPropostaEncontroMock(dataEncontro, dataEncontro);
             ConfigurarMockRepositorio(idProposta, [encontro]);
+            var horaInicioEsperada = encontro.HoraInicio;
+            var horaFimEsperada = encontro.HoraFim;
 
             // Act
             var resultado = await _sut.ExecutarAsync(idProposta);
@@ -93,10 +95,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var cronogramaMapeado = resultado.Items.First();
 
             cronogramaMapeado.Id.Should().Be(encontro.Id);
-            cronogramaMapeado.NomeTurmas.Should().ContainSingle().Which.Should().Be(encontro.Turmas.First().Turma.Nome);
             cronogramaMapeado.CronogramaDatas.Should().HaveCount(1);
             cronogramaMapeado.CronogramaDatas[0].Data.Should().Be(dataEncontro);
-            cronogramaMapeado.CronogramaDatas[0].HoraInicio.Should().Be(encontro.HoraInicio);
+            cronogramaMapeado.CronogramaDatas[0].HoraInicio.Should().Be(horaInicioEsperada);
+            cronogramaMapeado.CronogramaDatas[0].HoraFim.Should().Be(horaFimEsperada);
         }
 
         [Fact]
