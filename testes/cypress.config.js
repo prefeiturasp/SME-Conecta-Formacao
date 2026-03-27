@@ -4,7 +4,7 @@ const dotenv = require('dotenv')
 
 const createBundler = require('@bahmutov/cypress-esbuild-preprocessor')
 const { addCucumberPreprocessorPlugin } = require('@badeball/cypress-cucumber-preprocessor')
-const { createEsbuildPlugin } = require('@badeball/cypress-cucumber-preprocessor/esbuild')
+const createEsbuildPlugin = require('@badeball/cypress-cucumber-preprocessor/esbuild').default
 
 const postgreSQL = require('cypress-postgresql')
 const pg = require('pg')
@@ -36,6 +36,13 @@ module.exports = defineConfig({
       LOGIN_CURSISTA: process.env.LOGIN_CURSISTA,
       LOGIN_EXTERNO: process.env.LOGIN_EXTERNO,
       SENHA: process.env.SENHA,
+      ID_AREA_PROMOTORA: process.env.ID_AREA_PROMOTORA,
+      PERFIL_AREA_PROMOTORA: process.env.PERFIL_AREA_PROMOTORA,
+      LABEL_AREA_PROMOTORA: process.env.LABEL_AREA_PROMOTORA,
+      VALUE_AREA_PROMOTORA: process.env.VALUE_AREA_PROMOTORA,
+      TELEFONES: process.env.TELEFONES,
+      GRUPO_AREA_PROMOTORA: process.env.GRUPO_AREA_PROMOTORA,
+      EMAIL_DOMAIN: process.env.EMAIL_DOMAIN,
 
       cucumber: {
         stepDefinitions: "cypress/support/step_definitions/**/*.js"

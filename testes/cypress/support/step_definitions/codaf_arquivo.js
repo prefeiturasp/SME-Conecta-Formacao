@@ -1,5 +1,9 @@
 import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
 
+const Dado = Given
+const Quando = When
+const Então = Then
+
 let token
 
 Before(() => {
@@ -8,12 +12,12 @@ Before(() => {
   })
 })
 
-Given('que possuo um token válido no endpoint CodafArquivo', function () {
+Dado('que possuo um token válido no endpoint CodafArquivo', function () {
   expect(token, 'valido').to.exist
 })
 
 // Buscar o modelo do termo do Codaf
-When('envio uma requisição GET no Codaf lista presença', function () { 
+Quando('envio uma requisição GET no Codaf lista presença', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/termo-responsabilidade/modelo`,
@@ -25,14 +29,14 @@ When('envio uma requisição GET no Codaf lista presença', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com modelo do termo do Codaf', function () {
+Então('retorna o status 200 com modelo do termo do Codaf', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
   })
 })
 
 // Não buscar modelo do termo do Codaf sem autenticação
-When('tento a requisição GET no Codaf lista presença', function () { 
+Quando('tento a requisição GET no Codaf lista presença', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/termo-responsabilidade/modelo`,
@@ -44,7 +48,7 @@ When('tento a requisição GET no Codaf lista presença', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem modelo do termo do Codaf', function () {
+Então('retorna o status 401 sem modelo do termo do Codaf', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })
