@@ -33,13 +33,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             var codafListaPresenca = new CodafListaPresenca(
                 codafListaPresencaCadastroDto.PropostaId,
                 codafListaPresencaCadastroDto.PropostaTurmaId,
-                codafListaPresencaCadastroDto.DataPublicacao,
+                new(codafListaPresencaCadastroDto.DataPublicacao,
                 codafListaPresencaCadastroDto.DataPublicacaoDom,
                 codafListaPresencaCadastroDto.NumeroComunicado,
                 codafListaPresencaCadastroDto.PaginaComunicadoDom,
                 codafListaPresencaCadastroDto.CodigoCursoEol,
                 codafListaPresencaCadastroDto.CodigoNivel,
-                codafListaPresencaCadastroDto.Observacao,
+                codafListaPresencaCadastroDto.Observacao),
                 contextoAplicacao.IdPerfilUsuario);
             codafListaPresenca.Iniciar();
 

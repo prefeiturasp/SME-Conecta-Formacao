@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Relatorios
 
         public async Task<string> GerarEArmazenarRelatorioAsync(RelatorioInscritosFormacaoDto dados)
         {
-            var caminhoArquivoTemporario = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            var caminhoArquivoTemporario = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.xlsx");
             var nomeArquivo = $"Relatorio_Inscritos_Formacao_{dados.NomeUsuario.Replace(" ", "").RemoverCaracteresEspeciais()}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
 
             try

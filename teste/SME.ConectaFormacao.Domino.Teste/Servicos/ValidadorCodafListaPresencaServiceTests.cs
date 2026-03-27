@@ -141,7 +141,7 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
         {
             // Arrange
             var codafListaPresenca = new CodafListaPresenca(_faker.Random.Long(1), _faker.Random.Long(1),
-                null, null, null, null, null, null, null, null);
+                new(null, null, null, null, null, null, null), null);
             // Act
             var resultado = await _validadorService.ValidarParaEnvioAoDfAsync(codafListaPresenca);
             // Assert
@@ -154,8 +154,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
         public async Task DadoUmaListaDePresencaComNumeroComunicadoNull_QuandoValidarParaEnvioAoDf_EntaoDeveRetornarErroDeValidacao()
         {
             // Arrange
-            var codafListaPresenca = new CodafListaPresenca(_faker.Random.Long(1), _faker.Random.Long(1), _faker.Date.Recent(),
-                 null, null, null, null, null, null, null);
+            var codafListaPresenca = new CodafListaPresenca(_faker.Random.Long(1), _faker.Random.Long(1), new(_faker.Date.Recent(),
+                 null, null, null, null, null, null), null);
             // Act
             var resultado = await _validadorService.ValidarParaEnvioAoDfAsync(codafListaPresenca);
             // Assert
@@ -168,8 +168,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
         public async Task DadoUmaListaDePresencaComPaginaComunicadoDomNull_QuandoValidarParaEnvioAoDf_EntaoDeveRetornarErroDeValidacao()
         {
             // Arrange
-            var codafListaPresenca = new CodafListaPresenca(_faker.Random.Long(1), _faker.Random.Long(1), _faker.Date.Recent(),
-                 null, 2, null, null, null, null, null);
+            var codafListaPresenca = new CodafListaPresenca(_faker.Random.Long(1), _faker.Random.Long(1), new(_faker.Date.Recent(),
+                 null, 2, null, null, null, null), null);
             // Act
             var resultado = await _validadorService.ValidarParaEnvioAoDfAsync(codafListaPresenca);
             // Assert
@@ -183,8 +183,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
         {
             // Arrange
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(_faker.Random.Long(1), propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null);
+            var codafListaPresenca = new CodafListaPresenca(_faker.Random.Long(1), propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null);
             _repositorioListaMock
                 .Setup(r => r.TurmaJaTemListaDePresencaAsync(propostaTurmaId, codafListaPresenca.Id))
                 .ReturnsAsync(true);
@@ -202,8 +202,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null);
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null);
             _repositorioPropostaMock
                 .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
@@ -224,8 +224,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null);
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null);
             _repositorioPropostaMock
                 .Setup(r => r.ObterNaoExcluidosPorIdAsync(propostaId))
                 .ReturnsAsync(new Proposta { Id = propostaId });
@@ -246,8 +246,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
@@ -282,8 +282,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
@@ -318,8 +318,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
@@ -354,8 +354,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
@@ -390,8 +390,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
@@ -426,8 +426,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
@@ -462,8 +462,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
@@ -498,8 +498,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
@@ -534,8 +534,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
@@ -570,8 +570,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
@@ -607,8 +607,8 @@ namespace SME.ConectaFormacao.Domino.Teste.Servicos
             var propostaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
             var inscritoId = _faker.Random.Long(1);
-            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, _faker.Date.Recent(),
-                 null, 2, 5, null, null, null, null)
+            var codafListaPresenca = new CodafListaPresenca(propostaId, propostaTurmaId, new(_faker.Date.Recent(),
+                 null, 2, 5, null, null, null), null)
             {
                 CodafAnexos =
                 [
