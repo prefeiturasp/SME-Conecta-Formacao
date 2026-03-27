@@ -34,11 +34,31 @@ Cypress.Commands.add('gerar_token', () => {
     failOnStatusCode: false,
   }).then((response) => {
 
-    expect(response.status, 'Erro ao gerar token').to.eq(200)
+    expect(response.status).to.eq(200)
 
-    const token = response.body.token
-    Cypress.env('TOKEN', token)
+    const perfis = response.body.perfilUsuario
 
-    return token
+    const perfilAdminDF = perfis.find(p => p.perfilNome === 'Admin DF')
+
+    expect(perfilAdminDF, 'Perfil Admin DF não encontrado').to.exist
+
+    return cy.request({
+      method: 'PUT',
+      url: `${Cypress.config('baseUrl')}/api/v1/autenticacao/perfis/${perfilAdminDF.perfil}`,
+      headers: {
+        Authorization: `Bearer ${response.body.token}`,
+        'Content-Type': 'application/json'
+      },
+      failOnStatusCode: false
+    }).then((resPerfil) => {
+
+      expect(resPerfil.status).to.eq(200)
+
+      const tokenFinal = resPerfil.body.token
+
+      Cypress.env('TOKEN', tokenFinal)
+
+      return tokenFinal
+    })
   })
 })

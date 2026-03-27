@@ -1,5 +1,9 @@
 import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
 
+const Dado = Given
+const Quando = When
+const Então = Then
+
 let token
 
 Before(() => {
@@ -8,12 +12,12 @@ Before(() => {
   })
 })
 
-Given('que possuo um token válido no endpoint Funcionario', function () {
+Dado('que possuo um token válido no endpoint Funcionario', function () {
   expect(token, 'valido').to.exist
 })
 
 // Buscar funcionários com usuários admin df
-When('envio uma requisição GET obter usuarios admin df', function () { 
+Quando('envio uma requisição GET obter usuarios admin df', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Funcionario/obter-usuarios-admin-df`,
@@ -25,7 +29,7 @@ When('envio uma requisição GET obter usuarios admin df', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 funcionários com usuários admin df', function () {
+Então('retorna o status 200 funcionários com usuários admin df', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200) 
     response.body.forEach((usuario) => {
@@ -36,7 +40,7 @@ Then('retorna o status 200 funcionários com usuários admin df', function () {
 })
 
 // Não buscar funcionários com usuários admin df sem autenticação
-When('tento a requisição GET obter usuarios admin df', function () { 
+Quando('tento a requisição GET obter usuarios admin df', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Funcionario/obter-usuarios-admin-df`,
@@ -48,14 +52,14 @@ When('tento a requisição GET obter usuarios admin df', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem funcionários com usuários admin df', function () {
+Então('retorna o status 401 sem funcionários com usuários admin df', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })
 })
 
 // Buscar funcionários com usuários parcerista
-When('envio uma requisição GET obter usuarios parcerista', function () { 
+Quando('envio uma requisição GET obter usuarios parcerista', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Funcionario/obter-parecerista`,
@@ -67,7 +71,7 @@ When('envio uma requisição GET obter usuarios parcerista', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 funcionários com usuários parcerista', function () {
+Então('retorna o status 200 funcionários com usuários parcerista', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200) 
     response.body.forEach((usuario) => {
@@ -78,7 +82,7 @@ Then('retorna o status 200 funcionários com usuários parcerista', function () 
 })
 
 // Não buscar funcionários com usuários parcerista sem autenticação
-When('tento a requisição GET obter usuarios parcerista', function () { 
+Quando('tento a requisição GET obter usuarios parcerista', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Funcionario/obter-parecerista`,
@@ -90,7 +94,7 @@ When('tento a requisição GET obter usuarios parcerista', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem funcionários com usuários parcerista', function () {
+Então('retorna o status 401 sem funcionários com usuários parcerista', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })

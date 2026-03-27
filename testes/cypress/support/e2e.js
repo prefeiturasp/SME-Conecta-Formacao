@@ -9,6 +9,7 @@ import './commands_api/commands_login'
 
 // COMANDOS CUSTOM - UI
 import './commands_ui/commands_login'
+import './commands_ui/commands_area_promotora'
 
 // Evita quebra por erro de front
 Cypress.on('uncaught:exception', () => {

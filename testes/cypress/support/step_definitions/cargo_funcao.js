@@ -1,5 +1,9 @@
 import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
 
+const Dado = Given
+const Quando = When
+const Então = Then
+
 let token
 
 Before(() => {
@@ -8,12 +12,12 @@ Before(() => {
   })
 })
 
-Given('que possuo um token no endpoint CargoFuncao', function () {
+Dado('que possuo um token no endpoint CargoFuncao', function () {
   expect(token, 'valido').to.exist
 })
 
 // Buscar cargo função
-When('envio uma requisição GET em cargos', function () { 
+Quando('envio uma requisição GET em cargos', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao`,
@@ -25,7 +29,7 @@ When('envio uma requisição GET em cargos', function () {
   }).as('response')
 })
 
-Then('retorna todos cargo função com status 200', function () {
+Então('retorna todos cargo função com status 200', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('array')
@@ -41,7 +45,7 @@ Then('retorna todos cargo função com status 200', function () {
 })
 
 // Buscar cargo função exibindo a opção de outros
-When('envio uma requisição GET em cargos com true', function () { 
+Quando('envio uma requisição GET em cargos com true', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao?exibirOpcaoOutros=true`,
@@ -53,7 +57,7 @@ When('envio uma requisição GET em cargos com true', function () {
   }).as('response')
 })
 
-Then('retorna todos cargo função exibindo a opção de outros com status 200', function () {
+Então('retorna todos cargo função exibindo a opção de outros com status 200', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('array')
@@ -69,7 +73,7 @@ Then('retorna todos cargo função exibindo a opção de outros com status 200',
 })
 
 // Buscar cargo função não exibindo a opção de outros
-When('envio uma requisição GET em cargos com false', function () { 
+Quando('envio uma requisição GET em cargos com false', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao?exibirOpcaoOutros=true`,
@@ -81,7 +85,7 @@ When('envio uma requisição GET em cargos com false', function () {
   }).as('response')
 })
 
-Then('retorna todos cargo função não exibindo a opção de outros com status 200', function () {
+Então('retorna todos cargo função não exibindo a opção de outros com status 200', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('array')
@@ -97,7 +101,7 @@ Then('retorna todos cargo função não exibindo a opção de outros com status 
 })
 
 // Não buscar cargo função sem autenticação
-When('tento a requisição GET no endpoint de cargos', function () { 
+Quando('tento a requisição GET no endpoint de cargos', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao`,
@@ -109,14 +113,14 @@ When('tento a requisição GET no endpoint de cargos', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem todos cargo função', function () {
+Então('retorna o status 401 sem todos cargo função', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })
 })
 
 // Buscar cargo função do tipo 1
-When('envio uma requisição GET em cargos de tipo', function () { 
+Quando('envio uma requisição GET em cargos de tipo', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao/tipo/1`,
@@ -128,7 +132,7 @@ When('envio uma requisição GET em cargos de tipo', function () {
   }).as('response')
 })
 
-Then('retorna cargo função do tipo 1 com status 200', function () {
+Então('retorna cargo função do tipo 1 com status 200', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('array')
@@ -144,7 +148,7 @@ Then('retorna cargo função do tipo 1 com status 200', function () {
 })
 
 // Buscar cargo função do tipo 2
-When('envio uma requisição GET em cargos do tipo', function () { 
+Quando('envio uma requisição GET em cargos do tipo', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao/tipo/2`,
@@ -156,7 +160,7 @@ When('envio uma requisição GET em cargos do tipo', function () {
   }).as('response')
 })
 
-Then('retorna cargo função do tipo 2 com status 200', function () {
+Então('retorna cargo função do tipo 2 com status 200', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('array')
@@ -172,7 +176,7 @@ Then('retorna cargo função do tipo 2 com status 200', function () {
 })
 
 // Buscar cargo função do tipo 3
-When('envio uma requisição GET em cargos tipo', function () { 
+Quando('envio uma requisição GET em cargos tipo', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao/tipo/3`,
@@ -184,7 +188,7 @@ When('envio uma requisição GET em cargos tipo', function () {
   }).as('response')
 })
 
-Then('retorna cargo função do tipo 3 com status 200', function () {
+Então('retorna cargo função do tipo 3 com status 200', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('array')
@@ -200,7 +204,7 @@ Then('retorna cargo função do tipo 3 com status 200', function () {
 })
 
 // Tipo é obrigatório em cargo função
-When('envio uma requisição GET em cargos sem tipo', function () { 
+Quando('envio uma requisição GET em cargos sem tipo', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao/tipo/`,
@@ -212,14 +216,14 @@ When('envio uma requisição GET em cargos sem tipo', function () {
   }).as('response')
 })
 
-Then('retorna que tipo é obrigatório em cargo função com status 404', function () {
+Então('retorna que tipo é obrigatório em cargo função com status 404', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(404)
   })
 })
 
 // Buscar cargo função tipo exibindo a opção de outros
-When('envio uma requisição GET em cargos tipo com true', function () { 
+Quando('envio uma requisição GET em cargos tipo com true', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao/tipo/1?exibirOpcaoOutros=true`,
@@ -231,7 +235,7 @@ When('envio uma requisição GET em cargos tipo com true', function () {
   }).as('response')
 })
 
-Then('retorna todos cargo função tipo exibindo a opção de outros com status 200', function () {
+Então('retorna todos cargo função tipo exibindo a opção de outros com status 200', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('array').and.not.be.empty
@@ -247,7 +251,7 @@ Then('retorna todos cargo função tipo exibindo a opção de outros com status 
 })
 
 // Buscar cargo função tipo não exibindo a opção de outros
-When('envio uma requisição GET em cargos tipo com false', function () { 
+Quando('envio uma requisição GET em cargos tipo com false', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao/tipo/1?exibirOpcaoOutros=false`,
@@ -259,7 +263,7 @@ When('envio uma requisição GET em cargos tipo com false', function () {
   }).as('response')
 })
 
-Then('retorna todos cargo função tipo não exibindo a opção de outros com status 200', function () {
+Então('retorna todos cargo função tipo não exibindo a opção de outros com status 200', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('array').and.not.be.empty
@@ -275,7 +279,7 @@ Then('retorna todos cargo função tipo não exibindo a opção de outros com st
 })
 
 // Não buscar cargo função tipo sem autenticação
-When('tento a requisição GET no endpoint de cargos tipos', function () { 
+Quando('tento a requisição GET no endpoint de cargos tipos', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/CargoFuncao/tipo/1`,
@@ -287,7 +291,7 @@ When('tento a requisição GET no endpoint de cargos tipos', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem todos cargo função tipo', function () {
+Então('retorna o status 401 sem todos cargo função tipo', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })

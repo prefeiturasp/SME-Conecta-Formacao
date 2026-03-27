@@ -1,5 +1,9 @@
 import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
 
+const Dado = Given
+const Quando = When
+const Então = Then
+
 let token
 
 Before(() => {
@@ -8,12 +12,12 @@ Before(() => {
   })
 })
 
-Given('que possuo um token válido no endpoint PalavraChave', function () {
+Dado('que possuo um token válido no endpoint PalavraChave', function () {
   expect(token, 'valido').to.exist
 })
 
 // Buscar cadastros de palavra chave
-When('envio uma requisição GET buscar palavra chave', function () { 
+Quando('envio uma requisição GET buscar palavra chave', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/PalavraChave`,
@@ -25,14 +29,14 @@ When('envio uma requisição GET buscar palavra chave', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com cadastros de palavra chave', function () {
+Então('retorna o status 200 com cadastros de palavra chave', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200) 
   })
 })
 
 // Não buscar cadastros de palavra chave sem autenticação
-When('tento a requisição GET buscar palavra chave', function () { 
+Quando('tento a requisição GET buscar palavra chave', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/PalavraChave`,
@@ -44,7 +48,7 @@ When('tento a requisição GET buscar palavra chave', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem palavra chave', function () {
+Então('retorna o status 401 sem palavra chave', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })

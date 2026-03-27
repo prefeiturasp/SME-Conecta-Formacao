@@ -1,5 +1,9 @@
 import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
 
+const Dado = Given
+const Quando = When
+const Então = Then
+
 let token
 
 Before(() => {
@@ -8,12 +12,12 @@ Before(() => {
   })
 })
 
-Given('que possuo um token válido no endpoint Inscricao', function () {
+Dado('que possuo um token válido no endpoint Inscricao', function () {
   expect(token, 'valido').to.exist
 })
 
 // Buscar dados de inscrição
-When('envio uma requisição GET dos dados de inscrição', function () { 
+Quando('envio uma requisição GET dos dados de inscrição', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/dados-inscricao`,
@@ -25,7 +29,7 @@ When('envio uma requisição GET dos dados de inscrição', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados de inscrição', function () {
+Então('retorna o status 200 com dados de inscrição', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('object')
@@ -38,7 +42,7 @@ Then('retorna o status 200 com dados de inscrição', function () {
 })
 
 // Não buscar dados de inscrição sem autenticação
-When('tento a requisição GET dos dados de inscrição', function () { 
+Quando('tento a requisição GET dos dados de inscrição', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/dados-inscricao`,
@@ -50,14 +54,14 @@ When('tento a requisição GET dos dados de inscrição', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem dados de inscrição', function () {
+Então('retorna o status 401 sem dados de inscrição', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })
 })
 
 // Buscar inscrição
-When('envio uma requisição GET na inscrição', function () { 
+Quando('envio uma requisição GET na inscrição', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao`,
@@ -69,7 +73,7 @@ When('envio uma requisição GET na inscrição', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com a inscrição', function () {
+Então('retorna o status 200 com a inscrição', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('object')
@@ -87,7 +91,7 @@ Then('retorna o status 200 com a inscrição', function () {
 })
 
 // Não buscar inscrição sem autenticação
-When('tento a requisição GET na inscrição', function () { 
+Quando('tento a requisição GET na inscrição', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao`,
@@ -99,14 +103,14 @@ When('tento a requisição GET na inscrição', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem a inscrição', function () {
+Então('retorna o status 401 sem a inscrição', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })
 })
 
 // Buscar próximas inscrições
-When('envio uma requisição GET em próximas inscrições', function () { 
+Quando('envio uma requisição GET em próximas inscrições', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/proximas`,
@@ -118,7 +122,7 @@ When('envio uma requisição GET em próximas inscrições', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com próximas inscrições', function () {
+Então('retorna o status 200 com próximas inscrições', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('object')
@@ -136,7 +140,7 @@ Then('retorna o status 200 com próximas inscrições', function () {
 })
 
 // Não buscar próximas inscrições sem autenticação
-When('tento a requisição GET em próximas inscrições', function () { 
+Quando('tento a requisição GET em próximas inscrições', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/proximas`,
@@ -148,14 +152,14 @@ When('tento a requisição GET em próximas inscrições', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem próximas inscrições', function () {
+Então('retorna o status 401 sem próximas inscrições', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })
 })
 
 // Buscar inscrição finalizada
-When('envio uma requisição GET em inscrição encerradas', function () { 
+Quando('envio uma requisição GET em inscrição encerradas', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/finalizadas`,
@@ -167,7 +171,7 @@ When('envio uma requisição GET em inscrição encerradas', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com inscrição finalizada', function () {
+Então('retorna o status 200 com inscrição finalizada', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('object')
@@ -185,7 +189,7 @@ Then('retorna o status 200 com inscrição finalizada', function () {
 })
 
 // Não buscar inscrição finalizada sem autenticação
-When('tento a requisição GET em inscrição encerradas', function () { 
+Quando('tento a requisição GET em inscrição encerradas', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/finalizadas`,
@@ -197,14 +201,14 @@ When('tento a requisição GET em inscrição encerradas', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem inscrição finalizada', function () {
+Então('retorna o status 401 sem inscrição finalizada', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })
 })
 
 // Buscar formação de turmas
-When('envio uma requisição GET em turma formadas', function () { 
+Quando('envio uma requisição GET em turma formadas', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/formacao-turmas`,
@@ -216,14 +220,14 @@ When('envio uma requisição GET em turma formadas', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com formação de turmas', function () {
+Então('retorna o status 200 com formação de turmas', function () {
   cy.get('@response').then((response) => {
-    expect(response.status).to.eq(404)    
+    expect(response.status).to.eq(200)    
   })
 })
 
 // Não buscar formação de turmas sem autenticação
-When('tento a requisição GET em turma formadas', function () { 
+Quando('tento a requisição GET em turma formadas', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/formacao-turmas`,
@@ -235,14 +239,14 @@ When('tento a requisição GET em turma formadas', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem formação de turmas', function () {
+Então('retorna o status 401 sem formação de turmas', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })
 })
 
 // Buscar tipos de inscrição
-When('envio uma requisição GET em inscrição tipos', function () { 
+Quando('envio uma requisição GET em inscrição tipos', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/tipos`,
@@ -254,7 +258,7 @@ When('envio uma requisição GET em inscrição tipos', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com tipos de inscrição', function () {
+Então('retorna o status 200 com tipos de inscrição', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.be.an('array')    
@@ -264,7 +268,7 @@ Then('retorna o status 200 com tipos de inscrição', function () {
 })
 
 // Não buscar tipos de inscrição sem autenticação
-When('tento a requisição GET em inscrição tipos', function () { 
+Quando('tento a requisição GET em inscrição tipos', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/tipos`,
@@ -276,14 +280,14 @@ When('tento a requisição GET em inscrição tipos', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem tipos de inscrição', function () {
+Então('retorna o status 401 sem tipos de inscrição', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })
 })
 
 // Buscar inscrição de cursista
-When('envio uma requisição GET no cursista em inscrição', function () { 
+Quando('envio uma requisição GET no cursista em inscrição', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/cursista?cpf=25828579800`,
@@ -295,7 +299,7 @@ When('envio uma requisição GET no cursista em inscrição', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com inscrição de cursista', function () {
+Então('retorna o status 200 com inscrição de cursista', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.not.be.null
@@ -306,7 +310,7 @@ Then('retorna o status 200 com inscrição de cursista', function () {
 })
 
 // Não buscar inscrição de cursista sem autenticação
-When('tento a requisição GET no cursista em inscrição', function () { 
+Quando('tento a requisição GET no cursista em inscrição', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Inscricao/cursista?cpf=25828579800`,
@@ -318,7 +322,7 @@ When('tento a requisição GET no cursista em inscrição', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem inscrição de cursista', function () {
+Então('retorna o status 401 sem inscrição de cursista', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })

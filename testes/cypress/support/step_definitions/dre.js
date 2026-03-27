@@ -1,5 +1,9 @@
 import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
 
+const Dado = Given
+const Quando = When
+const Então = Then
+
 let token
 
 Before(() => {
@@ -8,15 +12,15 @@ Before(() => {
   })
 })
 
-Given('que possuo um token válido', function () {
+Dado('que possuo um token válido', function () {
   expect(token, 'valido').to.exist
 })
 
-Given('que não possuo um token válido', function () { 
+Dado('que não possuo um token válido', function () { 
 })
 
 // Buscar cadastros de Dre
-When('envio uma requisição GET no endpoint Dre', function () { 
+Quando('envio uma requisição GET no endpoint Dre', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Dre`,
@@ -28,14 +32,14 @@ When('envio uma requisição GET no endpoint Dre', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com todos cadastros de Dre', function () {
+Então('retorna o status 200 com todos cadastros de Dre', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200) 
   })
 })
 
 // Buscar cadastros de Dre exibindo todas
-When('envio uma requisição GET no endpoint Dre como true', function () {
+Quando('envio uma requisição GET no endpoint Dre como true', function () {
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Dre?exibirOpcaoTodos=true`,
@@ -47,14 +51,14 @@ When('envio uma requisição GET no endpoint Dre como true', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados de Dre exibindo todas', function () {
+Então('retorna o status 200 com dados de Dre exibindo todas', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
   })
 })
 
 // Buscar cadastros de Dre não exibindo todas
-When('envio uma requisição GET no endpoint Dre como false', function () {
+Quando('envio uma requisição GET no endpoint Dre como false', function () {
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Dre?exibirOpcaoTodos=false`,
@@ -66,14 +70,14 @@ When('envio uma requisição GET no endpoint Dre como false', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados de Dre não exibindo todas', function () {
+Então('retorna o status 200 com dados de Dre não exibindo todas', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
   })
 })
 
 // Não buscar cadastros de Dre sem autenticação 
-When('tento a requisição GET no endpoint Dre', function () { 
+Quando('tento a requisição GET no endpoint Dre', function () { 
   return cy.request({
     method: 'GET',
     url: Cypress.config('baseUrl') + `/api/v1/Dre`,
@@ -85,7 +89,7 @@ When('tento a requisição GET no endpoint Dre', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem cadastros de Dre', function () {
+Então('retorna o status 401 sem cadastros de Dre', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })

@@ -1,5 +1,9 @@
 import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
 
+const Dado = Given
+const Quando = When
+const Então = Then
+
 let token
 
 Before(() => {
@@ -8,15 +12,15 @@ Before(() => {
   })
 })
 
-Given('que possuo um token de acesso', function () {
+Dado('que possuo um token de acesso', function () {
   expect(token, 'valido').to.exist
 })
 
-Given('que não possuo um token de acesso', function () { 
+Dado('que não possuo um token de acesso', function () { 
 })
 
 // Buscar dados do ano turma da modalidade 1
-When('envio uma requisição GET com ano letivo da modalidade 1', function () { 
+Quando('envio uma requisição GET com ano letivo da modalidade 1', function () { 
 
   const anoAtual = new Date().getFullYear()
 
@@ -32,14 +36,14 @@ When('envio uma requisição GET com ano letivo da modalidade 1', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados do ano turma da modalidade 1', function () {
+Então('retorna o status 200 com dados do ano turma da modalidade 1', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)    
   })
 })
 
 // Buscar dados do ano turma da modalidade 3
-When('envio uma requisição GET com ano letivo da modalidade 3', function () {
+Quando('envio uma requisição GET com ano letivo da modalidade 3', function () {
 
   const anoAtual = new Date().getFullYear()
 
@@ -55,14 +59,14 @@ When('envio uma requisição GET com ano letivo da modalidade 3', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados do ano turma da modalidade 3', function () {
+Então('retorna o status 200 com dados do ano turma da modalidade 3', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)    
   })
 })
 
 // Buscar dados do ano turma da modalidade 4
-When('envio uma requisição GET com ano letivo da modalidade 4', function () { 
+Quando('envio uma requisição GET com ano letivo da modalidade 4', function () { 
 
   const anoAtual = new Date().getFullYear()
 
@@ -78,14 +82,14 @@ When('envio uma requisição GET com ano letivo da modalidade 4', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados do ano turma da modalidade 4', function () {
+Então('retorna o status 200 com dados do ano turma da modalidade 4', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)    
   })
 })
 
 // Buscar dados do ano turma da modalidade 5
-When('envio uma requisição GET com ano letivo da modalidade 5', function () {
+Quando('envio uma requisição GET com ano letivo da modalidade 5', function () {
   
   const anoAtual = new Date().getFullYear()
 
@@ -101,14 +105,14 @@ When('envio uma requisição GET com ano letivo da modalidade 5', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados do ano turma da modalidade 5', function () {
+Então('retorna o status 200 com dados do ano turma da modalidade 5', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)    
   })
 })
 
 // Buscar dados do ano turma da modalidade 6
-When('envio uma requisição GET com ano letivo da modalidade 6', function () { 
+Quando('envio uma requisição GET com ano letivo da modalidade 6', function () { 
 
   const anoAtual = new Date().getFullYear()
 
@@ -124,14 +128,14 @@ When('envio uma requisição GET com ano letivo da modalidade 6', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados do ano turma da modalidade 6', function () {
+Então('retorna o status 200 com dados do ano turma da modalidade 6', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)    
   })
 })
 
 // Buscar dados do ano turma da modalidade 7
-When('envio uma requisição GET com ano letivo da modalidade 7', function () {
+Quando('envio uma requisição GET com ano letivo da modalidade 7', function () {
   
   const anoAtual = new Date().getFullYear()
 
@@ -147,14 +151,14 @@ When('envio uma requisição GET com ano letivo da modalidade 7', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados do ano turma da modalidade 7', function () {
+Então('retorna o status 200 com dados do ano turma da modalidade 7', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)    
   })
 })
 
 // Buscar dados do ano turma da modalidade 8
-When('envio uma requisição GET com ano letivo da modalidade 8', function () { 
+Quando('envio uma requisição GET com ano letivo da modalidade 8', function () { 
 
   const anoAtual = new Date().getFullYear()
 
@@ -170,14 +174,14 @@ When('envio uma requisição GET com ano letivo da modalidade 8', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados do ano turma da modalidade 8', function () {
+Então('retorna o status 200 com dados do ano turma da modalidade 8', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)    
   })
 })
 
 // Buscar dados do ano turma da modalidade 9
-When('envio uma requisição GET com ano letivo da modalidade 9', function () { 
+Quando('envio uma requisição GET com ano letivo da modalidade 9', function () { 
 
   const anoAtual = new Date().getFullYear()
 
@@ -193,14 +197,14 @@ When('envio uma requisição GET com ano letivo da modalidade 9', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados do ano turma da modalidade 9', function () {
+Então('retorna o status 200 com dados do ano turma da modalidade 9', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)    
   })
 })
 
 // Buscar dados do ano turma da modalidade 10
-When('envio uma requisição GET com ano letivo da modalidade 10', function () {
+Quando('envio uma requisição GET com ano letivo da modalidade 10', function () {
   
   const anoAtual = new Date().getFullYear()
 
@@ -216,14 +220,14 @@ When('envio uma requisição GET com ano letivo da modalidade 10', function () {
   }).as('response')
 })
 
-Then('retorna o status 200 com dados do ano turma da modalidade 10', function () {
+Então('retorna o status 200 com dados do ano turma da modalidade 10', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)    
   })
 })
 
 // Não retorna dados de ano turma com modalidade inválida
-When('envio uma requisição GET com ano letivo da modalidade inválida', function () {
+Quando('envio uma requisição GET com ano letivo da modalidade inválida', function () {
 
   const anoAtual = new Date().getFullYear()
 
@@ -239,14 +243,14 @@ When('envio uma requisição GET com ano letivo da modalidade inválida', functi
   }).as('response')
 })
 
-Then('retorna o status 422 sem dados do ano turma da modalidade', function () {
+Então('retorna o status 422 sem dados do ano turma da modalidade', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(422)    
   })
 })
 
 // Não retorna dados de ano turma sem modalidade
-When('envio uma requisição GET com ano letivo sem modalidade', function () {
+Quando('envio uma requisição GET com ano letivo sem modalidade', function () {
 
   const anoAtual = new Date().getFullYear()
 
@@ -262,14 +266,14 @@ When('envio uma requisição GET com ano letivo sem modalidade', function () {
   }).as('response')
 })
 
-Then('retorna o status 422 sem dados do ano turma de modalidade', function () {
+Então('retorna o status 422 sem dados do ano turma de modalidade', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(422)    
   })
 })
 
 // Não retorna dados de ano turma sem ano letivo
-When('envio uma requisição GET com ano letivo sem ano letivo', function () {
+Quando('envio uma requisição GET com ano letivo sem ano letivo', function () {
 
   const anoAtual = new Date().getFullYear()
 
@@ -285,14 +289,14 @@ When('envio uma requisição GET com ano letivo sem ano letivo', function () {
   }).as('response')
 })
 
-Then('retorna o status 500 sem dados do ano turma modalidade', function () {
+Então('retorna o status 500 sem dados do ano turma modalidade', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(500)    
   })
 })
 
 // Não buscar dados do ano turma da modalidade sem autenticação
-When('tento a requisição GET com ano letivo da modalidade', function () { 
+Quando('tento a requisição GET com ano letivo da modalidade', function () { 
 
   const anoAtual = new Date().getFullYear()
 
@@ -307,7 +311,7 @@ When('tento a requisição GET com ano letivo da modalidade', function () {
   }).as('response')
 })
 
-Then('retorna o status 401 sem dados do ano turma da modalidade', function () {
+Então('retorna o status 401 sem dados do ano turma da modalidade', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(401)
   })
