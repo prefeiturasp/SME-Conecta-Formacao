@@ -19,15 +19,15 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             if (listaPresenca == null)
                 return Erro.NaoEncontrado();
 
-            var arquivoDto = await GerarRelatorioCodafAsync(codafId);
+            var nomeArquivo = $"CODAF_{listaPresenca.Proposta.NumeroHomologacao}-{listaPresenca.PropostaTurma.Nome}.xlsx";
+            var arquivoDto = await GerarRelatorioCodafAsync(codafId, nomeArquivo);
             await AtualizarStatusParaFinalizadoAsync(listaPresenca);
             return arquivoDto;
         }
 
-        private async Task<ArquivoDto> GerarRelatorioCodafAsync(long codafId)
+        private async Task<ArquivoDto> GerarRelatorioCodafAsync(long codafId, string nomeArquivo)
         {
             var arquivoBytes = await servicoRelatorio.GerarRelatorioCodafAsync(codafId);
-            var nomeArquivo = $"CODAF_{codafId}.xlsx";
             var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             return new ArquivoDto(nomeArquivo, contentType, new MemoryStream(arquivoBytes, writable: false));
         }
@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 
             listaPresenca.Finalizar();
             await repositorioCodafListaPresenca.Atualizar(listaPresenca);
-         
+
         }
     }
 }
