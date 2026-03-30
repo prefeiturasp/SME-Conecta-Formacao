@@ -16,6 +16,11 @@ namespace SME.ConectaFormacao.TesteIntegracao.Setup
 {
     public class ConectaWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
+        static ConectaWebApplicationFactory()
+        {
+            Environment.SetEnvironmentVariable("DOCKER_API_VERSION", "1.41");
+        }
+
         private readonly PostgreSqlContainer _pgContainer = new PostgreSqlBuilder("postgres:15.6")
             .WithDatabase("sme_conecta")
             .WithUsername("postgres")
