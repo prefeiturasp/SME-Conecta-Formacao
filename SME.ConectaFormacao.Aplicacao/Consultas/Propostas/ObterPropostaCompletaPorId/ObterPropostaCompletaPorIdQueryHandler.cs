@@ -82,6 +82,14 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.EhParecerista = ehParecerista;
             propostaCompletaDTO.EhAdminDF = ehAdminDF;
             propostaCompletaDTO.EhAreaPromotora = ehAreaPromotora;
+
+            propostaCompletaDTO.PodeEditar = PodeEditar(
+                ehAdminDF,
+                ehAreaPromotora,
+                propostaCompletaDTO.Auditoria.CriadoPor,
+                usuarioLogado.Login
+            );
+
             propostaCompletaDTO.TotalDeConsideracoes = totalDeConsideracoes;
             propostaCompletaDTO.ExibirConsideracoes = PodeExibirParecer(ehAdminDF, possuiPareceristasNaProposta, estaAguardandoAnaliseParecerPelaDfOuAreaPromotoraOuAnaliseFinalPelaDf, ehPareceristaDaProposta, ehAreaPromotora, totalDeConsideracoes.Count());
             propostaCompletaDTO.PodeEnviar = PodeEnviar(proposta, possuiPareceristasNaProposta, ehAdminDF, ehAreaPromotora, possuiPareceristasEnviados);
@@ -108,6 +116,24 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.ArquivoImagemDivulgacao = _mapper.Map<PropostaImagemDivulgacaoDTO>(arquivo);
 
             return propostaCompletaDTO;
+        }
+
+        private static bool PodeEditar(
+            bool ehAdminDF,
+            bool ehAreaPromotora,
+            string codigoCriador,
+            string codigoUsuarioLogado)
+        {
+            if (ehAdminDF)
+                return true;
+
+            if (!ehAreaPromotora)
+                return false;
+
+            return codigoCriador?.Equals(
+                codigoUsuarioLogado,
+                StringComparison.OrdinalIgnoreCase
+            ) == true;
         }
 
         private static bool DesativarAnoEhComponente(Proposta proposta)
