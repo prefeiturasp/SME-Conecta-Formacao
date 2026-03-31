@@ -26,6 +26,9 @@ module.exports = defineConfig({
 
     baseUrl: 'https://hom-conectaformacao.sme.prefeitura.sp.gov.br',
 
+    viewportWidth: 1920,
+    viewportHeight: 1080,
+
     specPattern: 'cypress/e2e/**/*.feature',
 
     supportFile: 'cypress/support/e2e.js',
