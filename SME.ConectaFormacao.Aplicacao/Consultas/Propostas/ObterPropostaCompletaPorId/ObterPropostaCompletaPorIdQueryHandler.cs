@@ -86,7 +86,7 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.PodeEditar = PodeEditar(
                 ehAdminDF,
                 ehAreaPromotora,
-                propostaCompletaDTO.Auditoria.CriadoPor,
+                propostaCompletaDTO.Auditoria.CriadoLogin,
                 usuarioLogado.Login
             );
 
@@ -130,10 +130,9 @@ namespace SME.ConectaFormacao.Aplicacao
             if (!ehAreaPromotora)
                 return false;
 
-            return codigoCriador?.Equals(
-                codigoUsuarioLogado,
-                StringComparison.OrdinalIgnoreCase
-            ) == true;
+            bool? ehCriador = codigoCriador?.Equals(codigoUsuarioLogado);
+
+            return ehCriador == true;
         }
 
         private static bool DesativarAnoEhComponente(Proposta proposta)
