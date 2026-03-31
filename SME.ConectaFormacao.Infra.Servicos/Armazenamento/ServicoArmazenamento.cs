@@ -169,16 +169,24 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
         }
         private async Task CopiarInterno(string nomeOrigem, string nomeDestino, string bucketOrigem, string bucketDestino)
         {
-            var cpSrcArgs = new CopySourceObjectArgs()
+            try
+            {
+                var cpSrcArgs = new CopySourceObjectArgs()
                 .WithBucket(bucketOrigem)
                 .WithObject(nomeOrigem);
 
-            var args = new CopyObjectArgs()
-                .WithBucket(bucketDestino)
-                .WithObject(nomeDestino)
-                .WithCopyObjectSource(cpSrcArgs);
+                var args = new CopyObjectArgs()
+                    .WithBucket(bucketDestino)
+                    .WithObject(nomeDestino)
+                    .WithCopyObjectSource(cpSrcArgs);
 
-            await minioClient.CopyObjectAsync(args);
+                await minioClient.CopyObjectAsync(args);
+            }
+            catch (Exception ex)
+            {
+                var obj = ex;
+            }
+            
         }
         private string MontarUrl(string nomeArquivo, string bucketName)
         {

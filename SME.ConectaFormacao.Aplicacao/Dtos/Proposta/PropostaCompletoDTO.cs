@@ -5,6 +5,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
     public class PropostaCompletoDTO
     {
+        public bool PodeEditar { get; set; }
+
         public bool EhAdminDF;
         public FormacaoHomologada? FormacaoHomologada { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
