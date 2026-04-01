@@ -93,8 +93,8 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             if (string.IsNullOrEmpty(texto)) return string.Empty;
 
             var textoNormalizado = texto.Normalize(NormalizationForm.FormD);
-            var spanNormalizado = textoNormalizado.AsSpan(); 
-            
+            var spanNormalizado = textoNormalizado.AsSpan();
+
             char[]? arrayAlugado = null;
             Span<char> buffer = spanNormalizado.Length <= 256
                 ? stackalloc char[spanNormalizado.Length]
@@ -257,10 +257,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
         public static string AplicarMascaraRf(this string rf)
         {
-            rf = rf.SomenteNumeros();
-            if (rf.Length != 7)
-                return rf;
-            return Convert.ToUInt64(rf).ToString("000\\.000\\.0");
+            return rf.EhRegistroFuncional() ? Convert.ToUInt64(rf).ToString("000\\.000\\.0") : rf ;
         }
 
         public static bool SaoStringsIguais(this string? str1, string? str2)
@@ -268,6 +265,11 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             if (string.IsNullOrEmpty(str1) && string.IsNullOrEmpty(str2))
                 return true;
             return string.Equals(str1?.Trim(), str2?.Trim(), StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public static bool EhRegistroFuncional(this string valor)
+        {
+            return valor.Length == 7 && valor.All(char.IsDigit);
         }
     }
 }
