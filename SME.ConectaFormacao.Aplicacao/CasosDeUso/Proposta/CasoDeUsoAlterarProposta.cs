@@ -16,15 +16,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         private readonly IRepositorioProposta _repositorioProposta;
         public CasoDeUsoAlterarProposta(IMediator mediator, IRepositorioProposta repositorioProposta) : base(mediator)
         {
-            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _repositorioProposta = repositorioProposta;
         }
 
         public async Task<RetornoDTO> Executar(long id, PropostaDTO propostaDTO)
         {
             if (!await PodeEditar(id))
-                throw new NegocioException(
-                    MensagemNegocio.USUARIO_SEM_PERMISSAO_PARA_EDITAR_PROPOSTA,
-                    HttpStatusCode.Forbidden);
+                throw new NegocioException(string.Format(MensagemNegocio.USUARIO_SEM_PERMISSAO_PARA_EDITAR_PROPOSTA, id));
 
             if (propostaDTO.Situacao.EhParaSalvarRascunho() || propostaDTO.EhProximoPasso)
                 return await mediator.Send(new AlterarPropostaRascunhoCommand(id, propostaDTO));
