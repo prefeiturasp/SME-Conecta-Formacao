@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
+using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 
@@ -93,6 +94,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
                 SELECT SETVAL('public.codaf_inscricao_lista_presenca_id_seq', COALESCE((SELECT MAX(ID) FROM PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA), 1));
                 """, new { codafListaPresencaId });
+        }
+
+        public async Task<IEnumerable<ResultadoDeltaInscritoCodafDto>> ObterDeltaInscritosCodafAsync(long propostaTurmaId)
+        {
+            var conn = conexao.Obter();
+            var parametros = new DynamicParameters();
+            parametros.Add("propostaTurmaId", propostaTurmaId);
+            parametros.Add("situacaoConfirmada", (int)SituacaoInscricao.Confirmada);
+            parametros.Add("situacaoCancelada", (int)SituacaoInscricao.Cancelada);
+            parametros.Add("TipoDeltaSemAlteracao", (int)TipoDeltaInscritoCodaf.SemAlteracao);
+            parametros.Add("TipoDeltaRemovido", (int)TipoDeltaInscritoCodaf.Removido);
+            parametros.Add("TipoDeltaNovo", (int)TipoDeltaInscritoCodaf.Novo);
+            parametros.Add("TipoDeltaIgnorado", (int)TipoDeltaInscritoCodaf.Ignorado);
+            var inscritos = await conn.QueryAsync<ResultadoDeltaInscritoCodafDto, ResultadoInscritoTurmaCodafListaPresencaDto, ResultadoDeltaInscritoCodafDto>(
+                CodafQueries.ObterDeltaInscritosCodaf,
+                (delta, dadosInscrito) =>
+                {
+                    delta.DadosInscrito = dadosInscrito;
+                    return delta;
+                },
+                parametros,
+                splitOn: "ID");
+            return inscritos;
         }
     }
 }

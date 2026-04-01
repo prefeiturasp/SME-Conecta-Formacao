@@ -3,6 +3,7 @@
     public class ResultadoInscritoTurmaCodafListaPresencaDto
     {
         public long Id { get; set; }
+        public string Login { get; set; } = null!;
         public string Cpf { get; set; } = null!;
         public string Nome { get; set; } = null!;
         public decimal? PercentualFrequencia { get; set; }
