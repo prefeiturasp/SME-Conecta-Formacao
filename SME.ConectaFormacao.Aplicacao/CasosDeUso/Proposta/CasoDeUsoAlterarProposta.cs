@@ -51,10 +51,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             var codigoCriador = proposta.CriadoLogin;
 
-            Usuario usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery())
-                ?? throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+            Usuario usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
+
+            if (usuarioLogado == null)
+                return true;
 
             var codigoUsuarioLogado = usuarioLogado.Login;
+            
 
             return string.Equals(
                 codigoCriador,
