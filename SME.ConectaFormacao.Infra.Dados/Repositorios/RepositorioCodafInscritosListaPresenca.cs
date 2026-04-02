@@ -29,6 +29,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 """;
             const string sqlConsulta = $"""
                 SELECT I.ID,
+                       U.LOGIN,
                        U.CPF,
                        U.NOME,
                        CI.PERCENTUAL_FREQUENCIA AS percentualFrequencia,

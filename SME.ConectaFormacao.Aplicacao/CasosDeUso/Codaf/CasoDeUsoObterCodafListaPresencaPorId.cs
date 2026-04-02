@@ -39,7 +39,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 
         private async Task ObterComentarioDfAsync(CodafListaPresencaDto listaPresencaDto)
         {
-            if (listaPresencaDto == null) return;
             if (listaPresencaDto.Status != StatusCodafListaPresenca.DevolvidoParaCorrecao) return;
             listaPresencaDto.Comentario = await repositorioCodafComentarioListaPresenca.ObterUltimoComentarioDevolucaoPorUsuarioAsync(
                 listaPresencaDto.Id, StatusCodafListaPresenca.DevolvidoParaCorrecao, StatusCodafListaPresenca.AguardandoDf);
@@ -47,31 +46,34 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 
         private async Task ObterDeltaInscritosAsync(CodafListaPresencaDto listaPresencaDto)
         {
-            if (listaPresencaDto == null) return;
             var deltaInscritos = await repositorioCodafInscritos.ObterDeltaInscritosCodafAsync(listaPresencaDto.PropostaTurmaId);
             if (deltaInscritos is null || !deltaInscritos.Any())
-                return;
-
-            var removidos = deltaInscritos
-                            .Where(d => d.TipoDelta == TipoDeltaInscritoCodaf.Removido)
-                            .Select(d =>
-                            {
-                                var (documento, tipo) = ResolvedorDocumentoUsuario.Resolver(d.DadosInscrito.Login, d.DadosInscrito.Cpf);
-                                return new InscritoCodafResumidoDto(
-                                    Id: d.DadosInscrito.Id,
-                                    Nome: d.DadosInscrito.Nome,
-                                    Documento: ResolvedorDocumentoUsuario.FormatarValor(documento, tipo)
-                                );
-                            }).ToList();
-            var adicionados = deltaInscritos.Where(d => d.TipoDelta == TipoDeltaInscritoCodaf.Novo).Select(d => d.DadosInscrito).ToList();
-
-            if (removidos.Count > 0 || adicionados.Count > 0)
             {
-                listaPresencaDto.DeltaInscritos = new DeltaInscritoCodafDto
+                listaPresencaDto.DeltaInscritos = new();
+            }
+            else
+            {
+                var removidos = deltaInscritos
+                                .Where(d => d.TipoDelta == TipoDeltaInscritoCodaf.Removido)
+                                .Select(d =>
+                                {
+                                    var (documento, tipo) = ResolvedorDocumentoUsuario.Resolver(d.DadosInscrito.Login, d.DadosInscrito.Cpf);
+                                    return new InscritoCodafResumidoDto(
+                                        Id: d.DadosInscrito.Id,
+                                        Nome: d.DadosInscrito.Nome,
+                                        Documento: ResolvedorDocumentoUsuario.FormatarValor(documento, tipo)
+                                    );
+                                }).ToList();
+                var adicionados = deltaInscritos.Where(d => d.TipoDelta == TipoDeltaInscritoCodaf.Novo).Select(d => d.DadosInscrito).ToList();
+
+                if (removidos.Count > 0 || adicionados.Count > 0)
                 {
-                    InscritosNovos = mapper.Map<IList<CodafInscritoTurmaListaPresencaRetornoDto>>(adicionados),
-                    InscritosRemovidos = removidos
-                };
+                    listaPresencaDto.DeltaInscritos = new()
+                    {
+                        InscritosNovos = mapper.Map<IList<CodafInscritoTurmaListaPresencaRetornoDto>>(adicionados),
+                        InscritosRemovidos = removidos
+                    };
+                }
             }
         }
     }

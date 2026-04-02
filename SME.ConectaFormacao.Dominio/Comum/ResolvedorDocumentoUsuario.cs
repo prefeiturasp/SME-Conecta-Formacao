@@ -1,8 +1,5 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SME.ConectaFormacao.Dominio.Comum
 {
