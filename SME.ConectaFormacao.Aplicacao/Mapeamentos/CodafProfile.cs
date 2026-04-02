@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
+using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using System.Diagnostics.CodeAnalysis;
@@ -26,7 +27,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 ;
             CreateMap<ListagemResultadoCodafListaPresencaDto, ListaPresencaCodafResumoDto>();
 
-            CreateMap<ResultadoInscritoTurmaCodafListaPresencaDto, CodafInscritoTurmaListaPresencaRetornoDto>();
+            CreateMap<ResultadoInscritoTurmaCodafListaPresencaDto, CodafInscritoTurmaListaPresencaRetornoDto>()
+                .ForMember(destino => destino.Documento, opt => opt.MapFrom(origem => ResolverEFormatarDocumento(origem.Login, origem.Cpf)));
 
             CreateMap<CodafInscritoListaPresencaSalvarDto, CodafInscricaoListaPresenca>();
             CreateMap<CodafRetificacaoListaPresencaSalvarDto, CodafRetificacaoListaPresenca>();
@@ -35,6 +37,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Extensao, opt => opt.MapFrom(src => src.NomeArquivo.Substring(src.NomeArquivo.LastIndexOf('.') + 1)))
                 ;
             CreateMap<CodafAnexo, CodafAnexoDto>().ForMember(dest => dest.UrlDownload, opt => opt.Ignore());
+        }
+        private static string ResolverEFormatarDocumento(string login, string cpf)
+        {
+            var (documento, tipo) = ResolvedorDocumentoUsuario.Resolver(login, cpf);
+            return ResolvedorDocumentoUsuario.FormatarValor(documento, tipo);
         }
     }
 }

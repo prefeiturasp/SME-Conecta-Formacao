@@ -8,7 +8,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria
         public long AreaPromotoraId { get; set; }
         [Required(ErrorMessage = "É necessário informar o Nome")]
         public string Nome { get; set; }
-        [Required(ErrorMessage = "É necessário informar o Cpf")]
+        [Required(ErrorMessage = "É necessário informar o Documento")]
         public string Cpf { get; set; }
         [Required(ErrorMessage = "É necessário informar o E-mail")]
         [EmailAddress(ErrorMessage = "O E-mail informado é inválido")]
