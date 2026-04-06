@@ -14,13 +14,13 @@ using System.Data;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
 {
-    public class SalvarInscricaoCommandHandlerTests
+    public class SalvarInscricaoCommandHandlerTestes
     {
         private readonly AutoMocker _mocker;
         private readonly SalvarInscricaoCommandHandler _handler;
         private readonly Faker _faker;
 
-        public SalvarInscricaoCommandHandlerTests()
+        public SalvarInscricaoCommandHandlerTestes()
         {
             _mocker = new AutoMocker();
             _handler = _mocker.CreateInstance<SalvarInscricaoCommandHandler>();

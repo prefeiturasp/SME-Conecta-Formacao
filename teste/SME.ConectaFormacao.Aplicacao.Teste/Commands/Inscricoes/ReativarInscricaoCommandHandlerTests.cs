@@ -11,13 +11,13 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
 {
-    public class ReativarInscricaoCommandHandlerTests
+    public class ReativarInscricaoCommandHandlerTestes
     {
         private readonly AutoMocker _mocker;
         private readonly ReativarInscricaoCommandHandler _handler;
         private readonly Faker _faker;
 
-        public ReativarInscricaoCommandHandlerTests()
+        public ReativarInscricaoCommandHandlerTestes()
         {
             _mocker = new AutoMocker();
             _handler = _mocker.CreateInstance<ReativarInscricaoCommandHandler>();

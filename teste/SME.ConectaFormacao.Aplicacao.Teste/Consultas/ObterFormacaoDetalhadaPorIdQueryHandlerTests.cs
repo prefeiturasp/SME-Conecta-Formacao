@@ -15,7 +15,7 @@ using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 {
-    public class ObterFormacaoDetalhadaPorIdQueryHandlerTests
+    public class ObterFormacaoDetalhadaPorIdQueryHandlerTestes
     {
         private readonly Mock<ICacheDistribuido> _mockCacheDistribuido;
         private readonly Mock<IRepositorioProposta> _mockRepositorioProposta;
@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         private readonly ObterFormacaoDetalhadaPorIdQueryHandler _handler;
         private readonly Faker _faker;
 
-        public ObterFormacaoDetalhadaPorIdQueryHandlerTests()
+        public ObterFormacaoDetalhadaPorIdQueryHandlerTestes()
         {
             var mocker = new AutoMocker();
             _mockCacheDistribuido = mocker.GetMock<ICacheDistribuido>();

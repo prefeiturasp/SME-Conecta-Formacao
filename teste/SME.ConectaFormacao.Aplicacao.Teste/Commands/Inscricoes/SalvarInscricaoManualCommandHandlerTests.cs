@@ -16,13 +16,13 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
 {
-    public class SalvarInscricaoManualCommandHandlerTests
+    public class SalvarInscricaoManualCommandHandlerTestes
     {
         private readonly AutoMocker _mocker;
         private readonly SalvarInscricaoManualCommandHandler _handler;
         private readonly Faker _faker;
 
-        public SalvarInscricaoManualCommandHandlerTests()
+        public SalvarInscricaoManualCommandHandlerTestes()
         {
             _mocker = new AutoMocker();
             _handler = _mocker.CreateInstance<SalvarInscricaoManualCommandHandler>();
