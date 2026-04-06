@@ -1,32 +1,26 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
-using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 {
     public class CasoDeUsoAtualizarCodafListaPresenca(
-        IRepositorioCodafListaPresenca repositorioCodafListaPresenca,
-        IRepositorioCodafInscritosListaPresenca repositorioCodafInscritosListaPresenca,
-        IRepositorioCodafRetificacaoListaPresenca repositorioCodafRetificacaoListaPresenca,
-        IValidadorCodafListaPresencaService validadorCodafListaPresencaService,
+        CodafListaPresencaDependencias dependencias,
         IValidator<CodafListaPresencaEdicaoDto> validator,
         IMapper mapper,
         ITransacao transacao,
-        IContextoAplicacao contextoAplicacao,
-        IGerenciadorAnexosCodafService gerenciadorAnexosCodafService,
-        IGerenciadorMovimentacaoCodafService gerenciadorMovimentacaoCodafService) :
+        IContextoAplicacao contextoAplicacao) :
         ICasoDeUsoAtualizarCodafListaPresenca
     {
         public async Task<Resultado> ExecutarAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, long id)
         {
-            var codafListaPresencaExistente = await repositorioCodafListaPresenca.ObterNaoExcluidosPorIdAsync(id);
+            var codafListaPresencaExistente = await dependencias.RepositorioLista.ObterNaoExcluidosPorIdAsync(id);
             if (codafListaPresencaExistente is null)
                 return Erro.NaoEncontrado("Lista de presença não encontrada.");
 
@@ -48,12 +42,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 
             try
             {
-                await repositorioCodafListaPresenca.Atualizar(codafListaPresencaExistente);
+                await dependencias.RepositorioLista.Atualizar(codafListaPresencaExistente);
                 await SalvarInscritosAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente);
                 await SalvarRetificacoesAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente.Id);
                 var anexos = mapper.Map<IEnumerable<CodafAnexo>>(codafListaPresencaEdicaoDto.Anexos);
-                await gerenciadorAnexosCodafService.ProcessarAnexosAsync(codafListaPresencaExistente.Id, anexos);
-                await gerenciadorMovimentacaoCodafService.RegistrarMovimentacaoAsync(codafListaPresencaExistente);
+                await dependencias.AnexosService.ProcessarAnexosAsync(codafListaPresencaExistente.Id, anexos);
+                await dependencias.MovimentacaoService.RegistrarMovimentacaoAsync(codafListaPresencaExistente);
                 transacaoDb.Commit();
                 return Resultado.DeSucesso();
             }
@@ -70,14 +64,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             if (!validationResult.IsValid)
                 return validationResult.ToErroValidacao();
 
-            var erroVinculo = await validadorCodafListaPresencaService.ValidarVinculoPropostaTurmaAsync(
+            var erroVinculo = await dependencias.ValidadorDominio.ValidarVinculoPropostaTurmaAsync(
                 codafListaPresencaEdicaoDto.PropostaId,
                 codafListaPresencaEdicaoDto.PropostaTurmaId);
 
             if (erroVinculo is not null)
                 return erroVinculo;
 
-            var erroUnicidadeTurma = await validadorCodafListaPresencaService.ValidarUnicidadeTurmaListaDePresencaAsync(
+            var erroUnicidadeTurma = await dependencias.ValidadorDominio.ValidarUnicidadeTurmaListaDePresencaAsync(
                 codafListaPresencaEdicaoDto.PropostaTurmaId, id);
 
             if (erroUnicidadeTurma is not null)
@@ -88,18 +82,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 
         private async Task SalvarInscritosAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, CodafListaPresenca codafListaPresenca)
         {
-            await repositorioCodafInscritosListaPresenca.ExcluirPorListaPresencaIdAsync(codafListaPresenca.Id);
             var inscritos = mapper.Map<List<CodafInscricaoListaPresenca>>(codafListaPresencaEdicaoDto.Inscritos);
-            if (inscritos is not null && inscritos.Count != 0)
-            {
-                inscritos.ForEach(i => i.CodafListaPresencaId = codafListaPresenca.Id);
-                await repositorioCodafInscritosListaPresenca.InserirVariosAsync(inscritos);
-            }
+            await dependencias.InscritosService.SalvarInscritosAsync(inscritos, codafListaPresenca.Id);
         }
 
         private async Task SalvarRetificacoesAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, long codafListaPresencaId)
         {
-            var retificacoesExistentes = await repositorioCodafRetificacaoListaPresenca.ObterPorListaPresencaIdAsync(codafListaPresencaId);
+            var retificacoesExistentes = await dependencias.RepositorioRetificacao.ObterPorListaPresencaIdAsync(codafListaPresencaId);
             var retificacoesEnviadas = codafListaPresencaEdicaoDto.Retificacoes ?? [];
             var retificacoesEnviadasIds = retificacoesEnviadas.Where(r => r.Id > 0).Select(r => r.Id).ToHashSet();
 
@@ -107,7 +96,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             {
                 if (!retificacoesEnviadasIds.Contains(retificacaoExistente.Id))
                 {
-                    await repositorioCodafRetificacaoListaPresenca.Remover(retificacaoExistente);
+                    await dependencias.RepositorioRetificacao.Remover(retificacaoExistente);
                 }
             }
 
@@ -121,14 +110,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                         retificacaoExistente.AtualizarInformacoes(
                             retificacaoDto.DataRetificacao,
                             retificacaoDto.PaginaRetificacaoDom);
-                        await repositorioCodafRetificacaoListaPresenca.Atualizar(retificacaoExistente);
+                        await dependencias.RepositorioRetificacao.Atualizar(retificacaoExistente);
                     }
                 }
                 else
                 {
                     var novaRetificacao = mapper.Map<CodafRetificacaoListaPresenca>(retificacaoDto);
                     novaRetificacao.CodafListaPresencaId = codafListaPresencaId;
-                    await repositorioCodafRetificacaoListaPresenca.Inserir(novaRetificacao);
+                    await dependencias.RepositorioRetificacao.Inserir(novaRetificacao);
                 }
             }
         }

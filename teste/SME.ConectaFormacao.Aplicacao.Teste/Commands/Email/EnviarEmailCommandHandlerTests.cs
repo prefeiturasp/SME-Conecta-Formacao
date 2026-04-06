@@ -12,14 +12,14 @@ using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Email
 {
-    public class EnviarEmailCommandHandlerTests
+    public class EnviarEmailCommandHandlerTestes
     {
         private readonly Mock<IServicoEnvioEmail> _mockServicoEnvioEmail;
         private readonly Mock<IServicoAcessos> _mockServicoAcessos;
         private readonly EnviarEmailCommandHandler _handler;
         private readonly Faker _faker;
 
-        public EnviarEmailCommandHandlerTests()
+        public EnviarEmailCommandHandlerTestes()
         {
             var mocker = new AutoMocker();
             _mockServicoEnvioEmail = mocker.GetMock<IServicoEnvioEmail>();

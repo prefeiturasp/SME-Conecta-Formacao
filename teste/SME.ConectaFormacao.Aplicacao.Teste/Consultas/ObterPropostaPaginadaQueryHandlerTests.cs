@@ -18,7 +18,7 @@ using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 {
-    public class ObterPropostaPaginadaQueryHandlerTests
+    public class ObterPropostaPaginadaQueryHandlerTestes
     {
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<IRepositorioProposta> _repositorioPropostaMock;
@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         private readonly ObterPropostaPaginadaQueryHandler _handler;
         private readonly Faker _faker;
 
-        public ObterPropostaPaginadaQueryHandlerTests()
+        public ObterPropostaPaginadaQueryHandlerTestes()
         {
             var mocker = new AutoMocker();
 
