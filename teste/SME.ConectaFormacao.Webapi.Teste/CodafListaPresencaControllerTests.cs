@@ -21,6 +21,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca> _mockCasoDeUsoRemoverRetificacao;
         private readonly Mock<ICasoDeUsoExcluirCodafListaPresenca> _mockCasoDeUsoExcluirCodafListaPresenca;
         private readonly Mock<ICasoDeUsoGerarRelatorioCodaf> _mockCasoDeUsoGerarRelatorioCodaf;
+        private readonly Mock<ICasoDeUsoSalvarInscritosCodaf> _mockCasoDeUsoSalvarInscritosCodaf;
         private readonly CodafListaPresencaController _controller;
         private readonly Faker _faker;
 
@@ -34,6 +35,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _mockCasoDeUsoRemoverRetificacao = mocker.GetMock<ICasoDeUsoRemoverCodafRetificacaoListaPresenca>();
             _mockCasoDeUsoExcluirCodafListaPresenca = mocker.GetMock<ICasoDeUsoExcluirCodafListaPresenca>();
             _mockCasoDeUsoGerarRelatorioCodaf = mocker.GetMock<ICasoDeUsoGerarRelatorioCodaf>();
+            _mockCasoDeUsoSalvarInscritosCodaf = mocker.GetMock<ICasoDeUsoSalvarInscritosCodaf>();
             _controller = mocker.CreateInstance<CodafListaPresencaController>();
             _faker = new Faker("pt_BR");
         }
@@ -292,6 +294,23 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Assert
             resultado.Should().NotBeNull();
             resultado.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task DadoUmaListaDeInscritos_QuandoSalvarInscritos_EntaoDeveRetornar204()
+        {
+            // Arrange
+            var codafId = _faker.Random.Long(1);
+            _mockCasoDeUsoSalvarInscritosCodaf
+                .Setup(x => x.ExecutarAsync(It.IsAny<List<CodafInscritoListaPresencaSalvarDto>>(), It.IsAny<long>()))
+                .ReturnsAsync(Resultado.DeSucesso());
+
+            // Act
+            var resultado = await _controller.SalvarInscritosAsync(codafId, []) as StatusCodeResult;
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
         }
     }
 }

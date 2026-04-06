@@ -16,6 +16,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         ICasoDeUsoObterCodafListaPresencaPorId casoDeUsoObterCodafListaPresencaPorId,
         ICasoDeUsoRemoverCodafRetificacaoListaPresenca casoDeUsoRemoverCodafRetificacaoListaPresenca,
         ICasoDeUsoExcluirCodafListaPresenca casoDeUsoExcluirCodafListaPresenca,
+        ICasoDeUsoSalvarInscritosCodaf casoDeUsoSalvarInscritosCodaf,
         ICasoDeUsoGerarRelatorioCodaf casoDeUsoGerarRelatorioCodaf) : BaseController
     {
         [HttpPost]
@@ -85,6 +86,15 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             if (resultado.Sucesso)
                 return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
 
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpPatch("{codafId:long}/inscritos")]
+        [ProducesResponseType(typeof(Resultado), 204)]
+        [ProducesResponseType(typeof(Resultado), 400)]
+        public async Task<IActionResult> SalvarInscritosAsync([FromRoute] long codafId, [FromBody] IList<CodafInscritoListaPresencaSalvarDto> inscritos)
+        {
+            var resultado = await casoDeUsoSalvarInscritosCodaf.ExecutarAsync(inscritos, codafId);
             return ProcessarResultado(resultado);
         }
     }

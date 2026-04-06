@@ -5,8 +5,10 @@ using FluentValidation;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
@@ -18,12 +20,16 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
     public class CasoDeUsoCriarCodafListaPresencaTests
     {
         private readonly Mock<IRepositorioCodafListaPresenca> _repositorioCodafListaPresencaMock;
-        private readonly Mock<IRepositorioCodafInscritosListaPresenca> _repositorioCodafInscritosListaPresencaMock;
         private readonly Mock<IRepositorioCodafRetificacaoListaPresenca> _repositorioCodafRetificacaoListaPresencaMock;
-        private readonly Mock<IValidadorCodafListaPresencaService> _validadorCodafListaPresencaServiceMock;
-        private readonly Mock<ITransacao> _transacaoMock;
-        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<ICodafInscritosListaPresencaService> _inscritosServiceMock;
+        private readonly Mock<IValidadorCodafListaPresencaService> _validadorDominioMock;
+        private readonly Mock<IGerenciadorAnexosCodafService> _anexosServiceMock;
+        private readonly Mock<IGerenciadorMovimentacaoCodafService> _movimentacaoServiceMock;
+
         private readonly Mock<IValidator<CodafListaPresencaCadastroDto>> _validatorMock;
+        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<ITransacao> _transacaoMock;
+        private readonly Mock<IContextoAplicacao> _contextoAplicacaoMock;
         private readonly CasoDeUsoCriarCodafListaPresenca _casoDeUso;
         private readonly Faker _faker;
 
@@ -31,14 +37,29 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             var mocker = new AutoMocker();
             _repositorioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
-            _repositorioCodafInscritosListaPresencaMock = mocker.GetMock<IRepositorioCodafInscritosListaPresenca>();
             _repositorioCodafRetificacaoListaPresencaMock = mocker.GetMock<IRepositorioCodafRetificacaoListaPresenca>();
-            _validadorCodafListaPresencaServiceMock = mocker.GetMock<IValidadorCodafListaPresencaService>();
-            _transacaoMock = mocker.GetMock<ITransacao>();
+            _inscritosServiceMock = mocker.GetMock<ICodafInscritosListaPresencaService>();
+            _validadorDominioMock = mocker.GetMock<IValidadorCodafListaPresencaService>();
+            _anexosServiceMock = mocker.GetMock<IGerenciadorAnexosCodafService>();
+            _movimentacaoServiceMock = mocker.GetMock<IGerenciadorMovimentacaoCodafService>();
+            var dependencias = new CodafListaPresencaDependencias(
+                _repositorioCodafListaPresencaMock.Object,
+                _repositorioCodafRetificacaoListaPresencaMock.Object,
+                _inscritosServiceMock.Object,
+                _validadorDominioMock.Object,
+                _anexosServiceMock.Object,
+                _movimentacaoServiceMock.Object
+            );
+            mocker.Use(dependencias);
             _validatorMock = mocker.GetMock<IValidator<CodafListaPresencaCadastroDto>>();
             _mapperMock = mocker.GetMock<IMapper>();
+            _transacaoMock = mocker.GetMock<ITransacao>();
+            _contextoAplicacaoMock = mocker.GetMock<IContextoAplicacao>();
+
             _casoDeUso = mocker.CreateInstance<CasoDeUsoCriarCodafListaPresenca>();
             _faker = new();
+            
+            _contextoAplicacaoMock.Setup(c => c.IdPerfilUsuario).Returns(Guid.NewGuid());
         }
 
         [Fact]
@@ -88,7 +109,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .Setup(v => v.ValidateAsync(codafListaPresencaCadastroDto, default))
                 .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
-            _validadorCodafListaPresencaServiceMock
+            _validadorDominioMock
                 .Setup(v => v.ValidarVinculoPropostaTurmaAsync(It.IsAny<long>(), It.IsAny<long>()))
                 .ReturnsAsync(Erro.Validacao(mensagemErroVinculo));
 
@@ -119,7 +140,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .Setup(v => v.ValidateAsync(codafListaPresencaCadastroDto, default))
                 .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
-            _validadorCodafListaPresencaServiceMock
+            _validadorDominioMock
                 .Setup(v => v.ValidarUnicidadeTurmaListaDePresencaAsync(It.IsAny<long>(), 0))
                 .ReturnsAsync(Erro.Validacao(mensagemErroVinculo));
 
@@ -205,7 +226,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .Setup(m => m.Map<CodafListaPresencaDto>(It.IsAny<CodafListaPresenca>()))
                 .Returns(new CodafListaPresencaDto());
             _mapperMock
-                .Setup(m => m.Map<IEnumerable<CodafInscricaoListaPresenca>>(inscritosDto))
+                .Setup(m => m.Map<List<CodafInscricaoListaPresenca>>(inscritosDto))
                 .Returns(
                 [
                     new() { InscricaoId = inscritosDto[0].InscricaoId },
@@ -223,11 +244,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             Assert.NotNull(resultado);
             resultado.Sucesso.Should().BeTrue();
             resultado.Dados.Should().NotBeNull();
-            _repositorioCodafInscritosListaPresencaMock.Verify(r => r.InserirVariosAsync(It.Is<IEnumerable<CodafInscricaoListaPresenca>>(inscritos =>
-                inscritos.Count() == 2 &&
+            _inscritosServiceMock.Verify(r => r.SalvarInscritosAsync(It.Is<List<CodafInscricaoListaPresenca>>(inscritos =>
+                inscritos.Count == 2 &&
                 inscritos.Any(i => i.InscricaoId == inscritosDto[0].InscricaoId) &&
-                inscritos.Any(i => i.InscricaoId == inscritosDto[1].InscricaoId)
-            )), Times.Once);
+                inscritos.Any(i => i.InscricaoId == inscritosDto[1].InscricaoId)), It.IsAny<long>()
+                ), Times.Once);
         }
 
         [Fact]
