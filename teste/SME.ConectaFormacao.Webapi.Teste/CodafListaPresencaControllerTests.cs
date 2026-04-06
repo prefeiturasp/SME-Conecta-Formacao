@@ -61,7 +61,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .ReturnsAsync(Resultado<CodafListaPresencaDto>.DeSucesso(codafDto));
 
             // Act
-            await _controller.Cadastrar(cadastroDto);
+            await _controller.Cadastrar(cadastroDto, _mockCasoDeUsoCriar.Object);
 
             // Assert
             _mockCasoDeUsoCriar.Verify(x => x.ExecutarAsync(cadastroDto), Times.Once);
@@ -86,7 +86,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .ReturnsAsync(Resultado<CodafListaPresencaDto>.DeSucesso(codafDto));
 
             // Act
-            var resultado = await _controller.Cadastrar(cadastroDto) as ObjectResult;
+            var resultado = await _controller.Cadastrar(cadastroDto, _mockCasoDeUsoCriar.Object) as ObjectResult;
 
             // Assert
             resultado.Should().NotBeNull();
@@ -110,7 +110,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(edicaoDto, id))
                 .ReturnsAsync(Resultado.DeSucesso());
             // Act
-            await _controller.Atualizar(id, edicaoDto);
+            await _controller.Atualizar(id, edicaoDto, _mockCasoDeUsoAtualizar.Object);
 
             // Assert
             _mockCasoDeUsoAtualizar.Verify(x => x.ExecutarAsync(edicaoDto, id), Times.Once);
@@ -130,7 +130,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(edicaoDto, id))
                 .ReturnsAsync(Resultado.DeSucesso());
             // Act
-            var resultado = await _controller.Atualizar(id, edicaoDto) as StatusCodeResult;
+            var resultado = await _controller.Atualizar(id, edicaoDto, _mockCasoDeUsoAtualizar.Object) as StatusCodeResult;
             // Assert
             resultado.Should().NotBeNull();
             resultado.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
@@ -151,7 +151,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(id))
                 .ReturnsAsync(Resultado<CodafListaPresencaDto>.DeSucesso(codafDto));
             // Act
-            await _controller.ObterPorId(id);
+            await _controller.ObterPorId(id, _mockCasoDeUsoObterPorId.Object);
             // Assert
             _mockCasoDeUsoObterPorId.Verify(x => x.ExecutarAsync(id), Times.Once);
         }
@@ -171,7 +171,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(id))
                 .ReturnsAsync(Resultado<CodafListaPresencaDto>.DeSucesso(codafDto));
             // Act
-            var resultado = await _controller.ObterPorId(id) as ObjectResult;
+            var resultado = await _controller.ObterPorId(id, _mockCasoDeUsoObterPorId.Object) as ObjectResult;
             // Assert
             resultado.Should().NotBeNull();
             resultado.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -196,7 +196,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .ReturnsAsync(Resultado<PaginacaoResultadoDto<ListaPresencaCodafResumoDto>>.DeSucesso(
                     new PaginacaoResultadoDto<ListaPresencaCodafResumoDto>([], 0, 0)));
             // Act
-            await _controller.ObterListaPaginada(filtroDto);
+            await _controller.ObterListaPaginada(filtroDto, _mockCasoDeUsoListar.Object);
             // Assert
             _mockCasoDeUsoListar.Verify(x => x.ExecutarAsync(filtroDto), Times.Once);
         }
@@ -217,7 +217,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(filtroDto))
                 .ReturnsAsync(Resultado<PaginacaoResultadoDto<ListaPresencaCodafResumoDto>>.DeSucesso(paginacaoResultadoDto));
             // Act
-            var resultado = await _controller.ObterListaPaginada(filtroDto) as ObjectResult;
+            var resultado = await _controller.ObterListaPaginada(filtroDto, _mockCasoDeUsoListar.Object) as ObjectResult;
             // Assert
             resultado.Should().NotBeNull();
             resultado.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -235,7 +235,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(retificacaoId))
                 .ReturnsAsync(Resultado.DeSucesso());
             // Act
-            await _controller.RemoverRetificacao(retificacaoId);
+            await _controller.RemoverRetificacao(retificacaoId, _mockCasoDeUsoRemoverRetificacao.Object);
             // Assert
             _mockCasoDeUsoRemoverRetificacao.Verify(x => x.ExecutarAsync(retificacaoId), Times.Once);
         }
@@ -249,7 +249,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(codafListaPresencaId))
                 .ReturnsAsync(Resultado.DeSucesso());
             // Act
-            await _controller.Excluir(codafListaPresencaId);
+            await _controller.Excluir(codafListaPresencaId, _mockCasoDeUsoExcluirCodafListaPresenca.Object);
             // Assert
             _mockCasoDeUsoExcluirCodafListaPresenca.Verify(x => x.ExecutarAsync(codafListaPresencaId), Times.Once);
         }
@@ -271,7 +271,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .ReturnsAsync(resultadoSucesso);
 
             // Act
-            var resultado = await _controller.ImprimirRelatorioCodafAsync(codafId) as FileStreamResult;
+            var resultado = await _controller.ImprimirRelatorioCodafAsync(codafId, _mockCasoDeUsoGerarRelatorioCodaf.Object) as FileStreamResult;
 
             // Assert
             resultado.Should().NotBeNull();
@@ -290,7 +290,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(codafId))
                 .ReturnsAsync(erro);
             // Act
-            var resultado = await _controller.ImprimirRelatorioCodafAsync(codafId) as NotFoundObjectResult;
+            var resultado = await _controller.ImprimirRelatorioCodafAsync(codafId, _mockCasoDeUsoGerarRelatorioCodaf.Object) as NotFoundObjectResult;
             // Assert
             resultado.Should().NotBeNull();
             resultado.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
@@ -306,7 +306,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .ReturnsAsync(Resultado.DeSucesso());
 
             // Act
-            var resultado = await _controller.SalvarInscritosAsync(codafId, []) as StatusCodeResult;
+            var resultado = await _controller.SalvarInscritosAsync(codafId, [], _mockCasoDeUsoSalvarInscritosCodaf.Object) as StatusCodeResult;
 
             // Assert
             resultado.Should().NotBeNull();
