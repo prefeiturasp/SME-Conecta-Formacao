@@ -53,9 +53,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             Usuario usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
 
-            if (usuarioLogado == null)
-                return true;
-
             var codigoUsuarioLogado = usuarioLogado.Login;
             
 
