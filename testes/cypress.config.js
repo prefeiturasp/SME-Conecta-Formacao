@@ -38,6 +38,8 @@ module.exports = defineConfig({
       LOGIN_ADM_GERAL: process.env.LOGIN_ADM_GERAL,
       LOGIN_CURSISTA: process.env.LOGIN_CURSISTA,
       LOGIN_EXTERNO: process.env.LOGIN_EXTERNO,
+      NOME: process.env.NOME,
+      EMAIL: process.env.EMAIL,
       SENHA: process.env.SENHA,
       ID_AREA_PROMOTORA: process.env.ID_AREA_PROMOTORA,
       PERFIL_AREA_PROMOTORA: process.env.PERFIL_AREA_PROMOTORA,
