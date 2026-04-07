@@ -90,10 +90,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
         public async Task Deve_obter_lista_proposta_dashboard_para_usuario_logado_parecerista()
         {
             // arrange
-            var situacoes = Enum.GetValues(typeof(SituacaoProposta)).Cast<SituacaoProposta>();
-
-            foreach (var situacao in situacoes)
-                await InserirNaBaseProposta(situacao);
+            await InserirNaBaseProposta(SituacaoProposta.AguardandoAnalisePeloParecerista);
 
             var usuario = UsuarioMock.GerarUsuario();
             await InserirNaBase(usuario);

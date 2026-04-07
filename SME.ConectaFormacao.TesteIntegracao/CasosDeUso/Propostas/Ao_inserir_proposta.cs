@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOVazio(SituacaoProposta.Rascunho);
@@ -71,7 +71,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -153,7 +153,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var propostaDTO = PropostaSalvarMock.GerarPropostaDTOVazio(SituacaoProposta.Cadastrada);
@@ -190,7 +190,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -269,7 +269,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -338,7 +338,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -412,7 +412,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -493,7 +493,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -564,7 +564,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -645,7 +645,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -698,7 +698,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -766,7 +766,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -847,7 +847,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -928,7 +928,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -1006,7 +1006,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);
@@ -1080,7 +1080,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             var parametroComunicadoAcaoFormativaUrl = ParametroSistemaMock.GerarParametroSistema(TipoParametroSistema.ComunicadoAcaoFormativaUrl);
             await InserirNaBase(parametroComunicadoAcaoFormativaUrl);
 
-            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            var areaPromotora = AreaPromotoraMock.GerarAreaPromotora(Perfis.ADMIN_DF);
             await InserirNaBase(areaPromotora);
 
             var dres = DreMock.GerarDreValida(5);

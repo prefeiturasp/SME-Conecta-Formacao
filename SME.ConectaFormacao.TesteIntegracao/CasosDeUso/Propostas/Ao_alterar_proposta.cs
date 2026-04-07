@@ -1367,6 +1367,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
                 componentesCurriculares.Select(t => new PropostaComponenteCurricularDTO { ComponenteCurricularId = t.Id }),
                 SituacaoProposta.AguardandoAnaliseDf, quantidadeTurmas: proposta.QuantidadeTurmas, quantidadePareceristas: 3);
 
+            propostaDTO.RfResponsavelDf = "123456";
             propostaDTO.FormacaoHomologada = FormacaoHomologada.Sim;
 
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoAlterarProposta>();
