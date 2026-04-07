@@ -10,8 +10,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Relatorios
         public long? PropostaTurmaId { get; set; }
         public Formato? Formato { get; set; }
         public long? AreaPromotoraId { get; set; }
-        public DateTime PeriodoDeRealizacaoInicial { get; set; }
-        public DateTime PeriodoDeRealizacaoFinal { get; set; }
+        private DateTime _periodoDeRealizacaoInicial;
+        public DateTime PeriodoDeRealizacaoInicial
+        {
+            get => _periodoDeRealizacaoInicial;
+            set => _periodoDeRealizacaoInicial = DateTime.SpecifyKind(value, DateTimeKind.Unspecified);
+        }
+
+        private DateTime _periodoDeRealizacaoFinal;
+        public DateTime PeriodoDeRealizacaoFinal
+        {
+            get => _periodoDeRealizacaoFinal;
+            set => _periodoDeRealizacaoFinal = DateTime.SpecifyKind(value, DateTimeKind.Unspecified);
+        }
         public SituacaoProposta? SituacaoProposta { get; set; }
         public SituacaoInscricao? SituacaoInscricao { get; set; }
         public long? CargoPublicoAlvoId { get; set; }
