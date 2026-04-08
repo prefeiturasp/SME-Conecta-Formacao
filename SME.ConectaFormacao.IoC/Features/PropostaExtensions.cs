@@ -67,6 +67,7 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoNotificarAreaPromotoraSobreValidacaoFinalPelaDF, CasoDeUsoNotificarAreaPromotoraSobreValidacaoFinalPelaDF>()
             .AddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>()
             .AddScoped<ICasoDeUsoObterCriterioValidacaoInscricao, CasoDeUsoObterCriterioValidacaoInscricao>()
+                .AddScoped<IRepositorioPropostaGrupoPeriodo, RepositorioPropostaGrupoPeriodo>()
             ;
 
             public IServiceCollection AdicionarModuloPropostaEncontro() =>

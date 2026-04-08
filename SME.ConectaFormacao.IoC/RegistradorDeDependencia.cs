@@ -1,3 +1,4 @@
+using Dapper;
 using Dapper.FluentMap;
 using Dapper.FluentMap.Dommel;
 using FluentValidation;
@@ -171,6 +172,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
 
     protected virtual void RegistrarMapeamentos()
     {
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
         FluentMapper.Initialize(config =>
         {
             config.AddMap(new UsuarioMap());
