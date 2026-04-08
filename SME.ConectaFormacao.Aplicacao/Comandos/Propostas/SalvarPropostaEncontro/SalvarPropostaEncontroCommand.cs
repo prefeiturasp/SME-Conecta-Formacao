@@ -2,18 +2,12 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 
-namespace SME.ConectaFormacao.Aplicacao
+namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontro
 {
-    public class SalvarPropostaEncontroCommand : IRequest<long>
+    public class SalvarPropostaEncontroCommand(long propostaId, PropostaEncontroDto encontroDto) : IRequest<long>
     {
-        public SalvarPropostaEncontroCommand(long propostaId, PropostaEncontroDTO encontroDTO)
-        {
-            PropostaId = propostaId;
-            EncontroDTO = encontroDTO;
-        }
-
-        public long PropostaId { get; }
-        public PropostaEncontroDTO EncontroDTO { get; }
+        public long PropostaId { get; } = propostaId;
+        public PropostaEncontroDto EncontroDto { get; } = encontroDto;
     }
 
     public class SalvarPropostaEncontroCommandValidator : AbstractValidator<SalvarPropostaEncontroCommand>

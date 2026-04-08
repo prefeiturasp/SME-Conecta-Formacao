@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Bogus.Extensions.Brazil;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Aplicacao.Dtos.PropostaEncontros;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -9,12 +10,12 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas.Mocks
 {
     public class PropostaSalvarMock
     {
-        private static IEnumerable<PropostaEncontroTurmaDTO> GerarPropostaEncontroTurmas(int quantidadeTurmas)
+        private static IEnumerable<PropostaEncontroTurmaDto> GerarPropostaEncontroTurmas(int quantidadeTurmas)
         {
             var quantidade = new Randomizer().Number(1, quantidadeTurmas);
 
             for (short i = 1; i <= quantidade; i++)
-                yield return new PropostaEncontroTurmaDTO { TurmaId = i };
+                yield return new PropostaEncontroTurmaDto { TurmaId = i };
         }
         private static IEnumerable<PropostaRegenteTurmaDTO> GerarPropostaRegenteTurmas(int quantidadeTurmas)
         {
@@ -31,20 +32,20 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas.Mocks
                 yield return new PropostaTutorTurmaDTO { TurmaId = i };
         }
 
-        private static IEnumerable<PropostaEncontroDataDTO> GerarPropostaEncontroDatas()
+        private static IEnumerable<PropostaEncontroDataDto> GerarPropostaEncontroDatas()
         {
             var quantidade = new Randomizer().Number(1, 99);
 
-            var faker = new Faker<PropostaEncontroDataDTO>();
+            var faker = new Faker<PropostaEncontroDataDto>();
             faker.RuleFor(x => x.DataInicio, DateTime.Now);
             faker.RuleFor(x => x.DataFim, f => f.Random.Bool() ? f.Date.Future() : null);
 
             return faker.Generate(quantidade);
         }
 
-        public static Faker<PropostaEncontroDTO> GeradorEncontro(int quantidadeTurmas)
+        public static Faker<PropostaEncontroDto> GeradorEncontro(int quantidadeTurmas)
         {
-            var faker = new Faker<PropostaEncontroDTO>();
+            var faker = new Faker<PropostaEncontroDto>();
             faker.RuleFor(x => x.Tipo, f => f.PickRandom<TipoEncontro>());
             faker.RuleFor(x => x.HoraInicio, f => DateTimeExtension.HorarioBrasilia().ToString("HH:mm"));
             faker.RuleFor(x => x.HoraFim, f => DateTimeExtension.HorarioBrasilia().AddMinutes(f.Random.Short(0, 60)).ToString("HH:mm"));
@@ -88,7 +89,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas.Mocks
         {
             return GeradorRegente(quantidadeTurmas);
         }
-        public static PropostaEncontroDTO GerarEncontro(short quantidadeTurmas)
+        public static PropostaEncontroDto GerarEncontro(short quantidadeTurmas)
         {
             return GeradorEncontro(quantidadeTurmas);
         }

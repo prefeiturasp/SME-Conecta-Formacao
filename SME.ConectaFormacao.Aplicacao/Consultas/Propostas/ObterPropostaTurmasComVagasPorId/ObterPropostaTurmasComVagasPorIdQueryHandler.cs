@@ -10,30 +10,23 @@ using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostaTurmasComVagasPorIdQueryHandler : IRequestHandler<ObterPropostaTurmasComVagasPorIdQuery, IEnumerable<RetornoListagemDTO>>
+    public class ObterPropostaTurmasComVagasPorIdQueryHandler(
+        IRepositorioProposta repositorioProposta,
+        IRepositorioPropostaEncontro repositorioPropostaEncontro,
+        IMapper mapper, 
+        ICacheDistribuido cacheDistribuido) : IRequestHandler<ObterPropostaTurmasComVagasPorIdQuery, IEnumerable<RetornoListagemDTO>>
     {
-        private readonly IRepositorioProposta _repositorioProposta;
-        private readonly IMapper _mapper;
-        private readonly ICacheDistribuido _cacheDistribuido;
-
-        public ObterPropostaTurmasComVagasPorIdQueryHandler(IRepositorioProposta repositorioProposta, IMapper mapper, ICacheDistribuido cacheDistribuido)
-        {
-            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
-        }
-
         public async Task<IEnumerable<RetornoListagemDTO>> Handle(ObterPropostaTurmasComVagasPorIdQuery request, CancellationToken cancellationToken)
         {
-            var proposta = await _repositorioProposta.ObterPorId(request.PropostaId) ??
+            var proposta = await repositorioProposta.ObterPorId(request.PropostaId) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
             IEnumerable<PropostaTurma> turmas;
             if (proposta.Situacao == Dominio.Enumerados.SituacaoProposta.Publicada && proposta.FormacaoHomologada == Dominio.Enumerados.FormacaoHomologada.Sim)
-                turmas = await _repositorioProposta.ObterTurmasPorId(proposta.Id);
+                turmas = await repositorioProposta.ObterTurmasPorId(proposta.Id);
             else
             {
-                turmas = await _repositorioProposta.ObterTurmasComVagaPorId(request.PropostaId, request.CodigoDre);
+                turmas = await repositorioProposta.ObterTurmasComVagaPorId(request.PropostaId, request.CodigoDre);
                 if (turmas.NaoPossuiElementos())
                     throw new NegocioException(MensagemNegocio.NENHUMA_TURMA_COM_VAGA_DISPONIVEL, System.Net.HttpStatusCode.NotFound);
             }
@@ -41,7 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao
             foreach (var turma in turmas)
                 turma.Nome += await ObterPeríodoEncontrosTurma(turma.Id);
 
-            var lista = _mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
+            var lista = mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
             lista = lista.OrderBy(x => x.Descricao);
             return lista;
         }
@@ -52,7 +45,8 @@ namespace SME.ConectaFormacao.Aplicacao
             var datasInicio = new List<DateTime>();
             var datasFim = new List<DateTime>();
 
-            var encontros = await _cacheDistribuido.ObterAsync(CacheDistribuidoNomes.PropostaTurmaEncontro.Parametros(turmaId), () => _repositorioProposta.ObterEncontrosPorPropostaTurmaId(turmaId));
+            var encontros = await cacheDistribuido.ObterAsync(CacheDistribuidoNomes.PropostaTurmaEncontro.Parametros(turmaId), 
+                () => repositorioPropostaEncontro.ObterEncontrosPorPropostaTurmaAsync(turmaId));
 
             foreach (var encontro in encontros)
             {

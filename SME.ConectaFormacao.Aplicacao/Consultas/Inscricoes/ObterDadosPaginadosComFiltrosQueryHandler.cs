@@ -3,7 +3,6 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -73,11 +72,17 @@ namespace SME.ConectaFormacao.Aplicacao
             return formacoes;
         }
 
-        private static string ObterData(IEnumerable<ListagemFormacaoComTurmaDTO>? inscricao, ListagemFormacaoComTurmaDTO i)
+        private static string ObterData(IEnumerable<ListagemFormacaoComTurmaDTO>? inscricoes, ListagemFormacaoComTurmaDTO turmaReferencia)
         {
-            return inscricao!.Any(x => x.NomeTurma != null && x.NomeTurma.Equals(i.NomeTurma) && x.Datas.NaoEhNulo())
-                ? string.Join(", ", inscricao!.Where(x => x.NomeTurma.Equals(i.NomeTurma)).Select(x => x.Datas).Distinct())
-                : string.Empty;
+            if (inscricoes is null || string.IsNullOrWhiteSpace(turmaReferencia.NomeTurma))
+                return string.Empty;
+
+            var datasValidas = inscricoes
+                .Where(x => x.NomeTurma == turmaReferencia.NomeTurma && !string.IsNullOrWhiteSpace(x.Datas))
+                .Select(x => x.Datas)
+                .Distinct();
+
+            return string.Join(", ", datasValidas);
         }
     }
 }

@@ -23,13 +23,13 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
             var entidade = new CodafListaPresenca(
                 PROPOSTA_ID,
                 PROPOSTA_TURMA_ID,
-                dataPublicacao,
+                new(dataPublicacao,
                 null,
                 1,
                 null,
                 CODIGO_CURSO_EOL,
                 CODIGO_NIVEL,
-                "Obs",
+                "Obs"),
                 idPerfilAdmin
             );
 
@@ -49,13 +49,13 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
             var entidade = new CodafListaPresenca(
                 PROPOSTA_ID,
                 PROPOSTA_TURMA_ID,
-                null,
+                new(null,
                 null,
                 null,
                 null,
                 CODIGO_CURSO_EOL,
                 CODIGO_NIVEL,
-                null,
+                null),
                 idPerfilComum
             );
 
@@ -75,13 +75,13 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
 
             // Act
             entidade.AtualizarInformacoes(
-                new(2024, 2, 1),
+                new(new(2024, 2, 1),
                 null,
                 2,
                 null,
                 novoCodigoCurso,
                 10,
-                "Nova Obs",
+                "Nova Obs"),
                 idPerfilAdmin
             );
 
@@ -98,10 +98,10 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
             var entidade = new CodafListaPresenca(
                 PROPOSTA_ID,
                 PROPOSTA_TURMA_ID,
-                null, null, null, null,
+                new(null, null, null, null,
                 CODIGO_CURSO_EOL,
                 CODIGO_NIVEL,
-                null,
+                null),
                 Perfis.ADMIN_DF
             );
 
@@ -110,13 +110,13 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
 
             // Act
             entidade.AtualizarInformacoes(
-                new (2024, 3, 1),
+                new(new (2024, 3, 1,0,0,0,DateTimeKind.Utc),
                 null,
                 null,
                 null,
                 tentativaNovoCodigo,
                 20,
-                "Update Comum",
+                "Update Comum"),
                 idPerfilComum
             );
 
@@ -145,13 +145,13 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
             return new CodafListaPresenca(
                 PROPOSTA_ID,
                 PROPOSTA_TURMA_ID,
-                DateTime.Now,
+                new(DateTime.Now,
                 null,
                 1,
                 null,
                 null,
                 null,
-                "Teste",
+                "Teste"),
                 Guid.NewGuid()
             );
         }

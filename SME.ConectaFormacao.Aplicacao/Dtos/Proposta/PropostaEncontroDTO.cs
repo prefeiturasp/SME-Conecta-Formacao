@@ -1,9 +1,10 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.PropostaEncontros;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using System.ComponentModel.DataAnnotations;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 {
-    public class PropostaEncontroDTO
+    public class PropostaEncontroDto
     {
         public long Id { get; set; }
         public string? HoraInicio { get; set; }
@@ -12,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         [MaxLength(200, ErrorMessage = "O local não pode conter mais que 200 caracteres")]
         public string? Local { get; set; }
 
-        public IEnumerable<PropostaEncontroTurmaDTO> Turmas { get; set; } = [];
-        public IEnumerable<PropostaEncontroDataDTO> Datas { get; set; } = [];
+        public IEnumerable<PropostaEncontroTurmaDto> Turmas { get; set; } = [];
+        public IEnumerable<PropostaEncontroDataDto> Datas { get; set; } = [];
     }
 }

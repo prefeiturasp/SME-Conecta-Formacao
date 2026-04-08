@@ -243,7 +243,8 @@
                 """;
 
         public const string ObterTodosCertificadosSelect = """
-                SELECT CC.ID,
+                SELECT DISTINCT
+                         CC.ID,
                          CC.CODIGO_CERTIFICADO AS codigoCertificado,
                          coalesce(U_Cursista.NOME, U_Regente.NOME, PR.nome_regente) AS nomeParticipante,
                          CASE

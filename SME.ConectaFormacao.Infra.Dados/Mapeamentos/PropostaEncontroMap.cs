@@ -16,6 +16,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
 
             Map(c => c.Turmas).Ignore();
             Map(c => c.Datas).Ignore();
+            Map(c => c.PossuiHorarioLegado).Ignore();
         }
     }
 }

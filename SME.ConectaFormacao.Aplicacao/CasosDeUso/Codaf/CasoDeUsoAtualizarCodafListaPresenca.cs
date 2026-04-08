@@ -35,13 +35,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 return erroValidacao;
 
             codafListaPresencaExistente.AtualizarInformacoes(
-                codafListaPresencaEdicaoDto.DataPublicacao,
+                new(codafListaPresencaEdicaoDto.DataPublicacao,
                 codafListaPresencaEdicaoDto.DataPublicacaoDom,
                 codafListaPresencaEdicaoDto.NumeroComunicado,
                 codafListaPresencaEdicaoDto.PaginaComunicadoDom,
                 codafListaPresencaEdicaoDto.CodigoCursoEol,
                 codafListaPresencaEdicaoDto.CodigoNivel,
-                codafListaPresencaEdicaoDto.Observacao,
+                codafListaPresencaEdicaoDto.Observacao),
                 contextoAplicacao.IdPerfilUsuario);
 
             using var transacaoDb = transacao.Iniciar();
