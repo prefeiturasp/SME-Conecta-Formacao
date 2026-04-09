@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Consultas.Propostas.PropostaGrupoPeriodoPorPropostaId;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -11,60 +12,43 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterPropostaCompletaPorIdQueryHandler : IRequestHandler<ObterPropostaCompletaPorIdQuery, PropostaCompletoDTO>
+    public class ObterPropostaCompletaPorIdQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta,
+        IRepositorioArquivo repositorioArquivo, IRepositorioPropostaMovimentacao repositorioPropostaMovimentacao,
+        IRepositorioAreaPromotora repositorioAreaPromotora, IMediator mediator) : IRequestHandler<ObterPropostaCompletaPorIdQuery, PropostaCompletoDTO>
     {
-        private readonly IMapper _mapper;
-        private readonly IRepositorioProposta _repositorioProposta;
-        private readonly IRepositorioArquivo _repositorioArquivo;
-        private readonly IRepositorioPropostaMovimentacao _repositorioPropostaMovimentacao;
-        private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
-        private readonly IMediator _mediator;
-
-        public ObterPropostaCompletaPorIdQueryHandler(IMapper mapper, IRepositorioProposta repositorioProposta,
-            IRepositorioArquivo repositorioArquivo, IRepositorioPropostaMovimentacao repositorioPropostaMovimentacao,
-            IRepositorioAreaPromotora repositorioAreaPromotora, IMediator mediator)
-        {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-            _repositorioArquivo = repositorioArquivo ?? throw new ArgumentNullException(nameof(repositorioArquivo));
-            _repositorioPropostaMovimentacao = repositorioPropostaMovimentacao ?? throw new ArgumentNullException(nameof(repositorioPropostaMovimentacao));
-            _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        }
-
         public async Task<PropostaCompletoDTO> Handle(ObterPropostaCompletaPorIdQuery request, CancellationToken cancellationToken)
         {
-            var proposta = await _repositorioProposta.ObterPorId(request.Id);
+            var proposta = await repositorioProposta.ObterPorId(request.Id);
             if (proposta == null || proposta.Excluido)
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
-            proposta.Dres = await _repositorioProposta.ObterDrePorId(request.Id);
-            proposta.PublicosAlvo = await _repositorioProposta.ObterPublicoAlvoPorId(request.Id);
-            proposta.FuncoesEspecificas = await _repositorioProposta.ObterFuncoesEspecificasPorId(request.Id);
-            proposta.CriteriosValidacaoInscricao = await _repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
-            proposta.VagasRemanecentes = await _repositorioProposta.ObterVagasRemacenentesPorId(request.Id);
-            proposta.PalavrasChaves = await _repositorioProposta.ObterPalavrasChavesPorId(request.Id);
-            proposta.Modalidades = await _repositorioProposta.ObterModalidadesPorId(request.Id);
-            proposta.AnosTurmas = await _repositorioProposta.ObterAnosTurmasPorId(request.Id);
-            proposta.ComponentesCurriculares = await _repositorioProposta.ObterComponentesCurricularesPorId(request.Id);
-            proposta.CriterioCertificacao = await _repositorioProposta.ObterCriterioCertificacaoPorPropostaId(request.Id);
-            proposta.Turmas = await _repositorioProposta.ObterTurmasPorId(request.Id);
-            proposta.TiposInscricao = await _repositorioProposta.ObterTiposInscricaoPorId(request.Id);
-            proposta.Movimentacao = await _repositorioPropostaMovimentacao.ObterUltimoParecerPropostaId(request.Id, proposta.Situacao);
-            proposta.AreaPromotora = await _repositorioAreaPromotora.ObterPorId(proposta.AreaPromotoraId);
-            proposta.UltimaJustificativaDevolucao = await _repositorioPropostaMovimentacao.ObterUltimaJustificativaDevolucao(request.Id);
-            proposta.Pareceristas = await _repositorioProposta.ObterPareceristasPorId(request.Id);
+            proposta.Dres = await repositorioProposta.ObterDrePorId(request.Id);
+            proposta.PublicosAlvo = await repositorioProposta.ObterPublicoAlvoPorId(request.Id);
+            proposta.FuncoesEspecificas = await repositorioProposta.ObterFuncoesEspecificasPorId(request.Id);
+            proposta.CriteriosValidacaoInscricao = await repositorioProposta.ObterCriteriosValidacaoInscricaoPorId(request.Id);
+            proposta.VagasRemanecentes = await repositorioProposta.ObterVagasRemacenentesPorId(request.Id);
+            proposta.PalavrasChaves = await repositorioProposta.ObterPalavrasChavesPorId(request.Id);
+            proposta.Modalidades = await repositorioProposta.ObterModalidadesPorId(request.Id);
+            proposta.AnosTurmas = await repositorioProposta.ObterAnosTurmasPorId(request.Id);
+            proposta.ComponentesCurriculares = await repositorioProposta.ObterComponentesCurricularesPorId(request.Id);
+            proposta.CriterioCertificacao = await repositorioProposta.ObterCriterioCertificacaoPorPropostaId(request.Id);
+            proposta.Turmas = await repositorioProposta.ObterTurmasPorId(request.Id);
+            proposta.TiposInscricao = await repositorioProposta.ObterTiposInscricaoPorId(request.Id);
+            proposta.Movimentacao = await repositorioPropostaMovimentacao.ObterUltimoParecerPropostaId(request.Id, proposta.Situacao);
+            proposta.AreaPromotora = await repositorioAreaPromotora.ObterPorId(proposta.AreaPromotoraId);
+            proposta.UltimaJustificativaDevolucao = await repositorioPropostaMovimentacao.ObterUltimaJustificativaDevolucao(request.Id);
+            proposta.Pareceristas = await repositorioProposta.ObterPareceristasPorId(request.Id);
 
             foreach (var turma in proposta.Turmas)
-                turma.Dres = await _repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(turma.Id);
+                turma.Dres = await repositorioProposta.ObterPropostaTurmasDresPorPropostaTurmaId(turma.Id);
 
-            var propostaCompletaDTO = _mapper.Map<PropostaCompletoDTO>(proposta);
-            propostaCompletaDTO.Auditoria = _mapper.Map<AuditoriaDTO>(proposta);
-            propostaCompletaDTO.AreaPromotora = _mapper.Map<PropostaAreaPromotoraDTO>(proposta.AreaPromotora);
+            var propostaCompletaDTO = mapper.Map<PropostaCompletoDTO>(proposta);
+            propostaCompletaDTO.Auditoria = mapper.Map<AuditoriaDTO>(proposta);
+            propostaCompletaDTO.AreaPromotora = mapper.Map<PropostaAreaPromotoraDTO>(proposta.AreaPromotora);
 
-            var perfilLogado = await _mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia(), cancellationToken);
-            var usuarioLogado = await _mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken);
-            var consideracoes = await _repositorioProposta.ObterPropostaPareceristaConsideracaoPorId(proposta.Id);
+            var perfilLogado = await mediator.Send(ObterGrupoUsuarioLogadoQuery.Instancia(), cancellationToken);
+            var usuarioLogado = await mediator.Send(ObterUsuarioLogadoQuery.Instancia(), cancellationToken);
+            var consideracoes = await repositorioProposta.ObterPropostaPareceristaConsideracaoPorId(proposta.Id);
 
             var ehAdminDF = perfilLogado.EhPerfilAdminDF();
             var ehParecerista = perfilLogado.EhPerfilParecerista();
@@ -110,10 +94,13 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.HorasTotais = proposta.HorasTotais;
             propostaCompletaDTO.CargaHorariaTotalOutra = proposta.CargaHorariaTotalOutra;
 
-            if (!proposta.ArquivoImagemDivulgacaoId.HasValue) return propostaCompletaDTO;
+            if (proposta.ArquivoImagemDivulgacaoId.HasValue)
+            {
+                var arquivo = await repositorioArquivo.ObterPorId(proposta.ArquivoImagemDivulgacaoId.Value);
+                propostaCompletaDTO.ArquivoImagemDivulgacao = mapper.Map<PropostaImagemDivulgacaoDTO>(arquivo);
+            }
 
-            var arquivo = await _repositorioArquivo.ObterPorId(proposta.ArquivoImagemDivulgacaoId.Value);
-            propostaCompletaDTO.ArquivoImagemDivulgacao = _mapper.Map<PropostaImagemDivulgacaoDTO>(arquivo);
+            propostaCompletaDTO.GruposPeriodos = await mediator.Send(new PropostaGrupoPeriodoPorPropostaIdQuery(proposta.Id), cancellationToken);
 
             return propostaCompletaDTO;
         }
@@ -169,7 +156,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task<bool> EhPerfilAreaPromotora(Guid usuarioLogado)
         {
-            return (await _mediator.Send(new ObterPerfilAreaPromotoraQuery(usuarioLogado))).NaoEhNulo();
+            return (await mediator.Send(new ObterPerfilAreaPromotoraQuery(usuarioLogado))).NaoEhNulo();
         }
 
         private static IEnumerable<PropostaTotalConsideracaoDTO> ObterTotalDePareceresPorCampo(IEnumerable<PropostaPareceristaConsideracao> propostaPareceres, bool ehPerfilAdminDF
@@ -190,7 +177,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task<int> ObterParametroSistema(TipoParametroSistema qtdeLimitePareceristaProposta)
         {
-            var parametro = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(qtdeLimitePareceristaProposta, DateTimeExtension.HorarioBrasilia().Year));
+            var parametro = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(qtdeLimitePareceristaProposta, DateTimeExtension.HorarioBrasilia().Year));
             return int.Parse(parametro.Valor);
         }
 
