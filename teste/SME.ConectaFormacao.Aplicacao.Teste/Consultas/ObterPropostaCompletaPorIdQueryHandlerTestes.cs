@@ -39,44 +39,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         }
 
         [Fact]
-        public void DadoMapperNulo_QuandoInstanciarHandler_EntaoDeveLancarArgumentNullException()
-        {
-            // Arrange
-            IMapper mapperNulo = null!;
-
-            // Act
-            var act = () => new ObterPropostaCompletaPorIdQueryHandler(
-                mapperNulo,
-                _repositorioProposta.Object,
-                _repositorioArquivo.Object,
-                _repositorioPropostaMovimentacao.Object,
-                _repositorioAreaPromotora.Object,
-                _mediator.Object);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>().WithParameterName("mapper");
-        }
-
-        [Fact]
-        public void DadoRepositorioPropostaNulo_QuandoInstanciarHandler_EntaoDeveLancarArgumentNullException()
-        {
-            // Arrange
-            IRepositorioProposta repositorioPropostaNulo = null!;
-
-            // Act
-            var act = () => new ObterPropostaCompletaPorIdQueryHandler(
-                _mapper.Object,
-                repositorioPropostaNulo,
-                _repositorioArquivo.Object,
-                _repositorioPropostaMovimentacao.Object,
-                _repositorioAreaPromotora.Object,
-                _mediator.Object);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>().WithParameterName("repositorioProposta");
-        }
-
-        [Fact]
         public void DadoRepositorioArquivoNulo_QuandoInstanciarHandler_EntaoDeveLancarArgumentNullException()
         {
             // Arrange

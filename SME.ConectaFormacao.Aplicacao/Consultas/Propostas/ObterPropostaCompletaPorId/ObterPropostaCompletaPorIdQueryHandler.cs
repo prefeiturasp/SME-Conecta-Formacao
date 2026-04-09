@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using SME.ConectaFormacao.Aplicacao.Consultas.Propostas.PropostaGrupoPeriodoPorPropostaId;
+using SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterPropostaGrupoPeriodoPorPropostaId;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -100,7 +100,7 @@ namespace SME.ConectaFormacao.Aplicacao
                 propostaCompletaDTO.ArquivoImagemDivulgacao = mapper.Map<PropostaImagemDivulgacaoDTO>(arquivo);
             }
 
-            propostaCompletaDTO.GruposPeriodos = await mediator.Send(new PropostaGrupoPeriodoPorPropostaIdQuery(proposta.Id), cancellationToken);
+            propostaCompletaDTO.GruposPeriodos = await mediator.Send(new ObterPropostaGrupoPeriodoPorPropostaIdQuery(proposta.Id), cancellationToken);
 
             return propostaCompletaDTO;
         }

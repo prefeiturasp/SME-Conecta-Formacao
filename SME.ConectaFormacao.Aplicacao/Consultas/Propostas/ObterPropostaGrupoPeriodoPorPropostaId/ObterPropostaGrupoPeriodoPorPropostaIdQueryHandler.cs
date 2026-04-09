@@ -2,12 +2,12 @@
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.Consultas.Propostas.PropostaGrupoPeriodoPorPropostaId
+namespace SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterPropostaGrupoPeriodoPorPropostaId
 {
-    public class PropostaGrupoPeriodoPorPropostaIdQueryHandler(IRepositorioPropostaGrupoPeriodo repositorioPropostaGrupoPeriodo)
-        : IRequestHandler<PropostaGrupoPeriodoPorPropostaIdQuery, IEnumerable<PropostaGrupoPeriodoDto>>
+    public class ObterPropostaGrupoPeriodoPorPropostaIdQueryHandler(IRepositorioPropostaGrupoPeriodo repositorioPropostaGrupoPeriodo)
+        : IRequestHandler<ObterPropostaGrupoPeriodoPorPropostaIdQuery, IEnumerable<PropostaGrupoPeriodoDto>>
     {
-        public async Task<IEnumerable<PropostaGrupoPeriodoDto>> Handle(PropostaGrupoPeriodoPorPropostaIdQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PropostaGrupoPeriodoDto>> Handle(ObterPropostaGrupoPeriodoPorPropostaIdQuery request, CancellationToken cancellationToken)
         {
             var grupos = await repositorioPropostaGrupoPeriodo.ObterPorPropostaIdAsync(request.PropostaId);
             return grupos.Select(g => new PropostaGrupoPeriodoDto
