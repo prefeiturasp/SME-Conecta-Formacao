@@ -38,6 +38,7 @@ module.exports = defineConfig({
       LOGIN_ADM_GERAL: process.env.LOGIN_ADM_GERAL,
       LOGIN_CURSISTA: process.env.LOGIN_CURSISTA,
       LOGIN_EXTERNO: process.env.LOGIN_EXTERNO,
+      CPF: process.env.CPF,
       NOME: process.env.NOME,
       EMAIL: process.env.EMAIL,
       SENHA: process.env.SENHA,
@@ -48,6 +49,12 @@ module.exports = defineConfig({
       TELEFONES: process.env.TELEFONES,
       GRUPO_AREA_PROMOTORA: process.env.GRUPO_AREA_PROMOTORA,
       EMAIL_DOMAIN: process.env.EMAIL_DOMAIN,
+      PROPOSTA_ID: process.env.PROPOSTA_ID,
+      PROPOSTA_TURMA_ID: process.env.PROPOSTA_TURMA_ID,
+      CARGO_CODIGO: process.env.CARGO_CODIGO,
+      CARGO_DRE_CODIGO: process.env.CARGO_DRE_CODIGO,
+      CARGO_UE_CODIGO: process.env.CARGO_UE_CODIGO,
+      TIPO_VINCULO: process.env.TIPO_VINCULO,   
 
       cucumber: {
         stepDefinitions: "cypress/support/step_definitions/**/*.js"

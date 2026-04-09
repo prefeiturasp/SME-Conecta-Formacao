@@ -1,16 +1,17 @@
-// ALLURE (sempre primeiro)
+// ALLURE
 import '@shelex/cypress-allure-plugin'
 
-// CUCUMBER (necessário para registrar steps corretamente)
+// CUCUMBER
 import '@badeball/cypress-cucumber-preprocessor'
 
-// COMANDOS CUSTOM - API
+// COMANDOS - API
 import './commands_api/commands_login'
 
-// COMANDOS CUSTOM - UI
+// COMANDOS - UI
 import './commands_ui/commands_login'
 import './commands_ui/commands_area_promotora'
 import './commands_ui/commands_meus_dados'
+import './commands_ui/commands_inscricoes'
 
 // Evita quebra por erro de front
 Cypress.on('uncaught:exception', () => {
