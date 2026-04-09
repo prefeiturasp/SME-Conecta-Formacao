@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPeriodo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -7,27 +8,28 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System.Net;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 {
-    public class CasoDeUsoAlterarProposta : CasoDeUsoAbstrato, ICasoDeUsoAlterarProposta
+    public class CasoDeUsoAlterarProposta(IMediator mediator, IRepositorioProposta repositorioProposta)
+        : CasoDeUsoAbstrato(mediator), ICasoDeUsoAlterarProposta
     {
-        private readonly IRepositorioProposta _repositorioProposta;
-        public CasoDeUsoAlterarProposta(IMediator mediator, IRepositorioProposta repositorioProposta) : base(mediator)
-        {
-            _repositorioProposta = repositorioProposta;
-        }
-
         public async Task<RetornoDTO> Executar(long id, PropostaDTO propostaDTO)
         {
             if (!await PodeEditar(id))
                 throw new NegocioException(string.Format(MensagemNegocio.USUARIO_SEM_PERMISSAO_PARA_EDITAR_PROPOSTA, id));
 
+            RetornoDTO retornoDto;
             if (propostaDTO.Situacao.EhParaSalvarRascunho() || propostaDTO.EhProximoPasso)
-                return await mediator.Send(new AlterarPropostaRascunhoCommand(id, propostaDTO));
+                retornoDto = await mediator.Send(new AlterarPropostaRascunhoCommand(id, propostaDTO));
+            else
+                retornoDto = await mediator.Send(new AlterarPropostaCommand(id, propostaDTO));
 
-            return await mediator.Send(new AlterarPropostaCommand(id, propostaDTO));
+            var resultadoSalvarGrupoPeriodo = await mediator.Send(new SalvarPropostaGrupoPeriodoCommand(retornoDto.EntidadeId, propostaDTO));
+
+            if (!resultadoSalvarGrupoPeriodo.Sucesso)
+                throw new NegocioException(resultadoSalvarGrupoPeriodo.MensagensErro);
+            return retornoDto;
         }
 
         private async Task<bool> PodeEditar(long id)
@@ -46,7 +48,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (!ehAreaPromotora)
                 return false;
 
-            var proposta = await _repositorioProposta.ObterPorId(id)
+            var proposta = await repositorioProposta.ObterPorId(id)
                 ?? throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
             var codigoCriador = proposta.CriadoLogin;
@@ -54,7 +56,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             Usuario usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
 
             var codigoUsuarioLogado = usuarioLogado.Login;
-            
+
 
             return string.Equals(
                 codigoCriador,

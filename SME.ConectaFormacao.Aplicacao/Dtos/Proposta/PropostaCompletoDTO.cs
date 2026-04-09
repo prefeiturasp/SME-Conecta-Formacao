@@ -82,5 +82,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? CargaHorariaTotalOutra { get; set; }
         public bool? Revalidacao { get; set; }
         public string? JustificativaRevalidacao { get; set; }
+        public IEnumerable<PropostaGrupoPeriodoDto> GruposPeriodos { get; set; } = [];
     }
 }
