@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterPropostaGrupoPe
                 Id = g.Id,
                 DataInicio = g.DataInicio,
                 DataFim = g.DataFim,
-                PropostaTurmasIds = [.. g.TurmasVinculadas.Select(t => t.PropostaTurmaId)]
+                PropostaTurmasIds = [.. g.TurmasVinculadas.Where(t => !t.Excluido).Select(t => t.PropostaTurmaId)]
             });
         }
     }
