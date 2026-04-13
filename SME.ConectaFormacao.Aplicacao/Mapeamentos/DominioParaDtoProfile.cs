@@ -421,7 +421,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<FormacaoTurma, RetornoTurmaDetalheDTO>()
                 .ForMember(dest => dest.Horario,
-                    opt => opt.MapFrom(o => $"{o.HoraInicio} - {o.HoraFim}"))
+                    opt => opt.MapFrom(o => $" De {o.HoraInicio} - {o.HoraFim}"))
                 .ForMember(dest => dest.Periodos,
                     opt =>
                         opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"{s.DataInicio:dd/MM/yyyy} - {s.DataFim.Value:dd/MM/yyyy}" : $"{s.DataInicio:dd/MM/yyyy}")))
