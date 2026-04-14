@@ -40,10 +40,10 @@ Cypress.Commands.add('realizar_login', (perfil) => {
         .click()
        break
 
-		case "EXTERNO":
+		case "CURSISTA":
 			cy.get(login_Conecta_Localizadores.texto_usuario(), { timeout: 4000 })
 			  .should('be.visible')
-			  .type(Cypress.env('LOGIN_EXTERNO'))
+			  .type(Cypress.env('LOGIN_CURSISTA'))
 
 			cy.get(login_Conecta_Localizadores.texto_senha(), { timeout: 4000 })
 			  .should('be.visible')

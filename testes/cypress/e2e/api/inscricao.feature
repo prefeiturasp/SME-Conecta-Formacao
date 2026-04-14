@@ -71,3 +71,93 @@ Funcionalidade: API - Inscrição
     Dado que não possuo um token válido
     Quando tento a requisição GET no cursista em inscrição
     Então retorna o status 401 sem inscrição de cursista
+
+  Cenário: Buscar dados de inscrição através do id
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando envio uma requisição GET dados inscrição por proposta id
+    Então retorna o status 200 com dados de inscrição através do id
+
+  Cenário: Não buscar dados de inscrição através sem id
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando envio uma requisição GET dados inscrição por proposta sem id
+    Então não retorna o status 404 com dados de inscrição sem id
+
+  Cenário: Não buscar dados de inscrição através do id sem autenticação
+    Dado que não possuo um token válido
+    Quando tento a requisição GET dados inscrição por proposta id
+    Então retorna o status 401 sem dados de inscrição através do id
+
+  Cenário: Buscar inscrição através da proposta id
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando envio uma requisição GET inscricao por propostaId
+    Então retorna o status 200 com inscrição através da proposta id
+
+  Cenário: Não buscar inscrição através da proposta sem id
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando requisição GET inscricao por proposta sem Id
+    Então não retorna o status 404 inscrição através da proposta sem id
+
+  Cenário: Não buscar inscrição através da proposta id sem autenticação
+    Dado que não possuo um token válido
+    Quando tento a requisição GET inscricao por propostaId
+    Então retorna o status 401 sem inscrição através da proposta id
+
+  Cenário: Buscar inscrição aberta através da proposta id
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando envio uma requisição GET inscricao aberta por propostaId
+    Então retorna o status 200 com inscrição abertas através da proposta id
+
+  Cenário: Não buscar inscrição aberta através da proposta sem id
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando requisição GET inscricao aberta por proposta sem Id
+    Então não retorna o status 422 inscrição aberta através da proposta sem id
+
+  Cenário: Não buscar inscrição aberta através da proposta id sem autenticação
+    Dado que não possuo um token válido
+    Quando tento a requisição GET inscricao aberta por propostaId
+    Então retorna o status 401 sem inscrição aberta através da proposta id
+
+  Cenário: Cadastrar inscrição com sucesso
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando envio uma requisição POST para cadastrar inscrição
+    Então retorna o status 200 com inscrição cadastrada com sucesso
+
+  Cenário: Não cadastrar inscrição sem propostaTurmaId
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando envio uma requisição POST para cadastrar inscrição sem propostaTurmaId
+    Então retorna o status 422 ao tentar cadastrar inscrição sem propostaTurmaId
+
+  Cenário: Não cadastrar inscrição sem autenticação
+    Dado que não possuo um token válido
+    Quando tento enviar uma requisição POST para cadastrar inscrição
+    Então retorna o status 401 sem autenticação ao cadastrar inscrição
+
+  Cenário: Cancelar inscrição com sucesso
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando envio uma requisição PUT para cancelar inscrição
+    Então retorna o status 200 com inscrição cancelada com sucesso
+
+  Cenário: Não cancelar inscrição sem id
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando envio uma requisição PUT para cancelar inscrição sem id
+    Então retorna o status 415 ao tentar cancelar inscrição sem id
+
+  Cenário: Não cancelar inscrição sem autenticação
+    Dado que não possuo um token válido
+    Quando tento enviar uma requisição PUT para cancelar inscrição
+    Então retorna o status 401 sem autenticação ao cancelar inscrição
+
+  Cenário: Cadastrar inscrição manual com sucesso
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando envio uma requisição POST para cadastrar inscrição manual
+    Então retorna o status 200 com inscrição manual cadastrada com sucesso
+
+  Cenário: Não cadastrar inscrição manual sem propostaTurmaId
+    Dado que possuo um token válido no endpoint Inscricao
+    Quando envio uma requisição POST para cadastrar inscrição manual sem propostaTurmaId
+    Então retorna o status 422 da inscrição manual não cadastrada sem propostaTurmaId
+
+  Cenário: Não cadastrar inscrição manual sem autenticação
+    Dado que não possuo um token válido
+    Quando tento enviar uma requisição POST de inscrição manual
+    Então retorna o status 401 de inscrição manual sem sucesso

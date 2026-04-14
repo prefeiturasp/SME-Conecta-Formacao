@@ -206,11 +206,11 @@ Quando('envio uma requisição POST para cadastrar Área Promotora', function ()
     nome: `Teste automatizado ${timestamp}`,
     tipo: 1,
     perfil: {
-      id: `${Cypress.env('ID_AREA_PROMOTORA')}`,
+      id: `${Cypress.env('AREA_PROMOTORA_ID')}`,
       nome: `${Cypress.env('PERFIL_AREA_PROMOTORA')}`,
       visaoId: 1,
-      label: `${Cypress.env('LABEL_AREA_PROMOTORA')}`,
-      value: `${Cypress.env('VALUE_AREA_PROMOTORA')}`
+      label: `${Cypress.env('TEXTO_AREA_PROMOTORA')}`,
+      value: `${Cypress.env('VALOR_AREA_PROMOTORA')}`
     },
     telefones: [
       { telefone: `${Cypress.env('TELEFONES')}` }
@@ -277,11 +277,11 @@ Quando('crio um registro e tento cadastrar novamente a mesma label de Área Prom
     nome: `Teste automatizado ${timestamp}`,
     tipo: 1,
     perfil: {
-      id: `${Cypress.env('ID_AREA_PROMOTORA')}`,
+      id: `${Cypress.env('AREA_PROMOTORA_ID')}`,
       nome: `${Cypress.env('PERFIL_AREA_PROMOTORA')}`,
       visaoId: 1,
-      label: `${Cypress.env('LABEL_AREA_PROMOTORA')}`,
-      value: `${Cypress.env('VALUE_AREA_PROMOTORA')}`
+      label: `${Cypress.env('TEXTO_AREA_PROMOTORA')}`,
+      value: `${Cypress.env('VALOR_AREA_PROMOTORA')}`
     },
     telefones: [
       { telefone: `${Cypress.env('TELEFONES')}` }
@@ -414,11 +414,11 @@ Quando('crio um registro para validar o delete de Área Promotora', function () 
       nome: `Teste automatizado ${timestamp}`,
       tipo: 1,
       perfil: {
-      id: `${Cypress.env('ID_AREA_PROMOTORA')}`,
+      id: `${Cypress.env('AREA_PROMOTORA_ID')}`,
       nome: `${Cypress.env('PERFIL_AREA_PROMOTORA')}`,
       visaoId: 1,
-      label: `${Cypress.env('LABEL_AREA_PROMOTORA')}`,
-      value: `${Cypress.env('VALUE_AREA_PROMOTORA')}`
+      label: `${Cypress.env('TEXTO_AREA_PROMOTORA')}`,
+      value: `${Cypress.env('VALOR_AREA_PROMOTORA')}`
     },
     telefones: [
       { telefone: `${Cypress.env('TELEFONES')}` }
@@ -521,11 +521,11 @@ Quando('crio um registro para validar a edição por id de Área Promotora', fun
       nome: `Teste automatizado ${timestamp}`,
     tipo: 1,
     perfil: {
-      id: `${Cypress.env('ID_AREA_PROMOTORA')}`,
+      id: `${Cypress.env('AREA_PROMOTORA_ID')}`,
       nome: `${Cypress.env('PERFIL_AREA_PROMOTORA')}`,
       visaoId: 1,
-      label: `${Cypress.env('LABEL_AREA_PROMOTORA')}`,
-      value: `${Cypress.env('VALUE_AREA_PROMOTORA')}`
+      label: `${Cypress.env('TEXTO_AREA_PROMOTORA')}`,
+      value: `${Cypress.env('VALOR_AREA_PROMOTORA')}`
     },
     telefones: [
       { telefone: `${Cypress.env('TELEFONES')}` }
@@ -570,11 +570,11 @@ Então('edito a Área Promotora por id com o status 200', function () {
         nome: `Teste automatizado ${timestamp}`,
     tipo: 1,
     perfil: {
-      id: `${Cypress.env('ID_AREA_PROMOTORA')}`,
+      id: `${Cypress.env('AREA_PROMOTORA_ID')}`,
       nome: `${Cypress.env('PERFIL_AREA_PROMOTORA')}`,
       visaoId: 1,
-      label: `${Cypress.env('LABEL_AREA_PROMOTORA')}`,
-      value: `${Cypress.env('VALUE_AREA_PROMOTORA')}`
+      label: `${Cypress.env('TEXTO_AREA_PROMOTORA')}`,
+      value: `${Cypress.env('VALOR_AREA_PROMOTORA')}`
     },
     telefones: [
       { telefone: `${Cypress.env('TELEFONES')}` }
@@ -618,11 +618,11 @@ Quando('tento editar Área Promotora sem id', function () {
       nome: `Teste automatizado ${timestamp}`,
     tipo: 1,
     perfil: {
-      id: `${Cypress.env('ID_AREA_PROMOTORA')}`,
+      id: `${Cypress.env('AREA_PROMOTORA_ID')}`,
       nome: `${Cypress.env('PERFIL_AREA_PROMOTORA')}`,
       visaoId: 1,
-      label: `${Cypress.env('LABEL_AREA_PROMOTORA')}`,
-      value: `${Cypress.env('VALUE_AREA_PROMOTORA')}`
+      label: `${Cypress.env('TEXTO_AREA_PROMOTORA')}`,
+      value: `${Cypress.env('VALOR_AREA_PROMOTORA')}`
     },
     telefones: [
       { telefone: `${Cypress.env('TELEFONES')}` }
@@ -659,11 +659,11 @@ Quando('tento editar Área Promotora com token inválido', function () {
       nome: `Teste automatizado ${timestamp}`,
     tipo: 1,
     perfil: {
-      id: `${Cypress.env('ID_AREA_PROMOTORA')}`,
+      id: `${Cypress.env('AREA_PROMOTORA_ID')}`,
       nome: `${Cypress.env('PERFIL_AREA_PROMOTORA')}`,
       visaoId: 1,
-      label: `${Cypress.env('LABEL_AREA_PROMOTORA')}`,
-      value: `${Cypress.env('VALUE_AREA_PROMOTORA')}`
+      label: `${Cypress.env('TEXTO_AREA_PROMOTORA')}`,
+      value: `${Cypress.env('VALOR_AREA_PROMOTORA')}`
     },
     telefones: [
       { telefone: `${Cypress.env('TELEFONES')}` }
@@ -700,11 +700,11 @@ Quando('crio um registro para validar a busca por id de Área Promotora', functi
       nome: `Teste automatizado ${timestamp}`,
     tipo: 1,
     perfil: {
-      id: `${Cypress.env('ID_AREA_PROMOTORA')}`,
+      id: `${Cypress.env('AREA_PROMOTORA_ID')}`,
       nome: `${Cypress.env('PERFIL_AREA_PROMOTORA')}`,
       visaoId: 1,
-      label: `${Cypress.env('LABEL_AREA_PROMOTORA')}`,
-      value: `${Cypress.env('VALUE_AREA_PROMOTORA')}`
+      label: `${Cypress.env('TEXTO_AREA_PROMOTORA')}`,
+      value: `${Cypress.env('VALOR_AREA_PROMOTORA')}`
     },
     telefones: [
       { telefone: `${Cypress.env('TELEFONES')}` }
