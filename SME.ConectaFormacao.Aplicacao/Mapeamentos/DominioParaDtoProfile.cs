@@ -421,13 +421,25 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<FormacaoTurma, RetornoTurmaDetalheDTO>()
                 .ForMember(dest => dest.Horario,
-                    opt => opt.MapFrom(o => $"{o.HoraInicio} até {o.HoraFim}"))
+                    opt => opt.MapFrom(o => $" De {o.HoraInicio} - {o.HoraFim}"))
                 .ForMember(dest => dest.Periodos,
                     opt =>
-                        opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"{s.DataInicio:dd/MM/yyyy} - {s.DataFim.Value:dd/MM/yyyy}" : $"{s.DataInicio:dd/MM/yyyy}")));
+                        opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"{s.DataInicio:dd/MM/yyyy} - {s.DataFim.Value:dd/MM/yyyy}" : $"{s.DataInicio:dd/MM/yyyy}")))
+                .ForMember(dest => dest.DatasEncontros,
+                    opt => opt.MapFrom(x =>
+                        x.Periodos.SelectMany(p =>
+                            GerarDatasEncontros(
+                                p.DataInicio,
+                                p.DataFim ?? p.DataInicio,
+                                x.HoraInicio,
+                                x.HoraFim
+                            )
+                        ).ToList()
+                    ));
 
 
-            CreateMap<CursistaServicoEol, CursistaServicoEol>().ReverseMap();
+
+        CreateMap<CursistaServicoEol, CursistaServicoEol>().ReverseMap();
 
 
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
@@ -437,6 +449,19 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista));
+        }
+        private static List<string> GerarDatasEncontros(DateTime inicio, DateTime fim, string horaInicio, string horaFim)
+        {
+            var lista = new List<string>();
+            var dataAtual = inicio.Date;
+
+            while (dataAtual <= fim.Date)
+            {
+                lista.Add($"{dataAtual:dd/MM/yyyy} {horaInicio} - {horaFim}");
+                dataAtual = dataAtual.AddDays(1);
+            }
+
+            return lista;
         }
     }
 }
