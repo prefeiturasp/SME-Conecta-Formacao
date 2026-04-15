@@ -1994,25 +1994,27 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                pe.local,
                                pe.hora_inicio horaInicio,
                                pe.hora_fim horaFim,
-                               pet.proposta_encontro_id propostaEncontroId 
+                               pet.proposta_encontro_id propostaEncontroId,
+                               coalesce(PGP.DATA_INICIO, p.data_realizacao_inicio) AS dataInicio,
+                               coalesce(PGP.DATA_FIM, p.data_realizacao_fim) AS dataFim
                         from proposta_turma pt
                         join proposta_encontro_turma pet on pet.turma_id = pt.id
-                        join proposta_encontro pe on pe.id = pet.proposta_encontro_id 
+                        join proposta_encontro pe on pe.id = pet.proposta_encontro_id
+                        JOIN proposta p ON p.ID = pt.PROPOSTA_ID
+                        LEFT JOIN proposta_grupo_periodo_turma pgpt ON pgpt.PROPOSTA_TURMA_ID = pt.ID AND NOT pgpt.EXCLUIDO 
+                        LEFT JOIN PUBLIC.PROPOSTA_GRUPO_PERIODO AS PGP ON PGP.ID = pgpt.GRUPO_PERIODO_ID AND NOT pgp.EXCLUIDO
                         where pt.proposta_id = @propostaId
                           and not pt.excluido
                           and not pet.excluido
                           and not pe.excluido
-                        order by pt.nome, pe.hora_inicio;
+                        order by pt.nome, dataInicio, pe.hora_inicio;
 
-                        select
-	                        coalesce(pgp.data_inicio, ped.data_inicio) as dataInicio,
-	                        coalesce(pgp.data_fim, ped.data_fim) as dataFim,
-	                        ped.proposta_encontro_id propostaEncontroId
-                        from proposta_encontro pe
-                            join proposta p on p.id = pe.proposta_id
-                            join  proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
-                            left join proposta_grupo_periodo_turma pgpt on pgpt.proposta_turma_id = pe.id and not pgpt.excluido
-                            left join proposta_grupo_periodo pgp on pgp.id = pgpt.grupo_periodo_id and not pgp.excluido
+                        select 
+                              ped.data_inicio dataInicio,
+                              ped.data_fim dataFim,
+                              ped.proposta_encontro_id propostaEncontroId
+                        from proposta_encontro pe 
+                        join  proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
                         where pe.proposta_id = @propostaId
                           and not pe.excluido
                           and not ped.excluido
