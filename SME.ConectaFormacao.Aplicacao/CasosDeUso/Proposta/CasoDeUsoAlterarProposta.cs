@@ -36,7 +36,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
         {
             var perfilUsuarioLogado = await mediator.Send(new ObterGrupoUsuarioLogadoQuery());
 
-            // Admin pode editar
             if (perfilUsuarioLogado.EhPerfilAdminDF())
                 return true;
 
@@ -44,7 +43,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
                 (await mediator.Send(new ObterPerfilAreaPromotoraQuery(perfilUsuarioLogado)))
                 .NaoEhNulo();
 
-            // Se não for área promotora, não pode editar
             if (!ehAreaPromotora)
                 return false;
 
