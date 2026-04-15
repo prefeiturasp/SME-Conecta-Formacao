@@ -450,7 +450,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista));
         }
-        private List<string> GerarDatasEncontros(DateTime inicio, DateTime fim, string horaInicio, string horaFim)
+        private static List<string> GerarDatasEncontros(DateTime inicio, DateTime fim, string horaInicio, string horaFim)
         {
             var lista = new List<string>();
             var dataAtual = inicio.Date;
