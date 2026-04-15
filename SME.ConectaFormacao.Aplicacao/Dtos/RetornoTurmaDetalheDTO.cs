@@ -10,5 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public string Horario { get; set; }
         public bool InscricaoEncerrada { get; set; }
         public List<string>? DatasEncontros { get; set; }
+        public DateTime DataInicio { get; set; }
+        public DateTime DataFim { get; set; }
     }
 }
