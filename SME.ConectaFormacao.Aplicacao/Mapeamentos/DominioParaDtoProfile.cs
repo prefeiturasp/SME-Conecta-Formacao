@@ -435,6 +435,16 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                                 x.HoraFim
                             )
                         ).ToList()
+                    ))
+                .ForMember(dest => dest.DataEncontrosNovo,
+                    opt => opt.MapFrom(x =>
+                        x.DatasNovo.Select(p => new DataEncontroNovoDTO
+                        {
+                            DataInicial = p.DataInicio.ToString("dd/MM/yyyy"),
+                            DataFinal = p.DataFim.HasValue ? p.DataFim.Value.ToString("dd/MM/yyyy") : null,
+                            HoraInicial = p.HoraInicio,
+                            HoraFinal = p.HoraFim
+                        }).ToList()
                     ));
 
 

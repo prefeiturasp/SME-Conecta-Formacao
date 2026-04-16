@@ -11,5 +11,6 @@
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public IEnumerable<FormacaoTurmaData> Periodos { get; set; }
+        public IEnumerable<FormacaoTurmaDataNovo> DatasNovo { get; set; }
     }
 }
