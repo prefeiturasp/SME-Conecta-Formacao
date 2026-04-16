@@ -442,7 +442,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                         x.DatasNovo == null ? null : x.DatasNovo.Select(p => new DataEncontroNovoDto
                         {
                             DataInicial = p.DataInicio.ToString(FormatoData),
-                            DataFinal = p.DataFim?.ToString(FormatoData),
+                            DataFinal = p.DataFim.HasValue ? p.DataFim.Value.ToString(FormatoData) : null,
                             HoraInicial = p.HoraInicio,
                             HoraFinal = p.HoraFim,
                             ModeloHorario = p.ModeloHorario
