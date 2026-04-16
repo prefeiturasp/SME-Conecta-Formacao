@@ -2009,20 +2009,36 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           and not pe.excluido
                         order by pt.nome, dataInicio, pe.hora_inicio;
 
-                        select 
+                        select
                               ped.data_inicio dataInicio,
                               ped.data_fim dataFim,
                               ped.proposta_encontro_id propostaEncontroId
-                        from proposta_encontro pe 
+                        from proposta_encontro pe
                         join  proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
                         where pe.proposta_id = @propostaId
                           and not pe.excluido
                           and not ped.excluido
-                        order by ped.data_inicio;  
+                        order by ped.data_inicio;
+
+                        select
+                              coalesce(pgp.data_inicio, ped.data_inicio) dataInicio,
+                              coalesce(pgp.data_fim, ped.data_fim) dataFim,
+                              ped.proposta_encontro_id propostaEncontroId,
+                              coalesce(ped.hora_inicio, pe.hora_inicio) horaInicio,
+                              coalesce(ped.hora_fim, pe.hora_fim) horaFim,
+                              case when ped.hora_inicio is not null then 'novo' else 'legado' end modeloHorario
+                        from proposta_encontro pe
+                        join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
+                        left join proposta_encontro_turma pet on pet.proposta_encontro_id = pe.id and not pet.excluido
+                        left join proposta_grupo_periodo_turma pgpt on pgpt.proposta_turma_id = pet.turma_id and not pgpt.excluido
+                        left join proposta_grupo_periodo pgp on pgp.id = pgpt.grupo_periodo_id and not pgp.excluido
+                        where pe.proposta_id = @propostaId
+                          and not pe.excluido
+                        order by dataInicio;
 
                         select a.nome,
                                a.codigo
-                        from arquivo a 
+                        from arquivo a
                         where not a.excluido and exists(select 1 from proposta p where not p.excluido and a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId);";
 
             var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao });
@@ -2036,11 +2052,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 formacaoDetalhe.PalavrasChaves = await queryMultiple.ReadAsync<string>();
                 formacaoDetalhe.Turmas = await queryMultiple.ReadAsync<FormacaoTurma>();
                 var formacaoDatasTurmas = await queryMultiple.ReadAsync<FormacaoTurmaData>();
+                var formacaoDatasTurmasNovo = await queryMultiple.ReadAsync<FormacaoTurmaDataNovo>();
                 var arquivos = await queryMultiple.ReadAsync<Arquivo>();
                 formacaoDetalhe.ArquivoImagemDivulgacao = arquivos.Any() ? arquivos.FirstOrDefault() : null;
 
                 foreach (var turma in formacaoDetalhe.Turmas)
+                {
                     turma.Periodos = formacaoDatasTurmas.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId).OrderBy(o => o.DataInicio);
+                    turma.DatasNovo = formacaoDatasTurmasNovo.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId).OrderBy(o => o.DataInicio);
+                }
 
                 formacaoDetalhe.Turmas = formacaoDetalhe.Turmas.OrderBy(o => o.Periodos.FirstOrDefault().DataInicio);
             }

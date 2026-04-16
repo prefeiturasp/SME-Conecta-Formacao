@@ -27,6 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
     public class DominioParaDtoProfile : Profile
     {
+        private const string FormatoData = "dd/MM/yyyy";
         public DominioParaDtoProfile()
         {
             MapAuditoria();
@@ -423,8 +424,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Horario,
                     opt => opt.MapFrom(o => $" De {o.HoraInicio} - {o.HoraFim}"))
                 .ForMember(dest => dest.Periodos,
-                    opt =>
-                        opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"{s.DataInicio:dd/MM/yyyy} - {s.DataFim.Value:dd/MM/yyyy}" : $"{s.DataInicio:dd/MM/yyyy}")))
+                    opt => opt.MapFrom(x => x.Periodos.Select(s => FormatarPeriodoData(s))))
                 .ForMember(dest => dest.DatasEncontros,
                     opt => opt.MapFrom(x =>
                         x.Periodos.SelectMany(p =>
@@ -435,7 +435,9 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                                 x.HoraFim
                             )
                         ).ToList()
-                    ));
+                    ))
+                .ForMember(dest => dest.DataEncontrosNovo,
+                    opt => opt.MapFrom(x => MapDataEncontrosNovo(x)));
 
 
 
@@ -450,6 +452,24 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista));
         }
+        private static string FormatarPeriodoData(FormacaoTurmaData s) =>
+            s.DataFim.HasValue
+                ? $"{s.DataInicio:dd/MM/yyyy} - {s.DataFim.Value:dd/MM/yyyy}"
+                : $"{s.DataInicio:dd/MM/yyyy}";
+
+        private static List<DataEncontroNovoDto>? MapDataEncontrosNovo(FormacaoTurma x)
+        {
+            if (x.DatasNovo == null) return null;
+            return x.DatasNovo.Select(p => new DataEncontroNovoDto
+            {
+                DataInicial = p.DataInicio.ToString(FormatoData),
+                DataFinal = p.DataFim.HasValue ? p.DataFim.Value.ToString(FormatoData) : null,
+                HoraInicial = p.HoraInicio,
+                HoraFinal = p.HoraFim,
+                ModeloHorario = p.ModeloHorario
+            }).ToList();
+        }
+
         private static List<string> GerarDatasEncontros(DateTime inicio, DateTime fim, string horaInicio, string horaFim)
         {
             var lista = new List<string>();
