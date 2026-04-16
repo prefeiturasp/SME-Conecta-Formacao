@@ -2025,7 +2025,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                               coalesce(pgp.data_fim, ped.data_fim) dataFim,
                               ped.proposta_encontro_id propostaEncontroId,
                               coalesce(ped.hora_inicio, pe.hora_inicio) horaInicio,
-                              coalesce(ped.hora_fim, pe.hora_fim) horaFim
+                              coalesce(ped.hora_fim, pe.hora_fim) horaFim,
+                              case when ped.hora_inicio is not null then 'novo' else 'legado' end modeloHorario
                         from proposta_encontro pe
                         join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
                         left join proposta_encontro_turma pet on pet.proposta_encontro_id = pe.id and not pet.excluido

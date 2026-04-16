@@ -27,6 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
     public class DominioParaDtoProfile : Profile
     {
+        private const string FormatoData = "dd/MM/yyyy";
         public DominioParaDtoProfile()
         {
             MapAuditoria();
@@ -438,12 +439,13 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                     ))
                 .ForMember(dest => dest.DataEncontrosNovo,
                     opt => opt.MapFrom(x =>
-                        x.DatasNovo.Select(p => new DataEncontroNovoDTO
+                        x.DatasNovo == null ? null : x.DatasNovo.Select(p => new DataEncontroNovoDto
                         {
-                            DataInicial = p.DataInicio.ToString("dd/MM/yyyy"),
-                            DataFinal = p.DataFim.HasValue ? p.DataFim.Value.ToString("dd/MM/yyyy") : null,
+                            DataInicial = p.DataInicio.ToString(FormatoData),
+                            DataFinal = p.DataFim?.ToString(FormatoData),
                             HoraInicial = p.HoraInicio,
-                            HoraFinal = p.HoraFim
+                            HoraFinal = p.HoraFim,
+                            ModeloHorario = p.ModeloHorario
                         }).ToList()
                     ));
 
