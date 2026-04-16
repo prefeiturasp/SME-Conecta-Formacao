@@ -7,7 +7,6 @@ class Meus_Dados_Localizadores {
   input_email = () => '#CF_INPUT_EMAIL'
   select_tipo = () => '.ant-row-no-wrap > .ant-form-item > .ant-row > .ant-form-item-control > .ant-form-item-control-input > .ant-form-item-control-input-content > .ant-select > .ant-select-selector > .ant-select-selection-item'
   input_email_educacional = () => '#CF_INPUT_EMAIL'
-  input_nome = () => '#CF_INPUT_NOME'
   input_senha = () => '#CF_INPUT_SENHA' 
   select_pessoa_deficiencia = () => ':nth-child(10) > .ant-form-item > .ant-row > .ant-form-item-control > .ant-form-item-control-input > .ant-form-item-control-input-content > .ant-select > .ant-select-selector > .ant-select-selection-item'
 
