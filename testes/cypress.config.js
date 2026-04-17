@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 
 import createBundler from '@bahmutov/cypress-esbuild-preprocessor'
 import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor'
-import createEsbuildPlugin from '@badeball/cypress-cucumber-preprocessor/esbuild'
+import * as createEsbuildPlugin from '@badeball/cypress-cucumber-preprocessor/esbuild' // ✅ CORREÇÃO
 
 import postgreSQL from 'cypress-postgresql'
 import pg from 'pg'
@@ -58,9 +58,10 @@ export default defineConfig({
       on(
         "file:preprocessor",
         createBundler({
-          plugins: [createEsbuildPlugin(config)],
+          plugins: [createEsbuildPlugin.default(config)], // ✅ CORREÇÃO
         })
       )
+
       // Allure
       allureWriter(on, config)
 
@@ -98,7 +99,6 @@ export default defineConfig({
         },
       })
 
-      // ENV (mantendo seu padrão)
       const envKeys = [
         'LOGIN_ADM_GERAL',
         'LOGIN_CURSISTA',
@@ -135,7 +135,7 @@ export default defineConfig({
         db: dbConfig
       }
 
-      // Cypress Cloud (resolve seu erro atual)
+      // Cypress Cloud
       const enhancedConfig = await cloudPlugin(on, config)
 
       return enhancedConfig
