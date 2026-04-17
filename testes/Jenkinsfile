@@ -41,8 +41,9 @@ pipeline {
                                     -w /app \
                                     registry.sme.prefeitura.sp.gov.br/devops/cypress-agent:14.5.2 \
                                     sh -c "rm -rf allure-results && \
-                                        rm -rf node_modules package-lock.json && \
-                                        npm ci --include=dev && \
+                                        npm install && \
+                                        npm install cypress@14.5.2 cypress-cloud@beta \
+                                        @shelex/cypress-allure-plugin allure-mocha crypto-js@4.1.1 --save-dev && \
                                         npx cypress-cloud run \
                                                 --parallel \
                                                 --browser chrome \
@@ -58,8 +59,8 @@ pipeline {
                         }
                     }
                     echo "Testes Cypress finalizados."
-                    def logText = currentBuild.rawBuild.getLog(20).join('\\n')
-                    def match = logText =~ /Recorded Run:\\s*(https?:\\/\\/\\S+)/
+                    def logText = currentBuild.rawBuild.getLog(20).join('\n')
+                    def match = logText =~ /Recorded Run:\s*(https?:\/\/\S+)/
                     if (match) {
                         env.CYPRESS_RUN_URL = match[0][1]
                     }
@@ -123,8 +124,31 @@ pipeline {
         
         success { sendTelegram("<b>SUCESSO! ✅</b>") }
         unstable { sendTelegram("<b>INSTÁVEL! ⚠️</b>") }
-        failure { sendTelegram("<b>FALHA! ❌</b>\\n") }
-        aborted { sendTelegram("<b>CANCELADO! ✖️</b>\\n") }
+        failure { sendTelegram("<b>FALHA! ❌</b>\n") }
+        aborted { sendTelegram("<b>CANCELADO! ✖️</b>\n") }
         
     }
 }
+
+
+// def sendTelegram(message) {
+//     def messageTemplate = (
+//         "<b>Job Name:</b> <a href='${JOB_URL}'>${JOB_NAME}</a>\n\n" +
+//         "<b>Status:</b> ${message}\n" +
+//         "<b>Build Number:</b> ${BUILD_DISPLAY_NAME}\n" +
+//         "<b>Dashboard Link:</b> <a href='${env.CYPRESS_RUN_URL}'>Resultados no dashboard</a>\n" +
+//         "<b>Log:</b> <a href='${env.BUILD_URL}console'>Ver console output</a>"
+//     )
+    
+//     def encodedMessage = URLEncoder.encode(messageTemplate, "UTF-8")
+
+//     withCredentials([string(credentialsId: 'telegramTokensigpae', variable: 'TOKEN'),
+//     string(credentialsId: 'telegramChatIdsigpae', variable: 'CHAT_ID')]) {
+//         response = httpRequest (consoleLogResponseBody: true,
+//             contentType: 'APPLICATION_JSON',
+//             httpMode: 'GET',
+//             url: 'https://api.telegram.org/bot'+"$TOKEN"+'/sendMessage?text='+encodedMessage+'&chat_id='+"$CHAT_ID"+'&parse_mode='+"HTML"+'&disable_web_page_preview=true',
+//             validResponseCodes: '200')
+//         return response
+//     }
+// }
