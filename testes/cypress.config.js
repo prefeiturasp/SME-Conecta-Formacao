@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 
 import createBundler from '@bahmutov/cypress-esbuild-preprocessor'
 import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor'
-import * as createEsbuildPlugin from '@badeball/cypress-cucumber-preprocessor/esbuild' // ✅ CORREÇÃO
+import { createEsbuildPlugin } from '@badeball/cypress-cucumber-preprocessor/esbuild' // ✅ CORREÇÃO FINAL
 
 import postgreSQL from 'cypress-postgresql'
 import pg from 'pg'
@@ -58,7 +58,7 @@ export default defineConfig({
       on(
         "file:preprocessor",
         createBundler({
-          plugins: [createEsbuildPlugin.default(config)], // ✅ CORREÇÃO
+          plugins: [createEsbuildPlugin(config)], // ✅ CORREÇÃO
         })
       )
 
@@ -135,7 +135,7 @@ export default defineConfig({
         db: dbConfig
       }
 
-      // Cypress Cloud
+      // Cypress Cloud (mantido conforme necessidade)
       const enhancedConfig = await cloudPlugin(on, config)
 
       return enhancedConfig
