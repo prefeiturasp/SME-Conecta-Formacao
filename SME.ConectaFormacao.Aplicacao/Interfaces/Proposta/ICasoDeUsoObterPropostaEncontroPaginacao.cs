@@ -1,10 +1,10 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Aplicacao.Dtos.PropostaEncontros;
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Proposta
 {
     public interface ICasoDeUsoObterPropostaEncontroPaginacao
     {
-        Task<PaginacaoResultadoDto<PropostaEncontroDTO>> Executar(long id);
+        Task<PaginacaoResultadoDto<CronogramaEncontroDto>> ExecutarAsync(long id);
     }
 }

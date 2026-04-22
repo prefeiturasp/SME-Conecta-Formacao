@@ -19,7 +19,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<IRepositorioCodafListaPresenca> _repositorioCodafListaPresencaMock;
         private readonly Mock<IRepositorioCodafComentarioListaPresenca> _repositorioComentarioCodafListaPresencaMock;
         private readonly Mock<ITransacao> _transacaoMock;
-        private readonly Mock<IRepositorioCodafMovimentacaoListaPresenca> _repositorioCodafMovimentacaoMock;
         private readonly Mock<IMediator> _mediatorMock;
         private readonly CasoDeUsoDevolverParaCorrecaoCodafListaPresenca _casoDeUso;
         private readonly Faker _faker;
@@ -30,7 +29,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _repositorioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
             _repositorioComentarioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafComentarioListaPresenca>();
             _transacaoMock = mocker.GetMock<ITransacao>();
-            _repositorioCodafMovimentacaoMock = mocker.GetMock<IRepositorioCodafMovimentacaoListaPresenca>();
             _mediatorMock = mocker.GetMock<IMediator>();
             _casoDeUso = mocker.CreateInstance<CasoDeUsoDevolverParaCorrecaoCodafListaPresenca>();
             _faker = new();
@@ -88,7 +86,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             long codafListaPresencaId = _faker.Random.Long(1);
             string justificativa = _faker.Lorem.Sentence();
 
-            var codafListaPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null) { Id = codafListaPresencaId };
+            var codafListaPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null) { Id = codafListaPresencaId };
             codafListaPresenca.Iniciar();
 
             _repositorioCodafListaPresencaMock
@@ -113,7 +111,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             long codafListaPresencaId = _faker.Random.Long(1);
             string justificativa = _faker.Lorem.Sentence();
-            var codafListaPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null) { Id = codafListaPresencaId };
+            var codafListaPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null) { Id = codafListaPresencaId };
             codafListaPresenca.Iniciar();
             codafListaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
@@ -144,7 +142,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             long codafListaPresencaId = _faker.Random.Long(1);
             string justificativa = _faker.Lorem.Sentence();
-            var codafListaPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null) { Id = codafListaPresencaId };
+            var codafListaPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null) { Id = codafListaPresencaId };
             codafListaPresenca.Iniciar();
             codafListaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
@@ -174,7 +172,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             long codafListaPresencaId = _faker.Random.Long(1);
             string justificativa = _faker.Lorem.Sentence();
-            var codafListaPresenca = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null) { Id = codafListaPresencaId };
+            var codafListaPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null) { Id = codafListaPresencaId };
             codafListaPresenca.Iniciar();
             codafListaPresenca.MarcarComoEnviadaParaDf();
             _repositorioCodafListaPresencaMock
@@ -186,10 +184,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .Returns(transacaoMock.Object);
 
             // Act
-            var resultado = await _casoDeUso.ExecutarAsync(codafListaPresencaId, justificativa);
+            await _casoDeUso.ExecutarAsync(codafListaPresencaId, justificativa);
 
             // Assert
-            _mediatorMock.Verify(m => m.Publish(It.Is<CodafListaPresencaDevolvidaEvento>(e => e.CodafListaPresenca == codafListaPresenca), It.IsAny<CancellationToken>()), Times.Once);
+            _mediatorMock.Verify(m => m.Publish(It.Is<CodafListaPresencaDevolvidaEvento>(e => 
+            e.CodafListaPresenca == codafListaPresenca), It.IsAny<CancellationToken>())
+            , Times.Once);
         }
     }
 }

@@ -201,5 +201,44 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             // Completa a importação e envia ao banco
             await writer.CompleteAsync();
         }
+
+        public async Task SincronizarLoteUeEolAsync(List<Ue> ues)
+        {
+            var conn = (NpgsqlConnection)conexao.Obter();
+            if (conn.State != System.Data.ConnectionState.Open)
+                await conn.OpenAsync();
+            using var transaction = await conn.BeginTransactionAsync();
+
+            try
+            {
+                const string sqlUpsert =
+                    """
+                    INSERT INTO ue (id, dre_id, codigo_ue, tipo_escola, sigla_tipo_escola, nome_escola)
+                    VALUES (@Id,@DreId,@CodigoUe,@TipoEscola,@SiglaTipoEscola,@NomeEscola)
+                    ON CONFLICT (codigo_ue) DO UPDATE SET
+                        dre_id = EXCLUDED.dre_id,
+                        tipo_escola = EXCLUDED.tipo_escola,
+                        sigla_tipo_escola = EXCLUDED.sigla_tipo_escola,
+                        nome_escola = EXCLUDED.nome_escola,
+                        data_atualizacao = now();
+                    """;
+
+                await conn.ExecuteAsync(sqlUpsert, ues, transaction);
+
+                var codigosUe = ues.Select(u => u.CodigoUe).ToList();
+                const string sqlDelete = 
+                    """
+                    DELETE FROM ue
+                    WHERE codigo_ue != ALL(@CodigosUe)
+                    """;
+                await conn.ExecuteAsync(sqlDelete, new { CodigosUe = codigosUe }, transaction);
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
 }

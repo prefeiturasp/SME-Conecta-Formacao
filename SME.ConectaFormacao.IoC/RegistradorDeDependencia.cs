@@ -27,7 +27,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacoes;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Ue;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Ues;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Ano;
@@ -78,6 +78,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
 {
     public virtual void Registrar()
     {
+        serviceCollection.AddSingleton(TimeProvider.System);
         RegistrarMediatr();
         RegistrarValidadoresFluentValidation();
         RegistrarTelemetria();
@@ -100,6 +101,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             .AdicionarModuloCodaf()
             .AdicionarModuloProposta()
             .ConfigurarServicoCompactacao()
+            .AdicionarModuloRelatorio()
+            .AdicionarModuloUe()
             ;
     }
 
@@ -232,6 +235,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new CodafAnexoMap());
 
             config.AddMap(new UsuarioAcessibilidadeMap());
+            config.AddMap(new UeMap());
 
             config.ForDommel();
         });
@@ -358,6 +362,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPorId, CasoDeUsoObterInscricaoPorId>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterTurmasInscricao, CasoDeUsoObterTurmasInscricao>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoPaginada, CasoDeUsoObterInscricaoPaginada>();
+        serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoProximaPaginada, CasoDeUsoObterInscricaoProximaPaginada>();
+        serviceCollection.TryAddScoped<ICasoDeUsoObterInscricaoFinalizadaPaginada, CasoDeUsoObterInscricaoFinalizadaPaginada>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterDadosPaginadosComFiltros, CasoDeUsoObterDadosPaginadosComFiltros>();
         serviceCollection.TryAddScoped<ICasoDeUsoAlterarVinculoInscricao, CasoDeUsoAlterarVinculoInscricao>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId, CasoDeUsoObterInformacoesInscricoesEstaoAbertasPorId>();
@@ -426,6 +432,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.AddScoped<ISincronizarFuncaoAtividadeEolUseCase, SincronizarFuncaoAtividadeEolUseCase>();
         serviceCollection.AddScoped<ISincronizarFuncaoAtividadeEolPorDreUseCase, SincronizarFuncaoAtividadeEolPorDreUseCase>();
         serviceCollection.AddScoped<ICasoDeUsoObterDadosInscricaoParaProposta, CasoDeUsoObterDadosInscricaoParaProposta>();
+        serviceCollection.AddScoped<ISincronizarUesEolUseCase, SincronizarUesEolUseCase>();
     }
 
     protected virtual void RegistrarHttpClients()

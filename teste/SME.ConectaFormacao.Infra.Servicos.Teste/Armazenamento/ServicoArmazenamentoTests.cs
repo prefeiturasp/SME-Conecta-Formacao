@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Minio;
+using Minio.DataModel.Args;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento;
@@ -55,9 +56,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Teste.Armazenamento
 
             _minioClientMock.Verify(x => x.PutObjectAsync(
                 It.Is<PutObjectArgs>(args =>
-                    args != null &&
-                    true
-                ),
+                    args != null),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
 

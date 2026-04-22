@@ -225,7 +225,7 @@
                     CC.ID = @certificadoId
                     AND CC.STATUS_PROCESSAMENTO = @statusProcessado
                     AND NOT CC.EXCLUIDO
-                    AND (U_ALUNO.LOGIN = @login OR U_PROF.LOGIN = @login)
+                    AND (@login IS NULL OR U_ALUNO.LOGIN = @login OR U_PROF.LOGIN = @login)
                 """;
 
         public const string ObterTodosCertificadosBaseJoins = """
@@ -243,15 +243,16 @@
                 """;
 
         public const string ObterTodosCertificadosSelect = """
-                SELECT CC.ID,
+                SELECT DISTINCT
+                         CC.ID,
                          CC.CODIGO_CERTIFICADO AS codigoCertificado,
-                         coalesce(U_Cursista.NOME, U_Regente.NOME) AS nomeParticipante,
+                         coalesce(U_Cursista.NOME, U_Regente.NOME, PR.nome_regente) AS nomeParticipante,
                          CASE
              	            WHEN CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID IS NOT NULL THEN @Cursista
              	            WHEN CC.PROPOSTA_REGENTE_TURMA_ID IS NOT NULL THEN @Regente
              	            ELSE @NaoDefinido
                          END AS tipoCertificado,
-                         coalesce(U_Cursista.LOGIN, U_Regente.LOGIN) AS documento,
+                         coalesce(U_Cursista.LOGIN, PR.REGISTRO_FUNCIONAL) AS documento,
                          CC.DATA_EMISSAO AS dataEmissao,
                          P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
                          P.ID AS codigoFormacao,

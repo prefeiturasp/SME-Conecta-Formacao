@@ -255,6 +255,14 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             return Convert.ToUInt64(cpf).ToString("000\\.000\\.000\\-00");
         }
 
+        public static string AplicarMascaraRf(this string rf)
+        {
+            rf = rf.SomenteNumeros();
+            if (rf.Length != 7)
+                return rf;
+            return Convert.ToUInt64(rf).ToString("000\\.000\\.0");
+        }
+
         public static bool SaoStringsIguais(this string? str1, string? str2)
         {
             if (string.IsNullOrEmpty(str1) && string.IsNullOrEmpty(str2))

@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             _faker = new();
 
             // Setup Padrão dos Mocks para a Base
-            _mockTemplateService.Setup(x => x.ObterTemplateCertificado(It.IsAny<string>()))
+            _mockTemplateService.Setup(x => x.ObterTemplate(It.IsAny<string>()))
                 .Returns("<html>{{IMG_BRASAO_TITULO_SME}} - {{ANO_ATUAL}}</html>"); // Template simplificado
 
             _mockTemplateService.Setup(x => x.ObterImagemBase64(It.IsAny<string>()))
@@ -50,7 +50,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             resultado.Should().Contain("base64_fake");
             resultado.Should().Contain(DateTime.Now.Year.ToString());
 
-            _mockTemplateService.Verify(x => x.ObterTemplateCertificado("layout-certificado-codaf.html"), Times.Once);
+            _mockTemplateService.Verify(x => x.ObterTemplate("layout-certificado-codaf.html"), Times.Once);
         }
 
         private class TestableCertificadoEstrategiaBase(ITemplateService templateService) : CertificadoEstrategiaBase(templateService)

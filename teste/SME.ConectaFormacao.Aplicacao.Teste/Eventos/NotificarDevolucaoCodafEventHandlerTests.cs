@@ -65,7 +65,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Eventos
         {
             // Arrange
             var evento = GerarEventoValido();
-            ConfigurarMocksDeDadosBasicos(out var usuarioAlvo, out var usuarioLogado);
+            ConfigurarMocksDeDadosBasicos(out var _, out var _);
 
             // Simula transação de notificação
             var transacaoMock = new Mock<IDbTransaction>();
@@ -142,7 +142,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Eventos
                 NotificacaoCorrelacaoId = Guid.NewGuid()
             };
 
-            var codaf = new CodafListaPresenca(1, 1, null, null, null, null, null, null, null, null)
+            var codaf = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null)
             {
                 Id = _faker.Random.Long(1, 100),
                 Proposta = new() { NumeroHomologacao = _faker.Random.Long(1000, 9999), NomeFormacao = _faker.Lorem.Sentence() },

@@ -75,7 +75,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return ProcessarResultado(resultado);
         }
 
-        [HttpGet("{codafId:long}/imprimir")]
+        [HttpPost("{codafId:long}/imprimir")]
         [ProducesResponseType(typeof(Resultado<ArquivoDto>), 200)]
         [ProducesResponseType(typeof(Resultado<ArquivoDto>), 404)]
         public async Task<IActionResult> ImprimirRelatorioCodafAsync(long codafId)
