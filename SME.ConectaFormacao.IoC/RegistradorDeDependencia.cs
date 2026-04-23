@@ -240,6 +240,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new UsuarioAcessibilidadeMap());
             config.AddMap(new UeMap());
 
+            config.AddMap(new CoordenadoriaMap());
+
             config.ForDommel();
         });
     }
