@@ -9,8 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.AlterarCoordenad
         {
             RuleFor(c => c.Id).GreaterThan(0).WithMessage("Id da coordenadoria deve ser maior que zero.");
             RuleFor(c => c.Nome).NotEmpty().WithMessage("Nome da coordenadoria é obrigatório.");
-            RuleFor(c => c.Sigla).NotEmpty().WithMessage("Sigla da coordenadoria é obrigatória.")
-                .MaximumLength(10).WithMessage("Sigla da coordenadoria deve ter no máximo 10 caracteres.");
+            RuleFor(c => c.Sigla).MaximumLength(10).WithMessage("A sigla da coordenadoria deve conter no máximo 10 caracteres.");
         }
     }
 }

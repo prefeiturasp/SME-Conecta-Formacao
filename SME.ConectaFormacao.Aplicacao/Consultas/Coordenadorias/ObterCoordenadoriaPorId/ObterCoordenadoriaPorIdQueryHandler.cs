@@ -23,7 +23,13 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Coordenadorias.ObterCoordenado
                 {
                     Id = a.Id,
                     Nome = a.Nome
-                })
+                }),
+                AlteradoEm = coordenadoria.AlteradoEm,
+                AlteradoPor = coordenadoria.AlteradoPor,
+                AlteradoLogin = coordenadoria.AlteradoLogin,
+                CriadoEm = coordenadoria.CriadoEm,
+                CriadoPor = coordenadoria.CriadoPor,
+                CriadoLogin = coordenadoria.CriadoLogin,                
             };
             return coordenadoriaDetalhadoDto;
         }

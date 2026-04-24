@@ -22,13 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.InserirCoordenad
             {
                 Nome = entidade.Nome,
                 Sigla = entidade.Sigla,
-                Id = entidade.Id,
-                AlteradoEm = entidade.AlteradoEm,
-                AlteradoLogin = entidade.AlteradoLogin,
-                AlteradoPor = entidade.AlteradoPor,
-                CriadoEm = entidade.CriadoEm,
-                CriadoLogin = entidade.CriadoLogin,
-                CriadoPor = entidade.CriadoPor
+                Id = entidade.Id,                
             };
             return dto;
         }

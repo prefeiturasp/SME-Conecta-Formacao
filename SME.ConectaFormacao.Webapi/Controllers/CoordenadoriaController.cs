@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.AlterarCoordenadoria;
 using SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.InserirCoordenadoria;
+using SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.RemoverCoordenadoria;
 using SME.ConectaFormacao.Aplicacao.Consultas.Coordenadorias.ObterCoordenadoriaPorId;
 using SME.ConectaFormacao.Aplicacao.Consultas.Coordenadorias.ObterCoordenadoriasPaginado;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Coordenadorias;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Contexto;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
@@ -42,9 +44,12 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CoordenadoriaDto>>), 400)]
         public async Task<IActionResult> ObterCoordenadoriasPaginado(
             [FromQuery] CoordenadoriaFiltroDto filtro,
-            [FromServices] IMediator mediator)
+            [FromServices] IMediator mediator,
+            [FromServices] IContextoAplicacao contextoAplicacao)
         {
-            var resultado = await mediator.Send(new ObterCoordenadoriasPaginadoQuery(filtro.Nome, filtro.Sigla, filtro.NumeroPagina, filtro.NumeroRegistros));
+            if (!int.TryParse(contextoAplicacao.ObterVariavel<string>("NumeroPagina"), out var numeroPagina) || numeroPagina == 0) numeroPagina = filtro.NumeroPagina;
+            if (!int.TryParse(contextoAplicacao.ObterVariavel<string>("NumeroRegistros"), out var numeroRegistros) || numeroRegistros == 0) numeroRegistros = filtro.NumeroRegistros;
+            var resultado = await mediator.Send(new ObterCoordenadoriasPaginadoQuery(filtro.Nome, filtro.Sigla, numeroPagina, numeroRegistros));
             return ProcessarResultado(resultado);
         }
 
@@ -56,6 +61,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] IMediator mediator)
         {
             var resultado = await mediator.Send(new ObterCoordenadoriaPorIdQuery(id));
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpDelete("{id:long}")]
+        [ProducesResponseType(typeof(Resultado), 204)]
+        [ProducesResponseType(typeof(Resultado), 400)]
+        public async Task<IActionResult> Excluir(
+            long id,
+            [FromServices] IMediator mediator)
+        {
+            var resultado = await mediator.Send(new RemoverCoordenadoriaCommand(id));
             return ProcessarResultado(resultado);
         }
     }
