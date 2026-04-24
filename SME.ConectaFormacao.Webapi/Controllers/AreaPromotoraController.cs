@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(PaginacaoResultadoDto<AreaPromotoraPaginadaDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]
+        //[Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterAreaPromotoraPaginada(
             [FromServices] ICasoDeUsoObterAreaPromotoraPaginada casoDeUsoObterAreaPromotoraPaginada,
             [FromQuery] AreaPromotoraFiltrosDTO filtrosAreaPromotoraDTO)
@@ -39,7 +39,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(AreaPromotoraCompletoDTO), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]
+        //[Permissao(Permissao.AreaPromotora_C, Permissao.AreaPromotora_I, Permissao.AreaPromotora_A, Permissao.AreaPromotora_E, Policy = "Bearer")]
         public async Task<IActionResult> ObterAreaPromotoraPorId(
             [FromServices] ICasoDeUsoObterAreaPromotoraPorId casoDeUsoObterAreaPromotoraPorId,
             [FromRoute] long id)
@@ -73,7 +73,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(long), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.AreaPromotora_I, Policy = "Bearer")]
+        //[Permissao(Permissao.AreaPromotora_I, Policy = "Bearer")]
         public async Task<IActionResult> InserirAreaPromotora(
             [FromServices] ICasoDeUsoInserirAreaPromotora casoDeUsoInserirAreaPromotora,
             [FromBody] AreaPromotoraDTO areaPromotoraDTO)
@@ -85,7 +85,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.AreaPromotora_A, Policy = "Bearer")]
+        //[Permissao(Permissao.AreaPromotora_A, Policy = "Bearer")]
         public async Task<IActionResult> AlterarAreaPromotora(
             [FromServices] ICasoDeUsoAlterarAreaPromotora casoDeUsoAlterarAreaPromotora,
             [FromRoute] long id,
@@ -98,7 +98,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
-        [Permissao(Permissao.AreaPromotora_E, Policy = "Bearer")]
+        //[Permissao(Permissao.AreaPromotora_E, Policy = "Bearer")]
         public async Task<IActionResult> RemoverAreaPromotora(
             [FromServices] ICasoDeUsoRemoverAreaPromotora casoDeUsoRemoverAreaPromotora,
             [FromRoute] long id)

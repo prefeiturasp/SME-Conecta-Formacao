@@ -54,7 +54,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
         {
             CreateMap<AreaPromotora, AreaPromotoraPaginadaDTO>()
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(x => x.Tipo.Nome()))
-                .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre!.Nome));
+                .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre!.Nome))
+                .ForMember(dest => dest.NomeCoordenadoria, opt => opt.MapFrom(x => x.Coordenadoria != null ? x.Coordenadoria.Nome : null));
 
             CreateMap<AreaPromotora, AreaPromotoraCompletoDTO>()
                 .ForMember(dest => dest.DreId, opt => opt.MapFrom(x => x.DreId))
