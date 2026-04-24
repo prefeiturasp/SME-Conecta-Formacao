@@ -17,8 +17,8 @@ Funcionalidade: Consulta de Área Promotora
 
     Exemplos:
       | tipo          | caso                   |
-      | Rede Parceria | Consultar por parceria |
-      | Rede Direta   | Consultar por direta   |
+      | Rede Parceria | Parceria |
+      | Rede Direta   | Direta   |
 
   Esquema do Cenário: Validar consulta por nome ao: <caso>
     Quando visualizo a tela "Área Promotora"

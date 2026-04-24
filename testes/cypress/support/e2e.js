@@ -12,6 +12,7 @@ import './commands_ui/commands_login'
 import './commands_ui/commands_area_promotora'
 import './commands_ui/commands_meus_dados'
 import './commands_ui/commands_inscricoes'
+import './commands_ui/commands_rede_parceria'
 
 // Evita quebra por erro de front
 Cypress.on('uncaught:exception', () => {
