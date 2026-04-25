@@ -83,5 +83,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public bool? Revalidacao { get; set; }
         public string? JustificativaRevalidacao { get; set; }
         public IEnumerable<PropostaGrupoPeriodoDto> GruposPeriodos { get; set; } = [];
+        public string? AnexoUrl { get; set; }
     }
 }
