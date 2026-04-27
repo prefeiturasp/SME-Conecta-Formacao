@@ -5,9 +5,12 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
+    [ExcludeFromCodeCoverage]
     public class RepositorioAreaPromotora : RepositorioBaseAuditavel<AreaPromotora>, IRepositorioAreaPromotora
     {
         public RepositorioAreaPromotora(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
@@ -34,7 +37,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         }
 
-        public Task<IEnumerable<AreaPromotora>> ObterDadosPaginados(string nome, short? tipo, long? coordenadoriaId, int numeroPagina, int numeroRegistros)
+        public Task<IEnumerable<AreaPromotora>> ObterDadosPaginados(string? nome, short? tipo, long? coordenadoriaId, int numeroPagina, int numeroRegistros)
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
@@ -51,14 +54,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }, new { nome, tipo, coordenadoriaId, numeroRegistros, registrosIgnorados });
         }
 
-        public Task<int> ObterTotalRegistrosPorFiltros(string nome, short? tipo, long? coordenadoriaId)
+        public Task<int> ObterTotalRegistrosPorFiltros(string? nome, short? tipo, long? coordenadoriaId)
         {
-            string query = string.Concat("select count(1) from (", MontarQueryListagem(ref nome, tipo, coordenadoriaId), ") tb");
+            var subQuery = MontarQueryListagem(ref nome, tipo, coordenadoriaId);
+            var query = new StringBuilder("select count(1) from (");
+            query.Append(subQuery);
+            query.Append(") tb");
 
-            return conexao.Obter().ExecuteScalarAsync<int>(query, new { nome, tipo, coordenadoriaId });
+            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { nome, tipo, coordenadoriaId });
         }
 
-        private static string MontarQueryListagem(ref string nome, short? tipo, long? coordenadoriaId)
+        private static string MontarQueryListagem(ref string? nome, short? tipo, long? coordenadoriaId)
         {
             var query =
                 """

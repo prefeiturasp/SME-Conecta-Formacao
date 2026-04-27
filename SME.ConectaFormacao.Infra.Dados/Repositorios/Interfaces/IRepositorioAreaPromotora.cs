@@ -9,9 +9,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<bool> Atualizar(IDbTransaction transacao, AreaPromotora areaPromotora);
         Task<long> Inserir(IDbTransaction transacao, AreaPromotora areaPromotora);
         Task<bool> Remover(IDbTransaction transacao, AreaPromotora areaPromotora);
-        Task<IEnumerable<AreaPromotora>> ObterDadosPaginados(string nome, short? tipo, long? coordenadoriaId, int numeroPagina, int numeroRegistros);
+        Task<IEnumerable<AreaPromotora>> ObterDadosPaginados(string? nome, short? tipo, long? coordenadoriaId, int numeroPagina, int numeroRegistros);
         Task<IEnumerable<AreaPromotoraTelefone>> ObterTelefonesPorId(long id);
-        Task<int> ObterTotalRegistrosPorFiltros(string nome, short? tipo, long? coordenadoriaId);
+        Task<int> ObterTotalRegistrosPorFiltros(string? nome, short? tipo, long? coordenadoriaId);
         Task InserirTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones);
         Task RemoverTelefones(IDbTransaction transacao, long id, IEnumerable<AreaPromotoraTelefone> telefones);
         Task<AreaPromotora> ObterPorGrupoIdEDres(Guid grupoId, string[] dres);

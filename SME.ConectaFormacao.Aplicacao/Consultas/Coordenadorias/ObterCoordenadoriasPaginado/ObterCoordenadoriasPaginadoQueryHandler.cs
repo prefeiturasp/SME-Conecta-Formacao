@@ -13,12 +13,12 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Coordenadorias.ObterCoordenado
             var resultado = await repositorioCoordenadoria
                 .ObterCoordenadoriaPaginadoAsync(request.Nome, request.Sigla, request.Pagina, request.TamanhoPagina);
             var resultadoDto = new PaginacaoResultadoDto<CoordenadoriaDto>(
-                items: resultado.Itens.Select(c => new CoordenadoriaDto
+                items: [.. resultado.Itens.Select(c => new CoordenadoriaDto
                 {
                     Id = c.Id,
                     Nome = c.Nome,
                     Sigla = c.Sigla
-                }).ToList(),
+                })],
                 numeroRegistros: resultado.TamanhoPagina,
                 totalRegistros: resultado.TotalRegistros
             );
