@@ -34,6 +34,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Coordenadorias
             _mapper.Setup(m => m.Map<CoordenadoriaDto>(It.IsAny<Coordenadoria>()))
                    .Returns(new CoordenadoriaDto() { Nome = command.Nome, Sigla = command.Sigla, Id = 1});
 
+            _repositorioCoordenadoria
+                .Setup(r => r.Inserir(It.IsAny<Coordenadoria>()))
+                .ReturnsAsync(1);
+
             // Act
             var result = await _sut.Handle(command, CancellationToken.None);
 
