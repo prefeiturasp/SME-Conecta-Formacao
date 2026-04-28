@@ -569,7 +569,11 @@ Cypress.Commands.add('editar_area_promotora', () => {
 
   cy.get(area_promotora_localizadores.btn_novo_voltar_area_promotora(), { timeout: 5000 })
     .should('be.visible')
-    .click({ force: true })
+    .click()
+  
+  cy.get(area_promotora_localizadores.btn_confirmar_exclui_area_promotora(), { timeout: 5000 })
+    .should('be.visible')
+    .click()
 
   cy.url({ timeout: 10000 }).should('include', '/cadastro/area-promotora')
 
