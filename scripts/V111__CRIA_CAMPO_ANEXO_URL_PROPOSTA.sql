@@ -1,0 +1,3 @@
+
+ALTER TABLE proposta
+ADD COLUMN IF NOT EXISTS anexo_url VARCHAR(1024);
