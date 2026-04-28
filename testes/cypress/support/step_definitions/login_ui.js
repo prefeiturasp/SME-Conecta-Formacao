@@ -4,6 +4,14 @@ const Dado = Given
 const Quando = When
 const Então = Then
 
+Dado('eu acesso o sistema com a visualização web', function () {
+    cy.visualizacao_login()
+})
+
+Dado('realizo login no sistema Conecta Formação com perfil {string}', function (perfil) {
+    cy.realizar_login(perfil)
+})
+
 Dado('eu acesso o sistema Conecta Formação', () => {
   cy.configurar_visualizacao() 
 })

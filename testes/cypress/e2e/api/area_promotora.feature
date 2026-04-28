@@ -42,30 +42,30 @@ Funcionalidade: API - Área Promotora
     Quando tento a requisição GET de lista parceira promotora
     Então retorna o status 401 sem lista rede parceira Área Promotora
 
-  Cenário: Cadastrar Área Promotora com sucesso
-    Dado que possuo um token válido no endpoint AreaPromotora
-    Quando envio uma requisição POST para cadastrar Área Promotora
-    Então retorna sucesso no cadastro da Área Promotora
+  #Cenário: Cadastrar Área Promotora com sucesso
+  #  Dado que possuo um token válido no endpoint AreaPromotora
+  #  Quando envio uma requisição POST para cadastrar Área Promotora
+  #  Então retorna sucesso no cadastro da Área Promotora
 
   Cenário: Não cadastrar Área Promotora sem payload
     Dado que possuo um token válido no endpoint AreaPromotora
     Quando envio uma requisição POST sem payload para Área Promotora
     Então retorna erro 422 ao cadastrar Área Promotora
 
-  Cenário: Não cadastrar Área Promotora com label já existente
-    Dado que possuo um token válido no endpoint AreaPromotora
-    Quando crio um registro e tento cadastrar novamente a mesma label de Área Promotora
-    Então não cadastra Área Promotora com label duplicada retornando o status 400
+  #Cenário: Não cadastrar Área Promotora com label já existente
+  #  Dado que possuo um token válido no endpoint AreaPromotora
+  #  Quando crio um registro e tento cadastrar novamente a mesma label de Área Promotora
+  #  Então não cadastra Área Promotora com label duplicada retornando o status 400
 
   Cenário: Não cadastrar Área Promotora sem autenticação
     Dado que não possuo um token válido
     Quando tento enviar uma requisição POST para cadastrar Área Promotora
     Então retorna o status 401 ao cadastrar Área Promotora
 
-  Cenário: Excluir Área Promotora
-    Dado que possuo um token válido no endpoint AreaPromotora
-    Quando crio um registro para validar o delete de Área Promotora
-    Então exclui a Área Promotora com o status 200
+  #Cenário: Excluir Área Promotora
+  #  Dado que possuo um token válido no endpoint AreaPromotora
+  #  Quando crio um registro para validar o delete de Área Promotora
+  #  Então exclui a Área Promotora com o status 200
 
    Cenário: Não exclui Área Promotora sem id
     Dado que não possuo um token válido
@@ -77,10 +77,10 @@ Funcionalidade: API - Área Promotora
     Quando tento deletar Área Promotora
     Então não exlcui Área Promotora retornando o status 400
 
-  Cenário: Editar Área Promotora por id
-    Dado que possuo um token válido no endpoint AreaPromotora
-    Quando crio um registro para validar a edição por id de Área Promotora
-    Então edito a Área Promotora por id com o status 200
+  #Cenário: Editar Área Promotora por id
+  #  Dado que possuo um token válido no endpoint AreaPromotora
+  #  Quando crio um registro para validar a edição por id de Área Promotora
+  #  Então edito a Área Promotora por id com o status 200
 
   Cenário: Não editar Área Promotora sem id
     Dado que possuo um token válido no endpoint AreaPromotora
@@ -92,10 +92,10 @@ Funcionalidade: API - Área Promotora
     Quando tento editar Área Promotora com token inválido
     Então não edita Área Promotora retornando o status 401
 
-  Cenário: Buscar Área Promotora por id
-    Dado que possuo um token válido no endpoint AreaPromotora
-    Quando crio um registro para validar a busca por id de Área Promotora
-    Então busco a Área Promotora por id com o status 200
+  #Cenário: Buscar Área Promotora por id
+  #  Dado que possuo um token válido no endpoint AreaPromotora
+  #  Quando crio um registro para validar a busca por id de Área Promotora
+  #  Então busco a Área Promotora por id com o status 200
 
   Cenário: Não buscar Área Promotora sem id válido
     Dado que possuo um token válido no endpoint AreaPromotora

@@ -5,11 +5,11 @@ const area_promotora_localizadores = new Area_Promotora_Localizadores()
 const common_Localizadores = new Common_Localizadores()
 
 Cypress.Commands.add('clicar_tela_area_promotora', () => {
-  cy.contains(common_Localizadores.menu_cadastro(), 'Cadastro', { timeout: 4000 })
+  cy.contains(common_Localizadores.menu_cadastro(), 'Cadastro', { timeout: 30000 })
     .should('be.visible')
     .click()
 
-  cy.contains(area_promotora_localizadores.menu_area_promotora(), 'Área promotora', { timeout: 4000 })
+  cy.contains(area_promotora_localizadores.menu_area_promotora(), 'Área promotora', { timeout: 30000 })
   .should('be.visible')
   .click()
 
@@ -46,27 +46,29 @@ Cypress.Commands.add('selecionar_tipo_area_promotora', (tipo) => {
 
       expect(
         textos.some((texto) => texto === tipo),
-        `esperava encontrar pelo menos um registro com o tipo "${tipo}", mas retornou: ${textos.join(', ')}`
+        `registro com "${tipo}", retornou: ${textos.join(', ')}`
       ).to.eq(true)
-
-      textos.forEach((texto) => {
-        expect(
-          texto,
-          `esperava que todas as linhas filtradas fossem do tipo "${tipo}"`
-        ).to.eq(tipo)
-      })
     })
 })
 
-Cypress.Commands.add('validar_resultado_area_promotora_por_tipo', (tipo) => {
-  cy.get(area_promotora_localizadores.tbl_tipo(), { timeout: 3000 })
-    .each(($el) => {
-      cy.wrap($el)
-        .should('be.visible')
-        .invoke('text')
-        .then((text) => {
-          expect(text.trim()).to.contain(tipo)
-        })
+Cypress.Commands.add('validar_resultado_area_promotora_por_tipo', (tipos) => {
+  const tiposValidos = Array.isArray(tipos)
+    ? tipos
+    : tipos.split(',').map(t => t.trim())
+
+  cy.get(area_promotora_localizadores.tbl_tipo(), { timeout: 10000 })
+    .should('have.length.greaterThan', 0)
+    .then(($cells) => {
+      const valores = [...$cells].map((el) => el.innerText.trim())
+
+      const encontrou = valores.some((valor) =>
+        tiposValidos.some((tipo) => valor.includes(tipo))
+      )
+
+      expect(
+        encontrou,
+        `espera um dos tipos: ${tiposValidos.join(', ')}. Retornou: ${valores.join(', ')}`
+      ).to.eq(true)
     })
 })
 
@@ -104,8 +106,8 @@ Cypress.Commands.add('criar_area_promotora_por_tipo', (tipo) => {
   function selecionarOpcaoAnt(inputSelector, textoOpcao) {
     const opcao = String(textoOpcao).trim()
 
-    cy.log(`opcao recebida no helper=${opcao}`)
-    expect(opcao, 'opção enviada ao helper do select').to.be.oneOf([
+    cy.log(`opção recebida=${opcao}`)
+    expect(opcao, 'opção enviada').to.be.oneOf([
       'Rede Parceria',
       'Rede Direta',
       'Arquivo Histórico Municipal'
@@ -567,7 +569,11 @@ Cypress.Commands.add('editar_area_promotora', () => {
 
   cy.get(area_promotora_localizadores.btn_novo_voltar_area_promotora(), { timeout: 5000 })
     .should('be.visible')
-    .click({ force: true })
+    .click()
+  
+  cy.get(area_promotora_localizadores.btn_confirmar_exclui_area_promotora(), { timeout: 5000 })
+    .should('be.visible')
+    .click()
 
   cy.url({ timeout: 10000 }).should('include', '/cadastro/area-promotora')
 

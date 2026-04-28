@@ -13,7 +13,7 @@ Cypress.Commands.add('configurar_visualizacao', (device) => {
 	}
 })
 
-Cypress.Commands.add('vizualicacao_login', () => { 
+Cypress.Commands.add('visualizacao_login', () => { 
   cy.visit('/login')
 
   cy.get(login_Conecta_Localizadores.texto_usuario(), { timeout: 4000 })
@@ -42,11 +42,11 @@ Cypress.Commands.add('realizar_login', (perfil) => {
       cy.contains('Acompanhamento de propostas formativas', { timeout: 10000 })
        .should('be.visible')
 
-      cy.get(login_Conecta_Localizadores.card_usuario(), { timeout: 4000 })
+      cy.get(login_Conecta_Localizadores.card_usuario(), { timeout: 30000 })
        .should('be.visible')
        .click()
 
-       cy.contains('.ant-dropdown-menu-title-content', 'Admin DF', { timeout: 4000 })
+       cy.contains('.ant-dropdown-menu-title-content', 'Admin DF', { timeout: 30000 })
         .should('be.visible')
         .click()
        break

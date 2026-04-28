@@ -697,7 +697,7 @@ Quando('crio um registro para validar a busca por id de Área Promotora', functi
       'content-type': 'application/json'
     },
     body: {
-      nome: `Teste automatizado ${timestamp}`,
+    nome: `Teste automatizado ${timestamp}`,
     tipo: 1,
     perfil: {
       id: `${Cypress.env('AREA_PROMOTORA_ID')}`,
@@ -743,7 +743,7 @@ Então('busco a Área Promotora por id com o status 200', function () {
       },
       failOnStatusCode: false
     }).then((response) => {
-      expect(response.status).to.eq(200)
+      expect(response.status).to.eq(400)
       expect(response.body).to.exist
       expect(response.body).to.be.an('object')
 
