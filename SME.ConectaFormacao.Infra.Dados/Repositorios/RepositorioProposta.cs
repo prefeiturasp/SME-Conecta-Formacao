@@ -414,11 +414,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             {
                 if (filtro.PossuiAnexo.Value)
                 {
-                    condicoesWhere.AppendLine(" AND p.anexo_url IS NOT NULL");
+                    condicoesWhere.AppendLine(@"
+                        AND p.anexo_url IS NOT NULL
+                        AND TRIM(p.anexo_url) <> ''");
                 }
                 else
                 {
-                    condicoesWhere.AppendLine(" AND p.anexo_url IS NULL");
+                    condicoesWhere.AppendLine(@"
+                        AND (p.anexo_url IS NULL
+                        OR TRIM(p.anexo_url) = '')");
                 }
             }
 
