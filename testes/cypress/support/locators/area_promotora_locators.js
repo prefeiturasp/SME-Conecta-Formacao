@@ -25,11 +25,10 @@ class Area_Promotora_Localizadores {
 
   // editar
   btn_edita_area_promotora = () => '#CF_BUTTON_NOVO'
-  btn_novo_voltar_area_promotora = () => '#CF_BUTTON_VOLTAR'
+  btn_confirmar_modal_area_promotora = () => '.ant-modal-confirm-btns > .ant-btn-default'
 
   // excluir
   btn_exclui_area_promotora = () => '#CF_BUTTON_EXCLUIR'
-  btn_confirmar_exclui_area_promotora = () => '.ant-modal-confirm-btns > .ant-btn-default'
   btn_cancelar_excluir_area_promotora = () => '.ant-modal-confirm-btns > .ant-btn-text > span'
   msg_exclui_area_promotora = () => '.ant-notification-notice-message'
 }
