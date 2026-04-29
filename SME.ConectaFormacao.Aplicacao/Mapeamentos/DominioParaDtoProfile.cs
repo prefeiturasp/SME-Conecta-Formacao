@@ -55,7 +55,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<AreaPromotora, AreaPromotoraPaginadaDTO>()
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(x => x.Tipo.Nome()))
                 .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre!.Nome))
-                .ForMember(dest => dest.NomeCoordenadoria, opt => opt.MapFrom(x => x.Coordenadoria != null ? x.Coordenadoria.Nome : null));
+                .ForMember(dest => dest.NomeCoordenadoria, opt => opt.MapFrom(x => FormatarNomeCoordenadoria(x.Coordenadoria)));
 
             CreateMap<AreaPromotora, AreaPromotoraCompletoDTO>()
                 .ForMember(dest => dest.DreId, opt => opt.MapFrom(x => x.DreId))
@@ -153,6 +153,17 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.DataRealizacaoFim, opt => opt.MapFrom(x => x.DataRealizacaoFim.HasValue ? x.DataRealizacaoFim.Value.ToString("dd/MM/yyyy") : string.Empty))
                 .ForMember(dest => dest.Revalidacao,
                     opt => opt.MapFrom(x => MapRevalidacao(x.Revalidacao)));
+        }
+
+        private static string? FormatarNomeCoordenadoria(Coordenadoria? coordenadoria)
+        {
+            if (coordenadoria == null)
+                return null;
+
+            if (string.IsNullOrWhiteSpace(coordenadoria.Sigla))
+                return coordenadoria.Nome;
+
+            return $"{coordenadoria.Sigla} - {coordenadoria.Nome}";
         }
 
         private static string MapRevalidacao(bool? revalidacao)
