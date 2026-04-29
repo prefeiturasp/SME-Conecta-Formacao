@@ -33,7 +33,8 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterPropostaPaginada
                 FormacaoHomologada = request.PropostaFiltrosDTO.FormacaoHomologada,
                 LoginUsuarioLogado = contextoAplicacao.UsuarioLogado,
                 PerfilUsuarioLogado = contextoAplicacao.IdPerfilUsuario ?? Guid.NewGuid(),
-                Revalidacao = request.PropostaFiltrosDTO.Revalidacao
+                Revalidacao = request.PropostaFiltrosDTO.Revalidacao,
+                PossuiAnexo = request.PropostaFiltrosDTO.PossuiAnexo
             };
 
             var resultado = await repositorioProposta.ObterPropostaPorFiltroAsync(filtroRepositorio);
