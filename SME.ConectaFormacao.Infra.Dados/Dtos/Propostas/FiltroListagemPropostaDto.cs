@@ -20,5 +20,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Propostas
         public bool? Revalidacao { get; set; }
         public string LoginUsuarioLogado { get; set; } = null!;
         public Guid PerfilUsuarioLogado { get; set; }
+        public bool? PossuiAnexo { get; set; }
     }
 }
