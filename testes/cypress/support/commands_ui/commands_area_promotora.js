@@ -137,7 +137,7 @@ Cypress.Commands.add('criar_area_promotora_por_tipo', (tipo) => {
   const nomeAreaPromotora = `${nomeBase} ${dia}/${mes}/${ano} ${hora}:${minuto}`
   const emailTeste = `testeautomatizado${dia}${mes}${ano}${hora}${minuto}@sme.com`
 
-  cy.get(area_promotora_localizadores.btn_novo_area_promotora(), { timeout: 5000 })
+  cy.get(area_promotora_localizadores.btn_salvar_area_promotora(), { timeout: 5000 })
     .should('be.visible')
     .click()
 
@@ -202,7 +202,7 @@ Cypress.Commands.add('excluir_area_promotora', (nomeFiltro = 'Teste automatizado
 
 Cypress.Commands.add('criar_sem_dados_area_promotora', () => {  
 
-  cy.get(area_promotora_localizadores.btn_novo_area_promotora(), { timeout: 5000 })
+  cy.get(area_promotora_localizadores.btn_salvar_area_promotora(), { timeout: 5000 })
     .should('be.visible')
     .click()
   
@@ -240,7 +240,7 @@ Cypress.Commands.add('excluir_area_promotora', (tipo = 'Rede Parceria') => {
       .click()
   }
 
-  cy.get(area_promotora_localizadores.btn_novo_area_promotora(), { timeout: 5000 })
+  cy.get(area_promotora_localizadores.btn_salvar_area_promotora(), { timeout: 5000 })
     .should('be.visible')
     .click()
 
@@ -390,7 +390,7 @@ Cypress.Commands.add('cancelar_exclusao_area_promotora', (tipo = 'Rede Parceria'
       .should('not.exist')
   }
 
-  cy.get(area_promotora_localizadores.btn_novo_area_promotora(), { timeout: 10000 })
+  cy.get(area_promotora_localizadores.btn_salvar_area_promotora(), { timeout: 10000 })
     .should('be.visible')
     .click()
 
@@ -448,7 +448,7 @@ Cypress.Commands.add('cancelar_exclusao_area_promotora', (tipo = 'Rede Parceria'
 })
 
 Cypress.Commands.add('validar_exclusao_area_promotora', () => {
-  cy.get(area_promotora_localizadores.btn_novo_area_promotora(), { timeout: 3000 })
+  cy.get(area_promotora_localizadores.btn_salvar_area_promotora(), { timeout: 3000 })
     .should('be.visible')   
 })
 
@@ -509,7 +509,7 @@ Cypress.Commands.add('editar_area_promotora', () => {
       .click()
   }
 
-  cy.get(area_promotora_localizadores.btn_novo_area_promotora(), { timeout: 5000 })
+  cy.get(area_promotora_localizadores.btn_salvar_area_promotora(), { timeout: 5000 })
     .should('be.visible')
     .click()
 
@@ -557,14 +557,14 @@ Cypress.Commands.add('editar_area_promotora', () => {
     .should('be.visible')
     .first()
     .click()
+  
+  cy.url({ timeout: 10000 }).should('include', '/cadastro/area-promotora/editar')
 
-  cy.get(area_promotora_localizadores.btn_edita_area_promotora(), { timeout: 15000 })
+  cy.get(area_promotora_localizadores.btn_edita_area_promotora(), { timeout: 30000 })
     .should('be.visible')
-    .click()
+    .click()  
 
-  cy.url({ timeout: 10000 }).should('include', '/cadastro/area-promotora')
-
-  cy.get(area_promotora_localizadores.input_nome(), { timeout: 10000 })
+  cy.get(area_promotora_localizadores.input_digite_nome(), { timeout: 30000 })
     .should('be.visible')
     .clear()
     .type('Teste automatizado')
