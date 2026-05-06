@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ConectaFormacao.Dominio.Servicos;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
@@ -13,11 +14,14 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterFormacaoDetalhadaPorIdQueryHandler(
         IRepositorioProposta repositorioProposta, IMapper mapper,
-        IMediator mediator, ICacheDistribuido cacheDistribuido, IRepositorioUsuarioAcessibilidade repositorioUsuarioAcessibilidade) :
+        IMediator mediator, ICacheDistribuido cacheDistribuido, IRepositorioUsuarioAcessibilidade repositorioUsuarioAcessibilidade, IPeriodoRealizacaoConsultaService periodoRealizacaoConsultaService) :
         IRequestHandler<ObterFormacaoDetalhadaPorIdQuery, RetornoFormacaoDetalhadaDTO>
     {
+
         public async Task<RetornoFormacaoDetalhadaDTO> Handle(ObterFormacaoDetalhadaPorIdQuery request, CancellationToken cancellationToken)
         {
+            var service = await periodoRealizacaoConsultaService.ObterPeriodoRealizacaoAsync(15477);
+
             var chaveRedis = CacheDistribuidoNomes.FormacaoDetalhada.Parametros(request.Id);
             var retornoFormacaoDetalhadaDto = await cacheDistribuido.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(chaveRedis);
 
