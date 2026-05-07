@@ -24,5 +24,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
         public double? PercentualFrequencia { get; set; }
 
         public string? EmailUsuario { get; set; }
+
+        //aqui, caso o aluno tenha coordenadoria vinculada na DRE, trará ela, caso contrário, trará a DRE
+        public string DreCoordenadoria { get; set; } = string.Empty;
+        public string TipoFormacao { get; set; } = string.Empty;
+
     }
 }

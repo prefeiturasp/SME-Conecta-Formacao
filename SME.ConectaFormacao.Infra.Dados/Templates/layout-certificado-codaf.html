@@ -23,20 +23,20 @@
             overflow: hidden;
         }
 
-        /* 1. MOLDURA ESQUERDA */
+        /* 1. MOLDURA SUPERIOR (Cabeçalho) */
         .sidebar-art {
             position: absolute;
             top: 0;
-            left: -1px; /* Ajuste fino para garantir que não haja borda branca */
-            width: 167px;
-            height: 100%;
+            left: 0;
+            width: 100%;
+            height: 200px; /* Altura do cabeçalho */
             z-index: 10;
         }
 
         /* 2. CABEÇALHO (Brasão SME) */
         .content-area {
-            margin-left: 180px; /* Espaço para a barra lateral + respiro */
-            padding-top: 70px;
+            margin-top: 220px; /* Espaço para o cabeçalho + respiro */
+            padding-left: 50px;
             padding-right: 50px;
             text-align: center;
         }
@@ -121,65 +121,43 @@
         .footer {
             position: absolute;
             bottom: 30px;
-            left: 180px; /* Alinhado com content-area */
-			right: 50px;   /* mesmo recuo do padding-right */
-            /*width: 900px;  Largura restante */
+            left: 50px;
+            right: 50px;
             font-size: 8pt;
             color: #666;
-			/*background-color:orange*/
         }
 
         /* Tabela para alinhar texto legal à esquerda e logo à direita (Old School Layout) */
         .footer-table {
             width: 100%;
             border-collapse: collapse;
-			/*background-color:purple;*/
         }
 
         .footer-text {
-			text-align: center;          /* centraliza horizontalmente o texto */
-			vertical-align: middle;
-			width: auto;                 /* ocupa o espaço restante */
-			/*background-color: blue;*/
-		}
+            text-align: center;          /* centraliza horizontalmente o texto */
+            vertical-align: middle;
+            width: auto;                 /* ocupa o espaço restante */
+        }
 
         .footer-logo-cell {
-			width: 1%;                   /* força a célula a colapsar */
-			white-space: nowrap;         /* impede expansão */
-			text-align: right;
-			vertical-align: bottom;
-			/*background-color: red;*/
-		}
+            width: 1%;                   /* força a célula a colapsar */
+            white-space: nowrap;         /* impede expansão */
+            text-align: right;
+            vertical-align: bottom;
+        }
 
         /* 4. LOGO PREFEITURA */
         .logo-prefeitura {
             width: 150px; /* Ajuste visual */
             height: auto;
         }
-
-        .rotacao-lateral {
-			position: absolute;
-			right: 0;
-			top: 50%;
-			
-			vertical-align: middle;
-
-			/* OLD SCHOOL rotation */
-			filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-
-			font-size: 8px;
-			color: #999;
-
-			/* ajuste fino de posição */
-			margin-top: -40px;
-		}
     </style>
 </head>
 <body>
     <div class="container">
         <img src="data:image/png;base64,{{IMG_MOLDURA_LATERAL}}"
              class="sidebar-art"
-             alt="Arte Lateral" />
+             alt="Arte Superior" />
 
         <div class="content-area">
             <img src="data:image/png;base64,{{IMG_BRASAO_TITULO_SME}}"
@@ -207,8 +185,7 @@
             <table class="footer-table">
                 <tr>
                     <td class="footer-text">
-					<br><br>
-                        PMSP/SME - Certificado registrado sob nº{{NUM_SEQ}}, do ano
+                        {{COORDENADORIA_OU_DRE}} - Certificado registrado sob nº{{NUM_SEQ}}, do ano
                         {{ANO_ATUAL}}, Comunicado nº {{NUM_COMUNICADO}}, <br>DOC
                         {{DATA_PUBLICACAO_CODAF}} (informado no CODAF) Homologação
                         {{NUM_HOM_FORMACAO}}.
@@ -220,9 +197,7 @@
                     </td>
                 </tr>
             </table>
-        </div>
-
-        <div class="rotacao-lateral">C<br>a<br>d<br>a<br>s<br>t<br>r<br>o<br><br> a<br>u<br>t<br>o<br>m<br>á<br>t<br>i<br>c<br>o<br>. <br><br>S<br>i<br>s<br>t<br>e<br>m<br>a<br> <br>E<br>O<br>L<br>.</div>
+        </div>      
     </div>
 </body>
 </html>

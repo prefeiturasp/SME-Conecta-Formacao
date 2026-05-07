@@ -39,7 +39,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     dados.HorasTotais,
                     dados.CargaHorariaTotalOutra,
                     dados.ConceitoFinal,
-                    dados.PercentualFrequencia
+                    dados.PercentualFrequencia,
+                    dados.DreCoordenadoria,
+                    dados.TipoFormacao
                 };
 
                 var novoCertificado = new CodafCertificado(
