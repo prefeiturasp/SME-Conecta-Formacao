@@ -5,6 +5,7 @@
         public const string ObterDadosParaEmissao = """
                 SELECT 
                 	   CILP.ID AS idReferencia,
+                       PT.ID AS propostaTurmaId,
                        U.NOME AS nomeCompleto,
                        U.LOGIN AS documento,
                        (U.LOGIN <> U.CPF) AS temRf,
@@ -45,6 +46,7 @@
                 UNION ALL
                 SELECT 
                        PRT.ID AS idReferencia,
+                       PT.ID AS propostaTurmaId,
                        PR.NOME_REGENTE AS nomeCompleto,
                        PR.REGISTRO_FUNCIONAL AS documento,
                        TRUE AS temRf, -- Regente sempre tem RF

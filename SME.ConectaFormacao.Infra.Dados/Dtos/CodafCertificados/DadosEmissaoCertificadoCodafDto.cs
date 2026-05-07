@@ -5,6 +5,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
     public class DadosEmissaoCertificadoCodafDto
     {
         public long IdReferencia { get; set; }
+        public long PropostaTurmaId { get; set; }
 
         public required string NomeCompleto { get; set; }
         public required string Documento { get; set; }
@@ -28,6 +29,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
         //aqui, caso o aluno tenha coordenadoria vinculada na DRE, trará ela, caso contrário, trará a DRE
         public string DreCoordenadoria { get; set; } = string.Empty;
         public string TipoFormacao { get; set; } = string.Empty;
-
+        public DateTime DataInicio { get; set; }
+        public DateTime DataFim { get; set; }
     }
 }
