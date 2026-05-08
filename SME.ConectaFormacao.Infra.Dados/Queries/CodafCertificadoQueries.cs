@@ -6,13 +6,14 @@
                 SELECT 
                 	   CILP.ID AS idReferencia,
                        PT.ID AS propostaTurmaId,
+                       CLP.PAGINA_COMUNICADO_DOM AS paginaDiarioOficial,
                        U.NOME AS nomeCompleto,
                        U.LOGIN AS documento,
                        (U.LOGIN <> U.CPF) AS temRf,
                        1 AS tipoParticipacao, -- Cursista
                        P.NOME_FORMACAO AS nomeFormacao,
-                       CASE WHEN P.tipo_formacao = 1 THEN 'CURSO'
-                            ELSE 'EVENTO'
+                       CASE WHEN P.tipo_formacao = 1 THEN 'curso'
+                            ELSE 'evento'
                        END AS tipoFormacao,
                        P.DATA_REALIZACAO_INICIO AS dataRealizacao,
                        CILP.CONCEITO_FINAL AS conceitoFinal,
@@ -24,19 +25,17 @@
                        CLP.DATA_PUBLICACAO AS dataPublicacao,
                        P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
                        CASE 
-                           WHEN C.NOME IS NOT NULL AND AP.NOME IS NOT NULL THEN C.NOME || ' - ' || AP.NOME
-                           WHEN C.NOME IS NOT NULL THEN C.NOME
+                           WHEN C.NOME IS NOT NULL THEN C.NOME || ' - ' || AP.NOME
                            ELSE D.NOME
                        END AS dreCoordenadoria
                 FROM   PUBLIC.CODAF_LISTA_PRESENCA AS CLP
                        INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
                        INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
                        INNER JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP ON CILP.CODAF_LISTA_PRESENCA_ID = CLP.ID
-                       INNER JOIN PUBLIC.INSCRICAO AS I  ON CILP.INSCRICAO_ID = I.ID 
-                       INNER JOIN PUBLIC.USUARIO AS U  ON I.USUARIO_ID = U.ID
-                       INNER JOIN PUBLIC.PROPOSTA_DRE AS PD ON PD.PROPOSTA_ID = P.ID
-                       INNER JOIN PUBLIC.DRE AS D ON D.ID = PD.DRE_ID
-                       LEFT JOIN PUBLIC.AREA_PROMOTORA AS AP ON AP.DREID = D.ID
+                       INNER JOIN PUBLIC.INSCRICAO AS I ON CILP.INSCRICAO_ID = I.ID 
+                       INNER JOIN PUBLIC.USUARIO AS U ON I.USUARIO_ID = U.ID
+                       LEFT JOIN PUBLIC.DRE AS D ON D.DRE_ID = I.CARGO_DRE_CODIGO
+                       LEFT JOIN PUBLIC.AREA_PROMOTORA AS AP ON AP.DREID = D.ID AND NOT AP.EXCLUIDO
                        LEFT JOIN PUBLIC.COORDENADORIA AS C ON C.ID = AP.COORDENADORIA_ID AND NOT C.EXCLUIDO
                 WHERE  NOT CLP.EXCLUIDO 
                   AND  CILP.APROVADO 
@@ -47,13 +46,14 @@
                 SELECT 
                        PRT.ID AS idReferencia,
                        PT.ID AS propostaTurmaId,
+                       CLP.PAGINA_COMUNICADO_DOM AS paginaDiarioOficial,
                        PR.NOME_REGENTE AS nomeCompleto,
                        PR.REGISTRO_FUNCIONAL AS documento,
                        TRUE AS temRf, -- Regente sempre tem RF
                        2 AS tipoParticipacao, -- Regente
                        P.NOME_FORMACAO AS nomeFormacao,                               
-                       CASE WHEN P.tipo_formacao = 1 THEN 'CURSO'
-                       ELSE 'EVENTO'
+                       CASE WHEN P.tipo_formacao = 1 THEN 'curso'
+                       ELSE 'evento'
                        END AS tipoFormacao,
                        P.DATA_REALIZACAO_INICIO AS dataRealizacao,
                        NULL AS conceitoFinal,
@@ -65,8 +65,7 @@
                        CLP.DATA_PUBLICACAO AS dataPublicacao,
                        P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
                        CASE 
-                           WHEN C.NOME IS NOT NULL AND AP.NOME IS NOT NULL THEN C.NOME || ' - ' || AP.NOME
-                           WHEN C.NOME IS NOT NULL THEN C.NOME
+                           WHEN C.NOME IS NOT NULL THEN C.NOME || ' - ' || AP.NOME
                            ELSE D.NOME
                        END AS dreCoordenadoria
                 FROM   PUBLIC.CODAF_LISTA_PRESENCA AS CLP
@@ -75,9 +74,8 @@
                        INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON PRT.TURMA_ID = PT.ID
                        INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR  ON PRT.PROPOSTA_REGENTE_ID = PR.ID
                        LEFT JOIN PUBLIC.USUARIO AS U ON U.CPF = PR.REGISTRO_FUNCIONAL OR U.LOGIN = PR.REGISTRO_FUNCIONAL
-                       INNER JOIN PUBLIC.PROPOSTA_DRE AS PD ON PD.PROPOSTA_ID = P.ID
-                       INNER JOIN PUBLIC.DRE AS D ON D.ID = PD.DRE_ID
-                       LEFT JOIN PUBLIC.AREA_PROMOTORA AS AP ON AP.DREID = D.ID
+                       LEFT JOIN PUBLIC.DRE AS D ON D.DRE_ID = PR.REGISTRO_FUNCIONAL
+                       LEFT JOIN PUBLIC.AREA_PROMOTORA AS AP ON AP.DREID = D.ID AND NOT AP.EXCLUIDO
                        LEFT JOIN PUBLIC.COORDENADORIA AS C ON C.ID = AP.COORDENADORIA_ID AND NOT C.EXCLUIDO
                 WHERE  NOT CLP.EXCLUIDO 
                   AND  NOT PRT.EXCLUIDO 

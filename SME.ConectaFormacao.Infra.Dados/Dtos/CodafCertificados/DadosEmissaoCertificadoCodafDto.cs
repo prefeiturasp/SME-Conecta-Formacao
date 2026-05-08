@@ -6,6 +6,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
     {
         public long IdReferencia { get; set; }
         public long PropostaTurmaId { get; set; }
+        public int PaginaDiarioOficial { get; set; }
 
         public required string NomeCompleto { get; set; }
         public required string Documento { get; set; }
