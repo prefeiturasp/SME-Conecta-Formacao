@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <title>Certificado</title>
     <style>
-        /* Reset básico para garantir que ocuparemos a folha toda */
         body,
         html {
             margin: 0;
@@ -12,39 +11,30 @@
             width: 100%;
             height: 100%;
             font-family: "Roboto", sans-serif;
-            -webkit-print-color-adjust: exact; /* Força impressão de background */
+            -webkit-print-color-adjust: exact;
         }
 
-        /* Container principal A4 Landscape */
         .container {
             position: relative;
-            width: 1392px; /* Largura aproximada A4 Landscape em 96dpi */
-            height: 991px; /* Altura aproximada A4 Landscape em 96dpi */
+            width: 1392px;
+            height: 991px;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background-image: url("data:image/png;base64,{{IMG_MOLDURA}}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            -webkit-print-color-adjust: exact;
         }
 
-        /* 1. MOLDURA SUPERIOR (Cabeçalho) */
-        .sidebar-art {
-            position: relative;
-            width: 100%;
-            height: 200px; /* Reduzida de 200px */
-            z-index: 10;
-            flex-shrink: 0;
-        }
-
-        /* 2. ÁREA DE CONTEÚDO PRINCIPAL */
         .content-area {
-            flex: 1;
-            padding-left: 50px;
-            padding-right: 50px;
-            padding-top: 30px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 150px 50px 120px 50px;
+            box-sizing: border-box;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow-y: auto;
         }
 
         .header-logo {
@@ -54,7 +44,6 @@
             margin: 0 auto;
         }
 
-        /* TÍTULO CERTIFICADO */
         h1.titulo {
             margin: 20px 0;
             font-size: 24pt;
@@ -63,14 +52,12 @@
             color: #333;
         }
 
-        /* TEXTO DO CORPO */
         .texto-certificado {
-            margin: 30px 80px;
+            margin: 0px 80px;
             font-size: 14pt;
             line-height: 1.6;
             text-align: justify;
             color: #444;
-            flex: 1;
         }
 
         .destaque {
@@ -78,13 +65,11 @@
             color: #000;
         }
 
-        /* 3. ASSINATURA */
         .assinatura-container {
-            margin: 15px 0 30px 0;
-            position: relative;
+            position: absolute;
+            bottom: 160px;
             width: 100%;
             text-align: center;
-            flex-shrink: 0;
         }
 
         .img-assinatura {
@@ -114,13 +99,11 @@
             line-height: 1.2;
         }
 
-        /* RODAPÉ COM TABELA */
         .footer-text {
-            padding-top: 15px;
-            padding-bottom: 15px;
-            padding-left: 50px;
-            padding-right: 50px;
-            flex-shrink: 0;
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            padding: 0 50px;
         }
 
         .footer-table {
@@ -169,10 +152,6 @@
 </head>
 <body>
     <div class="container">
-        <img src="data:image/png;base64,{{IMG_MOLDURA_LATERAL}}"
-             class="sidebar-art"
-             alt="Arte Superior" />
-
         <div class="content-area">
             <div>
                 <h1 class="titulo">CERTIFICADO</h1>

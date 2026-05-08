@@ -18,13 +18,11 @@
 
     <ItemGroup>
       <EmbeddedResource Include="Templates\Assets\assinatura_secretario.png" />
-      <EmbeddedResource Include="Templates\Assets\barra_lateral_padrao_certificado_codaf.png" />
-      <EmbeddedResource Include="Templates\Assets\barra_lateral_semrf_certificado_codaf.png" />
-      <EmbeddedResource Include="Templates\Assets\brasao_prefeitura.png" />
-      <EmbeddedResource Include="Templates\Assets\header.jpg" />
       <EmbeddedResource Include="Templates\layout-certificado-codaf.html" />
       <EmbeddedResource Include="Templates\Template_Relatorio_Inscritos_Por_Formacao.xlsx" />
-    </ItemGroup>
+	  <EmbeddedResource Include="Templates\Assets\certificado_cursista_com_RF_com_carimbo.svg" />
+	  <EmbeddedResource Include="Templates\Assets\certificado_cursista_com_RF_sem_carimbo.svg" />
+	</ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\SME.ConectaFormacao.Dominio\SME.ConectaFormacao.Dominio.csproj" />
