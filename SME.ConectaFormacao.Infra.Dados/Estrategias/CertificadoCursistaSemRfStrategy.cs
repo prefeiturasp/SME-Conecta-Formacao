@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
         public string GerarHtml(DadosEmissaoCertificadoCodafDto dados)
         {
             var layout = ObterLayoutBase(dados);
-            var imgMolduraLateral = templateService.ObterImagemBase64("barra_lateral_semrf_certificado_codaf.png");
+            var imgMolduraLateral = templateService.ObterImagemBase64("certificado_cursista_com_RF_com carimbo.svg");
             return layout.Replace("{{TEXTO_CERTIFICADO}}", GerarCorpoCertificado(dados))
                          .Replace("{{IMG_MOLDURA_LATERAL}}", imgMolduraLateral)
                          .MinificarHtml();
