@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio.IoC
 
             services.AddHttpClient<IServicoRelatorio, ServicoRelatorio>(c =>
             {
-                c.BaseAddress = new Uri("https://localhost:5011");//new Uri(relatorioOptions.UrlApiServidorRelatorios);
+                c.BaseAddress = new Uri(relatorioOptions.UrlApiServidorRelatorios);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
                 c.DefaultRequestHeaders.Add("x-sr-api-key", relatorioOptions.ApiKeySr);
 
