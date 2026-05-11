@@ -20,9 +20,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
         private static string GerarCorpoCertificado(DadosEmissaoCertificadoCodafDto dados)
         {
             return $@"
-            <p>Certificamos para os devidos fins que o(a) servidor(a), <b>{dados.NomeCompleto}</b>, 
-            R.F. {dados.Documento}, ministrou o Evento <b>{dados.NomeFormacao}</b> 
-            promovido pelo(a) SME em {dados.DataRealizacao:dd/MM/yyyy}, 
+            <p>Certificamos para os devidos fins que o(a) servidor(a), <b> {StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</b>, 
+            RF: {StringExtensao.AplicarMascaraRf(dados.Documento)}, 
+            ministrou o {dados.TipoFormacao} <b>{dados.NomeFormacao} </b> 
+            promovido pela {dados.DreCoordenadoria} da Secretaria Municipal de Educação,
+            no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, 
             com carga horária de {dados.HorasTotais ?? dados.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro():00} horas.</p>";
         }
 

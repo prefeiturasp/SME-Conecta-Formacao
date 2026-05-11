@@ -36,6 +36,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 
                 var periodo = await periodoRealizacaoConsultaService.ObterPeriodoRealizacaoAsync(dados.PropostaTurmaId);
 
+                if (periodo != null)
+                {
+                    dados.DataInicio = periodo.DataInicio;
+                    dados.DataFim = periodo.DataFim;
+                }
+
                 var htmlCertificado = geradorCertificado.GerarHtml(dados);
                 var metadados = new
                 {
@@ -56,7 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     dados.IdReferencia,
                     htmlCertificado,
                     metadados
-                    );
+                );
                 entidadesParaSalvar.Add(novoCertificado);
             }
 
