@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using ConectaFormacao.Dominio.Servicos;
+using FluentAssertions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -20,6 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<IKeyedServiceProvider> _keyedServiceProviderMock;
         private readonly Mock<IMediator> _mediatorMock;
         private readonly Mock<ICertificadoCodafGeradorConteudo> _geradorConteudoMock;
+        private readonly Mock<IPeriodoRealizacaoConsultaService> _periodoRealizacaoConsultaServiceMock; 
 
         // System Under Test
         private readonly CasoDeUsoEmitirCertificadoCodaf _sut;
@@ -30,11 +32,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _keyedServiceProviderMock = new Mock<IKeyedServiceProvider>();
             _mediatorMock = new Mock<IMediator>();
             _geradorConteudoMock = new Mock<ICertificadoCodafGeradorConteudo>();
+            _periodoRealizacaoConsultaServiceMock = new Mock<IPeriodoRealizacaoConsultaService>(); 
 
             _sut = new CasoDeUsoEmitirCertificadoCodaf(
                 _repositorioMock.Object,
                 _keyedServiceProviderMock.Object,
-                _mediatorMock.Object
+                _mediatorMock.Object,
+                _periodoRealizacaoConsultaServiceMock.Object 
             );
         }
 
