@@ -12,5 +12,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
         public string NomeFormacao { get; set; } = null!;
         public bool TemRf { get; set; }
         public TipoParticipacaoCodaf TipoParticipacao { get; set; }
+        public string SiglaCoordenadoriaOuDre { get; set; } = null!;
     }
 }

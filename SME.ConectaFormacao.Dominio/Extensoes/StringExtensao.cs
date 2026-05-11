@@ -271,5 +271,14 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         {
             return valor.Length == 7 && valor.All(char.IsDigit);
         }
+
+        public static string FormatarNomePessoa(this string nome)
+        {
+            if (string.IsNullOrWhiteSpace(nome))
+                return nome;
+
+            var textInfo = CultureInfo.CurrentCulture.TextInfo;
+            return textInfo.ToTitleCase(nome.ToLower());
+        }
     }
 }

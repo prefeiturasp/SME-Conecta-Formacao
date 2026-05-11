@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
 
             // Setup Padrão dos Mocks para a Base
             _mockTemplateService.Setup(x => x.ObterTemplate(It.IsAny<string>()))
-                .Returns("<html>{{IMG_BRASAO_TITULO_SME}} - {{ANO_ATUAL}}</html>"); // Template simplificado
+                .Returns("<html>{{IMG_BRASAO_PREFEITURA}} - {{IMG_ASSINATURA_SECRETARIO}} - {{ANO_ATUAL}}</html>");
 
             _mockTemplateService.Setup(x => x.ObterImagemBase64(It.IsAny<string>()))
                 .Returns("base64_fake");
