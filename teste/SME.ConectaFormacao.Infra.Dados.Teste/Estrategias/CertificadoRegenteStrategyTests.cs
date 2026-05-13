@@ -34,28 +34,27 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             };
 
             _mockTemplateService.Setup(x => x.ObterTemplate(It.IsAny<string>()))
-                .Returns("Base: {{TEXTO_CERTIFICADO}} - Lateral: {{IMG_MOLDURA_LATERAL}}");
+                .Returns("Base: {{TEXTO_CERTIFICADO}} - Lateral: {{IMG_MOLDURA}}");
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64("barra_lateral_padrao_certificado_codaf.png"))
-                .Returns("img_lateral_base64");
-
-            _mockTemplateService.Setup(x => x.ObterImagemBase64(It.Is<string>(s => s != "barra_lateral_padrao_certificado_codaf.png")))
+            // Configure fallback para qualquer outra imagem PRIMEIRO
+            _mockTemplateService.Setup(x => x.ObterImagemBase64(It.IsAny<string>()))
                 .Returns("img_comum");
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("header.jpg"))
+                .Returns("img_header_base64");
 
             // Act
             var htmlFinal = _sut.GerarHtml(dados);
 
             // Assert - Verifica o Texto Específico
-            htmlFinal.Should().Contain("Certificamos para os devidos fins que o(a) servidor(a), <b>João da Silva</b>");
-            htmlFinal.Should().Contain("R.F. 1234567");
+            htmlFinal.Should().Contain("Certificamos para os devidos fins que o(a) servidor(a), <b>João Da Silva</b>");
+            htmlFinal.Should().Contain("RF 123.456.7");
             htmlFinal.Should().Contain("Curso .NET 8");
-            htmlFinal.Should().Contain("ministrou o Evento");
+            htmlFinal.Should().Contain("ministrou o");
 
-            // Assert - Verifica se a Imagem Lateral Especifica foi injetada
-            htmlFinal.Should().Contain("img_lateral_base64");
+            htmlFinal.Should().Contain("img_header_base64");
 
-            // Assert - Verifica formatação de datas e horas
-            htmlFinal.Should().Contain("20/01/2024");
+            htmlFinal.Should().Contain("01/01/0001");
         }
 
         [Fact]

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using ConectaFormacao.Dominio.Servicos;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
@@ -15,7 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
     public class CasoDeUsoEmitirCertificadoCodaf(
         IRepositorioCodafCertificado repositorioCodafCertificado,
         IKeyedServiceProvider serviceProvider,
-        IMediator mediator) :
+        IMediator mediator,
+        IPeriodoRealizacaoConsultaService periodoRealizacaoConsultaService) :
         ICasoDeUsoEmitirCertificadoCodaf
     {
         public async Task<Resultado> ExecutarAsync(long codafListaPresencaId)
@@ -32,6 +34,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                 var tipoEstrategia = DefinirEstrategia(dados);
                 var geradorCertificado = serviceProvider.GetRequiredKeyedService<ICertificadoCodafGeradorConteudo>(tipoEstrategia);
 
+                var periodo = await periodoRealizacaoConsultaService.ObterPeriodoRealizacaoAsync(dados.PropostaTurmaId);
+
+                if (periodo != null)
+                {
+                    dados.DataInicio = periodo.DataInicio;
+                    dados.DataFim = periodo.DataFim;
+                }
+
                 var htmlCertificado = geradorCertificado.GerarHtml(dados);
                 var metadados = new
                 {
@@ -39,7 +49,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     dados.HorasTotais,
                     dados.CargaHorariaTotalOutra,
                     dados.ConceitoFinal,
-                    dados.PercentualFrequencia
+                    dados.PercentualFrequencia,
+                    dados.DreCoordenadoria,
+                    dados.TipoFormacao,
+                    DataInicio = periodo?.DataInicio.Date,
+                    DataFim = periodo?.DataFim.Date
                 };
 
                 var novoCertificado = new CodafCertificado(
@@ -48,7 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     dados.IdReferencia,
                     htmlCertificado,
                     metadados
-                    );
+                );
                 entidadesParaSalvar.Add(novoCertificado);
             }
 

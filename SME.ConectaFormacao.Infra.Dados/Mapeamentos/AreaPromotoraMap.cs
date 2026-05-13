@@ -13,9 +13,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.Email).ToColumn("email");
             Map(c => c.GrupoId).ToColumn("grupo_id");
             Map(c => c.DreId).ToColumn("dreid");
+            Map(c => c.CoordenadoriaId).ToColumn("coordenadoria_id");
 
             Map(c => c.Dre).Ignore();
             Map(c => c.Telefones).Ignore();
+            Map(c => c.Coordenadoria).Ignore();
         }
     }
 }

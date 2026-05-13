@@ -5,58 +5,75 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
+    [ExcludeFromCodeCoverage]
     public class RepositorioAreaPromotora : RepositorioBaseAuditavel<AreaPromotora>, IRepositorioAreaPromotora
     {
         public RepositorioAreaPromotora(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : base(contexto, conexao)
         {
         }
 
-        public async Task<AreaPromotora?> ObterAreaPromotoraPorIdComDre(long areaPromotoraId)
+        public async Task<AreaPromotora?> ObterAreaPromotoraPorIdDetalhadoAsync(long areaPromotoraId)
         {
-            var query = @" select ap.*, d.*
-                             from area_promotora ap
-                             left join dre d on ap.dreid = d.id
-                            where not ap.excluido and ap.id = @areaPromotoraId ";
+            var query =
+                """
+                select ap.*, d.*, c.*
+                from area_promotora ap
+                left join dre d on ap.dreid = d.id
+                left join coordenadoria c on ap.coordenadoria_id = c.id and not c.excluido
+                where not ap.excluido and ap.id = @areaPromotoraId
+                """;
 
-            return (await conexao.Obter().QueryAsync<AreaPromotora, Dre, AreaPromotora>(query, (areaPromotora, dre) =>
+            return (await conexao.Obter().QueryAsync<AreaPromotora, Dre, Coordenadoria, AreaPromotora>(query, (areaPromotora, dre, coordenadoria) =>
             {
                 areaPromotora.AdicionarDre(dre);
+                areaPromotora.Coordenadoria = coordenadoria;
                 return areaPromotora;
             }, new { areaPromotoraId })).FirstOrDefault();
+
         }
 
-        public Task<IEnumerable<AreaPromotora>> ObterDadosPaginados(string nome, short? tipo, int numeroPagina, int numeroRegistros)
+        public Task<IEnumerable<AreaPromotora>> ObterDadosPaginados(string? nome, short? tipo, long? coordenadoriaId, int numeroPagina, int numeroRegistros)
         {
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
-            string query = MontarQueryListagem(ref nome, tipo);
+            string query = MontarQueryListagem(ref nome, tipo, coordenadoriaId);
 
-            query += " order by ap.nome";
+            query += " order by ap.nome, c.nome";
             query += " limit @numeroRegistros offset @registrosIgnorados";
 
-            return conexao.Obter().QueryAsync<AreaPromotora, Dre, AreaPromotora>(query, (areaPromotora, dre) =>
+            return conexao.Obter().QueryAsync<AreaPromotora, Dre, Coordenadoria, AreaPromotora>(query, (areaPromotora, dre, coordenadoria) =>
             {
                 areaPromotora.Dre = dre;
+                areaPromotora.Coordenadoria = coordenadoria;
                 return areaPromotora;
-            }, new { nome, tipo, numeroRegistros, registrosIgnorados });
+            }, new { nome, tipo, coordenadoriaId, numeroRegistros, registrosIgnorados });
         }
 
-        public Task<int> ObterTotalRegistrosPorFiltros(string nome, short? tipo)
+        public Task<int> ObterTotalRegistrosPorFiltros(string? nome, short? tipo, long? coordenadoriaId)
         {
-            string query = string.Concat("select count(1) from (", MontarQueryListagem(ref nome, tipo), ") tb");
+            var subQuery = MontarQueryListagem(ref nome, tipo, coordenadoriaId);
+            var query = new StringBuilder("select count(1) from (");
+            query.Append(subQuery);
+            query.Append(") tb");
 
-            return conexao.Obter().ExecuteScalarAsync<int>(query, new { nome, tipo });
+            return conexao.Obter().ExecuteScalarAsync<int>(query.ToString(), new { nome, tipo, coordenadoriaId });
         }
 
-        private static string MontarQueryListagem(ref string nome, short? tipo)
+        private static string MontarQueryListagem(ref string? nome, short? tipo, long? coordenadoriaId)
         {
-            var query = @"select ap.*, d.*
-                          from area_promotora ap
-                          left join dre d  on ap.dreid = d.id 
-                          where not ap.excluido ";
+            var query =
+                """
+                select ap.*, d.*, c. *
+                from area_promotora ap
+                     left join dre d  on ap.dreid = d.id
+                     left join coordenadoria c on ap.coordenadoria_id = c.id and not c.excluido
+                where not ap.excluido
+                """;
 
             if (!string.IsNullOrEmpty(nome))
             {
@@ -66,6 +83,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (tipo.GetValueOrDefault() > 0)
                 query += " and ap.tipo = @tipo";
+
+            if (coordenadoriaId is not null)
+                query += " and ap.coordenadoria_id = @coordenadoriaId";
 
             return query;
         }

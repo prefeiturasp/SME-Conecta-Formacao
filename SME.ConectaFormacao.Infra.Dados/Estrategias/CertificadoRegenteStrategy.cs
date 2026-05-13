@@ -11,19 +11,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
         public string GerarHtml(DadosEmissaoCertificadoCodafDto dados)
         {
             var layout = ObterLayoutBase(dados);
-            var imgMolduraLateral = templateService.ObterImagemBase64("barra_lateral_padrao_certificado_codaf.png");
+            var imgCabecalho = templateService.ObterImagemBase64("header.jpg");
             return layout.Replace("{{TEXTO_CERTIFICADO}}", GerarCorpoCertificado(dados))
-                         .Replace("{{IMG_MOLDURA_LATERAL}}", imgMolduraLateral)
+                         .Replace("{{IMG_MOLDURA}}", imgCabecalho)
                          .MinificarHtml();
         }
 
         private static string GerarCorpoCertificado(DadosEmissaoCertificadoCodafDto dados)
         {
             return $@"
-            <p>Certificamos para os devidos fins que o(a) servidor(a), <b>{dados.NomeCompleto}</b>, 
-            R.F. {dados.Documento}, ministrou o Evento <b>{dados.NomeFormacao}</b> 
-            promovido pelo(a) SME em {dados.DataRealizacao:dd/MM/yyyy}, 
-            com carga horária de {dados.HorasTotais ?? dados.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro():00} horas.</p>";
+            <p>Certificamos para os devidos fins que o(a) servidor(a), <b>{StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</b>, 
+            RF {StringExtensao.AplicarMascaraRf(dados.Documento)}, ministrou o {dados.TipoFormacao} <b>{dados.NomeFormacao}</b> 
+            promovido pela {dados.DreCoordenadoria} da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, com carga horária 
+                        de {dados.HorasTotais ?? dados.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro():00} horas.</p>";
         }
 
         public (string Titulo, string Corpo) GerarConteudoEmail(DadosProcessamentoCertificadoCodafDto dados, string urlAcesso)

@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.Coordenadorias;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora
@@ -15,5 +16,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora
         public IEnumerable<AreaPromotoraEmailDTO> Emails { get; set; }
         public IEnumerable<AreaPromotoraTelefoneDTO> Telefones { get; set; }
         public AuditoriaDTO Auditoria { get; set; }
+        public CoordenadoriaDto? Coordenadoria { get; set; }
     }
 }

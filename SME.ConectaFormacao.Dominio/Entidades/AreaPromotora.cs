@@ -10,6 +10,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public Guid GrupoId { get; set; }
         public long? DreId { get; set; }
         public Dre? Dre { get; set; }
+        public long? CoordenadoriaId { get; set; }
+        public Coordenadoria? Coordenadoria { get; set; }
         public IEnumerable<AreaPromotoraTelefone> Telefones { get; set; }
 
         public void AdicionarDre(Dre? dre)

@@ -1,3 +1,4 @@
+using ConectaFormacao.Dominio.Servicos;
 using Dapper;
 using Dapper.FluentMap;
 using Dapper.FluentMap.Dommel;
@@ -59,6 +60,7 @@ using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Dados.Servicos;
 using SME.ConectaFormacao.Infra.Dados.Templates;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.IoC;
 using SME.ConectaFormacao.Infra.Servicos.CacheDistribuido.IoC;
@@ -104,6 +106,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             .ConfigurarServicoCompactacao()
             .AdicionarModuloRelatorio()
             .AdicionarModuloUe()
+            .AdicionarModuloCoordenadoria()
             ;
     }
 
@@ -239,6 +242,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new UsuarioAcessibilidadeMap());
             config.AddMap(new UeMap());
 
+            config.AddMap(new CoordenadoriaMap());
+
             config.ForDommel();
         });
     }
@@ -289,6 +294,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.AddScoped<IRepositorioFuncaoAtividadeUsuario, RepositorioFuncaoAtividadeUsuario>();
         serviceCollection.AddScoped<IRepositorioCargoFuncaoEol, RepositorioCargoFuncaoEol>();
         serviceCollection.AddScoped<IRepositorioCodafListaPresenca, RepositorioCodafListaPresenca>();
+        serviceCollection.AddScoped<IRepositorioPeriodoRealizacaoConsulta, RepositorioPeriodoRealizacaoConsulta>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -445,6 +451,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
     protected virtual void RegistrarServices()
     {
         serviceCollection.AddScoped<IServicoTemplateEmail, ServicoTemplateEmail>();
+        serviceCollection.AddScoped<IPeriodoRealizacaoConsultaService, PeriodoRealizacaoConsultaService>();
         serviceCollection.ConfigurarServicoEmails();
     }
 }

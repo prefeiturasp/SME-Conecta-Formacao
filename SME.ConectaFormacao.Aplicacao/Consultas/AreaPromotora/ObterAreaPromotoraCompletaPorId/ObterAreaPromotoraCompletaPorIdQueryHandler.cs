@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<AreaPromotoraCompletoDTO> Handle(ObterAreaPromotoraCompletaPorIdQuery request, CancellationToken cancellationToken)
         {
-            var areaPromotora = await _repositorioAreaPromotora.ObterAreaPromotoraPorIdComDre(request.Id);
+            var areaPromotora = await _repositorioAreaPromotora.ObterAreaPromotoraPorIdDetalhadoAsync(request.Id);
             if (areaPromotora == null || areaPromotora.Excluido)
                 throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 

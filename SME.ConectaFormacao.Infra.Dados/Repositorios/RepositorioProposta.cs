@@ -410,6 +410,22 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 parametros.Add("revalidacao", filtro.Revalidacao);
             }
 
+            if (filtro.PossuiAnexo is not null)
+            {
+                if (filtro.PossuiAnexo.Value)
+                {
+                    condicoesWhere.AppendLine(@"
+                        AND p.anexo_url IS NOT NULL
+                        AND TRIM(p.anexo_url) <> ''");
+                }
+                else
+                {
+                    condicoesWhere.AppendLine(@"
+                        AND (p.anexo_url IS NULL
+                        OR TRIM(p.anexo_url) = '')");
+                }
+            }
+
             var conn = conexao.Obter();
             var sqlCount = $"SELECT COUNT(1) {sqlBaseJoins} {condicoesWhere}";
 
