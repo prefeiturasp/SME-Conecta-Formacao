@@ -1,163 +1,169 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>Certificado</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-        * {
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
+        html, body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background: #fff;
         }
 
-        body, html {
-            width: 100%;
-            height: 100%;
-            background: #525659;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
+        .pagina {
+            width: 1123px;
+            height: 794px;
             position: relative;
-            background-color: white;
-            width: 1373px; /* --- ajusta o tamanho da folha --- */
-            height: 793px;
             overflow: hidden;
-            background-image: url("certificado_cursista_com_RF_com_carimbo.svg");
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            margin-top: 20px;
-            -webkit-print-color-adjust: exact;
+            background: white;
+            font-family: Roboto, sans-serif;
         }
 
-        h1.titulo {
+        /* IMAGENS (FUNDO) */
+        .topo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: block;
+            z-index: 0;
+        }
+
+        .brasao {
+            position: absolute;
+            width: 300px;
+            height: auto;
+            margin-top: 80px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .selo {
+            position: absolute;
+            width: 140px;
+            height: auto;
+            bottom: 49px;
+            right: 120px;
+            z-index: 0;
+        }
+
+        /* TEXTO (ACIMA DAS IMAGENS) */
+        .titulo {
             position: absolute;
             width: 100%;
+            top: 210px;
             text-align: center;
-            top: 265px; /* --- ajusta a altura do título --- */
             font-family: 'Roboto', sans-serif;
             font-weight: 700;
-            font-size: 27px;
+            font-size: 35px;
             line-height: 100%;
-            text-transform: uppercase;
             color: #000;
         }
 
         .texto-certificado {
             position: absolute;
-            top: 351px; /* --- ajusta a altura do conteúdo --- */
-            width: 100%;
-            padding: 0 150px;
+            top: 355px;
+            left: 10;
+            right: 10;
+            margin: 0 125px;
+            text-align: center;
             font-family: 'Roboto', sans-serif;
             font-weight: 400;
-            font-size: 22px;
-            line-height: 39px;
-            text-align: center;
+            font-size: 19px;
+            line-height: 25px;
             color: #000;
         }
 
+        /* ASSINATURA */
         .assinatura-container {
             position: absolute;
-            bottom: 125px; /* --- ajusta a altura da assinatura --- */
+            top: 152mm;
             width: 100%;
             text-align: center;
         }
 
         .img-assinatura {
-            width: 377px;
-            height: 84px;
+            width: 350px;
+            height: auto;
             display: block;
             margin: 0 auto -35px auto;
+            position: relative;
+            z-index: 2;
         }
 
         .linha-assinatura {
-            width: 350px;
-            height: 1px;
-            background-color: #000;
-            margin: -15px auto 8px auto;
+            width: 320px;
+            height: 3px;
+            background: #000;
+            margin: 0px auto 8px auto;
+            position: relative;
+            z-index: 1;
         }
 
         .nome-assinatura {
             font-family: 'Roboto', sans-serif;
             font-weight: 700;
-            font-size: 14px;
-            line-height: 100%;
-            letter-spacing: 0%;
-            text-align: center;
-            text-transform: none;
-            margin-top: 15px;
+            font-size: 16px;
         }
 
         .cargo-assinatura {
             font-family: 'Roboto', sans-serif;
             font-weight: 400;
-            font-size: 14px;
-            line-height: 100%;
-            letter-spacing: 0%;
-            text-align: center;
+            font-size: 15px;
+            margin-top: 1px;
         }
 
+        /* FOOTER */
         .footer-text {
             position: absolute;
-            bottom: 80px; /* --- ajusta a altura do rodapé --- */
-            width: 100%;
-            padding: 0 60px;
+            bottom: 45px;
+            left: 320px;
+            right: 320px;
             font-family: 'Roboto', sans-serif;
-            font-weight: 400;
-            font-size: 10px;
-            line-height: 100%;
-            letter-spacing: 0%;
-            text-align: center;
+            font-size: 13px;
             color: #333;
-        }
-
-        @media print {
-            @page {
-                size: landscape;
-                margin: 0;
-            }
-
-            body {
-                background: none;
-                padding: 0;
-            }
-
-            .container {
-                margin: 0;
-                box-shadow: none;
-                width: 100%;
-                height: 100%;
-            }
+            line-height: 1.2;
+            text-align: center;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
+    <div class="pagina">
+
+        <img class="topo" src="header.svg">
+
+        <img class="brasao" src="brasao.png">
+
+        <img class="selo {{CLASSE_SELO}}" src="selo.svg">
+
         <h1 class="titulo">CERTIFICADO</h1>
 
         <div class="texto-certificado">
-            Certificamos para os devidos fins que o(a) servidor(a), <b>Jerval Nine Ruths Machado</b>,
-            RF: <b>12.345.678</b>, participou do CURSO <b>Scrum na Prática</b>
-            promovido pela <b>Diretoria Regional de Educação</b> da Secretaria Municipal de Educação,
-            no período de 01/03/2026 a 31/03/2026, com carga horária de 50 horas,
-            tendo obtido nota de aproveitamento S e frequência de 95%.
+            {{TEXTO_CERTIFICADO}}
         </div>
 
         <div class="assinatura-container">
-            <img src="assinatura_secretario.png" class="img-assinatura" alt="Assinatura" />
+            <img src="assinatura.png" class="img-assinatura" alt="Assinatura" />
             <div class="linha-assinatura"></div>
             <div class="nome-assinatura">Fernando Padula</div>
             <div class="cargo-assinatura">Secretário Municipal de Educação</div>
         </div>
 
         <div class="footer-text">
-            DRE-SÉ - Certificado registrado sob nº 1234, Com. nº 567 - DOC 08/05/2026, pág. 45, Homologação nº HOM999888.
+            {{COORDENADORIA_OU_DRE}} - Certificado registrado sob nº {{NUM_CODIGO_CERTIFICADO}}, Com. nº {{NUM_COMUNICADO}} - DOC {{DATA_PUBLICACAO_CODAF}}, pág. {{PAG_DIARIO_OFICIAL}}, Homologação nº {{NUM_HOM_FORMACAO}}.
         </div>
+
     </div>
 </body>
 </html>
