@@ -9,25 +9,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
         protected string ObterLayoutBase(DadosEmissaoCertificadoCodafDto dados)
         {
             var layout = templateService.ObterTemplate("layout-certificado-codaf.html");
-            var imgAssinaturaSecretario = templateService.ObterImagemBase64("assinatura_secretario.png");
-            var imgBrasaoPrefeitura = templateService.ObterImagemBase64("brasao_prefeitura.png");
-            var dataAtualAssinatura = DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy");
-            var anoAtual = DateTime.Now.ToString("yyyy");
+            var coordenadoriaOuDre = dados.DreCoordenadoria;
+            var numCodigoCertificado = dados.CodigoCertificado.ToString();
             var numComunicado = dados.NumeroComunicado.ToString();
             var dataPublicacao = dados.DataPublicacao.ToString("dd/MM/yyyy");
-            var numHomologacao = dados.NumeroHomologacao?.ToString() ?? "N/A";
-            var coordenadoriaOuDre = dados.DreCoordenadoria;
             var paginaDiarioOficial = dados.PaginaDiarioOficial.ToString();
+            var numHomologacao = dados.NumeroHomologacao?.ToString() ?? "N/A";
             return layout
-                .Replace("{{IMG_BRASAO_PREFEITURA}}", imgBrasaoPrefeitura)
-                .Replace("{{IMG_ASSINATURA_SECRETARIO}}", imgAssinaturaSecretario)
-                .Replace("{{DATA_ATUAL_ASSINATURA}}", dataAtualAssinatura)
-                .Replace("{{ANO_ATUAL}}", anoAtual)
+                .Replace("{{COORDENADORIA_OU_DRE}}", coordenadoriaOuDre)
+                .Replace("{{NUM_CODIGO_CERTIFICADO}}", numCodigoCertificado)
                 .Replace("{{NUM_COMUNICADO}}", numComunicado)
                 .Replace("{{DATA_PUBLICACAO_CODAF}}", dataPublicacao)
-                .Replace("{{NUM_HOM_FORMACAO}}", numHomologacao)
-                .Replace("{{COORDENADORIA_OU_DRE}}", coordenadoriaOuDre)
-                .Replace("{{PAG_DIARIO_OFICIAL}}", paginaDiarioOficial);
+                .Replace("{{PAG_DIARIO_OFICIAL}}", paginaDiarioOficial)
+                .Replace("{{NUM_HOM_FORMACAO}}", numHomologacao);
         }
     }
 }

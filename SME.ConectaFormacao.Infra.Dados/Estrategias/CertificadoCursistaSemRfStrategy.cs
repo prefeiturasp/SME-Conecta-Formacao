@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Extensoes;
+﻿using Org.BouncyCastle.Tls;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Base;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
@@ -20,8 +21,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
 
         private static string GerarCorpoCertificado(DadosEmissaoCertificadoCodafDto dados)
         {
-
-
             return $@"Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</i></b>, 
                       CPF: <b><i>{StringExtensao.AplicarMascaraCpf(dados.Documento)}</i></b>, participou do {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
                       promovido pela <b>{dados.DreCoordenadoria}</b> da Secretaria Municipal de Educação, 

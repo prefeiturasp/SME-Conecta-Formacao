@@ -125,8 +125,8 @@
         .footer-text {
             position: absolute;
             bottom: 45px;
-            left: 330px;
-            right: 330px;
+            left: 320px;
+            right: 320px;
             font-family: 'Roboto', sans-serif;
             font-size: 13px;
             color: #333;
@@ -154,14 +154,14 @@
         </div>
 
         <div class="assinatura-container">
-            <img src="assinatura_secretario.png" class="img-assinatura" alt="Assinatura" />
+            <img src="assinatura.png" class="img-assinatura" alt="Assinatura" />
             <div class="linha-assinatura"></div>
             <div class="nome-assinatura">Fernando Padula</div>
             <div class="cargo-assinatura">Secretário Municipal de Educação</div>
         </div>
 
         <div class="footer-text">
-            SME/EMFORPEF - Certificado registrado sob nº XXXX, Com. nº XXX - DOC ??/??/????, pág. XXX, Homologação nº HOMXXXXX.
+            {{COORDENADORIA_OU_DRE}} - Certificado registrado sob nº {{NUM_CODIGO_CERTIFICADO}}, Com. nº {{NUM_COMUNICADO}} - DOC {{DATA_PUBLICACAO_CODAF}}, pág. {{PAG_DIARIO_OFICIAL}}, Homologação nº {{NUM_HOM_FORMACAO}}.
         </div>
 
     </div>
