@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Templates\Assets\assinatura_secretario.png" />
       <None Remove="Templates\Assets\barra_lateral_padrao_certificado_codaf.png" />
       <None Remove="Templates\Assets\brasao_prefeitura.png" />
       <None Remove="Templates\Assets\header.jpg" />
@@ -17,11 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Templates\Assets\assinatura_secretario.png" />
       <EmbeddedResource Include="Templates\layout-certificado-codaf.html" />
       <EmbeddedResource Include="Templates\Template_Relatorio_Inscritos_Por_Formacao.xlsx" />
-	  <EmbeddedResource Include="Templates\Assets\certificado_cursista_com_RF_com_carimbo.svg" />
-	  <EmbeddedResource Include="Templates\Assets\certificado_cursista_com_RF_sem_carimbo.svg" />
 	</ItemGroup>
 
     <ItemGroup>
