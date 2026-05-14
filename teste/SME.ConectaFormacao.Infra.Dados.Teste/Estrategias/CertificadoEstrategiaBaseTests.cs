@@ -20,8 +20,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             _faker = new();
 
             // Setup Padrão dos Mocks para a Base
-            _mockTemplateService.Setup(x => x.ObterTemplate(It.IsAny<string>()))
-                .Returns("<html>{{IMG_BRASAO_PREFEITURA}} - {{IMG_ASSINATURA_SECRETARIO}} - {{ANO_ATUAL}}</html>");
+            _mockTemplateService.Setup(x => x.ObterTemplate("Templates/layout-certificado-codaf.html"))
+                .Returns("<html>{{HEADER}} - {{BRASAO}} - {{ASSINATURA}} - {{SELO}} - {{COORDENADORIA_OU_DRE}} - {{NUM_CODIGO_CERTIFICADO}} - {{NUM_COMUNICADO}} - {{DATA_PUBLICACAO_CODAF}} - {{PAG_DIARIO_OFICIAL}} - {{NUM_HOM_FORMACAO}}</html>");
 
             _mockTemplateService.Setup(x => x.ObterImagemBase64(It.IsAny<string>()))
                 .Returns("base64_fake");
@@ -38,6 +38,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 NumeroComunicado = 123,
                 DataPublicacao = new(2023, 10, 10, 0, 0, 0, DateTimeKind.Utc),
                 NumeroHomologacao = 999,
+                CodigoCertificado = 456,
+                DreCoordenadoria = "DRE Teste",
+                PaginaDiarioOficial = 5,
                 NomeCompleto = _faker.Person.FullName,
                 Documento = _faker.Person.Cpf(),
                 NomeFormacao = _faker.Lorem.Sentence(3),
@@ -48,9 +51,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
 
             // Assert
             resultado.Should().Contain("base64_fake");
-            resultado.Should().Contain(DateTime.Now.Year.ToString());
 
-            _mockTemplateService.Verify(x => x.ObterTemplate("layout-certificado-codaf.html"), Times.Once);
+            _mockTemplateService.Verify(x => x.ObterTemplate("Templates/layout-certificado-codaf.html"), Times.Once);
+            _mockTemplateService.Verify(x => x.ObterImagemBase64(It.IsAny<string>()), Times.Exactly(4));
         }
 
         private class TestableCertificadoEstrategiaBase(ITemplateService templateService) : CertificadoEstrategiaBase(templateService)
