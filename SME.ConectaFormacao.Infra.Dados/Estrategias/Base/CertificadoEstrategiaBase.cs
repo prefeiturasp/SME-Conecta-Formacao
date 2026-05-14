@@ -6,9 +6,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
     public abstract class CertificadoEstrategiaBase(ITemplateService templateService)
     {
         protected ITemplateService templateService = templateService;
+        
+        // Constantes com os caminhos EXATOS conforme definido no .csproj
+        private const string TEMPLATE_LAYOUT = "SME.ConectaFormacao.Infra.Dados.Templates.layout-certificado-codaf.html";
+        private const string IMAGEM_HEADER = "SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.svg";
+        private const string IMAGEM_BRASAO = "SME.ConectaFormacao.Infra.Dados.Templates.Assets.brasao.png";
+        private const string IMAGEM_SELO = "SME.ConectaFormacao.Infra.Dados.Templates.Assets.selo.svg";
+        private const string IMAGEM_ASSINATURA = "SME.ConectaFormacao.Infra.Dados.Templates.Assets.assinatura.png";
+
         protected string ObterLayoutBase(DadosEmissaoCertificadoCodafDto dados)
         {
-            var layout = templateService.ObterTemplate("Templates/layout-certificado-codaf.html");
+            var layout = templateService.ObterTemplate(TEMPLATE_LAYOUT);
             
             var coordenadoriaOuDre = dados.DreCoordenadoria;
             var numCodigoCertificado = dados.CodigoCertificado.ToString();
@@ -17,10 +25,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
             var paginaDiarioOficial = dados.PaginaDiarioOficial.ToString();
             var numHomologacao = dados.NumeroHomologacao?.ToString() ?? "N/A";
 
-            var imgHeader = templateService.ObterImagemBase64("Templates/Assets/header.svg");
-            var brasao = templateService.ObterImagemBase64("Templates/Assets/brasao.png");
-            var selo = templateService.ObterImagemBase64("Templates/Assets/selo.svg");
-            var assinatura = templateService.ObterImagemBase64("Templates/Assets/assinatura.png");
+            var imgHeader = templateService.ObterImagemBase64(IMAGEM_HEADER);
+            var brasao = templateService.ObterImagemBase64(IMAGEM_BRASAO);
+            var selo = templateService.ObterImagemBase64(IMAGEM_SELO);
+            var assinatura = templateService.ObterImagemBase64(IMAGEM_ASSINATURA);
 
             return layout
                 .Replace("{{COORDENADORIA_OU_DRE}}", coordenadoriaOuDre)
