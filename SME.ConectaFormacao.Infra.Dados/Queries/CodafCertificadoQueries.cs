@@ -24,6 +24,12 @@
                        CLP.NUMERO_COMUNICADO AS numeroComunicado,
                        CLP.DATA_PUBLICACAO AS dataPublicacao,
                        P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+                       (
+                		  SELECT CC.codigo_certificado
+                		  FROM PUBLIC.CODAF_CERTIFICADOS CC
+                		  WHERE CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID = CILP.ID
+                		  FETCH FIRST 1 ROW ONLY
+                		) AS codigoCertificado,
                        CASE 
                            WHEN C.NOME IS NOT NULL THEN C.NOME || ' - ' || C.SIGLA
                            ELSE D.NOME
@@ -65,6 +71,14 @@
                        CLP.NUMERO_COMUNICADO AS numeroComunicado,
                        CLP.DATA_PUBLICACAO AS dataPublicacao,
                        P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+                       (
+                		  SELECT CC.codigo_certificado
+                		  FROM PUBLIC.CODAF_CERTIFICADOS CC
+                		  JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA CILP2 
+                		       ON CILP2.ID = CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID
+                		  WHERE CILP2.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                		  FETCH FIRST 1 ROW ONLY
+                		) AS codigoCertificado,
                        CASE 
                            WHEN C.NOME IS NOT NULL THEN C.NOME || ' - ' || C.SIGLA
                            ELSE D.NOME

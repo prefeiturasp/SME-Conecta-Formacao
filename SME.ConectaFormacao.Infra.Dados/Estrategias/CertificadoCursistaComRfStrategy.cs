@@ -24,19 +24,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
         public string GerarHtml(DadosEmissaoCertificadoCodafDto dados)
         {
             var layout = ObterLayoutBase(dados);
-            var imgCabecalho = templateService.ObterImagemBase64("header.jpg");
-            return layout.Replace("{{TEXTO_CERTIFICADO}}", GerarCorpoCertificado(dados))
-                         .Replace("{{IMG_MOLDURA}}", imgCabecalho)
-                         .MinificarHtml();
+
+            return layout
+                .Replace("{{TEXTO_CERTIFICADO}}", GerarCorpoCertificado(dados))
+                .Replace("{{CLASSE_SELO}}", "")
+                .MinificarHtml();
         }
 
         private static string GerarCorpoCertificado(DadosEmissaoCertificadoCodafDto dados)
         {
             return $@"Certificamos para os devidos fins que o(a) servidor(a), <b> {StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</b>, 
-                      RF: {StringExtensao.AplicarMascaraRf(dados.Documento)}, participou <br>
-                      do {dados.TipoFormacao} <b>{dados.NomeFormacao} </b> 
-                      promovido pela {dados.DreCoordenadoria} da Secretaria Municipal de Educação,
-                       no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, 
+                      RF: {StringExtensao.AplicarMascaraRf(dados.Documento)}, participou do {dados.TipoFormacao} <b>{dados.NomeFormacao} </b> 
+                      promovido pela {dados.DreCoordenadoria} da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, 
                        com carga horária de {dados.HorasTotais ?? dados.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro():00} horas,
                        tendo obtido nota de aproveitamento {dados.ConceitoFinal} 
                       e frequência de {dados.PercentualFrequencia}%.";
