@@ -141,11 +141,11 @@
 <body>
     <div class="pagina">
 
-        <img class="topo" src="Assets/header.svg" alt="Cabeçalho">
+        <img class="topo" src="data:image/svg+xml;base64,{{HEADER}}" alt="Cabeçalho">
 
-        <img class="brasao" src="Assets/brasao.png" alt="Brasão">
+        <img class="brasao" src="data:image/png;base64,{{BRASAO}}" alt="Brasão">
 
-        <img class="selo {{CLASSE_SELO}}" src="Assets/selo.svg" alt="Selo">
+        <img class="selo {{CLASSE_SELO}}" src="data:image/svg+xml;base64,{{SELO}}" alt="Selo">
 
         <h1 class="titulo">CERTIFICADO</h1>
 
@@ -154,14 +154,14 @@
         </div>
 
         <div class="assinatura-container">
-            <img src="Assets/assinatura.png" class="img-assinatura" alt="Assinatura" />
+            <img src="data:image/png;base64,{{ASSINATURA}}" class="img-assinatura" alt="Assinatura">
             <div class="linha-assinatura"></div>
             <div class="nome-assinatura">Fernando Padula</div>
             <div class="cargo-assinatura">Secretário Municipal de Educação</div>
         </div>
 
         <div class="footer-text">
-            {{COORDENADORIA_OU_DRE}} - Certificado registrado sob nº {{NUM_CODIGO_CERTIFICADO}}, Com. nº {{NUM_COMUNICADO}} - DOC {{DATA_PUBLICACAO_CODAF}}, pág. {{PAG_DIARIO_OFICIAL}}, Homologação nº {{NUM_HOM_FORMACAO}}.
+            SME/{{COORDENADORIA_OU_DRE}} - Certificado registrado sob nº {{NUM_CODIGO_CERTIFICADO}}, Com. nº {{NUM_COMUNICADO}} - DOC {{DATA_PUBLICACAO_CODAF}}, pág. {{PAG_DIARIO_OFICIAL}}, Homologação nº {{NUM_HOM_FORMACAO}}.
         </div>
 
     </div>
