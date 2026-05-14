@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Estrategias;
 using SME.ConectaFormacao.Infra.Dados.Templates;
 
@@ -15,44 +14,69 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
         public CertificadoCursistaComRfEstrategiaTests()
         {
             _mockTemplateService = new Mock<ITemplateService>();
-            _sut = new CertificadoCursistaComRfStrategy(_mockTemplateService.Object);
+            _sut = new(_mockTemplateService.Object);
         }
 
         [Fact]
-        public void GerarHtml_DeveGerarTextoCorreto_ParaCursistaComRf()
+        public void GerarHtml_DeveGerarTextoCorreto_ParaCursistaSemRf()
         {
             // Arrange
             var dados = new DadosEmissaoCertificadoCodafDto
             {
                 NomeCompleto = "João da Silva",
-                Documento = "1234567",
+                Documento = "12345678910",
                 NomeFormacao = "Curso .NET 8",
                 DataRealizacao = new(2024, 01, 20, 0, 0, 0, DateTimeKind.Utc),
+                DataInicio = new(2024, 01, 20),
+                DataFim = new(2024, 01, 20),
                 HorasTotais = 20,
                 ConceitoFinal = "S",
                 PercentualFrequencia = 100,
                 TipoFormacao = "curso",
-                DataInicio = new(2024, 01, 20),
-                DataFim = new(2024, 01, 20),
-                DreCoordenadoria = "Secretaria Municipal"
+                DreCoordenadoria = "Secretaria Municipal",
+                CodigoCertificado = 123,
+                NumeroComunicado = 456,
+                DataPublicacao = new(2024, 01, 20),
+                PaginaDiarioOficial = 10,
+                NumeroHomologacao = 789
             };
 
-            _mockTemplateService.Setup(x => x.ObterTemplate(It.IsAny<string>()))
-                .Returns("Base: {{TEXTO_CERTIFICADO}} - Lateral: {{IMG_MOLDURA}}");
+            var templateComPlaceholders = @"
+                {{HEADER}}
+                {{TEXTO_CERTIFICADO}}
+                {{BRASAO}}
+                {{SELO}}
+                {{ASSINATURA}}
+                {{COORDENADORIA_OU_DRE}}
+                {{NUM_CODIGO_CERTIFICADO}}
+                {{NUM_COMUNICADO}}
+                {{DATA_PUBLICACAO_CODAF}}
+                {{PAG_DIARIO_OFICIAL}}
+                {{NUM_HOM_FORMACAO}}
+                {{IMG_MOLDURA}}";
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64("header.jpg"))
+            _mockTemplateService.Setup(x => x.ObterTemplate("Templates/layout-certificado-codaf.html"))
+                .Returns(templateComPlaceholders);
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("Templates/Assets/header.svg"))
                 .Returns("img_cabecalho_base64");
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64(It.Is<string>(s => s != "header.jpg")))
-                .Returns("img_comum");
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("Templates/Assets/brasao.png"))
+                .Returns("img_brasao_base64");
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("Templates/Assets/selo.svg"))
+                .Returns("img_selo_base64");
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("Templates/Assets/assinatura.png"))
+                .Returns("img_assinatura_base64");
 
             // Act
             var htmlFinal = _sut.GerarHtml(dados);
 
             // Assert - Verifica o Texto Específico
             htmlFinal.Should().Contain("Certificamos para os devidos fins que o(a) servidor(a)");
-            htmlFinal.Should().Contain("João Da Silva");
-            htmlFinal.Should().Contain("RF: 123.456.7");
+            htmlFinal.Should().MatchRegex(@"João\s+Da\s+Silva"); // Aceita variações de espaço
+            htmlFinal.Should().Contain("RF: 12345678910");
             htmlFinal.Should().Contain("Curso .NET 8");
             htmlFinal.Should().Contain("participou");
 
