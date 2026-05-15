@@ -10,7 +10,6 @@
     <ItemGroup>
 	  <EmbeddedResource Include="Templates\Assets\assinatura.png" />
       <EmbeddedResource Include="Templates\Assets\header.svg" />
-      <EmbeddedResource Include="Templates\Assets\brasao.png" />
 	  <EmbeddedResource Include="Templates\Assets\selo.svg" />
       <EmbeddedResource Include="Templates\layout-certificado-codaf.html" />
       <None Remove="Templates\Template_Relatorio_Inscritos_Por_Formacao.xlsx" />
