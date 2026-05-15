@@ -59,7 +59,7 @@ Funcionalidade: Consulta de Minhas Inscrições
       | nome    | Nome da formação                  |
       | periodo | Período de realização da formação |
 
-  Esquema do Cenário: Validar a consultar de novas formações
+  Esquema do Cenário: Validar a consulta de novas formações
     Quando acesso o menu Minhas Inscrições
     E clico em explorar formações
     Então exibe para consulta de novas formações
