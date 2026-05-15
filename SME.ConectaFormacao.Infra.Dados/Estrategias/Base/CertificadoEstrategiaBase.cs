@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
         
         // Constantes com os caminhos EXATOS conforme definido no .csproj
         private const string TEMPLATE_LAYOUT = "SME.ConectaFormacao.Infra.Dados.Templates.layout-certificado-codaf.html";
-        private const string IMAGEM_HEADER = "SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.svg";
+        private const string IMAGEM_HEADER = "SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.png";
         private const string IMAGEM_BRASAO = "SME.ConectaFormacao.Infra.Dados.Templates.Assets.brasao.png";
         private const string IMAGEM_SELO = "SME.ConectaFormacao.Infra.Dados.Templates.Assets.selo.svg";
         private const string IMAGEM_ASSINATURA = "SME.ConectaFormacao.Infra.Dados.Templates.Assets.assinatura.png";

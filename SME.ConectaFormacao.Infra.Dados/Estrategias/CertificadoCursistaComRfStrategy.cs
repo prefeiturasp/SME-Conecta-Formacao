@@ -8,6 +8,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
 {
     public class CertificadoCursistaComRfStrategy(ITemplateService templateService) : CertificadoEstrategiaBase(templateService), ICertificadoCodafGeradorConteudo
     {
+
         public (string Titulo, string Corpo) GerarConteudoEmail(DadosProcessamentoCertificadoCodafDto dados, string urlAcesso)
         {
             var titulo = @$"PARABÉNS! SEU CERTIFICADO FOI EMITIDO | {dados.NomeFormacao}";
@@ -33,12 +34,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
 
         private static string GerarCorpoCertificado(DadosEmissaoCertificadoCodafDto dados)
         {
-            return $@"Certificamos para os devidos fins que o(a) servidor(a), <b> {StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</b>, 
-                      RF: {StringExtensao.AplicarMascaraRf(dados.Documento)}, participou do {dados.TipoFormacao} <b>{dados.NomeFormacao} </b> 
-                      promovido pela {dados.DreCoordenadoria} da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, 
-                       com carga horária de {dados.HorasTotais ?? dados.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro():00} horas,
-                       tendo obtido nota de aproveitamento {dados.ConceitoFinal} 
-                      e frequência de {dados.PercentualFrequencia}%.";
+            return $@"Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</i></b>,
+                    RF: <b><i>{StringExtensao.AplicarMascaraRf(dados.Documento)}</i></b>, participou do {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
+                    promovido pela <b>{dados.DreCoordenadoria}</b> da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, 
+                    com carga horária de {dados.HorasTotais ?? dados.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro():00} horas,
+                    tendo obtido nota de aproveitamento {dados.ConceitoFinal} e frequência de {dados.PercentualFrequencia}%.";
         }
     }
 }
