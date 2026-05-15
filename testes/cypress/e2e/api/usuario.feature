@@ -1,6 +1,6 @@
 # language: pt
 
-Funcionalidade: API - Usuario
+Funcionalidade: API - Usuário
 
   Cenário: Buscar cadastro do usuário
     Dado que possuo um token válido no endpoint Usuario
