@@ -47,7 +47,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 NumeroComunicado = 123,
                 DataPublicacao = new(2023, 10, 10, 0, 0, 0, DateTimeKind.Utc),
                 NumeroHomologacao = 999,
-                CodigoCertificado = 456,
                 DreCoordenadoria = "DRE Teste",
                 PaginaDiarioOficial = 5,
                 NomeCompleto = _faker.Person.FullName,
