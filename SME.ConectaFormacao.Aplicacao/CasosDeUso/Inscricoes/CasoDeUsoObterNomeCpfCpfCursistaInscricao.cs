@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Consultas.Inscricoes.ObterCargosFuncoesPorUsuarioId;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
@@ -25,7 +26,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(login.SomenteNumeros()));
             if (usuario is { Nome: not null, Cpf: not null })
+            {
                 retornoUsuarioCpfNomeDTO = _mapper.Map<RetornoUsuarioCpfNomeDTO>(usuario);
+
+                if (registroFuncional.NaoEstaPreenchido())
+                    retornoUsuarioCpfNomeDTO.UsuarioCargos = await mediator.Send(
+                        new ObterCargosFuncoesPorUsuarioIdQuery(usuario.Id));
+            }
 
             if (registroFuncional.EstaPreenchido())
             {
