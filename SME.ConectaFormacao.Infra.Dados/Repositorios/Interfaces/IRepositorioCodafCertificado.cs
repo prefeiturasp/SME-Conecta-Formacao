@@ -17,5 +17,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<DadosCertificadoUsuarioParaDownloadDto?> ObterCertificadoDisponivelDoUsuarioAsync(long codafCertificadoId);
         Task<ResultadoPaginado<ListagemCertificadosCodafDto>> ObterTodosCertificadosAsync(FiltroListagemTodosCertificadosCodafDto filtro);
         Task<IList<CodafCertificado>> ObterCertificadosDisponiveisPorListaDeIdAsync(List<long> certificadosId);
+        Task AtualizaCodigoCertificado(long codafListaPresencaId);
     }
 }

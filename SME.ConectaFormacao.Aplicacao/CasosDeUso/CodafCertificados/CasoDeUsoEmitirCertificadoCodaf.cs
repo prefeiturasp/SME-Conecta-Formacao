@@ -67,7 +67,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             }
 
             if (entidadesParaSalvar.Count != 0)
+            {
                 await repositorioCodafCertificado.InserirLoteAsync(entidadesParaSalvar);
+                await repositorioCodafCertificado.AtualizaCodigoCertificado(codafListaPresencaId);
+            }
 
             await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarArquivoCertificadosCodaf, codafListaPresencaId));
             return Resultado.DeSucesso();

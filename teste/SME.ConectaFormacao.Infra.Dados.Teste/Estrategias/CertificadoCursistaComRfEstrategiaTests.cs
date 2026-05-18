@@ -34,7 +34,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 PercentualFrequencia = 100,
                 TipoFormacao = "curso",
                 DreCoordenadoria = "Secretaria Municipal",
-                CodigoCertificado = 123,
                 NumeroComunicado = 456,
                 DataPublicacao = new(2024, 01, 20),
                 PaginaDiarioOficial = 10,
