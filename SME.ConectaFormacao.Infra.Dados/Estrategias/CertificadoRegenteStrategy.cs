@@ -11,7 +11,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
         public string GerarHtml(DadosEmissaoCertificadoCodafDto dados)
         {
             var layout = ObterLayoutBase(dados);
-
             return layout
                 .Replace("{{TEXTO_CERTIFICADO}}", GerarCorpoCertificado(dados))
                 .Replace("{{CLASSE_SELO}}", "hidden")

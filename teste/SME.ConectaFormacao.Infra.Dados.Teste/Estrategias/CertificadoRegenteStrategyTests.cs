@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             _mockTemplateService.Setup(x => x.ObterImagemBase64(It.IsAny<string>()))
                 .Returns("img_comum");
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64("header.jpg"))
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("header.png"))
                 .Returns("img_header_base64");
 
             // Act

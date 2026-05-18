@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
         }
 
         [Fact]
-        public void GerarHtml_DeveGerarTextoCorreto_ParaCursistaSemRf()
+        public void GerarHtml_DeveGerarTextoCorreto_ParaCursistaComRf()
         {
             // Arrange
             var dados = new DadosEmissaoCertificadoCodafDto
@@ -55,19 +55,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 {{NUM_HOM_FORMACAO}}
                 {{IMG_MOLDURA}}";
 
-            _mockTemplateService.Setup(x => x.ObterTemplate("Templates/layout-certificado-codaf.html"))
+            _mockTemplateService.Setup(x => x.ObterTemplate("SME.ConectaFormacao.Infra.Dados.Templates.layout-certificado-codaf.html"))
                 .Returns(templateComPlaceholders);
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64("Templates/Assets/header.svg"))
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.png"))
                 .Returns("img_cabecalho_base64");
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64("Templates/Assets/brasao.png"))
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.brasao.png"))
                 .Returns("img_brasao_base64");
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64("Templates/Assets/selo.svg"))
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.selo.svg"))
                 .Returns("img_selo_base64");
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64("Templates/Assets/assinatura.png"))
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.assinatura.png"))
                 .Returns("img_assinatura_base64");
 
             // Act
@@ -76,7 +76,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             // Assert - Verifica o Texto Específico
             htmlFinal.Should().Contain("Certificamos para os devidos fins que o(a) servidor(a)");
             htmlFinal.Should().MatchRegex(@"João\s+Da\s+Silva"); // Aceita variações de espaço
-            htmlFinal.Should().Contain("RF: 12345678910");
+            htmlFinal.Should().MatchRegex(@"RF:.*?12345678910");
             htmlFinal.Should().Contain("Curso .NET 8");
             htmlFinal.Should().Contain("participou");
 

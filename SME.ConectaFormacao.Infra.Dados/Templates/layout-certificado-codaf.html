@@ -1,135 +1,149 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Certificado</title>
 
     <style>
-        @page {
-            size: A4 landscape;
-            margin: 0;
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+      }
+
+      .pagina {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: auto;
+        height: auto;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      .topo {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 24.5%;
+        background-image: url("data:image/png;base64,{{HEADER}}");
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: top left;
+        z-index: 0;
+      }
+
+      .brasao {
+          position: absolute;
+          width: 390px;
+          height: auto;
+          top: 36%;
+          left: 36%;
+          transform: translate(-50%, -50%);
+          z-index: 1;
+          opacity: 0.22;
         }
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            background: #fff;
-        }
+      .selo {
+        position: absolute;
+        width: 175px;
+        height: auto;
+        bottom: 70px;
+        right: 130px;
+        z-index: 0;
+      }
 
-        .pagina {
-            width: 1123px;
-            height: 794px;
-            position: relative;
-            overflow: hidden;
-            background: white;
-            font-family: Roboto, sans-serif;
-        }
+      .hidden {
+          display: none !important;
+      }
 
-        /* IMAGENS (FUNDO) */
-        .topo {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: block;
-            z-index: 0;
-        }
+      .titulo {
+        position: absolute;
+        width: 100%;
+        top: 265px;
+        text-align: center;
+        font-family: "Roboto", sans-serif;
+        font-weight: 700;
+        font-size: 42px;
+        line-height: 100%;
+        color: #000;
+      }
 
-        .brasao {
-            position: absolute;
-            width: 300px;
-            height: auto;
-            margin-top: 80px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 0;
-        }
+      .texto-certificado {
+        position: absolute;
+        top: 430px;
+        left: 10px;
+        right: 10px;
+        margin: 0 125px;
+        text-align: center;
+        font-family: "Roboto", sans-serif;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 29px;
+        color: #000;
+      }
 
-        .selo {
-            position: absolute;
-            width: 140px;
-            height: auto;
-            bottom: 49px;
-            right: 120px;
-            z-index: 0;
-        }
+      .assinatura-container {
+        position: absolute;
+        top: 190mm;
+        width: 100%;
+        text-align: center;
+      }
 
-        /* TEXTO (ACIMA DAS IMAGENS) */
-        .titulo {
-            position: absolute;
-            width: 100%;
-            top: 210px;
-            text-align: center;
-            font-family: 'Roboto', sans-serif;
-            font-weight: 700;
-            font-size: 35px;
-            line-height: 100%;
-            color: #000;
-        }
+      .img-assinatura {
+        width: 400px;
+        height: auto;
+        display: block;
+        margin: 0 auto -35px auto;
+        position: relative;
+        z-index: 2;
+      }
 
-        .texto-certificado {
-            position: absolute;
-            top: 355px;
-            left: 10;
-            right: 10;
-            margin: 0 125px;
-            text-align: center;
-            font-family: 'Roboto', sans-serif;
-            font-weight: 400;
-            font-size: 19px;
-            line-height: 25px;
-            color: #000;
-        }
+      .linha-assinatura {
+        width: 370px;
+        height: 3px;
+        background: #000;
+        margin: 0px auto 8px auto;
+        position: relative;
+        z-index: 1;
+      }
 
-        /* ASSINATURA */
-        .assinatura-container {
-            position: absolute;
-            top: 152mm;
-            width: 100%;
-            text-align: center;
-        }
+      .nome-assinatura {
+        font-family: "Roboto", sans-serif;
+        font-weight: 700;
+        font-size: 20px;
+      }
 
-        .img-assinatura {
-            width: 350px;
-            height: auto;
-            display: block;
-            margin: 0 auto -35px auto;
-            position: relative;
-            z-index: 2;
-        }
+      .cargo-assinatura {
+        font-family: "Roboto", sans-serif;
+        font-weight: 400;
+        font-size: 19px;
+        margin-top: 1px;
+      }
 
-        .linha-assinatura {
-            width: 320px;
-            height: 3px;
-            background: #000;
-            margin: 0px auto 8px auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .nome-assinatura {
-            font-family: 'Roboto', sans-serif;
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .cargo-assinatura {
-            font-family: 'Roboto', sans-serif;
-            font-weight: 400;
-            font-size: 15px;
-            margin-top: 1px;
-        }
-
-        /* FOOTER */
         .footer-text {
             position: absolute;
-            bottom: 45px;
-            left: 320px;
-            right: 320px;
-            font-family: 'Roboto', sans-serif;
-            font-size: 13px;
-            color: #333;
+            bottom: 60px;
+            left: 28%;
+            right: 28%;
+            font-family: "Roboto", sans-serif;
+            font-size: 16px;
+            color: #2f2f2f;
             line-height: 1.2;
             text-align: center;
             overflow-wrap: break-word;
@@ -140,30 +154,34 @@
 
 <body>
     <div class="pagina">
+        <div class="topo"></div>
 
-        <img class="topo" src="data:image/svg+xml;base64,{{HEADER}}" alt="Cabeçalho">
+        <img class="brasao" src="data:image/png;base64,{{BRASAO}}" alt="Brasão" />
 
-        <img class="brasao" src="data:image/png;base64,{{BRASAO}}" alt="Brasão">
-
-        <img class="selo {{CLASSE_SELO}}" src="data:image/svg+xml;base64,{{SELO}}" alt="Selo">
+        <img class="selo {{CLASSE_SELO}}"
+             src="data:image/svg+xml;base64,{{SELO}}"
+             alt="Selo" />
 
         <h1 class="titulo">CERTIFICADO</h1>
 
-        <div class="texto-certificado">
-            {{TEXTO_CERTIFICADO}}
-        </div>
+        <div class="texto-certificado">{{TEXTO_CERTIFICADO}}</div>
 
         <div class="assinatura-container">
-            <img src="data:image/png;base64,{{ASSINATURA}}" class="img-assinatura" alt="Assinatura">
+            <img src="data:image/png;base64,{{ASSINATURA}}"
+                 class="img-assinatura"
+                 alt="Assinatura" />
             <div class="linha-assinatura"></div>
             <div class="nome-assinatura">Fernando Padula</div>
             <div class="cargo-assinatura">Secretário Municipal de Educação</div>
         </div>
 
         <div class="footer-text">
-            SME/{{COORDENADORIA_OU_DRE}} - Certificado registrado sob nº {{NUM_CODIGO_CERTIFICADO}}, Com. nº {{NUM_COMUNICADO}} - DOC {{DATA_PUBLICACAO_CODAF}}, pág. {{PAG_DIARIO_OFICIAL}}, Homologação nº {{NUM_HOM_FORMACAO}}.
+            SME/{{COORDENADORIA_OU_DRE}} - Certificado registrado sob nº
+            {{NUM_CODIGO_CERTIFICADO}}, Com. nº {{NUM_COMUNICADO}} - DOC
+            {{DATA_PUBLICACAO_CODAF}}, pág. {{PAG_DIARIO_OFICIAL}}, Homologação nº
+            {{NUM_HOM_FORMACAO}}.
         </div>
-
     </div>
 </body>
 </html>
+

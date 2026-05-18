@@ -12,6 +12,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
         {
             var layout = ObterLayoutBase(dados);
 
+
             return layout
                 .Replace("{{TEXTO_CERTIFICADO}}", GerarCorpoCertificado(dados))
                 .Replace("{{CLASSE_SELO}}", "")
