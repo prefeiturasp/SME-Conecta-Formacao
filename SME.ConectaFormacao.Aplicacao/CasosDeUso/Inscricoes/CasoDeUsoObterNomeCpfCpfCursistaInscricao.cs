@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
             {
                 retornoUsuarioCpfNomeDTO = _mapper.Map<RetornoUsuarioCpfNomeDTO>(usuario);
 
-                if (registroFuncional.NaoEstaPreenchido())
+                if (string.IsNullOrEmpty(registroFuncional))
                     retornoUsuarioCpfNomeDTO.UsuarioCargos = await mediator.Send(
                         new ObterCargosFuncoesPorUsuarioIdQuery(usuario.Id));
             }
