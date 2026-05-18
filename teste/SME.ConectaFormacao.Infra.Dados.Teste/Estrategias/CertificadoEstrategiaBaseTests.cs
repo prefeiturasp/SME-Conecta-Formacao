@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             _mockTemplateService.Setup(x => x.ObterTemplate("SME.ConectaFormacao.Infra.Dados.Templates.layout-certificado-codaf.html"))
                 .Returns("<html>{{HEADER}} - {{BRASAO}} - {{ASSINATURA}} - {{SELO}} - {{COORDENADORIA_OU_DRE}} - {{NUM_CODIGO_CERTIFICADO}} - {{NUM_COMUNICADO}} - {{DATA_PUBLICACAO_CODAF}} - {{PAG_DIARIO_OFICIAL}} - {{NUM_HOM_FORMACAO}}</html>");
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.svg"))
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.png"))
                 .Returns("base64_fake");
 
             _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.brasao.png"))
@@ -62,7 +62,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             resultado.Should().Contain("base64_fake");
 
             _mockTemplateService.Verify(x => x.ObterTemplate("SME.ConectaFormacao.Infra.Dados.Templates.layout-certificado-codaf.html"), Times.Once);
-            _mockTemplateService.Verify(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.svg"), Times.Once);
+            _mockTemplateService.Verify(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.png"), Times.Once);
             _mockTemplateService.Verify(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.brasao.png"), Times.Once);
             _mockTemplateService.Verify(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.selo.svg"), Times.Once);
             _mockTemplateService.Verify(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.assinatura.png"), Times.Once);
