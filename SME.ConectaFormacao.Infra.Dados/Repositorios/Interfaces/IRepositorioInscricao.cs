@@ -29,5 +29,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<InscricaoDadosEmailConfirmacao>> ObterDadosInscricaoPorInscricaoId(long inscricoeId);
         Task<IEnumerable<long>> ObterIdsInscricoesAguardandoAnalise(long id);
         Task AtualizarSituacao(long inscricaoId, SituacaoInscricao situacao);
+        Task<IEnumerable<CargoFuncaoUsuarioDto>> ObterCargosFuncoesPorUsuarioId(long usuarioId);
     }
 }

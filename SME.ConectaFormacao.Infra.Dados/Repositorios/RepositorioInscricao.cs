@@ -738,5 +738,27 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             await conexao.Obter().ExecuteAsync(sql, new { situacao, inscricaoId });
         }
 
+        public Task<IEnumerable<CargoFuncaoUsuarioDto>> ObterCargosFuncoesPorUsuarioId(long usuarioId)
+        {
+            var query = @"
+                SELECT DISTINCT
+                    ce.cd_cargo::text                AS Codigo,
+                    cf.nome                          AS Descricao,
+                    COALESCE(ce.codigo_ue, '')       AS UeCodigo,
+                    COALESCE(d.dre_id, '')           AS DreCodigo,
+                    COALESCE(ce.tipo_vinculo, 0)     AS TipoVinculo,
+                    ce.data_posse::timestamp         AS DataInicio
+                FROM usuario u
+                JOIN cargos_eol ce ON ce.cd_registro_funcional = u.login
+                JOIN cargo_funcao_depara_eol cfde ON cfde.codigo_cargo_eol = ce.cd_cargo AND NOT cfde.excluido
+                JOIN cargo_funcao cf ON cf.id = cfde.cargo_funcao_id AND NOT cf.excluido
+                LEFT JOIN ue ON ue.codigo_ue = ce.codigo_ue
+                LEFT JOIN dre d ON d.id = ue.dre_id
+                WHERE u.id = @usuarioId
+                  AND NOT u.excluido";
+
+            return conexao.Obter().QueryAsync<CargoFuncaoUsuarioDto>(query, new { usuarioId });
+        }
+
     }
 }
