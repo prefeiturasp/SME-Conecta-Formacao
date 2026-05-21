@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         private static string ConstruirCondicoesFiltro(FiltroRelatorioInscritosPorFormacaoDto filtro, DynamicParameters parametros)
         {
-            var condicoes = new StringBuilder();
+            var condicoes = new StringBuilder(" WHERE rn = 1 ");
 
             if (filtro.PeriodoDeRealizacaoInicial.Year >= 2000 && filtro.PeriodoDeRealizacaoFinal.Year >= 2000)
             {
@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     condicoes,
                     parametros,
                     filtro.PeriodoDeRealizacaoInicial.Date,
-                    " AND P.DATA_REALIZACAO_INICIO::date >= @periodoDeRealizacaoInicial ",
+                    " AND dataRealizacaoInicio::date >= @periodoDeRealizacaoInicial ",
                     "periodoDeRealizacaoInicial"
                 );
 
@@ -45,35 +45,34 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     condicoes,
                     parametros,
                     filtro.PeriodoDeRealizacaoFinal.Date,
-                    " AND P.DATA_REALIZACAO_FIM::date <= @periodoDeRealizacaoFinal ",
+                    " AND dataRealizacaoFim::date <= @periodoDeRealizacaoFinal ",
                     "periodoDeRealizacaoFinal"
                 );
             }
 
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.PropostaId, " AND P.ID = @propostaId ", "propostaId");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.NumeroHomologacao, " AND P.NUMERO_HOMOLOGACAO = @numeroHomologacao ", "numeroHomologacao");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.PropostaTurmaId, " AND PT.ID = @propostaTurmaId ", "propostaTurmaId");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.AreaPromotoraId, " AND AP.ID = @areaPromotoraId ", "areaPromotoraId");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.DreId, " AND D.ID = @dreId ", "dreId");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.UeId, " AND UE.ID = @ueId ", "ueId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.PropostaId, " AND codigoFormacao = @propostaId ", "propostaId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.NumeroHomologacao, " AND codigoHomologacao = @numeroHomologacao ", "numeroHomologacao");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.PropostaTurmaId, " AND turma = @propostaTurmaId ", "propostaTurmaId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.AreaPromotoraId, " AND areaPromotora = @areaPromotoraId ", "areaPromotoraId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.DreId, " AND dre = @dreId ", "dreId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.UeId, " AND ue = @ueId ", "ueId");
 
-            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoProposta, " AND P.SITUACAO = @situacaoFormacao ", "situacaoFormacao");
-            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoInscricao, " AND I.SITUACAO = @situacaoInscricao ", "situacaoInscricao");
-            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.Formato, " AND P.FORMATO = @formato ", "formato");
-            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.Modalidade, " AND PM.MODALIDADE = @modalidade ", "modalidade");
+            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoProposta, " AND situacaoFormacao = @situacaoFormacao ", "situacaoFormacao");
+            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoInscricao, " AND situacaoInscricao = @situacaoInscricao ", "situacaoInscricao");
+            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.Formato, " AND modalidadeFormativa = @formato ", "formato");
+            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.Modalidade, " AND etapaModalidade = @modalidade ", "modalidade");
 
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.CargoPublicoAlvoId, " AND CF_PUBLICO.ID = @cargoPublicoAlvoId ", "cargoPublicoAlvoId");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.FuncaoId, " AND CF_FUNC_PROP.ID = @funcaoId ", "funcaoId");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.AnoTurmaId, " AND AT.ID = @anoTurmaId ", "anoTurmaId");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.ComponenteCurricularId, " AND CC.ID = @componenteCurricularId ", "componenteCurricularId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.CargoPublicoAlvoId, " AND publicoAlvo = @cargoPublicoAlvoId ", "cargoPublicoAlvoId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.FuncaoId, " AND funcaoEspecifica = @funcaoId ", "funcaoId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.AnoTurmaId, " AND anoEtapa = @anoTurmaId ", "anoTurmaId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.ComponenteCurricularId, " AND componenteCurricular = @componenteCurricularId ", "componenteCurricularId");
 
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.Pcd, " AND UA.POSSUI_DEFICIENCIA = @pcd ", "pcd");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.NecessitaAdaptacao, " AND UA.NECESSITA_ADAPTACAO = @necessitaAdaptacao ", "necessitaAdaptacao");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.Pcd, " AND pcd = @pcd ", "pcd");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.NecessitaAdaptacao, " AND necessitaAdaptacao = @necessitaAdaptacao ", "necessitaAdaptacao");
 
-            
-            AdicionarFiltroTexto(condicoes, parametros, filtro.NomeFormacao, " AND f_unaccent(P.NOME_FORMACAO) ILIKE f_unaccent(@nomeFormacao) ", "nomeFormacao");
-            AdicionarFiltroTexto(condicoes, parametros, filtro.Email, " AND f_unaccent(U.EMAIL_EDUCACIONAL) ILIKE f_unaccent(@email) ", "email");
-            AdicionarFiltroTexto(condicoes, parametros, filtro.DocumentoCursista, " AND U.LOGIN = @documentoCursista ", "documentoCursista", buscaParcial: false);
+            AdicionarFiltroTexto(condicoes, parametros, filtro.NomeFormacao, " AND f_unaccent(nomeFormacao) ILIKE f_unaccent(@nomeFormacao) ", "nomeFormacao");
+            AdicionarFiltroTexto(condicoes, parametros, filtro.Email, " AND f_unaccent(email) ILIKE f_unaccent(@email) ", "email");
+            AdicionarFiltroTexto(condicoes, parametros, filtro.DocumentoCursista, " AND rfCpf = @documentoCursista ", "documentoCursista", buscaParcial: false);
 
             return condicoes.ToString();
         }
