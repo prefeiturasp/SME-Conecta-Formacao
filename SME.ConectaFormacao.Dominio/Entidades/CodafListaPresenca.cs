@@ -90,5 +90,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             if (Status == StatusCodafListaPresenca.AguardandoDf)
                 Status = StatusCodafListaPresenca.Finalizado;
         }
+        public bool EstaFinalizado()
+            => Status == StatusCodafListaPresenca.Finalizado;
     }
 }

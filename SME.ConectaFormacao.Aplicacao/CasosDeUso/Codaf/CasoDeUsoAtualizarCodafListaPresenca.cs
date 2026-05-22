@@ -24,6 +24,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             if (codafListaPresencaExistente is null)
                 return Erro.NaoEncontrado("Lista de presença não encontrada.");
 
+            if (codafListaPresencaExistente.EstaFinalizado())
+                return Erro.Negocio("Não é possível editar uma lista de presença com situação 'Finalizado'.");
+
             var erroValidacao = await ValidarRegrasDeNegocio(codafListaPresencaEdicaoDto, id);
             if (erroValidacao is not null)
                 return erroValidacao;
