@@ -30,6 +30,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             if (codafListaPresenca == null)
                 return Erro.NaoEncontrado("Lista de presença Codaf não encontrada para o Id informado.");
 
+            if (codafListaPresenca.EstaFinalizado())
+                return Erro.Validacao("Não é possível devolver uma lista de presença Codaf com situação 'Finalizado'.");
+
             if (!codafListaPresenca.PodeSerDevolvidaParaCorrecao())
                 return Erro.Validacao("A lista de presença Codaf deve estar com status 'Enviada para DF' para ser devolvida para correção.");
 

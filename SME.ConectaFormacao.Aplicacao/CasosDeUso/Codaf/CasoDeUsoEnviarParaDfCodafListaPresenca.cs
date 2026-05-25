@@ -17,6 +17,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             var codafListaPresenca = await repositorioCodafListaPresenca.ObterPorIdDetalhadoAsync(codafListaPresencaId);
             if (codafListaPresenca is null)
                 return Erro.NaoEncontrado("Lista de presença não encontrada.");
+            
+            if (codafListaPresenca.EstaFinalizado())
+                return Erro.Negocio("Não é possível enviar para DF uma lista de presença com situação 'Finalizado'.");
+
             if (!codafListaPresenca.PodeSerEnviadaParaDf())
                 return Erro.Negocio("Lista de presença não pode ser enviada para o DF.");
             var erroValidacao = await validadorCodafListaPresencaService.ValidarParaEnvioAoDfAsync(codafListaPresenca);
