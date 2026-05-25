@@ -6,7 +6,9 @@ using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
+using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
@@ -16,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<IMapper> _mapperMock;
         private readonly CasoDeUsoSalvarInscritosCodaf _sut;
         private readonly Faker _faker;
+        private readonly Mock<IRepositorioCodafListaPresenca> _repositorioCodafListaPresencaMock;
 
         public CasoDeUsoSalvarInscritosCodafTestes()
         {
@@ -24,6 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mapperMock = mocker.GetMock<IMapper>();
             _sut = mocker.CreateInstance<CasoDeUsoSalvarInscritosCodaf>();
             _faker = new();
+            _repositorioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
         }
 
         [Fact]
@@ -80,6 +84,17 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 ConceitoFinal = _faker.Random.String(),
                 PercentualFrequencia = _faker.Random.Decimal(1, 100)
             };
+
+
+            var codaf = new CodafListaPresenca(
+                propostaId: _faker.Random.Long(1),
+                propostaTurmaId: _faker.Random.Long(1),
+                StatusCodafListaPresenca.Iniciado
+            );
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(codafListaPresencaId))
+                .ReturnsAsync(codaf);   
+
             var inscritosDto = new List<CodafInscritoListaPresencaSalvarDto> { inscritoDto };
             var inscritos = new List<CodafInscricaoListaPresenca>
             {
