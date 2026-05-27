@@ -34,6 +34,7 @@
                        I.SITUACAO AS situacaoInscricao, 
                        NULL AS situacaoConclusaoCursista, 
                        U.EMAIL_EDUCACIONAL AS email,
+                       U.EMAIL AS emailNaoEducacional,
                        ROW_NUMBER() OVER (PARTITION BY P.ID, PT.ID, U.ID ORDER BY 
                            CASE
                                WHEN CURRENT_DATE BETWEEN P.DATA_REALIZACAO_INICIO AND P.DATA_REALIZACAO_FIM THEN 1
@@ -93,7 +94,8 @@
                    descricaoAdaptacao,
                    situacaoInscricao,
                    situacaoConclusaoCursista,
-                   email
+                   email,
+                   emailNaoEducacional
             FROM   inscritos_rankeados
             """;
 
