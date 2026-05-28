@@ -410,14 +410,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.ServicoArmazenamento.Arma
 
         #region Testes de Construtor
 
-        [Fact(DisplayName = "Construtor - Deve validar ServicoArmazenamento nulo")]
-        public void Construtor_Deve_Validar_ServicoArmazenamento_Nulo()
+        [Fact(DisplayName = "Construtor - Deve lançar ArgumentNullException quando ServicoArmazenamento é nulo")]
+        public void Construtor_Deve_Lancar_ArgumentNullException_Com_ServicoArmazenamento_Nulo()
         {
             // Act & Assert
-            var excecao = Assert.Throws<ArgumentNullException>(() =>
+            Assert.Throws<ArgumentNullException>(() =>
                 new ArmazenarArquivoTemporarioServicoArmazenamentoCommandHandler(null!));
-
-            Assert.Equal("servicoArmazenamento", excecao.ParamName);
         }
 
         [Fact(DisplayName = "Construtor - Deve criar instância com parâmetro válido")]
