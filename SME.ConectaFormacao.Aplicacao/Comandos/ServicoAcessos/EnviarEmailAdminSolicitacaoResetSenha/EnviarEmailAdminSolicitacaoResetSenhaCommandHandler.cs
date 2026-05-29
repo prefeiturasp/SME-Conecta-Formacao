@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdmin
             if (usuario == null)
                 throw new NegocioException(MensagemNegocio.LOGIN_NAO_ENCONTRADO);
 
-            if (hostEnvironment.IsProduction())
+            if (!hostEnvironment.IsDevelopment())
             {
                 var mensagem = new MimeMessage();
                 mensagem.From.Add(new MailboxAddress("Conecta Formação", configuracaoEmail.Email));
@@ -55,7 +55,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdmin
             return true;
         }
 
-        private string MontarCorpo(Usuario usuario)
+        private static string MontarCorpo(Usuario usuario)
         {
             var dataHora = DateTime.Now;
 
