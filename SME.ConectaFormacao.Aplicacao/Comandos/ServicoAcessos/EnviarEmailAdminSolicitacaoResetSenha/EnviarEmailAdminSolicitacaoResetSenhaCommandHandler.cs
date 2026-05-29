@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Hosting;
 using MimeKit;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -15,15 +16,18 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdmin
         private readonly IRepositorioUsuario repositorioUsuario;
         private readonly IServicoEnvioEmail servicoEnvioEmail;
         private readonly IServicoAcessos servicoAcessos;
+        private readonly IHostEnvironment hostEnvironment;
 
         public EnviarEmailAdminSolicitacaoResetSenhaCommandHandler(
             IRepositorioUsuario repositorioUsuario,
             IServicoEnvioEmail servicoEnvioEmail,
-            IServicoAcessos servicoAcessos)
+            IServicoAcessos servicoAcessos,
+            IHostEnvironment hostEnvironment)
         {
             this.repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
             this.servicoEnvioEmail = servicoEnvioEmail ?? throw new ArgumentNullException(nameof(servicoEnvioEmail));
             this.servicoAcessos = servicoAcessos;
+            this.hostEnvironment = hostEnvironment;
         }
 
         public async Task<bool> Handle(
@@ -37,13 +41,16 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdmin
             if (usuario == null)
                 throw new NegocioException(MensagemNegocio.LOGIN_NAO_ENCONTRADO);
 
-            var mensagem = new MimeMessage();
-            mensagem.From.Add(new MailboxAddress("Conecta Formação", configuracaoEmail.Email));
-            mensagem.To.Add(new MailboxAddress("Administrador", "priscila.o@sme.prefeitura.sp.gov.br"));
-            mensagem.Subject = "SOLICITAÇÃO DE RESET DE SENHA";
-            mensagem.Body = new TextPart("html") { Text = MontarCorpo(usuario) };
+            if (hostEnvironment.IsProduction())
+            {
+                var mensagem = new MimeMessage();
+                mensagem.From.Add(new MailboxAddress("Conecta Formação", configuracaoEmail.Email));
+                mensagem.To.Add(new MailboxAddress("Administrador", "priscila.o@sme.prefeitura.sp.gov.br"));
+                mensagem.Subject = "SOLICITAÇÃO DE RESET DE SENHA";
+                mensagem.Body = new TextPart("html") { Text = MontarCorpo(usuario) };
 
-            await servicoEnvioEmail.EnviarAsync(mensagem, cancellationToken);
+                await servicoEnvioEmail.EnviarAsync(mensagem, cancellationToken);
+            }
 
             return true;
         }
