@@ -43,7 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdmin
 
             var mensagem = new MimeMessage();
             mensagem.From.Add(new MailboxAddress("Conecta Formação", configuracaoEmail.Email));
-            mensagem.To.Add(new MailboxAddress("Administrador", "priscila.o@sme.prefeitura.sp.gov.br"));
+            mensagem.To.Add(new MailboxAddress("Administrador", "conectaformacao@sme.prefeitura.sp.gov.br"));
             mensagem.Subject = "SOLICITAÇÃO DE RESET DE SENHA";
             mensagem.Body = new TextPart("html") { Text = MontarCorpo(usuario) };
 
