@@ -41,16 +41,15 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdmin
             if (usuario == null)
                 throw new NegocioException(MensagemNegocio.LOGIN_NAO_ENCONTRADO);
 
-            if (!hostEnvironment.IsDevelopment())
-            {
-                var mensagem = new MimeMessage();
-                mensagem.From.Add(new MailboxAddress("Conecta Formação", configuracaoEmail.Email));
-                mensagem.To.Add(new MailboxAddress("Administrador", "priscila.o@sme.prefeitura.sp.gov.br"));
-                mensagem.Subject = "SOLICITAÇÃO DE RESET DE SENHA";
-                mensagem.Body = new TextPart("html") { Text = MontarCorpo(usuario) };
+            var mensagem = new MimeMessage();
+            mensagem.From.Add(new MailboxAddress("Conecta Formação", configuracaoEmail.Email));
+            mensagem.To.Add(new MailboxAddress("Administrador", "priscila.o@sme.prefeitura.sp.gov.br"));
+            mensagem.Subject = "SOLICITAÇÃO DE RESET DE SENHA";
+            mensagem.Body = new TextPart("html") { Text = MontarCorpo(usuario) };
 
+            if (!hostEnvironment.IsDevelopment())
                 await servicoEnvioEmail.EnviarAsync(mensagem, cancellationToken);
-            }
+
 
             return true;
         }
@@ -58,7 +57,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdmin
         private static string MontarCorpo(Usuario usuario)
         {
             var dataHora = DateTime.Now;
-            
+
             return $@"
                 <h2>SOLICITAÇÃO DE RESET DE SENHA</h2>
                 <p>O usuário (a) a seguir solicitou reset de senha no Conecta:</p>
