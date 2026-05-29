@@ -58,8 +58,6 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdmin
         private static string MontarCorpo(Usuario usuario)
         {
             var dataHora = DateTime.Now;
-
-            //<tr><td><strong>Telefone:</strong></td><td>{usuario.Telefone ?? "-"}</td></tr>
             
             return $@"
                 <h2>SOLICITAÇÃO DE RESET DE SENHA</h2>
