@@ -16,9 +16,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
+            if (param.Mensagem == null)
+                return true;
+            
             var mensagem = param.Mensagem.ToString();
-            if (mensagem == null)
-                return false;
+            if (string.IsNullOrWhiteSpace(mensagem))
+                return true;
             
             var turmaIds = mensagem.JsonParaObjeto<long>();
             var inscricoes = await mediator.Send(new ObtertInscricoesPorPropostaTurmaQuery(new[] { turmaIds }));

@@ -27,11 +27,14 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
         public static string SomenteNumeros(this string valor)
         {
+            if (string.IsNullOrEmpty(valor)) return valor;
             return Regex.Replace(valor, "[^0-9]", "");
         }
 
         public static string AplicarMascara(this string valor, string mascara)
         {
+            if (string.IsNullOrEmpty(valor))
+                return valor;
             valor = valor.SomenteNumeros();
             if (string.IsNullOrEmpty(valor))
                 return valor;

@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
             var dadosInscricao = new DadosInscricaoPropostaDto
             {
                 UsuarioNome = usuarioLogado.Nome,
-                UsuarioCpf = usuarioLogado.Cpf.AplicarMascara(@"000\.000\.000\-00"),
+                UsuarioCpf = usuarioLogado.Cpf?.AplicarMascara(@"000\.000\.000\-00") ?? string.Empty,
                 UsuarioEmail = usuarioLogado.Email,
                 UsuarioRf = usuarioLogado.Login
             };
@@ -78,6 +78,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
         {
             Login = contextoAplicacao.UsuarioLogado,
             Nome = contextoAplicacao.NomeUsuario,
+            Tipo = TipoUsuario.Externo
         };
     }
 }
