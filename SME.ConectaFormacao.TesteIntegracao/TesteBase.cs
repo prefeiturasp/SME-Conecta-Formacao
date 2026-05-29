@@ -3,9 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
+using SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdminSolicitacaoResetSenha;
 using SME.ConectaFormacao.Dominio;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.ServicosFakes;
 using SME.ConectaFormacao.TesteIntegracao.Setup;
 using Xunit;
@@ -43,6 +45,7 @@ namespace SME.ConectaFormacao.TesteIntegracao
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<PublicarNaFilaRabbitCommand, bool>), typeof(PublicarNaFilaRabbitCommandFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<AlterarEmailServicoAcessosCommand, bool>), typeof(AlterarEmailServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<AlterarNomeServicoAcessosCommand, bool>), typeof(AlterarNomeServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
+            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<EnviarEmailAdminSolicitacaoResetSenhaCommand, bool>), typeof(EnviarEmailAdminSolicitacaoResetSenhaCommandHandlerFake), ServiceLifetime.Scoped));
         }
 
         protected virtual void RegistrarQueryFakes(IServiceCollection services)

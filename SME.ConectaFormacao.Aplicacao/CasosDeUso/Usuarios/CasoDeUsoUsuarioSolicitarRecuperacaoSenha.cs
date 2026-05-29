@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdminSolicitacaoResetSenha;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
@@ -15,8 +16,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios
         public async Task<string> Executar(string login)
         {
             var email = await mediator.Send(new SolicitarRecuperacaoSenhaServicoAcessosPorLoginCommand(login));
+
             if (email.IndexOf('@') < 0)
                 throw new NegocioException(MensagemNegocio.LOGIN_NAO_ENCONTRADO);
+
+            await mediator.Send(new EnviarEmailAdminSolicitacaoResetSenhaCommand(login));
 
             return string.Format(MensagemNegocio.ORIENTACOES_RECUPERACAO_SENHA, email.TratarEmail());
         }
