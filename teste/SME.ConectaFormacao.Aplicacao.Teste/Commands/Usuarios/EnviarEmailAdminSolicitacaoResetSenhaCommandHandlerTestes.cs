@@ -1,7 +1,6 @@
-﻿using AutoMapper;
-using Bogus;
+﻿using Bogus;
 using FluentAssertions;
-using Microsoft.Extensions.Hosting;using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting;
 using MimeKit;
 using Moq;
 using Moq.AutoMock;
@@ -45,7 +44,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Usuarios
 
             _repositorioUsuario
                 .Setup(r => r.ObterPorLogin(comando.Login))
-                .ReturnsAsync((Dominio.Entidades.Usuario)null);
+                .ReturnsAsync((Dominio.Entidades.Usuario)null!);
 
             // Act
             var act = async () => await _sut.Handle(comando, CancellationToken.None);
@@ -97,7 +96,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Usuarios
 
             var configEmail = new AcessosConfiguracaoEmailRetorno { Email = "teste@dominio.com" };
 
-            MimeMessage emailCapturado = null;
+            MimeMessage emailCapturado = null!;
 
             _repositorioUsuario
                 .Setup(r => r.ObterPorLogin(comando.Login))
@@ -126,8 +125,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Usuarios
 
             emailCapturado.Should().NotBeNull();
             emailCapturado.Subject.Should().Be("SOLICITAÇÃO DE RESET DE SENHA");
-            emailCapturado.Body.ToString().Should().Contain(usuario.Nome);
-            emailCapturado.Body.ToString().Should().Contain(usuario.Email);
+
+            var corpo = (emailCapturado.Body as TextPart)?.Text;
+            corpo.Should().NotBeNull();
+            corpo.Should().Contain(usuario.Nome);
+            corpo.Should().Contain(usuario.Email);
         }
 
         #region Helpers
