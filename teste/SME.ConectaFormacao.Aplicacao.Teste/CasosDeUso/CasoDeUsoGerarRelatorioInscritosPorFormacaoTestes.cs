@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios;
 using SME.ConectaFormacao.Aplicacao.Dtos.Relatorios;
 using SME.ConectaFormacao.Aplicacao.Eventos.Relatorios;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.InscritosPorFormacao;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Relatorios;
 using SME.ConectaFormacao.Infra.Dados.Relatorios;
@@ -47,7 +48,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         public async Task DadoFiltrosInvalidos_QuandoExecutar_EntaoDeveLogarErroDeNegocioERetornarFalse()
         {
             // Arrange
-            var filtroInvalido = new FiltroRelatorioInscritosPorFormacaoDto(); 
+            var filtroInvalido = new FiltroRelatorioInscritosPorFormacaoDto();
             var mensagemRabbit = CriarMensagemRabbit(filtroInvalido);
 
             // Act
@@ -87,6 +88,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _geradorRelatorioMock.Setup(g => g.GerarEArmazenarRelatorioAsync(It.IsAny<RelatorioInscritosFormacaoDto>()))
                                  .ReturnsAsync(urlEsperada);
 
+            NotificarRelatorioEmitidoEvento? eventoPublicacao = null;
+            _mediatorMock.Setup(m => m.Publish(It.IsAny<NotificarRelatorioEmitidoEvento>(), It.IsAny<CancellationToken>()))
+                         .Callback<NotificarRelatorioEmitidoEvento, CancellationToken>((evt, ct) => eventoPublicacao = evt)
+                         .Returns(Task.CompletedTask);
+
             // Act
             var resultado = await _sut.Executar(mensagemRabbit);
 
@@ -98,11 +104,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                     dto.Inscritos.Count() == 1 &&
                     dto.NomeUsuario == "LEITE CARRETA")), Times.Once);
 
-            _mediatorMock.Verify(m => m.Publish(
-                It.Is<NotificarRelatorioEmitidoEvento>(evento =>
-                    evento.Notificacao.Mensagem.Contains(urlEsperada) &&
-                    evento.UsuariosAlvo[0].Id == usuarioDb.Id),
-                It.IsAny<CancellationToken>()), Times.Once);
+            eventoPublicacao.Should().NotBeNull();
+            eventoPublicacao!.Notificacao.Mensagem.Should().Contain(urlEsperada);
+            eventoPublicacao.UsuariosAlvo.Should().NotBeNull();
+            eventoPublicacao.UsuariosAlvo[0].Id.Should().Be(usuarioDb.Id);
         }
 
         [Fact]
@@ -132,6 +137,110 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 It.IsAny<string>()), Times.Once);
 
             _mediatorMock.Verify(m => m.Publish(It.IsAny<NotificarRelatorioEmitidoEvento>(), It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task DadoInscritosComDatasEPcd_QuandoExecutar_EntaoCamposPeriodoEPcdDevemSerFormatadosCorretamente()
+        {
+            // Arrange
+            var filtroValido = new FiltroRelatorioInscritosPorFormacaoDto { PropostaId = 999 };
+            var mensagemRabbit = CriarMensagemRabbit(filtroValido);
+            var usuarioDb = new Usuario { Id = 2, Nome = "Usuário Teste", Login = "998877" };
+
+            var modelComPcd = new InscritoFormacaoQueryModel
+            {
+                CodigoFormacao = "1",
+                NomeCursista = "Cursista PCD",
+                RfCpf = "11122233344",
+                DataRealizacaoInicio = new DateTime(2025, 2, 1),
+                DataRealizacaoFim = new DateTime(2025, 2, 5),
+                Pcd = true,
+                NecessitaAdaptacao = true,
+                DescricaoAdaptacao = "Leitor de tela"
+            };
+
+            var modelSemPcd = new InscritoFormacaoQueryModel
+            {
+                CodigoFormacao = "2",
+                NomeCursista = "Cursista Sem PCD",
+                RfCpf = "55566677788",
+                // sem datas e pcd nulo -> deve retornar "N/A" e periodo "N/A"
+                Pcd = null
+            };
+
+            _repositorioUsuarioMock.Setup(r => r.ObterPorId(It.IsAny<long>())).ReturnsAsync(usuarioDb);
+            _repositorioRelatoriosMock.Setup(r => r.ObterDadosRelatorioInscritosPorFormacaoAsync(It.IsAny<FiltroRelatorioInscritosPorFormacaoDto>()))
+                                      .ReturnsAsync(new List<InscritoFormacaoQueryModel> { modelComPcd, modelSemPcd });
+
+            RelatorioInscritosFormacaoDto? dtoRecebido = null;
+            _geradorRelatorioMock.Setup(g => g.GerarEArmazenarRelatorioAsync(It.IsAny<RelatorioInscritosFormacaoDto>()))
+                                 .Callback<RelatorioInscritosFormacaoDto>(d => dtoRecebido = d)
+                                 .ReturnsAsync("https://url/relatorio.xlsx");
+
+            _mediatorMock.Setup(m => m.Publish(It.IsAny<NotificarRelatorioEmitidoEvento>(), It.IsAny<CancellationToken>()))
+                         .Returns(Task.CompletedTask);
+
+            // Act
+            var resultado = await _sut.Executar(mensagemRabbit);
+
+            // Assert
+            resultado.Should().BeTrue();
+            dtoRecebido.Should().NotBeNull();
+
+            var inscritos = dtoRecebido!.Inscritos.ToList();
+            inscritos.Count.Should().Be(2);
+
+            // Verifica periodo formatado para o primeiro
+            inscritos[0].Periodo.Should().Be("01/02/2025 À 05/02/2025");
+            inscritos[0].Pcd.Should().Be("Sim");
+            inscritos[0].PrecisaAdaptacao.Should().Be("Sim");
+            inscritos[0].QualAdaptacao.Should().Be("Leitor de tela");
+
+            // Segundo registro sem datas e sem PCD
+            inscritos[1].Periodo.Should().Be("N/A");
+            inscritos[1].Pcd.Should().Be("N/A");
+            // quando Pcd é null, PrecisaAdaptacao deve ser string vazia por lógica do mapeamento
+            inscritos[1].PrecisaAdaptacao.Should().Be("");
+        }
+
+        [Fact]
+        public async Task DadoDadosValidos_QuandoExecutar_EntaoNotificacaoDeveConterDataExpiracaoCom24Horas()
+        {
+            // Arrange
+            var filtroValido = new FiltroRelatorioInscritosPorFormacaoDto { PropostaId = 777 };
+            var mensagemRabbit = CriarMensagemRabbit(filtroValido);
+            var usuarioDb = new Usuario { Id = 3, Nome = "Outro Usuario", Login = "445566" };
+
+            var dadosBanco = new List<InscritoFormacaoQueryModel>
+            {
+                new() { CodigoFormacao = "10", NomeCursista = "Aluno", RfCpf = "00011122233" }
+            };
+
+            var urlEsperada = "https://minio.sme.sp.gov.br/relatorios/777.xlsx";
+
+            _repositorioUsuarioMock.Setup(r => r.ObterPorId(It.IsAny<long>())).ReturnsAsync(usuarioDb);
+            _repositorioRelatoriosMock.Setup(r => r.ObterDadosRelatorioInscritosPorFormacaoAsync(It.IsAny<FiltroRelatorioInscritosPorFormacaoDto>()))
+                                      .ReturnsAsync(dadosBanco);
+            _geradorRelatorioMock.Setup(g => g.GerarEArmazenarRelatorioAsync(It.IsAny<RelatorioInscritosFormacaoDto>()))
+                                 .ReturnsAsync(urlEsperada);
+
+            NotificarRelatorioEmitidoEvento? eventoCapturado = null;
+            _mediatorMock.Setup(m => m.Publish(It.IsAny<NotificarRelatorioEmitidoEvento>(), It.IsAny<CancellationToken>()))
+                         .Callback<NotificarRelatorioEmitidoEvento, CancellationToken>((evt, ct) => eventoCapturado = evt)
+                         .Returns(Task.CompletedTask);
+
+            // Act
+            var resultado = await _sut.Executar(mensagemRabbit);
+
+            // Assert
+            resultado.Should().BeTrue();
+
+            eventoCapturado.Should().NotBeNull();
+            var dataEsperada = _timeProviderMock.Object.GetUtcNow().AddHours(24);
+            eventoCapturado!.Notificacao.DataExpiracao.Should().Be(dataEsperada);
+            eventoCapturado.Notificacao.Titulo.Should().Be("Relatório de inscritos por formação (.xlsx)");
+            eventoCapturado.Notificacao.Categoria.Should().Be(NotificacaoCategoria.Informe);
+            eventoCapturado.Notificacao.Tipo.Should().Be(NotificacaoTipo.Relatorio);
         }
 
         private static MensagemRabbit CriarMensagemRabbit(FiltroRelatorioInscritosPorFormacaoDto filtro)

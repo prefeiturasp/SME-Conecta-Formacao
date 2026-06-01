@@ -35,6 +35,7 @@
                        NULL AS situacaoConclusaoCursista, 
                        U.EMAIL_EDUCACIONAL AS email,
                        U.EMAIL AS emailNaoEducacional,
+                       U.TELEFONE AS telefone,
                        ROW_NUMBER() OVER (PARTITION BY P.ID, PT.ID, U.ID ORDER BY 
                            CASE
                                WHEN CURRENT_DATE BETWEEN P.DATA_REALIZACAO_INICIO AND P.DATA_REALIZACAO_FIM THEN 1
@@ -88,6 +89,7 @@
                    turma,
                    rfCpf,
                    nomeCursista,
+                   telefone,
                    pcd,
                    descricaoDeficiencia,
                    necessitaAdaptacao,
