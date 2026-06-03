@@ -17,6 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         private readonly Mock<IServicoAcessos> _servicoAcessosMock;
         private readonly Mock<IRepositorioUsuario> _repositorioUsuarioMock;
         private readonly Mock<IMediator> _mediatorMock;
+        private readonly Mock<IRepositorioUsuarioAcessibilidade> _repositorioUsuarioAcessibilidadeMock;
         private readonly ObterMeusDadosServicoAcessosPorLoginQueryHandler _handler;
 
         public ObterMeusDadosServicoAcessosPorLoginQueryHandlerTeste()
@@ -27,6 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             _servicoAcessosMock = mocker.GetMock<IServicoAcessos>();
             _repositorioUsuarioMock = mocker.GetMock<IRepositorioUsuario>();
             _mediatorMock = mocker.GetMock<IMediator>();
+            _repositorioUsuarioAcessibilidadeMock = mocker.GetMock<IRepositorioUsuarioAcessibilidade>();
             _handler = mocker.CreateInstance<ObterMeusDadosServicoAcessosPorLoginQueryHandler>();
         }
         [Fact]
@@ -44,6 +46,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             _repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("1234567")).ReturnsAsync((1, "usuario@edu.sme.prefeitura.sp.gov.br"));
 
             _mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns(new DadosUsuarioDTO { Nome = "Usuario Teste", Login = "1234567", Email = "usuario@teste.com", EmailEducacional = "usuario@edu.sme.prefeitura.sp.gov.br" });
+            _repositorioUsuarioAcessibilidadeMock.Setup(r => r.ObterAcessibilidadeAtualDoUsuarioAsync()).ReturnsAsync((UsuarioAcessibilidade?)null);
             
             var query = new ObterMeusDadosServicoAcessosPorLoginQuery("1234567");
 
@@ -74,6 +77,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<object>(), It.IsAny<CancellationToken>())).ReturnsAsync("Unidade Teste");
             _mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns(new DadosUsuarioDTO { Nome = "Usuario Externo", Login = "1234567", Email = "usuario@externo.com", NomeUnidade = "Unidade Teste" });
+            _repositorioUsuarioAcessibilidadeMock.Setup(r => r.ObterAcessibilidadeAtualDoUsuarioAsync()).ReturnsAsync((UsuarioAcessibilidade?)null);
 
             var query = new ObterMeusDadosServicoAcessosPorLoginQuery("1234567");
 
@@ -83,6 +87,184 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             Assert.Equal("1234567", result.Login);
             Assert.Equal("usuario@externo.com", result.Email);
             Assert.Equal("Unidade Teste", result.NomeUnidade);
+        }
+
+        [Fact]
+        public async Task DeveCopiarEmailEducacional_QuandoEmailDoAcessoForEducacionalEEmailEducacionalVazio()
+        {
+            var acessoDadosUsuario = new AcessosDadosUsuario
+            {
+                Nome = "Aluno Edu",
+                Login = "7654321",
+                Email = "aluno@edu.sme.prefeitura.sp.gov.br",
+                Tipo = (int)TipoUsuario.Interno,
+                EmailEducacional = null
+            };
+
+            _servicoAcessosMock.Setup(s => s.ObterMeusDados("7654321")).ReturnsAsync(acessoDadosUsuario);
+            _repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("7654321")).ReturnsAsync((0, string.Empty));
+            _repositorioUsuarioAcessibilidadeMock.Setup(r => r.ObterAcessibilidadeAtualDoUsuarioAsync()).ReturnsAsync((UsuarioAcessibilidade?)null);
+
+            _mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns((AcessosDadosUsuario a) => new DadosUsuarioDTO
+            {
+                Nome = a.Nome,
+                Login = a.Login,
+                Email = a.Email,
+                EmailEducacional = a.EmailEducacional!
+            });
+
+            var query = new ObterMeusDadosServicoAcessosPorLoginQuery("7654321");
+
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            // Como o email do acesso é do dominio educacional e EmailEducacional estava vazio, deve ser copiado
+            Assert.Equal("aluno@edu.sme.prefeitura.sp.gov.br", result.EmailEducacional);
+        }
+
+        [Fact]
+        public async Task DeveGerarEmailEducacional_QuandoUsuarioExisteEEmailEducacionalVazio()
+        {
+            var usuario = ObterUsuario();
+            var acessoDadosUsuario = new AcessosDadosUsuario
+            {
+                Nome = "Usuario Gerador",
+                Login = "9999999",
+                Email = "usuario@naoedu.com",
+                Tipo = (int)TipoUsuario.Interno,
+                EmailEducacional = null
+            };
+
+            _servicoAcessosMock.Setup(s => s.ObterMeusDados("9999999")).ReturnsAsync(acessoDadosUsuario);
+            _repositorioUsuarioMock.Setup(r => r.ObterPorLogin("9999999")).ReturnsAsync(usuario);
+            _repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("9999999")).ReturnsAsync((0, string.Empty));
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GerarEmailEducacionalCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync("gerado@edu.sme.prefeitura.sp.gov.br");
+            _repositorioUsuarioAcessibilidadeMock.Setup(r => r.ObterAcessibilidadeAtualDoUsuarioAsync()).ReturnsAsync((UsuarioAcessibilidade?)null);
+
+            _mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns(new DadosUsuarioDTO { Nome = "Usuario Gerador", Login = "9999999", Email = "usuario@naoedu.com", EmailEducacional = "gerado@edu.sme.prefeitura.sp.gov.br" });
+
+            var query = new ObterMeusDadosServicoAcessosPorLoginQuery("9999999");
+
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            Assert.Equal("gerado@edu.sme.prefeitura.sp.gov.br", result.EmailEducacional);
+        }
+
+        [Fact]
+        public async Task DeveObterNomePeloLoginEMapearAcessibilidadeQuandoNomeNulo()
+        {
+            var acessoDadosUsuario = new AcessosDadosUsuario
+            {
+                Nome = null!,
+                Login = "8888888",
+                Email = "usuario@naoedu.com",
+                Tipo = (int)TipoUsuario.Interno
+            };
+
+            var acessibilidade = new UsuarioAcessibilidade
+            {
+                UsuarioId = 1,
+                PossuiDeficiencia = true,
+                DescricaoDeficiencia = "Visual",
+                NecessitaAdaptacao = false,
+                DescricaoAdaptacao = null
+            };
+
+            _servicoAcessosMock.Setup(s => s.ObterMeusDados("8888888")).ReturnsAsync(acessoDadosUsuario);
+            _repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("8888888")).ReturnsAsync((0, string.Empty));
+            _repositorioUsuarioAcessibilidadeMock.Setup(r => r.ObterAcessibilidadeAtualDoUsuarioAsync()).ReturnsAsync(acessibilidade);
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterNomeCpfProfissionalPorRegistroFuncionalQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Dtos.RetornoUsuarioCpfNomeDTO { Nome = "Nome Via EOL" });
+
+            _mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns((AcessosDadosUsuario a) => new DadosUsuarioDTO
+            {
+                Nome = a.Nome ?? "Nome Via EOL",
+                Login = a.Login,
+                Email = a.Email,
+                EmailEducacional = a.EmailEducacional!
+            });
+
+            _mapperMock.Setup(m => m.Map<UsuarioAcessibilidadeDto>(It.IsAny<UsuarioAcessibilidade>()))
+                .Returns(new UsuarioAcessibilidadeDto { UsuarioId = 1, PossuiDeficiencia = true, DescricaoDeficiencia = "Visual", NecessitaAdaptacao = false, DescricaoAdaptacao = null, Salvar = false });
+
+            var query = new ObterMeusDadosServicoAcessosPorLoginQuery("8888888");
+
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            Assert.Equal("Nome Via EOL", result.Nome);
+            Assert.NotNull(result.UsuarioAcessibilidade);
+            Assert.True(result.UsuarioAcessibilidade.PossuiDeficiencia);
+            Assert.Equal("Visual", result.UsuarioAcessibilidade.DescricaoDeficiencia);
+        }
+
+        [Fact]
+        public async Task DeveRetornarTelefoneDoUsuario_QuandoUsuarioPossuiTelefone()
+        {
+            var usuario = ObterUsuario();
+            usuario.Telefone = "11999999999";
+
+            var acessoDadosUsuario = new AcessosDadosUsuario
+            {
+                Nome = "Usuario Telefone",
+                Login = "7777777",
+                Email = "usuario@naoedu.com",
+                Tipo = (int)TipoUsuario.Interno,
+                Telefone = null!
+            };
+
+            _servicoAcessosMock.Setup(s => s.ObterMeusDados("7777777")).ReturnsAsync(acessoDadosUsuario);
+            _repositorioUsuarioMock.Setup(r => r.ObterPorLogin("7777777")).ReturnsAsync(usuario);
+            _repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("7777777")).ReturnsAsync((0, string.Empty));
+            _repositorioUsuarioAcessibilidadeMock.Setup(r => r.ObterAcessibilidadeAtualDoUsuarioAsync()).ReturnsAsync((UsuarioAcessibilidade?)null);
+
+            _mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns((AcessosDadosUsuario a) => new DadosUsuarioDTO
+            {
+                Nome = a.Nome,
+                Login = a.Login,
+                Email = a.Email,
+                Telefone = a.Telefone
+            });
+
+            var query = new ObterMeusDadosServicoAcessosPorLoginQuery("7777777");
+
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            Assert.Equal("11999999999", result.Telefone);
+        }
+
+        [Fact]
+        public async Task DeveSobrescreverTelefoneDoAcessoPeloTelefoneDoUsuario_QuandoAmbosExistirem()
+        {
+            var usuario = ObterUsuario();
+            usuario.Telefone = "22222222";
+
+            var acessoDadosUsuario = new AcessosDadosUsuario
+            {
+                Nome = "Usuario Telefone Override",
+                Login = "6666666",
+                Email = "usuario@naoedu.com",
+                Tipo = (int)TipoUsuario.Interno,
+                Telefone = "11111111"
+            };
+
+            _servicoAcessosMock.Setup(s => s.ObterMeusDados("6666666")).ReturnsAsync(acessoDadosUsuario);
+            _repositorioUsuarioMock.Setup(r => r.ObterPorLogin("6666666")).ReturnsAsync(usuario);
+            _repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("6666666")).ReturnsAsync((0, string.Empty));
+            _repositorioUsuarioAcessibilidadeMock.Setup(r => r.ObterAcessibilidadeAtualDoUsuarioAsync()).ReturnsAsync((UsuarioAcessibilidade?)null);
+
+            _mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns((AcessosDadosUsuario a) => new DadosUsuarioDTO
+            {
+                Nome = a.Nome,
+                Login = a.Login,
+                Email = a.Email,
+                Telefone = a.Telefone
+            });
+
+            var query = new ObterMeusDadosServicoAcessosPorLoginQuery("6666666");
+
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            Assert.Equal("22222222", result.Telefone);
         }
 
         private static Usuario ObterUsuario()

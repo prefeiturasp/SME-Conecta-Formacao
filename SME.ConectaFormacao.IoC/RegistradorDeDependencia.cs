@@ -312,6 +312,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarNome, CasoDeUsoUsuarioAlterarNome>();
         serviceCollection.TryAddScoped<ICasoDeUsoAlterarEmailEReenviarEmailParaValidacao, CasoDeUsoAlterarEmailEReenviarEmailParaValidacao>();
         serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarTipoEmail, CasoDeUsoUsuarioAlterarTipoEmail>();
+        serviceCollection.TryAddScoped<ICasoDeUsoUsuarioAlterarTelefone, CasoDeUsoUsuarioAlterarTelefone>();
 
         serviceCollection.TryAddScoped<ICasoDeUsoUsuarioSolicitarRecuperacaoSenha, CasoDeUsoUsuarioSolicitarRecuperacaoSenha>();
         serviceCollection.TryAddScoped<ICasoDeUsoUsuarioValidacaoSenhaToken, CasoDeUsoUsuarioValidacaoSenhaToken>();
