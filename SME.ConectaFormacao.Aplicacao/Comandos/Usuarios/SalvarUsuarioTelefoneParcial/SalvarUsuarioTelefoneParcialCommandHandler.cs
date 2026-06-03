@@ -21,13 +21,13 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             var usuario = await _repositorioUsuario.ObterPorLogin(request.Login);
 
-            if (usuario.EhNulo())
+            if (usuario == null || usuario.EhNulo())
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             usuario.Telefone = request.Telefone.SomenteNumeros();
 
-            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Usuario.Parametros(usuario.Login)));
-            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.UsuarioLogado.Parametros(usuario.Login)));
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.Usuario.Parametros(usuario.Login)), cancellationToken);
+            await _mediator.Send(new RemoverCacheCommand(CacheDistribuidoNomes.UsuarioLogado.Parametros(usuario.Login)), cancellationToken);
 
             return (await _repositorioUsuario.Atualizar(usuario)).Id > 0;
         }

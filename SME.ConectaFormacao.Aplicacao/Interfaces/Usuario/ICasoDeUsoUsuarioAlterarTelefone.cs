@@ -2,6 +2,6 @@
 {
     public interface ICasoDeUsoUsuarioAlterarTelefone
     {
-        Task<bool> Executar(string login, string nome);
+        Task<bool> Executar(string login, string telefone);
     }
 }
