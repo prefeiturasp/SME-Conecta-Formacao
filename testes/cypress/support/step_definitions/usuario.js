@@ -505,3 +505,227 @@ Então('retorna o status 401 sem alterar nome do usuário', function () {
     expect(response.status).to.eq(401)
   })
 })
+
+// Solicitar recuperação de senha
+Quando('envio uma requisição POST com login do usuário', function () { 
+  return cy.request({
+    method: 'POST',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario/${Cypress.env('LOGIN_ADM_GERAL')}/solicitar-recuperacao-senha`,
+    headers: {
+      accept: 'text/plain',
+      Authorization: `Bearer ${token}`
+    },
+    timeout: 10000,         
+    failOnStatusCode: false  
+  }).as('response')
+})
+
+Então('retorna o status 200 solicitando recuperação de senha', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(200)  
+  })
+})
+
+// Não solicitar recuperação de senha sem usuário
+Quando('envio uma requisição POST sem login do usuário', function () { 
+  return cy.request({
+    method: 'POST',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario//solicitar-recuperacao-senha`,
+    headers: {
+      accept: 'text/plain',
+      Authorization: `Bearer ${token}`
+    },        
+    failOnStatusCode: false  
+  }).as('response')
+})
+
+Então('retorna o status 405 sem solicitar recuperação de senha', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(405) 
+  })
+})
+
+// Não solicitar recuperação de senha com usuário inválido
+Quando('envio uma requisição POST com login de usuário inválido', function () { 
+  return cy.request({
+    method: 'POST',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario/9999999/solicitar-recuperacao-senha`,
+    headers: {
+      accept: 'text/plain',
+      Authorization: `Bearer ${token}`
+    },        
+    failOnStatusCode: false,
+    timeout: 60000 
+  }).as('response')
+})
+
+Então('retorna o status 400 sem solicitar recuperação de senha', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(400)
+  })
+})
+
+// Validar token de recuperação de senha
+Quando('envio uma requisição GET com token da senha', function () { 
+  return cy.request({
+    method: 'GET',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario/valida-token-recuperacao-senha/${Cypress.env('TOKEN_RECUPERACAO')}`,
+    headers: {
+      accept: 'text/plain',
+      Authorization: `Bearer ${token}`
+    },
+    timeout: 10000,         
+    failOnStatusCode: false  
+  }).as('response')
+})
+
+Então('retorna o status 200 com token de recuperação de senha', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(200)  
+  })
+})
+
+// Não validar recuperação de senha sem token
+Quando('envio uma requisição GET sem token da senha', function () { 
+  return cy.request({
+    method: 'GET',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario/valida-token-recuperacao-senha/${Cypress.env('LOGIN_ADM_GERAL')}`,
+    headers: {
+      accept: 'text/plain',
+      Authorization: `Bearer ${token}`
+    },
+    timeout: 10000,         
+    failOnStatusCode: false  
+  }).as('response')
+})
+
+Então('retorna o status 422 sem token de recuperação de senha', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(422)  
+  })
+})
+
+// Não validar token inválido na recuperação de senha
+Quando('envio uma requisição GET com token de recuperação', function () { 
+  return cy.request({
+    method: 'GET',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario/valida-token-recuperacao-senha/`,
+    headers: {
+      accept: 'text/plain',
+      Authorization: `token_invalido`
+    },        
+    failOnStatusCode: false,
+    timeout: 60000 
+  }).as('response')
+})
+
+Então('retorna o status 401 sem validar token de recuperação de senha', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(401)
+  })
+})
+
+// Recuperar senha do usuário
+Quando('envio uma requisição PUT de recuperar senha', function () { 
+  return cy.request({
+    method: 'PUT',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario/recuperar-senha`,
+    headers: {
+      accept: 'text/plain'
+    },
+    timeout: 10000,
+    body: {
+      novaSenha: `${Cypress.env('SENHA')}`,
+      token: `${Cypress.env('TOKEN_RECUPERACAO')}`
+    },        
+    failOnStatusCode: false  
+  }).as('response')
+})
+
+Então('retorna o status 200 recuperando nova senha', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(400)
+  })
+})
+
+// Não recuperar sem usuário
+Quando('envio uma requisição PUT de recuperar senha sem token', function () { 
+  return cy.request({
+    method: 'PUT',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario/recuperar-senha`,
+    headers: {
+      accept: 'text/plain'
+    },
+    body: {
+      novaSenha: `${Cypress.env('SENHA')}`,
+      token: `${Cypress.env('TOKEN_RECUPERACAO')}`
+    },
+    failOnStatusCode: false  
+  }).as('response')
+})
+
+Então('retorna o status 400 sem recuperação da senha', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(400) 
+  })
+})
+
+// Não recuperar sem inserir nova senha
+Quando('envio uma requisição PUT de recuperar sem a senha', function () { 
+  return cy.request({
+    method: 'PUT',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario/recuperar-senha`,
+    headers: {
+      accept: 'text/plain'
+    },
+    body: {
+      novaSenha: `${Cypress.env('SENHA')}`,
+      token: `${Cypress.env('TOKEN_RECUPERACAO')}`
+    },               
+    failOnStatusCode: false,
+    timeout: 60000 
+  }).as('response')
+})
+
+Então('retorna o status 400 sem recuperar a senha', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(400)
+  })
+})
+
+// Reenviar e-mail de recuperação de senha ao usuário
+Quando('envio uma requisição GET de reenvio da senha', function () { 
+  return cy.request({
+    method: 'GET',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario/${Cypress.env('LOGIN_ADM_GERAL')}/reenviar-email`,
+    headers: {
+      accept: 'text/plain'
+    },
+    timeout: 10000,    
+    failOnStatusCode: false  
+  }).as('response')
+})
+
+Então('retorna o status 200 reenviando o e-mail de senha ao usuário', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(200)
+  })
+})
+
+// Não reenviar e-mail de recuperação de senha sem usuário
+Quando('tento a requisição GET de reenvio da senha', function () { 
+  return cy.request({
+    method: 'PUT',
+    url: Cypress.config('baseUrl') + `/api/v1/Usuario//reenviar-email`,
+    headers: {
+      accept: 'text/plain'
+    },   
+    failOnStatusCode: false  
+  }).as('response')
+})
+
+Então('retorna o status 405 sem reenviar e-mail de senha', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(405) 
+  })
+})
