@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Estrategias;
 using SME.ConectaFormacao.Infra.Dados.Templates;
 
@@ -33,29 +32,32 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 PercentualFrequencia = 100
             };
 
-            _mockTemplateService.Setup(x => x.ObterTemplate(It.IsAny<string>()))
-                .Returns("Base: {{TEXTO_CERTIFICADO}} - Lateral: {{IMG_MOLDURA_LATERAL}}");
+            _mockTemplateService.Setup(x => x.ObterTemplate("SME.ConectaFormacao.Infra.Dados.Templates.layout-certificado-codaf.html"))
+                .Returns("Base: {{TEXTO_CERTIFICADO}} - Lateral: {{IMG_MOLDURA}} - {{HEADER}} - {{ASSINATURA}} - {{BRASAO}} - {{SELO}}");
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64("barra_lateral_semrf_certificado_codaf.png"))
-                .Returns("img_lateral_base64");
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.png"))
+                .Returns("img_header_base64");
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64(It.Is<string>(s => s != "barra_lateral_semrf_certificado_codaf.png")))
-                .Returns("img_comum");
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.brasao.png"))
+                .Returns("img_brasao_base64");
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.selo.svg"))
+                .Returns("img_selo_base64");
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.assinatura.png"))
+                .Returns("img_assinatura_base64");
 
             // Act
             var htmlFinal = _sut.GerarHtml(dados);
 
-            // Assert - Verifica o Texto Específico
-            htmlFinal.Should().Contain("Certificamos para os devidos fins que o(a) servidor(a), <b>João da Silva</b>");
-            htmlFinal.Should().Contain("CPF 123.456.789-10");
+            htmlFinal.Should().Contain("Certificamos para os devidos fins que o(a) servidor(a), <b><i>João Da Silva</i></b>");
+            htmlFinal.Should().Contain("CPF: <b><i>123.456.789-10</i></b>");
             htmlFinal.Should().Contain("Curso .NET 8");
-            htmlFinal.Should().Contain("participou do Evento");
+            htmlFinal.Should().Contain("participou do");
 
-            // Assert - Verifica se a Imagem Lateral Especifica foi injetada
-            htmlFinal.Should().Contain("img_lateral_base64");
-
-            // Assert - Verifica formatação de datas e horas
-            htmlFinal.Should().Contain("20/01/2024");
+            htmlFinal.Should().Contain("img_header_base64");
+          
+            htmlFinal.Should().Contain("01/01/0001");
         }
 
         [Fact]

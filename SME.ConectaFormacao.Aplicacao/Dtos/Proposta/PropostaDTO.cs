@@ -47,6 +47,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? CargaHorariaTotalOutra { get; set; }
         public bool Revalidacao { get; set; }
         public string? JustificativaRevalidacao { get; set; }
+        public string? AnexoUrl { get; set; }
 
         public IEnumerable<PropostaDreDTO> Dres { get; set; } = [];
         public IEnumerable<PropostaPublicoAlvoDTO> PublicosAlvo { get; set; } = [];
@@ -63,6 +64,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaComponenteCurricularDTO> ComponentesCurriculares { get; set; } = [];
         public IEnumerable<PropostaTipoInscricaoDTO> TiposInscricao { get; set; } = [];
         public IEnumerable<PropostaPareceristaDTO>? Pareceristas { get; set; } = [];
+        public IEnumerable<PropostaGrupoPeriodoDto> GruposPeriodos { get; set; } = [];
         public bool EhProximoPasso { get; set; }
     }
 }

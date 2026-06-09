@@ -216,4 +216,5 @@ public static class MensagemNegocio
 
     public const string ERRO_FUNCAO_ATIVIDADE_EOL_POR_DRE = "Não foi possivel obter os dados de funcao atividade";
     public const string ERRO_OBTER_TODAS_AS_UES = "Não foi possível obter as unidades escolares do EOL";
+    public const string USUARIO_SEM_PERMISSAO_PARA_EDITAR_PROPOSTA = "Os dados desta proposta podem ser alterados apenas pela Divisão de Formação (DF) ou pelo usuário que realizou o cadastro: {0}";
 }

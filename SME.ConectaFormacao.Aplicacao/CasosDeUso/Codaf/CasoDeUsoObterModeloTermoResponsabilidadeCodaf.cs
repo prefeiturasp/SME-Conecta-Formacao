@@ -10,10 +10,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         private const string CAMINHO_RECURSO = "SME.ConectaFormacao.Aplicacao.Assets.TermoResponsabilidadeModelo.pdf";
         private const string NOME_ARQUIVO_DOWNLOAD = "TermoResponsabilidadeModelo.pdf";
         private const string CONTENT_TYPE = "application/pdf";
+
+        private readonly Assembly _assembly;
+
+        public CasoDeUsoObterModeloTermoResponsabilidadeCodaf(Assembly? assembly = null)
+        {
+            _assembly = assembly ?? Assembly.GetExecutingAssembly();
+        }
+
         public Resultado<ArquivoDto> Executar()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(CAMINHO_RECURSO);
+            var stream = _assembly.GetManifestResourceStream(CAMINHO_RECURSO);
 
             if (stream == null)
                 return Erro.NaoEncontrado("Não foi possível localizar o modelo do termo de responsabilidade.");

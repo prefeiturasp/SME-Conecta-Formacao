@@ -47,6 +47,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? CargaHorariaTotalOutra { get; set; }
         public bool? Revalidacao { get; set; }
         public string? JustificativaRevalidacao { get; set; }
+        public string? AnexoUrl { get; set; }
 
         public AreaPromotora? AreaPromotora { get; set; }
         public Arquivo? ArquivoImagemDivulgacao { get; set; }

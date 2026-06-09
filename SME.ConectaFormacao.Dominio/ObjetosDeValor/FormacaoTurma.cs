@@ -8,6 +8,9 @@
         public string HoraInicio { get; set; }
         public string HoraFim { get; set; }
         public long PropostaEncontroId { get; set; }
+        public DateTime DataInicio { get; set; }
+        public DateTime DataFim { get; set; }
         public IEnumerable<FormacaoTurmaData> Periodos { get; set; }
+        public IEnumerable<FormacaoTurmaDataNovo>? DatasNovo { get; set; }
     }
 }

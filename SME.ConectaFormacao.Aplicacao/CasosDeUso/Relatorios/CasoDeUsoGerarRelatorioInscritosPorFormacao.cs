@@ -133,6 +133,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
                 model.SituacaoInscricao?.Nome() ?? "N/A",
                 model.SituacaoConclusaoCursista ?? "N/A",
                 model.Email ?? "N/A",
+                model.EmailNaoEducacional ?? "N/A",
+                model.Telefone ?? "N/A",
                 FormatarBoolean(model.Pcd),
                 model.DescricaoDeficiencia ?? "N/A",
                 model.Pcd.HasValue && model.Pcd.Value ? FormatarBoolean(model.NecessitaAdaptacao) : "",

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdminSolicitacaoResetSenha;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -26,16 +27,36 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios
         protected override void RegistrarCommandFakes(IServiceCollection services)
         {
             base.RegistrarCommandFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<SolicitarRecuperacaoSenhaServicoAcessosPorLoginCommand, string>), typeof(SolicitarRecuperacaoSenhaServicoAcessosPorLoginCommandHandlerFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<AlterarSenhaServicoAcessosPorTokenCommand, string>), typeof(AlterarSenhaServicoAcessosPorTokenCommandHandlerFake), ServiceLifetime.Scoped));
+
+            services.Replace(new ServiceDescriptor(
+                typeof(IRequestHandler<SolicitarRecuperacaoSenhaServicoAcessosPorLoginCommand, string>),
+                typeof(SolicitarRecuperacaoSenhaServicoAcessosPorLoginCommandHandlerFake),
+                ServiceLifetime.Scoped));
+
+            services.Replace(new ServiceDescriptor(
+                typeof(IRequestHandler<AlterarSenhaServicoAcessosPorTokenCommand, string>),
+                typeof(AlterarSenhaServicoAcessosPorTokenCommandHandlerFake),
+                ServiceLifetime.Scoped));
         }
 
         protected override void RegistrarQueryFakes(IServiceCollection services)
         {
             base.RegistrarQueryFakes(services);
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ValidarUsuarioTokenServicoAcessosQuery, bool>), typeof(ValidarTokenRecuperacaoSenhaServicoAcessosQueryHandlerFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterPerfisUsuarioServicoAcessosPorLoginQuery, UsuarioPerfisRetornoDTO>), typeof(ObterPerfisUsuarioServicoAcessosPorLoginQueryHandlerFake), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IRequestHandler<VincularPerfilExternoCoreSSOServicoAcessosCommand, bool>), typeof(VincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFake), ServiceLifetime.Scoped));
+
+            services.Replace(new ServiceDescriptor(
+                typeof(IRequestHandler<ValidarUsuarioTokenServicoAcessosQuery, bool>),
+                typeof(ValidarTokenRecuperacaoSenhaServicoAcessosQueryHandlerFake),
+                ServiceLifetime.Scoped));
+
+            services.Replace(new ServiceDescriptor(
+                typeof(IRequestHandler<ObterPerfisUsuarioServicoAcessosPorLoginQuery, UsuarioPerfisRetornoDTO>),
+                typeof(ObterPerfisUsuarioServicoAcessosPorLoginQueryHandlerFake),
+                ServiceLifetime.Scoped));
+
+            services.Replace(new ServiceDescriptor(
+                typeof(IRequestHandler<VincularPerfilExternoCoreSSOServicoAcessosCommand, bool>),
+                typeof(VincularPerfilExternoCoreSSOServicoAcessosCommandHandlerFake),
+                ServiceLifetime.Scoped));
         }
 
         [Fact(DisplayName = "Usuário - Deve retornar exceção ao solicitar recuperãção de senha com login do usuário inválido")]
@@ -61,7 +82,9 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios
             var login = UsuarioRecuperarSenhaMock.LoginValido;
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoUsuarioSolicitarRecuperacaoSenha>();
 
-            var orientacaoEsperada = string.Format(MensagemNegocio.ORIENTACOES_RECUPERACAO_SENHA, UsuarioRecuperarSenhaMock.EmailValido.TratarEmail());
+            var orientacaoEsperada = string.Format(
+                MensagemNegocio.ORIENTACOES_RECUPERACAO_SENHA,
+                UsuarioRecuperarSenhaMock.EmailValido.TratarEmail());
 
             // act
             var retorno = await casoDeUso.Executar(login);
@@ -104,8 +127,10 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios
         {
             // arrange
             var mapper = ObterCasoDeUso<IMapper>();
+
             var usuario = UsuarioInserirExternoMock.GerarUsuarioExternoDTO();
             usuario.Login = UsuarioRecuperarSenhaMock.LoginValido;
+
             await InserirNaBase(mapper.Map<Dominio.Entidades.Usuario>(usuario));
 
             var recuperacaoSenhaDto = UsuarioRecuperarSenhaMock.RecuperacaoSenhaDto;
@@ -119,10 +144,29 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios
             retorno.UsuarioLogin.ShouldBe(UsuarioRecuperarSenhaMock.LoginValido);
 
             var usuarios = ObterTodos<Dominio.Entidades.Usuario>();
+
             usuarios.Any().ShouldBeTrue();
 
             var usuarioLogin = usuarios.FirstOrDefault(f => f.Login.Equals(usuario.Login));
+
             usuarioLogin.Nome.ShouldNotBeNull(retorno.UsuarioNome);
         }
+
+        [Fact(DisplayName = "Usuário - Deve enviar email ao admin quando solicitar reset de senha")]
+        public async Task Deve_enviar_email_admin_ao_solicitar_reset_senha()
+        {
+            // arrange
+            var command = new EnviarEmailAdminSolicitacaoResetSenhaCommand(
+                UsuarioRecuperarSenhaMock.LoginValido);
+
+            var mediator = ObterCasoDeUso<IMediator>();
+
+            // act
+            var retorno = await mediator.Send(command);
+
+            // assert
+            retorno.ShouldBeTrue();
+        }
+
     }
 }

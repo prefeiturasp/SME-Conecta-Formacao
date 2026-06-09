@@ -10,13 +10,13 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 {
 
-    public class ObterInscricaoFinalizadaPaginadaQueryHandlerTests
+    public class ObterInscricaoFinalizadaPaginadaQueryHandlerTestes
     {
         private readonly Mock<IRepositorioInscricao> _repositorioMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly ObterInscricaoFinalizadaPaginadaQueryHandler _handler;
 
-        public ObterInscricaoFinalizadaPaginadaQueryHandlerTests()
+        public ObterInscricaoFinalizadaPaginadaQueryHandlerTestes()
         {
             _repositorioMock = new Mock<IRepositorioInscricao>();
             _mapperMock = new Mock<IMapper>();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
@@ -42,6 +43,9 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoExcluirCodafListaPresenca, CasoDeUsoExcluirCodafListaPresenca>()
                 .AddScoped<IRepositorioCodafLogRemessaConclusao, RepositorioCodafLogRemessaConclusao>()
                 .AddScoped<ICasoDeUsoGerarArquivoRemessaConclusaoCodaf, CasoDeUsoGerarArquivoRemessaConclusaoCodaf>()
+                .AddScoped<ICodafInscritosListaPresencaService, CodafInscritosListaPresencaService>()
+                .AddScoped<CodafListaPresencaDependencias>()
+                .AddScoped<ICasoDeUsoSalvarInscritosCodaf, CasoDeUsoSalvarInscritosCodaf>()
                 .AdicionarModuloCodafCertificado()
             ;
 

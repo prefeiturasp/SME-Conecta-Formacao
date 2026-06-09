@@ -373,5 +373,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return certificados.ToList();
         }
+
+        public async Task AtualizaCodigoCertificado(long codafListaPresencaId)
+        {
+            await conexao.Obter().ExecuteAsync(
+                CodafCertificadoQueries.AtualizarCodigoCertificadoNoHtml,
+                new { codafListaPresencaId });
+        }
     }
 }

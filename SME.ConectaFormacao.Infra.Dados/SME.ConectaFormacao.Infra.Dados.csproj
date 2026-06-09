@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
@@ -8,23 +8,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Templates\Assets\assinatura_secretario.png" />
-      <None Remove="Templates\Assets\barra_lateral_padrao_certificado_codaf.png" />
-      <None Remove="Templates\Assets\brasao_prefeitura.png" />
-      <None Remove="Templates\Assets\brasao_sme.png" />
-      <None Remove="Templates\layout-certificado-codaf.html" />
+	  <EmbeddedResource Include="Templates\Assets\assinatura.png" />
+	  <EmbeddedResource Include="Templates\Assets\brasao.png" />
+	  <EmbeddedResource Include="Templates\Assets\header.png" />
+	  <EmbeddedResource Include="Templates\Assets\selo.svg" />
+      <EmbeddedResource Include="Templates\layout-certificado-codaf.html" />
       <None Remove="Templates\Template_Relatorio_Inscritos_Por_Formacao.xlsx" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Templates\Assets\assinatura_secretario.png" />
-      <EmbeddedResource Include="Templates\Assets\barra_lateral_padrao_certificado_codaf.png" />
-      <EmbeddedResource Include="Templates\Assets\barra_lateral_semrf_certificado_codaf.png" />
-      <EmbeddedResource Include="Templates\Assets\brasao_prefeitura.png" />
-      <EmbeddedResource Include="Templates\Assets\brasao_sme.png" />
-      <EmbeddedResource Include="Templates\layout-certificado-codaf.html" />
       <EmbeddedResource Include="Templates\Template_Relatorio_Inscritos_Por_Formacao.xlsx" />
-    </ItemGroup>
+	</ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\SME.ConectaFormacao.Dominio\SME.ConectaFormacao.Dominio.csproj" />

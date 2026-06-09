@@ -78,9 +78,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                 try
                 {
                     var htmlComSequencial = InserirSequencialNoHtml(certificado.HtmlContentSnapshot, certificado.CodigoCertificado);
+                    var htmlComSigla = InserirSiglaCoordenadoriaOuDre(htmlComSequencial, certificado.SiglaCoordenadoriaOuDre);
                     var htmlCertificadoDto = new HtmlCertificadoCodafDto
                     {
-                        HtmlContent = htmlComSequencial
+                        HtmlContent = htmlComSigla
                     };
                     var arquivoPdf = await servicoRelatorio.ConveterHtmlCertificadoCodafParaPdfAsync(htmlCertificadoDto);
                     var certificadoIdGuid = Guid.NewGuid();
@@ -107,6 +108,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             var marcador = "{{NUM_SEQ}}";
             if (htmlContent.Contains(marcador))
                 htmlContent = htmlContent.Replace(marcador, sequencialFormatado);
+            return htmlContent;
+        }
+
+        private static string InserirSiglaCoordenadoriaOuDre(string htmlContent, string sigla)
+        {
+            var marcador = "{{COORDENADORIA_OU_DRE}}";
+            if (htmlContent.Contains(marcador))
+                htmlContent = htmlContent.Replace(marcador, sigla);
             return htmlContent;
         }
 

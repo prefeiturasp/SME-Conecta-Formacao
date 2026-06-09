@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Estrategias;
 using SME.ConectaFormacao.Infra.Dados.Templates;
 
@@ -15,7 +14,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
         public CertificadoCursistaComRfEstrategiaTests()
         {
             _mockTemplateService = new Mock<ITemplateService>();
-            _sut = new CertificadoCursistaComRfStrategy(_mockTemplateService.Object);
+            _sut = new(_mockTemplateService.Object);
         }
 
         [Fact]
@@ -25,37 +24,68 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             var dados = new DadosEmissaoCertificadoCodafDto
             {
                 NomeCompleto = "João da Silva",
-                Documento = "1234567",
+                Documento = "12345678910",
                 NomeFormacao = "Curso .NET 8",
                 DataRealizacao = new(2024, 01, 20, 0, 0, 0, DateTimeKind.Utc),
+                DataInicio = new(2024, 01, 20),
+                DataFim = new(2024, 01, 20),
                 HorasTotais = 20,
                 ConceitoFinal = "S",
-                PercentualFrequencia = 100
+                PercentualFrequencia = 100,
+                TipoFormacao = "curso",
+                DreCoordenadoria = "Secretaria Municipal",
+                NumeroComunicado = 456,
+                DataPublicacao = new(2024, 01, 20),
+                PaginaDiarioOficial = 10,
+                NumeroHomologacao = 789
             };
 
-            _mockTemplateService.Setup(x => x.ObterTemplate(It.IsAny<string>()))
-                .Returns("Base: {{TEXTO_CERTIFICADO}} - Lateral: {{IMG_MOLDURA_LATERAL}}");
+            var templateComPlaceholders = @"
+                {{HEADER}}
+                {{TEXTO_CERTIFICADO}}
+                {{BRASAO}}
+                {{SELO}}
+                {{ASSINATURA}}
+                {{COORDENADORIA_OU_DRE}}
+                {{NUM_CODIGO_CERTIFICADO}}
+                {{NUM_COMUNICADO}}
+                {{DATA_PUBLICACAO_CODAF}}
+                {{PAG_DIARIO_OFICIAL}}
+                {{NUM_HOM_FORMACAO}}
+                {{IMG_MOLDURA}}";
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64("barra_lateral_padrao_certificado_codaf.png"))
-                .Returns("img_lateral_base64");
+            _mockTemplateService.Setup(x => x.ObterTemplate("SME.ConectaFormacao.Infra.Dados.Templates.layout-certificado-codaf.html"))
+                .Returns(templateComPlaceholders);
 
-            _mockTemplateService.Setup(x => x.ObterImagemBase64(It.Is<string>(s => s != "barra_lateral_padrao_certificado_codaf.png")))
-                .Returns("img_comum");
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.png"))
+                .Returns("img_cabecalho_base64");
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.brasao.png"))
+                .Returns("img_brasao_base64");
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.selo.svg"))
+                .Returns("img_selo_base64");
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.assinatura.png"))
+                .Returns("img_assinatura_base64");
 
             // Act
             var htmlFinal = _sut.GerarHtml(dados);
 
             // Assert - Verifica o Texto Específico
-            htmlFinal.Should().Contain("Certificamos para os devidos fins que o(a) servidor(a), <b>João da Silva</b>");
-            htmlFinal.Should().Contain("R.F. 1234567");
+            htmlFinal.Should().Contain("Certificamos para os devidos fins que o(a) servidor(a)");
+            htmlFinal.Should().MatchRegex(@"João\s+Da\s+Silva"); // Aceita variações de espaço
+            htmlFinal.Should().MatchRegex(@"RF:.*?12345678910");
             htmlFinal.Should().Contain("Curso .NET 8");
-            htmlFinal.Should().Contain("participou do Evento");
+            htmlFinal.Should().Contain("participou");
 
-            // Assert - Verifica se a Imagem Lateral Especifica foi injetada
-            htmlFinal.Should().Contain("img_lateral_base64");
+            // Assert - Verifica se a Imagem foi injetada
+            htmlFinal.Should().Contain("img_cabecalho_base64");
 
             // Assert - Verifica formatação de datas e horas
             htmlFinal.Should().Contain("20/01/2024");
+            htmlFinal.Should().Contain("20 horas");
+            htmlFinal.Should().Contain("frequência de 100%");
         }
 
         [Fact]
@@ -77,7 +107,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             titulo.Should().Contain("Curso Docker");
 
             corpo.Should().Contain("Olá <b>Maria</b>!");
-            corpo.Should().Contain("participação como <b>cursista</b>"); // Valida que é texto de cursista
+            corpo.Should().Contain("participação como <b>cursista</b>");
             corpo.Should().Contain(url);
         }
     }

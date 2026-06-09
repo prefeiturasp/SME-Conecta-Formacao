@@ -15,45 +15,45 @@ public abstract class RepositorioBaseAuditavel<TEntidade>(
     protected readonly IContextoAplicacao contexto = contexto;
     protected readonly IConectaFormacaoConexao conexao = conexao;
 
-    public Task<TEntidade> ObterPorId(long id)
+    public virtual Task<TEntidade> ObterPorId(long id)
         => conexao.Obter().GetAsync<TEntidade>(id);
 
     public async virtual Task<IList<TEntidade>> ObterTodos()
         => (await conexao.Obter().GetAllAsync<TEntidade>())
             .ToList();
 
-    public Task<TEntidade?> ObterPorExpressaoAsync(Expression<Func<TEntidade, bool>> predicado)
+    public virtual Task<TEntidade?> ObterPorExpressaoAsync(Expression<Func<TEntidade, bool>> predicado)
     {
         return conexao.Obter().FirstOrDefaultAsync(predicado);
     }
 
-    public async Task<IList<TEntidade>> ObterListaPorExpressaoAsync(Expression<Func<TEntidade, bool>> predicado)
+    public async virtual Task<IList<TEntidade>> ObterListaPorExpressaoAsync(Expression<Func<TEntidade, bool>> predicado)
     {
         var resultado = await conexao.Obter().SelectAsync(predicado);
         return [.. resultado];
     }
 
-    public async Task<long> Inserir(TEntidade entidade)
+    public virtual async Task<long> Inserir(TEntidade entidade)
     {
         PreencherAuditoriaCriacao(entidade);
         entidade.Id = (long)await conexao.Obter().InsertAsync(entidade);
         return entidade.Id;
     }
 
-    public async Task<TEntidade> Atualizar(TEntidade entidade)
+    public async virtual Task<TEntidade> Atualizar(TEntidade entidade)
     {
         PreencherAuditoriaAlteracao(entidade);
         await conexao.Obter().UpdateAsync(entidade);
         return entidade;
     }
 
-    public async Task Remover(TEntidade entidade)
+    public virtual async Task Remover(TEntidade entidade)
     {
         entidade.Excluido = true;
         await Atualizar(entidade);
     }
 
-    public async Task Remover(long id)
+    public virtual async Task Remover(long id)
     {
         TEntidade entidade = await ObterPorId(id);
         await Remover(entidade);
@@ -73,12 +73,12 @@ public abstract class RepositorioBaseAuditavel<TEntidade>(
         entidade.AlteradoLogin = contexto.UsuarioLogado;
     }
 
-    public async Task<TEntidade?> ObterNaoExcluidosPorIdAsync(long id)
+    public virtual async Task<TEntidade?> ObterNaoExcluidosPorIdAsync(long id)
     {
         return await conexao.Obter().FirstOrDefaultAsync<TEntidade>(e => e.Id == id && !e.Excluido);
     }
 
-    public async Task<IList<TEntidade>> ObterTodosNaoExcluidosAsync()
+    public virtual async Task<IList<TEntidade>> ObterTodosNaoExcluidosAsync()
     {
         var resultado = await conexao.Obter().SelectAsync<TEntidade>(e => !e.Excluido);
         return resultado.ToList();

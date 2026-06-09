@@ -410,6 +410,22 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 parametros.Add("revalidacao", filtro.Revalidacao);
             }
 
+            if (filtro.PossuiAnexo is not null)
+            {
+                if (filtro.PossuiAnexo.Value)
+                {
+                    condicoesWhere.AppendLine(@"
+                        AND p.anexo_url IS NOT NULL
+                        AND TRIM(p.anexo_url) <> ''");
+                }
+                else
+                {
+                    condicoesWhere.AppendLine(@"
+                        AND (p.anexo_url IS NULL
+                        OR TRIM(p.anexo_url) = '')");
+                }
+            }
+
             var conn = conexao.Obter();
             var sqlCount = $"SELECT COUNT(1) {sqlBaseJoins} {condicoesWhere}";
 
@@ -1994,30 +2010,51 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                pe.local,
                                pe.hora_inicio horaInicio,
                                pe.hora_fim horaFim,
-                               pet.proposta_encontro_id propostaEncontroId 
+                               pet.proposta_encontro_id propostaEncontroId,
+                               coalesce(PGP.DATA_INICIO, p.data_realizacao_inicio) AS dataInicio,
+                               coalesce(PGP.DATA_FIM, p.data_realizacao_fim) AS dataFim
                         from proposta_turma pt
                         join proposta_encontro_turma pet on pet.turma_id = pt.id
-                        join proposta_encontro pe on pe.id = pet.proposta_encontro_id 
+                        join proposta_encontro pe on pe.id = pet.proposta_encontro_id
+                        JOIN proposta p ON p.ID = pt.PROPOSTA_ID
+                        LEFT JOIN proposta_grupo_periodo_turma pgpt ON pgpt.PROPOSTA_TURMA_ID = pt.ID AND NOT pgpt.EXCLUIDO 
+                        LEFT JOIN PUBLIC.PROPOSTA_GRUPO_PERIODO AS PGP ON PGP.ID = pgpt.GRUPO_PERIODO_ID AND NOT pgp.EXCLUIDO
                         where pt.proposta_id = @propostaId
                           and not pt.excluido
                           and not pet.excluido
                           and not pe.excluido
-                        order by pt.nome, pe.hora_inicio;
+                        order by pt.nome, dataInicio, pe.hora_inicio;
 
-                        select 
+                        select
                               ped.data_inicio dataInicio,
                               ped.data_fim dataFim,
                               ped.proposta_encontro_id propostaEncontroId
-                        from proposta_encontro pe 
+                        from proposta_encontro pe
                         join  proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
                         where pe.proposta_id = @propostaId
                           and not pe.excluido
                           and not ped.excluido
-                        order by ped.data_inicio;  
+                        order by ped.data_inicio;
+
+                        select
+                              coalesce(pgp.data_inicio, ped.data_inicio) dataInicio,
+                              coalesce(pgp.data_fim, ped.data_fim) dataFim,
+                              ped.proposta_encontro_id propostaEncontroId,
+                              coalesce(ped.hora_inicio, pe.hora_inicio) horaInicio,
+                              coalesce(ped.hora_fim, pe.hora_fim) horaFim,
+                              case when ped.hora_inicio is not null then 'novo' else 'legado' end modeloHorario
+                        from proposta_encontro pe
+                        join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
+                        left join proposta_encontro_turma pet on pet.proposta_encontro_id = pe.id and not pet.excluido
+                        left join proposta_grupo_periodo_turma pgpt on pgpt.proposta_turma_id = pet.turma_id and not pgpt.excluido
+                        left join proposta_grupo_periodo pgp on pgp.id = pgpt.grupo_periodo_id and not pgp.excluido
+                        where pe.proposta_id = @propostaId
+                          and not pe.excluido
+                        order by dataInicio;
 
                         select a.nome,
                                a.codigo
-                        from arquivo a 
+                        from arquivo a
                         where not a.excluido and exists(select 1 from proposta p where not p.excluido and a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId);";
 
             var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao });
@@ -2031,11 +2068,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 formacaoDetalhe.PalavrasChaves = await queryMultiple.ReadAsync<string>();
                 formacaoDetalhe.Turmas = await queryMultiple.ReadAsync<FormacaoTurma>();
                 var formacaoDatasTurmas = await queryMultiple.ReadAsync<FormacaoTurmaData>();
+                var formacaoDatasTurmasNovo = await queryMultiple.ReadAsync<FormacaoTurmaDataNovo>();
                 var arquivos = await queryMultiple.ReadAsync<Arquivo>();
                 formacaoDetalhe.ArquivoImagemDivulgacao = arquivos.Any() ? arquivos.FirstOrDefault() : null;
 
                 foreach (var turma in formacaoDetalhe.Turmas)
+                {
                     turma.Periodos = formacaoDatasTurmas.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId).OrderBy(o => o.DataInicio);
+                    turma.DatasNovo = formacaoDatasTurmasNovo.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId).OrderBy(o => o.DataInicio);
+                }
 
                 formacaoDetalhe.Turmas = formacaoDetalhe.Turmas.OrderBy(o => o.Periodos.FirstOrDefault().DataInicio);
             }
@@ -2474,6 +2515,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 FROM PUBLIC.PROPOSTA AS P 
                 WHERE NOT P.EXCLUIDO
                   AND CAST(P.NUMERO_HOMOLOGACAO AS TEXT) ILIKE @termo
+                  AND FORMACAO_HOMOLOGADA = @formacaoHomologada
+                  AND SITUACAO = @situacaoProposta
                 """;
             const string sqlSelect = $"""
                 SELECT p.ID AS propostaId,
@@ -2486,7 +2529,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 """;
             const string sqlCount = $"SELECT COUNT(1) {sqlBase}";
             var conn = conexao.Obter();
-            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, new { termo });
+
+            var formacaoHomologada = (int)FormacaoHomologada.Sim;
+            var situacaoProposta = (int)SituacaoProposta.Publicada;
+
+            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, new { termo, formacaoHomologada, situacaoProposta });
             if (totalRegistros == 0)
                 return new()
                 {
@@ -2499,7 +2546,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
             var dados = await conn.QueryAsync<AutocompletarNumeroHomologacaoDto>(sqlSelect,
-                new { termo, limit = numeroRegistros, offset = registrosIgnorados });
+                new { termo, limit = numeroRegistros, offset = registrosIgnorados, formacaoHomologada, situacaoProposta });
 
             return new()
             {

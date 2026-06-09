@@ -25,6 +25,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Relatorios
         public SituacaoInscricao? SituacaoInscricao { get; set; }
         public string? SituacaoConclusaoCursista { get; set; }
         public string? Email { get; set; }
+        public string? EmailNaoEducacional { get; set; }
+        public string? Telefone { get; set; }
         public bool? Pcd { get; set; }
         public string? DescricaoDeficiencia { get; set; }
         public bool NecessitaAdaptacao { get; set; }

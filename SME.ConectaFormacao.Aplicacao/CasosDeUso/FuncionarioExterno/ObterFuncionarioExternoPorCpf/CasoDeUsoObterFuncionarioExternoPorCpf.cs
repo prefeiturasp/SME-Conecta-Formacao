@@ -17,15 +17,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.FuncionarioExterno.ObterFunci
         {
             var contratos = await mediator.Send(new ObterDadosFuncionarioExternoQuery(cpf));
 
-            if (contratos != null)
+            if (contratos?.Any() ?? false)
             {
+                var primeiroContrato = contratos.FirstOrDefault();
                 var ues = contratos.Select(x => new RetornoListagemDTO() { Id = Convert.ToInt64(x.CodigoUE), Descricao = x.NomeUe }).DistinctBy(x => x.Id).ToList();
 
                 return new FuncionarioExternoDTO(
-                    contratos.FirstOrDefault().NomePessoa,
-                    contratos.FirstOrDefault().Cpf,
-                    contratos.FirstOrDefault().CodigoUE,
-                    contratos.FirstOrDefault().NomeUe,
+                    primeiroContrato!.NomePessoa,
+                    primeiroContrato.Cpf,
+                    primeiroContrato.CodigoUE,
+                    primeiroContrato.NomeUe,
                     ues);
             }
 

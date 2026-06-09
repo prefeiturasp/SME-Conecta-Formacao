@@ -8,13 +8,13 @@ using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 {
-    public class ObterUnidadePorCodigoEOLQueryHandlerTests
+    public class ObterUnidadePorCodigoEOLQueryHandlerTestes
     {
         private readonly AutoMocker _mocker;
         private readonly ObterUnidadePorCodigoEOLQueryHandler _handler;
         private readonly Faker _faker;
 
-        public ObterUnidadePorCodigoEOLQueryHandlerTests()
+        public ObterUnidadePorCodigoEOLQueryHandlerTestes()
         {
             _mocker = new AutoMocker();
             _handler = _mocker.CreateInstance<ObterUnidadePorCodigoEOLQueryHandler>();

@@ -25,6 +25,12 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public ICollection<CodafAnexo>? CodafAnexos { get; set; }
 
         protected CodafListaPresenca() { }
+        public CodafListaPresenca(long propostaId, long propostaTurmaId, StatusCodafListaPresenca status)
+        {
+            PropostaId = propostaId;
+            PropostaTurmaId = propostaTurmaId;
+            Status = status;
+        }
 
         public CodafListaPresenca(long propostaId, long propostaTurmaId, DadosPublicacaoLista dadosPublicacao, Guid? idPerfilUsuario)
         {
@@ -32,6 +38,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             PropostaTurmaId = propostaTurmaId; 
             AtribuirDadosPublicacao(dadosPublicacao, idPerfilUsuario);
         }
+
         public void AtualizarInformacoes(DadosPublicacaoLista dadosPublicacao, Guid? idPerfilUsuario)
         {
             AtribuirDadosPublicacao(dadosPublicacao, idPerfilUsuario);
@@ -90,5 +97,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             if (Status == StatusCodafListaPresenca.AguardandoDf)
                 Status = StatusCodafListaPresenca.Finalizado;
         }
+        public bool EstaFinalizado()
+            => Status == StatusCodafListaPresenca.Finalizado;
     }
 }

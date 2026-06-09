@@ -132,6 +132,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoUsuarioAlterarNome.Executar(login, nomeUsuarioDto.Nome));
         }
 
+        [HttpPut("{login}/telefone")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> AlterarTelefoneConectaECoreSSO([FromRoute] string login, [FromBody] TelefoneUsuarioDTO telefoneUsuarioDTO, [FromServices] ICasoDeUsoUsuarioAlterarTelefone casoDeUsoUsuarioAlterarTelefone)
+        {
+            return Ok(await casoDeUsoUsuarioAlterarTelefone.Executar(login, telefoneUsuarioDTO.Telefone));
+        }
+
         [HttpPut("{login}/tipo-email")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

@@ -9,6 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Usuario
         public string Login { get; set; }
         public string Email { get; set; }
         public string NomeUnidade { get; set; }
+        public string Telefone { get; set; } = string.Empty;
         public TipoUsuario Tipo { get; set; }
         public TipoEmail TipoEmail { get; set; }
         public string EmailEducacional { get; set; }

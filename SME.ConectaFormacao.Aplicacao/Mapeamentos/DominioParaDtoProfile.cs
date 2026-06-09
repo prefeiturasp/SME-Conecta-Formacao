@@ -27,6 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
     public class DominioParaDtoProfile : Profile
     {
+        private const string FormatoData = "dd/MM/yyyy";
         public DominioParaDtoProfile()
         {
             MapAuditoria();
@@ -53,7 +54,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
         {
             CreateMap<AreaPromotora, AreaPromotoraPaginadaDTO>()
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(x => x.Tipo.Nome()))
-                .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre!.Nome));
+                .ForMember(dest => dest.NomeDre, opt => opt.MapFrom(x => x.Dre!.Nome))
+                .ForMember(dest => dest.NomeCoordenadoria, opt => opt.MapFrom(x => FormatarNomeCoordenadoria(x.Coordenadoria)));
 
             CreateMap<AreaPromotora, AreaPromotoraCompletoDTO>()
                 .ForMember(dest => dest.DreId, opt => opt.MapFrom(x => x.DreId))
@@ -151,6 +153,17 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.DataRealizacaoFim, opt => opt.MapFrom(x => x.DataRealizacaoFim.HasValue ? x.DataRealizacaoFim.Value.ToString("dd/MM/yyyy") : string.Empty))
                 .ForMember(dest => dest.Revalidacao,
                     opt => opt.MapFrom(x => MapRevalidacao(x.Revalidacao)));
+        }
+
+        private static string? FormatarNomeCoordenadoria(Coordenadoria? coordenadoria)
+        {
+            if (coordenadoria == null)
+                return null;
+
+            if (string.IsNullOrWhiteSpace(coordenadoria.Sigla))
+                return coordenadoria.Nome;
+
+            return $"{coordenadoria.Sigla} - {coordenadoria.Nome}";
         }
 
         private static string MapRevalidacao(bool? revalidacao)
@@ -421,13 +434,26 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<FormacaoTurma, RetornoTurmaDetalheDTO>()
                 .ForMember(dest => dest.Horario,
-                    opt => opt.MapFrom(o => $"{o.HoraInicio} até {o.HoraFim}"))
+                    opt => opt.MapFrom(o => $" De {o.HoraInicio} - {o.HoraFim}"))
                 .ForMember(dest => dest.Periodos,
-                    opt =>
-                        opt.MapFrom(x => x.Periodos.Select(s => s.DataFim.HasValue ? $"{s.DataInicio:dd/MM/yyyy} - {s.DataFim.Value:dd/MM/yyyy}" : $"{s.DataInicio:dd/MM/yyyy}")));
+                    opt => opt.MapFrom(x => x.Periodos.Select(s => FormatarPeriodoData(s))))
+                .ForMember(dest => dest.DatasEncontros,
+                    opt => opt.MapFrom(x =>
+                        x.Periodos.SelectMany(p =>
+                            GerarDatasEncontros(
+                                p.DataInicio,
+                                p.DataFim ?? p.DataInicio,
+                                x.HoraInicio,
+                                x.HoraFim
+                            )
+                        ).ToList()
+                    ))
+                .ForMember(dest => dest.DataEncontrosNovo,
+                    opt => opt.MapFrom(x => MapDataEncontrosNovo(x)));
 
 
-            CreateMap<CursistaServicoEol, CursistaServicoEol>().ReverseMap();
+
+        CreateMap<CursistaServicoEol, CursistaServicoEol>().ReverseMap();
 
 
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
@@ -437,6 +463,37 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista));
+        }
+        private static string FormatarPeriodoData(FormacaoTurmaData s) =>
+            s.DataFim.HasValue
+                ? $"{s.DataInicio:dd/MM/yyyy} - {s.DataFim.Value:dd/MM/yyyy}"
+                : $"{s.DataInicio:dd/MM/yyyy}";
+
+        private static List<DataEncontroNovoDto>? MapDataEncontrosNovo(FormacaoTurma x)
+        {
+            if (x.DatasNovo == null) return null;
+            return x.DatasNovo.Select(p => new DataEncontroNovoDto
+            {
+                DataInicial = p.DataInicio.ToString(FormatoData),
+                DataFinal = p.DataFim.HasValue ? p.DataFim.Value.ToString(FormatoData) : null,
+                HoraInicial = p.HoraInicio,
+                HoraFinal = p.HoraFim,
+                ModeloHorario = p.ModeloHorario
+            }).ToList();
+        }
+
+        private static List<string> GerarDatasEncontros(DateTime inicio, DateTime fim, string horaInicio, string horaFim)
+        {
+            var lista = new List<string>();
+            var dataAtual = inicio.Date;
+
+            while (dataAtual <= fim.Date)
+            {
+                lista.Add($"{dataAtual:dd/MM/yyyy} {horaInicio} - {horaFim}");
+                dataAtual = dataAtual.AddDays(1);
+            }
+
+            return lista;
         }
     }
 }

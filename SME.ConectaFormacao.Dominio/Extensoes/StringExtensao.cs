@@ -27,11 +27,14 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
         public static string SomenteNumeros(this string valor)
         {
+            if (string.IsNullOrEmpty(valor)) return valor;
             return Regex.Replace(valor, "[^0-9]", "");
         }
 
         public static string AplicarMascara(this string valor, string mascara)
         {
+            if (string.IsNullOrEmpty(valor))
+                return valor;
             valor = valor.SomenteNumeros();
             if (string.IsNullOrEmpty(valor))
                 return valor;
@@ -93,8 +96,8 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             if (string.IsNullOrEmpty(texto)) return string.Empty;
 
             var textoNormalizado = texto.Normalize(NormalizationForm.FormD);
-            var spanNormalizado = textoNormalizado.AsSpan(); 
-            
+            var spanNormalizado = textoNormalizado.AsSpan();
+
             char[]? arrayAlugado = null;
             Span<char> buffer = spanNormalizado.Length <= 256
                 ? stackalloc char[spanNormalizado.Length]
@@ -257,10 +260,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
         public static string AplicarMascaraRf(this string rf)
         {
-            rf = rf.SomenteNumeros();
-            if (rf.Length != 7)
-                return rf;
-            return Convert.ToUInt64(rf).ToString("000\\.000\\.0");
+            return rf.EhRegistroFuncional() ? Convert.ToUInt64(rf).ToString("000\\.000\\.0") : rf ;
         }
 
         public static bool SaoStringsIguais(this string? str1, string? str2)
@@ -268,6 +268,20 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             if (string.IsNullOrEmpty(str1) && string.IsNullOrEmpty(str2))
                 return true;
             return string.Equals(str1?.Trim(), str2?.Trim(), StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public static bool EhRegistroFuncional(this string valor)
+        {
+            return valor.Length == 7 && valor.All(char.IsDigit);
+        }
+
+        public static string FormatarNomePessoa(this string nome)
+        {
+            if (string.IsNullOrWhiteSpace(nome))
+                return nome;
+
+            var textInfo = CultureInfo.CurrentCulture.TextInfo;
+            return textInfo.ToTitleCase(nome.ToLower());
         }
     }
 }

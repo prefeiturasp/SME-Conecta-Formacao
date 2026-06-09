@@ -25,6 +25,12 @@ namespace SME.ConectaFormacao.Aplicacao
                 acessoDadosUsuario.NomeUnidade = unidade?.NomeUnidade!;
             }
             var (tipoEmail, emailEducacional) = await repositorioUsuario.ObterEmailEducacionalPorLogin(request.Login);
+
+            if (usuario is not null && !string.IsNullOrEmpty(usuario.Telefone))
+            {
+                acessoDadosUsuario.Telefone = usuario.Telefone;
+            }
+
             acessoDadosUsuario.TipoEmail = tipoEmail;
             acessoDadosUsuario.EmailEducacional = emailEducacional;
             acessoDadosUsuario.Nome = acessoDadosUsuario.Nome ?? await ObterNomeUsuarioPeloLogin(request.Login);

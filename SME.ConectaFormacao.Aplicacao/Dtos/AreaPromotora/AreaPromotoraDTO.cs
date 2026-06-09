@@ -13,6 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora
         public AreaPromotoraTipo Tipo { get; set; }
         [Required(ErrorMessage = "É necessário informar o Perfil")]
         public Guid GrupoId { get; set; }
+        public long? CoordenadoriaId { get; set; }
         public IEnumerable<AreaPromotoraEmailDTO> Emails { get; set; }
         public IEnumerable<AreaPromotoraTelefoneDTO> Telefones { get; set; }
     }

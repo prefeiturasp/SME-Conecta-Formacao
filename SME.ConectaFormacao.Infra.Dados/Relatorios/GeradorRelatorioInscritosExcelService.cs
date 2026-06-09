@@ -9,7 +9,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Relatorios
 {
     [ExcludeFromCodeCoverage]
     public class GeradorRelatorioInscritosExcelService(
-        IServicoArmazenamento servicoArmazenamento, 
+        IServicoArmazenamento servicoArmazenamento,  
         ITemplateService templateService) : IGeradorRelatorioInscritosExcelService
     {
         private const string NOME_ARQUIVO_TEMPLATE = "Template_Relatorio_Inscritos_Por_Formacao.xlsx";

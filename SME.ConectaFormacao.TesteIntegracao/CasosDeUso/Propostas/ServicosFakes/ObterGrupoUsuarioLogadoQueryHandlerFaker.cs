@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas.Mocks;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas.ServicosFakes
@@ -8,7 +9,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas.ServicosFakes
     {
         public Task<Guid> Handle(ObterGrupoUsuarioLogadoQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(PropostaSalvarMock.GrupoUsuarioLogadoId);
+            return Task.FromResult(Perfis.ADMIN_DF);
         }
     }
 }

@@ -3,7 +3,7 @@
     public class CodafInscritoTurmaListaPresencaRetornoDto
     {
         public long Id { get; set; }
-        public string Cpf { get; set; } = null!;
+        public string Documento { get; set; } = null!;
         public string Nome { get; set; } = null!;
         public decimal? PercentualFrequencia { get; set; }
         public string? ConceitoFinal { get; set; }

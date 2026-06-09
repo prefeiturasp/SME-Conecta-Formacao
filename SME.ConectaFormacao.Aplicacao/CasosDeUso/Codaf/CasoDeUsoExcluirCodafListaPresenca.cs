@@ -15,6 +15,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             if (codafListaPresenca == null)
                 return Erro.NaoEncontrado("Lista de presença não encontrada.");
 
+            if (codafListaPresenca.EstaFinalizado())
+                return Erro.Negocio("Não é possível excluir uma lista de presença com situação 'Finalizado'.");
+
             if (!codafListaPresenca.PodeSerExcluido(contextoAplicacao.IdPerfilUsuario))
                 return Erro.Negocio("Essa lista não pode ser excluída.");
 

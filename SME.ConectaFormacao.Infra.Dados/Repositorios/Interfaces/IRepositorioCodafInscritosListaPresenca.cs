@@ -10,5 +10,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<ResultadoPaginado<ResultadoInscritoTurmaCodafListaPresencaDto>> ObterInscritosPorTurmaAsync(long propostaTurmaId, int numeroPagina, int numeroRegistros);
         Task InserirVariosAsync(IEnumerable<CodafInscricaoListaPresenca> inscritosListaPresenca);
         Task ExcluirPorListaPresencaIdAsync(long codafListaPresencaId);
+        Task<IEnumerable<ResultadoDeltaInscritoCodafDto>> ObterDeltaInscritosCodafAsync(long propostaTurmaId);
     }
 }

@@ -6,5 +6,6 @@
         public string Nome { get; set; }
         public string Tipo { get; set; }
         public string? NomeDre { get; set; }
+        public string? NomeCoordenadoria { get; set; }
     }
 }

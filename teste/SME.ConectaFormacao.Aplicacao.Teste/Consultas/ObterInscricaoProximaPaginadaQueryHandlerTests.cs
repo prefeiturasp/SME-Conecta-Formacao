@@ -16,13 +16,13 @@ using Xunit;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 {
-    public class ObterInscricaoProximaPaginadaQueryHandlerTests
+    public class ObterInscricaoProximaPaginadaQueryHandlerTestes
     {
         private readonly Mock<IRepositorioInscricao> _repositorioMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly ObterInscricaoProximaPaginadaQueryHandler _handler;
 
-        public ObterInscricaoProximaPaginadaQueryHandlerTests()
+        public ObterInscricaoProximaPaginadaQueryHandlerTestes()
         {
             _repositorioMock = new Mock<IRepositorioInscricao>();
             _mapperMock = new Mock<IMapper>();
