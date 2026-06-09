@@ -2515,6 +2515,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 FROM PUBLIC.PROPOSTA AS P 
                 WHERE NOT P.EXCLUIDO
                   AND CAST(P.NUMERO_HOMOLOGACAO AS TEXT) ILIKE @termo
+                  AND FORMACAO_HOMOLOGADA = @formacaoHomologada
+                  AND SITUACAO = @situacaoProposta
                 """;
             const string sqlSelect = $"""
                 SELECT p.ID AS propostaId,
@@ -2527,7 +2529,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 """;
             const string sqlCount = $"SELECT COUNT(1) {sqlBase}";
             var conn = conexao.Obter();
-            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, new { termo });
+
+            var formacaoHomologada = (int)FormacaoHomologada.Sim;
+            var situacaoProposta = (int)SituacaoProposta.Publicada;
+
+            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, new { termo, formacaoHomologada, situacaoProposta });
             if (totalRegistros == 0)
                 return new()
                 {
@@ -2540,7 +2546,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
             var dados = await conn.QueryAsync<AutocompletarNumeroHomologacaoDto>(sqlSelect,
-                new { termo, limit = numeroRegistros, offset = registrosIgnorados });
+                new { termo, limit = numeroRegistros, offset = registrosIgnorados, formacaoHomologada, situacaoProposta });
 
             return new()
             {
