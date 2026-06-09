@@ -107,6 +107,7 @@ export default defineConfig({
         'NOME',
         'EMAIL',
         'SENHA',
+        'TOKEN_RECUPERACAO',
         'ID_AREA_PROMOTORA',
         'PERFIL_AREA_PROMOTORA',
         'LABEL_AREA_PROMOTORA',

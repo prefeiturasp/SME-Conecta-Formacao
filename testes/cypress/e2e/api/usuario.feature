@@ -111,3 +111,58 @@ Funcionalidade: API - Usuário
     Dado que não possuo um token válido
     Quando tento a requisição PUT com nome do usuário
     Então retorna o status 401 sem alterar nome do usuário
+
+  Cenário: Solicitar recuperação de senha
+    Dado que possuo um token válido no endpoint Usuario
+    Quando envio uma requisição POST com login do usuário
+    Então retorna o status 200 solicitando recuperação de senha
+
+  Cenário: Não solicitar recuperação de senha sem usuário
+    Dado que possuo um token válido no endpoint Usuario
+    Quando envio uma requisição POST sem login do usuário
+    Então retorna o status 405 sem solicitar recuperação de senha
+
+  Cenário: Não solicitar recuperação de senha com usuário inválido
+    Dado que não possuo um token válido
+    Quando envio uma requisição POST com login de usuário inválido
+    Então retorna o status 400 sem solicitar recuperação de senha
+
+  Cenário: Validar token de recuperação de senha
+    Dado que possuo um token válido no endpoint Usuario
+    Quando envio uma requisição GET com token da senha
+    Então retorna o status 200 com token de recuperação de senha
+
+  Cenário: Não validar recuperação de senha sem token
+    Dado que possuo um token válido no endpoint Usuario
+    Quando envio uma requisição GET sem token da senha
+    Então retorna o status 422 sem token de recuperação de senha
+
+  Cenário: Não validar token inválido na recuperação de senha
+    Dado que não possuo um token válido
+    Quando envio uma requisição GET com token de recuperação
+    Então retorna o status 401 sem validar token de recuperação de senha
+
+  Cenário: Recuperar senha do usuário
+    Dado que possuo um token válido no endpoint Usuario
+    Quando envio uma requisição PUT de recuperar senha
+    Então retorna o status 200 recuperando nova senha
+
+  Cenário: Não recuperar senha sem token
+    Dado que possuo um token válido no endpoint Usuario
+    Quando envio uma requisição PUT de recuperar senha sem token
+    Então retorna o status 400 sem recuperação da senha
+
+  Cenário: Não recuperar sem inserir nova senha
+    Dado que possuo um token válido no endpoint Usuario
+    Quando envio uma requisição PUT de recuperar sem a senha
+    Então retorna o status 400 sem recuperar a senha
+
+  Cenário: Reenviar e-mail de recuperação de senha ao usuário
+    Dado que possuo um token válido no endpoint Usuario
+    Quando envio uma requisição GET de reenvio da senha
+    Então retorna o status 200 reenviando o e-mail de senha ao usuário
+
+  Cenário: Não reenviar e-mail de recuperação de senha sem usuário
+    Dado que possuo um token válido no endpoint Usuario
+    Quando tento a requisição GET de reenvio da senha
+    Então retorna o status 405 sem reenviar e-mail de senha
