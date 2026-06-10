@@ -65,6 +65,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdmin
                     <tr><td><strong>Nome:</strong></td><td>{usuario.Nome}</td></tr>
                     <tr><td><strong>E-mail:</strong></td><td>{usuario.Email}</td></tr>
                     <tr><td><strong>E-mail educacional:</strong></td><td>{usuario.EmailEducacional ?? "-"}</td></tr>
+                    <tr><td><strong>Telefone:</strong></td><td>{usuario.Telefone ?? "-"}</td></tr>
                     <tr><td><strong>RF/CPF:</strong></td><td>{usuario.Login}</td></tr>
                     <tr><td><strong>Data/Hora:</strong></td><td>Em {dataHora:dd/MM/yyyy} às {dataHora:HH:mm}</td></tr>
                 </table>";
