@@ -11,20 +11,19 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Dados.Servicos;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 {
     public class SalvarInscricaoCommandHandler(
-        IContextoAplicacao _contextoAplicacao, 
-        ICacheDistribuido _cacheDistribuido,
         IMapper mapper, 
         IMediator mediator, 
         IRepositorioInscricao repositorioInscricao,
         ITransacao transacao, 
-        IUsuarioAcessibilidadeService usuarioAcessibilidadeService, 
-        IRepositorioUsuario repositorioUsuario) :
+        IUsuarioAcessibilidadeService usuarioAcessibilidadeService,
+        IUsuarioCacheService usuarioCacheService) :
         IRequestHandler<SalvarInscricaoCommand, RetornoDTO>
     {
         private readonly ITransacao _transacao = transacao;
@@ -42,11 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
             if (!string.IsNullOrWhiteSpace(telefoneInformado) &&
                 usuarioLogado.Telefone != telefoneInformado)
             {
-                usuarioLogado.Telefone = telefoneInformado;
-
-                await repositorioUsuario.AtualizarTelefone(usuarioLogado.Id, telefoneInformado);
-                await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.Usuario.Parametros(_contextoAplicacao.UsuarioLogado));
-                await _cacheDistribuido.RemoverAsync(CacheDistribuidoNomes.UsuarioLogado.Parametros(_contextoAplicacao.UsuarioLogado));
+                await usuarioCacheService.AtualizarTelefoneEInvalidarCacheAsync(usuarioLogado, telefoneInformado);
             }
 
             var inscricao = mapper.Map<Inscricao>(request.InscricaoDto);

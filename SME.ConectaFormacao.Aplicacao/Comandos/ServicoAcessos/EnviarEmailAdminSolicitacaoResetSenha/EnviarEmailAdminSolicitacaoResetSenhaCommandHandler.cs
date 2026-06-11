@@ -65,10 +65,24 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdmin
                     <tr><td><strong>Nome:</strong></td><td>{usuario.Nome}</td></tr>
                     <tr><td><strong>E-mail:</strong></td><td>{usuario.Email}</td></tr>
                     <tr><td><strong>E-mail educacional:</strong></td><td>{usuario.EmailEducacional ?? "-"}</td></tr>
-                    <tr><td><strong>Telefone:</strong></td><td>{usuario.Telefone ?? "-"}</td></tr>
+                    <tr><td><strong>Telefone:</strong></td><td>{FormatarTelefone(usuario.Telefone)}</td></tr>
                     <tr><td><strong>RF/CPF:</strong></td><td>{usuario.Login}</td></tr>
                     <tr><td><strong>Data/Hora:</strong></td><td>Em {dataHora:dd/MM/yyyy} às {dataHora:HH:mm}</td></tr>
                 </table>";
+        }
+        private static string FormatarTelefone(string? telefone)
+        {
+            if (string.IsNullOrWhiteSpace(telefone))
+                return "-";
+
+            var numeros = new string(telefone.Where(char.IsDigit).ToArray());
+
+            return numeros.Length switch
+            {
+                11 => $"({numeros[..2]}) {numeros[2..7]}-{numeros[7..]}",  // (99) 99999-9999
+                10 => $"({numeros[..2]}) {numeros[2..6]}-{numeros[6..]}",  // (99) 9999-9999
+                _ => telefone
+            };
         }
     }
 }
