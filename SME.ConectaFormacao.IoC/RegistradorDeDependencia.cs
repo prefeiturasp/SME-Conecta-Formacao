@@ -56,6 +56,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.UsuarioRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Aplicacao.Pipelines;
 using SME.ConectaFormacao.Dominio.Interfaces;
+using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Mapeamentos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
@@ -453,6 +454,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
     {
         serviceCollection.AddScoped<IServicoTemplateEmail, ServicoTemplateEmail>();
         serviceCollection.AddScoped<IPeriodoRealizacaoConsultaService, PeriodoRealizacaoConsultaService>();
+        serviceCollection.AddScoped<IUsuarioCacheService, UsuarioCacheService>();
         serviceCollection.ConfigurarServicoEmails();
     }
 }

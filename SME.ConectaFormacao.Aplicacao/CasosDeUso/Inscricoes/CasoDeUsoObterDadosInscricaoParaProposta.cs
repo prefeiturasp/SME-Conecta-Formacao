@@ -26,7 +26,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
                 UsuarioNome = usuarioLogado.Nome,
                 UsuarioCpf = usuarioLogado.Cpf?.AplicarMascara(@"000\.000\.000\-00") ?? string.Empty,
                 UsuarioEmail = usuarioLogado.Email,
-                UsuarioRf = usuarioLogado.Login
+                UsuarioRf = usuarioLogado.Login,
+                UsuarioTelefone = usuarioLogado.Telefone
             };
 
             if (usuarioLogado is not null && usuarioLogado.Tipo != TipoUsuario.Externo)

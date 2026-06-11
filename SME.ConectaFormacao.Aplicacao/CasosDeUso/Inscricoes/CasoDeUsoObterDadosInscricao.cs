@@ -27,7 +27,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
                     UsuarioCpf = (cargosFuncoesEol.Any() ? cargosFuncoesEol.First().Cpf : usuarioLogado.Login).AplicarMascara(@"000\.000\.000\-00"),
                     UsuarioEmail = usuarioLogado.EmailEducacional,
                     UsuarioRf = usuarioLogado.Login,
-                    UsuarioCargos = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoesEol)
+                    UsuarioCargos = ObterCargosBaseSobrepostoFuncaoAtividade(cargosFuncoesEol),
+                    UsuarioTelefone = usuarioLogado.Telefone
                 };
             }
             else
@@ -38,6 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
                     UsuarioCpf = usuarioLogado.Login.AplicarMascara(@"000\.000\.000\-00"),
                     UsuarioEmail = usuarioLogado.EmailEducacional,
                     UsuarioRf = usuarioLogado.Login,
+                    UsuarioTelefone = usuarioLogado.Telefone
                 };
             }
 

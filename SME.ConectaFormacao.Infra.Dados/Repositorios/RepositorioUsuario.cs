@@ -118,6 +118,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().ExecuteAsync(query, new { login, email }) > 0;
         }
+        public async Task<bool> AtualizarTelefone(long usuarioId, string telefone)
+        {
+            var query = @"UPDATE public.usuario
+                            SET telefone = @telefone, alterado_em = now(), alterado_por = 'Sistema', alterado_login = 'Sistema'
+                            WHERE id = @usuarioId";
+
+            return await conexao.Obter()
+                .ExecuteAsync(query, new { usuarioId, telefone }) > 0;
+        }
 
         public Task<(int tipo, string? email)> ObterEmailEducacionalPorLogin(string login)
         {

@@ -9,6 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes
         public string? CargoCodigo { get; set; }
         public string? CargoDreCodigo { get; set; }
         public string? CargoUeCodigo { get; set; }
+        public string? UsuarioTelefone { get; set; }
 
         public string? FuncaoCodigo { get; set; }
         public string? FuncaoDreCodigo { get; set; }
