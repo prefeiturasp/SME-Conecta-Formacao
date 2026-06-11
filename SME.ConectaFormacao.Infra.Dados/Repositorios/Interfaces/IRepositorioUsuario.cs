@@ -17,5 +17,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> ObterTotalUsuarioRedeParceria(long[] areaPromotoraIds, string? nome, string? cpf, SituacaoUsuario? situacao);
         Task<IEnumerable<Usuario>> ObterUsuarioRedeParceria(long[] areaPromotoraIds, string? nome, string? cpf, SituacaoUsuario? situacao, int numeroPagina, int numeroRegistros);
         Task<IEnumerable<Usuario>> ObterUsuariosPorEolUnidadeAsync(string codigoEolUnidade, string? login, string? nome);
+        Task<bool> AtualizarTelefone(long usuarioId, string telefone);
     }
 }

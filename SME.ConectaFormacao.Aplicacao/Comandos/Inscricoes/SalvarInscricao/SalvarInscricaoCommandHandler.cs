@@ -3,6 +3,7 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.Email.InscricaoEmEspera;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
@@ -10,13 +11,19 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Dados.Servicos;
+using SME.ConectaFormacao.Infra.Servicos.Cache;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 {
     public class SalvarInscricaoCommandHandler(
-        IMapper mapper, IMediator mediator, IRepositorioInscricao repositorioInscricao,
-        ITransacao transacao, IUsuarioAcessibilidadeService usuarioAcessibilidadeService) :
+        IMapper mapper, 
+        IMediator mediator, 
+        IRepositorioInscricao repositorioInscricao,
+        ITransacao transacao, 
+        IUsuarioAcessibilidadeService usuarioAcessibilidadeService,
+        IUsuarioCacheService usuarioCacheService) :
         IRequestHandler<SalvarInscricaoCommand, RetornoDTO>
     {
         private readonly ITransacao _transacao = transacao;
@@ -28,6 +35,14 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
             if (usuarioLogado.Tipo.EhInterno() && string.IsNullOrWhiteSpace(request.InscricaoDto.CargoCodigo))
                 throw new NegocioException(MensagemNegocio.INFORME_O_CARGO);
+
+            var telefoneInformado = request.InscricaoDto.UsuarioTelefone;
+
+            if (!string.IsNullOrWhiteSpace(telefoneInformado) &&
+                usuarioLogado.Telefone != telefoneInformado)
+            {
+                await usuarioCacheService.AtualizarTelefoneEInvalidarCacheAsync(usuarioLogado, telefoneInformado);
+            }
 
             var inscricao = mapper.Map<Inscricao>(request.InscricaoDto);
             inscricao.UsuarioId = usuarioLogado.Id;

@@ -6,6 +6,7 @@
         public required string UsuarioRf { get; set; }
         public string? UsuarioCpf { get; set; }
         public string? UsuarioEmail { get; set; }
+        public string? UsuarioTelefone { get; set; }
         public IEnumerable<DadosInscricaoCargoEol> UsuarioCargos { get; set; } = [];
     }
 }
