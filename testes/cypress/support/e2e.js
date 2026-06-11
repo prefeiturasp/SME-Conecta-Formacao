@@ -16,6 +16,7 @@ import './commands_ui/commands_rede_parceria'
 import './commands_ui/commands_nova_inscricao'
 import './commands_ui/commands_inscricoes'
 import './commands_ui/commands_redefinir_senha'
+import './commands_ui/commands_notificacoes'
 
 // Evita quebra por erro de front
 Cypress.on('uncaught:exception', () => {
