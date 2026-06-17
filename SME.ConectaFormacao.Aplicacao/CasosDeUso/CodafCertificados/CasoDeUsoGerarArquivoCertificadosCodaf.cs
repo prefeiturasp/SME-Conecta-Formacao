@@ -85,7 +85,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     };
                     var arquivoPdf = await servicoRelatorio.ConveterHtmlCertificadoCodafParaPdfAsync(htmlCertificadoDto);
                     var certificadoIdGuid = Guid.NewGuid();
-                    var nomeDoArquivo = $"{DateTime.Now:yyyy/MM}/{certificado.CodigoCertificado:D4}-{certificadoIdGuid}.pdf";
+                    var nomeDoArquivo = $"{DateTime.Now:yyyy/MM}/{certificado.CodigoCertificado}-{certificadoIdGuid}.pdf";
                     var chaveObjetoArmazenamento = await servicoArmazenamento.UploadCertificadoCodafAsync(nomeDoArquivo, arquivoPdf);
                     await repositorioCodafCertificado.AtualizarStatusProcessamentoAsync(
                         certificado.Id,
@@ -104,10 +104,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 
         private static string InserirSequencialNoHtml(string htmlContent, long sequencial)
         {
-            var sequencialFormatado = sequencial.ToString("D4");
             var marcador = "{{NUM_SEQ}}";
             if (htmlContent.Contains(marcador))
-                htmlContent = htmlContent.Replace(marcador, sequencialFormatado);
+                htmlContent = htmlContent.Replace(marcador, sequencial.ToString());
             return htmlContent;
         }
 
