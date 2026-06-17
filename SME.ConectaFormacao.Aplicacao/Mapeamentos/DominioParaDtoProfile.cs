@@ -114,6 +114,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                         ? o.AreaPromotora.Nome
                         : null))
                 .ForMember(dest => dest.TipoFormacaoDescricao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
+                .ForMember(dest => dest.TipoEmissorDescricao, opt => opt.MapFrom(x => x.TipoEmissor.HasValue ? x.TipoEmissor.Nome() : null))
                 .ForMember(dest => dest.FormatoDescricao, opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
                 .ForMember(dest => dest.InscricaoEncerrada, opt => opt.MapFrom(o => DateTimeExtension.HorarioBrasilia().Date > o.DataInscricaoFim))
                 .ForMember(dest => dest.Periodo, opt => opt.MapFrom(o => $"{o.DataRealizacaoInicio.GetValueOrDefault():dd/MM/yyyy} até {o.DataRealizacaoFim.GetValueOrDefault():dd/MM/yyyy}"))

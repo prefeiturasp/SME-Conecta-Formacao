@@ -2,6 +2,7 @@
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Coordenadorias;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -65,5 +66,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 TotalRegistros = totalRegistros
             };
         }
+
+        public async Task<List<CoordenadoriaDto>> ObterCoordenadoriaSelectAsync()
+        {
+            var condicoesWhere = new StringBuilder("WHERE NOT EXCLUIDO ");
+
+            var conn = conexao.Obter();
+
+            var sql = new StringBuilder("SELECT * FROM coordenadoria ").Append(condicoesWhere).Append("ORDER BY NOME");
+
+            var coordenadorias = await conn.QueryAsync<CoordenadoriaDto>(sql.ToString());
+
+            return new List<CoordenadoriaDto>(coordenadorias);
+        }
     }
+
 }
