@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Coordenadorias
+﻿namespace SME.ConectaFormacao.Infra.Dados.Dtos.Coordenadorias
 {
     public class CoordenadoriaDto
     {
