@@ -10,7 +10,9 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public string? PeriodoInscricao { get; set; }
         public string? AreaPromotora { get; set; }
         public TipoFormacao TipoFormacao { get; set; }
+        public TipoEmissor TipoEmissor { get; set; }
         public string? TipoFormacaoDescricao { get; set; }
+        public string? TipoEmissorDescricao { get; set; } = null;
         public Formato Formato { get; set; }
         public string? FormatoDescricao { get; set; }
         public string? ImagemUrl { get; set; }
