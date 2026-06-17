@@ -1,0 +1,3 @@
+ALTER TABLE proposta
+ADD COLUMN IF NOT EXISTS tipo_emissor INT,
+ADD COLUMN IF NOT EXISTS id_emissor INT
