@@ -107,6 +107,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id);
         Task RemoverParecerista(PropostaParecerista parecerista);
         Task AtualizarIntegrarNoSGA(long propostaId, bool valor);
-        Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros);
+        Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, bool comCodaf, int numeroPagina, int numeroRegistros);
     }
 }

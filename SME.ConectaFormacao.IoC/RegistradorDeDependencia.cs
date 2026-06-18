@@ -243,7 +243,6 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new CodafSuplementarInscricaoMap());
             config.AddMap(new CodafSuplementarRetificacaoMap());
             config.AddMap(new CodafSuplementarMap());
-            config.AddMap(new CodafSuplementarAnexoMap());
 
             config.AddMap(new UsuarioAcessibilidadeMap());
             config.AddMap(new UeMap());

@@ -2508,7 +2508,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecerista>(query, new { propostaId, registroFuncional });
         }
 
-        public async Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros)
+        public async Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, bool comCodaf, int numeroPagina, int numeroRegistros)
         {
             termo = $"{termo}%";
             const string sqlBase = """
@@ -2517,6 +2517,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                   AND CAST(P.NUMERO_HOMOLOGACAO AS TEXT) ILIKE @termo
                   AND FORMACAO_HOMOLOGADA = @formacaoHomologada
                   AND SITUACAO = @situacaoProposta
+                  AND (@comCodaf = false OR EXISTS (SELECT 1 FROM PUBLIC.CODAF_LISTA_PRESENCA CLP WHERE CLP.PROPOSTA_ID = P.ID AND CLP.STATUS = @statusFinalizado))
                 """;
             const string sqlSelect = $"""
                 SELECT p.ID AS propostaId,
@@ -2532,8 +2533,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var formacaoHomologada = (int)FormacaoHomologada.Sim;
             var situacaoProposta = (int)SituacaoProposta.Publicada;
+            var statusFinalizado = (int)StatusCodafListaPresenca.Finalizado;
 
-            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, new { termo, formacaoHomologada, situacaoProposta });
+
+            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, new { termo, formacaoHomologada, situacaoProposta, statusFinalizado, comCodaf });
             if (totalRegistros == 0)
                 return new()
                 {
@@ -2546,7 +2549,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
             var dados = await conn.QueryAsync<AutocompletarNumeroHomologacaoDto>(sqlSelect,
-                new { termo, limit = numeroRegistros, offset = registrosIgnorados, formacaoHomologada, situacaoProposta });
+                new { termo, limit = numeroRegistros, offset = registrosIgnorados, formacaoHomologada, situacaoProposta, statusFinalizado, comCodaf });
 
             return new()
             {
