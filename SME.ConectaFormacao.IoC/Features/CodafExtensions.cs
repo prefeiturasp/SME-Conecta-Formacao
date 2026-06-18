@@ -46,6 +46,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICodafInscritosListaPresencaService, CodafInscritosListaPresencaService>()
                 .AddScoped<CodafListaPresencaDependencias>()
                 .AddScoped<ICasoDeUsoSalvarInscritosCodaf, CasoDeUsoSalvarInscritosCodaf>()
+                .AddScoped<ICasoDeUsoObterPropostaTurmaComCodaf, CasoDeUsoObterPropostaTurmaComCodaf>()
                 .AdicionarModuloCodafCertificado()
             ;
 

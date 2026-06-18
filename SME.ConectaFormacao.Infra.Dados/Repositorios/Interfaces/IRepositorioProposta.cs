@@ -61,6 +61,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task RemoverDres(IEnumerable<PropostaDre> propostaDres);
         Task<IEnumerable<PropostaDre>> ObterDrePorId(long propostaId);
         Task<IEnumerable<PropostaTurma>> ObterTurmasPorId(long propostaId);
+        Task<IEnumerable<PropostaTurma>> ObterTurmasComCodafAsync(long propostaId);
         Task InserirTurmas(long propostaId, IEnumerable<PropostaTurma> turmasInserir);
         Task RemoverTurmas(IEnumerable<PropostaTurma> turmasExcluir);
         Task AtualizarTurmas(long propostaId, IEnumerable<PropostaTurma> turmasInserir);
