@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
-using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementar;
-using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementar;
+using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Webapi.Controllers;
 
 namespace SME.ConectaFormacao.Webapi.Teste

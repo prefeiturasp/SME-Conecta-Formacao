@@ -1,5 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
@@ -22,23 +21,24 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public ICollection<CodafSuplementarAnexo>? CodafAnexos { get; set; }
 
         protected CodafSuplementar() { }
-        public CodafSuplementar(long codafListaPresencaId, StatusCodafSuplementar status)
+        public CodafSuplementar(long codafListaPresencaId)
         {
             CodafListaPresencaId = codafListaPresencaId;
-            Status = status;
+            Status = StatusCodafSuplementar.Iniciado;
         }
 
-        public CodafSuplementar(long codafListaPresencaId, DadosPublicacaoLista dadosPublicacao, Guid? idPerfilUsuario)
+        public CodafSuplementar(long codafListaPresencaId, DadosPublicacaoLista dadosPublicacao)
         {
             CodafListaPresencaId = codafListaPresencaId;
-            AtribuirDadosPublicacao(dadosPublicacao, idPerfilUsuario);
+            Status = StatusCodafSuplementar.Iniciado;
+            AtribuirDadosPublicacao(dadosPublicacao);
         }
 
-        public void AtualizarInformacoes(DadosPublicacaoLista dadosPublicacao, Guid? idPerfilUsuario)
+        public void AtualizarInformacoes(DadosPublicacaoLista dadosPublicacao)
         {
-            AtribuirDadosPublicacao(dadosPublicacao, idPerfilUsuario);
+            AtribuirDadosPublicacao(dadosPublicacao);
         }
-        private void AtribuirDadosPublicacao(DadosPublicacaoLista dados, Guid? idPerfilUsuario)
+        private void AtribuirDadosPublicacao(DadosPublicacaoLista dados)
         {
             DataPublicacao = dados.DataPublicacao;
             DataPublicacaoDom = dados.DataPublicacaoDom;
@@ -46,11 +46,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             PaginaComunicadoDom = dados.PaginaComunicadoDom;
             Observacao = dados.Observacao;
 
-            if (idPerfilUsuario == Perfis.ADMIN_DF)
-            {
-                CodigoNivel = dados.CodigoNivel;
-                CodigoCursoEol = dados.CodigoCursoEol;
-            }
+            CodigoNivel = dados.CodigoNivel;
+            CodigoCursoEol = dados.CodigoCursoEol;
         }
 
         public void Iniciar()

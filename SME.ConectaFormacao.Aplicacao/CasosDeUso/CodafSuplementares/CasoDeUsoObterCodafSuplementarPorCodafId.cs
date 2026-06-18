@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementar;
-using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementar;
+using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
-namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementar
+namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
     public class CasoDeUsoObterCodafSuplementarPorCodafId(
         IRepositorioCodafListaPresenca repositorioCodafListaPresenca,

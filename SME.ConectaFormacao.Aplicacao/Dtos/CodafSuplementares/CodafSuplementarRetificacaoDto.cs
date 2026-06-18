@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementar
+﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
 {
     public class CodafSuplementarRetificacaoDto
     {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
-using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementar;
+using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Entidades;
 using System.Diagnostics.CodeAnalysis;
 

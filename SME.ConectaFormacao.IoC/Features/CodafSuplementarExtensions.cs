@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementar;
-using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementar;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -18,6 +18,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<IRepositorioCodafSuplementar, RepositorioCodafSuplementar>()
                 .AddScoped<IRepositorioCodafSuplementarInscricao, RepositorioCodafSuplementarInscricao>()
                 .AddScoped<ICasoDeUsoObterCodafSuplementarPorCodafId, CasoDeUsoObterCodafSuplementarPorCodafId>()
+                .AddScoped<ICasoDeUsoCriarCodafSuplementar, CasoDeUsoCriarCodafSuplementar>()
                 ;
         }
     }

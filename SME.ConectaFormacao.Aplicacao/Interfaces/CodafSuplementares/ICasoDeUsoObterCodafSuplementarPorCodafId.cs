@@ -1,7 +1,7 @@
-﻿using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementar;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 
-namespace SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementar
+namespace SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares
 {
     public interface ICasoDeUsoObterCodafSuplementarPorCodafId
     {
