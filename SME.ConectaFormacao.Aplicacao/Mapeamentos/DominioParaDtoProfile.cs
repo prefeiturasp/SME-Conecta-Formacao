@@ -147,8 +147,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<Proposta, PropostaPaginadaDTO>()
                 .ForMember(dest => dest.TipoFormacao, opt => opt.MapFrom(x => x.TipoFormacao.HasValue ? x.TipoFormacao.Nome() : null))
+                .ForMember(dest => dest.TipoEmissor, opt => opt.MapFrom(x => x.TipoEmissor.HasValue ? x.TipoEmissor.Nome() : null))
                 .ForMember(dest => dest.Formato, opt => opt.MapFrom(x => x.Formato.HasValue ? x.Formato.Nome() : null))
                 .ForMember(dest => dest.Situacao, opt => opt.MapFrom(x => x.Situacao.Nome()))
+                .ForMember(dest => dest.IdEmissor, opt => opt.MapFrom(x => x.IdEmissor != 0 ? x.IdEmissor : 0))
                 .ForMember(dest => dest.AreaPromotora, opt => opt.MapFrom(x => x.AreaPromotora.Nome))
                 .ForMember(dest => dest.DataRealizacaoInicio, opt => opt.MapFrom(x => x.DataRealizacaoInicio.HasValue ? x.DataRealizacaoInicio.Value.ToString("dd/MM/yyyy") : string.Empty))
                 .ForMember(dest => dest.DataRealizacaoFim, opt => opt.MapFrom(x => x.DataRealizacaoFim.HasValue ? x.DataRealizacaoFim.Value.ToString("dd/MM/yyyy") : string.Empty))

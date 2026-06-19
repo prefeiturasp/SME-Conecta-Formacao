@@ -44,6 +44,20 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotNull()
                 .WithMessage("É necessário informar o tipo de inscrição para alterar a proposta");
 
+            // Quando o curso for com certificado, id do emissor e tipo do emissor passam a ser obrigatórios
+            When(f => f.PropostaDTO.CursoComCertificado, () =>
+            {
+                RuleFor(f => f.PropostaDTO.IdEmissor)
+                    .NotNull()
+                    .WithMessage("É necessário informar o id do emissor quando o curso for com certificado")
+                    .GreaterThan(0)
+                    .WithMessage("O id do emissor deve ser maior que zero");
+
+                RuleFor(f => f.PropostaDTO.TipoEmissor)
+                    .NotNull()
+                    .WithMessage("É necessário informar o tipo do emissor quando o curso for com certificado");
+            });
+
             RuleFor(f => f.PropostaDTO.Dres)
                 .NotEmpty()
                 .WithMessage("É necessário informar a dre para alterar a proposta");
