@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos.IoC
 
             services.AddHttpClient<IServicoAcessos, ServicoAcessos>(c =>
             {
-                c.BaseAddress = new Uri(servicoAcessosOptions.UrlApi);
+                c.BaseAddress = new Uri("https://localhost:7178/api/");
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
                 c.DefaultRequestHeaders.Add("x-api-acessos-key", servicoAcessosOptions.KeyApi);
             }).AddPolicyHandler(GetRetryPolicy());

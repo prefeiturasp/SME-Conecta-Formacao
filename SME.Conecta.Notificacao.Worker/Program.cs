@@ -19,10 +19,10 @@ builder.Services.AddSingleton<IConnectionFactory>(serviceProvider =>
 {
     var factory = new ConnectionFactory
     {
-        HostName = configuracaoRabbitOptions.HostName,
-        UserName = configuracaoRabbitOptions.UserName,
-        Password = configuracaoRabbitOptions.Password,
-        VirtualHost = configuracaoRabbitOptions.VirtualHost,
+        HostName = "localhost",
+        UserName = "user",
+        Password = "bitnami",
+        VirtualHost = "dev",
         RequestedHeartbeat = TimeSpan.FromSeconds(configuracaoRabbitOptions.TempoHeartBeat),
     };
 

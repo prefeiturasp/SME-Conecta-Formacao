@@ -24,10 +24,10 @@ builder.Services.AddSingleton<IConnectionFactory>(serviceProvider =>
 {
     var factory = new ConnectionFactory
     {
-        HostName = options.HostName,
-        UserName = options.UserName,
-        Password = options.Password,
-        VirtualHost = options.VirtualHost,
+        HostName = "localhost",
+        UserName = "user",
+        Password = "bitnami",
+        VirtualHost = "dev",
         RequestedHeartbeat = System.TimeSpan.FromSeconds(options.TempoHeartBeat),
     };
 
