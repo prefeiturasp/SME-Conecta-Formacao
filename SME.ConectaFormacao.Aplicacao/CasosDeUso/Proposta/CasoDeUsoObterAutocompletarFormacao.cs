@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (string.IsNullOrWhiteSpace(filtro.TermoBusca))
                 return new PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>([], 0, 0);
 
-            var resultado = await repositorioProposta.ObterAutocompletarNumeroHomologacaoAsync(filtro.TermoBusca, filtro.NumeroPagina, filtro.NumeroRegistros);
+            var resultado = await repositorioProposta.ObterAutocompletarNumeroHomologacaoAsync(filtro.TermoBusca, filtro.ComCodaf, filtro.NumeroPagina, filtro.NumeroRegistros);
             return new PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>(resultado.Itens, resultado.TotalRegistros, resultado.TotalPaginas);
         }
     }

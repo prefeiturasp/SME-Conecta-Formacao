@@ -1,6 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
-
-namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
+﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
 {
     public class CodafAnexoTemporarioDto
     {

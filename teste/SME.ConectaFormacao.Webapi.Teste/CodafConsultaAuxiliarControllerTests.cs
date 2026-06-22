@@ -17,6 +17,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
     {
         private readonly Mock<ICasoDeUsoListarInscritosTurmaCodafListaPresenca> _mockCasoDeUsoListarInscritosTurma;
         private readonly Mock<ICasoDeUsoTurmaPossuiCodafListaPresenca> _mockCasoDeUsoTurmaPossuiCodafListaPresenca;
+        private readonly Mock<ICasoDeUsoObterPropostaTurmaComCodaf> _mockCasoDeUsoObterPropostaTurmaComCodaf;
         private readonly CodafConsultaAuxiliarController _controller;
         private readonly Faker _faker;
 
@@ -25,6 +26,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var mocker = new AutoMocker();
             _mockCasoDeUsoListarInscritosTurma = mocker.GetMock<ICasoDeUsoListarInscritosTurmaCodafListaPresenca>();
             _mockCasoDeUsoTurmaPossuiCodafListaPresenca = mocker.GetMock<ICasoDeUsoTurmaPossuiCodafListaPresenca>();
+            _mockCasoDeUsoObterPropostaTurmaComCodaf = mocker.GetMock<ICasoDeUsoObterPropostaTurmaComCodaf>();
             _controller = mocker.CreateInstance<CodafConsultaAuxiliarController>();
             _faker = new Faker();
         }
@@ -72,7 +74,6 @@ namespace SME.ConectaFormacao.Webapi.Teste
         {
             // Arrange
             var propostaTurmaId = _faker.Random.Long(1);
-            var listaPresencaId = _faker.Random.Long(1);
             _mockCasoDeUsoListarInscritosTurma
                 .Setup(x => x.ExecutarAsync(propostaTurmaId, 1, 10))
                 .ReturnsAsync(Resultado<PaginacaoResultadoDto<CodafInscritoTurmaListaPresencaRetornoDto>>.DeSucesso(
@@ -95,6 +96,20 @@ namespace SME.ConectaFormacao.Webapi.Teste
             await _controller.TurmaPossuiListaPresenca(propostaTurmaId);
             // Assert
             _mockCasoDeUsoTurmaPossuiCodafListaPresenca.Verify(x => x.ExecutarAsync(propostaTurmaId), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmaPropostaId_QuandoObterTurmasComCodafPorProposta_EntaoDeveChamarCasoDeUsoObterPropostaTurmaComCodaf()
+        {
+            // Arrange
+            var propostaId = _faker.Random.Long(1);
+            _mockCasoDeUsoObterPropostaTurmaComCodaf
+                .Setup(x => x.ExecutarAsync(propostaId))
+                .ReturnsAsync(Resultado<IEnumerable<PropostaTurmaComCodafDto>>.DeSucesso([]));
+            // Act
+            await _controller.ObterTurmasComCodafPorProposta(propostaId);
+            // Assert
+            _mockCasoDeUsoObterPropostaTurmaComCodaf.Verify(x => x.ExecutarAsync(propostaId), Times.Once);
         }
     }
 }
