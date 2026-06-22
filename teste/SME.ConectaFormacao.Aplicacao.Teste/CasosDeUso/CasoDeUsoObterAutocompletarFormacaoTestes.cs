@@ -63,7 +63,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 new() { NumeroHomologacao = 67890 }
             };
             _repositorioPropostaMock
-                .Setup(r => r.ObterAutocompletarNumeroHomologacaoAsync(filtro.TermoBusca, true, filtro.NumeroPagina, filtro.NumeroRegistros))
+                .Setup(r => r.ObterAutocompletarNumeroHomologacaoAsync(filtro.TermoBusca, It.IsAny<bool>(), filtro.NumeroPagina, filtro.NumeroRegistros))
                 .ReturnsAsync(new ResultadoPaginado<AutocompletarNumeroHomologacaoDto>() { Itens = itensMock, PaginaAtual = 1, TamanhoPagina = 10, TotalRegistros = itensMock.Count });
             // Act
             var resultado = await _casoDeUso.ExecutarAsync(filtro);
