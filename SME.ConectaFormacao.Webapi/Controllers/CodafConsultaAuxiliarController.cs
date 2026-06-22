@@ -11,7 +11,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     [Route("api/v1/CodafListaPresenca")]
     public class CodafConsultaAuxiliarController(
         ICasoDeUsoListarInscritosTurmaCodafListaPresenca casoDeUsoListarInscritosTurmaCodafListaPresenca,
-        ICasoDeUsoTurmaPossuiCodafListaPresenca casoDeUsoTurmaPossuiCodafListaPresenca) : BaseController
+        ICasoDeUsoTurmaPossuiCodafListaPresenca casoDeUsoTurmaPossuiCodafListaPresenca,
+        ICasoDeUsoObterPropostaTurmaComCodaf casoDeUsoObterPropostaTurmaComCodaf) : BaseController
     {
 
         [HttpGet("inscritos-turma/{propostaTurmaId:long}")]
@@ -30,6 +31,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> TurmaPossuiListaPresenca(long propostaTurmaId, [FromQuery] long listaPresencaId = 0)
         {
             var resultado = await casoDeUsoTurmaPossuiCodafListaPresenca.ExecutarAsync(propostaTurmaId, listaPresencaId);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpGet("propostas/{propostaId:long}/turmas")]
+        [ProducesResponseType(typeof(Resultado<IEnumerable<PropostaTurmaComCodafDto>>), 200)]
+        [ProducesResponseType(typeof(Resultado<IEnumerable<PropostaTurmaComCodafDto>>), 400)]
+        [ProducesResponseType(typeof(Resultado<IEnumerable<PropostaTurmaComCodafDto>>), 500)]
+        public async Task<IActionResult> ObterTurmasComCodafPorProposta(long propostaId)
+        {
+            var resultado = await casoDeUsoObterPropostaTurmaComCodaf.ExecutarAsync(propostaId);
             return ProcessarResultado(resultado);
         }
     }

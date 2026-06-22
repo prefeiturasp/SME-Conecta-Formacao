@@ -61,6 +61,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task RemoverDres(IEnumerable<PropostaDre> propostaDres);
         Task<IEnumerable<PropostaDre>> ObterDrePorId(long propostaId);
         Task<IEnumerable<PropostaTurma>> ObterTurmasPorId(long propostaId);
+        Task<IEnumerable<PropostaTurma>> ObterTurmasComCodafAsync(long propostaId);
         Task InserirTurmas(long propostaId, IEnumerable<PropostaTurma> turmasInserir);
         Task RemoverTurmas(IEnumerable<PropostaTurma> turmasExcluir);
         Task AtualizarTurmas(long propostaId, IEnumerable<PropostaTurma> turmasInserir);
@@ -107,6 +108,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<PropostaParecerista>> ObterSugestaoParecerPareceristas(long id);
         Task RemoverParecerista(PropostaParecerista parecerista);
         Task AtualizarIntegrarNoSGA(long propostaId, bool valor);
-        Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros);
+        Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, bool comCodaf, int numeroPagina, int numeroRegistros);
     }
 }
