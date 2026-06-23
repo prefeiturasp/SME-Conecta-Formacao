@@ -32,7 +32,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 ConceitoFinal = "S",
                 PercentualFrequencia = 100,
                 TipoFormacao = "o",
-                DreCoordenadoria = ""
+                Emissor = ""
             };
 
             _mockTemplateService.Setup(x => x.ObterTemplate(It.IsAny<string>()))

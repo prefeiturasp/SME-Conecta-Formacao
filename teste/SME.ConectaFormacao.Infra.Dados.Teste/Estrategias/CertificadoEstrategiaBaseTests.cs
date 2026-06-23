@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
 
             // Setup Padrão dos Mocks para a Base
             _mockTemplateService.Setup(x => x.ObterTemplate("SME.ConectaFormacao.Infra.Dados.Templates.layout-certificado-codaf.html"))
-                .Returns("<html>{{HEADER}} - {{BRASAO}} - {{ASSINATURA}} - {{SELO}} - {{COORDENADORIA_OU_DRE}} - {{NUM_CODIGO_CERTIFICADO}} - {{NUM_COMUNICADO}} - {{DATA_PUBLICACAO_CODAF}} - {{PAG_DIARIO_OFICIAL}} - {{NUM_HOM_FORMACAO}}</html>");
+                .Returns("<html>{{HEADER}} - {{BRASAO}} - {{ASSINATURA}} - {{SELO}} - {{EMISSOR}} - {{NUM_CODIGO_CERTIFICADO}} - {{NUM_COMUNICADO}} - {{DATA_PUBLICACAO_CODAF}} - {{PAG_DIARIO_OFICIAL}} - {{NUM_HOM_FORMACAO}}</html>");
 
             _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.png"))
                 .Returns("base64_fake");
@@ -47,7 +47,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 NumeroComunicado = 123,
                 DataPublicacao = new(2023, 10, 10, 0, 0, 0, DateTimeKind.Utc),
                 NumeroHomologacao = 999,
-                DreCoordenadoria = "DRE Teste",
+                Emissor = "DRE Teste",
                 PaginaDiarioOficial = 5,
                 NomeCompleto = _faker.Person.FullName,
                 Documento = _faker.Person.Cpf(),
