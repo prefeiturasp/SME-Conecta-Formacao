@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
         public string? ConceitoFinal { get; set; }
         public double? PercentualFrequencia { get; set; }
         public string? EmailUsuario { get; set; }
-        public string DreCoordenadoria { get; set; } = string.Empty;
+        public string NomeEmissor { get; set; } = string.Empty;
         public string TipoFormacao { get; set; } = string.Empty;
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }

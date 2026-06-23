@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 ConceitoFinal = "S",
                 PercentualFrequencia = 100,
                 TipoFormacao = "curso",
-                DreCoordenadoria = "Secretaria Municipal",
+                NomeEmissor = "Secretaria Municipal",
                 NumeroComunicado = 456,
                 DataPublicacao = new(2024, 01, 20),
                 PaginaDiarioOficial = 10,
@@ -46,7 +46,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 {{BRASAO}}
                 {{SELO}}
                 {{ASSINATURA}}
-                {{COORDENADORIA_OU_DRE}}
+                {{NOME_EMISSOR}}
                 {{NUM_CODIGO_CERTIFICADO}}
                 {{NUM_COMUNICADO}}
                 {{DATA_PUBLICACAO_CODAF}}

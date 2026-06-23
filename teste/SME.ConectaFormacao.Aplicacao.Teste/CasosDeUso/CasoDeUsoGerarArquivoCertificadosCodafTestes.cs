@@ -69,13 +69,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             {
                 Id = 1,
                 CodigoCertificado = 12345,
-                HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{COORDENADORIA_OU_DRE}}</div>",
+                HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{NOME_EMISSOR}}</div>",
                 NomeCompleto = "Fulano da Silva",
                 EmailUsuario = "fulano@exemplo.com",
                 NomeFormacao = "Curso X",
                 TemRf = true,
                 TipoParticipacao = TipoParticipacaoCodaf.Cursista,
-                SiglaCoordenadoriaOuDre = "DRE-ABC"
+                Emissor = "DRE-ABC"
             };
 
             _mockRepositorioCertificado.SetupSequence(r => r.ObterCertificadosParaProcessamentoAsync())
@@ -114,7 +114,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mockRepositorioCertificado.Verify(r => r.ObterCertificadosParaProcessamentoAsync(), Times.Exactly(2));
             _mockServicoRelatorio.Verify(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()), Times.Once);
             htmlRecebido.Should().Contain(certificado.CodigoCertificado.ToString())
-                               .And.Contain(certificado.SiglaCoordenadoriaOuDre);
+                               .And.Contain(certificado.Emissor);
             _mockServicoArmazenamento.Verify(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), retornoPdf), Times.Once);
             _mockRepositorioCertificado.Verify(r => r.AtualizarStatusProcessamentoAsync(certificado.Id,
                 StatusProcessamentoCertificadoCodaf.ProcessadoComSucesso, It.IsAny<string>(), null), Times.Once);
@@ -138,7 +138,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 EmailUsuario = "err@exemplo.com",
                 TemRf = false,
                 TipoParticipacao = TipoParticipacaoCodaf.Cursista,
-                SiglaCoordenadoriaOuDre = "DRE-X"
+                Emissor = "DRE-X"
             };
 
             _mockRepositorioCertificado.SetupSequence(r => r.ObterCertificadosParaProcessamentoAsync())
@@ -175,7 +175,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 EmailUsuario = string.Empty, 
                 TemRf = true,
                 TipoParticipacao = TipoParticipacaoCodaf.Cursista,
-                SiglaCoordenadoriaOuDre = "DRE-Y"
+                Emissor = "DRE-Y"
             };
 
             _mockRepositorioCertificado.SetupSequence(r => r.ObterCertificadosParaProcessamentoAsync())

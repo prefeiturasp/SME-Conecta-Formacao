@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
         {
             var layout = templateService.ObterTemplate(TEMPLATE_LAYOUT);
             
-            var coordenadoriaOuDre = dados.DreCoordenadoria;
+            var nomeEmissor = dados.NomeEmissor;
             var numComunicado = dados.NumeroComunicado.ToString();
             var dataPublicacao = dados.DataPublicacao.ToString("dd/MM/yyyy");
             var paginaDiarioOficial = dados.PaginaDiarioOficial.ToString();
@@ -30,7 +30,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
             var assinatura = templateService.ObterImagemBase64(IMAGEM_ASSINATURA);
 
             return layout
-                .Replace("{{COORDENADORIA_OU_DRE}}", coordenadoriaOuDre)
+                .Replace("{{NOME_EMISSOR}}", nomeEmissor)
                 .Replace("{{NUM_COMUNICADO}}", numComunicado)
                 .Replace("{{DATA_PUBLICACAO_CODAF}}", dataPublicacao)
                 .Replace("{{PAG_DIARIO_OFICIAL}}", paginaDiarioOficial)
