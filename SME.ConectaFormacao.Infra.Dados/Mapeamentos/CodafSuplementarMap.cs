@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
         public CodafSuplementarMap()
         {
             ToTable("codaf_suplementar");
-            Map(c => c.CodafListaPresencaId).ToColumn("codaf_lista_presenca_id");
+            Map(c => c.CodafId).ToColumn("codaf_lista_presenca_id");
             Map(c => c.DataPublicacao).ToColumn("data_publicacao");
             Map(c => c.DataPublicacaoDom).ToColumn("data_publicacao_dom");
             Map(c => c.NumeroComunicado).ToColumn("numero_comunicado");
@@ -20,6 +20,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.CodafInscricoes).Ignore();
             Map(c => c.CodafRetificacoes).Ignore();
             Map(c => c.CodafAnexos).Ignore();
+            Map(c => c.Proposta).Ignore();
+            Map(c => c.PropostaTurma).Ignore();
         }
     }
 }
