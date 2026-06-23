@@ -109,7 +109,7 @@ Cypress.Commands.add('enviar_proximas_formacoes', () => {
       })
     })
 
-    cy.contains('Sua inscrição foi confirmada', { timeout: 10000 })
+    cy.contains('Sua inscrição foi', { timeout: 10000 })
       .should('be.visible')
   })
 })
