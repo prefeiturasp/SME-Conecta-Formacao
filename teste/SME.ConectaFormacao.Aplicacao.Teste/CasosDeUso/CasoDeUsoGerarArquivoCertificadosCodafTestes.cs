@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             {
                 Id = 1,
                 CodigoCertificado = 12345,
-                HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{NOME_EMISSOR}}</div>",
+                HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{EMISSOR}}</div>",
                 NomeCompleto = "Fulano da Silva",
                 EmailUsuario = "fulano@exemplo.com",
                 NomeFormacao = "Curso X",

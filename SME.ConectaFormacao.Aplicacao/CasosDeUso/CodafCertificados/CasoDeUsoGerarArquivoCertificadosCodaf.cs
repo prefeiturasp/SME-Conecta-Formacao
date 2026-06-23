@@ -78,7 +78,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                 try
                 {
                     var htmlComSequencial = InserirSequencialNoHtml(certificado.HtmlContentSnapshot, certificado.CodigoCertificado);
-                    var htmlComSigla = InserirNomeEmissor(htmlComSequencial, certificado.Emissor);
+                    var htmlComSigla = InserirEmissor(htmlComSequencial, certificado.Emissor);
                     var htmlCertificadoDto = new HtmlCertificadoCodafDto
                     {
                         HtmlContent = htmlComSigla
@@ -110,9 +110,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             return htmlContent;
         }
 
-        private static string InserirNomeEmissor(string htmlContent, string sigla)
+        private static string InserirEmissor(string htmlContent, string sigla)
         {
-            var marcador = "{{NOME_EMISSOR}}";
+            var marcador = "{{EMISSOR}}";
             if (htmlContent.Contains(marcador))
                 htmlContent = htmlContent.Replace(marcador, sigla);
             return htmlContent;

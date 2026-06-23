@@ -50,7 +50,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     dados.CargaHorariaTotalOutra,
                     dados.ConceitoFinal,
                     dados.PercentualFrequencia,
-                    dados.NomeEmissor,
+                    dados.Emissor,
                     dados.TipoFormacao,
                     DataInicio = periodo?.DataInicio.Date,
                     DataFim = periodo?.DataFim.Date

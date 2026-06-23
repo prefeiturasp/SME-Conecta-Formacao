@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
         {
             return $@"Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</i></b>,
                     RF: <b><i>{StringExtensao.AplicarMascaraRf(dados.Documento)}</i></b>, participou do {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
-                    promovido pela <b>{dados.NomeEmissor}</b> da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, 
+                    promovido pela <b>{dados.Emissor}</b> da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, 
                     com carga horária de {dados.HorasTotais ?? dados.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro():00} horas,
                     tendo obtido nota de aproveitamento {dados.ConceitoFinal} e frequência de {dados.PercentualFrequencia}%.";
         }
