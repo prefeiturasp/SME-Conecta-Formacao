@@ -12,6 +12,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
+using System.Globalization;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
 {
@@ -157,10 +158,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
 
         private static string FormatarDataString(string dataIso)
         {
-            if (DateTime.TryParse(dataIso, out var data))
+            if (DateTime.TryParse(dataIso, CultureInfo.InvariantCulture, DateTimeStyles.None, out var data))
+            {
                 return data.ToString("dd/MM/yyyy");
-            
-            return dataIso; 
+            }
+
+            return dataIso;
         }
     }
 }
