@@ -37,8 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 ;
             CreateMap<CodafSuplementarAnexo, CodafSuplementarAnexoDto>().ForMember(dest => dest.UrlDownload, opt => opt.Ignore());
             CreateMap<CodafRetificacaoListaPresenca, CodafSuplementarRetificacaoDto>();
-            CreateMap<CodafAnexo, CodafSuplementarAnexoDto>().ForMember(dest => dest.UrlDownload, opt => opt.Ignore());
-            ;
+            CreateMap<CodafAnexo, CodafSuplementarAnexoDto>().ForMember(dest => dest.UrlDownload, opt => opt.Ignore());            
             CreateMap<FiltroCodafSuplementarDto, FiltroListagemResultadoCodafSuplementarDto>()
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(src => src.CodigoFormacao.ToString()))
                 .ForMember(dest => dest.NumeroHomologacao, opt => opt.MapFrom(src => src.NumeroHomologacao.ToString()))

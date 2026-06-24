@@ -81,7 +81,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 INSERT INTO PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA 
                 (CODAF_LISTA_PRESENCA_ID, INSCRICAO_ID, PERCENTUAL_FREQUENCIA, ATIVIDADE_OBRIGATORIO, CONCEITO_FINAL, APROVADO, criado_em, criado_por, alterado_em, alterado_por, criado_login, alterado_login, excluido) 
                 VALUES 
-                (@CodafId, @InscricaoId, @PercentualFrequencia, @AtividadeObrigatorio, @ConceitoFinal, @Aprovado, @CriadoEm, @CriadoPor, @AlteradoEm, @AlteradoPor, @CriadoLogin, @AlteradoLogin, @Excluido);",
+                (@CodafListaPresencaId, @InscricaoId, @PercentualFrequencia, @AtividadeObrigatorio, @ConceitoFinal, @Aprovado, @CriadoEm, @CriadoPor, @AlteradoEm, @AlteradoPor, @CriadoLogin, @AlteradoLogin, @Excluido);",
                 inscritosListaPresenca);
 
         }
