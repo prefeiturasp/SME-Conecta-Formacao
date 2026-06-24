@@ -131,6 +131,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
                 model.RfCpf?.AplicarMascaraCpf().AplicarMascaraRf() ?? "N/A",
                 model.NomeCursista ?? "N/A",
                 model.SituacaoInscricao?.Nome() ?? "N/A",
+                string.IsNullOrEmpty(model.DataInscricao) ? "N/A" : FormatarDataString(model.DataInscricao),
+                string.IsNullOrEmpty(model.HoraInscricao) ? "N/A" : model.HoraInscricao,
                 model.SituacaoConclusaoCursista ?? "N/A",
                 model.Email ?? "N/A",
                 model.EmailNaoEducacional ?? "N/A",
@@ -151,6 +153,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
         {
             if (!valor.HasValue) return "N/A";
             return valor.Value ? "Sim" : "Não";
+        }
+
+        private static string FormatarDataString(string dataIso)
+        {
+            if (DateTime.TryParse(dataIso, out var data))
+                return data.ToString("dd/MM/yyyy");
+            
+            return dataIso; 
         }
     }
 }

@@ -32,6 +32,8 @@
                        UA.NECESSITA_ADAPTACAO AS necessitaAdaptacao, 
                        UA.DESCRICAO_ADAPTACAO AS descricaoAdaptacao, 
                        I.SITUACAO AS situacaoInscricao, 
+                       TO_CHAR(I.CRIADO_EM, 'YYYY-MM-DD') AS dataInscricao,
+                       TO_CHAR(I.CRIADO_EM, 'HH24:MI:SS') AS horaInscricao,
                        NULL AS situacaoConclusaoCursista, 
                        U.EMAIL_EDUCACIONAL AS email,
                        U.EMAIL AS emailNaoEducacional,
@@ -95,6 +97,8 @@
                    necessitaAdaptacao,
                    descricaoAdaptacao,
                    situacaoInscricao,
+                   dataInscricao,
+                   horaInscricao,
                    situacaoConclusaoCursista,
                    email,
                    emailNaoEducacional

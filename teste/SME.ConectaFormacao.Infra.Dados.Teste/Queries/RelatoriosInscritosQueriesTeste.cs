@@ -83,7 +83,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Queries
                 .And.Contain("P.DATA_REALIZACAO_INICIO as dataRealizacaoInicio")
                 .And.Contain("P.DATA_REALIZACAO_FIM as dataRealizacaoFim")
                 .And.Contain("P.SITUACAO AS situacaoFormacao")
-                .And.Contain("P.FORMATO AS modalidadeFormativa");
+                .And.Contain("P.FORMATO AS modalidadeFormativa")
+                .And.Contain("TO_CHAR(I.CRIADO_EM, 'YYYY-MM-DD') AS dataInscricao")
+                .And.Contain("TO_CHAR(I.CRIADO_EM, 'HH24:MI:SS') AS horaInscricao");
 
             query.Should()
                 .Contain("CASE")
@@ -256,6 +258,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Queries
                 .And.Contain("necessitaAdaptacao")
                 .And.Contain("descricaoAdaptacao")
                 .And.Contain("situacaoInscricao")
+                .And.Contain("dataInscricao")
+                .And.Contain("horaInscricao")
                 .And.Contain("situacaoConclusaoCursista")
                 .And.Contain("email");
         }
