@@ -19,6 +19,8 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<IRepositorioCodafSuplementarInscricao, RepositorioCodafSuplementarInscricao>()
                 .AddScoped<ICasoDeUsoObterCodafSuplementarPorCodafId, CasoDeUsoObterCodafSuplementarPorCodafId>()
                 .AddScoped<ICasoDeUsoCriarCodafSuplementar, CasoDeUsoCriarCodafSuplementar>()
+                .AddScoped<ICasoDeUsoListarCodafSuplementar, CasoDeUsoListarCodafSuplementar>()
+                .AddScoped<ICasoDeUsoObterCodafSuplementarPorId, CasoDeUsoObterCodafSuplementarPorId>()
                 ;
         }
     }

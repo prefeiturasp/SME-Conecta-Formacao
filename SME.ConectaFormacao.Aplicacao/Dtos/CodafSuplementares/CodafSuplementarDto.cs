@@ -1,8 +1,12 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
 {
-    public class CodafSuplementarDetalhadoDto
+    public class CodafSuplementarDto
     {
         public long Id { get; set; }
         public long CodafId { get; set; }
@@ -27,5 +31,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
         public long? NumeroHomologacao { get; set; }
         public IList<CodafSuplementarRetificacaoDto>? Retificacoes { get; set; }
         public IList<CodafSuplementarAnexoDto>? Anexos { get; set; }
+        public IList<CodafSuplementarInscritoDto>? Inscritos { get; set; }
     }
 }

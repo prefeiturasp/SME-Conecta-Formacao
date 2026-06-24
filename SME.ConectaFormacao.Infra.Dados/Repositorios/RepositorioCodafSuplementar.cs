@@ -1,7 +1,12 @@
-﻿using SME.ConectaFormacao.Dominio.Contexto;
+﻿using Dapper;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -9,5 +14,247 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
     public class RepositorioCodafSuplementar(IConectaFormacaoConexao conexao, IContextoAplicacao contexto) :
         RepositorioBaseAuditavel<CodafSuplementar>(contexto, conexao), IRepositorioCodafSuplementar
     {
+        public async Task<ResultadoPaginado<ListagemResultadoCodafSuplementarDto>> ObterListagemResultadoCodafSuplementarPorFiltroAsync(FiltroListagemResultadoCodafSuplementarDto filtro)
+        {
+            const string sqlBaseJoins = """
+                FROM  PUBLIC.CODAF_SUPLEMENTAR AS CS
+                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID 
+                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID 
+                INNER JOIN PUBLIC.AREA_PROMOTORA AS AP ON P.AREA_PROMOTORA_ID = AP.ID
+                """;
+            const string sqlBaseOrderBy = """
+                ORDER  BY
+                        CS.CRIADO_EM
+                """;
+
+            var condicoesWhere = new StringBuilder("WHERE NOT CS.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO ");
+            var parametros = new DynamicParameters();
+
+            if (!string.IsNullOrWhiteSpace(filtro.NomeFormacao))
+            {
+                condicoesWhere.Append(" AND f_unaccent(P.NOME_FORMACAO) ILIKE f_unaccent(@nomeFormacao) ");
+                parametros.Add("nomeFormacao", $"%{filtro.NomeFormacao}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.CodigoFormacao))
+            {
+                condicoesWhere.Append(" AND CAST(P.ID AS TEXT) ILIKE @codigoFormacao ");
+                parametros.Add("codigoFormacao", $"{filtro.CodigoFormacao.Trim()}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.NumeroHomologacao))
+            {
+                condicoesWhere.Append(" AND CAST(P.NUMERO_HOMOLOGACAO AS TEXT) ILIKE @numeroHomologacao ");
+                parametros.Add("numeroHomologacao", $"{filtro.NumeroHomologacao.Trim()}%");
+            }
+
+            if (filtro.PropostaTurmaId is not null)
+            {
+                condicoesWhere.Append(" AND PT.ID = @propostaTurmaId ");
+                parametros.Add("propostaTurmaId", filtro.PropostaTurmaId.Value);
+            }
+
+            if (filtro.AreaPromotoraId is not null)
+            {
+                condicoesWhere.Append(" AND AP.ID = @areaPromotoraId ");
+                parametros.Add("areaPromotoraId", filtro.AreaPromotoraId.Value);
+            }
+
+            if (filtro.Status is not null)
+            {
+                condicoesWhere.Append(" AND CS.STATUS = @status ");
+                parametros.Add("status", filtro.Status.Value);
+            }
+
+            var conn = conexao.Obter();
+            var sqlCount = new StringBuilder($"""
+                SELECT COUNT(1)
+                {sqlBaseJoins}
+                {condicoesWhere}
+                """);
+
+            var totalRegistros = await conn.QueryFirstAsync<int>(sqlCount.ToString(), parametros);
+            if (totalRegistros == 0)
+                return new ResultadoPaginado<ListagemResultadoCodafSuplementarDto>
+                {
+                    Itens = [],
+                    PaginaAtual = filtro.Pagina,
+                    TamanhoPagina = filtro.TamanhoPagina,
+                    TotalRegistros = 0
+                };
+
+            var registrosIgnorados = (filtro.Pagina - 1) * filtro.TamanhoPagina;
+            parametros.Add("limite", filtro.TamanhoPagina);
+            parametros.Add("registrosIgnorados", registrosIgnorados);
+            parametros.Add("statusPendente", StatusProcessamentoCertificadoCodaf.Pendente);
+            parametros.Add("statusEmProcessamento", StatusProcessamentoCertificadoCodaf.EmProcessamento);
+            parametros.Add("statusProcessadoComSucesso", StatusProcessamentoCertificadoCodaf.ProcessadoComSucesso);
+            parametros.Add("statusProcessadoComErro", StatusProcessamentoCertificadoCodaf.ProcessadoComErro);
+
+            var sqlConsulta = new StringBuilder($"""
+                SELECT CLP.ID,
+                       P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+                       p.NOME_FORMACAO AS nomeFormacao,
+                       p.ID AS codigoFormacao,
+                       pt.NOME AS nomeTurma,
+                       ap.NOME AS nomeAreaPromotora,
+                       CS.STATUS,
+                       1
+                       /*CASE 
+                	        -- 0: Sem Cetificado
+                           WHEN P.CURSO_COM_CERTIFICADO = FALSE THEN 0
+
+                           -- 1: Pendente Emissão
+                           WHEN NOT EXISTS (
+                               SELECT 1 
+                               FROM PUBLIC.CODAF_LOG_REMESSA_CONCLUSAO AS L 
+                               WHERE L.CODAF_LISTA_PRESENCA_ID = CS.ID
+                           ) THEN 1
+
+                           -- 3: Em Processamento
+                           WHEN EXISTS (
+                           	SELECT 1
+                           	FROM  PUBLIC.CODAF_CERTIFICADOS AS CC
+                           	WHERE CC.CODAF_LISTA_PRESENCA_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusPendente, @statusEmProcessamento)
+                           ) THEN 3
+
+                           -- 4: Emitido
+                           WHEN EXISTS (
+                           	SELECT 1
+                           	FROM  PUBLIC.CODAF_CERTIFICADOS AS CC
+                           	WHERE CC.CODAF_LISTA_PRESENCA_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusProcessadoComSucesso, @statusProcessadoComErro)
+                           ) THEN 4
+
+                           -- 2: Disponível para Emissão
+                           ELSE 2
+                       END AS*/ statusCertificacaoTurma,
+                       CLP.CODIGO_CURSO_EOL codigoCursoEol,
+                       CLP.CODIGO_NIVEL codigoNivel
+                {sqlBaseJoins}
+                {condicoesWhere}
+                {sqlBaseOrderBy}
+                LIMIT @limite OFFSET @registrosIgnorados
+                """);
+
+            var itens = await conn.QueryAsync<ListagemResultadoCodafSuplementarDto>(sqlConsulta.ToString(), parametros);
+            return new ResultadoPaginado<ListagemResultadoCodafSuplementarDto>
+            {
+                Itens = itens,
+                PaginaAtual = filtro.Pagina,
+                TamanhoPagina = filtro.TamanhoPagina,
+                TotalRegistros = totalRegistros
+            };
+        }
+
+        public async Task<CodafSuplementar?> ObterPorIdDetalhadoAsync(long id)
+        {
+            var conn = conexao.Obter();
+            var sql = $"""
+                -- 1. Dados do Cabeçalho (CODAF + Proposta + Turma)
+                {sqlObterCodafPorIdComPropostaEPropostaTurma}
+
+                -- 2. Retificações
+                {sqlObterRetificacoesPorIdCodaf}
+
+                -- 3. Anexos
+                {sqlObterAnexosPorIdCodaf}
+
+                -- 4. Inscritos (A lista grande)
+                {sqlObterInscricoesDaListaPorIdCodaf}
+                """;
+
+            var parametros = new { id };
+
+            using var multi = await conn.QueryMultipleAsync(sql, parametros);
+            var codafSuplementar = multi.Read<CodafSuplementar, Proposta, PropostaTurma, CodafSuplementar>(
+                (cs, p, pt) =>
+                {
+                    cs.Proposta = p;
+                    cs.PropostaTurma = pt;
+                    return cs;
+                },
+            splitOn: "ID,ID").SingleOrDefault();
+
+            if (codafSuplementar is null)
+                return null;
+
+            codafSuplementar.CodafRetificacoes = [.. await multi.ReadAsync<CodafSuplementarRetificacao>()];
+            codafSuplementar.CodafAnexos = [.. await multi.ReadAsync<CodafSuplementarAnexo>()];
+            codafSuplementar.CodafInscricoes = [.. await multi.ReadAsync<CodafSuplementarInscricao>()];
+            return codafSuplementar;
+        }
+
+        private const string sqlObterCodafPorIdComPropostaEPropostaTurma = """
+            SELECT CS.ID,
+                   CLP.ID AS codafId,
+                   CLP.PROPOSTA_ID AS propostaId,
+                   CLP.PROPOSTA_TURMA_ID AS propostaTurmaId,
+                   CS.DATA_PUBLICACAO AS dataPublicacao,
+                   CS.DATA_PUBLICACAO_DOM AS dataPublicacaoDom,
+                   CS.NUMERO_COMUNICADO AS numeroComunicado,
+                   CS.PAGINA_COMUNICADO_DOM AS paginaComunicadoDom,
+                   CS.CODIGO_CURSO_EOL AS codigoCursoEol,
+                   CS.CODIGO_NIVEL AS codigoNivel,
+                   CS.OBSERVACAO,
+                   CS.STATUS,
+                   CS.ALTERADO_EM AS alteradoEm,
+                   CS.ALTERADO_POR AS alteradoPor,
+                   CS.ALTERADO_LOGIN AS alteradoLogin,
+                   CS.CRIADO_EM AS criadoEm,
+                   CS.CRIADO_POR AS criadoPor,
+                   CS.CRIADO_LOGIN AS criadoLogin,
+           
+                   P.ID, 
+                   P.NOME_FORMACAO AS nomeFormacao,
+                   P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+           
+                   PT.ID, 
+                   PT.NOME
+            FROM PUBLIC.CODAF_SUPLEMENTAR AS CS
+            INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID
+            INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
+            INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
+            WHERE NOT CS.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
+              AND CS.ID = @id;
+            """;
+
+        private const string sqlObterRetificacoesPorIdCodaf = """
+            SELECT CSR.ID, 
+                   CSR.CODAF_SUPLEMENTAR_ID AS CodafSuplementarId,
+                   CSR.DATA_RETIFICACAO AS DataRetificacao,
+                   CSR.PAGINA_RETIFICACAO_DOM AS PaginaRetificacaoDom,
+                   CSR.CRIADO_EM AS CriadoEm,
+                   CSR.CRIADO_POR AS CriadoPor
+            FROM PUBLIC.CODAF_SUPLEMENTAR_RETIFICACAO AS CSR
+            WHERE NOT CSR.EXCLUIDO AND CSR.CODAF_SUPLEMENTAR_ID = @id;
+            """;
+
+        private const string sqlObterAnexosPorIdCodaf = """
+            SELECT CSA.ID, 
+                   CSA.CODAF_SUPLEMENTAR_ID AS CodafSuplementarId,
+                   CSA.ARQUIVO_CODIGO AS ArquivoCodigo,
+                   CSA.NOME_ARQUIVO AS NomeArquivo,
+                   CSA.EXTENSAO AS Extensao,
+                   CSA.TIPO_ANEXO_ID AS TipoAnexoId,
+                   CSA.CRIADO_EM AS CriadoEm,
+                   CSA.CRIADO_POR AS CriadoPor
+            FROM PUBLIC.CODAF_SUPLEMENTAR_ANEXO AS CSA 
+            WHERE NOT CSA.EXCLUIDO AND CSA.CODAF_SUPLEMENTAR_ID = @id;
+            """;
+
+        private const string sqlObterInscricoesDaListaPorIdCodaf = """
+            SELECT CSI.ID, 
+                   CSI.CODAF_SUPLEMENTAR_ID AS CodafSuplementarId,
+                   CSI.INSCRICAO_ID AS InscricaoId,
+                   CSI.PERCENTUAL_FREQUENCIA AS PercentualFrequencia,
+                   CSI.ATIVIDADE_OBRIGATORIO AS AtividadeObrigatorio,
+                   CSI.CONCEITO_FINAL AS ConceitoFinal,
+                   CSI.APROVADO AS Aprovado,
+                   CSI.CRIADO_EM AS CriadoEm,
+                   CSI.CRIADO_POR AS CriadoPor
+            FROM PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO AS CSI 
+            WHERE NOT CSI.EXCLUIDO AND CSI.CODAF_SUPLEMENTAR_ID = @id;
+            """;
     }
 }
