@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
             return $@"
             <p>Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</i></b>, 
             RF: <b><i>{StringExtensao.AplicarMascaraRf(dados.Documento)}</b></i>, ministrou o {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
-            promovido pela <b>{dados.DreCoordenadoria}</b> da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, com carga horária 
+            promovido pela Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, com carga horária 
             de {dados.HorasTotais ?? dados.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro():00} horas.</p>";
         }
 
