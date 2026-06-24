@@ -23,6 +23,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Relatorios
         public string? RfCpf { get; set; }
         public string? NomeCursista { get; set; }
         public SituacaoInscricao? SituacaoInscricao { get; set; }
+        public string? DataInscricao { get; set; }
+        public string? HoraInscricao { get; set; }
         public string? SituacaoConclusaoCursista { get; set; }
         public string? Email { get; set; }
         public string? EmailNaoEducacional { get; set; }
