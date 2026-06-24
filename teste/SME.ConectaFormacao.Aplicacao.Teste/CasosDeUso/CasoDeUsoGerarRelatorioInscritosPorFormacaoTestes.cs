@@ -170,7 +170,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _repositorioUsuarioMock.Setup(r => r.ObterPorId(It.IsAny<long>())).ReturnsAsync(usuarioDb);
             _repositorioRelatoriosMock.Setup(r => r.ObterDadosRelatorioInscritosPorFormacaoAsync(It.IsAny<FiltroRelatorioInscritosPorFormacaoDto>()))
-                                      .ReturnsAsync(new List<InscritoFormacaoQueryModel> { modelComPcd, modelSemPcd });
+                                      .ReturnsAsync([modelComPcd, modelSemPcd]);
 
             RelatorioInscritosFormacaoDto? dtoRecebido = null;
             _geradorRelatorioMock.Setup(g => g.GerarEArmazenarRelatorioAsync(It.IsAny<RelatorioInscritosFormacaoDto>()))
@@ -201,6 +201,60 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             inscritos[1].Pcd.Should().Be("N/A");
             // quando Pcd é null, PrecisaAdaptacao deve ser string vazia por lógica do mapeamento
             inscritos[1].PrecisaAdaptacao.Should().Be("");
+        }
+
+        [Fact]
+        public async Task DadoInscritosComDataEHoraInscricao_QuandoExecutar_EntaoCamposDevemSerMapeadosCorretamente()
+        {
+            // Arrange
+            var filtroValido = new FiltroRelatorioInscritosPorFormacaoDto { PropostaId = 888 };
+            var mensagemRabbit = CriarMensagemRabbit(filtroValido);
+            var usuarioDb = new Usuario { Id = 1, Nome = "Admin", Login = "admin123" };
+
+            var modelComDataHora = new InscritoFormacaoQueryModel
+            {
+                CodigoFormacao = "123",
+                NomeCursista = "Inscrito Com Data e Hora",
+                RfCpf = "11122233344",
+                DataInscricao = "10/05/2026",
+                HoraInscricao = "14:30:00"
+            };
+
+            var modelSemDataHora = new InscritoFormacaoQueryModel
+            {
+                CodigoFormacao = "124",
+                NomeCursista = "Inscrito Sem Data e Hora",
+                RfCpf = "55566677788",
+                DataInscricao = null,
+                HoraInscricao = null
+            };
+
+            _repositorioUsuarioMock.Setup(r => r.ObterPorId(It.IsAny<long>())).ReturnsAsync(usuarioDb);
+            _repositorioRelatoriosMock.Setup(r => r.ObterDadosRelatorioInscritosPorFormacaoAsync(It.IsAny<FiltroRelatorioInscritosPorFormacaoDto>()))
+                                      .ReturnsAsync([modelComDataHora, modelSemDataHora]);
+
+            RelatorioInscritosFormacaoDto? dtoAnalisado = null;
+            _geradorRelatorioMock.Setup(g => g.GerarEArmazenarRelatorioAsync(It.IsAny<RelatorioInscritosFormacaoDto>()))
+                                 .Callback<RelatorioInscritosFormacaoDto>(d => dtoAnalisado = d)
+                                 .ReturnsAsync("https://url/relatorio.xlsx");
+
+            // Act
+            var resultado = await _sut.Executar(mensagemRabbit);
+
+            // Assert
+            resultado.Should().BeTrue();
+            dtoAnalisado.Should().NotBeNull();
+
+            var inscritos = dtoAnalisado!.Inscritos.ToList();
+            inscritos.Count.Should().Be(2);
+
+            // Verifica o preenchimento de Data e Hora
+            inscritos[0].DataInscricao.Should().Be("10/05/2026");
+            inscritos[0].HoraInscricao.Should().Be("14:30:00");
+
+            // Verifica o fallback quando não tem preenchimento (N/A)
+            inscritos[1].DataInscricao.Should().Be("N/A");
+            inscritos[1].HoraInscricao.Should().Be("N/A");
         }
 
         [Fact]
