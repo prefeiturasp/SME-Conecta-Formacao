@@ -238,6 +238,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new CodafListaPresencaMap());
             config.AddMap(new CodafMovimentacaoListaPresencaMap());
             config.AddMap(new CodafCertificadoMap());
+            config.AddMap(new CodafAnexoMap());
 
             config.AddMap(new CodafSuplementarAnexoMap());
             config.AddMap(new CodafSuplementarInscricaoMap());

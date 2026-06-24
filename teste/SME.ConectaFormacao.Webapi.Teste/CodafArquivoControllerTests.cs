@@ -128,7 +128,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
         {
             // Arrange
             long codafListaPresencaId = 1;
-            var erro = Erro.NaoEncontrado("Dados não encontrados para o CodafListaPresencaId informado.");
+            var erro = Erro.NaoEncontrado("Dados não encontrados para o CodafId informado.");
             _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol
                 .Setup(x => x.ExecutarAsync(codafListaPresencaId))
                 .ReturnsAsync(erro);
