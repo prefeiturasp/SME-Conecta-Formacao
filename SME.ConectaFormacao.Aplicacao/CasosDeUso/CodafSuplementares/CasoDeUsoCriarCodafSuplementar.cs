@@ -4,9 +4,11 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
+    [ExcludeFromCodeCoverage]
     public class CasoDeUsoCriarCodafSuplementar(
         IRepositorioCodafSuplementar repositorioCodafSuplementar,
         IRepositorioCodafListaPresenca repositorioCodafLista,
