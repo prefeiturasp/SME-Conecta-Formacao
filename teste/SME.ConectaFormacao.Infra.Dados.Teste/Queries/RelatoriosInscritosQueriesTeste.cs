@@ -85,7 +85,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Queries
                 .And.Contain("P.SITUACAO AS situacaoFormacao")
                 .And.Contain("P.FORMATO AS modalidadeFormativa")
                 .And.Contain("TO_CHAR(I.CRIADO_EM, 'YYYY-MM-DD') AS dataInscricao")
-                .And.Contain("TO_CHAR(I.CRIADO_EM, 'HH24:MI:SS') AS horaInscricao");
+                .And.Contain("TO_CHAR(I.CRIADO_EM, 'HH24:MI') AS horaInscricao");
 
             query.Should()
                 .Contain("CASE")
