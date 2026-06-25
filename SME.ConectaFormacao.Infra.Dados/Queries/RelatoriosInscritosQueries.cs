@@ -33,7 +33,7 @@
                        UA.DESCRICAO_ADAPTACAO AS descricaoAdaptacao, 
                        I.SITUACAO AS situacaoInscricao, 
                        TO_CHAR(I.CRIADO_EM, 'YYYY-MM-DD') AS dataInscricao,
-                       TO_CHAR(I.CRIADO_EM, 'HH24:MI:SS') AS horaInscricao,
+                       TO_CHAR(I.CRIADO_EM, 'HH24:MI') AS horaInscricao,
                        NULL AS situacaoConclusaoCursista, 
                        U.EMAIL_EDUCACIONAL AS email,
                        U.EMAIL AS emailNaoEducacional,
