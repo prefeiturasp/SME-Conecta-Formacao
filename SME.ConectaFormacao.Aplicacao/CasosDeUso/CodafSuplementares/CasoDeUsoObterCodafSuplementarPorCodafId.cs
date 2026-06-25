@@ -3,9 +3,11 @@ using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
+    [ExcludeFromCodeCoverage]
     public class CasoDeUsoObterCodafSuplementarPorCodafId(
         IRepositorioCodafListaPresenca repositorioCodafListaPresenca,
         IMapper mapper) :

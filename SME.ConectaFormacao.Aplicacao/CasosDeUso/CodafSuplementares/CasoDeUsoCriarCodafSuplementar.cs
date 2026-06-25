@@ -4,9 +4,11 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
+    [ExcludeFromCodeCoverage]
     public class CasoDeUsoCriarCodafSuplementar(
         IRepositorioCodafSuplementar repositorioCodafSuplementar,
         IRepositorioCodafListaPresenca repositorioCodafLista,
@@ -23,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
             if (codafOriginal is null)
                 return Erro.Validacao("Codaf não encontrado para a turma informada");
 
-            var codafSuplementarExistente = await repositorioCodafSuplementar.ObterPorExpressaoAsync(c => c.CodafListaPresencaId == codafOriginal.Id);
+            var codafSuplementarExistente = await repositorioCodafSuplementar.ObterPorExpressaoAsync(c => c.CodafId == codafOriginal.Id);
 
             if (codafSuplementarExistente is not null)
                 return Erro.Validacao("Já existe um codaf suplementar para a turma informada");

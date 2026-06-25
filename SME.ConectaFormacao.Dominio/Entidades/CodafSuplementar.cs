@@ -5,7 +5,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class CodafSuplementar : EntidadeBaseAuditavel
     {
-        public long CodafListaPresencaId { get; private set; }
+        public long CodafId { get; private set; }
         public DateTime? DataPublicacao { get; private set; }
         public DateTime? DataPublicacaoDom { get; private set; }
         public short? NumeroComunicado { get; private set; }
@@ -15,6 +15,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public string? Observacao { get; private set; }
         public StatusCodafSuplementar Status { get; private set; }
 
+        public Proposta Proposta { get; set; } = null!;
+        public PropostaTurma PropostaTurma { get; set; } = null!;
         public CodafListaPresenca CodafListaPresenca { get; set; } = null!;
         public ICollection<CodafSuplementarInscricao> CodafInscricoes { get; set; } = [];
         public ICollection<CodafSuplementarRetificacao> CodafRetificacoes { get; set; } = [];
@@ -23,13 +25,13 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         protected CodafSuplementar() { }
         public CodafSuplementar(long codafListaPresencaId)
         {
-            CodafListaPresencaId = codafListaPresencaId;
+            CodafId = codafListaPresencaId;
             Status = StatusCodafSuplementar.Iniciado;
         }
 
         public CodafSuplementar(long codafListaPresencaId, DadosPublicacaoLista dadosPublicacao)
         {
-            CodafListaPresencaId = codafListaPresencaId;
+            CodafId = codafListaPresencaId;
             Status = StatusCodafSuplementar.Iniciado;
             AtribuirDadosPublicacao(dadosPublicacao);
         }
