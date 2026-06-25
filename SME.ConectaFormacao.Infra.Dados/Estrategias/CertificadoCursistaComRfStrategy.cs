@@ -14,10 +14,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
             var titulo = @$"PARABÉNS! SEU CERTIFICADO FOI EMITIDO | {dados.NomeFormacao}";
 
             var corpo = $@"
-            <p>Olá <b>{dados.NomeCompleto}</b>! Parabéns!</p>
-            <p>Você concluiu com sucesso sua participação como <b>cursista</b> na formação <b>{dados.NomeFormacao}</b>.</p>
-            <p>Você pode visualizar seu novo certificado pela tela 'Meus certificados' na plataforma Conecta clicando <a href='{urlAcesso}' target='_blank'>aqui</a>.</p>
-            <p>Te desejamos muito sucesso, e até a próxima!</p>";
+                <p>Olá <b>{dados.NomeCompleto}</b>! Parabéns!</p>
+                <p>Você concluiu sua participação como <b>cursista</b> na formação <b>{dados.NomeFormacao}</b>.</p>
+                <p>O certificado pode ser visualizado na tela 'Meus certificados' na plataforma Conecta, clicando <a href='{urlAcesso}' target='_blank'>aqui</a>.</p>";
 
             return (titulo, corpo);
         }
