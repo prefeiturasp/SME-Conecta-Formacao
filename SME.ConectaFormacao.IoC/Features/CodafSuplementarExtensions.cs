@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
+using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Dados.Servicos;
 
 namespace SME.ConectaFormacao.IoC.Features
 {
@@ -21,6 +23,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoCriarCodafSuplementar, CasoDeUsoCriarCodafSuplementar>()
                 .AddScoped<ICasoDeUsoListarCodafSuplementar, CasoDeUsoListarCodafSuplementar>()
                 .AddScoped<ICasoDeUsoObterCodafSuplementarPorId, CasoDeUsoObterCodafSuplementarPorId>()
+                .AddScoped<ICodafSuplementarInscritosService, CodafSuplementarInscritosService>()
                 ;
         }
     }

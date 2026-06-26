@@ -1,8 +1,11 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
+using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 
@@ -12,7 +15,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
     public class CasoDeUsoCriarCodafSuplementar(
         IRepositorioCodafSuplementar repositorioCodafSuplementar,
         IRepositorioCodafListaPresenca repositorioCodafLista,
-        IValidator<CodafSuplementarCadastroDto> validator) : ICasoDeUsoCriarCodafSuplementar
+        ICodafSuplementarInscritosService codafSuplementarInscritosService,
+        IValidator<CodafSuplementarCadastroDto> validator,
+        IMapper mapper,
+        ITransacao transacao) : ICasoDeUsoCriarCodafSuplementar
     {
         public async Task<Resultado<CodafSuplementarDetalhadoDto>> ExecutarAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto)
         {
@@ -39,27 +45,46 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                     codafSuplementarCadastroDto.CodigoNivel,
                     codafSuplementarCadastroDto.Observacao));
 
-            var id = await repositorioCodafSuplementar.Inserir(codafSuplementar);
-            codafSuplementar.Id = id;
+            using var transacaoDb = transacao.Iniciar();
 
-            var codafSuplementarDetalhadoDto = new CodafSuplementarDetalhadoDto
+            try
             {
-                AlteradoEm = codafSuplementar.AlteradoEm,
-                AlteradoLogin = codafSuplementar.AlteradoLogin,
-                AlteradoPor = codafSuplementar.AlteradoPor,
-                CodigoCursoEol = codafSuplementar.CodigoCursoEol,
-                CodigoNivel = codafSuplementar.CodigoNivel,
-                CriadoEm = codafSuplementar.CriadoEm,
-                CriadoLogin = codafSuplementar.CriadoLogin,
-                CriadoPor = codafSuplementar.CriadoPor,
-                DataPublicacao = codafSuplementar.DataPublicacao,
-                DataPublicacaoDom = codafSuplementar.DataPublicacaoDom,
-                Id = codafSuplementar.Id,
-                CodigoFormacao = codafOriginal.PropostaId,
-                PropostaId = codafOriginal.PropostaId
-            };
+                var id = await repositorioCodafSuplementar.Inserir(codafSuplementar);
+                codafSuplementar.Id = id;
 
-            return codafSuplementarDetalhadoDto;
+                await SalvarInscritosAsync(codafSuplementarCadastroDto, codafSuplementar);
+
+                transacaoDb.Commit();
+                var codafSuplementarDetalhadoDto = new CodafSuplementarDetalhadoDto
+                {
+                    AlteradoEm = codafSuplementar.AlteradoEm,
+                    AlteradoLogin = codafSuplementar.AlteradoLogin,
+                    AlteradoPor = codafSuplementar.AlteradoPor,
+                    CodigoCursoEol = codafSuplementar.CodigoCursoEol,
+                    CodigoNivel = codafSuplementar.CodigoNivel,
+                    CriadoEm = codafSuplementar.CriadoEm,
+                    CriadoLogin = codafSuplementar.CriadoLogin,
+                    CriadoPor = codafSuplementar.CriadoPor,
+                    DataPublicacao = codafSuplementar.DataPublicacao,
+                    DataPublicacaoDom = codafSuplementar.DataPublicacaoDom,
+                    Id = codafSuplementar.Id,
+                    CodigoFormacao = codafOriginal.PropostaId,
+                    PropostaId = codafOriginal.PropostaId
+                };
+
+                return codafSuplementarDetalhadoDto;
+            }
+            catch (Exception ex)
+            {
+                transacaoDb.Rollback();
+                return new Erro(TipoFalha.ErroInterno, "Erro ao salvar CODAF Suplementar");
+            }
+        }
+
+        private async Task SalvarInscritosAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto, CodafSuplementar codafSuplementar)
+        {
+            var inscritos = mapper.Map<List<CodafSuplementarInscricao>>(codafSuplementarCadastroDto.Inscritos);
+            await codafSuplementarInscritosService.SalvarInscritosAsync(inscritos, codafSuplementar.Id);
         }
     }
 }

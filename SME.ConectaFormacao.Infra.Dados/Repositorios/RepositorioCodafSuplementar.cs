@@ -93,7 +93,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             parametros.Add("statusProcessadoComErro", StatusProcessamentoCertificadoCodaf.ProcessadoComErro);
 
             var sqlConsulta = new StringBuilder($"""
-                SELECT CLP.ID,
+                SELECT CS.ID,
                        P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
                        p.NOME_FORMACAO AS nomeFormacao,
                        p.ID AS codigoFormacao,
@@ -181,7 +181,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             codafSuplementar.CodafRetificacoes = [.. await multi.ReadAsync<CodafSuplementarRetificacao>()];
             codafSuplementar.CodafAnexos = [.. await multi.ReadAsync<CodafSuplementarAnexo>()];
-            codafSuplementar.CodafInscricoes = [.. await multi.ReadAsync<CodafSuplementarInscricao>()];
+            codafSuplementar.CodafInscricoes = [.. multi.Read<CodafSuplementarInscricao, Usuario, CodafSuplementarInscricao>(
+                (csi, usuario) =>
+                {
+                    csi.Inscricao = new()
+                    {
+                        Usuario = usuario
+                    };
+                    return csi;
+                },
+                splitOn: "LOGIN")];
             return codafSuplementar;
         }
 
@@ -252,8 +261,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    CSI.CONCEITO_FINAL AS ConceitoFinal,
                    CSI.APROVADO AS Aprovado,
                    CSI.CRIADO_EM AS CriadoEm,
-                   CSI.CRIADO_POR AS CriadoPor
+                   CSI.CRIADO_POR AS CriadoPor,
+                   U.LOGIN,
+                   U.CPF,
+                   U.NOME
             FROM PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO AS CSI 
+                 INNER JOIN PUBLIC.INSCRICAO AS I ON I.ID = CSI.INSCRICAO_ID
+                 INNER JOIN PUBLIC.USUARIO AS U  ON U.ID = I.USUARIO_ID 
             WHERE NOT CSI.EXCLUIDO AND CSI.CODAF_SUPLEMENTAR_ID = @id;
             """;
     }
