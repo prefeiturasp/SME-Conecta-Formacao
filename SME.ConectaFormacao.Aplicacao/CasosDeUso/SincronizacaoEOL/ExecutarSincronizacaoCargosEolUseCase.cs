@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
+using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLogViaRabbit;
 using SME.ConectaFormacao.Aplicacao.Interfaces.SincronizacaoEOL;
 using SME.ConectaFormacao.Infra;
@@ -16,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
             var dres = await mediator.Send(new ObterCodigosDresEOLQuery());
 
             if (dres is not null && dres.Any())
-                codigosDre.AddRange(dres.Select(d => d.Codigo));
+                codigosDre.AddRange(dres.Select(d => d.Codigo));            
 
             foreach (var codigoDre in codigosDre)
             {
@@ -30,7 +31,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
                         await mediator.Send(new SalvarLogViaRabbitCommand(
                             $"Erro ao publicar mensagem na fila para sincronização de cargos EOL da DRE {codigoDre}.",
                             LogNivel.Negocio,
-                            LogContexto.SincronizacaoCargosEol));
+                            LogContexto.SincronizacaoCargosEol));  
+
+                    await mediator.Send(new SalvarLogCommand(
+                        "SincronizacaoCargosEol",
+                        LogNivel.Negocio,
+                        $"{(!mensagemPublicada ? "Erro" : "Sucesso")} ao publicar mensagem na fila para sincronização de cargos EOL da DRE {codigoDre}.",
+                        ""));
                 }
                 catch (Exception ex)
                 {
@@ -43,6 +50,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
                         rastreamento: ex.StackTrace ?? "",
                         excecaoInterna: ex.InnerException?.Message ?? "",
                         innerException: ex.InnerException?.StackTrace ?? ""));
+
+                    //salva o log de erro na tabela criada no banco de dados
+                    await mediator.Send(new SalvarLogCommand(
+                        "SincronizacaoCargosEol",
+                        LogNivel.Negocio,
+                        ex.InnerException?.Message ?? "",
+                        ex.InnerException?.StackTrace ?? "")
+                    );
                 }
             }
 

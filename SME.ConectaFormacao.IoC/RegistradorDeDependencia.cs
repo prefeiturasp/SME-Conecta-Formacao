@@ -25,6 +25,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Log;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacoes;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
@@ -229,6 +230,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new ImportacaoArquivoRegistroMap());
             config.AddMap(new PropostaPareceristaMap());
 
+            config.AddMap(new LogMap());
+
             config.AddMap(new NotificacaoMap());
             config.AddMap(new NotificacaoUsuarioMap());
 
@@ -301,6 +304,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.AddScoped<IRepositorioCargoFuncaoEol, RepositorioCargoFuncaoEol>();
         serviceCollection.AddScoped<IRepositorioCodafListaPresenca, RepositorioCodafListaPresenca>();
         serviceCollection.AddScoped<IRepositorioPeriodoRealizacaoConsulta, RepositorioPeriodoRealizacaoConsulta>();
+        serviceCollection.AddScoped<IRepositorioLog, RepositorioLog>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -344,9 +348,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterUnidadePorCodigoEol, CasoDeUsoObterUnidadePorCodigoEol>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterFuncionarioExternoPorCpf, CasoDeUsoObterFuncionarioExternoPorCpf>();                                                        
-        
-        
-                
+        serviceCollection.TryAddScoped<ICasoDeUsoSalvarLog, CasoDeUsoSalvarLog>(); 
 
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoCarregarTemporario, CasoDeUsoArquivoCarregarTemporario>();
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();
