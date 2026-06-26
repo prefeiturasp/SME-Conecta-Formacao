@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using MediatR;
 using Moq;
 using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
-using SME.ConectaFormacao.Aplicacao.Dtos.Log;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
+using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using System.Data;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Logs
@@ -14,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Logs
         private readonly Mock<IRepositorioLog> repositorioMock;
         private readonly Mock<IMapper> mapperMock;
         private readonly Mock<ITransacao> transacaoMock;
+        private readonly Mock<IMediator> mediatorMock;
         private readonly Mock<IDbTransaction> dbTransactionMock;
 
         private readonly SalvarLogCommandHandler handler;
@@ -23,6 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Logs
             repositorioMock = new Mock<IRepositorioLog>();
             mapperMock = new Mock<IMapper>();
             transacaoMock = new Mock<ITransacao>();
+            mediatorMock = new Mock<IMediator>();
             dbTransactionMock = new Mock<IDbTransaction>();
 
             transacaoMock
@@ -32,55 +35,118 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Logs
             handler = new SalvarLogCommandHandler(
                 repositorioMock.Object,
                 mapperMock.Object,
-                transacaoMock.Object);
+                transacaoMock.Object,
+                mediatorMock.Object);
         }
 
         [Fact]
-        public async Task Deve_salvar_log_com_sucesso()
+        public async Task Deve_salvar_log_quando_usuario_logado_existir()
         {
-            var dto = new LogDTO();
-            var entidade = new Log();
+            // Arrange
+            var usuario = new Usuario
+            {
+                Id = 10,
+                Login = "mchiesa"
+            };
+
+            var log = new Log();
+
+            var command = new SalvarLogCommand(
+                "Entidade",
+                LogNivel.Informacao,
+                "Mensagem",
+                "Complemento");
+
+            mediatorMock
+                .Setup(x => x.Send(It.IsAny<ObterUsuarioLogadoQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(usuario);
 
             mapperMock
-                .Setup(x => x.Map<Log>(dto))
-                .Returns(entidade);
+                .Setup(x => x.Map<Log>(command))
+                .Returns(log);
 
             repositorioMock
-                .Setup(x => x.Inserir(dbTransactionMock.Object, entidade))
+                .Setup(x => x.Inserir(dbTransactionMock.Object, log))
                 .ReturnsAsync(0L);
 
-            var command = new SalvarLogCommand(dto);
-
+            // Act
             var resultado = await handler.Handle(command, CancellationToken.None);
 
+            // Assert
             Assert.True(resultado);
-
-            mapperMock.Verify(x => x.Map<Log>(dto), Times.Once);
-
-            repositorioMock.Verify(
-                x => x.Inserir(dbTransactionMock.Object, entidade),
-                Times.Once);
+            Assert.Equal("10", log.CriadoPor);
+            Assert.Equal("mchiesa", log.CriadoLogin);
+            Assert.NotEqual(default, log.CriadoEm);
 
             dbTransactionMock.Verify(x => x.Commit(), Times.Once);
             dbTransactionMock.Verify(x => x.Rollback(), Times.Never);
         }
 
         [Fact]
-        public async Task Deve_realizar_rollback_quando_ocorrer_erro()
+        public async Task Deve_utilizar_usuario_sistema_quando_usuario_logado_for_nulo()
         {
-            var dto = new LogDTO();
-            var entidade = new Log();
+            // Arrange
+            var log = new Log();
+
+            var command = new SalvarLogCommand(
+                "Entidade",
+                LogNivel.Informacao,
+                "Mensagem",
+                null);
+
+            mediatorMock
+                .Setup(x => x.Send(It.IsAny<ObterUsuarioLogadoQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Usuario)null);
 
             mapperMock
-                .Setup(x => x.Map<Log>(dto))
-                .Returns(entidade);
+                .Setup(x => x.Map<Log>(command))
+                .Returns(log);
 
             repositorioMock
-                .Setup(x => x.Inserir(dbTransactionMock.Object, entidade))
+                .Setup(x => x.Inserir(dbTransactionMock.Object, log))
+                .ReturnsAsync(0L);
+
+            // Act
+            await handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            Assert.Equal("1", log.CriadoPor);
+            Assert.Equal("Sistema", log.CriadoLogin);
+
+            dbTransactionMock.Verify(x => x.Commit(), Times.Once);
+        }
+
+        [Fact]
+        public async Task Deve_realizar_rollback_quando_ocorrer_excecao()
+        {
+            // Arrange
+            var usuario = new Usuario
+            {
+                Id = 10,
+                Login = "mchiesa"
+            };
+
+            var log = new Log();
+
+            var command = new SalvarLogCommand(
+                "Entidade",
+                LogNivel.Critico,
+                "Mensagem",
+                null);
+
+            mediatorMock
+                .Setup(x => x.Send(It.IsAny<ObterUsuarioLogadoQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(usuario);
+
+            mapperMock
+                .Setup(x => x.Map<Log>(command))
+                .Returns(log);
+
+            repositorioMock
+                .Setup(x => x.Inserir(dbTransactionMock.Object, log))
                 .ThrowsAsync(new Exception("Erro"));
 
-            var command = new SalvarLogCommand(dto);
-
+            // Act / Assert
             await Assert.ThrowsAsync<Exception>(() =>
                 handler.Handle(command, CancellationToken.None));
 
@@ -95,7 +161,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Logs
                 new SalvarLogCommandHandler(
                     null!,
                     mapperMock.Object,
-                    transacaoMock.Object));
+                    transacaoMock.Object,
+                    mediatorMock.Object));
         }
 
         [Fact]
@@ -105,7 +172,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Logs
                 new SalvarLogCommandHandler(
                     repositorioMock.Object,
                     null!,
-                    transacaoMock.Object));
+                    transacaoMock.Object,
+                    mediatorMock.Object));
         }
 
         [Fact]
@@ -115,6 +183,18 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Logs
                 new SalvarLogCommandHandler(
                     repositorioMock.Object,
                     mapperMock.Object,
+                    null!,
+                    mediatorMock.Object));
+        }
+
+        [Fact]
+        public void Deve_lancar_excecao_quando_mediator_for_nulo()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new SalvarLogCommandHandler(
+                    repositorioMock.Object,
+                    mapperMock.Object,
+                    transacaoMock.Object,
                     null!));
         }
     }

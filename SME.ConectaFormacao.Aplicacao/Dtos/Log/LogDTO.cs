@@ -2,7 +2,7 @@
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Log;
 
-public class LogDTO
+public class LogDto
 {
     public long Id { get; set; }
     public string? CriadoPor { get; set; }

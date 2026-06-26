@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public interface ICasoDeUsoSalvarLog
     {
-        Task<bool> Executar(LogDTO logDTO);
+        Task<bool> Executar(LogDto logDto);
     }
 }

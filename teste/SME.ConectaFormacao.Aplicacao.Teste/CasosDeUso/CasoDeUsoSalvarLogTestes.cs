@@ -20,11 +20,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         [Fact]
         public async Task Deve_retornar_true_quando_mediator_retornar_true()
         {
-            var dto = new LogDTO();
+            var dto = new LogDto();
 
             mediatorMock
                 .Setup(x => x.Send(
-                    It.Is<SalvarLogCommand>(c => c.LogDTO == dto),
+                    It.Is<SalvarLogCommand>(c => c.Entidade == dto.Entidade && c.NivelLog == dto.NivelLog && c.Mensagem == dto.Mensagem && c.Complemento == dto.Complemento),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             Assert.True(resultado);
 
             mediatorMock.Verify(x => x.Send(
-                It.Is<SalvarLogCommand>(c => c.LogDTO == dto),
+                It.Is<SalvarLogCommand>(c => c.Entidade == dto.Entidade && c.NivelLog == dto.NivelLog && c.Mensagem == dto.Mensagem && c.Complemento == dto.Complemento),
                 It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -41,11 +41,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         [Fact]
         public async Task Deve_retornar_false_quando_mediator_retornar_false()
         {
-            var dto = new LogDTO();
+            var dto = new LogDto();
 
             mediatorMock
                 .Setup(x => x.Send(
-                    It.Is<SalvarLogCommand>(c => c.LogDTO == dto),
+                    It.Is<SalvarLogCommand>(c => c.Entidade == dto.Entidade && c.NivelLog == dto.NivelLog && c.Mensagem == dto.Mensagem && c.Complemento == dto.Complemento),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             Assert.False(resultado);
 
             mediatorMock.Verify(x => x.Send(
-                It.Is<SalvarLogCommand>(c => c.LogDTO == dto),
+                It.Is<SalvarLogCommand>(c => c.Entidade == dto.Entidade && c.NivelLog == dto.NivelLog && c.Mensagem == dto.Mensagem && c.Complemento == dto.Complemento),
                 It.IsAny<CancellationToken>()),
                 Times.Once);
         }

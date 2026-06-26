@@ -1,7 +1,5 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
-using SME.ConectaFormacao.Aplicacao.Dtos.Log;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.Infra.Servicos.Eol.Interfaces;
@@ -16,21 +14,11 @@ public class ObterCodigosDresEOLQueryHandler : IRequestHandler<ObterCodigosDresE
     public ObterCodigosDresEOLQueryHandler(IServicoEol servicoEol, IMediator mediator)
     {
         _servicoEol = servicoEol ?? throw new ArgumentNullException(nameof(servicoEol));
-        _mediator = mediator;
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     public async Task<IEnumerable<DreServicoEol>> Handle(ObterCodigosDresEOLQuery request, CancellationToken cancellationToken)
     {
-        Usuario usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery());
-
-        if (usuarioLogado is null)
-        {
-            usuarioLogado = new Usuario
-            {
-                Id = 1,
-                Login = "Sistema",
-            };
-        }
 
         try
         {
@@ -38,16 +26,12 @@ public class ObterCodigosDresEOLQueryHandler : IRequestHandler<ObterCodigosDresE
         }
         catch (Exception ex)
         {
-            await _mediator.Send(new SalvarLogCommand(new LogDTO
-            {
-                CriadoPor = usuarioLogado.Id.ToString(),
-                CriadoLogin = usuarioLogado.Login,
-                CriadoEm = DateTime.Now,
-                Entidade = "SincronizacaoCargosEol - ObterCodigosDres",
-                NivelLog = LogNivel.Negocio,
-                Mensagem = ex.InnerException?.Message ?? "",
-                Complemento = ex.InnerException?.StackTrace ?? ""
-            }));
+            await _mediator.Send(new SalvarLogCommand(
+                "SincronizacaoCargosEol - ObterCodigosDres",
+                LogNivel.Negocio,
+                ex.InnerException?.Message ?? "",
+                ex.InnerException?.StackTrace ?? ""
+            ));
 
             throw;
         }

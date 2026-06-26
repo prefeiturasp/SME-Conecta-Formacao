@@ -10,9 +10,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Log
         {
         }
 
-        public async Task<bool> Executar(LogDTO logDTO)
+        public async Task<bool> Executar(LogDto logDto)
         {
-            return await mediator.Send(new SalvarLogCommand(logDTO));
+            return await mediator.Send(new SalvarLogCommand(logDto.Entidade, logDto.NivelLog, logDto.Mensagem, logDto.Complemento));
         }
     }
 }
