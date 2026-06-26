@@ -31,7 +31,7 @@ public class ObterCodigosDresEOLQueryHandler : IRequestHandler<ObterCodigosDresE
                 LogNivel.Negocio,
                 ex.InnerException?.Message ?? "",
                 ex.InnerException?.StackTrace ?? ""
-            ));
+            ), cancellationToken);
 
             throw;
         }
