@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
+using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLogViaRabbit;
+using SME.ConectaFormacao.Aplicacao.Dtos.Log;
 using SME.ConectaFormacao.Aplicacao.Interfaces.SincronizacaoEOL;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
@@ -18,6 +21,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
             if (dres is not null && dres.Any())
                 codigosDre.AddRange(dres.Select(d => d.Codigo));
 
+            Usuario usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery());
+
+            if (usuarioLogado is null)
+            {
+                usuarioLogado = new Usuario
+                {
+                    Id = 1,
+                    Login = "Sistema",
+                };
+            }
+
             foreach (var codigoDre in codigosDre)
             {
                 try
@@ -30,7 +44,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
                         await mediator.Send(new SalvarLogViaRabbitCommand(
                             $"Erro ao publicar mensagem na fila para sincronização de cargos EOL da DRE {codigoDre}.",
                             LogNivel.Negocio,
-                            LogContexto.SincronizacaoCargosEol));
+                            LogContexto.SincronizacaoCargosEol));  
+
+                    await mediator.Send(new SalvarLogCommand(new LogDTO
+                    {
+                        CriadoPor = usuarioLogado.Id.ToString(),
+                        CriadoLogin = usuarioLogado.Login,
+                        CriadoEm = DateTime.Now,
+                        Entidade = "SincronizacaoCargosEol",
+                        NivelLog = LogNivel.Negocio,
+                        Mensagem = $"{(!mensagemPublicada ? "Erro" : "Sucesso")} ao publicar mensagem na fila para sincronização de cargos EOL da DRE {codigoDre}.",
+                        Complemento = ""
+                    }));
                 }
                 catch (Exception ex)
                 {
@@ -43,6 +68,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.SincronizacaoEOL
                         rastreamento: ex.StackTrace ?? "",
                         excecaoInterna: ex.InnerException?.Message ?? "",
                         innerException: ex.InnerException?.StackTrace ?? ""));
+
+                    //salva o log de erro na tabela criada no banco de dados
+                    await mediator.Send(new SalvarLogCommand(new LogDTO
+                    {
+                        CriadoPor = usuarioLogado.Id.ToString(),
+                        CriadoLogin = usuarioLogado.Login,
+                        CriadoEm = DateTime.Now,
+                        Entidade = "SincronizacaoCargosEol",
+                        NivelLog = LogNivel.Negocio,
+                        Mensagem = ex.InnerException?.Message ?? "",
+                        Complemento = ex.InnerException?.StackTrace ?? ""
+                    }));
                 }
             }
 
