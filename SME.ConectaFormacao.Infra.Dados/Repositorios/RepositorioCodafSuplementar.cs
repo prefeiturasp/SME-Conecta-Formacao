@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
@@ -270,5 +271,33 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                  INNER JOIN PUBLIC.USUARIO AS U  ON U.ID = I.USUARIO_ID 
             WHERE NOT CSI.EXCLUIDO AND CSI.CODAF_SUPLEMENTAR_ID = @id;
             """;
+
+        public async Task<IEnumerable<DadosConsultaParaTxtEolDto>?> ObterDadosRemessaConclusaoCodafAsync(long id)
+        {
+            var conn = conexao.Obter();
+            const string query = """
+                SELECT U.LOGIN registroFuncional,
+                       CLP.CODIGO_CURSO_EOL codigoCursoEol,
+                       P.DATA_REALIZACAO_FIM dataFimCurso,
+                       CLP.CODIGO_NIVEL codigoNivel,
+                       P.NUMERO_HOMOLOGACAO numeroHomologacao,
+                       P.HORAS_TOTAIS horasTotais,
+                       P.CARGA_HORARIA_TOTAL_OUTRA cargaHorariaTotalOutra,
+                       PT.NOME nomeTurma
+                FROM   PUBLIC.CODAF_SUPLEMENTAR AS CLP
+                       INNER JOIN PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO AS CILP  ON CILP.CODAF_SUPLEMENTAR_ID = CLP.ID
+                       INNER JOIN PUBLIC.INSCRICAO AS INSCR ON INSCR.ID = CILP.INSCRICAO_ID
+                       INNER JOIN PUBLIC.USUARIO AS U ON U.ID = INSCR.USUARIO_ID
+                       --------
+
+                       pegar o nome da turma
+                WHERE NOT CLP.EXCLUIDO AND NOT CILP.EXCLUIDO AND NOT INSCR.EXCLUIDO 
+                  AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
+                  AND CLP.ID = @id;
+                """;
+            var parametros = new { id };
+            var resultado = await conn.QueryAsync<DadosConsultaParaTxtEolDto>(query, parametros);
+            return resultado;
+        }
     }
 }
