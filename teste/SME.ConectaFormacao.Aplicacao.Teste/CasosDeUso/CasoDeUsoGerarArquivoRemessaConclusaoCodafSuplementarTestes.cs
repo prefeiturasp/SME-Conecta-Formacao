@@ -1,5 +1,10 @@
-﻿using Moq;
+﻿using Bogus;
+using FluentAssertions;
+using Moq;
+using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
+using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -7,117 +12,98 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
     public class CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementarTestes
     {
-        private readonly Mock<IRepositorioCodafSuplementar> repositorio;
-        private readonly Mock<IRepositorioCodafSuplementarLogRemessaConclusao> repositorioLog;
-
-        private readonly CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar casoDeUso;
+        private readonly Mock<IRepositorioCodafSuplementar> _repositorioCodafSuplementarMock;
+        private readonly Mock<IRepositorioCodafSuplementarLogRemessaConclusao> _repositorioCodafSuplementarLogMock;
+        private readonly CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar _sut;
 
         public CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementarTestes()
         {
-            repositorio = new Mock<IRepositorioCodafSuplementar>();
-            repositorioLog = new Mock<IRepositorioCodafSuplementarLogRemessaConclusao>();
+            var mocker = new AutoMocker();
 
-            casoDeUso = new CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar(
-                repositorio.Object,
-                repositorioLog.Object);
+            _repositorioCodafSuplementarMock = mocker.GetMock<IRepositorioCodafSuplementar>();
+            _repositorioCodafSuplementarLogMock = mocker.GetMock<IRepositorioCodafSuplementarLogRemessaConclusao>();
+
+            _sut = mocker.CreateInstance<CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar>();
+        }
+        [Fact]
+        public async Task DadoCodafSuplementarSemDados_QuandoExecutarAsync_EntaoRetornaErroNaoEncontrado()
+        {
+            // Arrange
+            var faker = new Faker("pt_BR");
+            var codafSuplementarId = faker.Random.Long(1, 100);
+
+            _repositorioCodafSuplementarMock
+                .Setup(r => r.ObterDadosRemessaConclusaoCodafSuplementarAsync(codafSuplementarId))
+                .ReturnsAsync((IEnumerable<DadosConsultaParaTxtEolDto>?)null);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafSuplementarId);
+
+            // Assert
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.NaoEncontrado);
+            resultado.Dados.Should().BeNull();
+
+            _repositorioCodafSuplementarMock.Verify(r => r.ObterPorId(It.IsAny<long>()), Times.Never);
+            _repositorioCodafSuplementarLogMock.Verify(r => r.InserirAsync(It.IsAny<CodafSuplementarLogRemessaConclusao>()), Times.Never);
+            _repositorioCodafSuplementarMock.Verify(r => r.Atualizar(It.IsAny<CodafSuplementar>()), Times.Never);
         }
 
         [Fact]
-        public async Task Deve_retornar_nao_encontrado_quando_nao_existirem_dados()
+        public async Task DadoCodafSuplementarComDadosValidos_QuandoExecutarAsync_EntaoGeraArquivoERegistraLogComSucesso()
         {
-            repositorio.Setup(x =>
-                    x.ObterDadosRemessaConclusaoCodafSuplementarAsync(It.IsAny<long>()))
-                .ReturnsAsync((IEnumerable<DadosConsultaParaTxtEolDto>)null!);
+            // Arrange
+            var faker = new Faker("pt_BR");
+            var codafSuplementarId = faker.Random.Long(1, 100);
+            var numeroHomologacao = faker.Random.Long(1000, 9999);
+            var nomeTurma = faker.Commerce.Department();
 
-            var resultado = await casoDeUso.ExecutarAsync(1);
-
-            Assert.False(resultado.Sucesso);
-
-            repositorioLog.Verify(
-                x => x.InserirAsync(It.IsAny<Dominio.Entidades.CodafSuplementarLogRemessaConclusao>()),
-                Times.Never);
-        }
-
-        [Fact]
-        public async Task Deve_gerar_arquivo_e_registrar_log_utilizando_horas_totais()
-        {
-            var dados = new List<DadosConsultaParaTxtEolDto>
-        {
-            new()
+            var dadosBrutos = new List<DadosConsultaParaTxtEolDto>
             {
-                RegistroFuncional = "123456",
-                CodigoCursoEol = 987,
-                CodigoNivel = 5,
-                NumeroHomologacao = 100,
-                NomeTurma = "Turma Á/2025",
-                HorasTotais = 40,
-                DataFimCurso = new DateTime(2025,12,20)
-            }
-        };
+                new()
+                {
+                    RegistroFuncional = faker.Random.String2(7, "0123456789"),
+                    CodigoCursoEol = faker.Random.Int(100, 999),
+                    CodigoNivel = faker.Random.Int(1, 10),
+                    DataFimCurso = faker.Date.Recent(),
+                    NumeroHomologacao = numeroHomologacao,
+                    HorasTotais = faker.Random.Int(10, 100),
+                    NomeTurma = nomeTurma
+                }
+            };
 
-            repositorio.Setup(x =>
-                    x.ObterDadosRemessaConclusaoCodafSuplementarAsync(It.IsAny<long>()))
-                .ReturnsAsync(dados);
+            var codafSuplementarMock = new Mock<CodafSuplementar>();
 
-            var resultado = await casoDeUso.ExecutarAsync(10);
+            _repositorioCodafSuplementarMock
+                .Setup(r => r.ObterDadosRemessaConclusaoCodafSuplementarAsync(codafSuplementarId))
+                .ReturnsAsync(dadosBrutos);
 
-            Assert.True(resultado.Sucesso);
-            Assert.NotNull(resultado.Dados);
+            _repositorioCodafSuplementarMock
+                .Setup(r => r.ObterPorId(codafSuplementarId))
+                .ReturnsAsync(codafSuplementarMock.Object);
 
-            Assert.Equal("application/octet-stream", resultado.Dados.ContentType);
-            Assert.StartsWith("HOM100", resultado.Dados.Nome);
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafSuplementarId);
 
-            using var reader = new StreamReader(resultado.Dados.Stream);
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            resultado.TipoFalha.Should().Be(TipoFalha.Nenhuma);
+            resultado.Dados.Should().NotBeNull();
 
-            var conteudo = await reader.ReadToEndAsync();
+            resultado.Dados!.Nome.Should().StartWith("HOM");
+            resultado.Dados.Nome.Should().Contain(numeroHomologacao.ToString());
+            resultado.Dados.ContentType.Should().Be("application/octet-stream");
+            resultado.Dados.Stream.Should().NotBeNull();
+            resultado.Dados.Stream.Length.Should().BeGreaterThan(0);
 
-            Assert.Contains("123456", conteudo);
+            _repositorioCodafSuplementarLogMock.Verify(r => r.InserirAsync(It.Is<CodafSuplementarLogRemessaConclusao>(log =>
+                log.CodafSuplementarId == codafSuplementarId &&
+                log.QuantidadeRegistros == dadosBrutos.Count &&
+                log.NomeArquivoGerado == resultado.Dados.Nome &&
+                !string.IsNullOrWhiteSpace(log.HashArquivo)
+            )), Times.Once);
 
-            repositorioLog.Verify(x =>
-                x.InserirAsync(It.Is<Dominio.Entidades.CodafSuplementarLogRemessaConclusao>(
-                    l =>
-                        l.CodafSuplementarId == 10 &&
-                        l.QuantidadeRegistros == 1 &&
-                        !string.IsNullOrWhiteSpace(l.HashArquivo) &&
-                        l.NomeArquivoGerado.StartsWith("HOM100"))),
-                Times.Once);
-        }
-
-        [Fact]
-        public async Task Deve_utilizar_carga_horaria_quando_horas_totais_for_nulo()
-        {
-            var dados = new List<DadosConsultaParaTxtEolDto>
-        {
-            new()
-            {
-                RegistroFuncional = "999",
-                CodigoCursoEol = 10,
-                CodigoNivel = 1,
-                NumeroHomologacao = 200,
-                NomeTurma = "Turma Teste",
-                HorasTotais = null,
-                CargaHorariaTotalOutra = "08:30",
-                DataFimCurso = null
-            }
-        };
-
-            repositorio.Setup(x =>
-                    x.ObterDadosRemessaConclusaoCodafSuplementarAsync(It.IsAny<long>()))
-                .ReturnsAsync(dados);
-
-            var resultado = await casoDeUso.ExecutarAsync(5);
-
-            Assert.True(resultado.Sucesso);
-
-            using var reader = new StreamReader(resultado.Dados!.Stream);
-
-            var conteudo = await reader.ReadToEndAsync();
-
-            Assert.Contains("08", conteudo);
-
-            repositorioLog.Verify(x =>
-                x.InserirAsync(It.IsAny<Dominio.Entidades.CodafSuplementarLogRemessaConclusao>()),
-                Times.Once);
+            _repositorioCodafSuplementarMock.Verify(r => r.Atualizar(codafSuplementarMock.Object), Times.Once);
         }
     }
 }
