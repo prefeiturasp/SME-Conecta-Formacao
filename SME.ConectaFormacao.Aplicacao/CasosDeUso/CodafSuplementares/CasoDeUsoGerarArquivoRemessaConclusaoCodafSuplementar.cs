@@ -2,6 +2,7 @@
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -28,7 +29,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
             var hashArquivo = CalcularHashSha256(streamArquivo);
 
-            await RegistrarLogGeracaoAsync(codafSuplementarId, hashArquivo, linhasFormatadas.Count, nomeArquivo);
+            var logRemessa = await RegistrarLogGeracaoAsync(codafSuplementarId, hashArquivo, linhasFormatadas.Count, nomeArquivo);
+
+            var codafSuplementar = await repositorioCodafSuplementar.ObterPorId(codafSuplementarId);
+            codafSuplementar.CodafSuplementarLogRemessasConclusao = codafSuplementar.CodafSuplementarLogRemessasConclusao ?? new List<CodafSuplementarLogRemessaConclusao>();
+            codafSuplementar.CodafSuplementarLogRemessasConclusao.Add(logRemessa);
+            codafSuplementar.DefinirStatus();
+            await repositorioCodafSuplementar.Atualizar(codafSuplementar);
 
             return new ArquivoDto(nomeArquivo, "application/octet-stream", streamArquivo);
         }
@@ -66,9 +73,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
             return Convert.ToHexStringLower(hashBytes);
         }
 
-        private async Task RegistrarLogGeracaoAsync(long codafSuplementarId, string hashArquivo, int quantidadeRegistros, string nomeArquivoGerado)
+        private async Task<CodafSuplementarLogRemessaConclusao> RegistrarLogGeracaoAsync(long codafSuplementarId, string hashArquivo, int quantidadeRegistros, string nomeArquivoGerado)
         {
-            var logRemessa = new Dominio.Entidades.CodafSuplementarLogRemessaConclusao
+            var logRemessa = new CodafSuplementarLogRemessaConclusao
             {
                 CodafSuplementarId = codafSuplementarId,
                 HashArquivo = hashArquivo,
@@ -76,6 +83,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                 NomeArquivoGerado = nomeArquivoGerado
             };
             await repositorioCodafSuplementarLog.InserirAsync(logRemessa);
+            return logRemessa;
         }
         private static List<DadosArquivoCodafEolDto> MapearParaDtoArquivo(IEnumerable<DadosConsultaParaTxtEolDto> dadosBrutos)
         {

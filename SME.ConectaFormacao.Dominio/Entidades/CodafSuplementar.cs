@@ -21,6 +21,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public ICollection<CodafSuplementarInscricao> CodafInscricoes { get; set; } = [];
         public ICollection<CodafSuplementarRetificacao> CodafRetificacoes { get; set; } = [];
         public ICollection<CodafSuplementarAnexo>? CodafAnexos { get; set; }
+        public ICollection<CodafSuplementarLogRemessaConclusao>? CodafSuplementarLogRemessasConclusao { get; set; }
 
         protected CodafSuplementar() { }
         public CodafSuplementar(long codafListaPresencaId)
@@ -55,6 +56,21 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public void Iniciar()
         {
             Status = StatusCodafSuplementar.Iniciado;
+        }
+
+        public void DefinirStatus()
+        {
+            if (Status == StatusCodafSuplementar.Finalizado)
+                return;
+
+            if (CodafInscricoes is not null && CodafInscricoes.Count != 0 &&
+                CodafAnexos is not null && CodafAnexos.Count != 0 &&
+                DataPublicacao is not null && DataPublicacaoDom is not null &&
+                NumeroComunicado is not null && PaginaComunicadoDom is not null &&
+                CodigoNivel is not null && CodigoCursoEol is not null)
+            {
+                Status = StatusCodafSuplementar.Aguardando;
+            }
         }
     }
 }

@@ -36,11 +36,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
             try
             {
-                await dependencias.RepositorioCodaf.Atualizar(codafSuplementarExistente);
                 await SalvarInscritosAsync(codafSuplementarCadastroDto, codafSuplementarExistente);
                 await SalvarRetificacoesAsync(codafSuplementarCadastroDto, codafSuplementarExistente.Id);
                 var anexos = dependencias.Mapper.Map<List<CodafSuplementarAnexo>>(codafSuplementarCadastroDto.Anexos);
                 await dependencias.AnexoService.ProcessarAnexosAsync(codafSuplementarExistente.Id, anexos);
+                codafSuplementarExistente.CodafAnexos = anexos;
+                codafSuplementarExistente.DefinirStatus();
+                await dependencias.RepositorioCodaf.Atualizar(codafSuplementarExistente);
                 transacaoDb.Commit();
                 return Resultado.DeSucesso();
             }
@@ -55,6 +57,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
         {
             var inscritos = dependencias.Mapper.Map<List<CodafSuplementarInscricao>>(codafSuplementarCadastroDto.Inscritos);
             await dependencias.InscritosService.SalvarInscritosAsync(inscritos, codafSuplementar.Id);
+            codafSuplementar.CodafInscricoes = inscritos;
         }
 
         private async Task SalvarRetificacoesAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto, long codafSuplementarId)
@@ -84,16 +87,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                 }
                 else
                 {
-                    try
-                    {
-                        var novaRetificacao = dependencias.Mapper.Map<CodafSuplementarRetificacao>(retificacaoDto);
-                        novaRetificacao.CodafSuplementarId = codafSuplementarId;
-                        await dependencias.RepositorioRetificacao.Inserir(novaRetificacao);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw;
-                    }
+                    var novaRetificacao = dependencias.Mapper.Map<CodafSuplementarRetificacao>(retificacaoDto);
+                    novaRetificacao.CodafSuplementarId = codafSuplementarId;
+                    await dependencias.RepositorioRetificacao.Inserir(novaRetificacao);
                 }
             }
         }

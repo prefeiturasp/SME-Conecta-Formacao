@@ -50,6 +50,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                 var anexos = dependencias.Mapper.Map<List<CodafSuplementarAnexo>>(codafSuplementarCadastroDto.Anexos);
                 await dependencias.AnexoService.ProcessarAnexosAsync(codafSuplementar.Id, anexos);
 
+                codafSuplementar.CodafAnexos = anexos;
+                codafSuplementar.DefinirStatus();
+
                 transacaoDb.Commit();
                 var codafSuplementarDetalhadoDto = new CodafSuplementarDetalhadoDto
                 {
@@ -81,6 +84,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
         {
             var inscritos = dependencias.Mapper.Map<List<CodafSuplementarInscricao>>(codafSuplementarCadastroDto.Inscritos);
             await dependencias.InscritosService.SalvarInscritosAsync(inscritos, codafSuplementar.Id);
+            codafSuplementar.CodafInscricoes = inscritos;
         }
 
         private async Task SalvarRetificacoesAsync(CodafSuplementarCadastroDto dto, long codafSuplementarId)

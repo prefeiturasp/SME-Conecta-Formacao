@@ -102,19 +102,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        pt.NOME AS nomeTurma,
                        ap.NOME AS nomeAreaPromotora,
                        CS.STATUS,
-                       1
-                       /*CASE 
+                       CASE 
                 	        -- 0: Sem Cetificado
                            WHEN P.CURSO_COM_CERTIFICADO = FALSE THEN 0
 
                            -- 1: Pendente Emissão
                            WHEN NOT EXISTS (
                                SELECT 1 
-                               FROM PUBLIC.CODAF_LOG_REMESSA_CONCLUSAO AS L 
-                               WHERE L.CODAF_LISTA_PRESENCA_ID = CS.ID
+                               FROM PUBLIC.CODAF_SUPLEMENTAR_LOG_REMESSA_CONCLUSAO AS L 
+                               WHERE L.CODAF_SUPLEMENTAR_ID = CS.ID
                            ) THEN 1
 
-                           -- 3: Em Processamento
+                           /*-- 3: Em Processamento
                            WHEN EXISTS (
                            	SELECT 1
                            	FROM  PUBLIC.CODAF_CERTIFICADOS AS CC
@@ -126,11 +125,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                            	SELECT 1
                            	FROM  PUBLIC.CODAF_CERTIFICADOS AS CC
                            	WHERE CC.CODAF_LISTA_PRESENCA_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusProcessadoComSucesso, @statusProcessadoComErro)
-                           ) THEN 4
+                           ) THEN 4*/
 
                            -- 2: Disponível para Emissão
                            ELSE 2
-                       END AS*/ statusCertificacaoTurma,
+                       END AS statusCertificacaoTurma,
                        CLP.CODIGO_CURSO_EOL codigoCursoEol,
                        CLP.CODIGO_NIVEL codigoNivel
                 {sqlBaseJoins}
@@ -277,12 +276,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        PT.NOME nomeTurma
                 FROM   PUBLIC.CODAF_SUPLEMENTAR AS CS
                        INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID
-                       INNER JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP  ON CILP.CODAF_LISTA_PRESENCA_ID = CLP.ID
-                       INNER JOIN PUBLIC.INSCRICAO AS INSCR ON INSCR.ID = CILP.INSCRICAO_ID
+                       INNER JOIN PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO AS CSI  ON CSI.CODAF_SUPLEMENTAR_ID = CS.ID
+                       INNER JOIN PUBLIC.INSCRICAO AS INSCR ON INSCR.ID = CSI.INSCRICAO_ID
                        INNER JOIN PUBLIC.USUARIO AS U ON U.ID = INSCR.USUARIO_ID
                        INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.ID = CLP.PROPOSTA_TURMA_ID
                        INNER JOIN PUBLIC.PROPOSTA AS P ON P.ID = PT.PROPOSTA_ID
-                WHERE NOT CLP.EXCLUIDO AND NOT CILP.EXCLUIDO AND NOT INSCR.EXCLUIDO 
+                WHERE NOT CLP.EXCLUIDO AND NOT CSI.EXCLUIDO AND NOT INSCR.EXCLUIDO 
                   AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
                   AND CS.ID = @id;
                 """;
