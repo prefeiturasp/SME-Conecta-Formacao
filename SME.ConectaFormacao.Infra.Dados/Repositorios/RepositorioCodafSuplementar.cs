@@ -2,7 +2,9 @@
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
@@ -192,6 +194,101 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 },
                 splitOn: "LOGIN")];
             return codafSuplementar;
+        }
+
+        public async Task ExcluirAsync(long id)
+        {
+            var conn = conexao.Obter();
+            using var transaction = conn.BeginTransaction();
+
+            try
+            {
+                var parametrosAtualizacao = new
+                {
+                    Id = id,
+                    Excluido = true,
+                    AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                    AlteradoPor = contexto.NomeUsuario,
+                    AlteradoLogin = contexto.UsuarioLogado
+                };
+
+                const string sqlSuplementar = """
+                    UPDATE PUBLIC.CODAF_SUPLEMENTAR
+                    SET    EXCLUIDO = @Excluido,
+                           ALTERADO_EM = @AlteradoEm,
+                           ALTERADO_POR = @AlteradoPor,
+                           ALTERADO_LOGIN = @AlteradoLogin
+                    WHERE  ID = @Id
+                    """;
+                await conn.ExecuteAsync(sqlSuplementar, parametrosAtualizacao, transaction);
+
+                const string sqlInscricoes = """
+                    UPDATE PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO
+                    SET    EXCLUIDO = @Excluido,
+                           ALTERADO_EM = @AlteradoEm,
+                           ALTERADO_POR = @AlteradoPor,
+                           ALTERADO_LOGIN = @AlteradoLogin
+                    WHERE  CODAF_SUPLEMENTAR_ID = @Id and NOT EXCLUIDO
+                    """;
+
+                await conn.ExecuteAsync(sqlInscricoes, parametrosAtualizacao, transaction);
+
+                const string sqlAnexos = """
+                    UPDATE PUBLIC.CODAF_SUPLEMENTAR_ANEXO
+                    SET    EXCLUIDO = @Excluido,
+                           ALTERADO_EM = @AlteradoEm,
+                           ALTERADO_POR = @AlteradoPor,
+                           ALTERADO_LOGIN = @AlteradoLogin
+                    WHERE  CODAF_SUPLEMENTAR_ID = @Id and NOT EXCLUIDO
+                    """;
+
+                await conn.ExecuteAsync(sqlAnexos, parametrosAtualizacao, transaction);
+
+                const string sqlRetificacoes = """
+                    UPDATE PUBLIC.CODAF_SUPLEMENTAR_RETIFICACAO
+                    SET    EXCLUIDO = @Excluido,
+                           ALTERADO_EM = @AlteradoEm,
+                           ALTERADO_POR = @AlteradoPor,
+                           ALTERADO_LOGIN = @AlteradoLogin
+                    WHERE  CODAF_SUPLEMENTAR_ID = @Id and NOT EXCLUIDO
+                    """;
+
+                await conn.ExecuteAsync(sqlRetificacoes, parametrosAtualizacao, transaction);
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<DadosConsultaParaTxtEolDto>?> ObterDadosRemessaConclusaoCodafSuplementarAsync(long id)
+        {
+            var conn = conexao.Obter();
+            const string query = """
+                SELECT U.LOGIN registroFuncional,
+                       CS.CODIGO_CURSO_EOL codigoCursoEol,
+                       P.DATA_REALIZACAO_FIM dataFimCurso,
+                       CS.CODIGO_NIVEL codigoNivel,
+                       P.NUMERO_HOMOLOGACAO numeroHomologacao,
+                       P.HORAS_TOTAIS horasTotais,
+                       P.CARGA_HORARIA_TOTAL_OUTRA cargaHorariaTotalOutra,
+                       PT.NOME nomeTurma
+                FROM   PUBLIC.CODAF_SUPLEMENTAR AS CS
+                       INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                       INNER JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP  ON CILP.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                       INNER JOIN PUBLIC.INSCRICAO AS INSCR ON INSCR.ID = CILP.INSCRICAO_ID
+                       INNER JOIN PUBLIC.USUARIO AS U ON U.ID = INSCR.USUARIO_ID
+                       INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.ID = CLP.PROPOSTA_TURMA_ID
+                       INNER JOIN PUBLIC.PROPOSTA AS P ON P.ID = PT.PROPOSTA_ID
+                WHERE NOT CLP.EXCLUIDO AND NOT CILP.EXCLUIDO AND NOT INSCR.EXCLUIDO 
+                  AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
+                  AND CS.ID = @id;
+                """;
+            var parametros = new { id };
+            var resultado = await conn.QueryAsync<DadosConsultaParaTxtEolDto>(query, parametros);
+            return resultado;
         }
 
         private const string sqlObterCodafPorIdComPropostaEPropostaTurma = """

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 
@@ -30,6 +32,27 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return ProcessarCriado(resultado);
         }
 
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(typeof(Resultado), 204)]
+        [ProducesResponseType(typeof(Resultado), 400)]
+        [ProducesResponseType(typeof(Resultado), 404)]
+        [ProducesResponseType(typeof(Resultado), 422)]
+        public async Task<IActionResult> Atualizar(
+            int id, [FromBody] CodafSuplementarCadastroDto codafSuplementarCadastroDto,
+            [FromServices] ICasoDeUsoAtualizarCodafSuplementar casoDeUsoAtualizar)
+        {
+            var resultado = await casoDeUsoAtualizar.ExecutarAsync(codafSuplementarCadastroDto, id);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpDelete("{codafSuplementarId:long}")]
+        public async Task<IActionResult> Excluir(long codafSuplementarId,
+            [FromServices] ICasoDeUsoExcluirCodafSuplementar casoDeUsoExcluirCodafSuplementar)
+        {
+            var resultado = await casoDeUsoExcluirCodafSuplementar.ExecutarAsync(codafSuplementarId);
+            return ProcessarResultado(resultado);
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafSuplementarResumoDto>>), 200)]
         [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafSuplementarResumoDto>>), 400)]
@@ -49,6 +72,41 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoObterCodafSuplementarPorId casoDeUsoObterCodafSuplementarPorId)
         {
             var resultado = await casoDeUsoObterCodafSuplementarPorId.ExecutarAsync(id);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpPost("anexos/temporarios")]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(typeof(Resultado<CodafAnexoTemporarioDto>), 201)]
+        [ProducesResponseType(typeof(Resultado<CodafAnexoTemporarioDto>), 404)]
+        public async Task<IActionResult> UploadAnexoTemporario(
+            [FromForm] IFormFile arquivo,
+            [FromServices] ICasoDeUsoUploadAnexoTemporarioCodafSuplementar casoDeUsoUploadAnexoTemporarioCodafSuplementar)
+        {
+            var resultado = await casoDeUsoUploadAnexoTemporarioCodafSuplementar.ExecutarAsync(arquivo);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpPost("{codafSuplementarId:long}/gerar-remessa-conclusao")]
+        [ProducesResponseType(typeof(FileResult), 200)]
+        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 404)]
+        public async Task<IActionResult> GerarArquivoRemessaConclusaoCodaf(
+            long codafSuplementarId,
+            [FromServices] ICasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar casoDeUsoGerarArquivoRemessaConclusaoCodaf)
+        {
+            var resultado = await casoDeUsoGerarArquivoRemessaConclusaoCodaf.ExecutarAsync(codafSuplementarId);
+            if (resultado.Sucesso)
+                return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpDelete("retificacoes/{retificacaoId:long}")]
+        [ProducesResponseType(typeof(Resultado<bool>), 204)]
+        [ProducesResponseType(typeof(Resultado<bool>), 404)]
+        public async Task<IActionResult> RemoverRetificacao(long retificacaoId,
+            [FromServices] ICasoDeUsoRemoverCodafSuplementarRetificacao casoDeUsoRemoverCodafSuplementarRetificacao)
+        {
+            var resultado = await casoDeUsoRemoverCodafSuplementarRetificacao.ExecutarAsync(retificacaoId);
             return ProcessarResultado(resultado);
         }
     }

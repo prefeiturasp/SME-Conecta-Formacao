@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS codaf_suplementar_inscricao(
 );
 
 CREATE TABLE IF NOT EXISTS codaf_suplementar_retificacao(
-	id int NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
+	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY(NO MINVALUE NO MAXVALUE NO CYCLE),
 	codaf_suplementar_id int8 NOT NULL,
 	data_retificacao date NOT NULL,
 	pagina_retificacao_dom SMALLINT NOT NULL,

@@ -1,24 +1,17 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
-using SME.ConectaFormacao.Infra.Dados;
-using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
     [ExcludeFromCodeCoverage]
     public class CasoDeUsoCriarCodafSuplementar(
-        IRepositorioCodafSuplementar repositorioCodafSuplementar,
-        IRepositorioCodafListaPresenca repositorioCodafLista,
-        ICodafSuplementarInscritosService codafSuplementarInscritosService,
-        IValidator<CodafSuplementarCadastroDto> validator,
-        IMapper mapper,
-        ITransacao transacao) : ICasoDeUsoCriarCodafSuplementar
+        CodafSuplementarDependencias dependencias,
+        IValidator<CodafSuplementarCadastroDto> validator) : ICasoDeUsoCriarCodafSuplementar
     {
         public async Task<Resultado<CodafSuplementarDetalhadoDto>> ExecutarAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto)
         {
@@ -26,12 +19,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
             if (!validationResult.IsValid)
                 return validationResult.ToErroValidacao();
 
-            var codafOriginal = await repositorioCodafLista.ObterNaoExcluidosPorIdAsync(codafSuplementarCadastroDto.CodafId);
+            var codafOriginal = await dependencias.RepositorioLista.ObterNaoExcluidosPorIdAsync(codafSuplementarCadastroDto.CodafId);
 
             if (codafOriginal is null)
                 return Erro.Validacao("Codaf não encontrado para a turma informada");
 
-            var codafSuplementarExistente = await repositorioCodafSuplementar.ObterPorExpressaoAsync(c => c.CodafId == codafOriginal.Id);
+            var codafSuplementarExistente = await dependencias.RepositorioCodaf.ObterPorExpressaoAsync(c => c.CodafId == codafOriginal.Id);
 
             if (codafSuplementarExistente is not null)
                 return Erro.Validacao("Já existe um codaf suplementar para a turma informada");
@@ -45,14 +38,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                     codafSuplementarCadastroDto.CodigoNivel,
                     codafSuplementarCadastroDto.Observacao));
 
-            using var transacaoDb = transacao.Iniciar();
+            using var transacaoDb = dependencias.Transacao.Iniciar();
 
             try
             {
-                var id = await repositorioCodafSuplementar.Inserir(codafSuplementar);
+                var id = await dependencias.RepositorioCodaf.Inserir(codafSuplementar);
                 codafSuplementar.Id = id;
 
                 await SalvarInscritosAsync(codafSuplementarCadastroDto, codafSuplementar);
+                await SalvarRetificacoesAsync(codafSuplementarCadastroDto, codafSuplementar.Id);
+                var anexos = dependencias.Mapper.Map<List<CodafSuplementarAnexo>>(codafSuplementarCadastroDto.Anexos);
+                await dependencias.AnexoService.ProcessarAnexosAsync(codafSuplementar.Id, anexos);
 
                 transacaoDb.Commit();
                 var codafSuplementarDetalhadoDto = new CodafSuplementarDetalhadoDto
@@ -74,7 +70,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
                 return codafSuplementarDetalhadoDto;
             }
-            catch (Exception ex)
+            catch
             {
                 transacaoDb.Rollback();
                 return new Erro(TipoFalha.ErroInterno, "Erro ao salvar CODAF Suplementar");
@@ -83,8 +79,21 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
         private async Task SalvarInscritosAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto, CodafSuplementar codafSuplementar)
         {
-            var inscritos = mapper.Map<List<CodafSuplementarInscricao>>(codafSuplementarCadastroDto.Inscritos);
-            await codafSuplementarInscritosService.SalvarInscritosAsync(inscritos, codafSuplementar.Id);
+            var inscritos = dependencias.Mapper.Map<List<CodafSuplementarInscricao>>(codafSuplementarCadastroDto.Inscritos);
+            await dependencias.InscritosService.SalvarInscritosAsync(inscritos, codafSuplementar.Id);
+        }
+
+        private async Task SalvarRetificacoesAsync(CodafSuplementarCadastroDto dto, long codafSuplementarId)
+        {
+            if (dto.Retificacoes is not null && dto.Retificacoes.Any())
+            {
+                var retificacoes = dependencias.Mapper.Map<List<CodafSuplementarRetificacao>>(dto.Retificacoes);
+                foreach (var retificacao in retificacoes)
+                {
+                    retificacao.CodafSuplementarId = codafSuplementarId;
+                    await dependencias.RepositorioRetificacao.Inserir(retificacao);
+                }
+            }
         }
     }
 }

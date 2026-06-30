@@ -33,7 +33,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Anexos, opt => opt.MapFrom(src => src.CodafAnexos))
                 .ForMember(dest => dest.Inscritos, opt => opt.MapFrom(src => src.CodafInscricoes))
                 ;
-            CreateMap<CodafSuplementarRetificacao, CodafSuplementarRetificacaoDto>();
+            CreateMap<CodafSuplementarRetificacao, CodafSuplementarRetificacaoDto>().ReverseMap();
+            CreateMap<CodafSuplementarRetificacaoSalvarDto, CodafSuplementarRetificacao>();
             CreateMap<CodafAnexoSalvarDto, CodafSuplementarAnexo>()
                 .ForMember(dest => dest.Extensao, opt => opt.MapFrom(src => src.NomeArquivo.Substring(src.NomeArquivo.LastIndexOf('.') + 1)))
                 ;

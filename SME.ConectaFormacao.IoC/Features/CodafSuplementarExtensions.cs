@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
@@ -24,6 +25,13 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoListarCodafSuplementar, CasoDeUsoListarCodafSuplementar>()
                 .AddScoped<ICasoDeUsoObterCodafSuplementarPorId, CasoDeUsoObterCodafSuplementarPorId>()
                 .AddScoped<ICodafSuplementarInscritosService, CodafSuplementarInscritosService>()
+                .AddScoped<ICasoDeUsoAtualizarCodafSuplementar, CasoDeUsoAtualizarCodafSuplementar>()
+                .AddScoped<ICasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar, CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar>()
+                .AddScoped<ICasoDeUsoUploadAnexoTemporarioCodafSuplementar, CasoDeUsoUploadAnexoTemporarioCodafSuplementar>()
+                .AddScoped<ICasoDeUsoExcluirCodafSuplementar, CasoDeUsoExcluirCodafSuplementar>()
+                .AddScoped<ICasoDeUsoRemoverCodafSuplementarRetificacao, CasoDeUsoRemoverCodafSuplementarRetificacao>()
+                .AddScoped<IGerenciadorAnexosCodafSuplementarService, GerenciadorAnexosCodafSuplementarService>()
+                .AddScoped<CodafSuplementarDependencias>()
                 ;
         }
     }

@@ -27,7 +27,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        criado_login as criadoLogin, 
                        alterado_login as alteradoLogin, 
                        excluido
-                FROM   public.codaf_anexo
+                FROM   public.codaf_suplementar_anexo
                 WHERE  NOT EXCLUIDO
                   AND  codaf_suplementar_id = @codafSuplementarId
                 """;

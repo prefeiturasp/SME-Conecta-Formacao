@@ -774,7 +774,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 AND (U.NOME ILIKE @termoBusca OR U.CPF ILIKE @termoBusca OR U.LOGIN ILIKE @termoBusca)
                 """;
             const string sqlConsulta = $"""
-                SELECT I.ID,
+                SELECT U.ID,
+                       I.ID as InscricaoId,
                        U.LOGIN,
                        U.CPF,
                        U.NOME
