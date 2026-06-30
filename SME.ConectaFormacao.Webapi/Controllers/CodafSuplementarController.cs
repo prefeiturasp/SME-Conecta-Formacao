@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 
@@ -84,19 +83,6 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoUploadAnexoTemporarioCodafSuplementar casoDeUsoUploadAnexoTemporarioCodafSuplementar)
         {
             var resultado = await casoDeUsoUploadAnexoTemporarioCodafSuplementar.ExecutarAsync(arquivo);
-            return ProcessarResultado(resultado);
-        }
-
-        [HttpPost("{codafSuplementarId:long}/gerar-remessa-conclusao")]
-        [ProducesResponseType(typeof(FileResult), 200)]
-        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 404)]
-        public async Task<IActionResult> GerarArquivoRemessaConclusaoCodaf(
-            long codafSuplementarId,
-            [FromServices] ICasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar casoDeUsoGerarArquivoRemessaConclusaoCodaf)
-        {
-            var resultado = await casoDeUsoGerarArquivoRemessaConclusaoCodaf.ExecutarAsync(codafSuplementarId);
-            if (resultado.Sucesso)
-                return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
             return ProcessarResultado(resultado);
         }
 
