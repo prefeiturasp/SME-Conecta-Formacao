@@ -84,16 +84,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                 }
                 else
                 {
-                    try
-                    {
-                        var novaRetificacao = dependencias.Mapper.Map<CodafSuplementarRetificacao>(retificacaoDto);
-                        novaRetificacao.CodafSuplementarId = codafSuplementarId;
-                        await dependencias.RepositorioRetificacao.Inserir(novaRetificacao);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw;
-                    }
+                    var novaRetificacao = dependencias.Mapper.Map<CodafSuplementarRetificacao>(retificacaoDto);
+                    novaRetificacao.CodafSuplementarId = codafSuplementarId;
+                    await dependencias.RepositorioRetificacao.Inserir(novaRetificacao);
                 }
             }
         }
