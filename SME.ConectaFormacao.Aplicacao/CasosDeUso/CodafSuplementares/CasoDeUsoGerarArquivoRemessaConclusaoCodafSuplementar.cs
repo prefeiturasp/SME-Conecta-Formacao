@@ -1,8 +1,7 @@
-﻿using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
+using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -12,14 +11,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
     public class CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar(
         IRepositorioCodafSuplementar repositorioCodafSuplementar,
-        IRepositorioCodafSuplementarLogRemessaConclusao repositorioCodafLog) :
+        IRepositorioCodafSuplementarLogRemessaConclusao repositorioCodafSuplementarLog) :
         ICasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar
     {
-        public async Task<Resultado<ArquivoDto>> ExecutarAsync(long codafSuplementarId)
+        public async Task<Resultado<CodafSuplementarArquivoDto>> ExecutarAsync(long codafSuplementarId)
         {
-            var dadosBrutos = await repositorioCodafSuplementar.ObterDadosRemessaConclusaoCodafSuplementarAsync(codafSuplementarId);
+            var dadosBrutos = await repositorioCodafSuplementar.ObterDadosRemessaConclusaoCodafAsync(codafSuplementarId);
 
-            if (dadosBrutos == null || !dadosBrutos.Any())
+            if (dadosBrutos == null)
                 return Erro.NaoEncontrado();
 
             var linhasFormatadas = MapearParaDtoArquivo(dadosBrutos);
@@ -31,7 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
             await RegistrarLogGeracaoAsync(codafSuplementarId, hashArquivo, linhasFormatadas.Count, nomeArquivo);
 
-            return new ArquivoDto(nomeArquivo, "application/octet-stream", streamArquivo);
+            return new CodafSuplementarArquivoDto(nomeArquivo, "application/octet-stream", streamArquivo);
         }
 
         private static MemoryStream GerarStreamArquivoTxt(List<DadosArquivoCodafEolDto> dados)
@@ -69,14 +68,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
         private async Task RegistrarLogGeracaoAsync(long codafSuplementarId, string hashArquivo, int quantidadeRegistros, string nomeArquivoGerado)
         {
-            var logRemessa = new CodafSuplementarLogRemessaConclusao
+            var logRemessa = new Dominio.Entidades.CodafSuplementarLogRemessaConclusao
             {
                 CodafSuplementarId = codafSuplementarId,
                 HashArquivo = hashArquivo,
                 QuantidadeRegistros = quantidadeRegistros,
                 NomeArquivoGerado = nomeArquivoGerado
             };
-            await repositorioCodafLog.InserirAsync(logRemessa);
+            await repositorioCodafSuplementarLog.InserirAsync(logRemessa);
         }
         private static List<DadosArquivoCodafEolDto> MapearParaDtoArquivo(IEnumerable<DadosConsultaParaTxtEolDto> dadosBrutos)
         {
