@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             var temCertificadosParaProcessar = true;
 
             var urlFrontEnd = configuration["UrlFrontEnd"];
-            var urlAcessoCertificados = $"{urlFrontEnd?.TrimEnd('/')}/meus-certificados";
+            var urlAcessoCertificados = $"{urlFrontEnd?.TrimEnd('/')}/certificados";
 
             while (temCertificadosParaProcessar)
             {

@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
             if (periodo is null)
                 return null;
 
-            if (periodo.DataInicio > periodo.DataFim)
+            if (periodo.DataInicio >= periodo.DataFim)
                 throw new InvalidOperationException(
                     "Período de realização inválido: Data início maior que data fim.");
 
