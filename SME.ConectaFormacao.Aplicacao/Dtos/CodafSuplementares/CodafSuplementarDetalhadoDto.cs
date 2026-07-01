@@ -27,5 +27,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
         public long? NumeroHomologacao { get; set; }
         public IList<CodafSuplementarRetificacaoDto>? Retificacoes { get; set; }
         public IList<CodafSuplementarAnexoDto>? Anexos { get; set; }
+        public IList<CodafSuplementarInscritoDto>? Inscritos { get; set; }
     }
 }

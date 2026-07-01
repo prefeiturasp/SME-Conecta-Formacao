@@ -30,5 +30,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<IEnumerable<long>> ObterIdsInscricoesAguardandoAnalise(long id);
         Task AtualizarSituacao(long inscricaoId, SituacaoInscricao situacao);
         Task<IEnumerable<CargoFuncaoUsuarioDto>> ObterCargosFuncoesPorUsuarioId(long usuarioId);
+        Task<ResultadoPaginado<InscricaoDadosCursistaDto>> PesquisarCursistaPorPropostaTurmaIdAsync(long propostaTurmaId, string termoBusca, int numeroPagina, int numeroRegistros);
     }
 }

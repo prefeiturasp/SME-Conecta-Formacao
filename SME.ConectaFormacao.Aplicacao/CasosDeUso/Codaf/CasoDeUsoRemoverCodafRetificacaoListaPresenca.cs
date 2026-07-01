@@ -1,6 +1,5 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
-using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
