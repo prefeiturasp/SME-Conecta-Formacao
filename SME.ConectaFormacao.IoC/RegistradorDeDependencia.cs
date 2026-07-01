@@ -15,6 +15,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Email;
@@ -38,6 +39,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Email;
@@ -348,8 +350,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterUnidadePorCodigoEol, CasoDeUsoObterUnidadePorCodigoEol>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterFuncionarioExternoPorCpf, CasoDeUsoObterFuncionarioExternoPorCpf>();                                                        
+        serviceCollection.TryAddScoped<ICasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar, CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar>();                                                       
         serviceCollection.TryAddScoped<ICasoDeUsoSalvarLog, CasoDeUsoSalvarLog>(); 
-
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoCarregarTemporario, CasoDeUsoArquivoCarregarTemporario>();
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoBaixar, CasoDeUsoArquivoBaixar>();

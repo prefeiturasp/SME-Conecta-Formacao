@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
@@ -760,5 +761,57 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<CargoFuncaoUsuarioDto>(query, new { usuarioId });
         }
 
+        public async Task<ResultadoPaginado<InscricaoDadosCursistaDto>> PesquisarCursistaPorPropostaTurmaIdAsync(long propostaTurmaId, string termoBusca, int numeroPagina, int numeroRegistros)
+        {
+            termoBusca = $"%{termoBusca.Trim()}%";
+            const string sqlBase = """
+                FROM   PUBLIC.INSCRICAO AS I
+                       INNER JOIN PUBLIC.USUARIO AS U  ON U.ID = I.USUARIO_ID 
+                WHERE NOT U.EXCLUIDO
+                AND NOT I.EXCLUIDO 
+                AND I.SITUACAO = @situacao
+                AND I.PROPOSTA_TURMA_ID = @propostaTurmaId
+                AND (U.NOME ILIKE @termoBusca OR U.CPF ILIKE @termoBusca OR U.LOGIN ILIKE @termoBusca)
+                """;
+            const string sqlConsulta = $"""
+                SELECT U.ID,
+                       I.ID as InscricaoId,
+                       U.LOGIN,
+                       U.CPF,
+                       U.NOME
+                {sqlBase}
+                ORDER BY U.NOME, U.CPF
+                LIMIT @limit OFFSET @offset;
+                """;
+            
+            const string sqlCount = $"SELECT COUNT(1) {sqlBase}";
+            var conn = conexao.Obter();
+            var parametros = new DynamicParameters();
+            parametros.Add("propostaTurmaId", propostaTurmaId);
+            parametros.Add("situacao", SituacaoInscricao.Confirmada);
+            parametros.Add("termoBusca", termoBusca);
+            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, parametros);
+            if (totalRegistros == 0)
+                return new()
+                {
+                    Itens = [],
+                    TotalRegistros = 0,
+                    PaginaAtual = numeroPagina,
+                    TamanhoPagina = numeroRegistros
+                };
+
+            var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
+
+            parametros.Add("limit", numeroRegistros);
+            parametros.Add("offset", registrosIgnorados); ;
+            var inscritos = await conn.QueryAsync<InscricaoDadosCursistaDto>(sqlConsulta, parametros);
+            return new ResultadoPaginado<InscricaoDadosCursistaDto>
+            {
+                Itens = inscritos,
+                TotalRegistros = totalRegistros,
+                PaginaAtual = numeroPagina,
+                TamanhoPagina = numeroRegistros
+            };
+        }
     }
 }
