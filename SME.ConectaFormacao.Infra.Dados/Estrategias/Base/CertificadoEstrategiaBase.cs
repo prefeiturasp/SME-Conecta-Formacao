@@ -23,6 +23,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
             var dataPublicacao = dados.DataPublicacao.ToString("dd/MM/yyyy");
             var paginaDiarioOficial = dados.PaginaDiarioOficial.ToString();
             var numHomologacao = dados.NumeroHomologacao?.ToString() ?? "N/A";
+            var dataEmissao = DateTime.Now.ToString("dd/MM/yyyy");
 
             var imgHeader = templateService.ObterImagemBase64(IMAGEM_HEADER);
             var brasao = templateService.ObterImagemBase64(IMAGEM_BRASAO);
@@ -38,7 +39,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
                 .Replace("{{HEADER}}", imgHeader)
                 .Replace("{{BRASAO}}", brasao)
                 .Replace("{{SELO}}", selo)
-                .Replace("{{ASSINATURA}}", assinatura);
+                .Replace("{{ASSINATURA}}", assinatura)
+                .Replace("{{DATA_EMISSAO}}", dataEmissao);
         }
     }
 }
