@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
@@ -19,6 +21,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<IRepositorioUsuarioAcessibilidade, RepositorioUsuarioAcessibilidade>()
                 .AddScoped<IUsuarioAcessibilidadeService, UsuarioAcessibilidadeService>()
                 .AddScoped<ICasoDeUsoSalvarUsuarioAcessibilidade, CasoDeUsoSalvarUsuarioAcessibilidade>()
+                .AddScoped<ICasoDeUsoPesquisarCursistaPorPropostaTurmaId, CasoDeUsoPesquisarCursistaPorPropostaTurmaId>()
                 ;
         }
     }

@@ -6,6 +6,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
     {
         public long Id { get; set; }
         public string TipoFormacao { get; set; } = null!;
+        public TipoEmissor? TipoEmissor { get; set; } = null!;
+        public long? IdEmissor { get; set; } = null!;
         public string AreaPromotora { get; set; } = null!;
         public string Formato { get; set; } = null!;
         public string NomeFormacao { get; set; } = null!;

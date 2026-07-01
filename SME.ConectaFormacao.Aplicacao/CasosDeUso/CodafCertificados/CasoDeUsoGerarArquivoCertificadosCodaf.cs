@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             var temCertificadosParaProcessar = true;
 
             var urlFrontEnd = configuration["UrlFrontEnd"];
-            var urlAcessoCertificados = $"{urlFrontEnd?.TrimEnd('/')}/meus-certificados";
+            var urlAcessoCertificados = $"{urlFrontEnd?.TrimEnd('/')}/certificados";
 
             while (temCertificadosParaProcessar)
             {
@@ -78,7 +78,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                 try
                 {
                     var htmlComSequencial = InserirSequencialNoHtml(certificado.HtmlContentSnapshot, certificado.CodigoCertificado);
-                    var htmlComSigla = InserirSiglaCoordenadoriaOuDre(htmlComSequencial, certificado.SiglaCoordenadoriaOuDre);
+                    var htmlComSigla = InserirEmissor(htmlComSequencial, certificado.Emissor);
                     var htmlCertificadoDto = new HtmlCertificadoCodafDto
                     {
                         HtmlContent = htmlComSigla
@@ -110,9 +110,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             return htmlContent;
         }
 
-        private static string InserirSiglaCoordenadoriaOuDre(string htmlContent, string sigla)
+        private static string InserirEmissor(string htmlContent, string sigla)
         {
-            var marcador = "{{COORDENADORIA_OU_DRE}}";
+            var marcador = "{{EMISSOR}}";
             if (htmlContent.Contains(marcador))
                 htmlContent = htmlContent.Replace(marcador, sigla);
             return htmlContent;

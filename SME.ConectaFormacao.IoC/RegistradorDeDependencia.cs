@@ -15,6 +15,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Email;
@@ -25,6 +26,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Grupo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ImportacaoInscricao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Log;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Modalidade;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Notificacoes;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.PalavraChave;
@@ -37,6 +39,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Email;
@@ -108,6 +111,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             .AdicionarModuloRelatorio()
             .AdicionarModuloUe()
             .AdicionarModuloCoordenadoria()
+            .AddCodafSuplementar()
             ;
     }
 
@@ -228,6 +232,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new ImportacaoArquivoRegistroMap());
             config.AddMap(new PropostaPareceristaMap());
 
+            config.AddMap(new LogMap());
+
             config.AddMap(new NotificacaoMap());
             config.AddMap(new NotificacaoUsuarioMap());
 
@@ -237,8 +243,12 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new CodafListaPresencaMap());
             config.AddMap(new CodafMovimentacaoListaPresencaMap());
             config.AddMap(new CodafCertificadoMap());
-
             config.AddMap(new CodafAnexoMap());
+
+            config.AddMap(new CodafSuplementarAnexoMap());
+            config.AddMap(new CodafSuplementarInscricaoMap());
+            config.AddMap(new CodafSuplementarRetificacaoMap());
+            config.AddMap(new CodafSuplementarMap());
 
             config.AddMap(new UsuarioAcessibilidadeMap());
             config.AddMap(new UeMap());
@@ -296,6 +306,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.AddScoped<IRepositorioCargoFuncaoEol, RepositorioCargoFuncaoEol>();
         serviceCollection.AddScoped<IRepositorioCodafListaPresenca, RepositorioCodafListaPresenca>();
         serviceCollection.AddScoped<IRepositorioPeriodoRealizacaoConsulta, RepositorioPeriodoRealizacaoConsulta>();
+        serviceCollection.AddScoped<IRepositorioLog, RepositorioLog>();
     }
 
     protected virtual void RegistrarCasosDeUso()
@@ -339,10 +350,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterUnidadePorCodigoEol, CasoDeUsoObterUnidadePorCodigoEol>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterFuncionarioExternoPorCpf, CasoDeUsoObterFuncionarioExternoPorCpf>();                                                        
-        
-        
-                
-
+        serviceCollection.TryAddScoped<ICasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar, CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar>();                                                       
+        serviceCollection.TryAddScoped<ICasoDeUsoSalvarLog, CasoDeUsoSalvarLog>(); 
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoCarregarTemporario, CasoDeUsoArquivoCarregarTemporario>();
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoBaixar, CasoDeUsoArquivoBaixar>();

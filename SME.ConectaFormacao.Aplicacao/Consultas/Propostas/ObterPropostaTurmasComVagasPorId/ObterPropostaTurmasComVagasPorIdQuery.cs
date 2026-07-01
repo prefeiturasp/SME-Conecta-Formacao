@@ -14,7 +14,6 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public long PropostaId { get; }
         public string? CodigoDre { get; set; }
-    }
 
     public class ObterPropostaTurmasComVagasPorIdQueryValidator : AbstractValidator<ObterPropostaTurmasComVagasPorIdQuery>
     {
@@ -25,4 +24,5 @@ namespace SME.ConectaFormacao.Aplicacao
                 .WithMessage("É necessário informar o id da proposta para obter as turmas com vaga disponível");
         }
     }
+}
 }

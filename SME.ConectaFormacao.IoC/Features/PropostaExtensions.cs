@@ -2,6 +2,8 @@
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Aplicacao.Servicos;
+using SME.ConectaFormacao.Aplicacao.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -76,7 +78,9 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoSalvarPropostaEncontro, CasoDeUsoSalvarPropostaEncontro>()
                 .AddScoped<ICasoDeUsoRemoverPropostaEncontro, CasoDeUsoRemoverPropostaEncontro>()
                 .AddScoped<ICasoDeUsoObterTipoEncontro, CasoDeUsoObterTipoEncontro>()
-                .AddScoped<ICasoDeUsoObterPropostaEncontroPaginacao, CasoDeUsoObterPropostaEncontroPaginacao>();
+                .AddScoped<ICasoDeUsoObterPropostaEncontroPaginacao, CasoDeUsoObterPropostaEncontroPaginacao>()
+                .AddScoped<IServicoPeriodoEncontroProposta, ServicoPeriodoEncontroProposta>()
+                ;
         }
     }
 }

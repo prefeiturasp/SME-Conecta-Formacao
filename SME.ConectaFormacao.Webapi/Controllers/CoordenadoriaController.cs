@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.InserirCoordenadoria
 using SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.RemoverCoordenadoria;
 using SME.ConectaFormacao.Aplicacao.Consultas.Coordenadorias.ObterCoordenadoriaPorId;
 using SME.ConectaFormacao.Aplicacao.Consultas.Coordenadorias.ObterCoordenadoriasPaginado;
+using SME.ConectaFormacao.Aplicacao.Consultas.Coordenadorias.ObterCoordenadoriasSelect;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Coordenadorias;
 using SME.ConectaFormacao.Dominio.Comum;
@@ -73,6 +74,14 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             var resultado = await mediator.Send(new RemoverCoordenadoriaCommand(id));
             return ProcessarResultado(resultado);
+        }
+
+        [HttpGet("select")]
+        [ProducesResponseType(typeof(List<CoordenadoriaDto>), 200)]
+        [ProducesResponseType(typeof(Resultado), 400)]
+        public async Task<List<CoordenadoriaDto>> ObterSelectCoordenadorias([FromServices] IMediator mediator)
+        {
+          return await mediator.Send(new ObterCoordenadoriasSelectQuery());
         }
     }
 }

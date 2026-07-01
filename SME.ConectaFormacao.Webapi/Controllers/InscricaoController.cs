@@ -43,9 +43,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ObterTurmas(
             [FromServices] ICasoDeUsoObterTurmasInscricao casoDeUsoObterTurmasInscricao,
             [FromRoute] long propostaId,
-            [FromQuery] string? codigoDre = null)
+            [FromQuery] string? codigoDre = null,
+            [FromQuery] bool comCodaf = false)
         {
-            return Ok(await casoDeUsoObterTurmasInscricao.Executar(propostaId, codigoDre));
+            return Ok(await casoDeUsoObterTurmasInscricao.Executar(propostaId, codigoDre, comCodaf));
         }
 
         [HttpGet]
