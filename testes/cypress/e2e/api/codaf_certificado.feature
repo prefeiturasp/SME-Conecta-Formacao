@@ -50,7 +50,7 @@ Funcionalidade: API - Codaf Certificado
   Cenário: Emitir download por lista presença Codaf certificados
     Dado que possuo um token válido do CodafCertificado
     Quando envio uma requisição POST no endpoint CodafCertificado download lista
-    Então retorna o status 200 com emitindo download lista presença Codaf certificados
+    Então retorna o status 204 com emitindo download lista presença Codaf certificados
 
   Cenário: Não emitir download sem a lista presença Codaf certificados
     Dado que possuo um token válido do CodafCertificado
