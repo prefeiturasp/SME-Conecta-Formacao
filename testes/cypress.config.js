@@ -120,7 +120,10 @@ export default defineConfig({
         'CARGO_CODIGO',
         'CARGO_DRE_CODIGO',
         'CARGO_UE_CODIGO',
-        'TIPO_VINCULO'
+        'TIPO_VINCULO',
+        'CODAF_ID',
+        'CERTIFICADO_CODAF_ID',
+        'CERTIFICADO_ID'
       ]
 
       const customEnv = Object.fromEntries(

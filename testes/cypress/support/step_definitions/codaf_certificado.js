@@ -178,7 +178,7 @@ Então('retorna o status 401 sem Codaf certificados', function () {
 Quando('envio uma requisição GET no endpoint CodafCertificado download', function () { 
   return cy.request({
     method: 'GET',
-    url: Cypress.config('baseUrl') + `/api/v1/CodafCertificado/572/download`,
+    url: Cypress.config('baseUrl') + `/api/v1/CodafCertificado/${Cypress.env('CERTIFICADO_ID')}/download`,
     headers: {
       accept: 'text/plain',
       Authorization: `Bearer ${token}`
@@ -222,7 +222,7 @@ Então('retorna o status 404 sem download Codaf certificados', function () {
 Quando('tento a requisição GET no endpoint CodafCertificado download', function () { 
   return cy.request({
     method: 'GET',
-    url: Cypress.config('baseUrl') + `/api/v1/CodafCertificado/{certificadoCodafId}/download`,
+    url: Cypress.config('baseUrl') + `/api/v1/CodafCertificado/${Cypress.env('CODAF_ID')}/download`,
     headers: {
       accept: 'text/plain',
       Authorization: `token_invalido`
@@ -241,7 +241,7 @@ Então('retorna o status 401 sem download Codaf certificados', function () {
 Quando('envio uma requisição POST no endpoint CodafCertificado download lista', function () {
   return cy.request({
     method: 'POST',
-    url: Cypress.config('baseUrl') + `/api/v1/CodafCertificado/1/emitir`,
+    url: Cypress.config('baseUrl') + `/api/v1/CodafCertificado/${Cypress.env('CERTIFICADO_CODAF_ID')}/emitir`,
     headers: {
       accept: 'text/plain',
       Authorization: `Bearer ${token}`
@@ -252,7 +252,7 @@ Quando('envio uma requisição POST no endpoint CodafCertificado download lista'
   }).as('response')
 })
 
-Então('retorna o status 200 com emitindo download lista presença Codaf certificados', function () {
+Então('retorna o status 204 com emitindo download lista presença Codaf certificados', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(204)
   })
@@ -284,7 +284,7 @@ Então('retorna o status 404 sem download lista presença Codaf certificados', f
 Quando('tento a requisição POST no endpoint CodafCertificado download lista', function () { 
   return cy.request({
     method: 'POST',
-    url: Cypress.config('baseUrl') + `/api/v1/CodafCertificado/1/emitir`,
+    url: Cypress.config('baseUrl') + `/api/v1/CodafCertificado/${Cypress.env('CODAF_ID')}/emitir`,
     headers: {
       accept: 'text/plain',
       Authorization: `token_invalido`
