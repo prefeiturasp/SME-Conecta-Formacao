@@ -1,4 +1,4 @@
-using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+Ôªøusing SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         public Task<Guid> BuscarPerfilUsuario()
         {
             var usuarioPerfil = _contextoAplicacao.IdPerfilUsuario ?? throw new NegocioException(
-                    "N„o foi possÌvel identificar os perfis do usu·rio logado. Por favor, faÁa login novamente.");
+                    "N√£o foi poss√≠vel identificar os perfis do usu√°rio logado. Por favor, fa√ßa login novamente.");
 
             return Task.FromResult(usuarioPerfil);
         }
