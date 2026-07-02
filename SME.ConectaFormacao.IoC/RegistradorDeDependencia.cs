@@ -15,7 +15,6 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Arquivo;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Autentiacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
-using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
@@ -40,7 +39,6 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Arquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Autenticacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
@@ -466,7 +464,6 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.AddScoped<IServicoTemplateEmail, ServicoTemplateEmail>();
         serviceCollection.AddScoped<IPeriodoRealizacaoConsultaService, PeriodoRealizacaoConsultaService>();
         serviceCollection.AddScoped<IUsuarioCacheService, UsuarioCacheService>();
-        serviceCollection.AddScoped<IValidadorPermissaoCodaf, ValidadorPermissaoCodaf>();
         serviceCollection.ConfigurarServicoEmails();
     }
 }
