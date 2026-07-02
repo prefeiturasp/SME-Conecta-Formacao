@@ -24,10 +24,10 @@
                CLP.NUMERO_COMUNICADO AS numeroComunicado,
                CLP.DATA_PUBLICACAO AS dataPublicacao,
                P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
-               CASE
-               WHEN P.TIPO_EMISSOR = 2 THEN COALESCE( C_EMISSOR.SIGLA || ' - ' || C_EMISSOR.NOME, C_EMISSOR.NOME)
-               ELSE D_EMISSOR.NOME
-               END AS emissor
+               CASE WHEN P.TIPO_EMISSOR = 2 THEN C_EMISSOR.NOME ELSE D_EMISSOR.NOME END AS emissor,
+               CASE WHEN P.TIPO_EMISSOR = 2 THEN C_EMISSOR.SIGLA ELSE NULL END AS emissorSigla,
+               P.TIPO_EMISSOR AS tipoEmissor
+
         FROM   PUBLIC.CODAF_LISTA_PRESENCA AS CLP
                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
@@ -69,10 +69,10 @@
                CLP.NUMERO_COMUNICADO AS numeroComunicado,
                CLP.DATA_PUBLICACAO AS dataPublicacao,
                P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
-               CASE
-               WHEN P.TIPO_EMISSOR = 2 THEN COALESCE( C_EMISSOR.SIGLA || ' - ' || C_EMISSOR.NOME, C_EMISSOR.NOME)
-               ELSE D_EMISSOR.NOME
-               END AS emissor
+               CASE WHEN P.TIPO_EMISSOR = 2 THEN C_EMISSOR.NOME ELSE D_EMISSOR.NOME END AS emissor,
+               CASE WHEN P.TIPO_EMISSOR = 2 THEN C_EMISSOR.SIGLA ELSE NULL END AS emissorSigla,
+               P.TIPO_EMISSOR AS tipoEmissor
+               
         FROM   PUBLIC.CODAF_LISTA_PRESENCA AS CLP
                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
