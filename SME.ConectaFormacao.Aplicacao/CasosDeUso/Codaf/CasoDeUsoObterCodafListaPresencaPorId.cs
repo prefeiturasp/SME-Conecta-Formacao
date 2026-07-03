@@ -2,6 +2,8 @@
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
@@ -13,15 +15,21 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         IServicoArmazenamento servicoArmazenamento,
         IRepositorioCodafComentarioListaPresenca repositorioCodafComentarioListaPresenca,
         IRepositorioCodafInscritosListaPresenca repositorioCodafInscritos,
-        IMapper mapper) : ICasoDeUsoObterCodafListaPresencaPorId
+        IMapper mapper,
+        IContextoAplicacao contextoAplicacao) : ICasoDeUsoObterCodafListaPresencaPorId
     {
         public async Task<Resultado<CodafListaPresencaDto>> ExecutarAsync(long listaPresencaId)
         {
+            bool perfilRestrito = contextoAplicacao.IdPerfilUsuario != Perfis.ADMIN_DF && contextoAplicacao.IdPerfilUsuario != Perfis.EMFORPEF;
+
             var listaPresenca = await repositorioCodafListaPresenca.ObterPorIdDetalhadoAsync(listaPresencaId);
             if (listaPresenca == null)
                 return Erro.NaoEncontrado("Lista de presença não encontrada.");
 
             var listaPresencaDto = mapper.Map<CodafListaPresencaDto>(listaPresenca);
+
+            if (perfilRestrito && listaPresencaDto.CriadoLogin != contextoAplicacao.LoginUsuario)
+                return Erro.Negocio("Você não tem permissão para visualizar esta lista de presença.");
 
             if (listaPresencaDto.Anexos != null)
             {
