@@ -3,6 +3,8 @@ using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -15,6 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
     {
         private readonly Mock<IRepositorioCodafListaPresenca> _mockRepositorioCodaf;
         private readonly Mock<IServicoRelatorio> _mockServicoRelatorio;
+        private readonly Mock<IContextoAplicacao> _mockContextoAplicacao;
         private readonly CasoDeUsoGerarRelatorioCodaf _sut;
 
         public CasoDeUsoGerarRelatorioCodafTestes()
@@ -23,6 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _mockRepositorioCodaf = mocker.GetMock<IRepositorioCodafListaPresenca>();
             _mockServicoRelatorio = mocker.GetMock<IServicoRelatorio>();
+            _mockContextoAplicacao = mocker.GetMock<IContextoAplicacao>();
             _sut = mocker.CreateInstance<CasoDeUsoGerarRelatorioCodaf>();
         }
 
@@ -51,10 +55,16 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Proposta = new Proposta { NumeroHomologacao = 12345 },
                 PropostaTurma = new PropostaTurma { Nome = "Turma A" }
             };
+            listaPresenca.Iniciar();
+            listaPresenca.MarcarComoEnviadaParaDf();
             _mockRepositorioCodaf.Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(codafId))
                 .ReturnsAsync(listaPresenca);
             _mockServicoRelatorio.Setup(s => s.GerarRelatorioCodafAsync(codafId))
                 .ReturnsAsync(Encoding.UTF8.GetBytes("conteudo do relatorio"));
+            _mockContextoAplicacao.Setup(c => c.LoginUsuario)
+                .Returns(listaPresenca.CriadoLogin);
+            _mockContextoAplicacao.Setup(c => c.IdPerfilUsuario)
+                .Returns(Perfis.ADMIN_DF);
 
             // Act
             var resultado = await _sut.ExecutarAsync(codafId);
@@ -112,5 +122,38 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             resultado.Sucesso.Should().BeTrue();
             _mockRepositorioCodaf.Verify(r => r.Atualizar(It.IsAny<CodafListaPresenca>()), Times.Never);
         }
+
+        [Fact]
+        public async Task DadoPerfilRestrito_QuandoTentarGerarRelatorioDeOutroUsuario_EntaoDeveRetornarErroNegocio()
+        {
+            // Arrange
+            long codafId = 1;
+            var loginCriadoLista = "usuario_criador";
+            var loginUsuarioAtual = "outro_usuario";
+
+            var listaPresenca = new CodafListaPresenca(codafId, 1, new(null, null, null, null, null, null, null), null)
+            {
+                CriadoLogin = loginCriadoLista,
+                Proposta = new Proposta { NumeroHomologacao = 12345 },
+                PropostaTurma = new PropostaTurma { Nome = "Turma A" }
+            };
+            listaPresenca.Iniciar();
+            listaPresenca.MarcarComoEnviadaParaDf();
+
+            _mockRepositorioCodaf.Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(codafId))
+                .ReturnsAsync(listaPresenca);
+            _mockContextoAplicacao.Setup(c => c.LoginUsuario)
+                .Returns(loginUsuarioAtual);
+            _mockContextoAplicacao.Setup(c => c.IdPerfilUsuario)
+                .Returns(Perfis.PARECERISTA);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafId);
+
+            // Assert
+            resultado.Sucesso.Should().BeFalse();
+            resultado.MensagensErro.Should().Contain("Você não tem permissão para gerar relatório desta lista de presença.");
+            _mockServicoRelatorio.Verify(s => s.GerarRelatorioCodafAsync(It.IsAny<long>()), Times.Never);
+        }       
     }
 }

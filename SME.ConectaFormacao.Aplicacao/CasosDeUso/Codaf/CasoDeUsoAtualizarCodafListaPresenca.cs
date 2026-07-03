@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados;
@@ -20,9 +21,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
     {
         public async Task<Resultado> ExecutarAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, long id)
         {
+            bool perfilRestrito = contextoAplicacao.IdPerfilUsuario != Perfis.ADMIN_DF && contextoAplicacao.IdPerfilUsuario != Perfis.EMFORPEF;
+
             var codafListaPresencaExistente = await dependencias.RepositorioLista.ObterNaoExcluidosPorIdAsync(id);
             if (codafListaPresencaExistente is null)
                 return Erro.NaoEncontrado("Lista de presença não encontrada.");
+
+            if (perfilRestrito && codafListaPresencaExistente.CriadoLogin != contextoAplicacao.LoginUsuario)
+                return Erro.Negocio("Você não tem permissão para editar esta lista de presença.");
 
             if (codafListaPresencaExistente.EstaFinalizado())
                 return Erro.Negocio("Não é possível editar uma lista de presença com situação 'Finalizado'.");
@@ -41,14 +47,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 codafListaPresencaEdicaoDto.Observacao),
                 contextoAplicacao.IdPerfilUsuario);
 
-            using var transacaoDb = transacao.Iniciar();
+            var transacaoDb = transacao.Iniciar();
+            if (transacaoDb == null)
+                return Resultado.DeFalha(TipoFalha.ErroInterno, $"Erro ao atualizar a lista de presença.");
 
             try
             {
                 await dependencias.RepositorioLista.Atualizar(codafListaPresencaExistente);
                 await SalvarInscritosAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente);
                 await SalvarRetificacoesAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente.Id);
-                var anexos = mapper.Map<IEnumerable<CodafAnexo>>(codafListaPresencaEdicaoDto.Anexos);
+
+                var anexos = Enumerable.Empty<CodafAnexo>();
+                if (codafListaPresencaEdicaoDto.Anexos != null && codafListaPresencaEdicaoDto.Anexos.Any())
+                    anexos = mapper.Map<IEnumerable<CodafAnexo>>(codafListaPresencaEdicaoDto.Anexos);
+
                 await dependencias.AnexosService.ProcessarAnexosAsync(codafListaPresencaExistente.Id, anexos);
                 await dependencias.MovimentacaoService.RegistrarMovimentacaoAsync(codafListaPresencaExistente);
                 transacaoDb.Commit();
@@ -59,13 +71,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                 transacaoDb.Rollback();
                 return Resultado.DeFalha(TipoFalha.ErroInterno, $"Erro ao atualizar a lista de presença.");
             }
+            finally
+            {
+                transacaoDb?.Dispose();
+            }
         }
 
         private async Task<Erro?> ValidarRegrasDeNegocio(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, long id)
         {
             var validationResult = await validator.ValidateAsync(codafListaPresencaEdicaoDto);
-            if (!validationResult.IsValid)
-                return validationResult.ToErroValidacao();
+            if (validationResult == null || !validationResult.IsValid)
+                return validationResult?.ToErroValidacao() ?? Erro.Validacao("Erro ao validar os dados de entrada.");
 
             var erroVinculo = await dependencias.ValidadorDominio.ValidarVinculoPropostaTurmaAsync(
                 codafListaPresencaEdicaoDto.PropostaId,
@@ -85,13 +101,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 
         private async Task SalvarInscritosAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, CodafListaPresenca codafListaPresenca)
         {
+            if (codafListaPresencaEdicaoDto.Inscritos == null || !codafListaPresencaEdicaoDto.Inscritos.Any())
+                return;
+
             var inscritos = mapper.Map<List<CodafInscricaoListaPresenca>>(codafListaPresencaEdicaoDto.Inscritos);
             await dependencias.InscritosService.SalvarInscritosAsync(inscritos, codafListaPresenca.Id);
         }
 
         private async Task SalvarRetificacoesAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, long codafListaPresencaId)
         {
-            var retificacoesExistentes = await dependencias.RepositorioRetificacao.ObterPorListaPresencaIdAsync(codafListaPresencaId);
+            var retificacoesExistentes = await dependencias.RepositorioRetificacao.ObterPorListaPresencaIdAsync(codafListaPresencaId) ?? [];
             var retificacoesEnviadas = codafListaPresencaEdicaoDto.Retificacoes ?? [];
             var retificacoesEnviadasIds = retificacoesEnviadas.Where(r => r.Id > 0).Select(r => r.Id).ToHashSet();
 
