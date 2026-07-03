@@ -38,5 +38,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 SELECT SETVAL('public.codaf_suplementar_inscricao_id_seq', COALESCE((SELECT MAX(ID) FROM PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO), 1));
                 """, new { codafSuplementarId });
         }
+
+        public async Task<IEnumerable<long>> ObterIdInscritosReprovadosAsync(long codafSuplementarId)
+        {
+            var query =
+            """
+            SELECT INSCRICAO_ID
+            FROM PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO
+            WHERE CODAF_SUPLEMENTAR_ID = @codafSuplementarId AND APROVADO = false;
+            """;
+
+            var resultado = await conexao.Obter().QueryAsync<long>(query, new { codafSuplementarId });
+            return resultado;
+
+        }
     }
 }

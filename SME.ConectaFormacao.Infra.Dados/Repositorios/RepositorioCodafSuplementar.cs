@@ -113,19 +113,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                WHERE L.CODAF_SUPLEMENTAR_ID = CS.ID
                            ) THEN 1
 
-                           /*-- 3: Em Processamento
+                           -- 3: Em Processamento
                            WHEN EXISTS (
                            	SELECT 1
                            	FROM  PUBLIC.CODAF_CERTIFICADOS AS CC
-                           	WHERE CC.CODAF_LISTA_PRESENCA_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusPendente, @statusEmProcessamento)
+                           	WHERE CC.CODAF_SUPLEMENTAR_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusPendente, @statusEmProcessamento)
                            ) THEN 3
 
                            -- 4: Emitido
                            WHEN EXISTS (
                            	SELECT 1
                            	FROM  PUBLIC.CODAF_CERTIFICADOS AS CC
-                           	WHERE CC.CODAF_LISTA_PRESENCA_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusProcessadoComSucesso, @statusProcessadoComErro)
-                           ) THEN 4*/
+                           	WHERE CC.CODAF_SUPLEMENTAR_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusProcessadoComSucesso, @statusProcessadoComErro)
+                           ) THEN 4
 
                            -- 2: Disponível para Emissão
                            ELSE 2

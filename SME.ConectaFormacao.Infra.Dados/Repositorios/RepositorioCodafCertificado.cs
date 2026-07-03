@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
+using SME.ConectaFormacao.Infra.Dados.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
@@ -25,6 +26,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 .QueryAsync<DadosEmissaoCertificadoCodafDto>(CodafCertificadoQueries.ObterDadosParaEmissao,
                 new { idCodaf = codafListaPresencaId });
 
+
+        public async Task<IEnumerable<DadosEmissaoCertificadoCodafDto>>
+            ObterDadosParaEmissaoCertificadosCodafSuplementarAsync(long codafSuplementarId) =>
+            await conexao.Obter()
+                .QueryAsync<DadosEmissaoCertificadoCodafDto>(CodafCertificadoQueries.ObterDadosParaEmissaoSuplementar,
+                new { codafSuplementarId });
+
         public async Task InserirLoteAsync(IEnumerable<CodafCertificado> certificados)
         {
             if (certificados is null || !certificados.Any())
@@ -32,33 +40,30 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             using var writer = await ((NpgsqlConnection)conexao.Obter())
                 .BeginBinaryImportAsync(CodafCertificadoQueries.InserirLoteCopy);
+
+            var criadoEm = DateTimeExtension.HorarioBrasilia();
+            var nomeUsuario = contexto.NomeUsuario;
+            var usuarioLogado = contexto.UsuarioLogado;
+
             foreach (var cert in certificados)
             {
                 await writer.StartRowAsync();
-                await writer.WriteAsync(cert.CodafListaPresencaId, NpgsqlDbType.Bigint);
 
-                if (cert.CodafInscricaoListaPresencaId.HasValue)
-                    await writer.WriteAsync(cert.CodafInscricaoListaPresencaId.Value, NpgsqlDbType.Bigint);
-                else
-                    await writer.WriteNullAsync();
-
-                if (cert.PropostaRegenteTurmaId.HasValue)
-                    await writer.WriteAsync(cert.PropostaRegenteTurmaId.Value, NpgsqlDbType.Bigint);
-                else
-                    await writer.WriteNullAsync();
+                await writer.EscreverNuloOuValorAsync(cert.CodafListaPresencaId, NpgsqlDbType.Bigint);
+                await writer.EscreverNuloOuValorAsync(cert.CodafSuplementarId, NpgsqlDbType.Bigint);
+                await writer.EscreverNuloOuValorAsync(cert.CodafInscricaoListaPresencaId, NpgsqlDbType.Bigint);
+                await writer.EscreverNuloOuValorAsync(cert.CodafSuplementarInscricaoId, NpgsqlDbType.Bigint);
+                await writer.EscreverNuloOuValorAsync(cert.PropostaRegenteTurmaId, NpgsqlDbType.Bigint);
 
                 await writer.WriteAsync((int)cert.TipoParticipacao, NpgsqlDbType.Integer);
                 await writer.WriteAsync(cert.DataEmissao, NpgsqlDbType.Timestamp);
                 await writer.WriteAsync(cert.HtmlContentSnapshot, NpgsqlDbType.Text);
 
-                if (!string.IsNullOrEmpty(cert.MetadadosJson))
-                    await writer.WriteAsync(cert.MetadadosJson, NpgsqlDbType.Jsonb);
-                else
-                    await writer.WriteNullAsync();
+                await writer.EscreverNuloOuStringAsync(cert.MetadadosJson, NpgsqlDbType.Jsonb);
 
-                await writer.WriteAsync(DateTimeExtension.HorarioBrasilia(), NpgsqlDbType.Timestamp);
-                await writer.WriteAsync(contexto.NomeUsuario, NpgsqlDbType.Varchar);
-                await writer.WriteAsync(contexto.UsuarioLogado, NpgsqlDbType.Varchar);
+                await writer.WriteAsync(criadoEm, NpgsqlDbType.Timestamp);
+                await writer.WriteAsync(nomeUsuario, NpgsqlDbType.Varchar);
+                await writer.WriteAsync(usuarioLogado, NpgsqlDbType.Varchar);
                 await writer.WriteAsync(false, NpgsqlDbType.Boolean);
             }
             await writer.CompleteAsync();
@@ -140,7 +145,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (filtro.DataEmissaoFim.HasValue)
             {
-                // Ajuste para pegar até o final do dia selecionado
                 condicoesWhere.Append(" AND dataEmissao <= @dataEmissaoFim ");
                 parametros.Add("dataEmissaoFim", filtro.DataEmissaoFim.Value.Date.AddDays(1).AddTicks(-1));
             }
@@ -281,7 +285,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (filtro.DataEmissao.HasValue)
             {
-                // Ajuste para pegar até o final do dia selecionado
                 condicoesWhere.Append(" AND CC.DATA_EMISSAO >= @dataEmissaoInicio AND CC.DATA_EMISSAO <= @dataEmissaoFim ");
                 parametros.Add("dataEmissaoInicio", filtro.DataEmissao.Value.Date);
                 parametros.Add("dataEmissaoFim", filtro.DataEmissao.Value.Date.AddDays(1).AddTicks(-1));
@@ -374,11 +377,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return certificados.ToList();
         }
 
-        public async Task AtualizaCodigoCertificado(long codafListaPresencaId)
+        public async Task AtualizaCodigoCertificado(long codafId, TipoCodaf tipoCodaf)
         {
             await conexao.Obter().ExecuteAsync(
                 CodafCertificadoQueries.AtualizarCodigoCertificadoNoHtml,
-                new { codafListaPresencaId });
+                new { codafId, tipoCodaf });
+        }
+
+        public async Task InativarCertificadosAnterioresCursistaAsync(IEnumerable<long> idInscritos)
+        {
+            await conexao.Obter().ExecuteAsync(
+                CodafCertificadoQueries.InativarCertificadosAnterioresDeCursistas,
+                new { inscricaoId = idInscritos.ToArray(), usuarioNome = contexto.NomeUsuario, usuarioLogin = contexto.UsuarioLogado });
         }
     }
 }
