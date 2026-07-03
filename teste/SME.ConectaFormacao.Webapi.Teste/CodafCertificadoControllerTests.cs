@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Webapi.Controllers;
 
@@ -43,14 +44,14 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var codafListaPresencaId = _faker.Random.Long(1, long.MaxValue);
 
             _mockCasoDeUsoEmitirCertificadoCodaf
-                .Setup(x => x.ExecutarAsync(codafListaPresencaId))
+                .Setup(x => x.ExecutarAsync(codafListaPresencaId, It.IsAny<TipoCodaf>()))
                 .ReturnsAsync(Resultado.DeSucesso());
 
             // Act
-            var resultado = await _controller.EmitirCertificadosCodaf(codafListaPresencaId);
+            var resultado = await _controller.EmitirCertificadosCodaf(codafListaPresencaId, TipoCodaf.ListaPresenca);
 
             // Assert
-            _mockCasoDeUsoEmitirCertificadoCodaf.Verify(x => x.ExecutarAsync(codafListaPresencaId), Times.Once);
+            _mockCasoDeUsoEmitirCertificadoCodaf.Verify(x => x.ExecutarAsync(codafListaPresencaId, TipoCodaf.ListaPresenca), Times.Once);
             Assert.IsType<NoContentResult>(resultado);
         }
 
