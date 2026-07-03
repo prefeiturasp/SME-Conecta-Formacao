@@ -62,7 +62,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _repositorioMock
                 .Setup(r => r.ObterCertificadosDisponiveisPorListaDeIdAsync(ids))
-                .ReturnsAsync(new List<CodafCertificado>());
+                .ReturnsAsync([]);
 
             // Act
             Func<Task> acao = async () => await _sut.ExecutarAsync(ids, streamFake);
@@ -119,7 +119,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _repositorioMock
                 .Setup(r => r.ObterCertificadosDisponiveisPorListaDeIdAsync(ids))
-                .ReturnsAsync(new List<CodafCertificado> { certificado });
+                .ReturnsAsync([certificado]);
 
             var resultadoSucesso = Resultado<Stream>.DeSucesso(streamRelatorio);
 

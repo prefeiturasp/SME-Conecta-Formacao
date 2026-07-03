@@ -7,5 +7,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
     {
         Task InserirVariosAsync(IEnumerable<CodafSuplementarInscricao> inscritosSuplementar);
         Task ExcluirPorCodafSuplementarIdAsync(long codafSuplementarId);
+        Task<IEnumerable<long>> ObterIdInscritosReprovadosAsync(long codafSuplementarId);
     }
 }

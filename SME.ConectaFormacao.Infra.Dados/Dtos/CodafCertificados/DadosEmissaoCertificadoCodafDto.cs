@@ -5,6 +5,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
     public class DadosEmissaoCertificadoCodafDto
     {
         public long IdReferencia { get; set; }
+        public long InscricaoId { get; set; }
         public long PropostaTurmaId { get; set; }
         public int PaginaDiarioOficial { get; set; }
         public required string NomeCompleto { get; set; }
