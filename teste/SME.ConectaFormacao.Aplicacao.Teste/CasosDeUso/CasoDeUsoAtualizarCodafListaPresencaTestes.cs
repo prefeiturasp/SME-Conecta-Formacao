@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Bogus;
 using FluentAssertions;
 using FluentValidation;
@@ -8,8 +8,10 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -392,6 +394,364 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             resultado.TipoFalha.Should().Be(TipoFalha.ErroInterno);
             transacaoMock.Verify(t => t.Rollback(), Times.Once);
             transacaoMock.Verify(t => t.Commit(), Times.Never);
+        }
+
+        [Fact]
+        public async Task DadoPerfilRestrito_QuandoTentarEditarListaDeOutroUsuario_EntaoDeveRetornarErroNegocio()
+        {
+            // Arrange
+            var propostaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var propostaTurmaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var loginCriadoLista = _faker.Internet.UserName();
+            var loginUsuarioAtual = _faker.Internet.UserName();
+
+            var codafListaPresencaEdicaoDto = new CodafListaPresencaEdicaoDto
+            {
+                PropostaId = propostaIdValido,
+                PropostaTurmaId = propostaTurmaIdValido
+            };
+
+            var codafListaPresencaExistente = new CodafListaPresenca(propostaIdValido, propostaTurmaIdValido, new(null, null, null, null, null, null, null), null)
+            {
+                Id = _faker.Random.Long(1, long.MaxValue),
+                CriadoLogin = loginCriadoLista
+            };
+
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafListaPresencaExistente);
+            _contextoAplicacaoMock
+                .Setup(c => c.LoginUsuario)
+                .Returns(loginUsuarioAtual);
+            _contextoAplicacaoMock
+                .Setup(c => c.IdPerfilUsuario)
+                .Returns(Perfis.PARECERISTA);
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente.Id);
+
+            // Assert
+            resultado.Sucesso.Should().BeFalse();
+            resultado.MensagensErro.Should().Contain("Você não tem permissão para editar esta lista de presença.");
+            resultado.TipoFalha.Should().Be(TipoFalha.RegraDeNegocio);
+            _repositorioCodafListaPresencaMock.Verify(r => r.Atualizar(It.IsAny<CodafListaPresenca>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task DadoListaComSituacaoFinalizado_QuandoTentarEditar_EntaoDeveRetornarErroNegocio()
+        {
+            // Arrange
+            var propostaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var propostaTurmaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var loginCriadoLista = _faker.Internet.UserName();
+
+            var codafListaPresencaEdicaoDto = new CodafListaPresencaEdicaoDto
+            {
+                PropostaId = propostaIdValido,
+                PropostaTurmaId = propostaTurmaIdValido
+            };
+
+            var codafListaPresencaExistente = new CodafListaPresenca(propostaIdValido, propostaTurmaIdValido, new(null, null, null, null, null, null, null), null)
+            {
+                Id = _faker.Random.Long(1, long.MaxValue),
+                CriadoLogin = loginCriadoLista
+            };
+            codafListaPresencaExistente.Iniciar();
+            codafListaPresencaExistente.MarcarComoEnviadaParaDf();
+            codafListaPresencaExistente.Finalizar();
+
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafListaPresencaExistente);
+            _contextoAplicacaoMock
+                .Setup(c => c.LoginUsuario)
+                .Returns(loginCriadoLista);
+            _contextoAplicacaoMock
+                .Setup(c => c.IdPerfilUsuario)
+                .Returns(Perfis.ADMIN_DF);
+            _validatorMock
+                .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            _validadorDominioMock
+                .Setup(v => v.ValidarVinculoPropostaTurmaAsync(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync((Erro?)null);
+            _validadorDominioMock
+                .Setup(v => v.ValidarUnicidadeTurmaListaDePresencaAsync(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync((Erro?)null);
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente.Id);
+
+            // Assert
+            resultado.Sucesso.Should().BeFalse();
+            resultado.MensagensErro.Should().Contain("Não é possível editar uma lista de presença com situação 'Finalizado'.");
+            resultado.TipoFalha.Should().Be(TipoFalha.RegraDeNegocio);
+            _repositorioCodafListaPresencaMock.Verify(r => r.Atualizar(It.IsAny<CodafListaPresenca>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task DadoEdicaoComAnexos_QuandoExecutar_EntaoDeveProcessarAnexosCorretamente()
+        {
+            // Arrange
+            var propostaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var propostaTurmaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var loginCriadoLista = _faker.Internet.UserName();
+
+            var anexosDto = new List<CodafAnexoSalvarDto>
+            {
+                new() {
+                    ArquivoCodigo = Guid.NewGuid(),
+                    NomeArquivo = _faker.System.FileName(),
+                    TipoAnexoId = TipoAnexoCodaf.ListaPresenca
+                }
+            };
+
+            var codafListaPresencaEdicaoDto = new CodafListaPresencaEdicaoDto
+            {
+                PropostaId = propostaIdValido,
+                PropostaTurmaId = propostaTurmaIdValido,
+                Anexos = anexosDto
+            };
+
+            var codafListaPresencaExistente = new CodafListaPresenca(propostaIdValido, propostaTurmaIdValido, new(null, null, null, null, null, null, null), null)
+            {
+                Id = _faker.Random.Long(1, long.MaxValue),
+                CriadoLogin = loginCriadoLista
+            };
+
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafListaPresencaExistente);
+            _contextoAplicacaoMock
+                .Setup(c => c.LoginUsuario)
+                .Returns(loginCriadoLista);
+            _contextoAplicacaoMock
+                .Setup(c => c.IdPerfilUsuario)
+                .Returns(Perfis.ADMIN_DF);
+            _validatorMock
+                .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+            _validadorDominioMock
+                .Setup(v => v.ValidarVinculoPropostaTurmaAsync(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync((Erro?)null);
+            _validadorDominioMock
+                .Setup(v => v.ValidarUnicidadeTurmaListaDePresencaAsync(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync((Erro?)null);
+            _mapperMock
+                .Setup(m => m.Map<IEnumerable<CodafAnexo>>(anexosDto))
+                .Returns(anexosDto.Select(a => new CodafAnexo 
+                {
+                    ArquivoCodigo = a.ArquivoCodigo,
+                    NomeArquivo = a.NomeArquivo,
+                    Extensao = System.IO.Path.GetExtension(a.NomeArquivo),
+                    TipoAnexoId = a.TipoAnexoId
+                }));
+
+            // Act
+            await _casoDeUso.ExecutarAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente.Id);
+
+            // Assert
+            _anexosServiceMock.Verify(
+                a => a.ProcessarAnexosAsync(
+                    It.Is<long>(id => id == codafListaPresencaExistente.Id),
+                    It.IsAny<IEnumerable<CodafAnexo>>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoEdicaoComSucesso_QuandoExecutar_EntaoDeveRegistrarMovimentacao()
+        {
+            // Arrange
+            var propostaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var propostaTurmaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var loginCriadoLista = _faker.Internet.UserName();
+
+            var codafListaPresencaEdicaoDto = new CodafListaPresencaEdicaoDto
+            {
+                PropostaId = propostaIdValido,
+                PropostaTurmaId = propostaTurmaIdValido
+            };
+
+            var codafListaPresencaExistente = new CodafListaPresenca(propostaIdValido, propostaTurmaIdValido, new(null, null, null, null, null, null, null), null)
+            {
+                Id = _faker.Random.Long(1, long.MaxValue),
+                CriadoLogin = loginCriadoLista
+            };
+
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafListaPresencaExistente);
+            _contextoAplicacaoMock
+                .Setup(c => c.LoginUsuario)
+                .Returns(loginCriadoLista);
+            _contextoAplicacaoMock
+                .Setup(c => c.IdPerfilUsuario)
+                .Returns(Perfis.ADMIN_DF);
+            _validatorMock
+                .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+            _validadorDominioMock
+                .Setup(v => v.ValidarVinculoPropostaTurmaAsync(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync((Erro?)null);
+            _validadorDominioMock
+                .Setup(v => v.ValidarUnicidadeTurmaListaDePresencaAsync(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync((Erro?)null);
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente.Id);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            _movimentacaoServiceMock.Verify(
+                m => m.RegistrarMovimentacaoAsync(
+                    It.Is<CodafListaPresenca>(l => l.Id == codafListaPresencaExistente.Id)),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoEdicaoComInscritos_QuandoExecutar_EntaoDeveSalvarInscritosCorretamente()
+        {
+            // Arrange
+            var propostaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var propostaTurmaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var loginCriadoLista = _faker.Internet.UserName();
+
+            var inscritos = new List<CodafInscritoListaPresencaSalvarDto>
+            {
+                new() {
+                    InscricaoId = _faker.Random.Long(1, long.MaxValue),
+                    PercentualFrequencia = 100
+                }
+            };
+
+            var codafListaPresencaEdicaoDto = new CodafListaPresencaEdicaoDto
+            {
+                PropostaId = propostaIdValido,
+                PropostaTurmaId = propostaTurmaIdValido,
+                Inscritos = inscritos
+            };
+
+            var codafListaPresencaExistente = new CodafListaPresenca(propostaIdValido, propostaTurmaIdValido, new(null, null, null, null, null, null, null), null)
+            {
+                Id = _faker.Random.Long(1, long.MaxValue),
+                CriadoLogin = loginCriadoLista
+            };
+
+            var inscrectosEntidades = new List<CodafInscricaoListaPresenca>
+            {
+                new() {
+                    InscricaoId = inscritos[0].InscricaoId,
+                    PercentualFrequencia = inscritos[0].PercentualFrequencia
+                }
+            };
+
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafListaPresencaExistente);
+            _contextoAplicacaoMock
+                .Setup(c => c.LoginUsuario)
+                .Returns(loginCriadoLista);
+            _contextoAplicacaoMock
+                .Setup(c => c.IdPerfilUsuario)
+                .Returns(Perfis.ADMIN_DF);
+            _validatorMock
+                .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+            _validadorDominioMock
+                .Setup(v => v.ValidarVinculoPropostaTurmaAsync(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync((Erro?)null);
+            _validadorDominioMock
+                .Setup(v => v.ValidarUnicidadeTurmaListaDePresencaAsync(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync((Erro?)null);
+            _mapperMock
+                .Setup(m => m.Map<List<CodafInscricaoListaPresenca>>(inscritos))
+                .Returns(inscrectosEntidades);
+
+            // Act
+            await _casoDeUso.ExecutarAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente.Id);
+
+            // Assert
+            _inscritosServiceMock.Verify(
+                i => i.SalvarInscritosAsync(
+                    It.Is<List<CodafInscricaoListaPresenca>>(l => l.Count == inscritos.Count),
+                    It.Is<long>(id => id == codafListaPresencaExistente.Id)),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoTransacaoComFalhaAoSalvarInscritos_QuandoExecutar_EntaoDeveExecutarRollback()
+        {
+            // Arrange
+            var propostaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var propostaTurmaIdValido = _faker.Random.Long(1, long.MaxValue);
+            var loginCriadoLista = _faker.Internet.UserName();
+
+            var codafListaPresencaEdicaoDto = new CodafListaPresencaEdicaoDto
+            {
+                PropostaId = propostaIdValido,
+                PropostaTurmaId = propostaTurmaIdValido,
+                Inscritos =
+                [
+                    new() {
+                        InscricaoId = _faker.Random.Long(1, long.MaxValue)
+                    }
+                ]
+            };
+
+            var codafListaPresencaExistente = new CodafListaPresenca(propostaIdValido, propostaTurmaIdValido, new(null, null, null, null, null, null, null), null)
+            {
+                Id = _faker.Random.Long(1, long.MaxValue),
+                CriadoLogin = loginCriadoLista
+            };
+
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafListaPresencaExistente);
+            _contextoAplicacaoMock
+                .Setup(c => c.LoginUsuario)
+                .Returns(loginCriadoLista);
+            _contextoAplicacaoMock
+                .Setup(c => c.IdPerfilUsuario)
+                .Returns(Perfis.ADMIN_DF);
+            _validatorMock
+                .Setup(v => v.ValidateAsync(codafListaPresencaEdicaoDto, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+            _validadorDominioMock
+                .Setup(v => v.ValidarVinculoPropostaTurmaAsync(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync((Erro?)null);
+            _validadorDominioMock
+                .Setup(v => v.ValidarUnicidadeTurmaListaDePresencaAsync(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync((Erro?)null);
+            _mapperMock
+                .Setup(m => m.Map<List<CodafInscricaoListaPresenca>>(It.IsAny<IEnumerable<CodafInscritoListaPresencaSalvarDto>>()))
+                .Returns([new() { InscricaoId = _faker.Random.Long(1, long.MaxValue) }]);
+            _inscritosServiceMock
+                .Setup(i => i.SalvarInscritosAsync(It.IsAny<List<CodafInscricaoListaPresenca>>(), It.IsAny<long>()))
+                .ThrowsAsync(new Exception("Erro ao salvar inscritos"));
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(codafListaPresencaEdicaoDto, codafListaPresencaExistente.Id);
+
+            // Assert
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.ErroInterno);
+            transacaoMock.Verify(t => t.Rollback(), Times.Once);
         }
     }
 }
