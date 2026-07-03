@@ -19,12 +19,12 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         ICasoDeUsoListarTodosCertificadosCodaf casoDeUsoListarTodosCertificadosCodaf,
         ICasoDeUsoDownloadLoteCertificados casoDeUsoDownloadLoteCertificados) : BaseController
     {
-        [HttpPost("{codafListaPresencaId}/emitir")]
+        [HttpPost("{codafId:long}/emitir")]
         [ProducesResponseType(typeof(Resultado), 200)]
         [ProducesResponseType(typeof(Resultado), 404)]
-        public async Task<IActionResult> EmitirCertificadosCodaf(long codafListaPresencaId)
+        public async Task<IActionResult> EmitirCertificadosCodaf([FromRoute] long codafId, [FromQuery] TipoCodaf tipoCodaf)
         {
-            var resultado = await casoDeUsoEmitirCertificadoCodaf.ExecutarAsync(codafListaPresencaId);
+            var resultado = await casoDeUsoEmitirCertificadoCodaf.ExecutarAsync(codafId, tipoCodaf);
             return ProcessarResultado(resultado);
         }
 

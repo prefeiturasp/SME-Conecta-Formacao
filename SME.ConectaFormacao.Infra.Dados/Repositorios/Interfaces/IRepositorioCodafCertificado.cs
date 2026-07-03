@@ -9,6 +9,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
     public interface IRepositorioCodafCertificado : IRepositorioBaseAuditavel<CodafCertificado>
     {
         Task<IEnumerable<DadosEmissaoCertificadoCodafDto>> ObterDadosParaEmissaoCertificadosCodafAsync(long codafListaPresencaId);
+        Task<IEnumerable<DadosEmissaoCertificadoCodafDto>> ObterDadosParaEmissaoCertificadosCodafSuplementarAsync(long codafSuplementarId);
         Task InserirLoteAsync(IEnumerable<CodafCertificado> certificados);
         Task<IEnumerable<DadosProcessamentoCertificadoCodafDto>> ObterCertificadosParaProcessamentoAsync();
         Task AtualizarStatusProcessamentoAsync(long id, StatusProcessamentoCertificadoCodaf statusProcessamento, string? chaveObjetoArmazenamento, string? erroProcessamento);
@@ -17,6 +18,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<DadosCertificadoUsuarioParaDownloadDto?> ObterCertificadoDisponivelDoUsuarioAsync(long codafCertificadoId);
         Task<ResultadoPaginado<ListagemCertificadosCodafDto>> ObterTodosCertificadosAsync(FiltroListagemTodosCertificadosCodafDto filtro);
         Task<IList<CodafCertificado>> ObterCertificadosDisponiveisPorListaDeIdAsync(List<long> certificadosId);
-        Task AtualizaCodigoCertificado(long codafListaPresencaId);
+        Task AtualizaCodigoCertificado(long codafId, TipoCodaf tipoCodaf);
+        Task InativarCertificadosAnterioresCursistaAsync(IEnumerable<long> idInscritos);
     }
 }
