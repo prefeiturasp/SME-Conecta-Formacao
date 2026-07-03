@@ -6,5 +6,6 @@
         public static readonly Guid PARECERISTA = Guid.Parse("E98E06D1-0556-4156-832A-613DF54E6096");
         public static readonly Guid SINPEEM = Guid.Parse("AAA08B83-5DEC-4930-BF5B-44DE9876843F");
         public static readonly Guid COPED = Guid.Parse("3a934680-be27-49be-a12f-cf8765602ebe");
+        public static readonly Guid EMFORPEF = Guid.Parse("2358698A-D07B-471C-A76B-0AC8324C2FEE");
     }
 }
