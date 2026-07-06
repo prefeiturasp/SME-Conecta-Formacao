@@ -32,6 +32,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoRemoverCodafSuplementarRetificacao, CasoDeUsoRemoverCodafSuplementarRetificacao>()
                 .AddScoped<IGerenciadorAnexosCodafSuplementarService, GerenciadorAnexosCodafSuplementarService>()
                 .AddScoped<CodafSuplementarDependencias>()
+                .AddScoped<ICasoDeUsoGerarRelatorioCodafSuplementar, CasoDeUsoGerarRelatorioCodafSuplementar>()
                 ;
         }
     }

@@ -452,7 +452,6 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.AddScoped<ISincronizarFuncaoAtividadeEolPorDreUseCase, SincronizarFuncaoAtividadeEolPorDreUseCase>();
         serviceCollection.AddScoped<ICasoDeUsoObterDadosInscricaoParaProposta, CasoDeUsoObterDadosInscricaoParaProposta>();
         serviceCollection.AddScoped<ISincronizarUesEolUseCase, SincronizarUesEolUseCase>();
-        serviceCollection.AddScoped<ICasoDeUsoGerarRelatorioCodafSuplementar, CasoDeUsoGerarRelatorioCodafSuplementar>();
     }
 
     protected virtual void RegistrarHttpClients()

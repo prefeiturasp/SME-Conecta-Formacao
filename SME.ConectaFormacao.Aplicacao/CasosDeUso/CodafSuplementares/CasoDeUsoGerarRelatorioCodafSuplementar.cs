@@ -20,12 +20,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                 return Erro.NaoEncontrado();
 
             var nomeArquivo = $"CODAF_{listaPresenca.Proposta.NumeroHomologacao}-{listaPresenca.PropostaTurma.Nome}.xlsx";
-            var arquivoDto = await GerarRelatorioCodafAsyncSuplementar(codafListaPresencaId, nomeArquivo);
+            var arquivoDto = await GerarRelatorioCodafSuplementarAsync(codafListaPresencaId, nomeArquivo);
             await AtualizarStatusParaFinalizadoAsync(listaPresenca);
             return arquivoDto;
         }
 
-        private async Task<ArquivoDto> GerarRelatorioCodafAsyncSuplementar(long codafListaPresencaId, string nomeArquivo)
+        private async Task<ArquivoDto> GerarRelatorioCodafSuplementarAsync(long codafListaPresencaId, string nomeArquivo)
         {
             var arquivoBytes = await servicoRelatorio.GerarRelatorioCodafSuplementarAsync(codafListaPresencaId);    
             var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
