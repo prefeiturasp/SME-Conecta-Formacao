@@ -6,5 +6,6 @@
         public const string RELATORIO_LAUDA_COMPLETA = "v1/conecta/prosposta/{0}/lauda-completa";
         public const string RELATORIO_CERTIFICADO_CODAF = "v1/conecta/gerar-certificado-codaf";
         public const string RELATORIO_CODAF = "v1/conecta/codaf/{0}/gerar-planilha";
+        public const string RELATORIO_CODAF_SUPLEMENTAR = "v1/conecta/codaf-suplementar/{0}/gerar-planilha";
     }
 }
