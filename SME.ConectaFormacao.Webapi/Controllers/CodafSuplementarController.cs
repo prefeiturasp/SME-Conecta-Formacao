@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 
@@ -93,6 +94,20 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoRemoverCodafSuplementarRetificacao casoDeUsoRemoverCodafSuplementarRetificacao)
         {
             var resultado = await casoDeUsoRemoverCodafSuplementarRetificacao.ExecutarAsync(retificacaoId);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpPost("{codafListaPresencaId:long}/imprimir")]
+        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 200)]
+        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 404)]
+        public async Task<IActionResult> ImprimirRelatorioCodafAsync(long codafListaPresencaId,
+        [FromServices] ICasoDeUsoGerarRelatorioCodafSuplementar casoDeUsoGerarRelatorioCodafSuplementar)
+        {
+            var resultado = await casoDeUsoGerarRelatorioCodafSuplementar.ExecutarAsync(codafListaPresencaId);
+
+            if (resultado.Sucesso)
+                return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
+
             return ProcessarResultado(resultado);
         }
     }
