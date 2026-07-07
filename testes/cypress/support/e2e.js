@@ -18,6 +18,7 @@ import './commands_ui/commands_inscricoes'
 import './commands_ui/commands_redefinir_senha'
 import './commands_ui/commands_notificacoes'
 import './commands_ui/commands_meus_certificados'
+import './commands_ui/commands_lista_presenca'
 
 // Evita quebra por erro de front
 Cypress.on('uncaught:exception', () => {
