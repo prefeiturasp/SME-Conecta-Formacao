@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
                 CodigoNivel = $"{dado.CodigoNivel:00}",
                 DataFimCurso = dado.DataFimCurso?.ToString("dd/MM/yyyy") ?? string.Empty,
                 NumeroHomologacao = $"HOM{dado.NumeroHomologacao}",
-                CargaHoraria = (dado.HorasTotais ?? dado.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro()).ToString("00")
+                CargaHoraria = DefinirCargaHoraria(dado)
             })];
         }
 
@@ -51,6 +51,13 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
             stream.Position = posicaoOriginal;
 
             return Convert.ToHexStringLower(hashBytes);
+        }
+
+        private static string DefinirCargaHoraria(DadosConsultaParaTxtEolDto dado)
+        {
+            if (dado.HorasTotais.HasValue && dado.HorasTotais.Value < 99)
+                return dado.HorasTotais.Value.ToString("00");
+            return dado.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro().ToString("00");
         }
     }
 }
