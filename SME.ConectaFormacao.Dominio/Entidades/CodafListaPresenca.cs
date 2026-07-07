@@ -24,7 +24,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public ICollection<CodafRetificacaoListaPresenca> CodafRetificacoes { get; set; } = [];
         public ICollection<CodafAnexo>? CodafAnexos { get; set; }
 
-        protected CodafListaPresenca() { }
+        public CodafListaPresenca() { }
         public CodafListaPresenca(long propostaId, long propostaTurmaId, StatusCodafListaPresenca status)
         {
             PropostaId = propostaId;

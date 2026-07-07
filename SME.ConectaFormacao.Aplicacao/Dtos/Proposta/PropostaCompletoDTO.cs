@@ -9,6 +9,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
 
         public bool EhAdminDF;
         public FormacaoHomologada? FormacaoHomologada { get; set; }
+        public TipoEmissor? TipoEmissor { get; set; }
+        public long? IdEmissor { get; set; }
         public TipoFormacao? TipoFormacao { get; set; }
         public Formato? Formato { get; set; }
         public TipoInscricao? TipoInscricao { get; set; }

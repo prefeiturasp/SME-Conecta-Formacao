@@ -4,13 +4,9 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
 {
-    public class CasoDeUsoObterTurmasInscricao : CasoDeUsoAbstrato, ICasoDeUsoObterTurmasInscricao
+    public class CasoDeUsoObterTurmasInscricao(IMediator mediator) : CasoDeUsoAbstrato(mediator), ICasoDeUsoObterTurmasInscricao
     {
-        public CasoDeUsoObterTurmasInscricao(IMediator mediator) : base(mediator)
-        {
-        }
-
-        public async Task<IEnumerable<RetornoListagemDTO>> Executar(long propostaId, string? codigoDre = null)
+        public async Task<IEnumerable<RetornoListagemDTO>> Executar(long propostaId, string? codigoDre = null, bool comCodaf = false)
         {
             return await mediator.Send(new ObterPropostaTurmasComVagasPorIdQuery(propostaId, codigoDre));
         }

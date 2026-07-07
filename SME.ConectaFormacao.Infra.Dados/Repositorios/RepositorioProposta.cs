@@ -1477,20 +1477,61 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task<IEnumerable<PropostaTurma>> ObterTurmasPorId(long propostaId)
         {
-            var query = @"select 
-                            id, 
-                            proposta_id, 
-                            nome,
-                            excluido,
-                            criado_em,
-	                        criado_por,
-                            criado_login,
-                        	alterado_em,    
-	                        alterado_por,
-	                        alterado_login
-                        from proposta_turma
-                        where proposta_id = @propostaId and not excluido order by nome";
+            var query =
+                """
+                select 
+                    id, 
+                    proposta_id, 
+                    nome,
+                    excluido,
+                    criado_em,
+                    criado_por,
+                    criado_login,
+                    alterado_em,    
+                    alterado_por,
+                    alterado_login
+                from proposta_turma
+                where proposta_id = @propostaId 
+                  and not excluido                
+                order by nome
+                """;
+
             return await conexao.Obter().QueryAsync<PropostaTurma>(query, new { propostaId });
+        }
+
+        public async Task<IEnumerable<PropostaTurma>> ObterTurmasComCodafAsync(long propostaId)
+        {
+            var query =
+                """
+                select 
+                    proposta_turma.id, 
+                    proposta_turma.proposta_id, 
+                    proposta_turma.nome,
+                    proposta_turma.excluido,
+                    proposta_turma.criado_em,
+                    proposta_turma.criado_por,
+                    proposta_turma.criado_login,
+                    proposta_turma.alterado_em,    
+                    proposta_turma.alterado_por,
+                    proposta_turma.alterado_login,
+                    CLP.ID AS Id  -- split on here
+                from proposta_turma
+                     INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA CLP ON CLP.PROPOSTA_TURMA_ID = proposta_turma.ID
+                where proposta_turma.proposta_id = @propostaId 
+                  and not proposta_turma.excluido
+                  AND CLP.STATUS = @statusFinalizado                
+                order by proposta_turma.nome
+                """;
+            var statusFinalizado = (int)StatusCodafListaPresenca.Finalizado;
+            var parameters = new { propostaId, statusFinalizado };
+
+            var result = await conexao.Obter().QueryAsync<PropostaTurma, CodafListaPresenca, PropostaTurma>(query, (turma, codaf) =>
+            {
+                turma.CodafListaPresenca = codaf;
+                return turma;
+            }, parameters, splitOn: "Id");
+
+            return result;
         }
 
         public async Task<IEnumerable<PropostaTurmaDre>> ObterPropostaTurmasDresPorPropostaTurmaId(params long[] propostaTurmaIds)
@@ -2508,7 +2549,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryFirstOrDefaultAsync<PropostaParecerista>(query, new { propostaId, registroFuncional });
         }
 
-        public async Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, int numeroPagina, int numeroRegistros)
+        public async Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, bool comCodaf, int numeroPagina, int numeroRegistros)
         {
             termo = $"{termo}%";
             const string sqlBase = """
@@ -2517,6 +2558,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                   AND CAST(P.NUMERO_HOMOLOGACAO AS TEXT) ILIKE @termo
                   AND FORMACAO_HOMOLOGADA = @formacaoHomologada
                   AND SITUACAO = @situacaoProposta
+                  AND (@comCodaf = false OR EXISTS (SELECT 1 FROM PUBLIC.CODAF_LISTA_PRESENCA CLP WHERE CLP.PROPOSTA_ID = P.ID AND CLP.STATUS = @statusFinalizado))
                 """;
             const string sqlSelect = $"""
                 SELECT p.ID AS propostaId,
@@ -2532,8 +2574,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var formacaoHomologada = (int)FormacaoHomologada.Sim;
             var situacaoProposta = (int)SituacaoProposta.Publicada;
+            var statusFinalizado = (int)StatusCodafListaPresenca.Finalizado;
 
-            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, new { termo, formacaoHomologada, situacaoProposta });
+
+            var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, new { termo, formacaoHomologada, situacaoProposta, statusFinalizado, comCodaf });
             if (totalRegistros == 0)
                 return new()
                 {
@@ -2546,7 +2590,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var registrosIgnorados = (numeroPagina - 1) * numeroRegistros;
 
             var dados = await conn.QueryAsync<AutocompletarNumeroHomologacaoDto>(sqlSelect,
-                new { termo, limit = numeroRegistros, offset = registrosIgnorados, formacaoHomologada, situacaoProposta });
+                new { termo, limit = numeroRegistros, offset = registrosIgnorados, formacaoHomologada, situacaoProposta, statusFinalizado, comCodaf });
 
             return new()
             {

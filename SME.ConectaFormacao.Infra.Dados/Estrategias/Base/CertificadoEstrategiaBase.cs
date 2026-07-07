@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
+﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Templates;
 
 namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
@@ -17,12 +18,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
         protected string ObterLayoutBase(DadosEmissaoCertificadoCodafDto dados)
         {
             var layout = templateService.ObterTemplate(TEMPLATE_LAYOUT);
-            
-            var coordenadoriaOuDre = dados.DreCoordenadoria;
+
+            var emissorRodape = ObterTextoEmissorRodape(dados);
             var numComunicado = dados.NumeroComunicado.ToString();
             var dataPublicacao = dados.DataPublicacao.ToString("dd/MM/yyyy");
             var paginaDiarioOficial = dados.PaginaDiarioOficial.ToString();
             var numHomologacao = dados.NumeroHomologacao?.ToString() ?? "N/A";
+            var dataEmissao = DateTime.Now.ToString("dd/MM/yyyy");
 
             var imgHeader = templateService.ObterImagemBase64(IMAGEM_HEADER);
             var brasao = templateService.ObterImagemBase64(IMAGEM_BRASAO);
@@ -30,7 +32,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
             var assinatura = templateService.ObterImagemBase64(IMAGEM_ASSINATURA);
 
             return layout
-                .Replace("{{COORDENADORIA_OU_DRE}}", coordenadoriaOuDre)
+                .Replace("{{EMISSOR}}", emissorRodape)
                 .Replace("{{NUM_COMUNICADO}}", numComunicado)
                 .Replace("{{DATA_PUBLICACAO_CODAF}}", dataPublicacao)
                 .Replace("{{PAG_DIARIO_OFICIAL}}", paginaDiarioOficial)
@@ -38,7 +40,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
                 .Replace("{{HEADER}}", imgHeader)
                 .Replace("{{BRASAO}}", brasao)
                 .Replace("{{SELO}}", selo)
-                .Replace("{{ASSINATURA}}", assinatura);
+                .Replace("{{ASSINATURA}}", assinatura)
+                .Replace("{{DATA_EMISSAO}}", dataEmissao);
+        }
+
+        protected static string ObterTextoEmissorCorpo(DadosEmissaoCertificadoCodafDto dados)
+        {
+            if (dados.TipoEmissor == TipoEmissor.Coordenadoria)
+                return string.IsNullOrWhiteSpace(dados.EmissorSigla)
+                    ? dados.Emissor
+                    : $"{dados.EmissorSigla} - {dados.Emissor}";
+
+            return dados.Emissor;
+        }
+
+        protected static string? ObterTextoEmissorRodape(DadosEmissaoCertificadoCodafDto dados)
+        {
+            return dados.TipoEmissor == TipoEmissor.Coordenadoria
+                ? dados.EmissorSigla
+                : dados.Emissor;
         }
     }
 }

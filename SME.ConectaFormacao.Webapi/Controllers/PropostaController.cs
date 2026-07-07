@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Dtos.PropostaEncontros;
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
@@ -532,6 +534,21 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> AutocompletarFormacao([FromServices] ICasoDeUsoObterAutocompletarFormacao useCase, [FromQuery] FiltroAutocompletarNumeroHomologacaoDto filtro)
         {
             return ProcessarResultado(await useCase.ExecutarAsync(filtro));
+        }
+
+        [HttpGet("proposta-turmas/{propostaTurmaId:long}/inscritos/buscar")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<DadosInscricaoCursistaRetornoDto>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Inscricao_I, Permissao.Inscricao_A, Permissao.Inscricao_E, Policy = "Bearer")]
+        public async Task<IActionResult> ObterCursistasPorPropostaTurmaId(
+            [FromServices] ICasoDeUsoPesquisarCursistaPorPropostaTurmaId casoDeUso,
+            [FromRoute] long propostaTurmaId,
+            [FromQuery] string termo, 
+            [FromQuery] int numeroPagina = 1, 
+            [FromQuery] int numeroRegistros = 10)
+        {
+            return ProcessarResultado(await casoDeUso.ExecutarAsync(propostaTurmaId, termo, numeroPagina, numeroRegistros));
         }
     }
 }
