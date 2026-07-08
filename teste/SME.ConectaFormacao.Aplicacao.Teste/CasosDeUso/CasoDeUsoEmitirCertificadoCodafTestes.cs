@@ -193,7 +193,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafCertificados
             _dbTransactionMock.Verify(t => t.Commit(), Times.Once);
         }
 
-        // --- MÉTODOS DE APOIO (DRY & KISS) ---
+        // --- Mï¿½TODOS DE APOIO (DRY & KISS) ---
 
         private DadosEmissaoCertificadoCodafDto CriarDadosEmissaoDtoFake(TipoParticipacaoCodaf tipoParticipacao, bool temRf)
         {
@@ -206,7 +206,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafCertificados
                 Documento = _faker.Random.String2(11, "0123456789"),
                 TemRf = temRf,
                 TipoParticipacao = tipoParticipacao,
-                NomeFormacao = "Formação Fake",
+                NomeFormacao = "Formaï¿½ï¿½o Fake",
                 DataRealizacao = _faker.Date.Recent(),
                 HorasTotais = _faker.Random.Int(10, 40),
                 Emissor = "DRE Local",
@@ -238,5 +238,562 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafCertificados
                 .Setup(x => x.ObterPeriodoRealizacaoAsync(dto.PropostaTurmaId))
                 .ReturnsAsync(periodo);
         }
+
+        #endregion
+
+        #region Testes com Cursista Com RF
+
+        [Fact]
+        public async Task ExecutarAsync_DeveEmitirCertificadoCursistaComRf_QuandoDadosValidosE_TemRfVerdadeiro()
+        {
+            // Arrange
+            const long codafListaPresencaId = 2;
+            const long inscricaoId = 101;
+            const long propostaTurmaId = 51;
+
+            var dadosEmissao = new DadosEmissaoCertificadoCodafDto
+            {
+                IdReferencia = inscricaoId,
+                PropostaTurmaId = propostaTurmaId,
+                NomeCompleto = "Maria da Silva",
+                Documento = "1234567",
+                TemRf = true,
+                TipoParticipacao = TipoParticipacaoCodaf.Cursista,
+                NomeFormacao = "Formaï¿½ï¿½o Docente",
+                DataRealizacao = new DateTime(2024, 2, 10),
+                HorasTotais = 30,
+                CargaHorariaTotalOutra = null,
+                ConceitoFinal = "S",
+                PercentualFrequencia = 95,
+                Emissor = "DRE 2",
+                TipoFormacao = "curso",
+                DataInicio = DateTime.MinValue,
+                DataFim = DateTime.MinValue,
+                EmailUsuario = "maria@example.com"
+            };
+
+            var periodo = new PeriodoRealizacao
+            {
+                DataInicio = new DateTime(2024, 2, 5),
+                DataFim = new DateTime(2024, 2, 15)
+            };
+
+            var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
+            mockGerador
+                .Setup(x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()))
+                .Returns("<html>Certificado Com RF</html>");
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId))
+                .ReturnsAsync(new List<DadosEmissaoCertificadoCodafDto> { dadosEmissao });
+
+            _mockPeriodoRealizacaoConsultaService
+                .Setup(x => x.ObterPeriodoRealizacaoAsync(propostaTurmaId))
+                .ReturnsAsync(periodo);
+
+            _mockServiceProvider
+                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.CursistaComRf))
+                .Returns(mockGerador.Object);
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.InserirLoteAsync(It.IsAny<IEnumerable<CodafCertificado>>()))
+                .Returns(Task.CompletedTask);
+
+            _mockMediator
+                .Setup(x => x.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafListaPresencaId);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+
+            _mockRepositorioCodafCertificado.Verify(
+                x => x.InserirLoteAsync(It.Is<IEnumerable<CodafCertificado>>(lista =>
+                    lista.First().TipoParticipacao == TipoParticipacaoCodaf.Cursista)),
+                Times.Once);
+        }
+
+        #endregion
+
+        #region Testes com Regente
+
+        [Fact]
+        public async Task ExecutarAsync_DeveEmitirCertificadoRegente_QuandoTipoParticipacaoEhRegente()
+        {
+            // Arrange
+            const long codafListaPresencaId = 3;
+            const long regenteId = 200;
+            const long propostaTurmaId = 52;
+
+            var dadosEmissao = new DadosEmissaoCertificadoCodafDto
+            {
+                IdReferencia = regenteId,
+                PropostaTurmaId = propostaTurmaId,
+                NomeCompleto = "Carlos Professor",
+                Documento = "9876543",
+                TemRf = true,
+                TipoParticipacao = TipoParticipacaoCodaf.Regente,
+                NomeFormacao = "Workshop Pedagogia",
+                DataRealizacao = new DateTime(2024, 3, 20),
+                HorasTotais = 40,
+                CargaHorariaTotalOutra = null,
+                ConceitoFinal = null,
+                PercentualFrequencia = null,
+                Emissor = "Coordenadoria Centro",
+                TipoFormacao = "evento",
+                DataInicio = DateTime.MinValue,
+                DataFim = DateTime.MinValue,
+                EmailUsuario = "carlos@example.com"
+            };
+
+            var periodo = new PeriodoRealizacao
+            {
+                DataInicio = new DateTime(2024, 3, 15),
+                DataFim = new DateTime(2024, 3, 25)
+            };
+
+            var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
+            mockGerador
+                .Setup(x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()))
+                .Returns("<html>Certificado RegenteComRf</html>");
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId))
+                .ReturnsAsync(new List<DadosEmissaoCertificadoCodafDto> { dadosEmissao });
+
+            _mockPeriodoRealizacaoConsultaService
+                .Setup(x => x.ObterPeriodoRealizacaoAsync(propostaTurmaId))
+                .ReturnsAsync(periodo);
+
+            _mockServiceProvider
+                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.RegenteComRf))
+                .Returns(mockGerador.Object);
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.InserirLoteAsync(It.IsAny<IEnumerable<CodafCertificado>>()))
+                .Returns(Task.CompletedTask);
+
+            _mockMediator
+                .Setup(x => x.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafListaPresencaId);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+
+            _mockRepositorioCodafCertificado.Verify(
+                x => x.InserirLoteAsync(It.Is<IEnumerable<CodafCertificado>>(lista =>
+                    lista.First().TipoParticipacao == TipoParticipacaoCodaf.Regente)),
+                Times.Once);
+        }
+
+        #endregion
+
+        #region Testes com Perï¿½odo Nulo
+
+        [Fact]
+        public async Task ExecutarAsync_DeveProcessarComPeriodoNulo_QuandoServicoRetornaNulo()
+        {
+            // Arrange
+            const long codafListaPresencaId = 4;
+            const long inscricaoId = 102;
+            const long propostaTurmaId = 53;
+
+            var dadosEmissao = new DadosEmissaoCertificadoCodafDto
+            {
+                IdReferencia = inscricaoId,
+                PropostaTurmaId = propostaTurmaId,
+                NomeCompleto = "Pedro Silva",
+                Documento = "11111111111",
+                TemRf = false,
+                TipoParticipacao = TipoParticipacaoCodaf.Cursista,
+                NomeFormacao = "Treinamento Rï¿½pido",
+                DataRealizacao = new DateTime(2024, 4, 1),
+                HorasTotais = 5,
+                CargaHorariaTotalOutra = null,
+                ConceitoFinal = "S",
+                PercentualFrequencia = 100,
+                Emissor = "DRE 3",
+                TipoFormacao = "curso",
+                DataInicio = DateTime.MinValue,
+                DataFim = DateTime.MinValue,
+                EmailUsuario = "pedro@example.com"
+            };
+
+            var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
+            mockGerador
+                .Setup(x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()))
+                .Returns("<html>Certificado</html>");
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId))
+                .ReturnsAsync(new List<DadosEmissaoCertificadoCodafDto> { dadosEmissao });
+
+            _mockPeriodoRealizacaoConsultaService
+                .Setup(x => x.ObterPeriodoRealizacaoAsync(propostaTurmaId))
+                .ReturnsAsync((PeriodoRealizacao?)null);
+
+            _mockServiceProvider
+                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.CursistaSemRf))
+                .Returns(mockGerador.Object);
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.InserirLoteAsync(It.IsAny<IEnumerable<CodafCertificado>>()))
+                .Returns(Task.CompletedTask);
+
+            _mockMediator
+                .Setup(x => x.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafListaPresencaId);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+
+            mockGerador.Verify(
+                x => x.GerarHtml(It.Is<DadosEmissaoCertificadoCodafDto>(d =>
+                    d.DataInicio == DateTime.MinValue &&
+                    d.DataFim == DateTime.MinValue)),
+                Times.Once);
+
+            _mockRepositorioCodafCertificado.Verify(
+                x => x.InserirLoteAsync(It.IsAny<IEnumerable<CodafCertificado>>()),
+                Times.Once);
+        }
+
+        #endregion
+
+        #region Testes com Mï¿½ltiplos Certificados
+
+        [Fact]
+        public async Task ExecutarAsync_DeveProcessarMultiplosCertificados_ComTiposEstrategiasDiferentes()
+        {
+            // Arrange
+            const long codafListaPresencaId = 5;
+
+            var dadosCursistaSemRf = new DadosEmissaoCertificadoCodafDto
+            {
+                IdReferencia = 103,
+                PropostaTurmaId = 54,
+                NomeCompleto = "Ana Silva",
+                Documento = "22222222222",
+                TemRf = false,
+                TipoParticipacao = TipoParticipacaoCodaf.Cursista,
+                NomeFormacao = "Curso 1",
+                DataRealizacao = new DateTime(2024, 5, 1),
+                HorasTotais = 20,
+                CargaHorariaTotalOutra = null,
+                ConceitoFinal = "S",
+                PercentualFrequencia = 100,
+                Emissor = "DRE 1",
+                TipoFormacao = "curso",
+                DataInicio = DateTime.MinValue,
+                DataFim = DateTime.MinValue,
+                EmailUsuario = "ana@example.com"
+            };
+
+            var dadosCursistaComRf = new DadosEmissaoCertificadoCodafDto
+            {
+                IdReferencia = 104,
+                PropostaTurmaId = 55,
+                NomeCompleto = "Bruno Santos",
+                Documento = "3333333",
+                TemRf = true,
+                TipoParticipacao = TipoParticipacaoCodaf.Cursista,
+                NomeFormacao = "Curso 2",
+                DataRealizacao = new DateTime(2024, 5, 2),
+                HorasTotais = 30,
+                CargaHorariaTotalOutra = null,
+                ConceitoFinal = "S",
+                PercentualFrequencia = 95,
+                Emissor = "DRE 2",
+                TipoFormacao = "curso",
+                DataInicio = DateTime.MinValue,
+                DataFim = DateTime.MinValue,
+                EmailUsuario = "bruno@example.com"
+            };
+
+            var dadosRegente = new DadosEmissaoCertificadoCodafDto
+            {
+                IdReferencia = 105,
+                PropostaTurmaId = 56,
+                NomeCompleto = "Diana Prof",
+                Documento = "4444444",
+                TemRf = true,
+                TipoParticipacao = TipoParticipacaoCodaf.Regente,
+                NomeFormacao = "Curso 3",
+                DataRealizacao = new DateTime(2024, 5, 3),
+                HorasTotais = 40,
+                CargaHorariaTotalOutra = null,
+                ConceitoFinal = null,
+                PercentualFrequencia = null,
+                Emissor = "Coordenadoria",
+                TipoFormacao = "evento",
+                DataInicio = DateTime.MinValue,
+                DataFim = DateTime.MinValue,
+                EmailUsuario = "diana@example.com"
+            };
+
+            var mockGeradorCursistaSemRf = new Mock<ICertificadoCodafGeradorConteudo>();
+            var mockGeradorCursistaComRf = new Mock<ICertificadoCodafGeradorConteudo>();
+            var mockGeradorRegente = new Mock<ICertificadoCodafGeradorConteudo>();
+
+            mockGeradorCursistaSemRf
+                .Setup(x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()))
+                .Returns("<html>Certificado Cursista Sem RF</html>");
+
+            mockGeradorCursistaComRf
+                .Setup(x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()))
+                .Returns("<html>Certificado Cursista Com RF</html>");
+
+            mockGeradorRegente
+                .Setup(x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()))
+                .Returns("<html>Certificado RegenteComRf</html>");
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId))
+                .ReturnsAsync(new List<DadosEmissaoCertificadoCodafDto> { dadosCursistaSemRf, dadosCursistaComRf, dadosRegente });
+
+            _mockPeriodoRealizacaoConsultaService
+                .Setup(x => x.ObterPeriodoRealizacaoAsync(It.IsAny<long>()))
+                .ReturnsAsync((PeriodoRealizacao?)null);
+
+            _mockServiceProvider
+                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.CursistaSemRf))
+                .Returns(mockGeradorCursistaSemRf.Object);
+
+            _mockServiceProvider
+                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.CursistaComRf))
+                .Returns(mockGeradorCursistaComRf.Object);
+
+            _mockServiceProvider
+                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.RegenteComRf))
+                .Returns(mockGeradorRegente.Object);
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.InserirLoteAsync(It.IsAny<IEnumerable<CodafCertificado>>()))
+                .Returns(Task.CompletedTask);
+
+            _mockMediator
+                .Setup(x => x.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafListaPresencaId);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+
+            mockGeradorCursistaSemRf.Verify(
+                x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()),
+                Times.Once);
+
+            mockGeradorCursistaComRf.Verify(
+                x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()),
+                Times.Once);
+
+            mockGeradorRegente.Verify(
+                x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()),
+                Times.Once);
+
+            _mockRepositorioCodafCertificado.Verify(
+                x => x.InserirLoteAsync(It.Is<IEnumerable<CodafCertificado>>(lista => lista.Count() == 3)),
+                Times.Once);
+
+            _mockMediator.Verify(
+                x => x.Send(
+                    It.Is<PublicarNaFilaRabbitCommand>(cmd =>
+                        cmd.Rota == RotasRabbit.GerarArquivoCertificadosCodaf),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+
+        #endregion
+
+        #region Testes de Metadados
+
+        [Fact]
+        public async Task ExecutarAsync_DeveInserirCertificadoComMetadadosCorretos()
+        {
+            // Arrange
+            const long codafListaPresencaId = 6;
+            const long inscricaoId = 106;
+            const long propostaTurmaId = 57;
+
+            var dadosEmissao = new DadosEmissaoCertificadoCodafDto
+            {
+                IdReferencia = inscricaoId,
+                PropostaTurmaId = propostaTurmaId,
+                NomeCompleto = "Teste Metadados",
+                Documento = "55555555555",
+                TemRf = false,
+                TipoParticipacao = TipoParticipacaoCodaf.Cursista,
+                NomeFormacao = "Curso Metadados",
+                DataRealizacao = new DateTime(2024, 6, 1),
+                HorasTotais = 25,
+                CargaHorariaTotalOutra = null,
+                ConceitoFinal = "S",
+                PercentualFrequencia = 100,
+                Emissor = "DRE Teste",
+                TipoFormacao = "curso",
+                DataInicio = DateTime.MinValue,
+                DataFim = DateTime.MinValue,
+                EmailUsuario = "teste@example.com"
+            };
+
+            var periodo = new PeriodoRealizacao
+            {
+                DataInicio = new DateTime(2024, 6, 1),
+                DataFim = new DateTime(2024, 6, 15)
+            };
+
+            var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
+            mockGerador
+                .Setup(x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()))
+                .Returns("<html>Certificado</html>");
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId))
+                .ReturnsAsync(new List<DadosEmissaoCertificadoCodafDto> { dadosEmissao });
+
+            _mockPeriodoRealizacaoConsultaService
+                .Setup(x => x.ObterPeriodoRealizacaoAsync(propostaTurmaId))
+                .ReturnsAsync(periodo);
+
+            _mockServiceProvider
+                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.CursistaSemRf))
+                .Returns(mockGerador.Object);
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.InserirLoteAsync(It.IsAny<IEnumerable<CodafCertificado>>()))
+                .Returns(Task.CompletedTask);
+
+            _mockMediator
+                .Setup(x => x.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafListaPresencaId);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+
+            _mockRepositorioCodafCertificado.Verify(
+                x => x.InserirLoteAsync(It.Is<IEnumerable<CodafCertificado>>(lista =>
+                    lista.First().HtmlContentSnapshot == "<html>Certificado</html>" &&
+                    lista.First().MetadadosJson != null)),
+                Times.Once);
+        }
+
+        #endregion
+
+        #region Testes de Interaï¿½ï¿½es com Repositï¿½rio
+
+        [Fact]
+        public async Task ExecutarAsync_DeveNaoInserirCertificados_QuandoListaSalvarVazia()
+        {
+            // Arrange
+            const long codafListaPresencaId = 7;
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId))
+                .ReturnsAsync(new List<DadosEmissaoCertificadoCodafDto>());
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafListaPresencaId);
+
+            // Assert
+            _mockRepositorioCodafCertificado.Verify(
+                x => x.InserirLoteAsync(It.IsAny<IEnumerable<CodafCertificado>>()),
+                Times.Never);
+
+            _mockMediator.Verify(
+                x => x.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()),
+                Times.Never);
+        }
+
+        #endregion
+
+        #region Testes com Carga Horï¿½ria Alternativa
+
+        [Fact]
+        public async Task ExecutarAsync_DeveProcessarCertificadoComCargaHorariaAlternativa()
+        {
+            // Arrange
+            const long codafListaPresencaId = 8;
+            const long inscricaoId = 107;
+            const long propostaTurmaId = 58;
+
+            var dadosEmissao = new DadosEmissaoCertificadoCodafDto
+            {
+                IdReferencia = inscricaoId,
+                PropostaTurmaId = propostaTurmaId,
+                NomeCompleto = "Teste Carga Alternativa",
+                Documento = "66666666666",
+                TemRf = false,
+                TipoParticipacao = TipoParticipacaoCodaf.Cursista,
+                NomeFormacao = "Curso Alternativo",
+                DataRealizacao = new DateTime(2024, 7, 1),
+                HorasTotais = null,
+                CargaHorariaTotalOutra = "10h30m",
+                ConceitoFinal = "S",
+                PercentualFrequencia = 100,
+                Emissor = "DRE Alternativa",
+                TipoFormacao = "curso",
+                DataInicio = DateTime.MinValue,
+                DataFim = DateTime.MinValue,
+                EmailUsuario = "alternativo@example.com"
+            };
+
+            var periodo = new PeriodoRealizacao
+            {
+                DataInicio = new DateTime(2024, 7, 1),
+                DataFim = new DateTime(2024, 7, 10)
+            };
+
+            var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
+            mockGerador
+                .Setup(x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()))
+                .Returns("<html>Certificado Alternativo</html>");
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId))
+                .ReturnsAsync(new List<DadosEmissaoCertificadoCodafDto> { dadosEmissao });
+
+            _mockPeriodoRealizacaoConsultaService
+                .Setup(x => x.ObterPeriodoRealizacaoAsync(propostaTurmaId))
+                .ReturnsAsync(periodo);
+
+            _mockServiceProvider
+                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.CursistaSemRf))
+                .Returns(mockGerador.Object);
+
+            _mockRepositorioCodafCertificado
+                .Setup(x => x.InserirLoteAsync(It.IsAny<IEnumerable<CodafCertificado>>()))
+                .Returns(Task.CompletedTask);
+
+            _mockMediator
+                .Setup(x => x.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafListaPresencaId);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+
+            mockGerador.Verify(
+                x => x.GerarHtml(It.Is<DadosEmissaoCertificadoCodafDto>(d =>
+                    d.CargaHorariaTotalOutra == "10h30m" &&
+                    d.HorasTotais == null)),
+                Times.Once);
+        }
+
+        #endregion
     }
 }

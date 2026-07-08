@@ -121,7 +121,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
         private static TipoEstrategiaCertificadoCodaf DefinirEstrategia(DadosProcessamentoCertificadoCodafDto certificado)
         {
             if (certificado.TipoParticipacao == TipoParticipacaoCodaf.Regente)
-                return TipoEstrategiaCertificadoCodaf.Regente;
+                return TipoEstrategiaCertificadoCodaf.RegenteComRf;
 
             return certificado.TemRf ? TipoEstrategiaCertificadoCodaf.CursistaComRf : TipoEstrategiaCertificadoCodaf.CursistaSemRf;
         }
