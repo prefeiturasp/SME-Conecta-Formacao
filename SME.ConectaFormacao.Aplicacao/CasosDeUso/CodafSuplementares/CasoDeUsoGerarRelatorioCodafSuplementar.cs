@@ -19,7 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
             if (listaPresenca == null)  
                 return Erro.NaoEncontrado();
 
-            var nomeArquivo = $"CODAF_{listaPresenca.Proposta.NumeroHomologacao}-{listaPresenca.PropostaTurma.Nome}.xlsx";
+            var nomeArquivo = $"CODAF_SUPLEMENTAR_{listaPresenca.Proposta.NumeroHomologacao}-{listaPresenca.PropostaTurma.Nome}.xlsx";
             var arquivoDto = await GerarRelatorioCodafSuplementarAsync(codafListaPresencaId, nomeArquivo);
             await AtualizarStatusParaFinalizadoAsync(listaPresenca);
             return arquivoDto;
