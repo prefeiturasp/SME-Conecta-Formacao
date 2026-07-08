@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             Assert.NotNull(resultado.Dados);
             Assert.Equal(
-                "CODAF_123456-Turma A.xlsx",
+                "CODAF_SUPLEMENTAR_123456-Turma A.xlsx",
                 resultado.Dados.Nome);
 
             Assert.Equal(
