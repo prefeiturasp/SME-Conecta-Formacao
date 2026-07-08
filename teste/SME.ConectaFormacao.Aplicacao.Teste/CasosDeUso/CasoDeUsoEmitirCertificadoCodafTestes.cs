@@ -270,7 +270,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
             mockGerador
                 .Setup(x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()))
-                .Returns("<html>Certificado Regente</html>");
+                .Returns("<html>Certificado RegenteComRf</html>");
 
             _mockRepositorioCodafCertificado
                 .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId))
@@ -281,7 +281,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .ReturnsAsync(periodo);
 
             _mockServiceProvider
-                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.Regente))
+                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.RegenteComRf))
                 .Returns(mockGerador.Object);
 
             _mockRepositorioCodafCertificado
@@ -466,7 +466,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             mockGeradorRegente
                 .Setup(x => x.GerarHtml(It.IsAny<DadosEmissaoCertificadoCodafDto>()))
-                .Returns("<html>Certificado Regente</html>");
+                .Returns("<html>Certificado RegenteComRf</html>");
 
             _mockRepositorioCodafCertificado
                 .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId))
@@ -485,7 +485,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .Returns(mockGeradorCursistaComRf.Object);
 
             _mockServiceProvider
-                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.Regente))
+                .Setup(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.RegenteComRf))
                 .Returns(mockGeradorRegente.Object);
 
             _mockRepositorioCodafCertificado

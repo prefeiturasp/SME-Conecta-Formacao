@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(x => x.PropostaRegenteDTO.NomeRegente)
                 .NotEmpty()
                 .NotNull()
-                .MinimumLength(1).WithMessage("Informe o nome do Regente");
+                .MinimumLength(1).WithMessage("Informe o nome do RegenteComRf");
 
             RuleFor(x => x.PropostaRegenteDTO.Turmas)
                 .Must(x => x.Any()).WithMessage("É necessário informar uma Turma para cadastrar um regente");

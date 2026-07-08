@@ -1,6 +1,7 @@
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
+using SME.ConectaFormacao.Infra.Dados.Extensoes;
 using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao.Utilitarios
@@ -16,7 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
                 CodigoNivel = $"{dado.CodigoNivel:00}",
                 DataFimCurso = dado.DataFimCurso?.ToString("dd/MM/yyyy") ?? string.Empty,
                 NumeroHomologacao = $"HOM{dado.NumeroHomologacao}",
-                CargaHoraria = DefinirCargaHoraria(dado)
+                CargaHoraria = dado.DefinirCargaHoraria()
             })];
         }
 
@@ -51,13 +52,6 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
             stream.Position = posicaoOriginal;
 
             return Convert.ToHexStringLower(hashBytes);
-        }
-
-        private static string DefinirCargaHoraria(DadosConsultaParaTxtEolDto dado)
-        {
-            if (dado.HorasTotais.HasValue && dado.HorasTotais.Value < 99)
-                return dado.HorasTotais.Value.ToString("00");
-            return dado.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro().ToString("00");
         }
     }
 }
