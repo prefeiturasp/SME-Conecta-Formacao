@@ -283,6 +283,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        INNER JOIN PUBLIC.PROPOSTA AS P ON P.ID = PT.PROPOSTA_ID
                 WHERE NOT CLP.EXCLUIDO AND NOT CSI.EXCLUIDO AND NOT INSCR.EXCLUIDO 
                   AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
+                  AND CSI.APROVADO
                   AND CS.ID = @id;
                 """;
             var parametros = new { id };
