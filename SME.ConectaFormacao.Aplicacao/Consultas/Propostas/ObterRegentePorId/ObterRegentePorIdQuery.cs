@@ -18,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentePorId
     {
         public ObterRegentePorIdQueryValidator()
         {
-            RuleFor(x => x.RegenteId).GreaterThan(0).WithMessage("Informe o Id do RegenteComRf");
+            RuleFor(x => x.RegenteId).GreaterThan(0).WithMessage("Informe o Id do Regente");
         }
     }
 }

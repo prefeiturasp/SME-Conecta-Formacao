@@ -317,7 +317,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             parametros.Add("limite", filtro.TamanhoPagina);
             parametros.Add("registrosIgnorados", registrosIgnorados);
             parametros.Add("Cursista", (int)TipoCertificadoCodaf.Cursista);
-            parametros.Add("RegenteComRf", (int)TipoCertificadoCodaf.Regente);
+            parametros.Add("Regente", (int)TipoCertificadoCodaf.Regente);
             parametros.Add("NaoDefinido", (int)TipoCertificadoCodaf.NaoDefinido);
 
             var sqlConsulta = new StringBuilder($"""
