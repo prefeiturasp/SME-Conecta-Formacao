@@ -2,6 +2,7 @@
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Base;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
+using SME.ConectaFormacao.Infra.Dados.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Templates;
 
 namespace SME.ConectaFormacao.Infra.Dados.Estrategias
@@ -36,7 +37,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
             return $@"Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</i></b>,
                     RF: <b><i>{StringExtensao.AplicarMascaraRf(dados.Documento)}</i></b>, participou do {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
                     promovido pela {ObterTextoEmissorCorpo(dados)} da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, 
-                    com carga horária de {dados.HorasTotais ?? dados.CargaHorariaTotalOutra.ConverterHoraMinutoParaInteiro():00} horas,
+                    com carga horária de {dados.DefinirCargaHoraria()} horas,
                     tendo obtido nota de aproveitamento {dados.ConceitoFinal} e frequência de {dados.PercentualFrequencia}%.";
         }
     }

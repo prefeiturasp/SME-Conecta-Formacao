@@ -327,7 +327,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.ID = CLP.PROPOSTA_TURMA_ID
                        INNER JOIN PUBLIC.PROPOSTA AS P ON P.ID = PT.PROPOSTA_ID
                 WHERE NOT CLP.EXCLUIDO AND NOT CILP.EXCLUIDO AND NOT INSCR.EXCLUIDO 
-                  AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
+                  AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO
+                  AND CILP.APROVADO
                   AND CLP.ID = @id;
                 """;
             var parametros = new { id };

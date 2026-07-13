@@ -1,8 +1,9 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Interface;
 
 namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
 {
-    public class DadosEmissaoCertificadoCodafDto
+    public class DadosEmissaoCertificadoCodafDto : ICargaHoraria
     {
         public long IdReferencia { get; set; }
         public long PropostaTurmaId { get; set; }

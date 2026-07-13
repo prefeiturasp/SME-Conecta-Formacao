@@ -53,8 +53,8 @@
                PT.ID AS propostaTurmaId,
                CLP.PAGINA_COMUNICADO_DOM AS paginaDiarioOficial,
                PR.NOME_REGENTE AS nomeCompleto,
-               PR.REGISTRO_FUNCIONAL AS documento,
-               TRUE AS temRf, -- Regente sempre tem RF
+               coalesce(PR.REGISTRO_FUNCIONAL, PR.CPF) AS documento,
+               PR.REGISTRO_FUNCIONAL IS NOT NULL AS temRf,
                2 AS tipoParticipacao, -- Regente
                P.NOME_FORMACAO AS nomeFormacao,                               
                CASE WHEN P.tipo_formacao = 1 THEN 'curso'
@@ -241,7 +241,7 @@
                     CC.ID,
                     CC.CODIGO_CERTIFICADO AS codigoCertificado,
                     P.NOME_FORMACAO AS nomeFormacao,
-                    coalesce(U_ALUNO.NOME, U_PROF.NOME) AS nomeCompleto,
+                    coalesce(U_ALUNO.NOME, PR.NOME_REGENTE) AS nomeCompleto,
                     CC.CHAVE_OBJETO_ARMAZENAMENTO AS chaveObjetoArmazenamento
                 FROM PUBLIC.CODAF_CERTIFICADOS CC
                 LEFT JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA CILP ON CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID = CILP.ID
@@ -250,14 +250,13 @@
                 LEFT JOIN PUBLIC.USUARIO U_ALUNO ON I.USUARIO_ID = U_ALUNO.ID
                 LEFT JOIN PUBLIC.PROPOSTA_REGENTE_TURMA PRT ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
                 LEFT JOIN PUBLIC.PROPOSTA_REGENTE PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
-                LEFT JOIN PUBLIC.USUARIO U_PROF ON (PR.REGISTRO_FUNCIONAL = U_PROF.CPF OR PR.REGISTRO_FUNCIONAL = U_PROF.LOGIN)
                 LEFT JOIN PUBLIC.PROPOSTA_TURMA PT ON PT.ID = COALESCE(CLP.PROPOSTA_TURMA_ID, PRT.TURMA_ID)
                 LEFT JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
                 WHERE 
                     CC.ID = @certificadoId
                     AND CC.STATUS_PROCESSAMENTO = @statusProcessado
                     AND NOT CC.EXCLUIDO
-                    AND (@login IS NULL OR U_ALUNO.LOGIN = @login OR U_PROF.LOGIN = @login)
+                    AND (@login IS NULL OR U_ALUNO.LOGIN = @login OR PR.REGISTRO_FUNCIONAL = @login OR PR.CPF = @login)
                 """;
 
         public const string ObterTodosCertificadosBaseJoins = """
@@ -284,7 +283,7 @@
              	            WHEN CC.PROPOSTA_REGENTE_TURMA_ID IS NOT NULL THEN @Regente
              	            ELSE @NaoDefinido
                          END AS tipoCertificado,
-                         coalesce(U_Cursista.LOGIN, PR.REGISTRO_FUNCIONAL) AS documento,
+                         coalesce(U_Cursista.LOGIN, PR.REGISTRO_FUNCIONAL, PR.CPF) AS documento,
                          CC.DATA_EMISSAO AS dataEmissao,
                          P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
                          P.ID AS codigoFormacao,
