@@ -173,7 +173,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
         private static List<PropostaRegente> CriarListaRegentes()
         {
-            return [new PropostaRegente { Id = 1, NomeRegente = "Regente 1" }];
+            return [new PropostaRegente { Id = 1, NomeRegente = "RegenteComRf 1" }];
         }
 
         private static List<PropostaTutor> CriarListaTutores()

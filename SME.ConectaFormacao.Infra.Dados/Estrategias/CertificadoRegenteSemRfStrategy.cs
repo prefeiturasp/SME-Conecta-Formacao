@@ -7,27 +7,24 @@ using SME.ConectaFormacao.Infra.Dados.Templates;
 
 namespace SME.ConectaFormacao.Infra.Dados.Estrategias
 {
-    public class CertificadoCursistaSemRfStrategy(ITemplateService templateService) : CertificadoEstrategiaBase(templateService), ICertificadoCodafGeradorConteudo
+    public class CertificadoRegenteSemRfStrategy(ITemplateService templateService) : CertificadoEstrategiaBase(templateService), ICertificadoCodafGeradorConteudo
     {
         public string GerarHtml(DadosEmissaoCertificadoCodafDto dados)
         {
             var layout = ObterLayoutBase(dados);
-
-
             return layout
                 .Replace("{{TEXTO_CERTIFICADO}}", GerarCorpoCertificado(dados))
-                .Replace("{{CLASSE_SELO}}", "")
+                .Replace("{{CLASSE_SELO}}", "hidden")
                 .MinificarHtml();
         }
 
         private static string GerarCorpoCertificado(DadosEmissaoCertificadoCodafDto dados)
         {
-            return $@"Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</i></b>, 
-                      CPF: <b><i>{StringExtensao.AplicarMascaraCpf(dados.Documento)}</i></b>, participou do {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
-                      promovido pela {ObterTextoEmissorCorpo(dados)} da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, 
-                      com carga horária de {dados.DefinirCargaHoraria()} horas,
-                      tendo obtido nota de aproveitamento {dados.ConceitoFinal} 
-                      e frequência de {dados.PercentualFrequencia}%.";
+            return $@"
+            <p>Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</i></b>, 
+            CPF: <b><i>{StringExtensao.AplicarMascaraCpf(dados.Documento)}</b></i>, ministrou o {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
+            promovido pela {ObterTextoEmissorCorpo(dados)} da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, com carga horária 
+            de {dados.DefinirCargaHoraria()} horas.</p>";
         }
 
         public (string Titulo, string Corpo) GerarConteudoEmail(DadosProcessamentoCertificadoCodafDto dados, string urlAcesso)
@@ -36,7 +33,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
 
             var corpo = $@"
                 <p>Olá <b>{dados.NomeCompleto}</b>! Parabéns!</p>
-                <p>Você concluiu sua participação como <b>cursista</b> na formação <b>{dados.NomeFormacao}</b>.</p>
+                <p>Você concluiu sua participação como <b>regente</b> na formação <b>{dados.NomeFormacao}</b>.</p>
                 <p>O certificado pode ser visualizado na tela 'Meus certificados' na plataforma Conecta, clicando <a href='{urlAcesso}' target='_blank'>aqui</a>.</p>";
 
             return (titulo, corpo);

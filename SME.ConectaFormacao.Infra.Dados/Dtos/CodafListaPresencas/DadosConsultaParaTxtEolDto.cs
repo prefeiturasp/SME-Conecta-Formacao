@@ -1,6 +1,8 @@
-﻿namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas
+﻿using SME.ConectaFormacao.Infra.Dados.Interface;
+
+namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas
 {
-    public class DadosConsultaParaTxtEolDto
+    public class DadosConsultaParaTxtEolDto : ICargaHoraria
     {
         public required string RegistroFuncional { get; set; }
         public int CodigoCursoEol { get; set; }
