@@ -4,6 +4,7 @@
     {
         CursistaComRf,
         CursistaSemRf,
-        Regente
+        RegenteComRf,
+        RegenteSemRf
     }
 }

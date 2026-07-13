@@ -6,15 +6,15 @@ using SME.ConectaFormacao.Infra.Dados.Templates;
 
 namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
 {
-    public class CertificadoRegenteStrategyTests
+    public class CertificadoRegenteComRfStrategyTests
     {
         private readonly Mock<ITemplateService> _mockTemplateService;
-        private readonly CertificadoRegenteStrategy _sut;
+        private readonly CertificadoRegenteComRfStrategy _sut;
 
-        public CertificadoRegenteStrategyTests()
+        public CertificadoRegenteComRfStrategyTests()
         {
             _mockTemplateService = new Mock<ITemplateService>();
-            _sut = new CertificadoRegenteStrategy(_mockTemplateService.Object);
+            _sut = new CertificadoRegenteComRfStrategy(_mockTemplateService.Object);
         }
 
         [Fact]
