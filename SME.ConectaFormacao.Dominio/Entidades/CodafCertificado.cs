@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             if (string.IsNullOrWhiteSpace(htmlContentSnapshot))
                 throw new ArgumentException("O snapshot do HTML do certificado é obrigatório.", nameof(htmlContentSnapshot));
             if (idReferencia <= 0)
-                throw new ArgumentException("O ID de referência (Inscrição ou RegenteComRf) é inválido.", nameof(idReferencia));
+                throw new ArgumentException("O ID de referência (Inscrição ou Regente) é inválido.", nameof(idReferencia));
             TipoParticipacao = tipoParticipacao;
             DefinirTipoIdReferencia(tipoParticipacao, idReferencia);
             DataEmissao = DateTime.Now;
