@@ -2,6 +2,7 @@
 using Bogus.Extensions.Brazil;
 using FluentAssertions;
 using Moq;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias;
 using SME.ConectaFormacao.Infra.Dados.Templates;
@@ -49,7 +50,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             var htmlFinal = _strategy.GerarHtml(dados);
             // Assert
             htmlFinal.Should().Contain("Certificamos para os devidos fins que o(a) servidor(a)");
-            htmlFinal.Should().Contain($"<i>{dados.NomeCompleto}</i>");
+            htmlFinal.Should().Contain($"<i>{dados.NomeCompleto.FormatarNomePessoa()}</i>");
             htmlFinal.Should().NotContain("RF:");
             htmlFinal.Should().Contain($"CPF: <b><i>{dados.Documento}</b></i>");
             htmlFinal.Should().Contain(dados.NomeFormacao);
