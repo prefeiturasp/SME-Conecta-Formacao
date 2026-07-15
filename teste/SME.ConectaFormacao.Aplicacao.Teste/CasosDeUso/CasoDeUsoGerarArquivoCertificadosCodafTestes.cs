@@ -207,5 +207,154 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _mockMediator.Verify(m => m.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()), Times.Never);
         }
+
+        [Fact]
+        public async Task DadoLoteComRegente_QuandoProcessar_EntaoDeveUsarEstrategiaRegenteComRf()
+        {
+            _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns(_faker.Internet.Url());
+
+            var certificado = new DadosProcessamentoCertificadoCodafDto
+            {
+                Id = 3,
+                CodigoCertificado = 999,
+                HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{EMISSOR}}</div>",
+                NomeCompleto = "Regente Teste",
+                EmailUsuario = "regente@exemplo.com",
+                TemRf = false,
+                TipoParticipacao = TipoParticipacaoCodaf.Regente,
+                Emissor = "DRE-Z"
+            };
+
+            _mockRepositorioCertificado.SetupSequence(r => r.ObterCertificadosParaProcessamentoAsync())
+                .ReturnsAsync([certificado])
+                .ReturnsAsync([]);
+
+            _mockServicoRelatorio
+                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()))
+                .ReturnsAsync([0x1]);
+
+            _mockServicoArmazenamento
+                .Setup(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+                .ReturnsAsync("chave-regente");
+
+            var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
+            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCertificadoCodafDto>(), It.IsAny<string>()))
+                .Returns(("T", "C"));
+            _mockServiceProvider
+                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), It.IsAny<object>()))
+                .Returns(mockGerador.Object);
+
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var resultado = await _sut.Executar(new MensagemRabbit());
+
+            await Task.Delay(50);
+
+            resultado.Should().BeTrue();
+            _mockServiceProvider.Verify(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo),
+                It.Is<object>(k => (TipoEstrategiaCertificadoCodaf)k == TipoEstrategiaCertificadoCodaf.RegenteComRf)), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoLoteComCursistaSemRfComEmail_QuandoProcessar_EntaoDeveUsarEstrategiaCursistaSemRf()
+        {
+            _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns(_faker.Internet.Url());
+
+            var certificado = new DadosProcessamentoCertificadoCodafDto
+            {
+                Id = 4,
+                CodigoCertificado = 1001,
+                HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{EMISSOR}}</div>",
+                NomeCompleto = "Cursista Sem RF",
+                EmailUsuario = "cursista-sem-rf@exemplo.com",
+                TemRf = false,
+                TipoParticipacao = TipoParticipacaoCodaf.Cursista,
+                Emissor = "DRE-W"
+            };
+
+            _mockRepositorioCertificado.SetupSequence(r => r.ObterCertificadosParaProcessamentoAsync())
+                .ReturnsAsync([certificado])
+                .ReturnsAsync([]);
+
+            _mockServicoRelatorio
+                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()))
+                .ReturnsAsync([0x2]);
+
+            _mockServicoArmazenamento
+                .Setup(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+                .ReturnsAsync("chave-cursista-sem-rf");
+
+            var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
+            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCertificadoCodafDto>(), It.IsAny<string>()))
+                .Returns(("T", "C"));
+            _mockServiceProvider
+                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), It.IsAny<object>()))
+                .Returns(mockGerador.Object);
+
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var resultado = await _sut.Executar(new MensagemRabbit());
+
+            await Task.Delay(50);
+
+            resultado.Should().BeTrue();
+            _mockServiceProvider.Verify(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo),
+                It.Is<object>(k => (TipoEstrategiaCertificadoCodaf)k == TipoEstrategiaCertificadoCodaf.CursistaSemRf)), Times.Once);
+            _mockMediator.Verify(m => m.Send(It.Is<PublicarNaFilaRabbitCommand>(c => c.Rota == RotasRabbit.EnviarEmail && c.Filtros is EnviarEmailDto), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUrlFrontEndNula_QuandoProcessar_EntaoDeveGerarConteudoComUrlPadraoCertificados()
+        {
+            _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns((string?)null);
+
+            var certificado = new DadosProcessamentoCertificadoCodafDto
+            {
+                Id = 5,
+                CodigoCertificado = 2002,
+                HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{EMISSOR}}</div>",
+                NomeCompleto = "Usuario Teste",
+                EmailUsuario = "usuario@exemplo.com",
+                TemRf = true,
+                TipoParticipacao = TipoParticipacaoCodaf.Cursista,
+                Emissor = "DRE-T"
+            };
+
+            _mockRepositorioCertificado.SetupSequence(r => r.ObterCertificadosParaProcessamentoAsync())
+                .ReturnsAsync([certificado])
+                .ReturnsAsync([]);
+
+            _mockServicoRelatorio
+                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()))
+                .ReturnsAsync([0x3]);
+
+            _mockServicoArmazenamento
+                .Setup(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+                .ReturnsAsync("chave-url-nula");
+
+            var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
+            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCertificadoCodafDto>(), It.IsAny<string>()))
+                .Returns(("T", "C"));
+            _mockServiceProvider
+                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), It.IsAny<object>()))
+                .Returns(mockGerador.Object);
+
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var resultado = await _sut.Executar(new MensagemRabbit());
+
+            await Task.Delay(50);
+
+            resultado.Should().BeTrue();
+            mockGerador.Verify(g => g.GerarConteudoEmail(
+                It.IsAny<DadosProcessamentoCertificadoCodafDto>(),
+                It.Is<string>(url => url == "/certificados")), Times.Once);
+        }
     }
 }

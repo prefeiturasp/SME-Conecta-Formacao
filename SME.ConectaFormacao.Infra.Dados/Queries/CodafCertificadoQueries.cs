@@ -273,14 +273,14 @@
                 """;
         public const string ObterMeusCertificadosCteBase = """
             WITH BaseCertificados AS (
+                -- 1. Cursista (Lista Normal)
                 SELECT 
-                    CC.ID,
-                    CC.CODIGO_CERTIFICADO AS codigoCertificado,
+                    CC.ID, CC.CODIGO_CERTIFICADO AS codigoCertificado, 
                     (U.LOGIN <> U.CPF) AS temRf,
-                    1 AS tipoParticipacao, -- Cursista
-                    P.NOME_FORMACAO AS nomeFormacao,
+                    1 AS tipoParticipacao, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
                     P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
-                    CC.DATA_EMISSAO AS dataEmissao,
+                    CC.DATA_EMISSAO AS dataEmissao, 
                     U.LOGIN
                 FROM PUBLIC.CODAF_CERTIFICADOS CC
                 INNER JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA CILP ON CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID = CILP.ID
@@ -293,14 +293,36 @@
 
                 UNION ALL
 
-                SELECT        
-                    CC.ID,
-                    CC.CODIGO_CERTIFICADO AS codigoCertificado,
-                    TRUE AS temRf, -- Regente sempre tem RF
-                    2 AS tipoParticipacao, -- Regente
-                    P.NOME_FORMACAO AS nomeFormacao,
+                -- 2. Cursista (Lista Suplementar)
+                SELECT 
+                    CC.ID, 
+                    CC.CODIGO_CERTIFICADO AS codigoCertificado, 
+                    (U.LOGIN <> U.CPF) AS temRf,
+                    1 AS tipoParticipacao, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
                     P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
-                    CC.DATA_EMISSAO AS dataEmissao,
+                    CC.DATA_EMISSAO AS dataEmissao, 
+                    U.LOGIN
+                FROM PUBLIC.CODAF_CERTIFICADOS CC
+                INNER JOIN PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO CSI ON CC.CODAF_SUPLEMENTAR_INSCRICAO_ID = CSI.ID
+                INNER JOIN PUBLIC.CODAF_SUPLEMENTAR CS ON CSI.CODAF_SUPLEMENTAR_ID = CS.ID
+                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.INSCRICAO AS I ON CSI.INSCRICAO_ID = I.ID 
+                INNER JOIN PUBLIC.USUARIO AS U ON I.USUARIO_ID = U.ID
+                WHERE NOT CC.EXCLUIDO AND CC.STATUS_PROCESSAMENTO = @statusProcessado
+
+                UNION ALL
+
+                -- 3. Regente
+                SELECT        
+                    CC.ID, CC.CODIGO_CERTIFICADO AS codigoCertificado, 
+                    TRUE AS temRf, 
+                    2 AS tipoParticipacao, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    P.NUMERO_HOMOLOGACAO AS numeroHomologacao, 
+                    CC.DATA_EMISSAO AS dataEmissao, 
                     U.LOGIN
                 FROM PUBLIC.CODAF_CERTIFICADOS CC
                 INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
@@ -314,58 +336,139 @@
             """;
 
         public const string ObterCertificadoDisponivelDoUsuario = """
+            WITH CertificadoBase AS (
                 SELECT 
-                    CC.ID,
-                    CC.CODIGO_CERTIFICADO AS codigoCertificado,
-                    P.NOME_FORMACAO AS nomeFormacao,
-                    coalesce(U_ALUNO.NOME, PR.NOME_REGENTE) AS nomeCompleto,
-                    CC.CHAVE_OBJETO_ARMAZENAMENTO AS chaveObjetoArmazenamento
+                    CC.ID, 
+                    CC.CODIGO_CERTIFICADO AS codigoCertificado, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    U.NOME AS nomeCompleto, 
+                    CC.CHAVE_OBJETO_ARMAZENAMENTO AS chaveObjetoArmazenamento, 
+                    U.LOGIN AS loginParticipante
                 FROM PUBLIC.CODAF_CERTIFICADOS CC
-                LEFT JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA CILP ON CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID = CILP.ID
-                LEFT JOIN PUBLIC.CODAF_LISTA_PRESENCA CLP ON CILP.CODAF_LISTA_PRESENCA_ID = CLP.ID
-                LEFT JOIN PUBLIC.INSCRICAO I ON CILP.INSCRICAO_ID = I.ID 
-                LEFT JOIN PUBLIC.USUARIO U_ALUNO ON I.USUARIO_ID = U_ALUNO.ID
-                LEFT JOIN PUBLIC.PROPOSTA_REGENTE_TURMA PRT ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
-                LEFT JOIN PUBLIC.PROPOSTA_REGENTE PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
-                LEFT JOIN PUBLIC.PROPOSTA_TURMA PT ON PT.ID = COALESCE(CLP.PROPOSTA_TURMA_ID, PRT.TURMA_ID)
-                LEFT JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
-                WHERE 
-                    CC.ID = @certificadoId
-                    AND CC.STATUS_PROCESSAMENTO = @statusProcessado
-                    AND NOT CC.EXCLUIDO
-                    AND (@login IS NULL OR U_ALUNO.LOGIN = @login OR PR.REGISTRO_FUNCIONAL = @login OR PR.CPF = @login)
-                """;
+                INNER JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA CILP ON CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID = CILP.ID
+                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA CLP ON CILP.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.INSCRICAO I ON CILP.INSCRICAO_ID = I.ID 
+                INNER JOIN PUBLIC.USUARIO U ON I.USUARIO_ID = U.ID
+                WHERE CC.ID = @certificadoId AND CC.STATUS_PROCESSAMENTO = @statusProcessado AND NOT CC.EXCLUIDO
 
-        public const string ObterTodosCertificadosBaseJoins = """
-                 FROM   PUBLIC.CODAF_CERTIFICADOS AS CC 
-                        INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.id = CC.codaf_lista_presenca_id
-                        INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.id = CLP.proposta_turma_id
-                        INNER JOIN PUBLIC.PROPOSTA AS P ON P.id = PT.proposta_id
-                        INNER JOIN PUBLIC.PROPOSTA_DRE AS PD ON PD.PROPOSTA_ID = P.ID                       
-                        LEFT JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP ON CILP.ID = CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID
-                        LEFT JOIN PUBLIC.INSCRICAO AS INSCR ON INSCR.ID = CILP.INSCRICAO_ID
-                        LEFT JOIN PUBLIC.USUARIO AS U_Cursista  ON U_Cursista.ID = INSCR.USUARIO_ID
-                        LEFT JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
-                        LEFT JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
-                        LEFT JOIN PUBLIC.USUARIO AS U_Regente ON U_Regente.CPF = PR.REGISTRO_FUNCIONAL OR U_Regente.LOGIN = PR.REGISTRO_FUNCIONAL
-                """;
+                UNION ALL
 
-        public const string ObterTodosCertificadosSelect = """
-                SELECT DISTINCT
-                         CC.ID,
-                         CC.CODIGO_CERTIFICADO AS codigoCertificado,
-                         coalesce(U_Cursista.NOME, U_Regente.NOME, PR.nome_regente) AS nomeParticipante,
-                         CASE
-             	            WHEN CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID IS NOT NULL THEN @Cursista
-             	            WHEN CC.PROPOSTA_REGENTE_TURMA_ID IS NOT NULL THEN @Regente
-             	            ELSE @NaoDefinido
-                         END AS tipoCertificado,
-                         coalesce(U_Cursista.LOGIN, PR.REGISTRO_FUNCIONAL, PR.CPF) AS documento,
-                         CC.DATA_EMISSAO AS dataEmissao,
-                         P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
-                         P.ID AS codigoFormacao,
-                         P.NOME_FORMACAO AS nomeFormacao                        
-             """;
+                SELECT 
+                    CC.ID, 
+                    CC.CODIGO_CERTIFICADO AS codigoCertificado, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    U.NOME AS nomeCompleto, 
+                    CC.CHAVE_OBJETO_ARMAZENAMENTO AS chaveObjetoArmazenamento, 
+                    U.LOGIN AS loginParticipante
+                FROM PUBLIC.CODAF_CERTIFICADOS CC
+                INNER JOIN PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO CSI ON CC.CODAF_SUPLEMENTAR_INSCRICAO_ID = CSI.ID
+                INNER JOIN PUBLIC.CODAF_SUPLEMENTAR CS ON CSI.CODAF_SUPLEMENTAR_ID = CS.ID
+                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.INSCRICAO I ON CSI.INSCRICAO_ID = I.ID 
+                INNER JOIN PUBLIC.USUARIO U ON I.USUARIO_ID = U.ID
+                WHERE CC.ID = @certificadoId AND CC.STATUS_PROCESSAMENTO = @statusProcessado AND NOT CC.EXCLUIDO
+
+                UNION ALL
+
+                SELECT 
+                    CC.ID, 
+                    CC.CODIGO_CERTIFICADO AS codigoCertificado, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    PR.NOME_REGENTE AS nomeCompleto, 
+                    CC.CHAVE_OBJETO_ARMAZENAMENTO AS chaveObjetoArmazenamento, 
+                    coalesce(PR.REGISTRO_FUNCIONAL, PR.CPF) AS loginParticipante
+                FROM PUBLIC.CODAF_CERTIFICADOS CC
+                INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA PRT ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
+                INNER JOIN PUBLIC.PROPOSTA_REGENTE PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON PRT.TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                WHERE CC.ID = @certificadoId AND CC.STATUS_PROCESSAMENTO = @statusProcessado AND NOT CC.EXCLUIDO
+            )
+            SELECT ID, codigoCertificado, nomeFormacao, nomeCompleto, chaveObjetoArmazenamento
+            FROM CertificadoBase
+            WHERE (@login IS NULL OR loginParticipante = @login)
+            """;
+
+        public const string ObterTodosCertificadosCteBase = """
+            WITH BaseCertificados AS (
+                -- 1. Cursista (Lista Normal)
+                SELECT 
+                    CC.ID AS id, 
+                    CC.CODIGO_CERTIFICADO AS codigoCertificado, 
+                    U.NOME AS nomeParticipante,
+                    @Cursista AS tipoCertificado, 
+                    U.LOGIN AS documento, 
+                    CC.DATA_EMISSAO AS dataEmissao,
+                    P.NUMERO_HOMOLOGACAO AS numeroHomologacao, 
+                    P.ID AS codigoFormacao,
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    PD.DRE_ID AS dreId, 
+                    CLP.PROPOSTA_TURMA_ID AS propostaTurmaId
+                FROM PUBLIC.CODAF_CERTIFICADOS CC
+                INNER JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA CILP ON CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID = CILP.ID
+                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA CLP ON CILP.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.PROPOSTA_DRE PD ON PD.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.INSCRICAO INSCR ON CILP.INSCRICAO_ID = INSCR.ID
+                INNER JOIN PUBLIC.USUARIO U ON INSCR.USUARIO_ID = U.ID
+                WHERE NOT CC.EXCLUIDO AND CC.STATUS_PROCESSAMENTO = @processadoComSucesso
+
+                UNION ALL
+
+                -- 2. Cursista (Lista Suplementar)
+                SELECT 
+                    CC.ID AS id, 
+                    CC.CODIGO_CERTIFICADO AS codigoCertificado, 
+                    U.NOME AS nomeParticipante,
+                    @Cursista AS tipoCertificado, 
+                    U.LOGIN AS documento, 
+                    CC.DATA_EMISSAO AS dataEmissao,
+                    P.NUMERO_HOMOLOGACAO AS numeroHomologacao, 
+                    P.ID AS codigoFormacao,
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    PD.DRE_ID AS dreId, 
+                    CLP.PROPOSTA_TURMA_ID AS propostaTurmaId
+                FROM PUBLIC.CODAF_CERTIFICADOS CC
+                INNER JOIN PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO CSI ON CC.CODAF_SUPLEMENTAR_INSCRICAO_ID = CSI.ID
+                INNER JOIN PUBLIC.CODAF_SUPLEMENTAR CS ON CSI.CODAF_SUPLEMENTAR_ID = CS.ID
+                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.PROPOSTA_DRE PD ON PD.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.INSCRICAO INSCR ON CSI.INSCRICAO_ID = INSCR.ID
+                INNER JOIN PUBLIC.USUARIO U ON INSCR.USUARIO_ID = U.ID
+                WHERE NOT CC.EXCLUIDO AND CC.STATUS_PROCESSAMENTO = @processadoComSucesso
+
+                UNION ALL
+
+                -- 3. Regente
+                SELECT 
+                    CC.ID AS id, 
+                    CC.CODIGO_CERTIFICADO AS codigoCertificado, 
+                    PR.NOME_REGENTE AS nomeParticipante,
+                    @Regente AS tipoCertificado, 
+                    coalesce(PR.REGISTRO_FUNCIONAL, PR.CPF) AS documento, 
+                    CC.DATA_EMISSAO AS dataEmissao,
+                    P.NUMERO_HOMOLOGACAO AS numeroHomologacao, 
+                    P.ID AS codigoFormacao,
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    PD.DRE_ID AS dreId, 
+                    CLP.PROPOSTA_TURMA_ID AS propostaTurmaId
+                FROM PUBLIC.CODAF_CERTIFICADOS CC
+                INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA PRT ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
+                INNER JOIN PUBLIC.PROPOSTA_REGENTE PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON PRT.TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA CLP ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.PROPOSTA_DRE PD ON PD.PROPOSTA_ID = P.ID
+                WHERE NOT CC.EXCLUIDO AND CC.STATUS_PROCESSAMENTO = @processadoComSucesso
+            )
+            """;
 
         public const string AtualizarCodigoCertificadoNoHtml = """
             UPDATE PUBLIC.CODAF_CERTIFICADOS
