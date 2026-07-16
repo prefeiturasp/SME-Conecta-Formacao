@@ -23,6 +23,9 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
             using var stream = arquivoDto.OpenReadStream();
             var arquivoId = await _servicoArmazenamento.ArmazenarTemporariaGuid(stream, arquivoDto.ContentType);
 
+            if (arquivoId == Guid.Empty)
+                return Resultado<CodafAnexoTemporarioDto>.DeFalha(TipoFalha.ErroInterno, "Erro ao salvar anexo, tente novamente.");
+
             return new CodafAnexoTemporarioDto
             {
                 ArquivoCodigo = arquivoId,

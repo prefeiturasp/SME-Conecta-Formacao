@@ -54,6 +54,46 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Utilitarios
         }
 
         [Fact]
+        public async Task Deve_retornar_erro_quando_guid_retornado_for_zerado()
+        {
+            var bytes = Encoding.UTF8.GetBytes("PDF fake");
+            var stream = new MemoryStream(bytes);
+
+            var arquivo = new Mock<IFormFile>();
+
+            arquivo.Setup(a => a.FileName)
+                .Returns("arquivo.pdf");
+
+            arquivo.Setup(a => a.ContentType)
+                .Returns("application/pdf");
+
+            arquivo.Setup(a => a.Length)
+                .Returns(bytes.Length);
+
+            arquivo.Setup(a => a.OpenReadStream())
+                .Returns(stream);
+
+            servicoArmazenamentoMock
+                .Setup(x => x.ArmazenarTemporariaGuid(
+                    It.IsAny<Stream>(),
+                    "application/pdf"))
+                .ReturnsAsync(Guid.Empty);
+
+            var resultado = await processador.ProcessarUploadAsync(arquivo.Object);
+
+            Assert.False(resultado.Sucesso);
+            Assert.NotNull(resultado.MensagensErro);
+            Assert.Single(resultado.MensagensErro);
+            Assert.Equal("Erro ao salvar anexo, tente novamente.", resultado.MensagensErro.First());
+
+            servicoArmazenamentoMock.Verify(
+                x => x.ObterUrlPorChaveObjetoAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()),
+                Times.Never);
+        }
+
+        [Fact]
         public async Task Deve_processar_upload_com_sucesso()
         {
             // Arrange
