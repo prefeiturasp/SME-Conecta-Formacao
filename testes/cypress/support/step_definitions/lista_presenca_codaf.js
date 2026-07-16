@@ -7,16 +7,16 @@ Quando('acesso o menu Lista Presença Codaf', () => {
   cy.acessar_lista_presenca()
 })
 
-Quando('filtro a presença nas formações', () => {
-  cy.filtrar_lista_presenca()
+Quando('filtro a presença nas formações {string}', (situacao) => {
+  cy.filtrar_lista_presenca(situacao)
 })
 
-Então('o sistema permite baixar o TXT CODAF', (situacao) => {
-  cy.validar_baixar_lista_presenca_eol(situacao)
+Então('o sistema permite baixar o TXT CODAF', () => {
+  cy.validar_baixar_lista_presenca_eol()
 })
 
-Então('o sistema permite baixar o relatório CODAF', (situacao) => {
-  cy.validar_baixar_lista_presenca_codaf(situacao)
+Então('o sistema permite baixar o relatório CODAF', () => {
+  cy.validar_baixar_lista_presenca_codaf()
 })
 
 Quando('preencho o campo {string} com {string} na presença das formações', (opcao, valor) => {
