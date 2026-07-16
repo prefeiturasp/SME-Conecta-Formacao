@@ -22,9 +22,11 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
+    [ExcludeFromCodeCoverage]
     public class DominioParaDtoProfile : Profile
     {
         private const string FormatoData = "dd/MM/yyyy";

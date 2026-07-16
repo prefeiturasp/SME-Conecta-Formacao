@@ -9,36 +9,26 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarPropostaRegenteCommandHandler : IRequestHandler<SalvarPropostaRegenteCommand, long>
+    public class SalvarPropostaRegenteCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao, IMediator mediator) : 
+        IRequestHandler<SalvarPropostaRegenteCommand, long>
     {
-        private readonly IMapper _mapper;
-        private readonly IRepositorioProposta _repositorioProposta;
-        private readonly ITransacao _transacao;
-        private readonly IMediator _mediator;
-
-        public SalvarPropostaRegenteCommandHandler(IMapper mapper, IRepositorioProposta repositorioProposta, ITransacao transacao, IMediator mediator)
-        {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        }
+        private readonly ITransacao _transacao = transacao;
 
         public async Task<long> Handle(SalvarPropostaRegenteCommand request, CancellationToken cancellationToken)
         {
-            var regenteAntes = await _repositorioProposta.ObterPropostaRegentePorId(request.PropostaRegenteDTO.Id);
-            var regenteDepois = _mapper.Map<PropostaRegente>(request.PropostaRegenteDTO);
+            var regenteAntes = await repositorioProposta.ObterPropostaRegentePorId(request.PropostaRegenteDTO.Id);
+            var regenteDepois = mapper.Map<PropostaRegente>(request.PropostaRegenteDTO);
 
-            if (regenteDepois.Cpf.NaoEhNulo() && !regenteDepois.Cpf.CpfEhValido())
+            if (regenteDepois.Cpf is not null && !regenteDepois.Cpf.CpfEhValido())
                 throw new NegocioException(MensagemNegocio.CPF_INVALIDO);
 
-            var turmasAntes = await _repositorioProposta.ObterRegenteTurmasPorRegenteId(regenteDepois.Id);
+            var turmasAntes = await repositorioProposta.ObterRegenteTurmasPorRegenteId(regenteDepois.Id);
             var arrayTurma = request.PropostaRegenteDTO.Turmas.Select(x => x.TurmaId);
             var turmasConsultar = arrayTurma.Where(w => !turmasAntes.Any(a => a.TurmaId == w)).ToArray();
 
-            await _mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(regenteDepois.RegistroFuncional, regenteDepois.Cpf, regenteDepois.NomeRegente, turmasConsultar), cancellationToken);
+            await mediator.Send(new ValidarSeJaExisteRegenteTurmaAntesDeCadastrarCommand(regenteDepois.RegistroFuncional, regenteDepois.Cpf, regenteDepois.NomeRegente, turmasConsultar), cancellationToken);
 
-            var transacao = _transacao.Iniciar();
+            var transacaoDb = _transacao.Iniciar();
             try
             {
                 if (regenteAntes != null)
@@ -51,31 +41,31 @@ namespace SME.ConectaFormacao.Aplicacao
                     {
                         regenteDepois.PropostaId = request.PropostaId;
                         regenteDepois.ManterCriador(regenteAntes);
-                        await _repositorioProposta.AtualizarPropostaRegente(regenteDepois);
+                        await repositorioProposta.AtualizarPropostaRegente(regenteDepois);
                     }
                 }
                 else
-                    await _repositorioProposta.InserirPropostaRegente(request.PropostaId, regenteDepois);
+                    await repositorioProposta.InserirPropostaRegente(request.PropostaId, regenteDepois);
 
                 var turmasInserir = regenteDepois.Turmas.Where(w => !turmasAntes.Any(a => a.Id == w.Id));
                 var turmasExcluir = turmasAntes.Where(w => !regenteDepois.Turmas.Any(a => a.Id == w.Id));
                 if (turmasInserir.Any())
-                    await _repositorioProposta.InserirPropostaRegenteTurma(regenteDepois.Id, turmasInserir);
+                    await repositorioProposta.InserirPropostaRegenteTurma(regenteDepois.Id, turmasInserir);
 
                 if (turmasExcluir.Any())
-                    await _repositorioProposta.ExcluirPropostaRegenteTurmas(turmasExcluir);
+                    await repositorioProposta.ExcluirPropostaRegenteTurmas(turmasExcluir);
 
-                transacao.Commit();
+                transacaoDb.Commit();
                 return regenteDepois.Id;
             }
             catch
             {
-                transacao.Rollback();
+                transacaoDb.Rollback();
                 throw;
             }
             finally
             {
-                transacao.Dispose();
+                transacaoDb.Dispose();
             }
         }
     }

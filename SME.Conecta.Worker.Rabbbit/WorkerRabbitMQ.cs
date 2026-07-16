@@ -12,9 +12,11 @@ using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Servicos.Mensageria;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.Options;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.Conecta.Worker
 {
+    [ExcludeFromCodeCoverage]
     public sealed class WorkerRabbitMQ : WorkerRabbitConecta
     {
         public WorkerRabbitMQ(IServiceScopeFactory serviceScopeFactory,

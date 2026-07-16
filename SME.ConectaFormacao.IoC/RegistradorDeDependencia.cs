@@ -78,9 +78,11 @@ using SME.ConectaFormacao.Infra.Servicos.Polly;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.IoC;
 using SME.ConectaFormacao.IoC.Extensions;
 using SME.ConectaFormacao.IoC.Features;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.IoC;
 
+[ExcludeFromCodeCoverage]
 public class RegistradorDeDependencia(IServiceCollection serviceCollection, IConfiguration configuration)
 {
     public virtual void Registrar()
