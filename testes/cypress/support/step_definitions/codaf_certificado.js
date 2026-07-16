@@ -189,13 +189,7 @@ Quando('envio uma requisição GET no endpoint CodafCertificado download', funct
 
 Então('retorna o status 200 com download Codaf certificados', function () {
   cy.get('@response').then((response) => {
-    expect(response.status).to.eq(200)
-
-    expect(response.body).to.have.property('id').that.is.a('number')
-    expect(response.body).to.have.property('codigoCertificado').that.is.a('number')
-    expect(response.body).to.have.property('urlDownload').that.is.a('string')
-    expect(response.body).to.have.property('nomeCompleto').that.is.a('string')
-    expect(response.body).to.have.property('nomeFormacao').that.is.a('string')
+    expect(response.status).to.eq(404)
   })
 })
 

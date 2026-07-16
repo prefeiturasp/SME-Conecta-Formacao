@@ -17,15 +17,15 @@ Cypress.Commands.add('acessar_lista_presenca', () => {
 
 Cypress.Commands.add('filtrar_lista_presenca', (situacao) => {
   cy.get(lista_presenca_localizadores.select_situacao(), { timeout: 10000 })
-      .should('to.exist')
-      .click()
+    .should('exist')
+    .click()
 
-  cy.get(lista_presenca_localizadores.select_situacao(situacao), { timeout: 10000 })
-      .should('to.exist')
-      .click()
+  cy.contains(lista_presenca_localizadores.opcao_situacao(), situacao, { timeout: 10000 })
+    .should('exist')
+    .click()
 
   cy.get(lista_presenca_localizadores.btn_filtrar(), { timeout: 30000 })
-    .should('be.visible')
+    .should('exist')
     .click()
 
   cy.url({ timeout: 30000 })

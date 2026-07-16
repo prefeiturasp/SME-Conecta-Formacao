@@ -8,21 +8,21 @@ Funcionalidade: Lista presença CODAF
 
   Esquema do Cenário: Gerar TXT EOL
     Quando acesso o menu Lista Presença Codaf
-    E filtro a presença nas formações
+    E filtro a presença nas formações "<situacao>"
     Então o sistema permite baixar o TXT CODAF
       
     Exemplos:
-      | situacao |
-      | Iniciado | 
+      | situacao   |
+      | Finalizado | 
 
   Esquema do Cenário: Baixar relatório CODAF
     Quando acesso o menu Lista Presença Codaf
-    E filtro a presença nas formações
+    E filtro a presença nas formações "<situacao>"
     Então o sistema permite baixar o relatório CODAF
          
     Exemplos:
-      | situacao |
-      | Iniciado | 
+      | situacao   |
+      | Finalizado | 
 
   Esquema do Cenário: Filtrar por: <caso>
     Quando acesso o menu Lista Presença Codaf
