@@ -84,7 +84,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Utilitarios
             Assert.False(resultado.Sucesso);
             Assert.NotNull(resultado.MensagensErro);
             Assert.Single(resultado.MensagensErro);
-            Assert.Equal("Erro ao salvar anexo, tente novamente.", resultado.MensagensErro.First());
+            Assert.Equal("Não foi possível salvar o anexo. Tente novamente.", resultado.MensagensErro?.First());
 
             servicoArmazenamentoMock.Verify(
                 x => x.ObterUrlPorChaveObjetoAsync(
