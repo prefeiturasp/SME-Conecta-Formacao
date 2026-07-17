@@ -5,7 +5,9 @@ using FluentAssertions;
 using Moq;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
+using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
@@ -22,6 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<IRepositorioCodafInscritosListaPresenca> _repositorioCodafInscritosMock;
         private readonly Mock<IServicoArmazenamento> _servicoArmazenamentoMock;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IContextoAplicacao> _contextoAplicacaoMock;
         private readonly CasoDeUsoObterCodafListaPresencaPorId _casoDeUsoObterCodafListaPresencaPorId;
         private readonly Faker _faker;
 
@@ -33,8 +36,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _repositorioCodafInscritosMock = mocker.GetMock<IRepositorioCodafInscritosListaPresenca>();
             _servicoArmazenamentoMock = mocker.GetMock<IServicoArmazenamento>();
             _mapperMock = mocker.GetMock<IMapper>();
+            _contextoAplicacaoMock = mocker.GetMock<IContextoAplicacao>();
             _casoDeUsoObterCodafListaPresencaPorId = mocker.CreateInstance<CasoDeUsoObterCodafListaPresencaPorId>();
             _faker = new();
+
+            _contextoAplicacaoMock.Setup(c => c.IdPerfilUsuario).Returns(Perfis.ADMIN_DF);
         }
 
         [Fact]
@@ -42,6 +48,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var listaPresencaId = _faker.Random.Long(1);
+            var criadoLogin = _faker.Internet.UserName();
             var listaPresencaEntidade = new CodafListaPresenca(
                 propostaId: 1,
                 propostaTurmaId: 1,
@@ -57,7 +64,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             {
                 Id = listaPresencaId,
                 PropostaId = 1,
-                PropostaTurmaId = 1
+                PropostaTurmaId = 1,
+                CriadoLogin = criadoLogin,
+                DeltaInscritos = new()
             };
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(listaPresencaId))
@@ -65,6 +74,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mapperMock
                 .Setup(m => m.Map<CodafListaPresencaDto>(listaPresencaEntidade))
                 .Returns(listaPresencaDto);
+            _repositorioCodafInscritosMock
+                .Setup(r => r.ObterDeltaInscritosCodafAsync(It.IsAny<long>()))
+                .ReturnsAsync((IList<ResultadoDeltaInscritoCodafDto>?)null);
 
             // Act
             var resultado = await _casoDeUsoObterCodafListaPresencaPorId.ExecutarAsync(listaPresencaId);
@@ -97,6 +109,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             var listaPresencaId = _faker.Random.Long(1);
             var anexoCodigo = _faker.Random.Guid();
+            var criadoLogin = _faker.Internet.UserName();
             var listaPresencaEntidade = new CodafListaPresenca(
                 propostaId: 1,
                 propostaTurmaId: 1,
@@ -120,7 +133,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Id = listaPresencaId,
                 PropostaId = 1,
                 PropostaTurmaId = 1,
-                Anexos = [anexoDto]
+                CriadoLogin = criadoLogin,
+                Anexos = [anexoDto],
+                DeltaInscritos = new()
             };
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(listaPresencaId))
@@ -132,6 +147,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _servicoArmazenamentoMock
                 .Setup(s => s.ObterUrlPorChaveObjetoAsync(anexoCodigo.ToString()))
                 .ReturnsAsync(urlDownloadEsperada);
+            _repositorioCodafInscritosMock
+                .Setup(r => r.ObterDeltaInscritosCodafAsync(It.IsAny<long>()))
+                .ReturnsAsync((IList<ResultadoDeltaInscritoCodafDto>?)null);
 
             // Act
             var resultado = await _casoDeUsoObterCodafListaPresencaPorId.ExecutarAsync(listaPresencaId);
@@ -150,6 +168,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var listaPresencaId = _faker.Random.Long(1);
+            var criadoLogin = _faker.Internet.UserName();
             var listaPresencaEntidade = new CodafListaPresenca(
                 propostaId: 1,
                 propostaTurmaId: 1,
@@ -173,7 +192,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Id = listaPresencaId,
                 PropostaId = 1,
                 PropostaTurmaId = 1,
-                Status = StatusCodafListaPresenca.DevolvidoParaCorrecao
+                CriadoLogin = criadoLogin,
+                Status = StatusCodafListaPresenca.DevolvidoParaCorrecao,
+                DeltaInscritos = new()
             };
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(listaPresencaId))
@@ -187,6 +208,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                     StatusCodafListaPresenca.DevolvidoParaCorrecao,
                     StatusCodafListaPresenca.AguardandoDf))
                 .ReturnsAsync(comentarioDevolucaoDto);
+            _repositorioCodafInscritosMock
+                .Setup(r => r.ObterDeltaInscritosCodafAsync(It.IsAny<long>()))
+                .ReturnsAsync((IList<ResultadoDeltaInscritoCodafDto>?)null);
 
             // Act
             var resultado = await _casoDeUsoObterCodafListaPresencaPorId.ExecutarAsync(listaPresencaId);
@@ -209,6 +233,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             var listaPresencaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
+            var criadoLogin = _faker.Internet.UserName();
             var listaPresencaEntidade = new CodafListaPresenca(
                 propostaId: 1,
                 propostaTurmaId: propostaTurmaId,
@@ -224,7 +249,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             {
                 Id = listaPresencaId,
                 PropostaId = 1,
-                PropostaTurmaId = propostaTurmaId
+                PropostaTurmaId = propostaTurmaId,
+                CriadoLogin = criadoLogin
             };
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(listaPresencaId))
@@ -232,6 +258,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mapperMock
                 .Setup(m => m.Map<CodafListaPresencaDto>(listaPresencaEntidade))
                 .Returns(listaPresencaDto);
+            _repositorioCodafInscritosMock
+                .Setup(r => r.ObterDeltaInscritosCodafAsync(It.IsAny<long>()))
+                .ReturnsAsync((IList<ResultadoDeltaInscritoCodafDto>?)null);
 
             // Act
             var resultado = await _casoDeUsoObterCodafListaPresencaPorId.ExecutarAsync(listaPresencaId);
@@ -250,6 +279,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             var listaPresencaId = _faker.Random.Long(1);
             var propostaTurmaId = _faker.Random.Long(1);
+            var criadoLogin = _faker.Internet.UserName();
             var listaPresencaEntidade = new CodafListaPresenca(
                 propostaId: 1,
                 propostaTurmaId: propostaTurmaId,
@@ -262,6 +292,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Observacao: "Observação"),
                 Perfis.ADMIN_DF);
 
+            var cpfRemovido = _faker.Person.Cpf();
+            var cpfNovo = _faker.Person.Cpf();
+            var loginRemovido = _faker.Internet.UserName();
+            var loginNovo = _faker.Internet.UserName();
+
             var deltaInscritos = new List<ResultadoDeltaInscritoCodafDto>
             {
                 new()
@@ -271,8 +306,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                     {
                         Id = _faker.Random.Long(1),
                         Nome = _faker.Name.FullName(),
-                        Login = _faker.Internet.UserName(),
-                        Cpf = _faker.Person.Cpf()
+                        Login = loginRemovido,
+                        Cpf = cpfRemovido
                     }
                 },
                 new()
@@ -282,8 +317,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                     {
                         Id = _faker.Random.Long(1),
                         Nome = _faker.Name.FullName(),
-                        Login = _faker.Internet.UserName(),
-                        Cpf = _faker.Person.Cpf()
+                        Login = loginNovo,
+                        Cpf = cpfNovo
                     }
                 }
             };
@@ -292,7 +327,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             {
                 Id = listaPresencaId,
                 PropostaId = 1,
-                PropostaTurmaId = propostaTurmaId
+                PropostaTurmaId = propostaTurmaId,
+                CriadoLogin = criadoLogin
             };
             _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(listaPresencaId))
@@ -301,11 +337,19 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .Setup(m => m.Map<CodafListaPresencaDto>(listaPresencaEntidade))
                 .Returns(listaPresencaDto);
             _repositorioCodafInscritosMock
-                .Setup(r => r.ObterDeltaInscritosCodafAsync(It.IsAny<long>()))
+                .Setup(r => r.ObterDeltaInscritosCodafAsync(propostaTurmaId))
                 .ReturnsAsync(deltaInscritos);
+
+            var inscritoNovoMapeado = new CodafInscritoTurmaListaPresencaRetornoDto
+            {
+                Id = deltaInscritos[1].DadosInscrito.Id,
+                Nome = deltaInscritos[1].DadosInscrito.Nome,
+                Documento = cpfNovo
+            };
+
             _mapperMock
                 .Setup(m => m.Map<IList<CodafInscritoTurmaListaPresencaRetornoDto>>(It.IsAny<List<ResultadoInscritoTurmaCodafListaPresencaDto>>()))
-                .Returns([new()]);
+                .Returns([inscritoNovoMapeado]);
 
             // Act
             var resultado = await _casoDeUsoObterCodafListaPresencaPorId.ExecutarAsync(listaPresencaId);

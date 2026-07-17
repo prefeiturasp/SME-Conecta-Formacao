@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
+using SME.ConectaFormacao.Infra.Dados.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
@@ -25,6 +26,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 .QueryAsync<DadosEmissaoCertificadoCodafDto>(CodafCertificadoQueries.ObterDadosParaEmissao,
                 new { idCodaf = codafListaPresencaId });
 
+
+        public async Task<IEnumerable<DadosEmissaoCertificadoCodafDto>>
+            ObterDadosParaEmissaoCertificadosCodafSuplementarAsync(long codafSuplementarId) =>
+            await conexao.Obter()
+                .QueryAsync<DadosEmissaoCertificadoCodafDto>(CodafCertificadoQueries.ObterDadosParaEmissaoSuplementar,
+                new { codafSuplementarId });
+
         public async Task InserirLoteAsync(IEnumerable<CodafCertificado> certificados)
         {
             if (certificados is null || !certificados.Any())
@@ -32,33 +40,30 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             using var writer = await ((NpgsqlConnection)conexao.Obter())
                 .BeginBinaryImportAsync(CodafCertificadoQueries.InserirLoteCopy);
+
+            var criadoEm = DateTimeExtension.HorarioBrasilia();
+            var nomeUsuario = contexto.NomeUsuario;
+            var usuarioLogado = contexto.UsuarioLogado;
+
             foreach (var cert in certificados)
             {
                 await writer.StartRowAsync();
-                await writer.WriteAsync(cert.CodafListaPresencaId, NpgsqlDbType.Bigint);
 
-                if (cert.CodafInscricaoListaPresencaId.HasValue)
-                    await writer.WriteAsync(cert.CodafInscricaoListaPresencaId.Value, NpgsqlDbType.Bigint);
-                else
-                    await writer.WriteNullAsync();
-
-                if (cert.PropostaRegenteTurmaId.HasValue)
-                    await writer.WriteAsync(cert.PropostaRegenteTurmaId.Value, NpgsqlDbType.Bigint);
-                else
-                    await writer.WriteNullAsync();
+                await writer.EscreverNuloOuValorAsync(cert.CodafListaPresencaId, NpgsqlDbType.Bigint);
+                await writer.EscreverNuloOuValorAsync(cert.CodafSuplementarId, NpgsqlDbType.Bigint);
+                await writer.EscreverNuloOuValorAsync(cert.CodafInscricaoListaPresencaId, NpgsqlDbType.Bigint);
+                await writer.EscreverNuloOuValorAsync(cert.CodafSuplementarInscricaoId, NpgsqlDbType.Bigint);
+                await writer.EscreverNuloOuValorAsync(cert.PropostaRegenteTurmaId, NpgsqlDbType.Bigint);
 
                 await writer.WriteAsync((int)cert.TipoParticipacao, NpgsqlDbType.Integer);
                 await writer.WriteAsync(cert.DataEmissao, NpgsqlDbType.Timestamp);
                 await writer.WriteAsync(cert.HtmlContentSnapshot, NpgsqlDbType.Text);
 
-                if (!string.IsNullOrEmpty(cert.MetadadosJson))
-                    await writer.WriteAsync(cert.MetadadosJson, NpgsqlDbType.Jsonb);
-                else
-                    await writer.WriteNullAsync();
+                await writer.EscreverNuloOuStringAsync(cert.MetadadosJson, NpgsqlDbType.Jsonb);
 
-                await writer.WriteAsync(DateTimeExtension.HorarioBrasilia(), NpgsqlDbType.Timestamp);
-                await writer.WriteAsync(contexto.NomeUsuario, NpgsqlDbType.Varchar);
-                await writer.WriteAsync(contexto.UsuarioLogado, NpgsqlDbType.Varchar);
+                await writer.WriteAsync(criadoEm, NpgsqlDbType.Timestamp);
+                await writer.WriteAsync(nomeUsuario, NpgsqlDbType.Varchar);
+                await writer.WriteAsync(usuarioLogado, NpgsqlDbType.Varchar);
                 await writer.WriteAsync(false, NpgsqlDbType.Boolean);
             }
             await writer.CompleteAsync();
@@ -140,7 +145,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (filtro.DataEmissaoFim.HasValue)
             {
-                // Ajuste para pegar até o final do dia selecionado
                 condicoesWhere.Append(" AND dataEmissao <= @dataEmissaoFim ");
                 parametros.Add("dataEmissaoFim", filtro.DataEmissaoFim.Value.Date.AddDays(1).AddTicks(-1));
             }
@@ -214,89 +218,84 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         public async Task<ResultadoPaginado<ListagemCertificadosCodafDto>>
             ObterTodosCertificadosAsync(FiltroListagemTodosCertificadosCodafDto filtro)
         {
-            const string sqlBaseJoins = CodafCertificadoQueries.ObterTodosCertificadosBaseJoins;
-            const string sqlSelect = CodafCertificadoQueries.ObterTodosCertificadosSelect;
-            const string sqlOrderBy = "ORDER BY CC.DATA_EMISSAO DESC, CC.CODIGO_CERTIFICADO ASC";
-
-            var condicoesWhere = new StringBuilder("WHERE NOT CC.EXCLUIDO AND  CC.STATUS_PROCESSAMENTO = @processadoComSucesso");
+            var condicoesWhere = new StringBuilder("WHERE 1=1 ");
             var parametros = new DynamicParameters();
             parametros.Add("processadoComSucesso", (int)StatusProcessamentoCertificadoCodaf.ProcessadoComSucesso);
+            parametros.Add("Cursista", (int)TipoCertificadoCodaf.Cursista);
+            parametros.Add("Regente", (int)TipoCertificadoCodaf.Regente);
 
             if (!string.IsNullOrWhiteSpace(filtro.CodigoFormacao))
             {
-                condicoesWhere.Append(" AND CAST(P.ID AS TEXT) ILIKE @codigoFormacao ");
+                condicoesWhere.Append(" AND CAST(codigoFormacao AS TEXT) ILIKE @codigoFormacao ");
                 parametros.Add("codigoFormacao", $"{filtro.CodigoFormacao.Trim()}%");
             }
 
             if (!string.IsNullOrWhiteSpace(filtro.NumeroHomologacao))
             {
-                condicoesWhere.Append(" AND CAST(P.NUMERO_HOMOLOGACAO AS TEXT) ILIKE @numeroHomologacao ");
+                condicoesWhere.Append(" AND CAST(numeroHomologacao AS TEXT) ILIKE @numeroHomologacao ");
                 parametros.Add("numeroHomologacao", $"{filtro.NumeroHomologacao.Trim()}%");
             }
 
             if (!string.IsNullOrWhiteSpace(filtro.NomeFormacao))
             {
-                condicoesWhere.Append(" AND f_unaccent(P.NOME_FORMACAO) ILIKE f_unaccent(@nomeFormacao) ");
+                condicoesWhere.Append(" AND f_unaccent(nomeFormacao) ILIKE f_unaccent(@nomeFormacao) ");
                 parametros.Add("nomeFormacao", $"%{filtro.NomeFormacao.Trim()}%");
             }
 
             if (filtro.PropostaTurmaId.HasValue)
             {
-                condicoesWhere.Append(" AND CLP.PROPOSTA_TURMA_ID = @propostaTurmaId ");
+                condicoesWhere.Append(" AND propostaTurmaId = @propostaTurmaId ");
                 parametros.Add("propostaTurmaId", filtro.PropostaTurmaId.Value);
             }
 
             if (!string.IsNullOrWhiteSpace(filtro.CodigoCertificado))
             {
-                condicoesWhere.Append(" AND CAST(CC.CODIGO_CERTIFICADO AS TEXT) ILIKE @codigoCertificado ");
+                condicoesWhere.Append(" AND CAST(codigoCertificado AS TEXT) ILIKE @codigoCertificado ");
                 parametros.Add("codigoCertificado", $"{filtro.CodigoCertificado.Trim()}%");
             }
 
-            if (filtro.TipoCertificado == TipoCertificadoCodaf.Cursista)
+            if (filtro.TipoCertificado == TipoCertificadoCodaf.Cursista || filtro.TipoCertificado == TipoCertificadoCodaf.Regente)
             {
-                condicoesWhere.Append(" AND CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID IS NOT NULL ");
-            }
-            else if (filtro.TipoCertificado == TipoCertificadoCodaf.Regente)
-            {
-                condicoesWhere.Append(" AND CC.PROPOSTA_REGENTE_TURMA_ID IS NOT NULL ");
+                condicoesWhere.Append(" AND tipoCertificado = @tipoCertificadoFiltro ");
+                parametros.Add("tipoCertificadoFiltro", (int)filtro.TipoCertificado);
             }
 
             if (!string.IsNullOrWhiteSpace(filtro.DocumentoCursista))
             {
-                condicoesWhere.Append(" AND U_Cursista.LOGIN = @documentoCursista ");
+                condicoesWhere.Append(" AND documento = @documentoCursista AND tipoCertificado = @Cursista ");
                 parametros.Add("documentoCursista", filtro.DocumentoCursista.Trim());
             }
 
             if (!string.IsNullOrWhiteSpace(filtro.DocumentoRegente))
             {
-                condicoesWhere.Append(" AND PR.REGISTRO_FUNCIONAL = @rfRegente ");
-                parametros.Add("rfRegente", filtro.DocumentoRegente.Trim());
+                condicoesWhere.Append(" AND documento = @documentoRegente AND tipoCertificado = @Regente ");
+                parametros.Add("documentoRegente", filtro.DocumentoRegente.Trim());
             }
 
             if (!string.IsNullOrWhiteSpace(filtro.NomeCursista))
             {
-                condicoesWhere.Append(" AND f_unaccent(U_Cursista.NOME) ILIKE f_unaccent(@nomeCursista) ");
+                condicoesWhere.Append(" AND f_unaccent(nomeParticipante) ILIKE f_unaccent(@nomeCursista) AND tipoCertificado = @Cursista ");
                 parametros.Add("nomeCursista", $"%{filtro.NomeCursista.Trim()}%");
             }
 
             if (filtro.DataEmissao.HasValue)
             {
-                // Ajuste para pegar até o final do dia selecionado
-                condicoesWhere.Append(" AND CC.DATA_EMISSAO >= @dataEmissaoInicio AND CC.DATA_EMISSAO <= @dataEmissaoFim ");
+                condicoesWhere.Append(" AND dataEmissao >= @dataEmissaoInicio AND dataEmissao <= @dataEmissaoFim ");
                 parametros.Add("dataEmissaoInicio", filtro.DataEmissao.Value.Date);
                 parametros.Add("dataEmissaoFim", filtro.DataEmissao.Value.Date.AddDays(1).AddTicks(-1));
             }
 
             if (filtro.DreId.HasValue)
             {
-                condicoesWhere.Append(" AND PD.DRE_ID = @dreId ");
+                condicoesWhere.Append(" AND dreId = @dreId ");
                 parametros.Add("dreId", filtro.DreId.Value);
             }
 
             var conn = conexao.Obter();
             var sqlCount = new StringBuilder($"""
+                {CodafCertificadoQueries.ObterTodosCertificadosCteBase}
                 SELECT COUNT(1)
-                {sqlBaseJoins}
+                FROM BaseCertificados
                 {condicoesWhere}
                 """);
 
@@ -315,13 +314,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             parametros.Add("registrosIgnorados", registrosIgnorados);
             parametros.Add("Cursista", (int)TipoCertificadoCodaf.Cursista);
             parametros.Add("Regente", (int)TipoCertificadoCodaf.Regente);
+
             parametros.Add("NaoDefinido", (int)TipoCertificadoCodaf.NaoDefinido);
 
             var sqlConsulta = new StringBuilder($"""
-                {sqlSelect}
-                {sqlBaseJoins}
+                {CodafCertificadoQueries.ObterTodosCertificadosCteBase}
+                SELECT 
+                    id, codigoCertificado, nomeParticipante, tipoCertificado,
+                    documento, dataEmissao, numeroHomologacao, codigoFormacao, nomeFormacao
+                FROM BaseCertificados
                 {condicoesWhere}
-                {sqlOrderBy}
+                ORDER BY dataEmissao DESC, codigoCertificado ASC
                 LIMIT @limite OFFSET @registrosIgnorados
                 """);
 
@@ -374,11 +377,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return certificados.ToList();
         }
 
-        public async Task AtualizaCodigoCertificado(long codafListaPresencaId)
+        public async Task AtualizaCodigoCertificado(long codafId, TipoCodaf tipoCodaf)
         {
             await conexao.Obter().ExecuteAsync(
                 CodafCertificadoQueries.AtualizarCodigoCertificadoNoHtml,
-                new { codafListaPresencaId });
+                new { codafId, tipoCodaf });
+        }
+
+        public async Task InativarCertificadosAnterioresCursistaAsync(IEnumerable<long> idInscritos)
+        {
+            await conexao.Obter().ExecuteAsync(
+                CodafCertificadoQueries.InativarCertificadosAnterioresDeCursistas,
+                new { inscricaoId = idInscritos.ToArray(), usuarioNome = contexto.NomeUsuario, usuarioLogin = contexto.UsuarioLogado });
         }
     }
 }

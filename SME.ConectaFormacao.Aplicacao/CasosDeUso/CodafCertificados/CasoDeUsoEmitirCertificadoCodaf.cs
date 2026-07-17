@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -17,12 +18,19 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
         IRepositorioCodafCertificado repositorioCodafCertificado,
         IKeyedServiceProvider serviceProvider,
         IMediator mediator,
-        IPeriodoRealizacaoConsultaService periodoRealizacaoConsultaService) :
+        IPeriodoRealizacaoConsultaService periodoRealizacaoConsultaService,
+        IRepositorioCodafSuplementarInscricao repositorioCodafSuplementarInscricao,
+        ITransacao transacao) :
         ICasoDeUsoEmitirCertificadoCodaf
     {
-        public async Task<Resultado> ExecutarAsync(long codafListaPresencaId)
+        public async Task<Resultado> ExecutarAsync(long codafId, TipoCodaf tipoCodaf)
         {
-            var listaDadosCertificado = await repositorioCodafCertificado.ObterDadosParaEmissaoCertificadosCodafAsync(codafListaPresencaId);
+            var listaDadosCertificado = tipoCodaf switch
+            {
+                TipoCodaf.ListaPresenca => await repositorioCodafCertificado.ObterDadosParaEmissaoCertificadosCodafAsync(codafId),
+                TipoCodaf.Suplementar => await repositorioCodafCertificado.ObterDadosParaEmissaoCertificadosCodafSuplementarAsync(codafId),
+                _ => throw new ArgumentOutOfRangeException(nameof(tipoCodaf), tipoCodaf, null)
+            };
 
             if (!listaDadosCertificado.Any())
                 return Erro.NaoEncontrado();
@@ -57,7 +65,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                 };
 
                 var novoCertificado = new CodafCertificado(
-                    codafListaPresencaId,
+                    codafId,
+                    tipoCodaf,
                     dados.TipoParticipacao,
                     dados.IdReferencia,
                     htmlCertificado,
@@ -68,12 +77,33 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 
             if (entidadesParaSalvar.Count != 0)
             {
-                await repositorioCodafCertificado.InserirLoteAsync(entidadesParaSalvar);
-                await repositorioCodafCertificado.AtualizaCodigoCertificado(codafListaPresencaId);
+                using var transacaoDb = transacao.Iniciar();
+                try
+                {
+                    await SanitizarCertificadosEmitidosAsync(tipoCodaf, codafId, listaDadosCertificado);
+                    await repositorioCodafCertificado.InserirLoteAsync(entidadesParaSalvar);
+                    await repositorioCodafCertificado.AtualizaCodigoCertificado(codafId, tipoCodaf);
+                    transacaoDb.Commit();
+                }
+                catch
+                {
+                    transacaoDb.Rollback();
+                    throw;
+                }
             }
 
-            await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarArquivoCertificadosCodaf, codafListaPresencaId));
+            await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.GerarArquivoCertificadosCodaf, codafId));
             return Resultado.DeSucesso();
+        }
+
+        private async Task SanitizarCertificadosEmitidosAsync(TipoCodaf tipoCodaf, long codafSuplementarId, IEnumerable<DadosEmissaoCertificadoCodafDto> listaDadosCertificado)
+        {
+            if (tipoCodaf == TipoCodaf.ListaPresenca) return;
+
+            var inscricaoCursistas = listaDadosCertificado.Where(x => x.TipoParticipacao == TipoParticipacaoCodaf.Cursista).Select(x => x.InscricaoId).ToList();
+            var inscritosReprovados = await repositorioCodafSuplementarInscricao.ObterIdInscritosReprovadosAsync(codafSuplementarId);
+            var inscritosParaCancelarCertificado = inscricaoCursistas.Union(inscritosReprovados).ToList();
+            await repositorioCodafCertificado.InativarCertificadosAnterioresCursistaAsync(inscritosParaCancelarCertificado);
         }
 
         private static TipoEstrategiaCertificadoCodaf DefinirEstrategia(DadosEmissaoCertificadoCodafDto dto)

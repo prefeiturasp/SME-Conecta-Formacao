@@ -126,5 +126,168 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _mocker.GetMock<IRepositorioCodafCertificado>().Verify(r => r.ObterTodosCertificadosAsync(filtroRepositorio), Times.Once);
         }
+
+        [Fact]
+        public async Task DadoFiltroValidoComDocumentoCpf_QuandoExecutarAsync_EntaoDeveRetornarDocumentoMascaradoComoCpf()
+        {
+            // Arrange
+            var filtro = new FiltroListaTodosCertificadosCodafDto
+            {
+                NumeroPagina = 1,
+                NumeroRegistros = 10
+            };
+
+            var filtroRepositorio = new FiltroListagemTodosCertificadosCodafDto
+            {
+                Pagina = 1,
+                TamanhoPagina = 10
+            };
+
+            var certificados = new List<ListagemCertificadosCodafDto>
+            {
+                new()
+                {
+                    Id = _faker.Random.Long(1, 1000),
+                    NomeParticipante = _faker.Person.FullName,
+                    Documento = "12345678901",
+                    TipoCertificado = TipoCertificadoCodaf.Cursista
+                }
+            };
+
+            var resultadoRepositorio = new ResultadoPaginado<ListagemCertificadosCodafDto>
+            {
+                Itens = certificados,
+                TotalRegistros = 1,
+                TamanhoPagina = 10
+            };
+
+            _mocker.GetMock<IMapper>()
+                .Setup(m => m.Map<FiltroListagemTodosCertificadosCodafDto>(filtro))
+                .Returns(filtroRepositorio);
+
+            _mocker.GetMock<IRepositorioCodafCertificado>()
+                .Setup(r => r.ObterTodosCertificadosAsync(filtroRepositorio))
+                .ReturnsAsync(resultadoRepositorio);
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(filtro);
+
+            // Assert
+            Assert.True(resultado.Sucesso);
+            Assert.NotNull(resultado.Dados);
+            Assert.Single(resultado.Dados.Items);
+            Assert.Equal("123.456.789-01", resultado.Dados.Items.First().Documento);
+        }
+
+        [Fact]
+        public async Task DadoFiltroValidoComDocumentoRf_QuandoExecutarAsync_EntaoDeveRetornarDocumentoMascaradoComoRf()
+        {
+            // Arrange
+            var filtro = new FiltroListaTodosCertificadosCodafDto
+            {
+                NumeroPagina = 1,
+                NumeroRegistros = 10
+            };
+
+            var filtroRepositorio = new FiltroListagemTodosCertificadosCodafDto
+            {
+                Pagina = 1,
+                TamanhoPagina = 10
+            };
+
+            var certificados = new List<ListagemCertificadosCodafDto>
+            {
+                new()
+                {
+                    Id = _faker.Random.Long(1, 1000),
+                    NomeParticipante = _faker.Person.FullName,
+                    Documento = "0123456",
+                    TipoCertificado = TipoCertificadoCodaf.Regente
+                }
+            };
+
+            var resultadoRepositorio = new ResultadoPaginado<ListagemCertificadosCodafDto>
+            {
+                Itens = certificados,
+                TotalRegistros = 1,
+                TamanhoPagina = 10
+            };
+
+            _mocker.GetMock<IMapper>()
+                .Setup(m => m.Map<FiltroListagemTodosCertificadosCodafDto>(filtro))
+                .Returns(filtroRepositorio);
+
+            _mocker.GetMock<IRepositorioCodafCertificado>()
+                .Setup(r => r.ObterTodosCertificadosAsync(filtroRepositorio))
+                .ReturnsAsync(resultadoRepositorio);
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(filtro);
+
+            // Assert
+            Assert.True(resultado.Sucesso);
+            Assert.NotNull(resultado.Dados);
+            Assert.Single(resultado.Dados.Items);
+            Assert.Equal("012.345.6", resultado.Dados.Items.First().Documento);
+        }
+
+        [Fact]
+        public async Task DadoFiltroValidoComDocumentosVazios_QuandoExecutarAsync_EntaoDeveManterDocumentosSemAlteracao()
+        {
+            // Arrange
+            var filtro = new FiltroListaTodosCertificadosCodafDto
+            {
+                NumeroPagina = 1,
+                NumeroRegistros = 10
+            };
+
+            var filtroRepositorio = new FiltroListagemTodosCertificadosCodafDto
+            {
+                Pagina = 1,
+                TamanhoPagina = 10
+            };
+
+            var certificados = new List<ListagemCertificadosCodafDto>
+            {
+                new()
+                {
+                    Id = _faker.Random.Long(1, 1000),
+                    NomeParticipante = _faker.Person.FullName,
+                    Documento = string.Empty,
+                    TipoCertificado = TipoCertificadoCodaf.Cursista
+                },
+                new()
+                {
+                    Id = _faker.Random.Long(1, 1000),
+                    NomeParticipante = _faker.Person.FullName,
+                    Documento = "   ",
+                    TipoCertificado = TipoCertificadoCodaf.Cursista
+                }
+            };
+
+            var resultadoRepositorio = new ResultadoPaginado<ListagemCertificadosCodafDto>
+            {
+                Itens = certificados,
+                TotalRegistros = 2,
+                TamanhoPagina = 10
+            };
+
+            _mocker.GetMock<IMapper>()
+                .Setup(m => m.Map<FiltroListagemTodosCertificadosCodafDto>(filtro))
+                .Returns(filtroRepositorio);
+
+            _mocker.GetMock<IRepositorioCodafCertificado>()
+                .Setup(r => r.ObterTodosCertificadosAsync(filtroRepositorio))
+                .ReturnsAsync(resultadoRepositorio);
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(filtro);
+
+            // Assert
+            Assert.True(resultado.Sucesso);
+            Assert.NotNull(resultado.Dados);
+            Assert.Equal(string.Empty, resultado.Dados.Items.First().Documento);
+            Assert.Equal("   ", resultado.Dados.Items.Last().Documento);
+        }
     }
 }
