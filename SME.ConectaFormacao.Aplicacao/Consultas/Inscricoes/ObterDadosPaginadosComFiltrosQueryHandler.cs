@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PaginacaoResultadoDto<DadosListagemFormacaoComTurmaDTO>> Handle(ObterDadosPaginadosComFiltrosQuery request, CancellationToken cancellationToken)
         {
             var retornoComTurmas = new List<DadosListagemFormacaoComTurmaDTO>();
-            var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroHomologacao);
+            var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroHomologacao, request.ApenasSemCodaf);
             if (totalRegistrosFiltro > 0)
             {
                 var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros, request.NumeroHomologacao);
@@ -43,9 +43,9 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             foreach (var proposta in formacoes)
             {
-                var inscricao = turmasFormacao?.Where(x => x.PropostaId == proposta.Id);
+                var inscricao = turmasFormacao?.Where(x => x.PropostaId == proposta.Id) ?? Enumerable.Empty<ListagemFormacaoComTurmaDTO>();
 
-                var turmas = inscricao!.Select(i => new DadosListagemFormacaoTurma
+                var turmas = inscricao.Select(i => new DadosListagemFormacaoTurma
                 {
                     PropostaTurmaId = i.PropostaTurmaId,
                     NomeTurma = i.NomeTurma,

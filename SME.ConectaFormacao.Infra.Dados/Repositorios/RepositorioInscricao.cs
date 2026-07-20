@@ -550,7 +550,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<Proposta>(query.ToString(), parametros);
         }
 
-        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, long? numeroHomologacao)
+        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, long? numeroHomologacao, bool? apenasSemCodaf)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"	
@@ -570,6 +570,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (numeroHomologacao.NaoEhNulo())
                 query += " and p.numero_homologacao = @numeroHomologacao ";
+            
+            if (apenasSemCodaf is true)
+                query += " and not exists(select 1 from codaf_lista_presenca clp where clp.proposta_id = p.id and not clp.excluido) ";
 
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta, numeroHomologacao });
         }
