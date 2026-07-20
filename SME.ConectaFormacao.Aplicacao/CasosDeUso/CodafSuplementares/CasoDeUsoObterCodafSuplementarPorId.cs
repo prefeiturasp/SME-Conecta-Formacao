@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
             var codafSuplementarDto = mapper.Map<CodafSuplementarDetalhadoDto>(codafSuplementar);
 
-            codafSuplementarDto.CertificadoEmitido = codafSuplementar.CodafCertificados != null && codafSuplementar.CodafCertificados.Any();
+            codafSuplementarDto.CertificadoEmitido = codafSuplementar.CodafCertificados != null && codafSuplementar.CodafCertificados.Count > 0;
 
             if (codafSuplementarDto.Anexos != null && codafSuplementarDto.Anexos.Count > 0)
             {
