@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
             codafSuplementarDto.CertificadoEmitido = codafSuplementar.CodafCertificados != null && codafSuplementar.CodafCertificados.Any();
 
-            if (codafSuplementarDto.Anexos != null && codafSuplementarDto.Anexos.Any())
+            if (codafSuplementarDto.Anexos != null && codafSuplementarDto.Anexos.Count > 0)
             {
                 foreach (var anexo in codafSuplementarDto.Anexos)
                 {
