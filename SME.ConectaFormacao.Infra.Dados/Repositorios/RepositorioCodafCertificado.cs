@@ -312,7 +312,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var registrosIgnorados = (filtro.Pagina - 1) * filtro.TamanhoPagina;
             parametros.Add("limite", filtro.TamanhoPagina);
             parametros.Add("registrosIgnorados", registrosIgnorados);
-            parametros.Add("NaoDefinido", (int)TipoCertificadoCodaf.NaoDefinido);
 
             var sqlConsulta = new StringBuilder($"""
                 {CodafCertificadoQueries.ObterTodosCertificadosCteBase}
