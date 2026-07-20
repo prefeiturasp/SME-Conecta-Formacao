@@ -1,5 +1,6 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
 {
@@ -29,6 +30,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
         public IList<CodafAnexoDto>? Anexos { get; set; }
         public DeltaInscritoCodafDto? DeltaInscritos { get; set; }
         public CodafComentarioDevolucaoDto? Comentario { get; set; }
+        public RegrasAprovacaoCursistaDto? RegrasAprovacao { get; set; }
 
     }
 }
