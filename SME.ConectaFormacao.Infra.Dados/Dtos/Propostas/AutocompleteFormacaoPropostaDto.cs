@@ -6,5 +6,7 @@
         public long NumeroHomologacao { get; set; }
         public string? NomeFormacao { get; set; }
         public long CodigoFormacao { get; set; }
+        public long[]? CriteriosCertificacaoIds { get; set; }
+        public RegrasAprovacaoCursistaDto? RegrasAprovacao { get; set; }
     }
 }

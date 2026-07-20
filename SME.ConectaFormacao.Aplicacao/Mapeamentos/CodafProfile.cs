@@ -18,6 +18,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.NumeroHomologacao, opt => opt.MapFrom(src => src.Proposta.NumeroHomologacao))
                 .ForMember(dest => dest.Retificacoes, opt => opt.MapFrom(src => src.CodafRetificacoes))
                 .ForMember(dest => dest.Anexos, opt => opt.MapFrom(src => src.CodafAnexos))
+                .ForMember(dest => dest.RegrasAprovacao, opt => opt.MapFrom(src =>
+                    CriterioCertificacaoFactory.ConstruirRegras(
+                        src.Proposta.CriterioCertificacao.Select(c => c.CriterioCertificacaoId)
+                    )
+                ))
                 ;
             CreateMap<FiltroListaPresencaCodafDto, FiltroListagemResultadoCodafListaPresencaDto>()
                 .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(src => src.CodigoFormacao.ToString()))

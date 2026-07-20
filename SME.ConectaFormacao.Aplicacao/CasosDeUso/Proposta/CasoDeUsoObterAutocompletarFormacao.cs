@@ -1,5 +1,6 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -14,7 +15,18 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (string.IsNullOrWhiteSpace(filtro.TermoBusca))
                 return new PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>([], 0, 0);
 
-            var resultado = await repositorioProposta.ObterAutocompletarNumeroHomologacaoAsync(filtro.TermoBusca, filtro.ComCodaf, filtro.NumeroPagina, filtro.NumeroRegistros);
+            var resultado = await repositorioProposta.ObterAutocompletarNumeroHomologacaoAsync(
+                filtro.TermoBusca,
+                filtro.ComCodaf,
+                filtro.NumeroPagina,
+                filtro.NumeroRegistros);
+
+            foreach (var item in resultado.Itens)
+            {
+                var idsCriterios = item.CriteriosCertificacaoIds ?? [];
+                item.RegrasAprovacao = CriterioCertificacaoFactory.ConstruirRegras(idsCriterios);
+            }
+
             return new PaginacaoResultadoDto<AutocompletarNumeroHomologacaoDto>(resultado.Itens, resultado.TotalRegistros, resultado.TotalPaginas);
         }
     }
