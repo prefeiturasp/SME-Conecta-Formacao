@@ -32,6 +32,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Retificacoes, opt => opt.MapFrom(src => src.CodafRetificacoes))
                 .ForMember(dest => dest.Anexos, opt => opt.MapFrom(src => src.CodafAnexos))
                 .ForMember(dest => dest.Inscritos, opt => opt.MapFrom(src => src.CodafInscricoes))
+                .ForMember(dest => dest.Certificados, opt => opt.MapFrom(src => src.CodafCertificados))
                 ;
             CreateMap<CodafSuplementarRetificacao, CodafSuplementarRetificacaoDto>().ReverseMap();
             CreateMap<CodafSuplementarRetificacaoSalvarDto, CodafSuplementarRetificacao>();
@@ -54,7 +55,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Inscricao != null && src.Inscricao.Usuario != null ? src.Inscricao.Usuario.Nome : string.Empty))
                 .ForMember(dest => dest.Documento, opt => opt.MapFrom(src => ResolverEFormatarDocumento(src.Inscricao)))
                 ;
-
+            CreateMap<CodafCertificado, CodafCertificadoDto>();
         }
         private static string ResolverEFormatarDocumento(Inscricao? inscricao)
         {

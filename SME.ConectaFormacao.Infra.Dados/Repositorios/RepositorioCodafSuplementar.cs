@@ -163,6 +163,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
                 -- 4. Inscritos (A lista grande)
                 {sqlObterInscricoesDaListaPorIdCodaf}
+
+                -- 5. Certificados
+                {sqlCertificadosPorIdCodaf}
                 """;
 
             var parametros = new { id };
@@ -192,6 +195,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     return csi;
                 },
                 splitOn: "LOGIN")];
+            codafSuplementar.CodafCertificados = [.. await multi.ReadAsync<CodafCertificado>()];
             return codafSuplementar;
         }
 
@@ -347,6 +351,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    CSA.CRIADO_POR AS CriadoPor
             FROM PUBLIC.CODAF_SUPLEMENTAR_ANEXO AS CSA 
             WHERE NOT CSA.EXCLUIDO AND CSA.CODAF_SUPLEMENTAR_ID = @id;
+            """;
+
+        private const string sqlCertificadosPorIdCodaf = """
+            SELECT CC.ID, 
+                   CC.CODIGO_CERTIFICADO AS CodigoCertificado,
+                   CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID AS CodafInscricaoListaPresenca,
+                   CC.PROPOSTA_REGENTE_TURMA_ID AS PropostaRegenteTurmaId,
+                   CC.TIPO_PARTICIPACAO AS TipoParticipacao,
+                   CC.STATUS_PROCESSAMENTO AS StatusProcessamento,
+                   CC.CRIADO_EM AS CriadoEm,
+                   CC.CRIADO_POR AS CriadoPor
+            FROM PUBLIC.CODAF_CERTIFICADOS AS CC
+            INNER JOIN CODAF_SUPLEMENTAR CS ON CC.CODAF_SUPLEMENTAR_ID = CS.ID
+            WHERE NOT CS.EXCLUIDO AND CC.CODAF_SUPLEMENTAR_ID = @id;
             """;
 
         private const string sqlObterInscricoesDaListaPorIdCodaf = """

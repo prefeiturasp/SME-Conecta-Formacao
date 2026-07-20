@@ -8,7 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
-    [ExcludeFromCodeCoverage]
     public class CasoDeUsoObterCodafSuplementarPorId(
         IRepositorioCodafSuplementar repositorioCodafSuplementar,
         IServicoArmazenamento servicoArmazenamento,
@@ -21,6 +20,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                 return Erro.NaoEncontrado("Codaf Suplementar não encontrado.");
 
             var codafSuplementarDto = mapper.Map<CodafSuplementarDetalhadoDto>(codafSuplementar);
+
+            codafSuplementarDto.CertificadoEmitido = codafSuplementar.CodafCertificados != null && codafSuplementar.CodafCertificados.Any();
 
             if (codafSuplementarDto.Anexos != null && codafSuplementarDto.Anexos.Any())
             {
