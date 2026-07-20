@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
+using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -163,6 +164,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
                 -- 4. Inscritos (A lista grande)
                 {sqlObterInscricoesDaListaPorIdCodaf}
+                
+                -- 5. Critérios de Certificação
+                {CodafQueries.SqlObterCriteriosCertificacaoPorIdCodaf}
                 """;
 
             var parametros = new { id };
@@ -192,6 +196,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     return csi;
                 },
                 splitOn: "LOGIN")];
+
+            if (codafSuplementar.Proposta == null)
+                return codafSuplementar;
+
+            codafSuplementar.Proposta.CriterioCertificacao = [.. await multi.ReadAsync<PropostaCriterioCertificacao>()];
             return codafSuplementar;
         }
 
