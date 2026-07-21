@@ -8,7 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
-    [ExcludeFromCodeCoverage]
     public class CasoDeUsoObterCodafSuplementarPorId(
         IRepositorioCodafSuplementar repositorioCodafSuplementar,
         IServicoArmazenamento servicoArmazenamento,
@@ -22,7 +21,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
             var codafSuplementarDto = mapper.Map<CodafSuplementarDetalhadoDto>(codafSuplementar);
 
-            if (codafSuplementarDto.Anexos != null && codafSuplementarDto.Anexos.Any())
+            codafSuplementarDto.CertificadoEmitido = codafSuplementar.CodafCertificados != null && codafSuplementar.CodafCertificados.Count > 0;
+
+            if (codafSuplementarDto.Anexos != null && codafSuplementarDto.Anexos.Count > 0)
             {
                 foreach (var anexo in codafSuplementarDto.Anexos)
                 {

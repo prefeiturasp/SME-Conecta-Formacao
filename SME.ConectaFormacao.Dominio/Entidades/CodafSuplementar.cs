@@ -21,6 +21,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public ICollection<CodafSuplementarInscricao> CodafInscricoes { get; set; } = [];
         public ICollection<CodafSuplementarRetificacao> CodafRetificacoes { get; set; } = [];
         public ICollection<CodafSuplementarAnexo>? CodafAnexos { get; set; }
+        public ICollection<CodafCertificado>? CodafCertificados { get; set; }
         public ICollection<CodafSuplementarLogRemessaConclusao>? CodafSuplementarLogRemessasConclusao { get; set; }
 
         protected CodafSuplementar() { }
