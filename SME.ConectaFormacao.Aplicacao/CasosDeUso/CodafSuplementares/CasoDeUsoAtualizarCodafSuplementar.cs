@@ -14,15 +14,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
         public async Task<Resultado> ExecutarAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto, long id)
         {
             var codafSuplementarExistente = await dependencias.RepositorioCodaf.ObterNaoExcluidosPorIdAsync(id);
+
             if (codafSuplementarExistente is null)
                 return Erro.NaoEncontrado("Codaf Suplementar não encontrado");
 
-            var codafDetalhado = await dependencias.RepositorioCodaf.ObterPorIdDetalhadoAsync(id);
-
-            var certificados = codafDetalhado?.CodafCertificados;
-
-            if (certificados != null && certificados.Count > 0)
-                return Erro.NaoEncontrado("Não é possível editar os dados, pois já existem certificados emitidos para este CODAF.");
+            bool possuiCertificadoEmitido = codafSuplementarExistente.CertificadoEmitido;
 
             var validationResult = await validator.ValidateAsync(codafSuplementarCadastroDto);
             if (!validationResult.IsValid)
@@ -41,7 +37,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
             try
             {
-                await SalvarInscritosAsync(codafSuplementarCadastroDto, codafSuplementarExistente);
+                if (!possuiCertificadoEmitido)
+                    await SalvarInscritosAsync(codafSuplementarCadastroDto, codafSuplementarExistente);
+
                 await SalvarRetificacoesAsync(codafSuplementarCadastroDto, codafSuplementarExistente.Id);
                 var anexos = dependencias.Mapper.Map<List<CodafSuplementarAnexo>>(codafSuplementarCadastroDto.Anexos);
                 await dependencias.AnexoService.ProcessarAnexosAsync(codafSuplementarExistente.Id, anexos);
