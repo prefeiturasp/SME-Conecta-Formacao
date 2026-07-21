@@ -111,24 +111,36 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         }
 
         [Fact]
-        public async Task ExecutarAsync_DeveRetornarErro_QuandoExistiremCertificadosEmitidos()
+        public async Task ExecutarAsync_DeveAtualizarCodafSemSalvarInscritos_QuandoPossuirCertificadoEmitido()
         {
             // Arrange
             var dto = CriarDto();
             var existente = CriarCodafSuplementar(CodafSuplementarId);
-            var detalhado = CriarCodafSuplementar(CodafSuplementarId);
 
             AdicionarItemNaColecao(
-                detalhado,
+                existente,
                 "CodafCertificados");
+
+            var anexosMapeados = new List<CodafSuplementarAnexo>();
 
             repositorioCodaf
                 .Setup(r => r.ObterNaoExcluidosPorIdAsync(CodafSuplementarId))
                 .ReturnsAsync(existente);
 
-            repositorioCodaf
-                .Setup(r => r.ObterPorIdDetalhadoAsync(CodafSuplementarId))
-                .ReturnsAsync(detalhado);
+            validator
+                .Setup(v => v.ValidateAsync(
+                    dto,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ValidationResult());
+
+            repositorioRetificacao
+                .Setup(r => r.ObterPorCodafSuplementarIdAsync(
+                    CodafSuplementarId))
+                .ReturnsAsync(new List<CodafSuplementarRetificacao>());
+
+            mapper
+                .Setup(m => m.Map<List<CodafSuplementarAnexo>>(dto.Anexos))
+                .Returns(anexosMapeados);
 
             // Act
             var resultado = await casoDeUso.ExecutarAsync(
@@ -136,24 +148,50 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 CodafSuplementarId);
 
             // Assert
-            Assert.Contains(
-                "já existem certificados emitidos",
-                ObterConteudoErro(resultado),
-                StringComparison.OrdinalIgnoreCase);
+            Assert.False(resultado is Erro);
 
             validator.Verify(
                 v => v.ValidateAsync(
-                    It.IsAny<CodafSuplementarCadastroDto>(),
+                    dto,
                     It.IsAny<CancellationToken>()),
+                Times.Once);
+
+            mapper.Verify(
+                m => m.Map<List<CodafSuplementarInscricao>>(dto.Inscritos),
                 Times.Never);
+
+            inscritosService.Verify(
+                s => s.SalvarInscritosAsync(
+                    It.IsAny<List<CodafSuplementarInscricao>>(),
+                    It.IsAny<long>()),
+                Times.Never);
+
+            repositorioRetificacao.Verify(
+                r => r.ObterPorCodafSuplementarIdAsync(
+                    CodafSuplementarId),
+                Times.Once);
+
+            anexoService.Verify(
+                s => s.ProcessarAnexosAsync(
+                    CodafSuplementarId,
+                    anexosMapeados),
+                Times.Once);
+
+            repositorioCodaf.Verify(
+                r => r.Atualizar(existente),
+                Times.Once);
+
+            Assert.Same(
+                anexosMapeados,
+                existente.CodafAnexos);
 
             transacao.Verify(
                 t => t.Iniciar(),
-                Times.Never);
+                Times.Once);
 
             transacaoDb.Verify(
                 t => t.Commit(),
-                Times.Never);
+                Times.Once);
 
             transacaoDb.Verify(
                 t => t.Rollback(),
@@ -161,12 +199,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             transacaoDb.Verify(
                 t => t.Dispose(),
-                Times.Never);
-
-            repositorioCodaf.Verify(
-                r => r.Atualizar(
-                    It.IsAny<CodafSuplementar>()),
-                Times.Never);
+                Times.Once);
         }
 
         [Fact]

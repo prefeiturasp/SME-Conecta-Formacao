@@ -209,6 +209,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return codafSuplementar;
         }
 
+        public override async Task<CodafSuplementar?> ObterNaoExcluidosPorIdAsync(long id)
+        {
+            var conn = conexao.Obter();
+            var sql = $"""
+                -- 1. CODAF
+                {sqlObterCodafPorId}              
+
+                -- 5. Certificados
+                {sqlCertificadosPorIdCodaf}
+                """;
+
+            var parametros = new { id };
+
+            using var multi = await conn.QueryMultipleAsync(sql, parametros);
+            var codafSuplementar = multi.Read<CodafSuplementar>().SingleOrDefault();
+
+            if (codafSuplementar is null)
+                return null;
+          
+            codafSuplementar.CodafCertificados = [.. await multi.ReadAsync<CodafCertificado>()];
+            return codafSuplementar;
+        }
+
         public async Task ExcluirAsync(long id)
         {
             var conn = conexao.Obter();
@@ -304,6 +327,27 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var resultado = await conn.QueryAsync<DadosConsultaParaTxtEolDto>(query, parametros);
             return resultado;
         }
+
+        private const string sqlObterCodafPorId = """
+            SELECT CS.ID AS codafId,
+                   CS.DATA_PUBLICACAO AS dataPublicacao,
+                   CS.DATA_PUBLICACAO_DOM AS dataPublicacaoDom,
+                   CS.NUMERO_COMUNICADO AS numeroComunicado,
+                   CS.PAGINA_COMUNICADO_DOM AS paginaComunicadoDom,
+                   CS.CODIGO_CURSO_EOL AS codigoCursoEol,
+                   CS.CODIGO_NIVEL AS codigoNivel,
+                   CS.OBSERVACAO,
+                   CS.STATUS,
+                   CS.ALTERADO_EM AS alteradoEm,
+                   CS.ALTERADO_POR AS alteradoPor,
+                   CS.ALTERADO_LOGIN AS alteradoLogin,
+                   CS.CRIADO_EM AS criadoEm,
+                   CS.CRIADO_POR AS criadoPor,
+                   CS.CRIADO_LOGIN AS criadoLogin
+            FROM PUBLIC.CODAF_SUPLEMENTAR AS CS         
+            WHERE NOT CS.EXCLUIDO
+              AND CS.ID = @id;
+            """;
 
         private const string sqlObterCodafPorIdComPropostaEPropostaTurma = """
             SELECT CS.ID,
