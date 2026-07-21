@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public int? CodigoNivel { get; private set; }
         public string? Observacao { get; private set; }
         public StatusCodafSuplementar Status { get; private set; }
-
+        public bool CertificadoEmitido => CodafCertificados is not null && CodafCertificados.Count > 0;
         public Proposta Proposta { get; set; } = null!;
         public PropostaTurma PropostaTurma { get; set; } = null!;
         public CodafListaPresenca CodafListaPresenca { get; set; } = null!;
