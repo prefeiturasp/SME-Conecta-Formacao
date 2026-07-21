@@ -319,7 +319,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         }
 
         private const string sqlObterCodafPorId = """
-            SELECT CS.ID AS codafId,
+            SELECT CS.ID as id,
+                   CLP.ID AS codafId,
                    CS.DATA_PUBLICACAO AS dataPublicacao,
                    CS.DATA_PUBLICACAO_DOM AS dataPublicacaoDom,
                    CS.NUMERO_COMUNICADO AS numeroComunicado,
@@ -334,7 +335,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    CS.CRIADO_EM AS criadoEm,
                    CS.CRIADO_POR AS criadoPor,
                    CS.CRIADO_LOGIN AS criadoLogin
-            FROM PUBLIC.CODAF_SUPLEMENTAR AS CS         
+            FROM PUBLIC.CODAF_SUPLEMENTAR AS CS   
+            INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID
             WHERE NOT CS.EXCLUIDO
               AND CS.ID = @id;
             """;
