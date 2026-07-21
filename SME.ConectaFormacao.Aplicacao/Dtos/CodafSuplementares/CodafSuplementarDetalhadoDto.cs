@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
@@ -26,8 +27,10 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
         public string? NomeFormacao { get; set; }
         public long? CodigoFormacao { get; set; }
         public long? NumeroHomologacao { get; set; }
+        public bool CertificadoEmitido { get; set; }
         public IList<CodafSuplementarRetificacaoDto>? Retificacoes { get; set; }
         public IList<CodafSuplementarAnexoDto>? Anexos { get; set; }
+        public IList<CodafCertificadoDto>? Certificados { get; set; }
         public IList<CodafSuplementarInscritoDto>? Inscritos { get; set; }
         public RegrasAprovacaoCursistaDto? RegrasAprovacao { get; set; }
     }
