@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
+using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -197,7 +198,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 {sqlObterInscricoesDaListaPorIdCodaf}
                 
                 -- 5. Critérios de Certificação
-                {sqlObterCriteriosCertificacaoPorIdCodaf}
+                {CodafQueries.SqlObterCriteriosCertificacaoPorIdCodaf}
                 """;
 
             var parametros = new { id };
@@ -417,15 +418,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    CILP.CRIADO_POR AS CriadoPor
             FROM PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP 
             WHERE NOT CILP.EXCLUIDO AND CILP.CODAF_LISTA_PRESENCA_ID = @id;
-            """;
-
-        private const string sqlObterCriteriosCertificacaoPorIdCodaf = """
-        SELECT PCC.ID, 
-               PCC.PROPOSTA_ID AS PropostaId, 
-               PCC.CRITERIO_CERTIFICACAO_ID AS CriterioCertificacaoId
-        FROM PUBLIC.PROPOSTA_CRITERIO_CERTIFICACAO AS PCC
-        WHERE NOT PCC.EXCLUIDO 
-          AND PCC.PROPOSTA_ID = (SELECT PROPOSTA_ID FROM PUBLIC.CODAF_LISTA_PRESENCA WHERE ID = @id LIMIT 1);
-        """;
+            """;        
     }
 }

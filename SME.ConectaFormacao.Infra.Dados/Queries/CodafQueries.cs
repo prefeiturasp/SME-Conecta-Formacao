@@ -26,5 +26,14 @@
           AND  I.SITUACAO IN (@situacaoConfirmada, @situacaoCancelada)
         ORDER  BY U.NOME, U.LOGIN, U.CPF
         """;
+
+        public const string SqlObterCriteriosCertificacaoPorIdCodaf = """
+        SELECT PCC.ID, 
+               PCC.PROPOSTA_ID AS PropostaId, 
+               PCC.CRITERIO_CERTIFICACAO_ID AS CriterioCertificacaoId
+        FROM PUBLIC.PROPOSTA_CRITERIO_CERTIFICACAO AS PCC
+        WHERE NOT PCC.EXCLUIDO 
+          AND PCC.PROPOSTA_ID = (SELECT PROPOSTA_ID FROM PUBLIC.CODAF_LISTA_PRESENCA WHERE ID = @id LIMIT 1);
+        """;
     }
 }
