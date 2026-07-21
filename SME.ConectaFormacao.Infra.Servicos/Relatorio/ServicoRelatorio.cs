@@ -73,6 +73,15 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio
             return arquivoBytes;
         }
 
+        public async Task<byte[]> GerarRelatorioCodafSuplementarAsync(long codafListaPresencaId)
+        {
+            var resposta = await _httpClient.PostAsync(EndpointRelatoriosConstants.RELATORIO_CODAF_SUPLEMENTAR.Parametros(codafListaPresencaId), null);
+            if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent)
+                throw new NegocioException(MensagemNegocio.ARQUIVO_NAO_ENCONTRADO, resposta.StatusCode);
+            var arquivoBytes = await resposta.Content.ReadAsByteArrayAsync();
+            return arquivoBytes;
+        }
+
         public Task<string> ObterRelatorioPropostaLaudaCompleta(long propostaId)
         {
             return ObterRelatorio(EndpointRelatoriosConstants.RELATORIO_LAUDA_COMPLETA.Parametros(propostaId), "pdf");

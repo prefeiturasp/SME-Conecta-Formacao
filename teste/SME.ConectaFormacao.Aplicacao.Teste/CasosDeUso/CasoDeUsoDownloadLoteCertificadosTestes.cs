@@ -19,6 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
     {
         private readonly CasoDeUsoDownloadLoteCertificados _sut;
         private readonly Faker _faker;
+        private readonly AutoMocker _mocker;
 
         private readonly Mock<IRepositorioCodafCertificado> _repositorioMock;
         private readonly Mock<IServicoArmazenamento> _servicoArmazenamentoMock;
@@ -27,7 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
         public CasoDeUsoDownloadLoteCertificadosTestes()
         {
-            var _mocker = new AutoMocker();
+            _mocker = new AutoMocker();
             _faker = new Faker("pt_BR");
 
             _repositorioMock = _mocker.GetMock<IRepositorioCodafCertificado>();
@@ -54,18 +55,31 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         }
 
         [Fact]
-        public async Task DadoNenhumCertificadoEncontradoNoBanco_QuandoExecutarAsync_EntaoDeveLancarInvalidOperationException()
+        public async Task DadoListaDeIdsNula_QuandoExecutarAsync_EntaoDeveLancarArgumentException()
+        {
+            // Arrange
+            List<long> idsNulos = null!;
+            using var streamFake = new MemoryStream();
+
+            // Act
+            var acao = async () => await _sut.ExecutarAsync(idsNulos, streamFake);
+
+            // Assert
+            await acao.Should().ThrowAsync<ArgumentException>()
+                .WithMessage("*A lista de IDs não pode ser vazia*");
+        }
+
+        [Fact]
+        public async Task DadoCertificadosNaoEncontrados_QuandoExecutarAsync_EntaoDeveLancarInvalidOperationException()
         {
             // Arrange
             var ids = new List<long> { 1, 2, 3 };
             using var streamFake = new MemoryStream();
 
-            _repositorioMock
-                .Setup(r => r.ObterCertificadosDisponiveisPorListaDeIdAsync(ids))
-                .ReturnsAsync(new List<CodafCertificado>());
+            SetupRepositorioRetornando(ids, []);
 
             // Act
-            Func<Task> acao = async () => await _sut.ExecutarAsync(ids, streamFake);
+            var acao = async () => await _sut.ExecutarAsync(ids, streamFake);
 
             // Assert
             await acao.Should().ThrowAsync<InvalidOperationException>()
@@ -73,37 +87,24 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         }
 
         [Fact]
-        public async Task DadoCertificadoValidoComChaveArmazenamento_QuandoExecutarAsync_EntaoDeveObterStreamDoMinioECompactar()
+        public async Task DadoCertificadoComChaveArmazenamentoValida_QuandoExecutarAsync_EntaoDeveObterStreamDoStorageECompactar()
         {
             // Arrange
             var ids = new List<long> { 1 };
             using var streamSaida = new MemoryStream();
-            using var streamMinio = new MemoryStream(_faker.Random.Bytes(100));
+            using var streamStorage = new MemoryStream(_faker.Random.Bytes(100));
 
-            var certificado = CriarCertificadoFake();
-            certificado.ChaveObjetoArmazenamento = "certificados/arquivo-123.pdf";
+            var certificado = CriarCertificadoFake("certificados/arquivo-123.pdf");
 
-            _repositorioMock
-                .Setup(r => r.ObterCertificadosDisponiveisPorListaDeIdAsync(ids))
-                .ReturnsAsync([certificado]);
-
-            var resultadoSucesso = Resultado<Stream>.DeSucesso(streamMinio);
-
-            _servicoArmazenamentoMock
-                .Setup(s => s.ObterArquivoPorChaveAsync(certificado.ChaveObjetoArmazenamento, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(resultadoSucesso);
+            SetupRepositorioRetornando(ids, [certificado]);
+            SetupStorageRetornando(certificado.ChaveObjetoArmazenamento!, Resultado<Stream>.DeSucesso(streamStorage));
 
             // Act
             await _sut.ExecutarAsync(ids, streamSaida);
 
             // Assert
-            _servicoCompactacaoMock.Verify(s =>
-                s.CompactarAssincronamenteAsync(It.IsAny<IAsyncEnumerable<ArquivoCompactacaoDto>>(), streamSaida, It.IsAny<CancellationToken>()),
-                Times.Once);
-
-            _servicoRelatorioMock.Verify(s =>
-                s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>(), It.IsAny<CancellationToken>()),
-                Times.Never);
+            VerificarCompactacaoExecutada(Times.Once());
+            _servicoRelatorioMock.Verify(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Fact]
@@ -114,78 +115,107 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             using var streamSaida = new MemoryStream();
             using var streamRelatorio = new MemoryStream(_faker.Random.Bytes(100));
 
-            var certificado = CriarCertificadoFake();
-            certificado.ChaveObjetoArmazenamento = null;
+            var certificado = CriarCertificadoFake(chaveArmazenamento: null);
 
-            _repositorioMock
-                .Setup(r => r.ObterCertificadosDisponiveisPorListaDeIdAsync(ids))
-                .ReturnsAsync(new List<CodafCertificado> { certificado });
-
-            var resultadoSucesso = Resultado<Stream>.DeSucesso(streamRelatorio);
-
-            _servicoRelatorioMock
-                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(resultadoSucesso);
+            SetupRepositorioRetornando(ids, [certificado]);
+            SetupRelatorioRetornando(Resultado<Stream>.DeSucesso(streamRelatorio));
 
             // Act
             await _sut.ExecutarAsync(ids, streamSaida);
 
             // Assert
-            _servicoArmazenamentoMock.Verify(s =>
-                s.ObterArquivoPorChaveAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
-                Times.Never);
-
-            _servicoCompactacaoMock.Verify(s =>
-                s.CompactarAssincronamenteAsync(It.IsAny<IAsyncEnumerable<ArquivoCompactacaoDto>>(), streamSaida, It.IsAny<CancellationToken>()),
-                Times.Once);
+            _servicoArmazenamentoMock.Verify(s => s.ObterArquivoPorChaveAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+            VerificarCompactacaoExecutada(Times.Once());
         }
 
         [Fact]
-        public async Task DadoFalhaEmTodosOsServicos_QuandoExecutarAsync_EntaoDeveGerarTxtComMensagemDeErroECompactar()
+        public async Task DadoCertificadoComChaveMasFalhaNoStorage_QuandoExecutarAsync_EntaoDeveFazerFallbackParaRelatorioECompactar()
+        {
+            // Arrange
+            var ids = new List<long> { 1 };
+            using var streamSaida = new MemoryStream();
+            using var streamRelatorio = new MemoryStream(_faker.Random.Bytes(100));
+
+            var certificado = CriarCertificadoFake("certificados/arquivo-falho.pdf");
+
+            SetupRepositorioRetornando(ids, [certificado]);
+            SetupStorageRetornando(certificado.ChaveObjetoArmazenamento!, Erro.NaoEncontrado());
+            SetupRelatorioRetornando(Resultado<Stream>.DeSucesso(streamRelatorio));
+
+            // Act
+            await _sut.ExecutarAsync(ids, streamSaida);
+
+            // Assert
+            _servicoArmazenamentoMock.Verify(s => s.ObterArquivoPorChaveAsync(certificado.ChaveObjetoArmazenamento!, It.IsAny<CancellationToken>()), Times.Once);
+            _servicoRelatorioMock.Verify(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>(), It.IsAny<CancellationToken>()), Times.Once);
+            VerificarCompactacaoExecutada(Times.Once());
+        }
+
+        [Fact]
+        public async Task DadoFalhaEmTodosOsServicos_QuandoExecutarAsync_EntaoDeveGerarTxtDeErroECompactar()
         {
             // Arrange
             var ids = new List<long> { 1 };
             using var streamSaida = new MemoryStream();
 
-            var certificado = CriarCertificadoFake();
-            certificado.ChaveObjetoArmazenamento = "chave-invalida";
+            var certificado = CriarCertificadoFake("chave-invalida");
+            var erroRelatorio = Erro.NaoEncontrado(); // Assume que "Erro" preenche MensagensErro internamente
 
-            _repositorioMock
-                .Setup(r => r.ObterCertificadosDisponiveisPorListaDeIdAsync(ids))
-                .ReturnsAsync(new List<CodafCertificado> { certificado });
-
-            var falhaMinio = Erro.NaoEncontrado();
-            _servicoArmazenamentoMock
-                .Setup(s => s.ObterArquivoPorChaveAsync(certificado.ChaveObjetoArmazenamento, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(falhaMinio);
-
-            var falhaRelatorio = Erro.NaoEncontrado();
-            _servicoRelatorioMock
-                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(falhaRelatorio);
+            SetupRepositorioRetornando(ids, [certificado]);
+            SetupStorageRetornando(certificado.ChaveObjetoArmazenamento!, Erro.NaoEncontrado());
+            SetupRelatorioRetornando(erroRelatorio);
 
             // Act
             await _sut.ExecutarAsync(ids, streamSaida);
 
             // Assert
-            _servicoCompactacaoMock.Verify(s =>
-                s.CompactarAssincronamenteAsync(It.IsAny<IAsyncEnumerable<ArquivoCompactacaoDto>>(), streamSaida, It.IsAny<CancellationToken>()),
-                Times.Once);
+            VerificarCompactacaoExecutada(Times.Once());
         }
 
-        // --- Helper Methods ---
-        private CodafCertificado CriarCertificadoFake()
+        // --- MÉTODOS DE APOIO (KISS & DRY) ---
+
+        private CodafCertificado CriarCertificadoFake(string? chaveArmazenamento = null)
         {
             return new CodafCertificado(
-                codafListaPresencaId: _faker.Random.Long(1, 100),
+                codafId: _faker.Random.Long(1, 100),
+                tipoCodaf: TipoCodaf.ListaPresenca,
                 tipoParticipacao: TipoParticipacaoCodaf.Cursista,
                 idReferencia: _faker.Random.Long(1, 100),
                 htmlContentSnapshot: "<html>Fake</html>",
                 metadadosJson: new { }
             )
             {
-                CodigoCertificado = _faker.Random.Long(1000, 9999)
+                CodigoCertificado = _faker.Random.Long(1000, 9999),
+                ChaveObjetoArmazenamento = chaveArmazenamento
             };
+        }
+
+        private void SetupRepositorioRetornando(List<long> ids, IList<CodafCertificado> retorno)
+        {
+            _repositorioMock
+                .Setup(r => r.ObterCertificadosDisponiveisPorListaDeIdAsync(ids))
+                .ReturnsAsync(retorno);
+        }
+
+        private void SetupStorageRetornando(string chave, Resultado<Stream> retorno)
+        {
+            _servicoArmazenamentoMock
+                .Setup(s => s.ObterArquivoPorChaveAsync(chave, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(retorno);
+        }
+
+        private void SetupRelatorioRetornando(Resultado<Stream> retorno)
+        {
+            _servicoRelatorioMock
+                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(retorno);
+        }
+
+        private void VerificarCompactacaoExecutada(Times times)
+        {
+            _servicoCompactacaoMock.Verify(s =>
+                s.CompactarAssincronamenteAsync(It.IsAny<IAsyncEnumerable<ArquivoCompactacaoDto>>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()),
+                times);
         }
     }
 }

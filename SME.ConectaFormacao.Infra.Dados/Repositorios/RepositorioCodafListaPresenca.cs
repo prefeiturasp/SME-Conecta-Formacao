@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -94,6 +93,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             {
                 condicoesWhere.Append(" AND DATE(CLP.DATA_ENVIO_DF) = DATE(@dataEnvioDf) ");
                 parametros.Add("dataEnvioDf", filtro.DataEnvioDf.Value);
+            }
+
+            if (filtro.PerfilRestrito)
+            {
+                condicoesWhere.Append(" AND CLP.CRIADO_LOGIN = '" + contexto.LoginUsuario + "'");
+                parametros.Add("perfilRestrito", filtro.PerfilRestrito);
             }
 
             var conn = conexao.Obter();

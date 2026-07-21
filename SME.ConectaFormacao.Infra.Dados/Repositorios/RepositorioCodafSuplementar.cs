@@ -113,19 +113,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                WHERE L.CODAF_SUPLEMENTAR_ID = CS.ID
                            ) THEN 1
 
-                           /*-- 3: Em Processamento
+                           -- 3: Em Processamento
                            WHEN EXISTS (
                            	SELECT 1
                            	FROM  PUBLIC.CODAF_CERTIFICADOS AS CC
-                           	WHERE CC.CODAF_LISTA_PRESENCA_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusPendente, @statusEmProcessamento)
+                           	WHERE CC.CODAF_SUPLEMENTAR_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusPendente, @statusEmProcessamento)
                            ) THEN 3
 
                            -- 4: Emitido
                            WHEN EXISTS (
                            	SELECT 1
                            	FROM  PUBLIC.CODAF_CERTIFICADOS AS CC
-                           	WHERE CC.CODAF_LISTA_PRESENCA_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusProcessadoComSucesso, @statusProcessadoComErro)
-                           ) THEN 4*/
+                           	WHERE CC.CODAF_SUPLEMENTAR_ID = CS.ID AND CC.STATUS_PROCESSAMENTO IN (@statusProcessadoComSucesso, @statusProcessadoComErro)
+                           ) THEN 4
 
                            -- 2: Disponível para Emissão
                            ELSE 2
@@ -283,6 +283,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        INNER JOIN PUBLIC.PROPOSTA AS P ON P.ID = PT.PROPOSTA_ID
                 WHERE NOT CLP.EXCLUIDO AND NOT CSI.EXCLUIDO AND NOT INSCR.EXCLUIDO 
                   AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
+                  AND CSI.APROVADO
                   AND CS.ID = @id;
                 """;
             var parametros = new { id };

@@ -11,5 +11,6 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces
             HtmlCertificadoCodafDto htmlCertificadoCodafDto,
             CancellationToken cancellationToken);
         Task<byte[]> GerarRelatorioCodafAsync(long codafId);
+        Task<byte[]> GerarRelatorioCodafSuplementarAsync(long codafListaPresencaId);
     }
 }
