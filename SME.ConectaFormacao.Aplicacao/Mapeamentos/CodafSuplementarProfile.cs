@@ -20,6 +20,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.NumeroHomologacao, opt => opt.MapFrom(src => src.Proposta.NumeroHomologacao))
                 .ForMember(dest => dest.Retificacoes, opt => opt.MapFrom(src => src.CodafRetificacoes))
                 .ForMember(dest => dest.Anexos, opt => opt.MapFrom(src => src.CodafAnexos))
+                .ForMember(dest => dest.RegrasAprovacao, opt => opt.MapFrom(src =>
+                    CriterioCertificacaoFactory.ConstruirRegras(
+                        src.Proposta.CriterioCertificacao.Select(c => c.CriterioCertificacaoId)
+                    )
+                ))
                 .ReverseMap()
                 ;
             CreateMap<CodafSuplementar, CodafSuplementarDetalhadoDto>()
@@ -32,6 +37,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Retificacoes, opt => opt.MapFrom(src => src.CodafRetificacoes))
                 .ForMember(dest => dest.Anexos, opt => opt.MapFrom(src => src.CodafAnexos))
                 .ForMember(dest => dest.Inscritos, opt => opt.MapFrom(src => src.CodafInscricoes))
+                .ForMember(dest => dest.RegrasAprovacao, opt => opt.MapFrom(src =>
+                    CriterioCertificacaoFactory.ConstruirRegras(
+                        src.Proposta.CriterioCertificacao.Select(c => c.CriterioCertificacaoId)
+                    )
+                ))
                 .ForMember(dest => dest.Certificados, opt => opt.MapFrom(src => src.CodafCertificados))
                 ;
             CreateMap<CodafSuplementarRetificacao, CodafSuplementarRetificacaoDto>().ReverseMap();
