@@ -4,11 +4,9 @@ using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
-    [ExcludeFromCodeCoverage]
     public class CasoDeUsoAtualizarCodafSuplementar(
         CodafSuplementarDependencias dependencias,
         IValidator<CodafSuplementarCadastroDto> validator) : ICasoDeUsoAtualizarCodafSuplementar
@@ -18,6 +16,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
             var codafSuplementarExistente = await dependencias.RepositorioCodaf.ObterNaoExcluidosPorIdAsync(id);
             if (codafSuplementarExistente is null)
                 return Erro.NaoEncontrado("Codaf Suplementar não encontrado");
+
+            var codafDetalhado = await dependencias.RepositorioCodaf.ObterPorIdDetalhadoAsync(id);
+
+            var certificados = codafDetalhado?.CodafCertificados;
+
+            if (certificados != null && certificados.Count > 0)
+                return Erro.NaoEncontrado("Não é possível editar os dados, pois já existem certificados emitidos para este CODAF.");
 
             var validationResult = await validator.ValidateAsync(codafSuplementarCadastroDto);
             if (!validationResult.IsValid)
