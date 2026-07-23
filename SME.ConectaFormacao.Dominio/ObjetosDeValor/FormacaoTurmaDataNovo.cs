@@ -8,5 +8,6 @@ namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
         public string? HoraInicio { get; set; }
         public string? HoraFim { get; set; }
         public string? ModeloHorario { get; set; }
+        public long? TurmaId { get; set; }
     }
 }

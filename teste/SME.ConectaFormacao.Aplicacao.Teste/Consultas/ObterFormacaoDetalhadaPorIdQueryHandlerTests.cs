@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Bogus;
 using FluentAssertions;
-using MediatR;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.Dtos;
@@ -59,7 +58,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 FormacaoHomologada = FormacaoHomologada.Sim,
                 ArquivoImagemDivulgacao = null
             };
-            
+
             var acessibilidade = new UsuarioAcessibilidade
             {
                 Id = _faker.Random.Long(1),
@@ -81,7 +80,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             };
 
             _mockRepositorioProposta
-                .Setup(r => r.ObterFormacaoDetalhadaPorId(query.Id))
+                .Setup(r => r.ObterFormacaoDetalhadaPorIdAsync(query.Id))
                 .ReturnsAsync(formacaoDetalhada);
 
             _mockRepositorioUsuarioAcessibilidade
@@ -140,7 +139,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             _mockCacheDistribuido
                 .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>()))
                 .ReturnsAsync(formacaoDetalhadaDto);
-            
+
             _mockRepositorioProposta
                 .Setup(r => r.ObterTurmasComVagaPorId(query.Id))
                 .ReturnsAsync([new() { Id = _faker.Random.Long(1) }]);
