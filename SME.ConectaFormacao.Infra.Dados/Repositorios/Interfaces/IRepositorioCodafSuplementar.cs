@@ -13,5 +13,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<CodafSuplementar?> ObterNaoExcluidosPorIdAsync(long id);
         Task ExcluirAsync(long id);
         Task<IEnumerable<DadosConsultaParaTxtEolDto>?> ObterDadosRemessaConclusaoCodafSuplementarAsync(long id);
+        Task<CodafSuplementar?> ObterPorIdCodafListaPresenca(long idCodafListaPresenca);
     }
 }
