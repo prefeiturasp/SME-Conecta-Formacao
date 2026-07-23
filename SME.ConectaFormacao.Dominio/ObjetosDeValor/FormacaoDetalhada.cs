@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
         public string Justificativa { get; set; }
         public FormacaoHomologada FormacaoHomologada { get; set; }
 
-        public string AreaPromotora { get; set; }
+        public string? AreaPromotora { get; set; }
         public IEnumerable<string> PublicosAlvo { get; set; }
         public IEnumerable<string> PalavrasChaves { get; set; }
         public IEnumerable<FormacaoTurma> Turmas { get; set; }
