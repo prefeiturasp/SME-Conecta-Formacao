@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Dommel;
-using Minio.DataModel.Notification;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -680,7 +679,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 	                            public.proposta_tutor
 	                        where not excluido and id = @id;";
             return await conexao.Obter().QueryFirstOrDefaultAsync<PropostaTutor>(query, new { id });
-        }        
+        }
 
         public async Task<int> ObterTotalRegentes(long propostaId)
         {
@@ -1997,130 +1996,149 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().QueryAsync<PropostaPublicoAlvo>(query, new { propostaId });
         }
-        public async Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId)
+        public async Task<FormacaoDetalhada?> ObterFormacaoDetalhadaPorIdAsync(long propostaId)
         {
-            var tipoInscricao = new int[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
-            var situacao = SituacaoProposta.Publicada;
+            var tipoInscricao = new[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
+            var situacao = (int)SituacaoProposta.Publicada;
 
-            var query = @"select
-                            p.nome_formacao NomeFormacao,
-                            p.tipo_formacao tipoFormacao,
-                            p.formato,
-                            p.data_realizacao_inicio dataRealizacaoInicio,
-                            p.data_realizacao_fim dataRealizacaoFim,                            
-                            p.data_inscricao_inicio dataInscricaoInicio,
-                            p.data_inscricao_fim dataInscricaoFim,
-                            p.justificativa,
-                            p.formacao_homologada as FormacaoHomologada,
-                            p.link_inscricoes_externa as LinkParaInscricoesExterna,
-                            coalesce((select false from public.proposta_tipo_inscricao pti where pti.proposta_id = p.id and pti.tipo_inscricao = 5), true) as PodeEnviarInscricao
-                        from proposta p
-                        inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id
-                        where p.id = @propostaId 
-                            and not p.excluido
-                            and pti.tipo_inscricao = any(@tipoInscricao) 
-                            and p.situacao = @situacao;
+            const string query = """
+            -- Formação Detalhada
+            select
+                p.nome_formacao NomeFormacao,
+                p.tipo_formacao tipoFormacao,
+                p.formato,
+                p.data_realizacao_inicio dataRealizacaoInicio,
+                p.data_realizacao_fim dataRealizacaoFim,                            
+                p.data_inscricao_inicio dataInscricaoInicio,
+                p.data_inscricao_fim dataInscricaoFim,
+                p.justificativa,
+                p.formacao_homologada as FormacaoHomologada,
+                p.link_inscricoes_externa as LinkParaInscricoesExterna,
+                not exists(select 1 from public.proposta_tipo_inscricao pti where pti.proposta_id = p.id and pti.tipo_inscricao = 5) as PodeEnviarInscricao
+            from proposta p
+            inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id
+            where p.id = @propostaId 
+                and not p.excluido
+                and pti.tipo_inscricao = any(@tipoInscricao) 
+                and p.situacao = @situacao;
 
-                          select
-                              ap.nome
-                        from proposta p 
-                            join area_promotora ap on ap.id = p.area_promotora_id
-                        where p.id = @propostaId 
-                            and not p.excluido 
-                            and not ap.excluido;
+            -- Area Promotora
+            select ap.nome
+            from proposta p 
+            join area_promotora ap on ap.id = p.area_promotora_id
+            where p.id = @propostaId 
+                and not p.excluido 
+                and not ap.excluido;
 
-                        select 
-                               case when cf.outros then p.publico_alvo_outros else cf.nome end as nome
-                        from proposta_publico_alvo ppa
-                        join cargo_funcao cf on cf.id = ppa.cargo_funcao_id
-                        join proposta p on p.id = ppa.proposta_id and not p.excluido
-                        where ppa.proposta_id = @propostaId
-                          and not ppa.excluido 
-                          and not cf.excluido;
+            -- Públicos Alvo
+            select case when cf.outros then p.publico_alvo_outros else cf.nome end as nome
+            from proposta_publico_alvo ppa
+            join cargo_funcao cf on cf.id = ppa.cargo_funcao_id
+            join proposta p on p.id = ppa.proposta_id and not p.excluido
+            where ppa.proposta_id = @propostaId
+                and not ppa.excluido 
+                and not cf.excluido;
 
-                        select 
-                               cf.nome
-                        from proposta_vaga_remanecente pvr
-                        join cargo_funcao cf on cf.id = pvr.cargo_funcao_id
-                        where pvr.proposta_id = @propostaId
-                          and not pvr.excluido
-                          and not cf.excluido;
+            -- Palavras Chaves
+            select cf.nome
+            from proposta_vaga_remanecente pvr
+            join cargo_funcao cf on cf.id = pvr.cargo_funcao_id
+            where pvr.proposta_id = @propostaId
+                and not pvr.excluido
+                and not cf.excluido;
 
-                        select distinct pt.id,
-                               pt.nome,
-                               pe.local,
-                               pe.hora_inicio horaInicio,
-                               pe.hora_fim horaFim,
-                               pet.proposta_encontro_id propostaEncontroId,
-                               coalesce(PGP.DATA_INICIO, p.data_realizacao_inicio) AS dataInicio,
-                               coalesce(PGP.DATA_FIM, p.data_realizacao_fim) AS dataFim
-                        from proposta_turma pt
-                        join proposta_encontro_turma pet on pet.turma_id = pt.id
-                        join proposta_encontro pe on pe.id = pet.proposta_encontro_id
-                        JOIN proposta p ON p.ID = pt.PROPOSTA_ID
-                        LEFT JOIN proposta_grupo_periodo_turma pgpt ON pgpt.PROPOSTA_TURMA_ID = pt.ID AND NOT pgpt.EXCLUIDO 
-                        LEFT JOIN PUBLIC.PROPOSTA_GRUPO_PERIODO AS PGP ON PGP.ID = pgpt.GRUPO_PERIODO_ID AND NOT pgp.EXCLUIDO
-                        where pt.proposta_id = @propostaId
-                          and not pt.excluido
-                          and not pet.excluido
-                          and not pe.excluido
-                        order by pt.nome, dataInicio, pe.hora_inicio;
+            -- Turmas
+            select distinct pt.id,
+                    pt.nome,
+                    pe.local,
+                    pe.hora_inicio horaInicio,
+                    pe.hora_fim horaFim,
+                    pet.proposta_encontro_id propostaEncontroId,
+                    coalesce(pgp.data_inicio, p.data_realizacao_inicio) as dataInicio,
+                    coalesce(pgp.data_fim, p.data_realizacao_fim) as dataFim
+            from proposta_turma pt
+            join proposta_encontro_turma pet on pet.turma_id = pt.id
+            join proposta_encontro pe on pe.id = pet.proposta_encontro_id
+            join proposta p on p.id = pt.proposta_id
+            left join proposta_grupo_periodo_turma pgpt on pgpt.proposta_turma_id = pt.id and not pgpt.excluido 
+            left join public.proposta_grupo_periodo pgp on pgp.id = pgpt.grupo_periodo_id and not pgp.excluido
+            where pt.proposta_id = @propostaId
+                and not pt.excluido
+                and not pet.excluido
+                and not pe.excluido
+            order by pt.nome, dataInicio, pe.hora_inicio;
 
-                        select
-                              ped.data_inicio dataInicio,
-                              ped.data_fim dataFim,
-                              ped.proposta_encontro_id propostaEncontroId
-                        from proposta_encontro pe
-                        join  proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
-                        where pe.proposta_id = @propostaId
-                          and not pe.excluido
-                          and not ped.excluido
-                        order by ped.data_inicio;
+            -- Turmas Datas
+            select ped.data_inicio dataInicio,
+                    ped.data_fim dataFim,
+                    ped.proposta_encontro_id propostaEncontroId
+            from proposta_encontro pe
+            join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id
+            where pe.proposta_id = @propostaId
+                and not pe.excluido
+                and not ped.excluido
+            order by ped.data_inicio;
 
-                        select
-                              coalesce(pgp.data_inicio, ped.data_inicio) dataInicio,
-                              coalesce(pgp.data_fim, ped.data_fim) dataFim,
-                              ped.proposta_encontro_id propostaEncontroId,
-                              coalesce(ped.hora_inicio, pe.hora_inicio) horaInicio,
-                              coalesce(ped.hora_fim, pe.hora_fim) horaFim,
-                              case when ped.hora_inicio is not null then 'novo' else 'legado' end modeloHorario
-                        from proposta_encontro pe
-                        join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
-                        left join proposta_encontro_turma pet on pet.proposta_encontro_id = pe.id and not pet.excluido
-                        left join proposta_grupo_periodo_turma pgpt on pgpt.proposta_turma_id = pet.turma_id and not pgpt.excluido
-                        left join proposta_grupo_periodo pgp on pgp.id = pgpt.grupo_periodo_id and not pgp.excluido
-                        where pe.proposta_id = @propostaId
-                          and not pe.excluido
-                        order by dataInicio;
+            -- Turmas Datas Novo
+            select coalesce(pgp.data_inicio, ped.data_inicio) dataInicio,
+                    coalesce(pgp.data_fim, ped.data_fim) dataFim,
+                    ped.proposta_encontro_id propostaEncontroId,
+                    coalesce(ped.hora_inicio, pe.hora_inicio) horaInicio,
+                    coalesce(ped.hora_fim, pe.hora_fim) horaFim,
+                    case when ped.hora_inicio is not null then 'novo' else 'legado' end modeloHorario,
+                    pet.turma_id as TurmaId
+            from proposta_encontro pe
+            join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
+            left join proposta_encontro_turma pet on pet.proposta_encontro_id = pe.id and not pet.excluido
+            left join proposta_grupo_periodo_turma pgpt on pgpt.proposta_turma_id = pet.turma_id and not pgpt.excluido
+            left join proposta_grupo_periodo pgp on pgp.id = pgpt.grupo_periodo_id and not pgp.excluido
+            where pe.proposta_id = @propostaId
+                and not pe.excluido
+            order by dataInicio;
 
-                        select a.nome,
-                               a.codigo
-                        from arquivo a
-                        where not a.excluido and exists(select 1 from proposta p where not p.excluido and a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId);";
+            --Arquivo
+            select a.nome,
+                    a.codigo,
+                    a.tipo_conteudo TipoConteudo,
+                    a.tipo Tipo
+            from arquivo a
+            where not a.excluido and exists(
+                select 1 from proposta p 
+                where not p.excluido and a.id = p.arquivo_imagem_divulgacao_id and p.id = @propostaId
+            );
+            """;
 
             var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao });
 
             var formacaoDetalhe = await queryMultiple.ReadFirstOrDefaultAsync<FormacaoDetalhada>();
 
-            if (formacaoDetalhe.NaoEhNulo())
+            if (formacaoDetalhe == null) return null;
+
+            formacaoDetalhe.AreaPromotora = await queryMultiple.ReadFirstOrDefaultAsync<string>();
+            formacaoDetalhe.PublicosAlvo = await queryMultiple.ReadAsync<string>();
+            formacaoDetalhe.PalavrasChaves = await queryMultiple.ReadAsync<string>();
+            formacaoDetalhe.Turmas = await queryMultiple.ReadAsync<FormacaoTurma>();
+
+            var formacaoDatasTurmas = (await queryMultiple.ReadAsync<FormacaoTurmaData>())
+                .ToLookup(x => x.PropostaEncontroId);
+
+            var formacaoDatasTurmasNovo = (await queryMultiple.ReadAsync<FormacaoTurmaDataNovo>())
+                .Where(x => x.TurmaId.HasValue)
+                .ToLookup(x => x.TurmaId!.Value);
+
+            var arquivos = await queryMultiple.ReadAsync<Arquivo>();
+            formacaoDetalhe.ArquivoImagemDivulgacao = arquivos.FirstOrDefault();
+
+            foreach (var turma in formacaoDetalhe.Turmas)
             {
-                formacaoDetalhe.AreaPromotora = await queryMultiple.ReadFirstOrDefaultAsync<string>();
-                formacaoDetalhe.PublicosAlvo = await queryMultiple.ReadAsync<string>();  
-                formacaoDetalhe.PalavrasChaves = await queryMultiple.ReadAsync<string>();
-                formacaoDetalhe.Turmas = await queryMultiple.ReadAsync<FormacaoTurma>();
-                var formacaoDatasTurmas = await queryMultiple.ReadAsync<FormacaoTurmaData>();
-                var formacaoDatasTurmasNovo = await queryMultiple.ReadAsync<FormacaoTurmaDataNovo>();
-                var arquivos = await queryMultiple.ReadAsync<Arquivo>();
-                formacaoDetalhe.ArquivoImagemDivulgacao = arquivos.Any() ? arquivos.FirstOrDefault() : null;
+                turma.Periodos = [.. formacaoDatasTurmas[turma.PropostaEncontroId].OrderBy(o => o.DataInicio)];
 
-                foreach (var turma in formacaoDetalhe.Turmas)
-                {
-                    turma.Periodos = formacaoDatasTurmas.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId).OrderBy(o => o.DataInicio);
-                    turma.DatasNovo = formacaoDatasTurmasNovo.Where(w => w.PropostaEncontroId == turma.PropostaEncontroId).OrderBy(o => o.DataInicio);
-                }
-
-                formacaoDetalhe.Turmas = formacaoDetalhe.Turmas.OrderBy(o => o.Periodos.FirstOrDefault().DataInicio);
+                turma.DatasNovo = [.. formacaoDatasTurmasNovo[turma.Id]
+                    .Where(w => w.PropostaEncontroId == turma.PropostaEncontroId)
+                    .OrderBy(o => o.DataInicio)];
             }
+
+            formacaoDetalhe.Turmas = [.. formacaoDetalhe.Turmas.OrderBy(o => o.Periodos.FirstOrDefault()?.DataInicio ?? DateTime.MaxValue)];
 
             return formacaoDetalhe;
         }
