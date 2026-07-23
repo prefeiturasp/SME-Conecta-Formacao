@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
             try
             {
-                if (!possuiCertificadoEmitido)
+                if (!possuiCertificadoEmitido || codafSuplementarExistente.Status != Dominio.Enumerados.StatusCodafSuplementar.Finalizado)
                     await SalvarInscritosAsync(codafSuplementarCadastroDto, codafSuplementarExistente);
 
                 await SalvarRetificacoesAsync(codafSuplementarCadastroDto, codafSuplementarExistente.Id);
