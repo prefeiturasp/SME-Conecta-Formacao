@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
+using System.Globalization;
 using System.Net;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -23,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (retornoFormacaoDetalhadaDto.EhNulo())
             {
-                var formacaoDetalhada = await repositorioProposta.ObterFormacaoDetalhadaPorId(request.Id) ?? 
+                var formacaoDetalhada = await repositorioProposta.ObterFormacaoDetalhadaPorIdAsync(request.Id) ?? 
                                         throw new NegocioException(MensagemNegocio.FORMACAO_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
                 retornoFormacaoDetalhadaDto = mapper.Map<RetornoFormacaoDetalhadaDTO>(formacaoDetalhada);
@@ -44,7 +45,9 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             retornoFormacaoDetalhadaDto.InscricaoEncerrada = retornoFormacaoDetalhadaDto.DataInscricaoFim.Date < DateTimeExtension.HorarioBrasilia().Date || !retornoFormacaoDetalhadaDto.Turmas.Any(a => !a.InscricaoEncerrada);
-            retornoFormacaoDetalhadaDto.Turmas = [.. retornoFormacaoDetalhadaDto.Turmas.OrderBy(x => x.Nome)];
+
+            StringComparer numComparer = StringComparer.Create(CultureInfo.CurrentCulture, CompareOptions.NumericOrdering);
+            retornoFormacaoDetalhadaDto.Turmas = [.. retornoFormacaoDetalhadaDto.Turmas.OrderBy(x => x.Nome, numComparer)];
 
             var acessibilidade = await repositorioUsuarioAcessibilidade.ObterAcessibilidadeAtualDoUsuarioAsync();
             retornoFormacaoDetalhadaDto.UsuarioAcessibilidade = mapper.Map<UsuarioAcessibilidadeDto>(acessibilidade);
