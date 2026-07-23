@@ -100,7 +100,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var lista = CriarLista(StatusCodafListaPresenca.Finalizado);
-            var codafSuplementar = CriarCodafSuplementar(StatusCodafSuplementar.Finalizado);
+
+            typeof(CodafSuplementar)
+                .GetProperty(nameof(CodafSuplementar.Status))
+                ?.SetValue(codafSuplementar, StatusCodafSuplementar.Finalizado);
+
 
             repositorioMock
                 .Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(It.IsAny<long>()))
@@ -119,6 +123,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             Assert.True(resultado.Sucesso);
+
+            repositorioCodafMock.Verify(r =>
+                r.Atualizar(It.IsAny<CodafSuplementar>()),
+                Times.Never);
 
             repositorioCodafMock.Verify(r =>
                 r.Atualizar(It.IsAny<CodafSuplementar>()),

@@ -121,6 +121,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 existente,
                 "CodafCertificados");
 
+            DefinirPropriedade(existente, "Status", Dominio.Enumerados.StatusCodafSuplementar.Finalizado);
+
             var anexosMapeados = new List<CodafSuplementarAnexo>();
 
             repositorioCodaf

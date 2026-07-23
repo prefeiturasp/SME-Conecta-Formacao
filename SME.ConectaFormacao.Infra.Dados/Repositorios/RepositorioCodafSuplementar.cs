@@ -231,7 +231,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             codafSuplementar.CodafCertificados = [.. await multi.ReadAsync<CodafCertificado>()];
             return codafSuplementar;
         }
-        
+
         public async Task<CodafSuplementar?> ObterPorIdCodafListaPresenca(long idCodafListaPresenca)
         {
             var conn = conexao.Obter();

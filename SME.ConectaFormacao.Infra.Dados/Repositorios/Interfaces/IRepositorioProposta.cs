@@ -74,7 +74,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<ResultadoPaginado<long>> ObterListagemFormacoesPorFiltro(FiltroListaFormacaoPropostaDto filtroListaFormacaoPropostaDto);
         Task<IEnumerable<Proposta>> ObterPropostasResumidasPorId(long[] propostaIds);
         Task<IEnumerable<PropostaPublicoAlvo>> ObterPropostasPublicoAlvoPorIdProposta(long propostaId);
-        Task<FormacaoDetalhada> ObterFormacaoDetalhadaPorId(long propostaId);
+        Task<FormacaoDetalhada?> ObterFormacaoDetalhadaPorIdAsync(long propostaId);
         Task<IEnumerable<PropostaTurma>> ObterTurmasComVagaPorId(long propostaId, string? codigoDre = null);
         Task<int> InserirPropostaTurmaVagas(PropostaTurmaVaga propostaTurmaVaga, int quantidade);
         Task<PropostaTurma> ObterTurmaPorId(long propostaTurmaId);
