@@ -58,6 +58,11 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         {
             Status = StatusCodafSuplementar.Iniciado;
         }
+        public void Finalizar()
+        {
+            if (Status == StatusCodafSuplementar.Aguardando)
+                Status = StatusCodafSuplementar.Finalizado;
+        }
 
         public void DefinirStatus()
         {
