@@ -231,6 +231,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             codafSuplementar.CodafCertificados = [.. await multi.ReadAsync<CodafCertificado>()];
             return codafSuplementar;
         }
+        public async Task<CodafSuplementar?> ObterPorIdCodafListaPresenca(long idCodafListaPresenca)
+        {
+            var conn = conexao.Obter();
+            var parametros = new { idCodafListaPresenca };
+            var codafSuplementar = await conn.QueryAsync<CodafSuplementar>(
+                sqlObterCodafSuplementarPorIdCodafListaPresenca,
+                parametros);
+            return codafSuplementar.FirstOrDefault();
+        }
 
         public async Task ExcluirAsync(long id)
         {
@@ -440,6 +449,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                  INNER JOIN PUBLIC.INSCRICAO AS I ON I.ID = CSI.INSCRICAO_ID
                  INNER JOIN PUBLIC.USUARIO AS U  ON U.ID = I.USUARIO_ID 
             WHERE NOT CSI.EXCLUIDO AND CSI.CODAF_SUPLEMENTAR_ID = @id;
+            """;
+
+        private const string sqlObterCodafSuplementarPorIdCodafListaPresenca = """
+            SELECT CS.ID,
+                   CS.CODAF_LISTA_PRESENCA_ID AS CodafId,
+                   CS.DATA_PUBLICACAO AS DataPublicacao,
+                   CS.DATA_PUBLICACAO_DOM AS DataPublicacaoDom,
+                   CS.NUMERO_COMUNICADO AS NumeroComunicado,
+                   CS.PAGINA_COMUNICADO_DOM AS PaginaComunicadoDom,
+                   CS.CODIGO_CURSO_EOL AS CodigoCursoEol,
+                   CS.CODIGO_NIVEL AS CodigoNivel,
+                   CS.OBSERVACAO AS Observacao,
+                   CS.STATUS AS Status,
+                   CS.ALTERADO_EM AS AlteradoEm,
+                   CS.ALTERADO_POR AS AlteradoPor,
+                   CS.ALTERADO_LOGIN AS AlteradoLogin,
+                   CS.CRIADO_EM AS CriadoEm,
+                   CS.CRIADO_POR AS CriadoPor,
+                   CS.CRIADO_LOGIN AS CriadoLogin,
+                   CS.EXCLUIDO AS Excluido
+            FROM PUBLIC.CODAF_SUPLEMENTAR AS CS
+            WHERE NOT CS.EXCLUIDO 
+              AND CS.ID = @idCodafListaPresenca;
             """;
     }
 }
