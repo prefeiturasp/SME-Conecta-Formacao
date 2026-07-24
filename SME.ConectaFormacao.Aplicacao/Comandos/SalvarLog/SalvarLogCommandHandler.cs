@@ -1,54 +1,67 @@
 using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
-using SME.ConectaFormacao.Infra.Dados;
-using SME.ConectaFormacao.Infra.Dados.Repositorios;
+using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 namespace SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 
-public class SalvarLogCommandHandler : IRequestHandler<SalvarLogCommand, bool>
+public class SalvarLogCommandHandler(
+    IRepositorioLog repositorio,
+    IMapper mapper,
+    IMediator mediator,
+    IServicoLogs servicoLogs) :
+    IRequestHandler<SalvarLogCommand, bool>
 {
-    private readonly IRepositorioLog _repositorio;
-    private readonly IMapper _mapper;
-    private readonly ITransacao _transacao;
-    private readonly IMediator _mediator;
-
-    public SalvarLogCommandHandler(IRepositorioLog repositorio, IMapper mapper, ITransacao transacao, IMediator mediator)
-    {
-        _repositorio = repositorio ?? throw new ArgumentNullException(nameof(repositorio));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-    }
 
     public async Task<bool> Handle(SalvarLogCommand request, CancellationToken cancellationToken)
     {
-        Usuario usuarioLogado = await _mediator.Send(new ObterUsuarioLogadoQuery(), cancellationToken);
+        try
+        {
+            var usuarioLogado = await mediator.Send(new ObterUsuarioLogadoQuery(), cancellationToken);
 
-        usuarioLogado ??= new Usuario
+            usuarioLogado ??= new Usuario
             {
                 Id = 1,
                 Login = "Sistema",
             };
 
-        var transacao = _transacao.Iniciar();
 
-        try
-        {
-            var log = _mapper.Map<Log>(request);
+            var log = mapper.Map<Log>(request);
             log.CriadoPor = usuarioLogado.Id.ToString();
             log.CriadoLogin = usuarioLogado.Login;
             log.CriadoEm = DateTime.Now;
+            log.Mensagem = $"[{request.IdentificadorRastreamento}] {request.Mensagem}";
 
-            await _repositorio.Inserir(transacao, log);
 
-            transacao.Commit();
+            var complemento = MontarComplementoExcecao(request.Excecao);
+            log.Complemento = string.IsNullOrEmpty(request.Complemento) ? complemento : $"{request.Complemento} | {complemento}";
+
+            await repositorio.InserirAsync(log);
+
+            if (request.Excecao is null)
+                await servicoLogs.Enviar(mensagem: log.Mensagem, nivel: log.NivelLog);
+            else
+                await servicoLogs.Enviar(request.Excecao, mensagem: log.Mensagem, nivel: log.NivelLog);
 
             return true;
         }
-        catch
+        catch (Exception ex)
         {
-            transacao.Rollback();
-            throw;
+            await servicoLogs.Enviar(ex, mensagem: $"Erro ao salvar log: {request.Mensagem}", nivel: LogNivel.Critico);
+            return false;
         }
+    }
+
+    private static string MontarComplementoExcecao(Exception? ex, int nivel = 0)
+    {
+        var complemento = string.Empty;
+        if (ex is not null)
+            complemento = $"{nivel + 1}: Exception: {ex.Message} | StackTrace: {ex.StackTrace}";
+
+        if (ex is not null && ex.InnerException is not null)
+            complemento += Environment.NewLine + MontarComplementoExcecao(ex.InnerException, nivel + 1);
+
+        return complemento;
     }
 }
