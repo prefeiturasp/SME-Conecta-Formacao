@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
+using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -9,10 +10,12 @@ using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
+using System.Drawing.Printing;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 {
@@ -25,13 +28,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
         IConfiguration configuration) :
         ICasoDeUsoGerarArquivoCertificadosCodaf
     {
+        private readonly Guid _identificadorRastreamento = Guid.NewGuid();
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
+            await SalvarLogAsync("Início do processamento de certificados Codaf");
             var temCertificadosParaProcessar = true;
 
             var urlFrontEnd = configuration["UrlFrontEnd"];
             var urlAcessoCertificados = $"{urlFrontEnd?.TrimEnd('/')}/certificados";
+            await SalvarLogAsync($"Url de acesso aos certificados: {urlAcessoCertificados}");
 
             while (temCertificadosParaProcessar)
             {
@@ -65,6 +71,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 
                 _ = EnviarEmailsAsync(notificacoesParaEnviar);
             }
+            await SalvarLogAsync("Fim do processamento de certificados Codaf");
 
             return true;
         }
@@ -96,6 +103,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                 }
                 catch (Exception e)
                 {
+                    await SalvarLogAsync($"Erro ao processar certificado Codaf com Id {certificado.Id} e Código {certificado.CodigoCertificado}: {e.Message}", LogNivel.Critico, e);
                     await repositorioCodafCertificado.AtualizarStatusProcessamentoAsync(certificado.Id, StatusProcessamentoCertificadoCodaf.ProcessadoComErro, null, e.Message);
                 }
             }
@@ -132,6 +140,33 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             {
                 _ = mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, emailDto));
             }
+        }
+
+        private async Task SalvarLogAsync(string mensagem, LogNivel nivelLog = LogNivel.Informacao, Exception? ex = null)
+        {
+            try
+            {
+                var complemento = MontarComplementoExcecao(ex);
+                await mediator.Send(new SalvarLogCommand(
+                    entidade: typeof(CasoDeUsoGerarArquivoCertificadosCodaf).FullName!,
+                    nivelLog: nivelLog, mensagem: $"[{_identificadorRastreamento}] {mensagem}", complemento: complemento));
+            }
+            catch
+            {
+                // Ignorar erros ao salvar log para não interromper o processamento
+            }
+        }
+
+        private static string MontarComplementoExcecao(Exception? ex, int nivel = 0)
+        {
+            var complemento = string.Empty;
+            if (ex is not null)
+                complemento = $"{nivel + 1}: Exception: {ex.Message} | StackTrace: {ex.StackTrace}";
+
+            if (ex is not null && ex.InnerException is not null)
+                complemento += Environment.NewLine + MontarComplementoExcecao(ex.InnerException, nivel + 1);
+
+            return complemento;
         }
     }
 }
