@@ -64,8 +64,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                     It.IsAny<long?>(),
                     It.IsAny<long?>(),
                     It.IsAny<string?>(),
-                    It.IsAny<long?>(),
-                    It.IsAny<bool?>()))
+                    It.IsAny<long?>()))
                 .ReturnsAsync(0);
 
             // Act
@@ -89,8 +88,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                     It.IsAny<long?>(),
                     It.IsAny<long?>(),
                     It.IsAny<string?>(),
-                    It.IsAny<long?>(),
-                    It.IsAny<bool?>()))
+                    It.IsAny<long?>()))
                 .ReturnsAsync(0);
 
             // Act
@@ -198,8 +196,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                     areaPromotoraId,
                     codigoFormacao,
                     nomeFormacao,
-                    numeroHomologacao,
-                    apenasSemCodaf))
+                    numeroHomologacao))
                 .ReturnsAsync(0);
 
             // Act
@@ -211,8 +208,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                     areaPromotoraId,
                     codigoFormacao,
                     nomeFormacao,
-                    numeroHomologacao,
-                    apenasSemCodaf),
+                    numeroHomologacao),
                 Times.Once);
         }
 
@@ -268,7 +264,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                 apenasSemCodaf: null);
 
             _repositorioInscricao
-                .Setup(r => r.ObterDadosPaginadosComFiltrosTotalRegistros(null, null, null, null, null))
+                .Setup(r => r.ObterDadosPaginadosComFiltrosTotalRegistros(null, null, null, null))
                 .ReturnsAsync(0);
 
             // Act
@@ -276,7 +272,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
 
             // Assert
             _repositorioInscricao.Verify(
-                r => r.ObterDadosPaginadosComFiltrosTotalRegistros(null, null, null, null, null),
+                r => r.ObterDadosPaginadosComFiltrosTotalRegistros(null, null, null, null),
                 Times.Once);
         }
 
@@ -327,7 +323,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
             // Assert
             _repositorioInscricao.Verify(
                 r => r.DadosListagemFormacaoComTurma(
-                    It.Is<long[]>(x => x.Contains(100) && x.Contains(200)), null),
+                    It.Is<long[]>(x => x.Contains(100) && x.Contains(200))),
                 Times.Once);
         }
 
@@ -361,7 +357,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
             formacao.Turmas.First().NomeTurma.Should().Be("Turma A");
         }
 
-        [Fact(DisplayName = "Handle - Deve calcular permissão de sorteio corretamente")]
+        [Fact(DisplayName = "Handle - Deve calcular permissão de Sorteio corretamente")]
         public async Task Handle_Deve_Calcular_Permissao_Sorteio_Corretamente()
         {
             // Arrange
@@ -548,6 +544,107 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
 
         #endregion
 
+        #region Testes - Filtro ApenasSemCodaf
+
+        [Fact(DisplayName = "Handle - Deve filtrar apenas turmas sem CodafId quando ApenasSemCodaf é true")]
+        public async Task Handle_Deve_Filtrar_Apenas_Turmas_Sem_Codaf_Quando_True()
+        {
+            // Arrange
+            var query = new ObterDadosPaginadosComFiltrosQuery(
+                numeroPagina: 1,
+                numeroRegistros: 10,
+                codigoFormacao: null,
+                nomeFormacao: null,
+                areaPromotoraIdUsuarioLogado: null,
+                numeroHomologacao: null,
+                apenasSemCodaf: true);
+
+            var formacaoDto = CriarDadosListagemFormacao(1);
+            var propostasOriginais = new List<Proposta> { CriarFormacaoDTO(1) };
+            var propostasDto = new List<DadosListagemFormacaoComTurmaDTO> { formacaoDto };
+
+            var turmasFormacao = new List<ListagemFormacaoComTurmaDTO>
+            {
+                CriarTurmaFormacao(propostaId: 1, nomeTurma: "Turma Sem Codaf", propostaTurmaId: 1, codafId: null),
+                CriarTurmaFormacao(propostaId: 1, nomeTurma: "Turma Com Codaf", propostaTurmaId: 2, codafId: 123)
+            };
+
+            ConfigurarMocksComSucesso(2, propostasOriginais, propostasDto, turmasFormacao, new List<PropostaTipoInscricao>());
+
+            // Act
+            var resultado = await _sut.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.Items.First().Turmas.Should().HaveCount(1);
+            resultado.Items.First().Turmas.First().NomeTurma.Should().Be("Turma Sem Codaf");
+        }
+
+        [Fact(DisplayName = "Handle - Deve retornar todas as turmas quando ApenasSemCodaf é false")]
+        public async Task Handle_Deve_Retornar_Todas_Turmas_Quando_ApenasSemCodaf_False()
+        {
+            // Arrange
+            var query = new ObterDadosPaginadosComFiltrosQuery(
+                numeroPagina: 1,
+                numeroRegistros: 10,
+                codigoFormacao: null,
+                nomeFormacao: null,
+                areaPromotoraIdUsuarioLogado: null,
+                numeroHomologacao: null,
+                apenasSemCodaf: false);
+
+            var formacaoDto = CriarDadosListagemFormacao(1);
+            var propostasOriginais = new List<Proposta> { CriarFormacaoDTO(1) };
+            var propostasDto = new List<DadosListagemFormacaoComTurmaDTO> { formacaoDto };
+
+            var turmasFormacao = new List<ListagemFormacaoComTurmaDTO>
+            {
+                CriarTurmaFormacao(propostaId: 1, nomeTurma: "Turma A", propostaTurmaId: 1, codafId: null),
+                CriarTurmaFormacao(propostaId: 1, nomeTurma: "Turma B", propostaTurmaId: 2, codafId: 123)
+            };
+
+            ConfigurarMocksComSucesso(2, propostasOriginais, propostasDto, turmasFormacao, new List<PropostaTipoInscricao>());
+
+            // Act
+            var resultado = await _sut.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.Items.First().Turmas.Should().HaveCount(2);
+        }
+
+        [Fact(DisplayName = "Handle - Deve retornar todas as turmas quando ApenasSemCodaf é null")]
+        public async Task Handle_Deve_Retornar_Todas_Turmas_Quando_ApenasSemCodaf_Null()
+        {
+            // Arrange
+            var query = new ObterDadosPaginadosComFiltrosQuery(
+                numeroPagina: 1,
+                numeroRegistros: 10,
+                codigoFormacao: null,
+                nomeFormacao: null,
+                areaPromotoraIdUsuarioLogado: null,
+                numeroHomologacao: null,
+                apenasSemCodaf: null);
+
+            var formacaoDto = CriarDadosListagemFormacao(1);
+            var propostasOriginais = new List<Proposta> { CriarFormacaoDTO(1) };
+            var propostasDto = new List<DadosListagemFormacaoComTurmaDTO> { formacaoDto };
+
+            var turmasFormacao = new List<ListagemFormacaoComTurmaDTO>
+            {
+                CriarTurmaFormacao(propostaId: 1, nomeTurma: "Turma A", propostaTurmaId: 1, codafId: null),
+                CriarTurmaFormacao(propostaId: 1, nomeTurma: "Turma B", propostaTurmaId: 2, codafId: 456)
+            };
+
+            ConfigurarMocksComSucesso(2, propostasOriginais, propostasDto, turmasFormacao, new List<PropostaTipoInscricao>());
+
+            // Act
+            var resultado = await _sut.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.Items.First().Turmas.Should().HaveCount(2);
+        }
+
+        #endregion
+
         #region Testes - Fluxo Completo
 
         [Fact(DisplayName = "Handle - Deve processar fluxo completo com múltiplas formações")]
@@ -617,8 +714,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                     It.IsAny<long?>(),
                     It.IsAny<long?>(),
                     It.IsAny<string?>(),
-                    It.IsAny<long?>(),
-                    It.IsAny<bool?>()))
+                    It.IsAny<long?>()))
                 .ReturnsAsync(1);
 
             _repositorioInscricao
@@ -636,7 +732,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                 .Returns(propostasDto);
 
             _repositorioInscricao
-                .Setup(r => r.DadosListagemFormacaoComTurma(It.IsAny<long[]>(), null))
+                .Setup(r => r.DadosListagemFormacaoComTurma(It.IsAny<long[]>(), It.IsAny<long?>()))
                 .ReturnsAsync((List<ListagemFormacaoComTurmaDTO>)null!);
 
             _repositorioInscricao
@@ -718,8 +814,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                     It.IsAny<long?>(),
                     It.IsAny<long?>(),
                     It.IsAny<string?>(),
-                    It.IsAny<long?>(),
-                    It.IsAny<bool?>()))
+                    It.IsAny<long?>()))
                 .ReturnsAsync(totalRegistros);
 
             _repositorioInscricao
@@ -737,7 +832,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                 .Returns(propostasDto);
 
             _repositorioInscricao
-                .Setup(r => r.DadosListagemFormacaoComTurma(It.IsAny<long[]>(), null))
+                .Setup(r => r.DadosListagemFormacaoComTurma(It.IsAny<long[]>(), It.IsAny<long?>()))
                 .ReturnsAsync(turmasFormacao);
 
             _repositorioInscricao
@@ -778,7 +873,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
             int? excedidas = null,
             int? aguardandoAnalise = 0,
             string? datas = null,
-            long? propostaTurmaId = 0)
+            long? propostaTurmaId = 0,
+            long? codafId = null)
         {
             return new ListagemFormacaoComTurmaDTO
             {
@@ -790,7 +886,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                 AguardandoAnalise = aguardandoAnalise,
                 Datas = datas,
                 PropostaTurmaId = propostaTurmaId,
-                Disponiveis = vagar
+                Disponiveis = vagar,
+                CodafId = codafId,
+                TotalInscricoes = 0,
+                Confirmadas = 0,
+                EmEspera = 0,
+                Cancelada = 0
             };
         }
 
