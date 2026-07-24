@@ -22,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PaginacaoResultadoDto<DadosListagemFormacaoComTurmaDTO>> Handle(ObterDadosPaginadosComFiltrosQuery request, CancellationToken cancellationToken)
         {
             var retornoComTurmas = new List<DadosListagemFormacaoComTurmaDTO>();
-            var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroHomologacao, request.ApenasSemCodaf);
+            var totalRegistrosFiltro = await _repositorioInscricao.ObterDadosPaginadosComFiltrosTotalRegistros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroHomologacao);
             if (totalRegistrosFiltro > 0)
             {
                 var propostasTurmas = await _repositorioInscricao.ObterDadosPaginadosComFiltros(request.AreaPromotoraIdUsuarioLogado, request.CodigoFormacao, request.NomeFormacao, request.NumeroPagina, request.NumeroRegistros, request.NumeroHomologacao);
@@ -33,36 +33,38 @@ namespace SME.ConectaFormacao.Aplicacao
                 var turmas = await _repositorioInscricao.DadosListagemFormacaoComTurma(codigosFormacao);
                 var tiposInscricao = await _repositorioInscricao.ObterTiposInscricaoPorPropostaIds(codigosFormacao);
 
-                retornoComTurmas.AddRange(MapearTurmasETipoInscricao(formacao, turmas, tiposInscricao));
+                retornoComTurmas.AddRange(MapearTurmasETipoInscricao(formacao, turmas, tiposInscricao, request.ApenasSemCodaf));
             }
 
             return new PaginacaoResultadoDto<DadosListagemFormacaoComTurmaDTO>(retornoComTurmas, totalRegistrosFiltro, request.NumeroRegistros);
         }
 
-        private static IEnumerable<DadosListagemFormacaoComTurmaDTO> MapearTurmasETipoInscricao(IEnumerable<DadosListagemFormacaoComTurmaDTO> formacoes, IEnumerable<ListagemFormacaoComTurmaDTO>? turmasFormacao, IEnumerable<PropostaTipoInscricao> tipoInscricaos)
+        private static IEnumerable<DadosListagemFormacaoComTurmaDTO> MapearTurmasETipoInscricao(IEnumerable<DadosListagemFormacaoComTurmaDTO> formacoes, IEnumerable<ListagemFormacaoComTurmaDTO>? turmasFormacao, IEnumerable<PropostaTipoInscricao> tipoInscricaos, bool? apenasSemCodaf)
         {
             foreach (var proposta in formacoes)
             {
                 var inscricao = turmasFormacao?.Where(x => x.PropostaId == proposta.Id) ?? Enumerable.Empty<ListagemFormacaoComTurmaDTO>();
 
-                var turmas = inscricao.Select(i => new DadosListagemFormacaoTurma
-                {
-                    PropostaTurmaId = i.PropostaTurmaId,
-                    NomeTurma = i.NomeTurma,
-                    QuantidadeVagas = i.QuantidadeVagas,
-                    QuantidadeInscricoes = i.TotalInscricoes,
-                    Data = ObterData(inscricao, i),
-                    QuantidadeConfirmada = i.Confirmadas,
-                    QuantidadeAguardandoAnalise = i.AguardandoAnalise,
-                    QuantidadeEmEspera = i.EmEspera,
-                    QuantidadeCancelada = i.Cancelada,
-                    QuantidadeDisponivel = i.Disponiveis,
-                    QuantidadeExcedida = i.Excedidas,
-                    Permissao = new DadosListagemFormacaoTurmaPermissao
+                var turmas = inscricao
+                    .Where(i => (apenasSemCodaf != true) || !i.CodafId.HasValue)
+                    .Select(i => new DadosListagemFormacaoTurma
                     {
-                        PodeRealizarSorteio = i.PermiteSorteio.GetValueOrDefault() && i.Disponiveis > 0 && i.Excedidas > 0 && i.AguardandoAnalise > 0
-                    }
-                }).DistinctBy(x => x.NomeTurma)
+                        PropostaTurmaId = i.PropostaTurmaId,
+                        NomeTurma = i.NomeTurma,
+                        QuantidadeVagas = i.QuantidadeVagas,
+                        QuantidadeInscricoes = i.TotalInscricoes,
+                        Data = ObterData(inscricao, i),
+                        QuantidadeConfirmada = i.Confirmadas,
+                        QuantidadeAguardandoAnalise = i.AguardandoAnalise,
+                        QuantidadeEmEspera = i.EmEspera,
+                        QuantidadeCancelada = i.Cancelada,
+                        QuantidadeDisponivel = i.Disponiveis,
+                        QuantidadeExcedida = i.Excedidas,
+                        Permissao = new DadosListagemFormacaoTurmaPermissao
+                        {
+                            PodeRealizarSorteio = i.PermiteSorteio.GetValueOrDefault() && i.Disponiveis > 0 && i.Excedidas > 0 && i.AguardandoAnalise > 0
+                        }
+                    }).DistinctBy(x => x.NomeTurma)
                     .ToList();
 
                 proposta.Turmas = turmas;

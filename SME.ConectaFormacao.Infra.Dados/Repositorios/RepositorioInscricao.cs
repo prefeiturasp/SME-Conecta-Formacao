@@ -4,7 +4,6 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
@@ -550,7 +549,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return conexao.Obter().QueryAsync<Proposta>(query.ToString(), parametros);
         }
 
-        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, long? numeroHomologacao, bool? apenasSemCodaf)
+        public Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, long? numeroHomologacao)
         {
             var situacaoProposta = (int)SituacaoProposta.Publicada;
             var query = @"	
@@ -570,9 +569,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (numeroHomologacao.NaoEhNulo())
                 query += " and p.numero_homologacao = @numeroHomologacao ";
-            
-            if (apenasSemCodaf is true)
-                query += " and not exists(select 1 from codaf_lista_presenca clp where clp.proposta_id = p.id and not clp.excluido) ";
 
             return conexao.Obter().ExecuteScalarAsync<int>(query, new { areaPromotoraIdUsuarioLogado, nomeFormacao, codigoDaFormacao, situacaoProposta, numeroHomologacao });
         }
@@ -624,7 +620,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 CASE 
                     WHEN cvps.proposta_id IS NOT NULL THEN TRUE
                     ELSE FALSE
-                END AS permiteSorteio
+                END AS permiteSorteio,
+                clp.id AS codafId
             FROM proposta p
             LEFT JOIN proposta_turma pt ON pt.proposta_id = p.id AND NOT pt.excluido
             LEFT JOIN proposta_encontro_turma pet ON pet.turma_id = pt.id AND NOT pet.excluido
@@ -632,6 +629,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             LEFT JOIN proposta_encontro_data ped ON ped.proposta_encontro_id = pe.id AND NOT ped.excluido
             LEFT JOIN inscricoes_turma it ON it.id = pt.id
             LEFT JOIN criterio_validacao_permite_sorteio cvps on cvps.proposta_id = p.id
+            LEFT JOIN codaf_lista_presenca clp ON clp.proposta_turma_id = pt.id AND NOT clp.excluido
             WHERE NOT p.excluido
               AND p.id = ANY(@propostaIds)";
 
