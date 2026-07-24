@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
+using SME.ConectaFormacao.Aplicacao.Servicos.Interfaces;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
     public class CasoDeUsoObterCodafSuplementarPorId(
         IRepositorioCodafSuplementar repositorioCodafSuplementar,
         IServicoArmazenamento servicoArmazenamento,
+        IServicoPeriodoEncontroProposta servicoPeriodoEncontroProposta,
         IMapper mapper) : ICasoDeUsoObterCodafSuplementarPorId
     {
         public async Task<Resultado<CodafSuplementarDetalhadoDto>> ExecutarAsync(long codafSuplementarId)
@@ -30,6 +31,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                     anexo.UrlDownload = await servicoArmazenamento.ObterUrlPorChaveObjetoAsync(anexo.ArquivoCodigo.ToString());
                 }
             }
+            if (codafSuplementar.PropostaTurma != null)
+                codafSuplementarDto.Turma = new() { 
+                    Id = codafSuplementar.PropostaTurma.Id, 
+                    Descricao = codafSuplementar.PropostaTurma.Nome + await servicoPeriodoEncontroProposta.ObterPeriodoEncontrosTurmaAsync(codafSuplementar.PropostaTurma.Id),
+                    CodafId = codafSuplementar.CodafId,
+                };
             return codafSuplementarDto;
         }
     }
