@@ -157,7 +157,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             }
         }
 
-        private static string MontarComplementoExcecao(Exception ex, int nivel = 0)
+        private static string MontarComplementoExcecao(Exception? ex, int nivel = 0)
         {
             var complemento = string.Empty;
             if (ex is not null)
