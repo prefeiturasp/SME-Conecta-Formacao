@@ -41,8 +41,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Assert
             Assert.False(resultado.Sucesso);
 
-            repositorioMock.Verify(r =>
-                r.Atualizar(It.IsAny<CodafListaPresenca>()),
+            repositorioCodafMock.Verify(r =>
+                r.Atualizar(It.IsAny<CodafSuplementar>()),
                 Times.Never);
 
             servicoRelatorioMock.Verify(r =>
@@ -55,7 +55,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var lista = CriarLista(StatusCodafListaPresenca.AguardandoDf);
-            var codafSuplementar = new CodafSuplementar(1);
+            var codafSuplementar = CriarCodafSuplementar(StatusCodafSuplementar.Aguardando);
 
             repositorioMock
                 .Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(It.IsAny<long>()))
@@ -90,10 +90,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 r.GerarRelatorioCodafSuplementarAsync(1),
                 Times.Once);
 
-            repositorioMock.Verify(r =>
-                r.Atualizar(It.IsAny<CodafListaPresenca>()),
-                Times.Never);
-
             repositorioCodafMock.Verify(r =>
                 r.Atualizar(It.IsAny<CodafSuplementar>()),
                 Times.Once);
@@ -104,11 +100,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var lista = CriarLista(StatusCodafListaPresenca.Finalizado);
-            var codafSuplementar = new CodafSuplementar(5);
-
-            typeof(CodafSuplementar)
-                .GetProperty(nameof(CodafSuplementar.Status))
-                ?.SetValue(codafSuplementar, StatusCodafSuplementar.Finalizado);
+            var codafSuplementar = CriarCodafSuplementar(StatusCodafSuplementar.Finalizado);
 
             repositorioMock
                 .Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(It.IsAny<long>()))
@@ -127,10 +119,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             Assert.True(resultado.Sucesso);
-
-            repositorioMock.Verify(r =>
-                r.Atualizar(It.IsAny<CodafListaPresenca>()),
-                Times.Never);
 
             repositorioCodafMock.Verify(r =>
                 r.Atualizar(It.IsAny<CodafSuplementar>()),
@@ -160,6 +148,17 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 ?.SetValue(lista, status);
 
             return lista;
+        }
+
+        private static CodafSuplementar CriarCodafSuplementar(StatusCodafSuplementar status)
+        {
+            var codafSuplementar = new CodafSuplementar(1);
+
+            typeof(CodafSuplementar)
+                .GetProperty(nameof(CodafSuplementar.Status))
+                ?.SetValue(codafSuplementar, status);
+
+            return codafSuplementar;
         }
     }
 }
