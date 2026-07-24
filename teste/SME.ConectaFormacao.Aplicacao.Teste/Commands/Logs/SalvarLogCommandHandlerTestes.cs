@@ -4,7 +4,7 @@ using Moq;
 using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados;
-using SME.ConectaFormacao.Infra.Dados.Repositorios;
+using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using System.Data;
 
