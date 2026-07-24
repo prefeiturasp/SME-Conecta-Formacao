@@ -95,7 +95,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                 }
                 catch (Exception ex)
                 {
-                    await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirCertificadoCodaf).FullName!, LogNivel.Critico, $"Erro ao registrar a emissão de certificados do Codaf {tipoCodaf} - {codafId}. Erro: {ex.Message}", identificadorRastreamento: _identificadorRastreamento), ex);
+                    await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirCertificadoCodaf).FullName!, LogNivel.Critico, $"Erro ao registrar a emissão de certificados do Codaf {tipoCodaf} - {codafId}. Erro: {ex.Message}", identificadorRastreamento: _identificadorRastreamento, excecao: ex));
                     transacaoDb.Rollback();
                     throw;
                 }

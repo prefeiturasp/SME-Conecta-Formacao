@@ -1,30 +1,23 @@
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterUsuarioLogadoQueryHandler : IRequestHandler<ObterUsuarioLogadoQuery, Usuario>
+    public class ObterUsuarioLogadoQueryHandler(IContextoAplicacao contextoAplicacao, IMediator mediator, ICacheDistribuido cacheDistribuido) : 
+        IRequestHandler<ObterUsuarioLogadoQuery, Usuario>
     {
-        private readonly IContextoAplicacao _contextoAplicacao;
-        private readonly IMediator _mediator;
-        private readonly ICacheDistribuido _cacheDistribuido;
-
-        public ObterUsuarioLogadoQueryHandler(IContextoAplicacao contextoAplicacao, IMediator mediator, ICacheDistribuido cacheDistribuido)
-        {
-            _contextoAplicacao = contextoAplicacao ?? throw new ArgumentNullException(nameof(contextoAplicacao));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            _cacheDistribuido = cacheDistribuido ?? throw new ArgumentNullException(nameof(cacheDistribuido));
-        }
-
         public async Task<Usuario> Handle(ObterUsuarioLogadoQuery request, CancellationToken cancellationToken)
         {
-            var nomeChave = CacheDistribuidoNomes.UsuarioLogado.Parametros(_contextoAplicacao.UsuarioLogado);
+            await mediator.Send(new SalvarLogCommand(typeof(ObterUsuarioLogadoQueryHandler).FullName!, LogNivel.Informacao, "Iniciando consulta do usuário logado", null, Guid.NewGuid(), null), cancellationToken);
+            var nomeChave = CacheDistribuidoNomes.UsuarioLogado.Parametros(contextoAplicacao.UsuarioLogado);
 
-            return await _cacheDistribuido.ObterAsync(nomeChave, () => _mediator.Send(new ObterUsuarioPorLoginQuery(_contextoAplicacao.UsuarioLogado), cancellationToken));
+            return await cacheDistribuido.ObterAsync(nomeChave, () => mediator.Send(new ObterUsuarioPorLoginQuery(contextoAplicacao.UsuarioLogado), cancellationToken));
         }
     }
 }
