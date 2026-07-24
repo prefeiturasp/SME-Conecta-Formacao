@@ -12,10 +12,10 @@ using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
-using System.Drawing.Printing;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 {
@@ -25,7 +25,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
         IServicoArmazenamento servicoArmazenamento,
         IMediator mediator,
         IKeyedServiceProvider serviceProvider,
-        IConfiguration configuration) :
+        IConfiguration configuration,
+        IServicoLogs servicoLogs) :
         ICasoDeUsoGerarArquivoCertificadosCodaf
     {
         private readonly Guid _identificadorRastreamento = Guid.NewGuid();
@@ -146,14 +147,19 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
         {
             try
             {
+                if (ex is null)
+                    await servicoLogs.Enviar(mensagem: $"[{_identificadorRastreamento}] {mensagem}", nivel: nivelLog);
+                else
+                    await servicoLogs.Enviar(ex, mensagem: $"[{_identificadorRastreamento}] {mensagem}");
+
                 var complemento = MontarComplementoExcecao(ex);
                 await mediator.Send(new SalvarLogCommand(
                     entidade: typeof(CasoDeUsoGerarArquivoCertificadosCodaf).FullName!,
                     nivelLog: nivelLog, mensagem: $"[{_identificadorRastreamento}] {mensagem}", complemento: complemento));
             }
-            catch
+            catch (Exception e)
             {
-                // Ignorar erros ao salvar log para não interromper o processamento
+                await servicoLogs.Enviar(e, mensagem: $"[{_identificadorRastreamento}] Erro ao salvar log: {mensagem}");
             }
         }
 
