@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Moq;
+using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -18,14 +19,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
         public CasoDeUsoObterCodafSuplementarPorIdTestes()
         {
-            repositorioMock = new Mock<IRepositorioCodafSuplementar>();
-            servicoArmazenamentoMock = new Mock<IServicoArmazenamento>();
-            mapperMock = new Mock<IMapper>();
+            var mocker = new AutoMocker();
+            repositorioMock = mocker.GetMock<IRepositorioCodafSuplementar>();
+            servicoArmazenamentoMock = mocker.GetMock<IServicoArmazenamento>();
+            mapperMock = mocker.GetMock<IMapper>();
 
-            casoDeUso = new CasoDeUsoObterCodafSuplementarPorId(
-                repositorioMock.Object,
-                servicoArmazenamentoMock.Object,
-                mapperMock.Object);
+            casoDeUso = mocker.CreateInstance<CasoDeUsoObterCodafSuplementarPorId>();
         }
 
         [Fact]
