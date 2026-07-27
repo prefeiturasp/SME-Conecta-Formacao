@@ -11,19 +11,18 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using SME.ConectaFormacao.Infra.Dados.Servicos;
-using SME.ConectaFormacao.Infra.Servicos.Cache;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 {
     public class SalvarInscricaoCommandHandler(
-        IMapper mapper, 
-        IMediator mediator, 
+        IMapper mapper,
+        IMediator mediator,
         IRepositorioInscricao repositorioInscricao,
-        ITransacao transacao, 
+        ITransacao transacao,
         IUsuarioAcessibilidadeService usuarioAcessibilidadeService,
-        IUsuarioCacheService usuarioCacheService) :
+        IUsuarioCacheService usuarioCacheService,
+        IContextoAplicacao contextoAplicacao) :
         IRequestHandler<SalvarInscricaoCommand, RetornoDTO>
     {
         private readonly ITransacao _transacao = transacao;
@@ -49,7 +48,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
             inscricao.Situacao = request.InscricaoDto.VagaRemanescente ? SituacaoInscricao.EmEspera : SituacaoInscricao.AguardandoAnalise;
             inscricao.Origem = OrigemInscricao.Manual;
 
-            await MapearCargoFuncao(inscricao, cancellationToken);
+            await MapearCargoFuncao(inscricao, usuarioLogado, cancellationToken);
 
             var propostaTurma = await mediator.Send(new ObterPropostaTurmaPorIdQuery(inscricao.PropostaTurmaId), cancellationToken) ??
                                 throw new NegocioException(MensagemNegocio.TURMA_NAO_ENCONTRADA);
@@ -76,12 +75,23 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
             return new RetornoDTO { Mensagem = mensagem, EntidadeId = inscricao.Id };
         }
 
-        private async Task MapearCargoFuncao(Inscricao inscricao, CancellationToken cancellationToken)
+        private bool EhUsuarioCursista()
+        {
+            return contextoAplicacao.IdPerfilUsuario == PerfilAutomatico.PERIL_CURSISTA_CODIGO;
+        }
+
+        private async Task MapearCargoFuncao(Inscricao inscricao, Usuario usuarioLogado, CancellationToken cancellationToken)
         {
             var codigosFuncoesEol = !string.IsNullOrWhiteSpace(inscricao.FuncaoCodigo) ? [long.Parse(inscricao.FuncaoCodigo)] : Enumerable.Empty<long>();
             var codigosCargosEol = !string.IsNullOrWhiteSpace(inscricao.CargoCodigo) ? [long.Parse(inscricao.CargoCodigo)] : Enumerable.Empty<long>();
+            
             if (codigosFuncoesEol.PossuiElementos() || codigosCargosEol.PossuiElementos())
             {
+                // Quando usuário é Rede Parceria e Cursista, não pode editar o cargo
+                if (usuarioLogado.Tipo.EhRedeParceria() && EhUsuarioCursista())
+                {
+                    return;
+                }
                 var cargosFuncoes = await mediator.Send(new ObterCargoFuncaoPorCodigoEolQuery(codigosCargosEol, codigosFuncoesEol), cancellationToken);
 
                 inscricao.CargoId = cargosFuncoes.FirstOrDefault(f => f.Tipo == CargoFuncaoTipo.Cargo)?.Id;
@@ -110,7 +120,6 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
                 if (cargoId.HasValue && !cargoEhOutros && !cargosProposta.Any(a => a.CargoFuncaoId == cargoId))
                     temErroCargo = true;
-
             }
 
             if (funcaoAtividadeProposta.PossuiElementos())
