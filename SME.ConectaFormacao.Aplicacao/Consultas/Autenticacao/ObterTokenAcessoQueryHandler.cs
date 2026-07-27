@@ -27,9 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(request.Login), cancellationToken);
 
             if (usuario.EhNulo())
-                usuario = new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email);
-
-            var alterouNomeUsuario = !usuarioPerfisRetornoDto.UsuarioNome.Equals(usuario.Nome);
+                usuario = new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email, usuarioPerfisRetornoDto.UsuarioNomeSocial);
 
             usuarioPerfisRetornoDto = await ValidarPerfisAutomaticos(request, usuarioPerfisRetornoDto, cancellationToken);
 
@@ -43,6 +41,11 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             usuario.Atualizar(usuarioPerfisRetornoDto.Email, DateTimeExtension.HorarioBrasilia(), usuarioPerfisRetornoDto.Cpf, usuarioPerfisRetornoDto.UsuarioNome);
+
+
+            var alterouNomeUsuario = !usuarioPerfisRetornoDto.UsuarioNome.Equals(usuario.Nome); 
+            var alterouNomeSocialUsuario = !string.Equals(usuarioPerfisRetornoDto.UsuarioNomeSocial, usuario.NomeSocial, StringComparison.Ordinal);
+    
             await mediator.Send(new SalvarUsuarioCommand(usuario, alterouNomeUsuario), cancellationToken);
 
             //TODO: quando interno vier a informação do EOL, esse trecho de código se torna obsoleto
