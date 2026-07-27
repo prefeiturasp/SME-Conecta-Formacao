@@ -1,11 +1,12 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class Usuario : EntidadeBaseAuditavel
     {
-        public Usuario(string login, string nome, string email, string cpf, TipoUsuario tipo, SituacaoUsuario situacao, string? codigoEolUnidade, string? emailEducacional, TipoEmail tipoEmail)
+        public Usuario(string login, string nome, string email, string cpf, 
+            TipoUsuario tipo, SituacaoUsuario situacao, string? codigoEolUnidade, 
+            string? emailEducacional, TipoEmail tipoEmail, string? nomeSocial = null)
         {
             Login = login;
             Nome = nome;
@@ -16,6 +17,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             CodigoEolUnidade = codigoEolUnidade;
             EmailEducacional = emailEducacional;
             TipoEmail = tipoEmail;
+            NomeSocial = nomeSocial;
         }
 
         public Usuario() { }
@@ -43,14 +45,17 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public TipoEmail? TipoEmail { get; set; }
         public long? AreaPromotoraId { get; set; }
         public string? Telefone { get; set; }
+        public string? NomeSocial { get; set; }
+        public string NomeExibicao => string.IsNullOrWhiteSpace(NomeSocial) ? Nome : NomeSocial;
 
-        public AreaPromotora AreaPromotora { get; set; }
+        public AreaPromotora? AreaPromotora { get; set; }
 
-        public void Atualizar(string email, DateTime? dataHora, string? cpf, string nome)
+        public void Atualizar(string email, DateTime? dataHora, string? cpf, string nome, string? nomeSocial = null)
         {
             Email = email;
             UltimoLogin = dataHora;
             Nome = nome;
+            NomeSocial = nomeSocial;
             if (!string.IsNullOrWhiteSpace(cpf))
                 Cpf = cpf;
 
