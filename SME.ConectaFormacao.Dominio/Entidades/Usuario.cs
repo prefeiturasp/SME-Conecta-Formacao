@@ -21,13 +21,14 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         }
 
         public Usuario() { }
-        public Usuario(string login, string nome, string email)
+        public Usuario(string login, string nome, string email, string? nomeSocial = null)
         {
             Login = login;
             Nome = nome;
             Email = email;
             Tipo = TipoUsuario.Interno;
             Situacao = SituacaoUsuario.Ativo;
+            NomeSocial = nomeSocial;
         }
 
         public string Login { get; set; }

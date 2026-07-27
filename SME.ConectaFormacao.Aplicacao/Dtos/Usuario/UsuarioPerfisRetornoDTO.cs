@@ -2,6 +2,7 @@
 public class UsuarioPerfisRetornoDTO
 {
     public string UsuarioNome { get; set; }
+    public string? UsuarioNomeSocial { get; set; }
     public string UsuarioLogin { get; set; }
     public DateTime DataHoraExpiracao { get; set; }
     public string Token { get; set; }
