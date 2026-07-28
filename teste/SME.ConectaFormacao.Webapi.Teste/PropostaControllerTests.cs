@@ -349,7 +349,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var mockUseCase = new Mock<ICasoDeUsoObterNomeRegenteTutor>();
             var rf = "1234567";
-            mockUseCase.Setup(x => x.Executar(rf)).ReturnsAsync("Nome Profissional");
+            mockUseCase.Setup(x => x.Executar(rf)).ReturnsAsync("NomeSocial Profissional");
 
             // Act
             var resultado = await _controller.ObterNomeProfissionalTutorRegente(rf, mockUseCase.Object);

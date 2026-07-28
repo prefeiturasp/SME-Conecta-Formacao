@@ -24,15 +24,15 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
             services.Replace(new ServiceDescriptor(typeof(IRequestHandler<ObterNomeCpfProfissionalPorRegistroFuncionalQuery, RetornoUsuarioCpfNomeDTO>), typeof(ObterNomeProfissionalPorRegistroFuncionalQueryHandlerFake), ServiceLifetime.Scoped));
         }
 
-        [Fact(DisplayName = "Proposta - Deve Obter Nome do Regente/Tutor com RF Válido")]
+        [Fact(DisplayName = "Proposta - Deve Obter NomeSocial do Regente/Tutor com RF Válido")]
         public async Task Deve_obter_nome_regente_tutor_com_ff_valido()
         {
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeRegenteTutor>();
             var consulta = await casoDeUso.Executar("111111");
             consulta.ShouldNotBeNull();
-            consulta.ShouldBeEquivalentTo("Nome do Profissional");
+            consulta.ShouldBeEquivalentTo("NomeSocial do Profissional");
         }
-        [Fact(DisplayName = "Proposta - Não Deve Obter Nome do Regente/Tutor RF Inválido")]
+        [Fact(DisplayName = "Proposta - Não Deve Obter NomeSocial do Regente/Tutor RF Inválido")]
         public async Task Deve_retornar_excessao_rf_invalido()
         {
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeRegenteTutor>();

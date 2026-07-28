@@ -214,7 +214,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                     NomePessoa = "Pessoa",
                     Cpf = cpf,
                     CodigoUE = "050",
-                    NomeUe = "Unidade A - Outro Nome"
+                    NomeUe = "Unidade A - Outro NomeSocial"
                 }
             };
 

@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
 
             var codigoDre = "67";
             var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoInstitucionalDreTratarUseCase>();
-            var mensagem = JsonSerializer.Serialize(new DreServicoEol(codigoDre, "Nome da Dre", "abr Dre"));
+            var mensagem = JsonSerializer.Serialize(new DreServicoEol(codigoDre, "NomeSocial da Dre", "abr Dre"));
             await casoDeUso.Executar(new MensagemRabbit(mensagem));
 
             var todosAreasDepois = ObterTodos<Dominio.Entidades.Dre>();
@@ -59,7 +59,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Dre
             var todosAreasAntes = ObterTodos<Dominio.Entidades.Dre>();
             todosAreasAntes.Count.ShouldBeEquivalentTo(1);
 
-            var nomeDre = "Nome da Dre atualizado";
+            var nomeDre = "NomeSocial da Dre atualizado";
             var abreviacao = "XYZ DRE";
 
             var casoDeUso = ObterCasoDeUso<IExecutarSincronizacaoInstitucionalDreTratarUseCase>();

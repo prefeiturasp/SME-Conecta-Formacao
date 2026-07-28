@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas.ServicosFakes
         {
             if (string.IsNullOrEmpty(request.RegistroFuncional))
                 throw new NegocioException(mensagem: MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO, statusCode: HttpStatusCode.NoContent);
-            return new RetornoUsuarioCpfNomeDTO() { Nome = "Nome do Profissional", Cpf = "99999999999" };
+            return new RetornoUsuarioCpfNomeDTO() { Nome = "NomeSocial do Profissional", Cpf = "99999999999" };
         }
     }
 }

@@ -56,7 +56,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Usuarios
             //var usuarioLogin = usuarioAlterado.FirstOrDefault(f => f.Login.Equals(usuarioMock.Login));
             //usuarioLogin!.Login.ShouldBe(usuarioMock.Login);
             //((int)usuarioLogin.TipoEmail!).ShouldBe((int)TipoEmail.Estagiario);
-            //usuarioLogin!.EmailEducacional.ShouldBe($"{usuarioMock.Nome.Replace(" ", "").ToLower()}.e{usuarioMock.Documento}@edu.sme.prefeitura.sp.gov.br"); 
+            //usuarioLogin!.EmailEducacional.ShouldBe($"{usuarioMock.NomeSocial.Replace(" ", "").ToLower()}.e{usuarioMock.Documento}@edu.sme.prefeitura.sp.gov.br"); 
             //usuarioLogin.Excluido.ShouldBeFalse();
         }
     }

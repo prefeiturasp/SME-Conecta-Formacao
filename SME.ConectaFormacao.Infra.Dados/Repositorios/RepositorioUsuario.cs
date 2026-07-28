@@ -14,32 +14,35 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
     {
         public Task<Usuario?> ObterPorLogin(string login)
         {
-            var query = @"select 
-                            id, 
-                            login,                             
-                            nome,       
-                            email,
-                            email_educacional,
-                            ultimo_login, 
-                            expiracao_recuperacao_senha, 
-                            token_recuperacao_senha,
-                            criado_em, 
-                            criado_por, 
-                            alterado_em, 
-                            alterado_por, 
-                            criado_login, 
-                            alterado_login,
-                            codigo_eol_unidade,
-                            tipo,
-                            possui_contrato_externo,
-                            situacao_cadastro,
-                            cpf,
-                            tipo_email,
-                            telefone,
-                            area_promotora_id,
-                            excluido
-                          from usuario 
-                          where login = @login or cpf = @login";
+            var query = """
+             select 
+                id, 
+                login,
+                nome,
+                nome_social,
+                email,
+                email_educacional,
+                ultimo_login, 
+                expiracao_recuperacao_senha, 
+                token_recuperacao_senha,
+                criado_em, 
+                criado_por, 
+                alterado_em, 
+                alterado_por, 
+                criado_login, 
+                alterado_login,
+                codigo_eol_unidade,
+                tipo,
+                possui_contrato_externo,
+                situacao_cadastro,
+                cpf,
+                tipo_email,
+                telefone,
+                area_promotora_id,
+                excluido
+             from usuario 
+             where login = @login or cpf = @login
+             """;
 
             return conexao.Obter().QueryFirstOrDefaultAsync<Usuario>(query, new { login });
         }

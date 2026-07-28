@@ -370,7 +370,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.PublicarNaFilaRabbit
             // Assert
             Assert.True(resultado);
             Assert.NotNull(mensagemCapturada);
-            // Usuário vazio terá Nome e Login null
+            // Usuário vazio terá NomeSocial e Login null
             Assert.Null(mensagemCapturada.UsuarioLogadoNomeCompleto);
             Assert.Null(mensagemCapturada.UsuarioLogadoRF);
         }

@@ -15,6 +15,7 @@
         public const string URL_USUARIOS_X_SENHA = "v1/usuarios/{0}/senha";
         public const string URL_USUARIOS_X_EMAIL = "v1/usuarios/{0}/email";
         public const string URL_USUARIOS_X_NOME = "v1/usuarios/{0}/nome";
+        public const string URL_USUARIOS_X_NOME_SOCIAL = "v1/usuarios/{0}/nome-social";
         public const string URL_USUARIOS_X_INATIVAR = "v1/usuarios/{0}/inativar";
         public const string URL_USUARIOS_X_SISTEMAS_Y_RECUPERAR_SENHA = "v1/usuarios/{0}/sistemas/{1}/recuperar-senha";
         public const string URL_USUARIOS_X_SISTEMAS_Y_VALIDAR = "v1/usuarios/{0}/sistemas/{1}/validar";

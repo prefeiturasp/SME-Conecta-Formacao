@@ -1,19 +1,20 @@
 ﻿using MediatR;
-using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterDadosServidorPorRfEol;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 using SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.Mocks;
 
 namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Autenticacao.ServicosFakes
 {
-    internal class ObterNomeServidorPorRfEolQueryHandlerFake : IRequestHandler<ObterNomeServidorPorRfEolQuery, string>
+    internal class ObterDadosServidorPorRfEolQueryHandlerFake : IRequestHandler<ObterDadosServidorPorRfEolQuery, UsuarioEolDto>
     {
-        public Task<string> Handle(ObterNomeServidorPorRfEolQuery request, CancellationToken cancellationToken)
+        public Task<UsuarioEolDto> Handle(ObterDadosServidorPorRfEolQuery request, CancellationToken cancellationToken)
         {
             if (request.RfServidor.Equals(AutenticacaoMock.AutenticacaoUsuarioDTOValido.Login))
-                return Task.FromResult(AutenticacaoMock.UsuarioPerfisRetornoDTOValido.UsuarioNome);
+                return Task.FromResult(new UsuarioEolDto { Nome = AutenticacaoMock.UsuarioPerfisRetornoDTOValido.UsuarioNome });
 
             return Task.FromResult(request.RfServidor.Equals(AutenticacaoMock.UsuarioLogado.Login)
-                ? AutenticacaoMock.UsuarioLogado.Nome
-                : string.Empty);
+                ? new UsuarioEolDto { Nome = AutenticacaoMock.UsuarioLogado.Nome }
+                : new UsuarioEolDto { Nome = string.Empty });
         }
     }
 }

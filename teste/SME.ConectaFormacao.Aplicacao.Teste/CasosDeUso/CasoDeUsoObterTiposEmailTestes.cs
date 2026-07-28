@@ -54,7 +54,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             Assert.Contains(resultadoList, r => r.Id == (short)TipoEmail.Estagiario);
         }
 
-        [Fact(DisplayName = "Executar - Deve mapear Descricao corretamente usando extensão Nome()")]
+        [Fact(DisplayName = "Executar - Deve mapear Descricao corretamente usando extensão NomeSocial()")]
         public async Task Executar_Deve_Mapear_Descricao_Corretamente_Usando_Extensao_Nome()
         {
             // Act

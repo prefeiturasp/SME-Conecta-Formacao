@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Funcionario
 
             var faker = new Faker<UsuarioPerfilServicoEol>();
             faker.RuleFor(x => x.Login, f => f.Random.Int(min: 1, max: 100).ToString());
-            faker.RuleFor(x => x.Nome, "Nome Do Usuário");
+            faker.RuleFor(x => x.Nome, "NomeSocial Do Usuário");
             faker.RuleFor(x => x.Perfil, f =>
             {
                 var index = new Random().Next(perfis.Length);

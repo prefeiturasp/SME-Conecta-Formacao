@@ -61,5 +61,6 @@
         public const string UnidadeEol = "unidade-eol:{0}";
         public const string DashboardProposta = "dashboard:{0}";
         public const string DashboardTotalPorTipo = "dashboard-total-por-tipo";
+        public const string NomesUsuario = "nomes-usuario:{0}";
     }
 }
