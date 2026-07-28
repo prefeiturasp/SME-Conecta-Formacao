@@ -8,16 +8,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Usuarios
     public class AlterarNomeSocialServicoAcessosCommandHandlerTestes
     {
         private readonly Mock<IServicoAcessos> servicoAcessosMock;
-        private readonly Mock<IMediator> mediatorMock;
         private readonly AlterarNomeSocialServicoAcessosCommandHandler sut;
 
         public AlterarNomeSocialServicoAcessosCommandHandlerTestes()
         {
             servicoAcessosMock = new Mock<IServicoAcessos>();
-            mediatorMock = new Mock<IMediator>();
             sut = new AlterarNomeSocialServicoAcessosCommandHandler(
-                servicoAcessosMock.Object,
-                mediatorMock.Object);
+                servicoAcessosMock.Object);
         }
 
         [Fact]
@@ -38,7 +35,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Usuarios
                 s => s.AlterarNomeSocialAsync(login, nomeSocial),
                 Times.Once);
             servicoAcessosMock.VerifyNoOtherCalls();
-            mediatorMock.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -59,7 +55,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Usuarios
                 s => s.AlterarNomeSocialAsync(login, nomeSocial),
                 Times.Once);
             servicoAcessosMock.VerifyNoOtherCalls();
-            mediatorMock.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -79,7 +74,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Usuarios
                 s => s.AlterarNomeSocialAsync(login, null),
                 Times.Once);
             servicoAcessosMock.VerifyNoOtherCalls();
-            mediatorMock.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -102,7 +96,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Usuarios
                 s => s.AlterarNomeSocialAsync(login, nomeSocial),
                 Times.Once);
             servicoAcessosMock.VerifyNoOtherCalls();
-            mediatorMock.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -125,7 +118,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Usuarios
                 s => s.AlterarNomeSocialAsync(login, nomeSocial),
                 Times.Once);
             servicoAcessosMock.VerifyNoOtherCalls();
-            mediatorMock.VerifyNoOtherCalls();
         }
     }
 }
