@@ -416,7 +416,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Assert
             Assert.NotNull(parecerista);
             var tipoLogin = parecerista.GetType().GetProperty("Login");
-            var tipoNome = parecerista.GetType().GetProperty("NomeSocial");
+            var tipoNome = parecerista.GetType().GetProperty("Nome");
 
             Assert.NotNull(tipoLogin);
             Assert.NotNull(tipoNome);
