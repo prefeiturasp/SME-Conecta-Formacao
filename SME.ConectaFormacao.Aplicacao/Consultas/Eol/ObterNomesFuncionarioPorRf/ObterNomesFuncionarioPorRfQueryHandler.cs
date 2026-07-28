@@ -14,14 +14,8 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterNomesFuncionarioPorRf
         public async Task<FuncionarioNomesDto?> Handle(ObterNomesFuncionarioPorRfQuery request, CancellationToken cancellationToken)
         {
             var chaveCache = CacheDistribuidoNomes.NomesUsuario.Parametros(request.Rf);
-            var nomesFuncionario = await cacheDistribuido.ObterObjetoAsync<FuncionarioNomesDto>(chaveCache);
-            if (nomesFuncionario != null)
-                return nomesFuncionario;
-
-            nomesFuncionario = await servicoEol.ObterNomesFuncionarioPorRegistroFuncional(request.Rf);
-            if (nomesFuncionario != null)
-                await cacheDistribuido.SalvarAsync<FuncionarioNomesDto>(chaveCache, nomesFuncionario);
-
+            var nomesFuncionario = await cacheDistribuido.ObterAsync(chaveCache, 
+                async () => await servicoEol.ObterNomesFuncionarioPorRegistroFuncional(request.Rf));
             return nomesFuncionario;
         }
     }
