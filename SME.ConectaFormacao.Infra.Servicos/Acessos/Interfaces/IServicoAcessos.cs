@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces
         Task<AcessosUsuarioAutenticacaoRetorno> Autenticar(string login, string senha);
         Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login);
         Task<bool> UsuarioCadastradoCoreSSO(string login);
-        Task<bool> CadastrarUsuarioCoreSSO(string login, string nome, string email, string senha);
+        Task<bool> CadastrarUsuarioCoreSSO(string login, string nome, string email, string senha, string? nomeSocial);
         Task<bool> VincularPerfilExternoCoreSSO(string login, Guid perfilId);
         Task<AcessosDadosUsuario> ObterMeusDados(string login);
         Task<bool> AlterarSenha(string login, string senhaAtual, string senhaNova);
@@ -21,8 +21,9 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces
         Task<AcessosPerfisUsuarioRetorno> RevalidarToken(string token);
         Task<string> ObterLoginUsuarioToken(Guid token, TipoAcao tipoAcao);
         Task<bool> EnviarEmailValidacaoUsuarioExterno(string login);
-        Task<bool> AtualizarUsuarioCoreSSO(string login, string nome, string email, string senha);
+        Task<bool> AtualizarUsuarioCoreSSO(string login, string nome, string email, string senha, string? nomeSocial);
         Task<bool> AlterarNome(string login, string nome);
+        Task<bool> AlterarNomeSocialAsync(string login, string? nomeSocial);
         Task<AcessosConfiguracaoEmailRetorno> ObterConfiguracaoEmail();
         Task<IEnumerable<RetornoUsuriosPareceristas>> ObterUsuariosPerfilPareceristas();
         Task<bool> DesvincularPerfilExternoCoreSSO(string login, Guid perfilId);

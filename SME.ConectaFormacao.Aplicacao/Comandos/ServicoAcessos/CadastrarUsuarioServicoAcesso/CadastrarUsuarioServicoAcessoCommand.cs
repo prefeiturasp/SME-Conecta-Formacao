@@ -3,20 +3,13 @@ using MediatR;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class CadastrarUsuarioServicoAcessoCommand : IRequest<bool>
+    public class CadastrarUsuarioServicoAcessoCommand(string login, string nome, string email, string senha) : IRequest<bool>
     {
-        public CadastrarUsuarioServicoAcessoCommand(string login, string nome, string email, string senha)
-        {
-            Login = login;
-            Nome = nome;
-            Email = email;
-            Senha = senha;
-        }
-
-        public string Login { get; set; }
-        public string Nome { get; set; }
-        public string Email { get; set; }
-        public string Senha { get; set; }
+        public string Login { get; set; } = login;
+        public string Nome { get; set; } = nome;
+        public string Email { get; set; } = email;
+        public string Senha { get; set; } = senha;
+        public string? NomeSocial { get; set; }
     }
 
     public class CadastrarUsuarioServicoAcessoCommandValidator : AbstractValidator<CadastrarUsuarioServicoAcessoCommand>

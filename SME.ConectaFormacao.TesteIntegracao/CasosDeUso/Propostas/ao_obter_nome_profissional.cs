@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas
         }
 
         [Fact(DisplayName = "Proposta - Deve Obter Nome do Regente/Tutor com RF Válido")]
-        public async Task Deve_obter_nome_regente_tutor_com_ff_valido()
+        public async Task Deve_obter_nome_regente_tutor_com_rf_valido()
         {
             var casoDeUso = ObterCasoDeUso<ICasoDeUsoObterNomeRegenteTutor>();
             var consulta = await casoDeUso.Executar("111111");

@@ -3,6 +3,7 @@
     public interface IServicoEol
     {
         Task<CursistaResumidoServicoEol> ObterNomeCpfProfissionalPorRegistroFuncional(string registroFuncional);
+        Task<FuncionarioNomesDto?> ObterNomesFuncionarioPorRegistroFuncional(string registroFuncional);
         Task<IEnumerable<DreServicoEol>> ObterCodigosDres();
         Task<IEnumerable<ComponenteCurricularAnoTurmaServicoEol>> ObterComponentesCurricularesEAnosTurmaPorAnoLetivo(int anoLetivo);
         Task<IEnumerable<CursistaCargoServicoEol>> ObterCargosFuncionadoPorRegistroFuncional(string registroFuncional);
@@ -13,7 +14,7 @@
         Task<UnidadeEol> ObterUnidadePorCodigoEol(string codigoEol);
         Task<IEnumerable<FuncionarioExternoServicoEol>?> ObterDadosFuncionarioExternoPorCpf(string cpf);
         Task<IEnumerable<DreUeAtribuicaoServicoEol>> ObterDreUeAtribuicaoPorFuncionarioCargo(string registroFuncional, long codigoCargo);
-        Task<string> ObterNomeServidorPorRfEol(string rfServidor);
+        Task<UsuarioEolDto?> ObterDadosServidorPorRfEol(string rfServidor);
         Task<IEnumerable<UsuarioPerfilServicoEol>> ObterUsuariosPorPerfis(IEnumerable<Guid> perfis);
         Task<IEnumerable<string>> VerificarSeUsuarioEstaAtivo(string[] rf);
         Task<IEnumerable<CargoEolDto>?> ObterCargosEolPorDreAsync(string codigoDre);
