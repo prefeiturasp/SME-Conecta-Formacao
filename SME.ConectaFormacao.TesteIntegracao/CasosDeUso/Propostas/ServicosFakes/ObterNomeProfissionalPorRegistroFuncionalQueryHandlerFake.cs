@@ -15,5 +15,5 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Propostas.ServicosFakes
                 throw new NegocioException(mensagem: MensagemNegocio.PROFISSIONAL_NAO_LOCALIZADO, statusCode: HttpStatusCode.NoContent);
             return new RetornoUsuarioCpfNomeDTO() { Nome = "Nome do Profissional", Cpf = "99999999999" };
         }
-    }
+    }   
 }

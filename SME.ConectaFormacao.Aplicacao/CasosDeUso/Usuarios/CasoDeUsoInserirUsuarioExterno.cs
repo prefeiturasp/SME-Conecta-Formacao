@@ -30,9 +30,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios
 
             bool usuarioCriadoCoresso;
             if (existeNoCoreSSO)
-                usuarioCriadoCoresso = await mediator.Send(new AtualizarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
+                usuarioCriadoCoresso = 
+                    await mediator.Send(new AtualizarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, 
+                    usuarioExternoDto.Email, usuarioExternoDto.Senha)
+                    { NomeSocial = usuarioExternoDto.NomeSocial });
             else
-                usuarioCriadoCoresso = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha));
+                usuarioCriadoCoresso = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuarioExternoDto.Login, usuarioExternoDto.Nome, usuarioExternoDto.Email, usuarioExternoDto.Senha)
+                { NomeSocial = usuarioExternoDto.NomeSocial });
 
             if (!usuarioCriadoCoresso)
                 throw new NegocioException(MensagemNegocio.USUARIO_JA_POSSUI_ACESSO_NO_CORRESSO);
@@ -51,7 +55,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios
                 situacaoCadastroUsuario,
                 usuarioExternoDto.CodigoUnidade,
                 usuarioExternoDto.EmailEducacional,
-                usuarioExternoDto.TipoEmail
+                usuarioExternoDto.TipoEmail,
+                usuarioExternoDto.NomeSocial
             )));
 
             if (confirmarEmail)

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterNomesFuncionarioPorRf;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 using System.Text.RegularExpressions;
 
 namespace SME.ConectaFormacao.Aplicacao
@@ -33,7 +35,9 @@ namespace SME.ConectaFormacao.Aplicacao
 
             acessoDadosUsuario.TipoEmail = tipoEmail;
             acessoDadosUsuario.EmailEducacional = emailEducacional;
-            acessoDadosUsuario.Nome = acessoDadosUsuario.Nome ?? await ObterNomeUsuarioPeloLogin(request.Login);
+            var nomesUsuario = await ObterNomeUsuarioPeloLogin(request.Login);
+            acessoDadosUsuario.Nome = acessoDadosUsuario.Nome ?? nomesUsuario?.Nome ?? throw new ArgumentException("NomeSocial usuário não localizado");
+            acessoDadosUsuario.NomeSocial = acessoDadosUsuario.NomeSocial ?? nomesUsuario?.NomeSocial;
             acessoDadosUsuario.Login = acessoDadosUsuario.Login ?? request.Login;
 
             var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
@@ -51,10 +55,9 @@ namespace SME.ConectaFormacao.Aplicacao
             return dtoUsuario;
         }
 
-        private async Task<string> ObterNomeUsuarioPeloLogin(string login)
+        private async Task<FuncionarioNomesDto?> ObterNomeUsuarioPeloLogin(string login)
         {
-            var cursista = await mediator.Send(new ObterNomeCpfProfissionalPorRegistroFuncionalQuery(login));
-            return cursista.Nome;
+            return await mediator.Send(new ObterNomesFuncionarioPorRfQuery(login));
         }
     }
 }
