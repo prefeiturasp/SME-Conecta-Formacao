@@ -265,7 +265,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             {
                 Codigo = "999888",
                 Sigla = "SIGLA",
-                NomeUnidade = "NomeSocial da Unidade",
+                NomeUnidade = "Nome da Unidade",
                 Tipo = UnidadeEolTipo.Instituicao,
                 CodigoReferencia = "REFXYZ"
             };

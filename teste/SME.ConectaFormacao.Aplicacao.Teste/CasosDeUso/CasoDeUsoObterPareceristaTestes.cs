@@ -153,7 +153,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             Assert.NotNull(resultado);
         }
 
-        [Fact(DisplayName = "Executar - Deve retornar pareceristas com Login e NomeSocial preenchidos")]
+        [Fact(DisplayName = "Executar - Deve retornar pareceristas com Login e Nome preenchidos")]
         public async Task Executar_Deve_Retornar_Pareceristas_Com_Login_E_Nome_Preenchidos()
         {
             // Arrange
@@ -394,7 +394,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             Assert.True(resultado.Any());
         }
 
-        [Fact(DisplayName = "Executar - Deve ter propriedades Login e NomeSocial em RetornoUsuarioLoginNomeDTO")]
+        [Fact(DisplayName = "Executar - Deve ter propriedades Login e Nome em RetornoUsuarioLoginNomeDTO")]
         public async Task Executar_Deve_Ter_Propriedades_Login_E_Nome_Em_RetornoUsuarioLoginNomeDTO()
         {
             // Arrange

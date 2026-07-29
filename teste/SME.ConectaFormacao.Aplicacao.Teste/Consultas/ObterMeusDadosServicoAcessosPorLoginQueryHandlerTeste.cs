@@ -177,11 +177,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             _repositorioUsuarioAcessibilidadeMock.Setup(r => r.ObterAcessibilidadeAtualDoUsuarioAsync()).ReturnsAsync(acessibilidade);
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterNomesFuncionarioPorRfQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new FuncionarioNomesDto { Nome = "NomeSocial Via EOL", NomeSocial = "NomeSocial Via EOL" });
+                .ReturnsAsync(new FuncionarioNomesDto { Nome = "Nome Via EOL", NomeSocial = "NomeSocial Via EOL" });
 
             _mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns((AcessosDadosUsuario a) => new DadosUsuarioDTO
             {
-                Nome = a.Nome ?? "NomeSocial Via EOL",
+                Nome = a.Nome ?? "Nome Via EOL",
                 Login = a.Login,
                 Email = a.Email,
                 EmailEducacional = a.EmailEducacional!
@@ -194,7 +194,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 
             var result = await _handler.Handle(query, CancellationToken.None);
 
-            Assert.Equal("NomeSocial Via EOL", result.Nome);
+            Assert.Equal("Nome Via EOL", result.Nome);    
             Assert.NotNull(result.UsuarioAcessibilidade);
             Assert.True(result.UsuarioAcessibilidade.PossuiDeficiencia);
             Assert.Equal("Visual", result.UsuarioAcessibilidade.DescricaoDeficiencia);

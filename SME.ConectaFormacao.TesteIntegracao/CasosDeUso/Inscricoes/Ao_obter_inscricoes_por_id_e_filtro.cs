@@ -81,7 +81,7 @@ namespace SME.ConectaFormacao.TesteIntegracao.CasosDeUso.Inscricoes
             retorno.Items.ShouldNotBeEmpty();
         }
 
-        [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id e NomeSocial")]
+        [Fact(DisplayName = "Inscrição - Deve obter inscrição Informando Somente o Id e Nome")]
         public async Task Deve_ober_dados_somente_com_id_nome()
         {
             // arrange
