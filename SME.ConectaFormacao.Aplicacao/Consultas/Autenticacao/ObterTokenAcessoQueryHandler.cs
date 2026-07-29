@@ -29,8 +29,8 @@ namespace SME.ConectaFormacao.Aplicacao
             if (usuario.Tipo.EhInterno())
             {
                 var dadosUsuarioEOL = await mediator.Send(new ObterDadosServidorPorRfEolQuery(request.Login), cancellationToken);
-                usuarioPerfisRetornoDto.UsuarioNome = dadosUsuarioEOL?.Nome ?? usuarioPerfisRetornoDto.UsuarioNome;
-                usuarioPerfisRetornoDto.NomeSocial = dadosUsuarioEOL?.NomeSocial ?? usuarioPerfisRetornoDto.NomeSocial;
+                usuarioPerfisRetornoDto.UsuarioNome = usuarioPerfisRetornoDto.UsuarioNome ?? dadosUsuarioEOL?.Nome ?? string.Empty;
+                usuarioPerfisRetornoDto.NomeSocial = usuarioPerfisRetornoDto.NomeSocial ?? dadosUsuarioEOL?.NomeSocial;
             }
 
             usuario.Atualizar(usuarioPerfisRetornoDto.Email, DateTimeExtension.HorarioBrasilia(), usuarioPerfisRetornoDto.Cpf, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.NomeSocial);
