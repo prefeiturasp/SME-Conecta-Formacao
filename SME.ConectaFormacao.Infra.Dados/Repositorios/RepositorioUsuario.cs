@@ -18,6 +18,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                             id, 
                             login,                             
                             nome,       
+                            nome_social,
                             email,
                             email_educacional,
                             ultimo_login, 

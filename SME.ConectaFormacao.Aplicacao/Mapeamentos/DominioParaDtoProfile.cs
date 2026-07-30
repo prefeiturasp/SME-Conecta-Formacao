@@ -331,8 +331,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.Nome.Trim()))
                 .ReverseMap();
 
+            CreateMap<Usuario, RetornoUsuarioCpfNomeDTO>()
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.NomeExibicao));
 
-            CreateMap<RetornoUsuarioCpfNomeDTO, Usuario>().ReverseMap();
+            CreateMap<RetornoUsuarioCpfNomeDTO, Usuario>();
+
             CreateMap<RetornoUsuarioCpfNomeDTO, CursistaResumidoServicoEol>().ReverseMap();
 
             CreateMap<DadosUsuarioDTO, Usuario>()
