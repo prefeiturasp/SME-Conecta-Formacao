@@ -9,6 +9,7 @@
                PT.ID AS propostaTurmaId,
                CLP.PAGINA_COMUNICADO_DOM AS paginaDiarioOficial,
                U.NOME AS nomeCompleto,
+               U.NOME_SOCIAL AS nomeSocial,
                U.LOGIN AS documento,
                (U.LOGIN <> U.CPF) AS temRf,
                1 AS tipoParticipacao, -- Cursista
@@ -55,6 +56,7 @@
                PT.ID AS propostaTurmaId,
                CLP.PAGINA_COMUNICADO_DOM AS paginaDiarioOficial,
                PR.NOME_REGENTE AS nomeCompleto,
+               NULL AS nomeSocial,
                coalesce(PR.REGISTRO_FUNCIONAL, PR.CPF) AS documento,
                PR.REGISTRO_FUNCIONAL IS NOT NULL AS temRf,
                2 AS tipoParticipacao, -- Regente
