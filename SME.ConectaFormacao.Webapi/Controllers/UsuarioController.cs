@@ -139,7 +139,10 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [Authorize("Bearer")]
         public async Task<IActionResult> AlterarNomeSocialConectaECoreSSO([FromRoute] string login, [FromBody] NomeSocialUsuarioDto nomeSocialUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarNomeSocial casoDeUsoUsuarioAlterarNomeSocial)
         {
-            return Ok(await casoDeUsoUsuarioAlterarNomeSocial.Executar(login, nomeSocialUsuarioDto.NomeSocial));
+            var nomeSocialSanitizado = string.IsNullOrWhiteSpace(nomeSocialUsuarioDto.NomeSocial)
+                ? null
+                : nomeSocialUsuarioDto.NomeSocial.Trim();
+            return Ok(await casoDeUsoUsuarioAlterarNomeSocial.Executar(login, nomeSocialSanitizado));
         }
 
         [HttpPut("{login}/telefone")]
