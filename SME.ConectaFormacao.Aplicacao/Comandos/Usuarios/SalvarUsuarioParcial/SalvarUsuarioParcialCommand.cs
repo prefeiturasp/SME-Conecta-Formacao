@@ -3,16 +3,11 @@ using MediatR;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class SalvarUsuarioParcialCommand : IRequest<bool>
+    public class SalvarUsuarioParcialCommand(string login, string nome) : IRequest<bool>
     {
-        public SalvarUsuarioParcialCommand(string login, string nome)
-        {
-            Nome = nome;
-            Login = login;
-        }
-
-        public string Nome { get; }
-        public string Login { get; }
+        public string Nome { get; } = nome;
+        public string Login { get; } = login;
+        public string? NomeSocial { get; set; }
     }
 
     public class SalvarUsuarioParcialCommandValidator : AbstractValidator<SalvarUsuarioParcialCommand>

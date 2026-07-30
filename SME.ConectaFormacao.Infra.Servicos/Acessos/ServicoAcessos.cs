@@ -10,21 +10,12 @@ using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 {
-    public class ServicoAcessos : IServicoAcessos
+    public class ServicoAcessos(HttpClient httpClient, ServicoAcessosOptions servicoAcessosOptions) : IServicoAcessos
     {
-        private readonly HttpClient _httpClient;
-        private readonly ServicoAcessosOptions _servicoAcessosOptions;
-
-        public ServicoAcessos(HttpClient httpClient, ServicoAcessosOptions servicoAcessosOptions)
-        {
-            this._httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            this._servicoAcessosOptions = servicoAcessosOptions ?? throw new ArgumentNullException(nameof(servicoAcessosOptions));
-        }
-
         public async Task<AcessosUsuarioAutenticacaoRetorno> Autenticar(string login, string senha)
         {
             var parametros = new { login, senha }.ObjetoParaJson();
-            var resposta = await _httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_AUTENTICACAO_AUTENTICAR, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            var resposta = await httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_AUTENTICACAO_AUTENTICAR, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (resposta.StatusCode == HttpStatusCode.InternalServerError || resposta.StatusCode == HttpStatusCode.BadGateway || resposta.StatusCode == HttpStatusCode.ServiceUnavailable || resposta.StatusCode == HttpStatusCode.GatewayTimeout)
                 throw new NegocioException(MensagemNegocio.SERVICO_AUTENTICACAO_FORA);
@@ -39,7 +30,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
         public async Task<AcessosPerfisUsuarioRetorno> RevalidarToken(string token)
         {
             var parametros = new { token }.ObjetoParaJson();
-            var resposta = await _httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_AUTENTICACAO_REVALIDAR, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            var resposta = await httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_AUTENTICACAO_REVALIDAR, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode)
                 throw new NegocioException(MensagemNegocio.TOKEN_INVALIDO, resposta.StatusCode);
@@ -50,7 +41,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<string> ObterLoginUsuarioToken(Guid token, TipoAcao tipoAcao)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_SISTEMAS_Y_VALIDAR_Z, token, _servicoAcessosOptions.CodigoSistema, tipoAcao));
+            var resposta = await httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_SISTEMAS_Y_VALIDAR_Z, token, servicoAcessosOptions.CodigoSistema, tipoAcao));
 
             if (!resposta.IsSuccessStatusCode) return string.Empty;
 
@@ -60,7 +51,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_AUTENTICACAO_USUARIOS_X_SISTEMAS_Y_PERFIS, login, _servicoAcessosOptions.CodigoSistema));
+            var resposta = await httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_AUTENTICACAO_USUARIOS_X_SISTEMAS_Y_PERFIS, login, servicoAcessosOptions.CodigoSistema));
 
             if (!resposta.IsSuccessStatusCode)
                 throw new NegocioException(MensagemNegocio.PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN, resposta.StatusCode);
@@ -71,7 +62,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<AcessosPerfisUsuarioRetorno> ObterPerfisUsuario(string login, Guid perfilUsuarioId)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_AUTENTICACAO_USUARIOS_X_SISTEMAS_Y_PERFIS_Z, login, _servicoAcessosOptions.CodigoSistema, perfilUsuarioId));
+            var resposta = await httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_AUTENTICACAO_USUARIOS_X_SISTEMAS_Y_PERFIS_Z, login, servicoAcessosOptions.CodigoSistema, perfilUsuarioId));
 
             if (!resposta.IsSuccessStatusCode)
                 throw new NegocioException(MensagemNegocio.PERFIS_DO_USUARIO_NAO_LOCALIZADOS_VERIFIQUE_O_LOGIN, resposta.StatusCode);
@@ -82,7 +73,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<bool> UsuarioCadastradoCoreSSO(string login)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_CADASTRADO, login));
+            var resposta = await httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_CADASTRADO, login));
 
             if (!resposta.IsSuccessStatusCode) return false;
 
@@ -90,10 +81,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             return json.JsonParaObjeto<bool>();
         }
 
-        public async Task<bool> CadastrarUsuarioCoreSSO(string login, string nome, string email, string senha)
+        public async Task<bool> CadastrarUsuarioCoreSSO(string login, string nome, string email, string senha, string? nomeSocial)
         {
-            var parametros = new { login, nome, email, senha }.ObjetoParaJson();
-            var resposta = await _httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_USUARIOS_CADASTRAR, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            var parametros = new { login, nome, email, senha, nomeSocial }.ObjetoParaJson();
+            var resposta = await httpClient.PostAsync(EndpointsServicoAcessosConstantes.URL_USUARIOS_CADASTRAR, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode) return false;
 
@@ -101,10 +92,10 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             return json.JsonParaObjeto<bool>();
         }
 
-        public async Task<bool> AtualizarUsuarioCoreSSO(string login, string nome, string email, string senha)
+        public async Task<bool> AtualizarUsuarioCoreSSO(string login, string nome, string email, string senha, string? nomeSocial)
         {
-            var parametros = new { login, nome, email, senha }.ObjetoParaJson();
-            var resposta = await _httpClient.PutAsync(EndpointsServicoAcessosConstantes.URL_USUARIOS_ATUALIZAR.Parametros(login), new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            var parametros = new { login, nome, email, senha, nomeSocial }.ObjetoParaJson();
+            var resposta = await httpClient.PutAsync(EndpointsServicoAcessosConstantes.URL_USUARIOS_ATUALIZAR.Parametros(login), new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode) return false;
 
@@ -114,7 +105,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<bool> VincularPerfilExternoCoreSSO(string login, Guid perfilId)
         {
-            var resposta = await _httpClient.PostAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_VINCULAR_PERFIL_Y, login, perfilId), null);
+            var resposta = await httpClient.PostAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_VINCULAR_PERFIL_Y, login, perfilId), null);
 
             if (!resposta.IsSuccessStatusCode) return false;
 
@@ -124,7 +115,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<AcessosDadosUsuario> ObterMeusDados(string login)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X, login));
+            var resposta = await httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X, login));
 
             if (!resposta.IsSuccessStatusCode) return new AcessosDadosUsuario();
 
@@ -134,7 +125,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public Task<bool> AlterarSenha(string login, string senhaAtual, string senhaNova)
         {
-            var json = new { login, senhaAtual, senhaNova, sistemaId = _servicoAcessosOptions.CodigoSistema }.ObjetoParaJson();
+            var json = new { login, senhaAtual, senhaNova, sistemaId = servicoAcessosOptions.CodigoSistema }.ObjetoParaJson();
             return InvocarPutServicoAcessosRetornandoBool(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_SENHA, login), json);
         }
 
@@ -146,7 +137,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         private async Task<bool> InvocarPutServicoAcessosRetornandoBool(string rota, string parametros)
         {
-            var resposta = await _httpClient.PutAsync(rota, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            var resposta = await httpClient.PutAsync(rota, new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (!resposta.IsSuccessStatusCode) return false;
 
@@ -156,7 +147,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<string> SolicitarRecuperacaoSenha(string login)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_SISTEMAS_Y_RECUPERAR_SENHA, login, _servicoAcessosOptions.CodigoSistema));
+            var resposta = await httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_SISTEMAS_Y_RECUPERAR_SENHA, login, servicoAcessosOptions.CodigoSistema));
 
             if (resposta.IsSuccessStatusCode)
             {
@@ -172,7 +163,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<bool> ValidarUsuarioToken(Guid token)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_SISTEMAS_Y_VALIDAR, token, _servicoAcessosOptions.CodigoSistema));
+            var resposta = await httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_SISTEMAS_Y_VALIDAR, token, servicoAcessosOptions.CodigoSistema));
 
             if (!resposta.IsSuccessStatusCode) return false;
 
@@ -183,7 +174,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
         public async Task<string> AlterarSenhaComTokenRecuperacao(Guid token, string novaSenha)
         {
             var parametros = new { token, senha = novaSenha }.ObjetoParaJson();
-            var resposta = await _httpClient.PutAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_SISTEMAS_X_SENHA, _servicoAcessosOptions.CodigoSistema), new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
+            var resposta = await httpClient.PutAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_SISTEMAS_X_SENHA, servicoAcessosOptions.CodigoSistema), new StringContent(parametros, Encoding.UTF8, "application/json-patch+json"));
 
             if (resposta.IsSuccessStatusCode)
             {
@@ -199,7 +190,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<IEnumerable<AcessosGrupo>> ObterGrupos()
         {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_GRUPOS_SISTEMA_X, _servicoAcessosOptions.CodigoSistema));
+            var resposta = await httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_GRUPOS_SISTEMA_X, servicoAcessosOptions.CodigoSistema));
 
             if (resposta.IsSuccessStatusCode)
             {
@@ -214,7 +205,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
         }
         public async Task<AcessosGrupo> ObterGrupoPorId(Guid grupoId)
         {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_GRUPOS_SISTEMA_X_Y, _servicoAcessosOptions.CodigoSistema, grupoId));
+            var resposta = await httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_GRUPOS_SISTEMA_X_Y, servicoAcessosOptions.CodigoSistema, grupoId));
 
             if (resposta.IsSuccessStatusCode)
             {
@@ -229,7 +220,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
         }
         public async Task<bool> EnviarEmailValidacaoUsuarioExterno(string login)
         {
-            var resposta = await _httpClient.PostAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_SISTEMAS_Y_ENVIAR_EMAIL_VALIDACAO, login, _servicoAcessosOptions.CodigoSistema), null);
+            var resposta = await httpClient.PostAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_SISTEMAS_Y_ENVIAR_EMAIL_VALIDACAO, login, servicoAcessosOptions.CodigoSistema), null);
 
             if (!resposta.IsSuccessStatusCode) return false;
 
@@ -243,9 +234,15 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
             return InvocarPutServicoAcessosRetornandoBool(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_NOME, login), json);
         }
 
+        public async Task<bool> AlterarNomeSocialAsync(string login, string? nomeSocial)
+        {
+            var json = new { login, nomeSocial }.ObjetoParaJson();
+            return await InvocarPutServicoAcessosRetornandoBool(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_NOME_SOCIAL, login), json);
+        }
+
         public async Task<AcessosConfiguracaoEmailRetorno> ObterConfiguracaoEmail()
         {
-            var resposta = await _httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_CONFIGURACAO_EMAIL_SISTEMA_X, _servicoAcessosOptions.CodigoSistema));
+            var resposta = await httpClient.GetAsync(string.Format(EndpointsServicoAcessosConstantes.URL_CONFIGURACAO_EMAIL_SISTEMA_X, servicoAcessosOptions.CodigoSistema));
 
             if (resposta.IsSuccessStatusCode)
             {
@@ -260,7 +257,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
         public async Task<IEnumerable<RetornoUsuriosPareceristas>> ObterUsuariosPerfilPareceristas()
         {
             var resposta =
-                await _httpClient.GetAsync(
+                await httpClient.GetAsync(
                     EndpointsServicoAcessosConstantes.URL_OBTER_USUARIOS_PARECERISTAS);
 
             if (resposta.IsSuccessStatusCode)
@@ -277,7 +274,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<bool> DesvincularPerfilExternoCoreSSO(string login, Guid perfilId)
         {
-            var resposta = await _httpClient.PostAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_DESVINCULAR_PERFIL_Y, login, perfilId), null);
+            var resposta = await httpClient.PostAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_DESVINCULAR_PERFIL_Y, login, perfilId), null);
 
             if (!resposta.IsSuccessStatusCode) return false;
 
@@ -287,7 +284,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Acessos
 
         public async Task<bool> InativarUsuario(string login)
         {
-            var resposta = await _httpClient.PutAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_INATIVAR, login), null);
+            var resposta = await httpClient.PutAsync(string.Format(EndpointsServicoAcessosConstantes.URL_USUARIOS_X_INATIVAR, login), null);
 
             if (!resposta.IsSuccessStatusCode) return false;
 
