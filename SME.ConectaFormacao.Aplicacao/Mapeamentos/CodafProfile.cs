@@ -24,6 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<ListagemResultadoCodafListaPresencaDto, ListaPresencaCodafResumoDto>();
 
             CreateMap<ResultadoInscritoTurmaCodafListaPresencaDto, CodafInscritoTurmaListaPresencaRetornoDto>()
+                .ForMember(destino => destino.Nome, opt => opt.MapFrom(origem => origem.NomeExibicao))
                 .ForMember(destino => destino.Documento, opt => opt.MapFrom(origem => ResolverEFormatarDocumento(origem.Login, origem.Cpf)));
 
             CreateMap<CodafInscritoListaPresencaSalvarDto, CodafInscricaoListaPresenca>();
