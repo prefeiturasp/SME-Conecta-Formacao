@@ -83,15 +83,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 
             if (entidadesParaSalvar.Count != 0)
             {
+                await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirCertificadoCodaf).FullName!, LogNivel.Informacao, $"Iniciando registro da emissão de certificados do Codaf {tipoCodaf} - {codafId}", identificadorRastreamento: _identificadorRastreamento));
                 using var transacaoDb = transacao.Iniciar();
                 try
-                {
-                    await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirCertificadoCodaf).FullName!, LogNivel.Informacao, $"Iniciando registro da emissão de certificados do Codaf {tipoCodaf} - {codafId}", identificadorRastreamento: _identificadorRastreamento));
+                {                    
                     await SanitizarCertificadosEmitidosAsync(tipoCodaf, codafId, listaDadosCertificado);
                     await repositorioCodafCertificado.InserirLoteAsync(entidadesParaSalvar);
                     await repositorioCodafCertificado.AtualizaCodigoCertificado(codafId, tipoCodaf);
-                    transacaoDb.Commit();
-                    await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirCertificadoCodaf).FullName!, LogNivel.Informacao, $"Finalizada registro da emissão de certificados do Codaf {tipoCodaf} - {codafId}", identificadorRastreamento: _identificadorRastreamento));
+                    transacaoDb.Commit();                    
                 }
                 catch (Exception ex)
                 {
@@ -99,6 +98,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     transacaoDb.Rollback();
                     throw;
                 }
+                await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirCertificadoCodaf).FullName!, LogNivel.Informacao, $"Finalizada registro da emissão de certificados do Codaf {tipoCodaf} - {codafId}", identificadorRastreamento: _identificadorRastreamento));
             }
             await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirCertificadoCodaf).FullName!, LogNivel.Informacao, $"Finalizada geração de certificados do Codaf {tipoCodaf} - {codafId}", identificadorRastreamento: _identificadorRastreamento));
 
