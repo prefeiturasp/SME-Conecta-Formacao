@@ -2080,18 +2080,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             order by ped.data_inicio;
 
             -- Turmas Datas Novo
-            select coalesce(pgp.data_inicio, ped.data_inicio) dataInicio,
-                    coalesce(pgp.data_fim, ped.data_fim) dataFim,
+            select  ped.data_inicio dataInicio,
+                    ped.data_fim dataFim,
                     ped.proposta_encontro_id propostaEncontroId,
-                    coalesce(ped.hora_inicio, pe.hora_inicio) horaInicio,
-                    coalesce(ped.hora_fim, pe.hora_fim) horaFim,
+                    ped.hora_inicio horaInicio,
+                    ped.hora_fim horaFim,
                     case when ped.hora_inicio is not null then 'novo' else 'legado' end modeloHorario,
                     pet.turma_id as TurmaId
             from proposta_encontro pe
             join proposta_encontro_data ped on ped.proposta_encontro_id = pe.id and not ped.excluido
             left join proposta_encontro_turma pet on pet.proposta_encontro_id = pe.id and not pet.excluido
-            left join proposta_grupo_periodo_turma pgpt on pgpt.proposta_turma_id = pet.turma_id and not pgpt.excluido
-            left join proposta_grupo_periodo pgp on pgp.id = pgpt.grupo_periodo_id and not pgp.excluido
             where pe.proposta_id = @propostaId
                 and not pe.excluido
             order by dataInicio;
