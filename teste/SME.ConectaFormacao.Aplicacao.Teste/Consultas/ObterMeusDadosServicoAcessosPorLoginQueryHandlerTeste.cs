@@ -2,12 +2,14 @@
 using MediatR;
 using Moq;
 using Moq.AutoMock;
+using SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterNomesFuncionarioPorRf;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Acessos;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Eol;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 {
@@ -157,6 +159,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 Nome = null!,
                 Login = "8888888",
                 Email = "usuario@naoedu.com",
+                NomeSocial = "NomeSocial Via EOL",
                 Tipo = (int)TipoUsuario.Interno
             };
 
@@ -173,8 +176,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             _repositorioUsuarioMock.Setup(r => r.ObterEmailEducacionalPorLogin("8888888")).ReturnsAsync((0, string.Empty));
             _repositorioUsuarioAcessibilidadeMock.Setup(r => r.ObterAcessibilidadeAtualDoUsuarioAsync()).ReturnsAsync(acessibilidade);
 
-            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterNomeCpfProfissionalPorRegistroFuncionalQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Dtos.RetornoUsuarioCpfNomeDTO { Nome = "Nome Via EOL" });
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterNomesFuncionarioPorRfQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new FuncionarioNomesDto { Nome = "Nome Via EOL", NomeSocial = "NomeSocial Via EOL" });
 
             _mapperMock.Setup(m => m.Map<DadosUsuarioDTO>(It.IsAny<AcessosDadosUsuario>())).Returns((AcessosDadosUsuario a) => new DadosUsuarioDTO
             {
@@ -191,7 +194,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 
             var result = await _handler.Handle(query, CancellationToken.None);
 
-            Assert.Equal("Nome Via EOL", result.Nome);
+            Assert.Equal("Nome Via EOL", result.Nome);    
             Assert.NotNull(result.UsuarioAcessibilidade);
             Assert.True(result.UsuarioAcessibilidade.PossuiDeficiencia);
             Assert.Equal("Visual", result.UsuarioAcessibilidade.DescricaoDeficiencia);

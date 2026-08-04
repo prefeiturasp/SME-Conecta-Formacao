@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
+using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -163,6 +164,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
                 -- 4. Inscritos (A lista grande)
                 {sqlObterInscricoesDaListaPorIdCodaf}
+
+                -- 5. Critérios de Certificação
+                {CodafQueries.SqlObterCriteriosCertificacaoPorIdCodaf}
+
+                -- 6. Certificados
+                {sqlCertificadosPorIdCodaf}
                 """;
 
             var parametros = new { id };
@@ -192,7 +199,47 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     return csi;
                 },
                 splitOn: "LOGIN")];
+
+            if (codafSuplementar.Proposta == null)
+                return codafSuplementar;
+
+            codafSuplementar.Proposta.CriterioCertificacao = [.. await multi.ReadAsync<PropostaCriterioCertificacao>()];
+            codafSuplementar.CodafCertificados = [.. await multi.ReadAsync<CodafCertificado>()];
+            
             return codafSuplementar;
+        }
+
+        public override async Task<CodafSuplementar?> ObterNaoExcluidosPorIdAsync(long id)
+        {
+            var conn = conexao.Obter();
+            var sql = $"""
+                -- 1. CODAF
+                {sqlObterCodafPorId}              
+
+                -- 5. Certificados
+                {sqlCertificadosPorIdCodaf}
+                """;
+
+            var parametros = new { id };
+
+            using var multi = await conn.QueryMultipleAsync(sql, parametros);
+            var codafSuplementar = multi.Read<CodafSuplementar>().SingleOrDefault();
+
+            if (codafSuplementar is null)
+                return null;
+          
+            codafSuplementar.CodafCertificados = [.. await multi.ReadAsync<CodafCertificado>()];
+            return codafSuplementar;
+        }
+
+        public async Task<CodafSuplementar?> ObterPorIdCodafListaPresenca(long idCodafListaPresenca)
+        {
+            var conn = conexao.Obter();
+            var parametros = new { idCodafListaPresenca };
+            var codafSuplementar = await conn.QueryAsync<CodafSuplementar>(
+                sqlObterCodafSuplementarPorIdCodafListaPresenca,
+                parametros);
+            return codafSuplementar.FirstOrDefault();
         }
 
         public async Task ExcluirAsync(long id)
@@ -291,6 +338,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             return resultado;
         }
 
+        private const string sqlObterCodafPorId = """
+            SELECT CS.ID as id,
+                   CLP.ID AS codafId,
+                   CS.DATA_PUBLICACAO AS dataPublicacao,
+                   CS.DATA_PUBLICACAO_DOM AS dataPublicacaoDom,
+                   CS.NUMERO_COMUNICADO AS numeroComunicado,
+                   CS.PAGINA_COMUNICADO_DOM AS paginaComunicadoDom,
+                   CS.CODIGO_CURSO_EOL AS codigoCursoEol,
+                   CS.CODIGO_NIVEL AS codigoNivel,
+                   CS.OBSERVACAO,
+                   CS.STATUS,
+                   CS.ALTERADO_EM AS alteradoEm,
+                   CS.ALTERADO_POR AS alteradoPor,
+                   CS.ALTERADO_LOGIN AS alteradoLogin,
+                   CS.CRIADO_EM AS criadoEm,
+                   CS.CRIADO_POR AS criadoPor,
+                   CS.CRIADO_LOGIN AS criadoLogin
+            FROM PUBLIC.CODAF_SUPLEMENTAR AS CS   
+            INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID
+            WHERE NOT CS.EXCLUIDO
+              AND CS.ID = @id;
+            """;
+
         private const string sqlObterCodafPorIdComPropostaEPropostaTurma = """
             SELECT CS.ID,
                    CLP.ID AS codafId,
@@ -349,6 +419,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             WHERE NOT CSA.EXCLUIDO AND CSA.CODAF_SUPLEMENTAR_ID = @id;
             """;
 
+        private const string sqlCertificadosPorIdCodaf = """
+            SELECT CC.ID, 
+                   CC.CODIGO_CERTIFICADO AS CodigoCertificado,
+                   CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID AS CodafInscricaoListaPresenca,
+                   CC.PROPOSTA_REGENTE_TURMA_ID AS PropostaRegenteTurmaId,
+                   CC.TIPO_PARTICIPACAO AS TipoParticipacao,
+                   CC.STATUS_PROCESSAMENTO AS StatusProcessamento,
+                   CC.CRIADO_EM AS CriadoEm,
+                   CC.CRIADO_POR AS CriadoPor
+            FROM PUBLIC.CODAF_CERTIFICADOS AS CC
+            INNER JOIN CODAF_SUPLEMENTAR CS ON CC.CODAF_SUPLEMENTAR_ID = CS.ID
+            WHERE NOT CS.EXCLUIDO AND CC.CODAF_SUPLEMENTAR_ID = @id;
+            """;
+
         private const string sqlObterInscricoesDaListaPorIdCodaf = """
             SELECT CSI.ID, 
                    CSI.CODAF_SUPLEMENTAR_ID AS CodafSuplementarId,
@@ -366,6 +450,29 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                  INNER JOIN PUBLIC.INSCRICAO AS I ON I.ID = CSI.INSCRICAO_ID
                  INNER JOIN PUBLIC.USUARIO AS U  ON U.ID = I.USUARIO_ID 
             WHERE NOT CSI.EXCLUIDO AND CSI.CODAF_SUPLEMENTAR_ID = @id;
+            """;
+
+        private const string sqlObterCodafSuplementarPorIdCodafListaPresenca = """
+            SELECT CS.ID,
+                   CS.CODAF_LISTA_PRESENCA_ID AS CodafId,
+                   CS.DATA_PUBLICACAO AS DataPublicacao,
+                   CS.DATA_PUBLICACAO_DOM AS DataPublicacaoDom,
+                   CS.NUMERO_COMUNICADO AS NumeroComunicado,
+                   CS.PAGINA_COMUNICADO_DOM AS PaginaComunicadoDom,
+                   CS.CODIGO_CURSO_EOL AS CodigoCursoEol,
+                   CS.CODIGO_NIVEL AS CodigoNivel,
+                   CS.OBSERVACAO AS Observacao,
+                   CS.STATUS AS Status,
+                   CS.ALTERADO_EM AS AlteradoEm,
+                   CS.ALTERADO_POR AS AlteradoPor,
+                   CS.ALTERADO_LOGIN AS AlteradoLogin,
+                   CS.CRIADO_EM AS CriadoEm,
+                   CS.CRIADO_POR AS CriadoPor,
+                   CS.CRIADO_LOGIN AS CriadoLogin,
+                   CS.EXCLUIDO AS Excluido
+            FROM PUBLIC.CODAF_SUPLEMENTAR AS CS
+            WHERE NOT CS.EXCLUIDO 
+              AND CS.ID = @idCodafListaPresenca;
             """;
     }
 }

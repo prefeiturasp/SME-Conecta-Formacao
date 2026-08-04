@@ -3,18 +3,14 @@ using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 
-public class SalvarLogCommand : IRequest<bool>
+public class SalvarLogCommand(
+    string entidade, LogNivel nivelLog, string mensagem, string? complemento = null, 
+    Guid? identificadorRastreamento = null, Exception? excecao = null) : IRequest<bool>
 {
-    public SalvarLogCommand(string entidade, LogNivel nivelLog, string mensagem, string? complemento)
-    {
-        Entidade = entidade;
-        NivelLog = nivelLog;
-        Mensagem = mensagem;
-        Complemento = complemento;
-    }
-
-    public string Entidade { get; }
-    public LogNivel NivelLog { get; }
-    public string Mensagem { get; }
-    public string? Complemento { get; }
+    public string Entidade { get; } = entidade;
+    public LogNivel NivelLog { get; } = nivelLog;
+    public string Mensagem { get; } = mensagem;
+    public string? Complemento { get; } = complemento;
+    public Guid IdentificadorRastreamento { get; } = identificadorRastreamento ?? Guid.NewGuid();
+    public Exception? Excecao { get; } = excecao;
 }

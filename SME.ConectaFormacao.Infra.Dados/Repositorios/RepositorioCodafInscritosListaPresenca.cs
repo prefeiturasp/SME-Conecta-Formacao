@@ -32,6 +32,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        U.LOGIN,
                        U.CPF,
                        U.NOME,
+                       U.NOME_SOCIAL,
                        CI.PERCENTUAL_FREQUENCIA AS percentualFrequencia,
                        CI.ATIVIDADE_OBRIGATORIO AS atividadeObrigatorio,
                        CI.CONCEITO_FINAL AS conceitoFinal,

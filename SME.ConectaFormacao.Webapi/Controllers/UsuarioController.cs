@@ -132,6 +132,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await casoDeUsoUsuarioAlterarNome.Executar(login, nomeUsuarioDto.Nome));
         }
 
+        [HttpPut("{login}/nome-social")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> AlterarNomeSocialConectaECoreSSO([FromRoute] string login, [FromBody] NomeSocialUsuarioDto nomeSocialUsuarioDto, [FromServices] ICasoDeUsoUsuarioAlterarNomeSocial casoDeUsoUsuarioAlterarNomeSocial)
+        {
+            var nomeSocialSanitizado = string.IsNullOrWhiteSpace(nomeSocialUsuarioDto.NomeSocial)
+                ? null
+                : nomeSocialUsuarioDto.NomeSocial.Trim();
+            return Ok(await casoDeUsoUsuarioAlterarNomeSocial.Executar(login, nomeSocialSanitizado));
+        }
+
         [HttpPut("{login}/telefone")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

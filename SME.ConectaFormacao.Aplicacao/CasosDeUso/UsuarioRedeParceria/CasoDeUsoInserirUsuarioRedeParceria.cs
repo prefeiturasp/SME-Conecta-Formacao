@@ -10,12 +10,9 @@ using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria
 {
-    public class CasoDeUsoInserirUsuarioRedeParceria : CasoDeUsoAbstrato, ICasoDeUsoInserirUsuarioRedeParceria
+    public class CasoDeUsoInserirUsuarioRedeParceria(IMediator mediator) : CasoDeUsoAbstrato(mediator), ICasoDeUsoInserirUsuarioRedeParceria
     {
         private const string PREFIXO_SENHA_PADRAO = "Sgp";
-        public CasoDeUsoInserirUsuarioRedeParceria(IMediator mediator) : base(mediator)
-        {
-        }
 
         public async Task<RetornoDTO> Executar(UsuarioRedeParceriaDTO usuarioRedeParceriaDTO)
         {
@@ -38,6 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria
             usuario.Tipo = TipoUsuario.RedeParceria;
             usuario.Login = usuarioRedeParceriaDTO.Cpf;
             usuario.Nome = usuarioRedeParceriaDTO.Nome;
+            usuario.NomeSocial = usuarioRedeParceriaDTO.NomeSocial;
             usuario.Cpf = usuarioRedeParceriaDTO.Cpf;
             usuario.AreaPromotoraId = usuarioRedeParceriaDTO.AreaPromotoraId;
             usuario.Telefone = usuarioRedeParceriaDTO.Telefone;
@@ -65,9 +63,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria
 
             bool usuarioCriadoCoresso;
             if (existeNoCoreSSO)
-                usuarioCriadoCoresso = await mediator.Send(new AtualizarUsuarioServicoAcessoCommand(usuario.Login, usuario.Nome, usuario.Email, senha));
+                usuarioCriadoCoresso = 
+                    await mediator.Send(new AtualizarUsuarioServicoAcessoCommand(usuario.Login, usuario.Nome, usuario.Email, senha)
+                    { NomeSocial = usuario.NomeSocial });
             else
-                usuarioCriadoCoresso = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuario.Login, usuario.Nome, usuario.Email, senha));
+                usuarioCriadoCoresso = await mediator.Send(new CadastrarUsuarioServicoAcessoCommand(usuario.Login, usuario.Nome, usuario.Email, senha)
+                { NomeSocial = usuario.NomeSocial });
 
             var vinculadoAoGrupoAreaPromotora = await mediator.Send(new VincularPerfilExternoCoreSSOServicoAcessosCommand(usuario.Login, areaPromotora.GrupoId));
 

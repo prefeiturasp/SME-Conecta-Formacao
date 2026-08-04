@@ -15,5 +15,6 @@
         public int? Disponiveis { get; set; }
         public int? Excedidas { get; set; }
         public bool? PermiteSorteio { get; set; }
+        public long? CodafId { get; set; }
     }
 }

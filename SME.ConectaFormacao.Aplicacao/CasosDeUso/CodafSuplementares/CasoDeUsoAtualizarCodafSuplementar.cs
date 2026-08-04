@@ -4,11 +4,9 @@ using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
-    [ExcludeFromCodeCoverage]
     public class CasoDeUsoAtualizarCodafSuplementar(
         CodafSuplementarDependencias dependencias,
         IValidator<CodafSuplementarCadastroDto> validator) : ICasoDeUsoAtualizarCodafSuplementar
@@ -16,8 +14,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
         public async Task<Resultado> ExecutarAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto, long id)
         {
             var codafSuplementarExistente = await dependencias.RepositorioCodaf.ObterNaoExcluidosPorIdAsync(id);
+
             if (codafSuplementarExistente is null)
                 return Erro.NaoEncontrado("Codaf Suplementar não encontrado");
+
+            bool possuiCertificadoEmitido = codafSuplementarExistente.CertificadoEmitido;
 
             var validationResult = await validator.ValidateAsync(codafSuplementarCadastroDto);
             if (!validationResult.IsValid)
@@ -36,7 +37,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
             try
             {
-                await SalvarInscritosAsync(codafSuplementarCadastroDto, codafSuplementarExistente);
+                if (!possuiCertificadoEmitido && codafSuplementarExistente.Status != Dominio.Enumerados.StatusCodafSuplementar.Finalizado)
+                    await SalvarInscritosAsync(codafSuplementarCadastroDto, codafSuplementarExistente);
+
                 await SalvarRetificacoesAsync(codafSuplementarCadastroDto, codafSuplementarExistente.Id);
                 var anexos = dependencias.Mapper.Map<List<CodafSuplementarAnexo>>(codafSuplementarCadastroDto.Anexos);
                 await dependencias.AnexoService.ProcessarAnexosAsync(codafSuplementarExistente.Id, anexos);

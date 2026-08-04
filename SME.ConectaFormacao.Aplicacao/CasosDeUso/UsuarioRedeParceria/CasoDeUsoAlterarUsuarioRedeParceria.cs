@@ -39,6 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria
             usuario.Telefone = usuarioRedeParceriaDTO.Telefone;
             usuario.AreaPromotoraId = usuarioRedeParceriaDTO.AreaPromotoraId;
             usuario.Situacao = usuarioRedeParceriaDTO.Situacao;
+            usuario.NomeSocial = usuarioRedeParceriaDTO.NomeSocial;
 
             var criadoCoresso = await AtualizarUsuarioNoCoreSSO(usuario, areaPromotora, areaPromotoraIdAntes.GetValueOrDefault());
             if (!criadoCoresso)
@@ -54,7 +55,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria
 
         private async Task<bool> AtualizarUsuarioNoCoreSSO(Dominio.Entidades.Usuario usuario, Dominio.Entidades.AreaPromotora areaPromotora, long areaPromotoraIdAntes)
         {
-            bool usuarioAtualizadoCoresso = await mediator.Send(new AtualizarUsuarioServicoAcessoCommand(usuario.Login, usuario.Nome, usuario.Email, string.Empty));
+            var usuarioAtualizadoCoresso = 
+                await mediator.Send(new AtualizarUsuarioServicoAcessoCommand(usuario.Login, usuario.Nome, usuario.Email, string.Empty)
+                { NomeSocial = usuario.NomeSocial });
 
             bool desvinculadoAoGrupoAreaPromotoraAntiga = true;
             if (areaPromotoraIdAntes != areaPromotora.Id)

@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -35,6 +36,28 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             repositorioMock.Verify(
                 r => r.ObterNaoExcluidosPorIdAsync(id),
                 Times.Once);
+
+            repositorioMock.Verify(
+                r => r.ExcluirAsync(It.IsAny<long>()),
+                Times.Never);
+        }
+
+        [Fact]
+        public async Task Deve_retornar_erro_quando_codaf_suplementar_estiver_finalizado()
+        {
+            const long id = 1;
+
+            var entidade = CodafSuplementarBuilder.Criar();
+            entidade.GetType().GetProperty("Status")?.SetValue(entidade, StatusCodafSuplementar.Finalizado);
+
+            repositorioMock
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(id))
+                .ReturnsAsync(entidade);
+
+            var resultado = await casoDeUso.ExecutarAsync(id);
+
+            resultado.Sucesso.Should().BeFalse();
+            resultado.MensagensErro.Should().Contain("Não é possível excluir um Codaf suplementar com situação 'Finalizado'.");
 
             repositorioMock.Verify(
                 r => r.ExcluirAsync(It.IsAny<long>()),

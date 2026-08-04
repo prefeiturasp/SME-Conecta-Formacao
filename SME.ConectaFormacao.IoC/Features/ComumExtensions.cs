@@ -22,6 +22,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<IUsuarioAcessibilidadeService, UsuarioAcessibilidadeService>()
                 .AddScoped<ICasoDeUsoSalvarUsuarioAcessibilidade, CasoDeUsoSalvarUsuarioAcessibilidade>()
                 .AddScoped<ICasoDeUsoPesquisarCursistaPorPropostaTurmaId, CasoDeUsoPesquisarCursistaPorPropostaTurmaId>()
+                .AddScoped<ICasoDeUsoUsuarioAlterarNomeSocial, CasoDeUsoUsuarioAlterarNomeSocial>()
                 ;
         }
     }
