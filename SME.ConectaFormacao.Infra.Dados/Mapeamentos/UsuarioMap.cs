@@ -22,6 +22,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.TipoEmail).ToColumn("tipo_email");
             Map(c => c.AreaPromotoraId).ToColumn("area_promotora_id");
             Map(c => c.Telefone).ToColumn("telefone");
+            Map(c => c.NomeSocial).ToColumn("nome_social");
+            Map(c => c.NomeExibicao).Ignore();
         }
     }
 }

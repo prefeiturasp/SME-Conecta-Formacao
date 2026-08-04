@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
         private static string GerarCorpoCertificado(DadosEmissaoCertificadoCodafDto dados)
         {
             return $@"
-            <p>Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeCompleto)}</i></b>, 
+            <p>Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeExibicao)}</i></b>, 
             CPF: <b><i>{StringExtensao.AplicarMascaraCpf(dados.Documento)}</b></i>, ministrou o {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
             promovido pela {ObterTextoEmissorCorpo(dados)} da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, com carga horária 
             de {dados.DefinirCargaHoraria()} horas.</p>";

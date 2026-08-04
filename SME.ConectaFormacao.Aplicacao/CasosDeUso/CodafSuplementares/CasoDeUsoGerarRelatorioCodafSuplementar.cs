@@ -10,6 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
     public class CasoDeUsoGerarRelatorioCodafSuplementar(
         IRepositorioCodafListaPresenca repositorioCodafListaPresenca,
+        IRepositorioCodafSuplementar repositorioCodafSuplementar,
         IServicoRelatorio servicoRelatorio) :
         ICasoDeUsoGerarRelatorioCodafSuplementar    
     {
@@ -19,9 +20,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
             if (listaPresenca == null)  
                 return Erro.NaoEncontrado();
 
+            var codafSuplementar = await repositorioCodafSuplementar.ObterPorIdCodafListaPresenca(codafListaPresencaId);
+            if (codafSuplementar == null)
+                return Erro.NaoEncontrado();
+
             var nomeArquivo = $"CODAF_SUPLEMENTAR_{listaPresenca.Proposta.NumeroHomologacao}-{listaPresenca.PropostaTurma.Nome}.xlsx";
             var arquivoDto = await GerarRelatorioCodafSuplementarAsync(codafListaPresencaId, nomeArquivo);
-            await AtualizarStatusParaFinalizadoAsync(listaPresenca);
+            await AtualizarStatusParaFinalizadoAsync(codafSuplementar);
             return arquivoDto;
         }
 
@@ -32,13 +37,13 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
             return new ArquivoDto(nomeArquivo, contentType, new MemoryStream(arquivoBytes, writable: false));
         }
 
-        private async Task AtualizarStatusParaFinalizadoAsync(CodafListaPresenca listaPresenca)
+        private async Task AtualizarStatusParaFinalizadoAsync(CodafSuplementar codafSuplementar)
         {
-            if (listaPresenca.Status == StatusCodafListaPresenca.Finalizado)
+            if (codafSuplementar.Status == StatusCodafSuplementar.Finalizado)
                 return;
 
-            listaPresenca.Finalizar();
-            await repositorioCodafListaPresenca.Atualizar(listaPresenca);
+            codafSuplementar.Finalizar();
+            await repositorioCodafSuplementar.Atualizar(codafSuplementar);
 
         }
     }

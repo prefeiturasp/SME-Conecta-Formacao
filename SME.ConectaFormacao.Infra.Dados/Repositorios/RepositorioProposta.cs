@@ -2580,7 +2580,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 SELECT p.ID AS propostaId,
                        p.NUMERO_HOMOLOGACAO AS numeroHomologacao,
                        p.NOME_FORMACAO AS nomeFormacao,
-                       p.ID AS codigoFormacao
+                       p.ID AS codigoFormacao,
+                       ARRAY(
+                           SELECT pcc.criterio_certificacao_id 
+                           FROM public.proposta_criterio_certificacao pcc 
+                           WHERE pcc.proposta_id = p.id AND NOT pcc.excluido
+                       ) AS CriteriosCertificacaoIds
                 {sqlBase}
                 ORDER BY numeroHomologacao
                 LIMIT @limit OFFSET @offset;

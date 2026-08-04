@@ -10,6 +10,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
         public long PropostaTurmaId { get; set; }
         public int PaginaDiarioOficial { get; set; }
         public required string NomeCompleto { get; set; }
+        public string? NomeSocial { get; set; }
+        public string NomeExibicao => string.IsNullOrWhiteSpace(NomeSocial) ? NomeCompleto : NomeSocial;
         public required string Documento { get; set; }
         public bool TemRf { get; set; }
         public TipoParticipacaoCodaf TipoParticipacao { get; set; }

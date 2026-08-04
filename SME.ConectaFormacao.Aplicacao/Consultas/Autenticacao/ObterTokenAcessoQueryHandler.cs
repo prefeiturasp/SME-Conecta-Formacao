@@ -1,7 +1,8 @@
 ﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.AlterarNomeSocialServicoAcessos;
+using SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterDadosServidorPorRfEol;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
-using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -9,27 +10,16 @@ using System.Net;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterTokenAcessoQueryHandler : IRequestHandler<ObterTokenAcessoQuery, UsuarioPerfisRetornoDTO>
+    public class ObterTokenAcessoQueryHandler
+        (IMediator mediator) : IRequestHandler<ObterTokenAcessoQuery, UsuarioPerfisRetornoDTO>
     {
-        private readonly IMediator mediator;
-        private const int TAMANHO_RF = 7;
-
-        public ObterTokenAcessoQueryHandler(IMediator mediator)
-        {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        }
-
         public async Task<UsuarioPerfisRetornoDTO> Handle(ObterTokenAcessoQuery request, CancellationToken cancellationToken)
         {
-            //TODO: aqui tem que alterar em ACESSOS para quando for interno(RF) pegar sempre do EOL
             var usuarioPerfisRetornoDto = await ObterPerfisUsuarioAcessos(request, cancellationToken);
 
             var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(request.Login), cancellationToken);
 
-            if (usuario.EhNulo())
-                usuario = new Usuario(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email);
-
-            var alterouNomeUsuario = !usuarioPerfisRetornoDto.UsuarioNome.Equals(usuario.Nome);
+            usuario ??= new(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.Email, usuarioPerfisRetornoDto.NomeSocial);
 
             usuarioPerfisRetornoDto = await ValidarPerfisAutomaticos(request, usuarioPerfisRetornoDto, cancellationToken);
 
@@ -38,17 +28,24 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (usuario.Tipo.EhInterno())
             {
-                var nomeUsuarioEOL = await mediator.Send(new ObterNomeServidorPorRfEolQuery(request.Login), cancellationToken);
-                usuarioPerfisRetornoDto.UsuarioNome = nomeUsuarioEOL.EstaPreenchido() ? nomeUsuarioEOL : usuarioPerfisRetornoDto.UsuarioNome;
+                var dadosUsuarioEOL = await mediator.Send(new ObterDadosServidorPorRfEolQuery(request.Login), cancellationToken);
+                usuarioPerfisRetornoDto.UsuarioNome = usuarioPerfisRetornoDto.UsuarioNome ?? dadosUsuarioEOL?.Nome ?? string.Empty;
+                usuarioPerfisRetornoDto.NomeSocial = usuarioPerfisRetornoDto.NomeSocial ?? dadosUsuarioEOL?.NomeSocial;
             }
 
-            usuario.Atualizar(usuarioPerfisRetornoDto.Email, DateTimeExtension.HorarioBrasilia(), usuarioPerfisRetornoDto.Cpf, usuarioPerfisRetornoDto.UsuarioNome);
-            await mediator.Send(new SalvarUsuarioCommand(usuario, alterouNomeUsuario), cancellationToken);
+            usuario.Atualizar(usuarioPerfisRetornoDto.Email, DateTimeExtension.HorarioBrasilia(), usuarioPerfisRetornoDto.Cpf, usuarioPerfisRetornoDto.UsuarioNome, usuarioPerfisRetornoDto.NomeSocial);
 
-            //TODO: quando interno vier a informação do EOL, esse trecho de código se torna obsoleto
+
+            var alterouNomeUsuario = !usuarioPerfisRetornoDto.UsuarioNome.Equals(usuario.Nome);
+            var alterouNomeSocialUsuario = !string.Equals(usuarioPerfisRetornoDto.NomeSocial, usuario.NomeSocial, StringComparison.Ordinal);
+
+            await mediator.Send(new SalvarUsuarioCommand(usuario, alterouNomeUsuario), cancellationToken);
+            if (alterouNomeSocialUsuario)
+                await mediator.Send(new AlterarNomeSocialServicoAcessosCommand(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.NomeSocial), cancellationToken);
+
             if (alterouNomeUsuario)
             {
-                await mediator.Send(new AlterarNomeServicoAcessosCommand(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome));
+                await mediator.Send(new AlterarNomeServicoAcessosCommand(usuarioPerfisRetornoDto.UsuarioLogin, usuarioPerfisRetornoDto.UsuarioNome), cancellationToken);
                 return await ObterPerfisUsuarioAcessos(request, cancellationToken);
             }
 

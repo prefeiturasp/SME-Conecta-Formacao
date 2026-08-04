@@ -14,13 +14,14 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public int? CodigoNivel { get; private set; }
         public string? Observacao { get; private set; }
         public StatusCodafSuplementar Status { get; private set; }
-
+        public bool CertificadoEmitido => CodafCertificados is not null && CodafCertificados.Count > 0;
         public Proposta Proposta { get; set; } = null!;
         public PropostaTurma PropostaTurma { get; set; } = null!;
         public CodafListaPresenca CodafListaPresenca { get; set; } = null!;
         public ICollection<CodafSuplementarInscricao> CodafInscricoes { get; set; } = [];
         public ICollection<CodafSuplementarRetificacao> CodafRetificacoes { get; set; } = [];
         public ICollection<CodafSuplementarAnexo>? CodafAnexos { get; set; }
+        public ICollection<CodafCertificado>? CodafCertificados { get; set; }
         public ICollection<CodafSuplementarLogRemessaConclusao>? CodafSuplementarLogRemessasConclusao { get; set; }
 
         protected CodafSuplementar() { }
@@ -57,6 +58,13 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         {
             Status = StatusCodafSuplementar.Iniciado;
         }
+        public void Finalizar()
+        {
+            if (Status == StatusCodafSuplementar.Aguardando)
+                Status = StatusCodafSuplementar.Finalizado;
+        }
+        public bool EstaFinalizado()
+           => Status == StatusCodafSuplementar.Finalizado;
 
         public void DefinirStatus()
         {
