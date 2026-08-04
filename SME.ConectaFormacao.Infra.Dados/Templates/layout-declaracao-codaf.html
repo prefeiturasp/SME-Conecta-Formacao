@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <title>Declaração</title>
+
+    <style>
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+      }
+
+      .pagina {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: auto;
+        height: auto;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      .topo {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 24.5%;
+        background-image: url("data:image/png;base64,{{HEADER}}");
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: top left;
+        z-index: 0;
+      }
+
+      .brasao {
+          position: absolute;
+          width: 390px;
+          height: auto;
+          top: 36%;
+          left: 36%;
+          transform: translate(-50%, -50%);
+          z-index: 1;
+          opacity: 0.22;
+        }
+
+      .selo {
+        position: absolute;
+        width: 175px;
+        height: auto;
+        bottom: 70px;
+        right: 130px;
+        z-index: 0;
+      }
+
+      .hidden {
+          display: none !important;
+      }
+
+      .titulo {
+        position: absolute;
+        width: 100%;
+        top: 265px;
+        text-align: center;
+        font-family: "Roboto", sans-serif;
+        font-weight: 700;
+        font-size: 42px;
+        line-height: 100%;
+        color: #000;
+      }
+
+      .texto-declaracao {
+        position: absolute;
+        top: 430px;
+        left: 10px;
+        right: 10px;
+        margin: 0 125px;
+        text-align: center;
+        font-family: "Roboto", sans-serif;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 29px;
+        color: #000;
+      }
+
+      .assinatura-container {
+        position: absolute;
+        top: 190mm;
+        width: 100%;
+        text-align: center;
+      }
+
+      .img-assinatura {
+        width: 400px;
+        height: auto;
+        display: block;
+        margin: 0 auto -35px auto;
+        position: relative;
+        z-index: 2;
+      }
+
+      .linha-assinatura {
+        width: 370px;
+        height: 3px;
+        background: #000;
+        margin: 0px auto 8px auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .nome-assinatura {
+        font-family: "Roboto", sans-serif;
+        font-weight: 700;
+        font-size: 20px;
+      }
+
+      .cargo-assinatura {
+        font-family: "Roboto", sans-serif;
+        font-weight: 400;
+        font-size: 19px;
+        margin-top: 1px;
+      }
+
+        .footer-text {
+            position: absolute;
+            bottom: 60px;
+            left: 28%;
+            right: 28%;
+            font-family: "Roboto", sans-serif;
+            font-size: 16px;
+            color: #2f2f2f;
+            line-height: 1.2;
+            text-align: center;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pagina">
+        <div class="topo"></div>
+
+        <img class="brasao" src="data:image/png;base64,{{BRASAO}}" alt="Brasão" />
+
+        <img class="selo {{CLASSE_SELO}}"
+             src="data:image/svg+xml;base64,{{SELO}}"
+             alt="Selo" />
+
+        <h1 class="titulo">DECLARAÇÃO</h1>
+
+        <div class="texto-declaracao">{{TEXTO_DECLARACAO}}</div>
+
+        <div class="assinatura-container">
+            <img src="data:image/png;base64,{{ASSINATURA}}"
+                 class="img-assinatura"
+                 alt="Assinatura" />
+            <div class="linha-assinatura"></div>
+            <div class="nome-assinatura">Fernando Padula</div>
+            <div class="cargo-assinatura">Secretário Municipal de Educação</div>
+        </div>
+
+        <div class="footer-text">
+            SME/{{EMISSOR}} - Declaração registrada sob nº
+            NUM_CODIGO_DECLARACAO, emitido em {{DATA_EMISSAO}}, Com. nº {{NUM_COMUNICADO}} - DOC
+            {{DATA_PUBLICACAO_CODAF}}, Cód da formação {{NUM_HOM_FORMACAO}}.
+        </div>
+    </div>
+</body>
+</html>
+
