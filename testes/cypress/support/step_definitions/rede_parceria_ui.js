@@ -22,7 +22,7 @@ Quando('clico em "Novo" em Listagem de usuários de parceria', () => {
 })
 
 Então('sistema não permite cadastrar usuários de parceria com campos obrigatórios vazios', () => {
-  cy.validar_campos_criar_novo_usuario()
+  cy.validar_campos_preenchidos_usuario_rede_parceria()
 })
 
 Então('o sistema exibe o {string} no cadastro de usuário de rede de parceria', (campo) => {
