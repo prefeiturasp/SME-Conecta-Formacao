@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
+﻿using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
-using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using System.Diagnostics.CodeAnalysis;
@@ -9,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
     [ExcludeFromCodeCoverage]
-    public class CodafSuplementarProfile : PerfilMapeamentoCodafBase
+    public partial class CodafSuplementarProfile : PerfilMapeamentoCodafBase
     {
         public CodafSuplementarProfile()
         {
