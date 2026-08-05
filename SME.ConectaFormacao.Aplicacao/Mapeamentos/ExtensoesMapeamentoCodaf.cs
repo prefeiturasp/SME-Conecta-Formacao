@@ -13,8 +13,6 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             this IMappingExpression<TOrigem, TDestino> mapeamento)
         {
             return mapeamento
-                .ForMember("CodigoFormacao", opt => opt.MapFrom("CodigoFormacao"))
-                .ForMember("NumeroHomologacao", opt => opt.MapFrom("NumeroHomologacao"))
                 .ForMember("Pagina", opt => opt.MapFrom("NumeroPagina"))
                 .ForMember("TamanhoPagina", opt => opt.MapFrom("NumeroRegistros"));
         }

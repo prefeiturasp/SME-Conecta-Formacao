@@ -12,11 +12,12 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public Proposta Proposta { get; set; } = null!;
         public PropostaTurma PropostaTurma { get; set; } = null!;
 
-        public CodafCursoNaoHomologado(long propostaId, long propostaTurmaId, StatusCodafCursoNaoHomologado status)
+        public CodafCursoNaoHomologado(long propostaId, long propostaTurmaId, string? observacao)
         {
             PropostaId = propostaId;
             PropostaTurmaId = propostaTurmaId;
-            Status = status;
+            Status = StatusCodafCursoNaoHomologado.Iniciado;
+            Observacao = observacao;
         }
         public ICollection<CodafCursoNaoHomologadoInscricao> CodafInscricoes { get; set; } = [];
         public ICollection<CodafCursoNaoHomologadoAnexo>? CodafAnexos { get; set; }
