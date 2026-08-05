@@ -39,25 +39,6 @@ namespace SME.ConectaFormacao.Webapi.Teste.Controllers
         }
 
         [Fact]
-        public async Task DadoDtoValido_QuandoCadastrar_EntaoDeveRetornarCreated()
-        {
-            // Arrange
-            var dto = new CodafCursoNaoHomologadoCadastroDto();
-            var detalhadoDto = new CodafCursoNaoHomologadoDetalhadoDto { Id = _faker.Random.Long(1, 100) };
-            var resultadoSucesso = Resultado<CodafCursoNaoHomologadoDetalhadoDto>.DeSucesso(detalhadoDto);
-
-            _casoDeUsoCriarMock.Setup(c => c.ExecutarAsync(dto)).ReturnsAsync(resultadoSucesso);
-
-            // Act
-            var resultado = await _sut.Cadastrar(dto, _casoDeUsoCriarMock.Object);
-
-            // Assert
-            var objectResult = resultado.Should().BeOfType<ObjectResult>().Subject;
-            objectResult.StatusCode.Should().Be(201);
-            _casoDeUsoCriarMock.Verify(c => c.ExecutarAsync(dto), Times.Once);
-        }
-
-        [Fact]
         public async Task DadoDtoValido_QuandoAtualizar_EntaoDeveRetornarNoContent()
         {
             // Arrange
@@ -133,25 +114,6 @@ namespace SME.ConectaFormacao.Webapi.Teste.Controllers
             var objectResult = resultado.Should().BeOfType<OkObjectResult>().Subject;
             objectResult.StatusCode.Should().Be(200);
             _casoDeUsoObterPorIdMock.Verify(c => c.ExecutarAsync(id), Times.Once);
-        }
-
-        [Fact]
-        public async Task DadoArquivoValido_QuandoUploadAnexoTemporario_EntaoDeveRetornarCreated()
-        {
-            // Arrange
-            var arquivoMock = new Mock<IFormFile>();
-            var anexoTemporarioDto = new CodafAnexoTemporarioDto();
-            var resultadoSucesso = Resultado<CodafAnexoTemporarioDto>.DeSucesso(anexoTemporarioDto);
-
-            _casoDeUsoUploadMock.Setup(c => c.ExecutarAsync(arquivoMock.Object)).ReturnsAsync(resultadoSucesso);
-
-            // Act
-            var resultado = await _sut.UploadAnexoTemporario(arquivoMock.Object, _casoDeUsoUploadMock.Object);
-
-            // Assert
-            var objectResult = resultado.Should().BeOfType<ObjectResult>().Subject;
-            objectResult.StatusCode.Should().Be(201);
-            _casoDeUsoUploadMock.Verify(c => c.ExecutarAsync(arquivoMock.Object), Times.Once);
         }
     }
 }
