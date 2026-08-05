@@ -8,12 +8,12 @@ class Meus_Dados_Localizadores {
   select_tipo = () => '.ant-row-no-wrap > .ant-form-item > .ant-row > .ant-form-item-control > .ant-form-item-control-input > .ant-form-item-control-input-content > .ant-select > .ant-select-selector > .ant-select-selection-item'
   input_email_educacional = () => '#CF_INPUT_EMAIL'
   input_senha = () => '#CF_INPUT_SENHA' 
-  select_pessoa_deficiencia = () => ':nth-child(11) > .ant-form-item > .ant-row > .ant-form-item-control > .ant-form-item-control-input > .ant-form-item-control-input-content > .ant-select > .ant-select-selector > .ant-select-selection-item'
+  select_pessoa_deficiencia = () => ':nth-child(10) > p'
 
   // editar
   btn_alterar_nome = () => ':nth-child(3) > .ant-row-no-wrap > .ant-btn'
   btn_alterar_email = () => ':nth-child(4) > .ant-row-no-wrap > .ant-btn'
-  btn_alterar_senha = () => ':nth-child(8) > .ant-row-no-wrap > .ant-btn' 
+  btn_alterar_senha = () => ':nth-child(9) > .ant-row-no-wrap > .ant-btn' 
   btn_salvar = () => '#CF_BUTTON_SALVAR'
   
   btn_modal_alterar = () => '#CF_BUTTON_MODAL_ALTERAR'
