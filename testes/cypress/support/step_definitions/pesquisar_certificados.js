@@ -27,7 +27,7 @@ Então('o sistema realiza o download dos certificados', () => {
   cy.validar_tabela_certificados()
 })
 
-Quando('filtro dado de certificado inexistente na pesquisa ', () => {
+Quando('filtro dado de certificado inexistente na pesquisa', () => {
   cy.nao_filtrar_certificado()
 })
 

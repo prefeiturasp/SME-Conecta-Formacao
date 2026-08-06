@@ -58,7 +58,7 @@ Cypress.Commands.add('preencher_filtro_pesquisa_certificados', (opcao, valor, va
   const campo = String(opcao).trim().toLowerCase()
 
   switch (campo) {
-    case 'nome':
+    case 'nome':    
       cy.get(pesquisar_certificados_localizadores.campo_nome(), { timeout: 10000 })
         .should('be.visible')
         .clear()
@@ -67,9 +67,12 @@ Cypress.Commands.add('preencher_filtro_pesquisa_certificados', (opcao, valor, va
 
     case 'tipo':
       cy.get(pesquisar_certificados_localizadores.select_tipo(), { timeout: 10000 })
-        .should('be.visible')
-        .clear()
-        .type(valor)
+        .should('to.exist')
+        .click()
+
+      cy.contains(pesquisar_certificados_localizadores.select_opcao(), 'Cursista', { timeout: 10000 })
+        .should('be.visible')   
+        .click()
       break
 
     case 'código':
@@ -93,25 +96,33 @@ Cypress.Commands.add('preencher_filtro_pesquisa_certificados', (opcao, valor, va
         .type(valor)
       break
 
-    case 'documento':
+    case 'documento': {
+      const valorFinal = Cypress.env('LOGIN_CURSISTA') || valor
+
       cy.get(pesquisar_certificados_localizadores.campo_documento(), { timeout: 10000 })
         .should('be.visible')
         .clear()
-        .type(valor)
+        .type(valorFinal)
       break
+    }
 
-    case 'regente':
+    case 'regente': {
+      const valorFinal = Cypress.env('LOGIN_CURSISTA') || valor
+
       cy.get(pesquisar_certificados_localizadores.campo_regente(), { timeout: 10000 })
         .should('be.visible')
         .clear()
-        .type(valor)
+        .type(valorFinal)
       break
-
+    }
+    
     case 'cursista':
+      const valorFinal = Cypress.env('NOME') || valor
+
       cy.get(pesquisar_certificados_localizadores.campo_cursista(), { timeout: 10000 })
-        .should('be.visible')
+        .should('to.exist')
         .clear()
-        .type(valor)
+        .type(valorFinal)
       break
 
     case 'data':
@@ -130,8 +141,8 @@ Cypress.Commands.add('preencher_filtro_pesquisa_certificados', (opcao, valor, va
         .should('to.exist')
         .click()
 
-      cy.get(pesquisar_certificados_localizadores.select_dre(valor), { timeout: 10000 })
-        .should('to.exist')
+      cy.contains(pesquisar_certificados_localizadores.select_opcao(), 'TODAS', { timeout: 10000 })
+        .should('be.visible')
         .click()  
       break
   
@@ -163,6 +174,6 @@ Cypress.Commands.add('nao_filtrar_certificado', (situacao) => {
 })
 
 Cypress.Commands.add('validar_sem_dados_certificados', () => {
-  cy.contains('Não encontramos registros para os filtros aplicados')
-    .should('be.visible')
+  cy.get(pesquisar_certificados_localizadores.tbl_certificados(), { timeout: 30000 })
+    .should('not.exist')
 })

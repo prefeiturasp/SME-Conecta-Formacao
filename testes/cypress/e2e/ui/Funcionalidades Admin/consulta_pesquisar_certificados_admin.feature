@@ -25,7 +25,7 @@ Funcionalidade: Pesquisar certificados
 
   Esquema do Cenário: Dados não encontrados
     Quando acesso o menu Pesquisar certificados
-    E filtro dado de certificado inexistente na pesquisa  
+    E filtro dado de certificado inexistente na pesquisa
     Então o sistema sem dados de certificados
 
   Esquema do Cenário: Filtrar por: <caso>
@@ -34,14 +34,14 @@ Funcionalidade: Pesquisar certificados
     Então busca nas pequisa de certificado com "<campo>"
 
     Exemplos:
-      | campo                 | opcao       | valor      | caso                           |
-      | Nome da formação      | nome        | Teste      | Nome da formação               |
-      | Tipo de certificado   | tipo        | Cursista   | Tipo de certificado            |
-      | Código da formação    | código      | 123        | Código da formação             |
-      | Número de homologação | número      | 572        | Número de homologação          |
-      | Código do certificado | certificado | 572        | Código do certificado          |
-      | RF ou CPF do cursista | documento   | 572        | RF ou CPF do cursista          |
-      | RF do regente         | regente     | 572        | RF do regente                  |
-      | Nome do cursista      | cursista    | 572        | Nome do cursista               |     
-      | Data de finalização   | data        | 01/01/2026 | Data de envio para finalização |
-      | DRE                   | diretoria   | 572        | DRE                            | 
+      | campo                 | opcao       | valor              | caso                           |
+      | Nome da formação      | nome        | Nome               | Nome da formação               |
+      | Tipo de certificado   | tipo        | Cursista           | Tipo de certificado            |
+      | Código da formação    | código      | 1                  | Código da formação             |
+      | Número de homologação | número      | 1                  | Número de homologação          |
+      | Código do certificado | certificado | 1                  | Código do certificado          |
+      | RF ou CPF do cursista | documento   | REGISTRO_FUNCIONAL | RF ou CPF do cursista          |
+      | RF do regente         | regente     | REGISTRO_FUNCIONAL | RF do regente                  |
+      | Nome do cursista      | cursista    | Nome               | Nome do cursista               |     
+      | Data de finalização   | data        | 01/01/2026         | Data de envio para finalização |
+      | DRE                   | diretoria   | TODAS              | DRE                            | 
