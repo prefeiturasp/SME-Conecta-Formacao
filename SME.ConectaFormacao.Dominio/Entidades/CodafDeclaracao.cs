@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public StatusProcessamentoDeclaracaoCodaf StatusProcessamento { get; set; }
         public string? ChaveObjetoArmazenamento { get; set; }
         public string? ErroProcessamento { get; set; }
-        public long? CodafCursoNaoHomologadoId { get; private set; }
+        public long? CodafCursoNaoHomologadoId { get; set; }
         public CodafCursoNaoHomologado? CodafCursoNaoHomologado { get; set; }
 
         public CodafDeclaracao(long codafCursoNaoHomologadoInscricaoId, TipoParticipacaoCodaf tipoParticipacao, long? referenciaId, string htmlContentSnapshot, string? metadadosJson)

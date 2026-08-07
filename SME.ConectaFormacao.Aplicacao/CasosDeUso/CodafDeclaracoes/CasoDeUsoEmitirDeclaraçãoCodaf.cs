@@ -30,8 +30,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
         public async Task<Resultado> ExecutarAsync(long codafNaoHomologadoId)
         {
             await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirDeclaracaoCodaf).FullName!, LogNivel.Informacao, $"Iniciando emissão de declarações do Codaf {codafNaoHomologadoId}", identificadorRastreamento: _identificadorRastreamento));
-            
-            var listaDadosDeclaracao = await repositorioCodafDeclaracao.ObterDadosParaEmissaoDeclaracoesCodafAsync(codafNaoHomologadoId) ?? throw new ArgumentOutOfRangeException(null, null, null);
+
+            var listaDadosDeclaracao = await repositorioCodafDeclaracao.ObterDadosParaEmissaoDeclaracoesCodafAsync(codafNaoHomologadoId) ?? throw new InvalidOperationException("Os dados para emissão de declarações do Codaf não foram encontrados.");
             
             await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirDeclaracaoCodaf).FullName!, LogNivel.Informacao, $"Finalizada consulta de dados para emissão de declaracoes do Codaf - {codafNaoHomologadoId}", identificadorRastreamento: _identificadorRastreamento));
 
