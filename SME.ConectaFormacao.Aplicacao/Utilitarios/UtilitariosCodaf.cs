@@ -29,7 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
         {
             foreach (var emailDto in notificacoesParaEnviar)
             {
-                _ = _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, emailDto));
+                _ = await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, emailDto));
             }
         }
 
