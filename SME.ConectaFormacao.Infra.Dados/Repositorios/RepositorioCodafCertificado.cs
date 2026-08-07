@@ -69,9 +69,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             await writer.CompleteAsync();
         }
 
-        public async Task<IEnumerable<DadosProcessamentoCertificadoCodafDto>>
+        public async Task<IEnumerable<DadosProcessamentoCodafDto>>
             ObterCertificadosParaProcessamentoAsync() =>
-            await conexao.Obter().QueryAsync<DadosProcessamentoCertificadoCodafDto>(
+            await conexao.Obter().QueryAsync<DadosProcessamentoCodafDto>(
                 CodafCertificadoQueries.ObterParaProcessamento, new
                 {
                     statusPendente = (int)StatusProcessamentoCertificadoCodaf.Pendente,

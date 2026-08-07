@@ -1,6 +1,6 @@
 ﻿namespace SME.ConectaFormacao.Infra.Servicos.Relatorio
 {
-    public class HtmlCertificadoCodafDto
+    public class HtmlCodafDto
     {
         public required string HtmlContent { get; set; }
     }

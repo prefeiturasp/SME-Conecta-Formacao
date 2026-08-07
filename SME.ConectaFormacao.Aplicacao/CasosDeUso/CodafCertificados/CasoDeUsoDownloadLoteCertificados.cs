@@ -11,7 +11,7 @@ using System.Threading.Channels;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 {
-    public class CasoDeUsoDownloadLoteCertificados(
+    public class CasoDeUsoDownloadLoteDeclaracoes(
         IRepositorioCodafCertificado repositorio,
         IServicoArmazenamento servicoArmazenamento,
         IServicoCompactacao servicoCompactacao,
@@ -80,7 +80,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     return new(nomeArquivo, storageResultado.Dados!);
             }
 
-            var pdfResultado = await servicoRelatorio.ConveterHtmlCertificadoCodafParaPdfAsync(new HtmlCertificadoCodafDto
+            var pdfResultado = await servicoRelatorio.ConveterHtmlCodafParaPdfAsync(new HtmlCodafDto
             {
                 HtmlContent = certificado.HtmlContentSnapshot
             }, cancellationToken);
