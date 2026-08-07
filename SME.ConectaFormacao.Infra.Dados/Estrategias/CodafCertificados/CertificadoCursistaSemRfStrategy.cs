@@ -1,11 +1,12 @@
 ﻿using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Base;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Templates;
 
-namespace SME.ConectaFormacao.Infra.Dados.Estrategias
+namespace SME.ConectaFormacao.Infra.Dados.Estrategias.CodafCertificados
 {
     public class CertificadoCursistaSemRfStrategy(ITemplateService templateService) : CertificadoEstrategiaBase(templateService), ICertificadoCodafGeradorConteudo
     {
@@ -30,7 +31,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
                       e frequência de {dados.PercentualFrequencia}%.";
         }
 
-        public (string Titulo, string Corpo) GerarConteudoEmail(DadosProcessamentoCertificadoCodafDto dados, string urlAcesso)
+        public (string Titulo, string Corpo) GerarConteudoEmail(DadosProcessamentoCodafDto dados, string urlAcesso)
         {
             var titulo = @$"PARABÉNS! SEU CERTIFICADO FOI EMITIDO | {dados.NomeFormacao}";
 
