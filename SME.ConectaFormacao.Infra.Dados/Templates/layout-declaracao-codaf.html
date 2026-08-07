@@ -59,19 +59,6 @@
           opacity: 0.22;
         }
 
-      .selo {
-        position: absolute;
-        width: 175px;
-        height: auto;
-        bottom: 70px;
-        right: 130px;
-        z-index: 0;
-      }
-
-      .hidden {
-          display: none !important;
-      }
-
       .titulo {
         position: absolute;
         width: 100%;
@@ -158,10 +145,6 @@
 
         <img class="brasao" src="data:image/png;base64,{{BRASAO}}" alt="Brasão" />
 
-        <img class="selo {{CLASSE_SELO}}"
-             src="data:image/svg+xml;base64,{{SELO}}"
-             alt="Selo" />
-
         <h1 class="titulo">DECLARAÇÃO</h1>
 
         <div class="texto-declaracao">{{TEXTO_DECLARACAO}}</div>
@@ -176,8 +159,7 @@
         </div>
 
         <div class="footer-text">
-            SME/{{EMISSOR}} - Declaração registrada sob nº
-            {{NUM_CODIGO_DECLARACAO}}, emitido em {{DATA_EMISSAO}}, Cód da formação {{NUM_HOM_FORMACAO}}.
+            SME/{{EMISSOR}} - Declaração registrada sob nº {{NUM_CODIGO_DECLARACAO}}, emitido em {{DATA_EMISSAO}}, Cód da formação {{NUM_HOM_FORMACAO}}.
         </div>
     </div>
 </body>
