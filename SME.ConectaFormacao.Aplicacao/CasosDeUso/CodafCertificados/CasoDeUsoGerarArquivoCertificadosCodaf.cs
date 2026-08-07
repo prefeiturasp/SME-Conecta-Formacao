@@ -2,8 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -21,10 +22,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
         IServicoArmazenamento servicoArmazenamento,
         IKeyedServiceProvider serviceProvider,
         IConfiguration configuration,
-        IUtilitariosCodaf utilitarios) :
+        UtilitariosCodaf utilitarios) :
         ICasoDeUsoGerarArquivoCertificadosCodaf
     {
-        private readonly IUtilitariosCodaf _utilitarios = utilitarios;
+        private readonly UtilitariosCodaf _utilitarios = utilitarios;
         public async Task<bool> Executar(MensagemRabbit param)
         {
             await _utilitarios.SalvarLogAsync("Início do processamento de certificados Codaf");
@@ -47,7 +48,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 
                 foreach (var certificado in certificadosProcessados)
                 {
-                    var tipoEstrategia = _utilitarios.DefinirEstrategia(certificado);
+                    var tipoEstrategia = UtilitariosCodaf.DefinirEstrategia(certificado);
                     var geradorCertificado = serviceProvider.GetRequiredKeyedService<ICertificadoCodafGeradorConteudo>(tipoEstrategia);
 
                     var (tituloEmail, textoEmail) = geradorCertificado.GerarConteudoEmail(certificado, urlAcessoCertificados);
@@ -79,8 +80,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             {
                 try
                 {
-                    var htmlComSequencial = _utilitarios.InserirSequencialNoHtml(certificado.HtmlContentSnapshot, certificado.CodigoDeclaracaoOuCertificado);
-                    var htmlComSigla = _utilitarios.InserirEmissor(htmlComSequencial, certificado.Emissor);
+                    var htmlComSequencial = StringExtensao.InserirSequencialNoHtml(certificado.HtmlContentSnapshot, certificado.CodigoDeclaracaoOuCertificado);
+                    var htmlComSigla = StringExtensao.InserirEmissor(htmlComSequencial, certificado.Emissor);
                     var htmlCertificadoDto = new HtmlCodafDto
                     {
                         HtmlContent = htmlComSigla

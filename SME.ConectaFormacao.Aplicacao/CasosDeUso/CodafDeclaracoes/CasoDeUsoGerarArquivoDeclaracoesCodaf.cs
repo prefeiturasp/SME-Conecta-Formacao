@@ -1,16 +1,15 @@
-﻿using MediatR;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
-using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
@@ -23,10 +22,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
         IServicoArmazenamento servicoArmazenamento,
         IKeyedServiceProvider serviceProvider,
         IConfiguration configuration,
-        IUtilitariosCodaf utilitarios) :
+        UtilitariosCodaf utilitarios) :
         ICasoDeUsoGerarArquivoDeclaracoesCodaf
     {
-        private readonly IUtilitariosCodaf _utilitarios = utilitarios;
+        private readonly UtilitariosCodaf _utilitarios = utilitarios;
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
@@ -50,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
 
                 foreach (var declaracao in declaracoesProcessadas)
                 {
-                    var tipoEstrategia = _utilitarios.DefinirEstrategia(declaracao);
+                    var tipoEstrategia = UtilitariosCodaf.DefinirEstrategia(declaracao);
                     var geradorDeclaracao = serviceProvider.GetRequiredKeyedService<IDeclaracaoCodafGeradorConteudo>(tipoEstrategia);
 
                     var (tituloEmail, textoEmail) = geradorDeclaracao.GerarConteudoEmail(declaracao, urlAcessoDeclaracoes);
@@ -82,8 +81,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
             {
                 try
                 {
-                    var htmlComSequencial = _utilitarios.InserirSequencialNoHtml(declaracao.HtmlContentSnapshot, declaracao.CodigoDeclaracaoOuCertificado);
-                    var htmlComSigla = _utilitarios.InserirEmissor(htmlComSequencial, declaracao.Emissor);
+                    var htmlComSequencial = StringExtensao.InserirSequencialNoHtml(declaracao.HtmlContentSnapshot, declaracao.CodigoDeclaracaoOuCertificado);
+                    var htmlComSigla = StringExtensao.InserirEmissor(htmlComSequencial, declaracao.Emissor);
                     var htmlDeclaracaoDto = new HtmlCodafDto
                     {
                         HtmlContent = htmlComSigla

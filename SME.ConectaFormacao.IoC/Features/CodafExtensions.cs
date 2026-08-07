@@ -57,6 +57,7 @@ namespace SME.ConectaFormacao.IoC.Features
 
             public IServiceCollection AdicionarModuloCodafCertificado() =>
                 services
+                    .AddScoped<UtilitariosCodaf>()
                     .AddScoped<IRepositorioCodafCertificado, RepositorioCodafCertificado>()
                     .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoCursistaComRfStrategy>(TipoEstrategiaCodaf.CursistaComRf)
                     .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoCursistaSemRfStrategy>(TipoEstrategiaCodaf.CursistaSemRf)
@@ -73,8 +74,8 @@ namespace SME.ConectaFormacao.IoC.Features
 
             public IServiceCollection AdicionarModuloCodafDeclaracao() =>
                 services
+                    .AddScoped<UtilitariosCodaf>()
                     .AddScoped<IRepositorioCodafDeclaracao, RepositorioCodafDeclaracao>()
-                    .AddScoped<IUtilitariosCodaf, UtilitariosCodaf>()
                     .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoCursistaComRfStrategy>(TipoEstrategiaCodaf.CursistaComRf)
                     .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoCursistaSemRfStrategy>(TipoEstrategiaCodaf.CursistaSemRf)
                     .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoRegenteComRfStrategy>(TipoEstrategiaCodaf.RegenteComRf)

@@ -23,31 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
             _mediator = mediator;
             _servicoLogs = servicoLogs;
             _identificadorRastreamento = Guid.NewGuid().ToString();
-        }
-
-        public string InserirSequencialNoHtml(string htmlContent, long sequencial)
-        {
-            var marcador = "{{NUM_SEQ}}";
-            if (htmlContent.Contains(marcador))
-                htmlContent = htmlContent.Replace(marcador, sequencial.ToString());
-            return htmlContent;
-        }
-
-        public string InserirEmissor(string htmlContent, string sigla)
-        {
-            var marcador = "{{EMISSOR}}";
-            if (htmlContent.Contains(marcador))
-                htmlContent = htmlContent.Replace(marcador, sigla);
-            return htmlContent;
-        }
-
-        public TipoEstrategiaCodaf DefinirEstrategia(DadosProcessamentoCodafDto declaracao)
-        {
-            if (declaracao.TipoParticipacao == TipoParticipacaoCodaf.Regente)
-                return TipoEstrategiaCodaf.RegenteComRf;
-
-            return declaracao.TemRf ? TipoEstrategiaCodaf.CursistaComRf : TipoEstrategiaCodaf.CursistaSemRf;
-        }
+        }       
 
         public async Task EnviarEmailsAsync(List<EnviarEmailDto> notificacoesParaEnviar)
         {
@@ -87,6 +63,14 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
                 complemento += Environment.NewLine + MontarComplementoExcecao(ex.InnerException, nivel + 1);
 
             return complemento;
+        }
+
+        public static TipoEstrategiaCodaf DefinirEstrategia(DadosProcessamentoCodafDto declaracao)
+        {
+            if (declaracao.TipoParticipacao == TipoParticipacaoCodaf.Regente)
+                return TipoEstrategiaCodaf.RegenteComRf;
+
+            return declaracao.TemRf ? TipoEstrategiaCodaf.CursistaComRf : TipoEstrategiaCodaf.CursistaSemRf;
         }
     }
 }

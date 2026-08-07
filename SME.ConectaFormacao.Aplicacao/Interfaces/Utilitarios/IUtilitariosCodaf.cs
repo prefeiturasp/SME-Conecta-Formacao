@@ -8,11 +8,7 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios
 {
     public interface IUtilitariosCodaf
     {
-        string InserirSequencialNoHtml(string htmlContent, long sequencial);
-
-        string InserirEmissor(string htmlContent, string sigla);
-
-        TipoEstrategiaCodaf DefinirEstrategia(DadosProcessamentoCodafDto declaracao);
+        static abstract TipoEstrategiaCodaf DefinirEstrategia(DadosProcessamentoCodafDto declaracao);
 
         Task EnviarEmailsAsync(List<EnviarEmailDto> notificacoesParaEnviar);
 
