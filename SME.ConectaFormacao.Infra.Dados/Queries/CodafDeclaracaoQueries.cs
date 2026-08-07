@@ -21,6 +21,7 @@
                P.CARGA_HORARIA_TOTAL_OUTRA AS cargaHorariaTotalOutra,
                U.EMAIL AS emailUsuario,
                P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+               CD.CODIGO_DECLARACAO AS numeroCodigoDeclaracao,
                CASE WHEN P.TIPO_EMISSOR = 2 THEN C_EMISSOR.NOME ELSE D_EMISSOR.NOME END AS emissor,
                CASE WHEN P.TIPO_EMISSOR = 2 THEN C_EMISSOR.SIGLA ELSE NULL END AS emissorSigla,
                P.TIPO_EMISSOR AS tipoEmissor
@@ -31,6 +32,7 @@
                INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CILP ON CILP.CODAF_CURSO_NAO_HOM_ID = CLP.ID
                INNER JOIN PUBLIC.INSCRICAO AS I ON CILP.INSCRICAO_ID = I.ID 
                INNER JOIN PUBLIC.USUARIO AS U ON I.USUARIO_ID = U.ID
+               LEFT JOIN PUBLIC.CODAF_DECLARACOES AS CD ON CD.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO_ID = CILP.ID
                LEFT JOIN PUBLIC.DRE AS D_EMISSOR 
                       ON D_EMISSOR.ID = P.ID_EMISSOR 
                      AND P.TIPO_EMISSOR = 1
@@ -63,6 +65,7 @@
                P.CARGA_HORARIA_TOTAL_OUTRA cargaHorariaTotalOutra,
                U.EMAIL AS emailUsuario,
                P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+               CD.CODIGO_DECLARACAO AS numeroCodigoDeclaracao,
                CASE WHEN P.TIPO_EMISSOR = 2 THEN C_EMISSOR.NOME ELSE D_EMISSOR.NOME END AS emissor,
                CASE WHEN P.TIPO_EMISSOR = 2 THEN C_EMISSOR.SIGLA ELSE NULL END AS emissorSigla,
                P.TIPO_EMISSOR AS tipoEmissor
@@ -73,6 +76,7 @@
                INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON PRT.TURMA_ID = PT.ID
                INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR  ON PRT.PROPOSTA_REGENTE_ID = PR.ID
                LEFT JOIN PUBLIC.USUARIO AS U ON U.CPF = PR.REGISTRO_FUNCIONAL OR U.LOGIN = PR.REGISTRO_FUNCIONAL
+               LEFT JOIN PUBLIC.CODAF_DECLARACOES AS CD ON CD.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
                LEFT JOIN PUBLIC.DRE AS D_EMISSOR 
                       ON D_EMISSOR.ID = P.ID_EMISSOR 
                      AND P.TIPO_EMISSOR = 1
@@ -186,10 +190,35 @@
         """;
 
         public const string AtualizarCodigoDeclaracaoNoHtml = """
-            UPDATE PUBLIC.CODAF_DECLARACOES
-            SET HTML_CONTENT_SNAPSHOT = REPLACE(HTML_CONTENT_SNAPSHOT, 'NUM_CODIGO_DECLARACAO', CAST(CODIGO_DECLARACAO AS TEXT))
-            WHERE CODAF_CURSO_NAO_HOMOLOGADO_ID = @codafNaoHomologadoId
-              AND NOT EXCLUIDO
+            UPDATE PUBLIC.CODAF_DECLARACOES CC
+            SET HTML_CONTENT_SNAPSHOT = REPLACE(
+                REPLACE(CC.HTML_CONTENT_SNAPSHOT, 'NUM_CODIGO_DECLARACAO', CAST(CC.CODIGO_DECLARACAO AS TEXT)),
+                'NUM_HOM_FORMACAO',
+                (SELECT CAST(P.NUMERO_HOMOLOGACAO AS TEXT)
+                 FROM PUBLIC.PROPOSTA_TURMA PT
+                 JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                 WHERE (PT.ID = (
+                    SELECT PROPOSTA_TURMA_ID 
+                    FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO 
+                    WHERE ID = CC.CODAF_CURSO_NAO_HOMOLOGADO_ID
+                 ) OR PT.ID = (
+                    SELECT PRT.TURMA_ID 
+                    FROM PUBLIC.PROPOSTA_REGENTE_TURMA PRT 
+                    WHERE PRT.ID = CC.PROPOSTA_REGENTE_TURMA_ID
+                 ))
+                 LIMIT 1)
+            )
+            WHERE (CC.CODAF_CURSO_NAO_HOMOLOGADO_ID = @codafNaoHomologadoId
+                   OR CC.PROPOSTA_REGENTE_TURMA_ID IN (
+                       SELECT PRT.ID 
+                       FROM PUBLIC.PROPOSTA_REGENTE_TURMA PRT
+                       WHERE PRT.TURMA_ID IN (
+                           SELECT PROPOSTA_TURMA_ID 
+                           FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO 
+                           WHERE ID = @codafNaoHomologadoId
+                       )
+                   ))
+              AND NOT CC.EXCLUIDO
             """;
 
         public const string InativarDeclaracoesAnterioresDeCursistas = """

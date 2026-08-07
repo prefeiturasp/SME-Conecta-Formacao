@@ -14,8 +14,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.CodafDeclaracoes
         {
             var layout = ObterLayoutBase(dados);
             return layout
-                .Replace("{{TEXTO_DECLARAÇAO}}", GerarCorpoDeclaracao(dados))
-                .Replace("{{CLASSE_SELO}}", "hidden")
+                .Replace("{{TEXTO_DECLARACAO}}", GerarCorpoDeclaracao(dados))
                 .MinificarHtml();
         }
 

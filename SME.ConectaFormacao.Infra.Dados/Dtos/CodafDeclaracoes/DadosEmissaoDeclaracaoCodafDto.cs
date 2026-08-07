@@ -26,5 +26,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes
         public string TipoFormacao { get; set; } = string.Empty;
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
+        public long? NumeroHomologacao { get; set; }
+        public long? NumeroCodigoDeclaracao { get; set; }
     }
 }
