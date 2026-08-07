@@ -1,20 +1,14 @@
-﻿using MediatR;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
-using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
-using SME.ConectaFormacao.Aplicacao.Utilitarios;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
-using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
@@ -25,14 +19,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
         IServicoRelatorio servicoRelatorio,
         IRepositorioCodafCertificado repositorioCodafCertificado,
         IServicoArmazenamento servicoArmazenamento,
-        IMediator mediator,
         IKeyedServiceProvider serviceProvider,
         IConfiguration configuration,
-        IServicoLogs servicoLogs) :
+        IUtilitariosCodaf utilitarios) :
         ICasoDeUsoGerarArquivoCertificadosCodaf
     {
-        private readonly Guid _identificadorRastreamento = Guid.NewGuid();
-        private readonly UtilitariosCodaf _utilitarios = new UtilitariosCodaf(mediator, servicoLogs);
+        private readonly IUtilitariosCodaf _utilitarios = utilitarios;
         public async Task<bool> Executar(MensagemRabbit param)
         {
             await _utilitarios.SalvarLogAsync("Início do processamento de certificados Codaf");

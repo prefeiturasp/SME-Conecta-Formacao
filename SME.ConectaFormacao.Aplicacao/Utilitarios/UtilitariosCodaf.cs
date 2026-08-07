@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
@@ -11,7 +12,7 @@ using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao.Utilitarios
 {
-    public class UtilitariosCodaf
+    public class UtilitariosCodaf : IUtilitariosCodaf
     {
         private readonly IMediator _mediator;
         private readonly IServicoLogs _servicoLogs;
@@ -76,7 +77,7 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
             }
         }
 
-        public static string MontarComplementoExcecao(Exception? ex, int nivel = 0)
+        private static string MontarComplementoExcecao(Exception? ex, int nivel = 0)
         {
             var complemento = string.Empty;
             if (ex is not null)

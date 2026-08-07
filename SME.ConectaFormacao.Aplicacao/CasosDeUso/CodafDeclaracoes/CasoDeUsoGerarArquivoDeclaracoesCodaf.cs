@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
-using SME.ConectaFormacao.Aplicacao.Utilitarios;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
@@ -21,13 +21,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
         IServicoRelatorio servicoRelatorio,
         IRepositorioCodafDeclaracao repositorioCodafDeclaracao,
         IServicoArmazenamento servicoArmazenamento,
-        IMediator mediator,
         IKeyedServiceProvider serviceProvider,
         IConfiguration configuration,
-        IServicoLogs servicoLogs) :
+        IUtilitariosCodaf utilitarios) :
         ICasoDeUsoGerarArquivoDeclaracoesCodaf
     {
-        private readonly UtilitariosCodaf _utilitarios = new UtilitariosCodaf(mediator, servicoLogs);
+        private readonly IUtilitariosCodaf _utilitarios = utilitarios;
 
         public async Task<bool> Executar(MensagemRabbit param)
         {

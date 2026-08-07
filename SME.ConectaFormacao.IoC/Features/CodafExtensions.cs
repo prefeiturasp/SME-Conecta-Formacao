@@ -6,6 +6,8 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.CodafCertificados;
@@ -72,6 +74,7 @@ namespace SME.ConectaFormacao.IoC.Features
             public IServiceCollection AdicionarModuloCodafDeclaracao() =>
                 services
                     .AddScoped<IRepositorioCodafDeclaracao, RepositorioCodafDeclaracao>()
+                    .AddScoped<IUtilitariosCodaf, UtilitariosCodaf>()
                     .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoCursistaComRfStrategy>(TipoEstrategiaCodaf.CursistaComRf)
                     .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoCursistaSemRfStrategy>(TipoEstrategiaCodaf.CursistaSemRf)
                     .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoRegenteComRfStrategy>(TipoEstrategiaCodaf.RegenteComRf)
