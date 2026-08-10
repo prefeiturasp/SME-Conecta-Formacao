@@ -8,12 +8,15 @@ using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
@@ -28,6 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<IKeyedServiceProvider> _mockServiceProvider;
         private readonly Mock<IConfiguration> _mockConfiguration;
         private readonly Mock<IMediator> _mockMediator;
+        private readonly Mock<IServicoLogs> _mockServicoLogs;
         private readonly CasoDeUsoGerarArquivoCertificadosCodaf _sut;
         private readonly Faker _faker;
 
@@ -40,6 +44,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mockServiceProvider = mocker.GetMock<IKeyedServiceProvider>();
             _mockConfiguration = mocker.GetMock<IConfiguration>();
             _mockMediator = mocker.GetMock<IMediator>();
+            _mockServicoLogs = mocker.GetMock<IServicoLogs>();
+
+            // Use real implementation of IUtilitariosCodaf with mocked dependencies
+            var utilitarios = new UtilitariosCodaf(_mockMediator.Object, _mockServicoLogs.Object);
+            mocker.Use<IUtilitariosCodaf>(utilitarios);
+
             _sut = mocker.CreateInstance<CasoDeUsoGerarArquivoCertificadosCodaf>();
             _faker = new();
         }
@@ -49,7 +59,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns(_faker.Internet.Url());
             _mockRepositorioCertificado.Setup(r => r.ObterCertificadosParaProcessamentoAsync())
-                .ReturnsAsync([]);
+                .ReturnsAsync(new List<DadosProcessamentoCodafDto>());
 
             var resultado = await _sut.Executar(new MensagemRabbit());
 
