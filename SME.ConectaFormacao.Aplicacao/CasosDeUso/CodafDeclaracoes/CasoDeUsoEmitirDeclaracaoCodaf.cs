@@ -93,7 +93,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
                     transacaoDb.Rollback();
                     throw;
                 }
-                await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirDeclaracaoCodaf).FullName!, LogNivel.Informacao, $"Finalizada registro da emissão de declarações do Codaf - {codafNaoHomologadoId}", identificadorRastreamento: _identificadorRastreamento));
+                await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirDeclaracaoCodaf).FullName!, LogNivel.Informacao, $"Finalizado registro da emissão de declarações do Codaf - {codafNaoHomologadoId}", identificadorRastreamento: _identificadorRastreamento));
             }
             await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirDeclaracaoCodaf).FullName!, LogNivel.Informacao, $"Finalizada geração de declarações do Codaf - {codafNaoHomologadoId}", identificadorRastreamento: _identificadorRastreamento));
 

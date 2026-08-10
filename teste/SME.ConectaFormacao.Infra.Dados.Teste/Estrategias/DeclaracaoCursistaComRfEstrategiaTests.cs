@@ -1,0 +1,104 @@
+﻿using FluentAssertions;
+using Moq;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
+using SME.ConectaFormacao.Infra.Dados.Estrategias.CodafDeclaracoes;
+using SME.ConectaFormacao.Infra.Dados.Templates;
+
+namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
+{
+    public class DeclaracaoCursistaComRfEstrategiaTests
+    {
+        private readonly Mock<ITemplateService> _mockTemplateService;
+        private readonly DeclaracaoCursistaComRfStrategy _sut;
+
+        public DeclaracaoCursistaComRfEstrategiaTests()
+        {
+            _mockTemplateService = new Mock<ITemplateService>();
+            _sut = new(_mockTemplateService.Object);
+        }
+
+        [Fact]
+        public void GerarHtml_DeveGerarTextoCorreto_ParaCursistaComRf()
+        {
+            // Arrange
+            var dados = new DadosEmissaoDeclaracaoCodafDto
+            {
+                NomeCompleto = "João da Silva",
+                Documento = "12345678910",
+                NomeFormacao = "Curso .NET 8",
+                DataRealizacao = new(2024, 01, 20, 0, 0, 0, DateTimeKind.Utc),
+                DataInicio = new(2024, 01, 20),
+                DataFim = new(2024, 01, 20),
+                HorasTotais = 20,
+                TipoFormacao = "curso",
+                Emissor = "Secretaria Municipal",
+                DataPublicacao = new(2024, 01, 20),
+                NumeroHomologacao = 789
+            };
+
+            var templateComPlaceholders = @"
+                {{HEADER}}
+                {{TEXTO_DECLARACAO}}
+                {{BRASAO}}
+                {{ASSINATURA}}
+                {{EMISSOR}}
+                {{NUM_CODIGO_DECLARACAO}}
+                {{DATA_PUBLICACAO_CODAF}}
+                {{NUM_HOM_FORMACAO}}
+                {{IMG_MOLDURA}}";
+
+            _mockTemplateService.Setup(x => x.ObterTemplate("SME.ConectaFormacao.Infra.Dados.Templates.layout-declaracao-codaf.html"))
+                .Returns(templateComPlaceholders);
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.header.png"))
+                .Returns("img_cabecalho_base64");
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.brasao.png"))
+                .Returns("img_brasao_base64");
+
+            _mockTemplateService.Setup(x => x.ObterImagemBase64("SME.ConectaFormacao.Infra.Dados.Templates.Assets.assinatura.png"))
+                .Returns("img_assinatura_base64");
+
+            // Act
+            var htmlFinal = _sut.GerarHtml(dados);
+
+            // Assert - Verifica o Texto Específico
+            htmlFinal.Should().Contain("Declaramos para os devidos fins que o(a) servidor(a)");
+            htmlFinal.Should().MatchRegex(@"João\s+Da\s+Silva"); // Aceita variações de espaço
+            htmlFinal.Should().MatchRegex(@"RF\s.*?12345678910");
+            htmlFinal.Should().Contain("Curso .NET 8");
+            htmlFinal.Should().Contain("participou");
+
+            // Assert - Verifica se a Imagem foi injetada
+            htmlFinal.Should().Contain("img_cabecalho_base64");
+
+            // Assert - Verifica formatação de datas e horas
+            htmlFinal.Should().Contain("20/01/2024");
+            htmlFinal.Should().Contain("20 horas");
+        }
+
+        [Fact]
+        public void GerarConteudoEmail_DeveRetornarTextoPersonalizado_ParaCursista()
+        {
+            // Arrange
+            var dados = new DadosProcessamentoCodafDto
+            {
+                NomeCompleto = "Maria",
+                NomeFormacao = "Curso Docker"
+            };
+            var url = "http://teste.com";
+
+            // Act
+            var (titulo, corpo) = _sut.GerarConteudoEmail(dados, url);
+
+            // Assert
+            titulo.Should().Contain("PARABÉNS! SUA DECLARAÇÃO FOI EMITIDA");
+            titulo.Should().Contain("Curso Docker");
+
+            corpo.Should().Contain("Olá <b>Maria</b>!");
+            corpo.Should().Contain("participação como <b>cursista</b>");
+            corpo.Should().Contain(url);
+        }
+    }
+}
