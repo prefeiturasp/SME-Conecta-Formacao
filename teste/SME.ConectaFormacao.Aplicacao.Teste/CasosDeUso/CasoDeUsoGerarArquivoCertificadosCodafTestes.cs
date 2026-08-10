@@ -241,7 +241,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCodafDto>(), It.IsAny<string>()))
                 .Returns(("T", "C"));
             _mockServiceProvider
-                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), It.IsAny<object>()))
+                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), 
+                    It.Is<object>(k => (TipoEstrategiaCodaf)k == TipoEstrategiaCodaf.RegenteComRf)))
                 .Returns(mockGerador.Object);
 
             _mockMediator
@@ -290,7 +291,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCodafDto>(), It.IsAny<string>()))
                 .Returns(("T", "C"));
             _mockServiceProvider
-                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), It.IsAny<object>()))
+                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), 
+                    It.Is<object>(k => (TipoEstrategiaCodaf)k == TipoEstrategiaCodaf.CursistaSemRf)))
                 .Returns(mockGerador.Object);
 
             _mockMediator

@@ -32,8 +32,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             await _utilitarios.SalvarLogAsync("Início do processamento de certificados Codaf");
             var temCertificadosParaProcessar = true;
 
-            var urlFrontEnd = configuration["UrlFrontEnd"];
-            var urlAcessoCertificados = $"{urlFrontEnd?.TrimEnd('/')}/certificados";
+            var urlFrontEnd = configuration["UrlFrontEnd"] ?? "/";
+            var urlAcessoCertificados = $"{urlFrontEnd.TrimEnd('/')}/certificados";
             await _utilitarios.SalvarLogAsync($"Url de acesso aos certificados: {urlAcessoCertificados}");
 
             while (temCertificadosParaProcessar)
@@ -66,7 +66,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     }
                 }
 
-                _ = _utilitarios.EnviarEmailsAsync(notificacoesParaEnviar);
+                await _utilitarios.EnviarEmailsAsync(notificacoesParaEnviar);
             }
             await _utilitarios.SalvarLogAsync("Fim do processamento de certificados Codaf");
 
