@@ -51,8 +51,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             var listagemResumoDto = new Faker<CodafCursoNaoHomologadoResumoDto>("pt_BR")
                 .RuleFor(c => c.Id, f => f.Random.Long(1))
-                .RuleFor(c => c.PropostaId, f => f.Random.Long(1))
-                .RuleFor(c => c.PropostaTurmaId, f => f.Random.Long(1))
+                .RuleFor(c => c.CodigoFormacao, f => f.Random.Long(1))
+                .RuleFor(c => c.NomeTurma, f => f.Random.Word())
                 .Generate(5);
 
             _mocker.GetMock<IMapper>()

@@ -20,7 +20,7 @@ namespace SME.ConectaFormacao.Webapi.Teste.Controllers
         private readonly Mock<ICasoDeUsoExcluirCodafCursoNaoHomologado> _casoDeUsoExcluirMock;
         private readonly Mock<ICasoDeUsoListarCodafCursoNaoHomologado> _casoDeUsoListarMock;
         private readonly Mock<ICasoDeUsoObterCodafCursoNaoHomologadoPorId> _casoDeUsoObterPorIdMock;
-        private readonly Mock<ICasoDeUsoUploadAnexoTemporarioCodafCursoNaoHomologado> _casoDeUsoUploadMock;
+        private readonly Mock<ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado> _casoDeUsoListarInscritosTurmaMock;
         private readonly CodafCursoNaoHomologadoController _sut;
         private readonly Faker _faker;
 
@@ -32,7 +32,7 @@ namespace SME.ConectaFormacao.Webapi.Teste.Controllers
             _casoDeUsoExcluirMock = mocker.GetMock<ICasoDeUsoExcluirCodafCursoNaoHomologado>();
             _casoDeUsoListarMock = mocker.GetMock<ICasoDeUsoListarCodafCursoNaoHomologado>();
             _casoDeUsoObterPorIdMock = mocker.GetMock<ICasoDeUsoObterCodafCursoNaoHomologadoPorId>();
-            _casoDeUsoUploadMock = mocker.GetMock<ICasoDeUsoUploadAnexoTemporarioCodafCursoNaoHomologado>();
+            _casoDeUsoListarInscritosTurmaMock = mocker.GetMock<ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado>();
 
             _sut = mocker.CreateInstance<CodafCursoNaoHomologadoController>();
             _faker = new Faker();
@@ -78,10 +78,10 @@ namespace SME.ConectaFormacao.Webapi.Teste.Controllers
         [Fact]
         public async Task DadoFiltroValido_QuandoObterListaPaginada_EntaoDeveRetornarOk()
         {
-            var filtro = new FiltroCodafCursoNaoHomologadoDto 
-            { 
-                NumeroPagina = 1, 
-                NumeroRegistros = 10 
+            var filtro = new FiltroCodafCursoNaoHomologadoDto
+            {
+                NumeroPagina = 1,
+                NumeroRegistros = 10
             };
             var paginacaoDto = new PaginacaoResultadoDto<CodafCursoNaoHomologadoResumoDto>(new List<CodafCursoNaoHomologadoResumoDto>(), 0, 10);
             var resultadoSucesso = Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoResumoDto>>.DeSucesso(paginacaoDto);
@@ -114,6 +114,45 @@ namespace SME.ConectaFormacao.Webapi.Teste.Controllers
             var objectResult = resultado.Should().BeOfType<OkObjectResult>().Subject;
             objectResult.StatusCode.Should().Be(200);
             _casoDeUsoObterPorIdMock.Verify(c => c.ExecutarAsync(id), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoDtoValido_QuandoCadastar_DeveRetornarCreated()
+        {
+            // Arrange
+            var dto = new CodafCursoNaoHomologadoCadastroDto();
+            var resultadoSucesso = Resultado<CodafCursoNaoHomologadoDetalhadoDto>.DeSucesso(new CodafCursoNaoHomologadoDetalhadoDto());
+            _casoDeUsoCriarMock.Setup(c => c.ExecutarAsync(dto)).ReturnsAsync(resultadoSucesso);
+
+            // Act
+            var resultado = await _sut.Cadastrar(dto, _casoDeUsoCriarMock.Object);
+
+            // Assert
+            var objectResult = resultado.Should().BeOfType<CreatedResult>().Subject;
+            objectResult.StatusCode.Should().Be(201);
+            _casoDeUsoCriarMock.Verify(c => c.ExecutarAsync(dto), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoPropostaTurmaIdValido_QuandoObterInscritosPorTurma_DeveRetornarOk()
+        {
+            // Arrange
+            var propostaTurmaId = _faker.Random.Long(1, 100);
+            var numeroPagina = 1;
+            var numeroRegistros = 10;
+            var paginacaoDto = new PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>([], 0, 10);
+            var resultadoSucesso = Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>>.DeSucesso(paginacaoDto);
+            _casoDeUsoListarInscritosTurmaMock
+                .Setup(c => c.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros))
+                .ReturnsAsync(resultadoSucesso);
+
+            // Act
+            var resultado = await _sut.ObterInscritosPorTurma(propostaTurmaId, _casoDeUsoListarInscritosTurmaMock.Object, numeroPagina, numeroRegistros);
+
+            // Assert
+            var objectResult = resultado.Should().BeOfType<OkObjectResult>().Subject;
+            objectResult.StatusCode.Should().Be(200);
+            _casoDeUsoListarInscritosTurmaMock.Verify(c => c.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros), Times.Once);
         }
     }
 }

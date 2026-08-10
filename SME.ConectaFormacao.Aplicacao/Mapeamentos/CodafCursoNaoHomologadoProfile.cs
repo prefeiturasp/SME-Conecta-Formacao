@@ -30,6 +30,10 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                     .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Inscricao != null && src.Inscricao.Usuario != null ? src.Inscricao.Usuario.Nome : string.Empty))
                     .ForMember(dest => dest.Documento, opt => opt.MapFrom(src => ResolverEFormatarDocumento(src.Inscricao)));
 
+                CreateMap<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto, CodafCursoNaoHomologadoInscritoTurmaDto>()
+                    .ForMember(destino => destino.Nome, opt => opt.MapFrom(origem => origem.NomeExibicao))
+                    .ForMember(destino => destino.Documento, opt => opt.MapFrom(origem => ResolverEFormatarDocumento(origem.Login, origem.Cpf)));
+
             }
         }
     }

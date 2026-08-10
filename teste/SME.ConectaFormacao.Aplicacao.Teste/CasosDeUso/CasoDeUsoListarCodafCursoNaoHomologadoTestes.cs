@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             
             var itensRepositorio = new List<ListagemResultadoCodafCursoNaoHomologadoDto> 
             { 
-                new ListagemResultadoCodafCursoNaoHomologadoDto { Id = _faker.Random.Long(1, 100), NomeTurma = "T1", NomeAreaPromotora = "A1" } 
+                new() { Id = _faker.Random.Long(1, 100), NomeTurma = "T1", NomeAreaPromotora = "A1" } 
             };
             var resultadoPaginadoRepositorio = new ResultadoPaginado<ListagemResultadoCodafCursoNaoHomologadoDto>
             {
@@ -53,7 +53,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                             .ReturnsAsync(resultadoPaginadoRepositorio);
 
             _mapperMock.Setup(m => m.Map<List<CodafCursoNaoHomologadoResumoDto>>(resultadoPaginadoRepositorio.Itens))
-                       .Returns(new List<CodafCursoNaoHomologadoResumoDto> { new CodafCursoNaoHomologadoResumoDto { Id = 1 } });
+                       .Returns([new CodafCursoNaoHomologadoResumoDto { Id = 1, NomeAreaPromotora = "Teste", NomeTurma = "Turma 1" }]);
 
             // Act
             var resultado = await _sut.ExecutarAsync(filtro);
