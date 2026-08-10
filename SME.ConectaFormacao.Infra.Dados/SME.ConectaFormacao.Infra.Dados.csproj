@@ -12,6 +12,7 @@
 	  <EmbeddedResource Include="Templates\Assets\brasao.png" />
 	  <EmbeddedResource Include="Templates\Assets\header.png" />
 	  <EmbeddedResource Include="Templates\Assets\selo.svg" />
+	  <EmbeddedResource Include="Templates\layout-declaracao-codaf.html" />
       <EmbeddedResource Include="Templates\layout-certificado-codaf.html" />
       <None Remove="Templates\Template_Relatorio_Inscritos_Por_Formacao.xlsx" />
     </ItemGroup>

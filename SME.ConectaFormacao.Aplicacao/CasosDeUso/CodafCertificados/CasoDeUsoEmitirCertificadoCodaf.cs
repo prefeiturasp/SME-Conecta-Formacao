@@ -116,16 +116,16 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
             await repositorioCodafCertificado.InativarCertificadosAnterioresCursistaAsync(inscritosParaCancelarCertificado);
         }
 
-        private static TipoEstrategiaCertificadoCodaf DefinirEstrategia(DadosEmissaoCertificadoCodafDto dto)
+        private static TipoEstrategiaCodaf DefinirEstrategia(DadosEmissaoCertificadoCodafDto dto)
         {
             if (dto.TipoParticipacao == TipoParticipacaoCodaf.Regente)
                 return dto.TemRf
-                    ? TipoEstrategiaCertificadoCodaf.RegenteComRf
-                    : TipoEstrategiaCertificadoCodaf.RegenteSemRf;
+                    ? TipoEstrategiaCodaf.RegenteComRf
+                    : TipoEstrategiaCodaf.RegenteSemRf;
 
             return dto.TemRf
-                ? TipoEstrategiaCertificadoCodaf.CursistaComRf
-                : TipoEstrategiaCertificadoCodaf.CursistaSemRf;
+                ? TipoEstrategiaCodaf.CursistaComRf
+                : TipoEstrategiaCodaf.CursistaSemRf;
         }
     }
 }

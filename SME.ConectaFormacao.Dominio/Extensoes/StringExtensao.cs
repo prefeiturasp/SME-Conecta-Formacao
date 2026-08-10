@@ -1,4 +1,5 @@
-﻿using System.Buffers;
+﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Buffers;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -282,6 +283,22 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
             var textInfo = CultureInfo.CurrentCulture.TextInfo;
             return textInfo.ToTitleCase(nome.ToLower());
+        }
+
+        public static string InserirSequencialNoHtml(this string htmlContent, long sequencial)
+        {
+            var marcador = "{{NUM_SEQ}}";
+            if (htmlContent.Contains(marcador))
+                htmlContent = htmlContent.Replace(marcador, sequencial.ToString());
+            return htmlContent;
+        }
+
+        public static string InserirEmissor(this string htmlContent, string sigla)
+        {
+            var marcador = "{{EMISSOR}}";
+            if (htmlContent.Contains(marcador))
+                htmlContent = htmlContent.Replace(marcador, sigla);
+            return htmlContent;
         }
     }
 }
