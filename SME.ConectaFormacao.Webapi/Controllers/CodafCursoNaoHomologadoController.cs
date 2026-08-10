@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
-using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Dominio.Comum;
@@ -67,15 +66,14 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return ProcessarResultado(resultado);
         }
 
-        [HttpPost("anexos/temporarios")]
-        [Consumes("multipart/form-data")]
-        [ProducesResponseType(typeof(Resultado<CodafAnexoTemporarioDto>), 201)]
-        [ProducesResponseType(typeof(Resultado<CodafAnexoTemporarioDto>), 404)]
-        public async Task<IActionResult> UploadAnexoTemporario(
-            [FromForm] IFormFile arquivo,
-            [FromServices] ICasoDeUsoUploadAnexoTemporarioCodafCursoNaoHomologado casoDeUsoUploadAnexoTemporarioCodafCursoNaoHomologado)
+        [HttpGet("inscritos-turma/{propostaTurmaId:long}")]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>>), 200)]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>>), 400)]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>>), 500)]
+        public async Task<IActionResult> ObterInscritosPorTurma(long propostaTurmaId, [FromServices] ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado casoDeUso,
+            [FromQuery] int numeroPagina = 1, [FromQuery] int numeroRegistros = 10)
         {
-            var resultado = await casoDeUsoUploadAnexoTemporarioCodafCursoNaoHomologado.ExecutarAsync(arquivo);
+            var resultado = await casoDeUso.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros);
             return ProcessarResultado(resultado);
         }
     }
