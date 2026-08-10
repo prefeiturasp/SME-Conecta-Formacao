@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS codaf_declaracoes (
 	tentativas_processamento int4 NOT NULL,
 	codaf_curso_nao_homologado_id int8 NULL,
 
-	CONSTRAINT ccnh_pk PRIMARY KEY (id),
+	CONSTRAINT codaf_declaracoes_pk PRIMARY KEY (id),
     CONSTRAINT codaf_declaracao_ccnh_insc_id_fk FOREIGN KEY (codaf_curso_nao_homologado_inscricao_id) REFERENCES codaf_curso_nao_homologado_inscricao(id),
     CONSTRAINT codaf_declaracao_ccnh_id_fk FOREIGN KEY (codaf_curso_nao_homologado_id) REFERENCES codaf_curso_nao_homologado(id)
 );
