@@ -2,6 +2,7 @@
 using SME.ConectaFormacao.Infra.Dados.Dtos.Relatorios;
 using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
@@ -10,6 +11,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
     [ExcludeFromCodeCoverage]
     public class RepositorioRelatorios(IConectaFormacaoConexao conexao) : IRepositorioRelatorios
     {
+        private static readonly TimeZoneInfo TimezoneBrasilia =
+            TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
+
         public async Task<IEnumerable<InscritoFormacaoQueryModel>> ObterDadosRelatorioInscritosPorFormacaoAsync(
             FiltroRelatorioInscritosPorFormacaoDto filtro)
         {
@@ -33,18 +37,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (filtro.PeriodoDeRealizacaoInicial.Year >= 2000 && filtro.PeriodoDeRealizacaoFinal.Year >= 2000)
             {
-                AdicionarFiltroOpcional<DateTime>(
+                AdicionarFiltroData(
                     condicoes,
                     parametros,
-                    filtro.PeriodoDeRealizacaoInicial.Date,
+                    filtro.PeriodoDeRealizacaoInicial,
                     " AND dataRealizacaoInicio::date >= @periodoDeRealizacaoInicial ",
                     "periodoDeRealizacaoInicial"
                 );
 
-                AdicionarFiltroOpcional<DateTime>(
+                AdicionarFiltroData(
                     condicoes,
                     parametros,
-                    filtro.PeriodoDeRealizacaoFinal.Date,
+                    filtro.PeriodoDeRealizacaoFinal,
                     " AND dataRealizacaoFim::date <= @periodoDeRealizacaoFinal ",
                     "periodoDeRealizacaoFinal"
                 );
@@ -53,9 +57,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             AdicionarFiltroOpcional(condicoes, parametros, filtro.PropostaId, " AND codigoFormacao = @propostaId ", "propostaId");
             AdicionarFiltroOpcional(condicoes, parametros, filtro.NumeroHomologacao, " AND codigoHomologacao = @numeroHomologacao ", "numeroHomologacao");
             AdicionarFiltroOpcional(condicoes, parametros, filtro.PropostaTurmaId, " AND turma = @propostaTurmaId ", "propostaTurmaId");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.AreaPromotoraId, " AND areaPromotora = @areaPromotoraId ", "areaPromotoraId");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.DreId, " AND dre = @dreId ", "dreId");
-            AdicionarFiltroOpcional(condicoes, parametros, filtro.UeId, " AND ue = @ueId ", "ueId");
+
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.AreaPromotoraId, " AND areaPromotoraId = @areaPromotoraId ", "areaPromotoraId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.DreId, " AND dreId = @dreId ", "dreId");
+            AdicionarFiltroOpcional(condicoes, parametros, filtro.UeId, " AND ueId = @ueId ", "ueId");
 
             AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoProposta, " AND situacaoFormacao = @situacaoFormacao ", "situacaoFormacao");
             AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoInscricao, " AND situacaoInscricao = @situacaoInscricao ", "situacaoInscricao");
@@ -84,6 +89,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 query.Append(sql);
                 parametros.Add(nomeParametro, valor.Value);
             }
+        }
+
+        private static void AdicionarFiltroData(StringBuilder query, DynamicParameters parametros, DateTime valor, string sql, string nomeParametro)
+        {
+            query.Append(sql);
+
+            var dataLocal = valor.Kind == DateTimeKind.Utc
+                ? TimeZoneInfo.ConvertTimeFromUtc(valor, TimezoneBrasilia).Date
+                : valor.Date;
+
+            parametros.Add(nomeParametro, DateOnly.FromDateTime(dataLocal), DbType.Date);
         }
 
         private static void AdicionarFiltroTexto(StringBuilder query, DynamicParameters parametros, string? valor, string sql, string nomeParametro, bool buscaParcial = true)
