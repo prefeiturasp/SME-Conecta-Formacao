@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Aplicacao.Servicos;
@@ -70,6 +71,7 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>()
             .AddScoped<ICasoDeUsoObterCriterioValidacaoInscricao, CasoDeUsoObterCriterioValidacaoInscricao>()
                 .AddScoped<IRepositorioPropostaGrupoPeriodo, RepositorioPropostaGrupoPeriodo>()
+                .AddScoped<ICasoDeUsoObterDetalhesPropostaComTurmasPorId, CasoDeUsoObterDetalhesPropostaComTurmasPorId>()
             ;
 
             public IServiceCollection AdicionarModuloPropostaEncontro() =>
