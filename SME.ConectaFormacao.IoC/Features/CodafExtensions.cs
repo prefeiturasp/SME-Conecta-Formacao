@@ -1,12 +1,17 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
-using SME.ConectaFormacao.Infra.Dados.Estrategias;
+using SME.ConectaFormacao.Infra.Dados.Estrategias.CodafCertificados;
+using SME.ConectaFormacao.Infra.Dados.Estrategias.CodafDeclaracoes;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -47,16 +52,17 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<CodafListaPresencaDependencias>()
                 .AddScoped<ICasoDeUsoSalvarInscritosCodaf, CasoDeUsoSalvarInscritosCodaf>()
                 .AddScoped<ICasoDeUsoObterPropostaTurmaComCodaf, CasoDeUsoObterPropostaTurmaComCodaf>()
+                .AddScoped<IUtilitariosCodaf, UtilitariosCodaf>()
                 .AdicionarModuloCodafCertificado()
-            ;
+                .AdicionarModuloCodafDeclaracao();
 
             public IServiceCollection AdicionarModuloCodafCertificado() =>
                 services
                     .AddScoped<IRepositorioCodafCertificado, RepositorioCodafCertificado>()
-                    .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoCursistaComRfStrategy>(TipoEstrategiaCertificadoCodaf.CursistaComRf)
-                    .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoCursistaSemRfStrategy>(TipoEstrategiaCertificadoCodaf.CursistaSemRf)
-                    .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoRegenteComRfStrategy>(TipoEstrategiaCertificadoCodaf.RegenteComRf)
-                    .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoRegenteSemRfStrategy>(TipoEstrategiaCertificadoCodaf.RegenteSemRf)
+                    .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoCursistaComRfStrategy>(TipoEstrategiaCodaf.CursistaComRf)
+                    .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoCursistaSemRfStrategy>(TipoEstrategiaCodaf.CursistaSemRf)
+                    .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoRegenteComRfStrategy>(TipoEstrategiaCodaf.RegenteComRf)
+                    .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoRegenteSemRfStrategy>(TipoEstrategiaCodaf.RegenteSemRf)
                     .AddScoped<ICasoDeUsoEmitirCertificadoCodaf, CasoDeUsoEmitirCertificadoCodaf>()
                     .AddScoped<ICasoDeUsoGerarArquivoCertificadosCodaf, CasoDeUsoGerarArquivoCertificadosCodaf>()
                     .AddScoped<ICasoDeUsoRecuperarCertificadosTravadosCodafResiliencia, CasoDeUsoRecuperarCertificadosTravadosCodafResiliencia>()
@@ -64,8 +70,17 @@ namespace SME.ConectaFormacao.IoC.Features
                     .AddScoped<ICasoDeUsoObterCertificadoCodafParaDownload, CasoDeUsoObterCertificadoCodafParaDownload>()
                     .AddScoped<ICasoDeUsoGerarRelatorioCodaf, CasoDeUsoGerarRelatorioCodaf>()
                     .AddScoped<ICasoDeUsoListarTodosCertificadosCodaf, CasoDeUsoListarTodosCertificadosCodaf>()
-                    .AddScoped<ICasoDeUsoDownloadLoteCertificados, CasoDeUsoDownloadLoteCertificados>()
-                ;
+                    .AddScoped<ICasoDeUsoDownloadLoteCertificados, CasoDeUsoDownloadLoteDeclaracoes>();
+
+            public IServiceCollection AdicionarModuloCodafDeclaracao() =>
+                services
+                    .AddScoped<IRepositorioCodafDeclaracao, RepositorioCodafDeclaracao>()
+                    .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoCursistaComRfStrategy>(TipoEstrategiaCodaf.CursistaComRf)
+                    .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoCursistaSemRfStrategy>(TipoEstrategiaCodaf.CursistaSemRf)
+                    .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoRegenteComRfStrategy>(TipoEstrategiaCodaf.RegenteComRf)
+                    .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoRegenteSemRfStrategy>(TipoEstrategiaCodaf.RegenteSemRf)
+                    .AddScoped<ICasoDeUsoEmitirDeclaracaoCodaf, CasoDeUsoEmitirDeclaracaoCodaf>()
+                    .AddScoped<ICasoDeUsoGerarArquivoDeclaracoesCodaf, CasoDeUsoGerarArquivoDeclaracoesCodaf>();
         }
     }
 }

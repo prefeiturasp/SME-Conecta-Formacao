@@ -200,7 +200,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento
                 ? _configuracaoArmazenamentoOptions.BucketTemp
                 : _configuracaoArmazenamentoOptions.BucketArquivos;
 
-        public async Task<string> UploadCertificadoCodafAsync(string nomeArquivo, byte[] conteudoPdf)
+        public async Task<string> UploadCodafAsync(string nomeArquivo, byte[] conteudoPdf)
         {
             using var stream = new MemoryStream(conteudoPdf);
             await minioClient.PutObjectAsync(new PutObjectArgs()

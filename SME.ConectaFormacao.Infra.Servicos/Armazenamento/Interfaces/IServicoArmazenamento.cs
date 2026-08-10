@@ -14,7 +14,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces
         Task<Guid> MoverGuid(Guid arquivoId);
         string ObterUrlPorGuid(Guid arquivoId, bool ehPastaTemp = false);
         Task<string> ObterUrlPorChaveObjetoAsync(string chaveObjeto, bool ehPastaTemp = false);
-        Task<string> UploadCertificadoCodafAsync(string nomeArquivo, byte[] conteudoPdf);
+        Task<string> UploadCodafAsync(string nomeArquivo, byte[] conteudoPdf);
         Task<Resultado<Stream>> ObterArquivoPorChaveAsync(string chaveObjeto, CancellationToken cancellationToken = default);
     }
 }
