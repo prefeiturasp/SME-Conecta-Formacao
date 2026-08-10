@@ -65,7 +65,7 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
             return complemento;
         }
 
-        public static TipoEstrategiaCodaf DefinirEstrategia(DadosProcessamentoCodafDto declaracao)
+        public TipoEstrategiaCodaf DefinirEstrategia(DadosProcessamentoCodafDto declaracao)
         {
             if (declaracao.TipoParticipacao == TipoParticipacaoCodaf.Regente)
                 return TipoEstrategiaCodaf.RegenteComRf;

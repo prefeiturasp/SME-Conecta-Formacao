@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
@@ -52,12 +52,12 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<CodafListaPresencaDependencias>()
                 .AddScoped<ICasoDeUsoSalvarInscritosCodaf, CasoDeUsoSalvarInscritosCodaf>()
                 .AddScoped<ICasoDeUsoObterPropostaTurmaComCodaf, CasoDeUsoObterPropostaTurmaComCodaf>()
+                .AddScoped<IUtilitariosCodaf, UtilitariosCodaf>()
                 .AdicionarModuloCodafCertificado()
                 .AdicionarModuloCodafDeclaracao();
 
             public IServiceCollection AdicionarModuloCodafCertificado() =>
                 services
-                    .AddScoped<UtilitariosCodaf>()
                     .AddScoped<IRepositorioCodafCertificado, RepositorioCodafCertificado>()
                     .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoCursistaComRfStrategy>(TipoEstrategiaCodaf.CursistaComRf)
                     .AddKeyedScoped<ICertificadoCodafGeradorConteudo, CertificadoCursistaSemRfStrategy>(TipoEstrategiaCodaf.CursistaSemRf)
@@ -74,7 +74,6 @@ namespace SME.ConectaFormacao.IoC.Features
 
             public IServiceCollection AdicionarModuloCodafDeclaracao() =>
                 services
-                    .AddScoped<UtilitariosCodaf>()
                     .AddScoped<IRepositorioCodafDeclaracao, RepositorioCodafDeclaracao>()
                     .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoCursistaComRfStrategy>(TipoEstrategiaCodaf.CursistaComRf)
                     .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoCursistaSemRfStrategy>(TipoEstrategiaCodaf.CursistaSemRf)

@@ -285,7 +285,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             return textInfo.ToTitleCase(nome.ToLower());
         }
 
-        public static string InserirSequencialNoHtml(string htmlContent, long sequencial)
+        public static string InserirSequencialNoHtml(this string htmlContent, long sequencial)
         {
             var marcador = "{{NUM_SEQ}}";
             if (htmlContent.Contains(marcador))
@@ -293,7 +293,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             return htmlContent;
         }
 
-        public static string InserirEmissor(string htmlContent, string sigla)
+        public static string InserirEmissor(this string htmlContent, string sigla)
         {
             var marcador = "{{EMISSOR}}";
             if (htmlContent.Contains(marcador))

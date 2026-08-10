@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
 using SME.ConectaFormacao.Aplicacao.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -22,10 +23,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
         IServicoArmazenamento servicoArmazenamento,
         IKeyedServiceProvider serviceProvider,
         IConfiguration configuration,
-        UtilitariosCodaf utilitarios) :
+        IUtilitariosCodaf utilitarios) :
         ICasoDeUsoGerarArquivoDeclaracoesCodaf
     {
-        private readonly UtilitariosCodaf _utilitarios = utilitarios;
+        private readonly IUtilitariosCodaf _utilitarios = utilitarios;
 
         public async Task<bool> Executar(MensagemRabbit param)
         {
@@ -49,7 +50,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
 
                 foreach (var declaracao in declaracoesProcessadas)
                 {
-                    var tipoEstrategia = UtilitariosCodaf.DefinirEstrategia(declaracao);
+                    var tipoEstrategia = _utilitarios.DefinirEstrategia(declaracao);
                     var geradorDeclaracao = serviceProvider.GetRequiredKeyedService<IDeclaracaoCodafGeradorConteudo>(tipoEstrategia);
 
                     var (tituloEmail, textoEmail) = geradorDeclaracao.GerarConteudoEmail(declaracao, urlAcessoDeclaracoes);
@@ -81,8 +82,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
             {
                 try
                 {
-                    var htmlComSequencial = StringExtensao.InserirSequencialNoHtml(declaracao.HtmlContentSnapshot, declaracao.CodigoDeclaracaoOuCertificado);
-                    var htmlComSigla = StringExtensao.InserirEmissor(htmlComSequencial, declaracao.Emissor);
+                    var htmlComSequencial = declaracao.HtmlContentSnapshot.InserirSequencialNoHtml(declaracao.CodigoDeclaracaoOuCertificado);
+                    var htmlComSigla = htmlComSequencial.InserirEmissor(declaracao.Emissor);
                     var htmlDeclaracaoDto = new HtmlCodafDto
                     {
                         HtmlContent = htmlComSigla
