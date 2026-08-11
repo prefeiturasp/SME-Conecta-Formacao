@@ -36,7 +36,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.CodafCertificados
             var titulo = @$"PARABÉNS! SEU CERTIFICADO FOI EMITIDO | {dados.NomeFormacao}";
 
             var corpo = $@"
-                <p>Olá <b>{dados.NomeCompleto}</b>! Parabéns!</p>
+                <p>Olá <b>{dados.NomeExibicao}</b>! Parabéns!</p>
                 <p>Você concluiu sua participação como <b>cursista</b> na formação <b>{dados.NomeFormacao}</b>.</p>
                 <p>O certificado pode ser visualizado na tela 'Meus certificados' na plataforma Conecta, clicando <a href='{urlAcesso}' target='_blank'>aqui</a>.</p>";
 
