@@ -21,9 +21,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.CodafDeclaracoes
         private static string GerarCorpoDeclaracao(DadosEmissaoDeclaracaoCodafDto dados)
         {
             return $@"
-            <p>Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeExibicao)}</i></b>, 
-            CPF: <b><i>{StringExtensao.AplicarMascaraCpf(dados.Documento)}</b></i>, ministrou o {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
-            promovido pela {ObterTextoEmissorCorpo(dados)} da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, com carga horária 
+            <p>Declaramos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeExibicao)}</i></b>, 
+            CPF <b><i>{StringExtensao.AplicarMascaraCpf(dados.Documento)}</b></i>, ministrou o {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
+            promovido pelo(a) {ObterTextoEmissorCorpo(dados)} da Secretaria Municipal de Educação no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, com carga horária 
             de {dados.DefinirCargaHoraria()} horas.</p>";
         }
 
