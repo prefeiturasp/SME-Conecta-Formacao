@@ -24,6 +24,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<CodafCursoNaoHomologadoDependencias>()
                 .AddScoped<IGerenciadorAnexosCodafCursoNaoHomologadoService, GerenciadorAnexosCodafCursoNaoHomologadoService>()
                 .AddScoped<ICodafCursoNaoHomologadoInscritosService, CodafCursoNaoHomologadoInscritosService>()
+                .AddScoped<ICasoDeUsoObterCodafCursoNaoHomologadoPorId, CasoDeUsoObterCodafCursoNaoHomologadoPorId>()
                 ;
         }
     }

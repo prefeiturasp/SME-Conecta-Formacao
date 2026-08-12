@@ -16,12 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafCursosNaoHomologados
         public DateTime CriadoEm { get; set; }
         public string? CriadoPor { get; set; }
         public string? CriadoLogin { get; set; }
-        public string? NomeFormacao { get; set; }
-        public long? CodigoFormacao { get; set; }
-        public long? NumeroHomologacao { get; set; }
-        public bool CertificadoEmitido { get; set; }
         public IList<CodafCursoNaoHomologadoAnexoDto>? Anexos { get; set; }
         public IList<CodafCursoNaoHomologadoInscritoDto>? Inscritos { get; set; }
-        public PropostaTurmaComCodafDto? Turma { get; set; }
+        public PropostaTurmaComCodafDto? PropostaTurma { get; set; }
     }
 }

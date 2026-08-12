@@ -13,6 +13,16 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
         {
             public CodafCursoNaoHomologadoProfile()
             {
+                CreateMap<CodafCursoNaoHomologado, CodafCursoNaoHomologadoDetalhadoDto>()
+                    .ForMember(dest => dest.PropostaId, opt => opt.MapFrom(src => src.PropostaId))
+                    .ForMember(dest => dest.PropostaTurmaId, opt => opt.MapFrom(src => src.PropostaTurmaId))
+                    .ForMember(dest => dest.Anexos, opt => opt.MapFrom(src => src.CodafAnexos))
+                    .ForMember(dest => dest.Inscritos, opt => opt.MapFrom(src => src.CodafInscricoes));
+
+                CreateMap<PropostaTurma, PropostaTurmaComCodafDto>()
+                    .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Nome))
+                    .ForMember(dest => dest.CodafId, opt => opt.MapFrom(src => src.CodafListaPresenca != null ? src.CodafListaPresenca.Id : 0));
+
                 CreateMap<FiltroCodafCursoNaoHomologadoDto, FiltroListagemResultadoCodafCursoNaoHomologadoDto>()
                     .AplicarMapeamentoFiltroPaginacao();
 
@@ -26,9 +36,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
                 CreateMap<CodafCursoNaoHomologadoInscritoSalvarDto, CodafCursoNaoHomologadoInscricao>();
 
-                CreateMap<CodafCursoNaoHomologadoInscricao, CodafCursoNaoHomologadoInscritoDto>()
-                    .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Inscricao != null && src.Inscricao.Usuario != null ? src.Inscricao.Usuario.Nome : string.Empty))
-                    .ForMember(dest => dest.Documento, opt => opt.MapFrom(src => ResolverEFormatarDocumento(src.Inscricao)));
+                CreateMap<CodafCursoNaoHomologadoInscricao, CodafCursoNaoHomologadoInscritoDto>();
 
                 CreateMap<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto, CodafCursoNaoHomologadoInscritoTurmaDto>()
                     .ForMember(destino => destino.Nome, opt => opt.MapFrom(origem => origem.NomeExibicao))

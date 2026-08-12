@@ -12,6 +12,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public Proposta Proposta { get; set; } = null!;
         public PropostaTurma PropostaTurma { get; set; } = null!;
 
+        public CodafCursoNaoHomologado() { }
+
         public CodafCursoNaoHomologado(long propostaId, long propostaTurmaId, string? observacao)
         {
             PropostaId = propostaId;

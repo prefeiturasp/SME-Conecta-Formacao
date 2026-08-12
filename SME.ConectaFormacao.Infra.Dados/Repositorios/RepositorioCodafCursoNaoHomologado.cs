@@ -213,7 +213,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         }
 
         private const string sqlObterCodafPorIdComPropostaEPropostaTurma = """
-            SELECT CCNH.ID,
+            SELECT CCNH.ID as Id,
                    CCNH.PROPOSTA_ID AS propostaId,
                    CCNH.PROPOSTA_TURMA_ID AS propostaTurmaId,
                    CCNH.OBSERVACAO,
@@ -240,28 +240,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         private const string sqlObterAnexosPorIdCodaf = """
             SELECT CA.ID, 
-                   CA.CODAF_CURSO_NAO_HOMOLOGADO_ID AS CodafListaPresencaId,
+                   CA.CODAF_CURSO_NAO_HOM_ID AS CodafCursoNaoHomologadoId,
                    CA.ARQUIVO_CODIGO AS ArquivoCodigo,
                    CA.NOME_ARQUIVO AS NomeArquivo,
                    CA.EXTENSAO AS Extensao,
                    CA.CRIADO_EM AS CriadoEm,
                    CA.CRIADO_POR AS CriadoPor
             FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_ANEXO AS CA 
-            WHERE NOT CA.EXCLUIDO AND CA.CODAF_CURSO_NAO_HOMOLOGADO_ID = @id;
+            WHERE NOT CA.EXCLUIDO AND CA.CODAF_CURSO_NAO_HOM_ID = @id;
             """;
 
         private const string sqlObterInscricoesDaListaPorIdCodaf = """
             SELECT CILP.ID, 
-                   CILP.CODAF_CURSO_NAO_HOMOLOGADO_ID AS CodafListaPresencaId,
+                   CILP.CODAF_CURSO_NAO_HOM_ID AS codafCursoNaoHomologadoId,
                    CILP.INSCRICAO_ID AS InscricaoId,
-                   CILP.PERCENTUAL_FREQUENCIA AS PercentualFrequencia,
-                   CILP.ATIVIDADE_OBRIGATORIO AS AtividadeObrigatorio,
-                   CILP.CONCEITO_FINAL AS ConceitoFinal,
-                   CILP.APROVADO AS Aprovado,
+                   CILP.PARTICIPOU AS Participou,
                    CILP.CRIADO_EM AS CriadoEm,
                    CILP.CRIADO_POR AS CriadoPor
             FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CILP 
-            WHERE NOT CILP.EXCLUIDO AND CILP.CODAF_CURSO_NAO_HOMOLOGADO_ID = @id;
+            WHERE NOT CILP.EXCLUIDO AND CILP.CODAF_CURSO_NAO_HOM_ID = @id;
             """;
     }
 }
