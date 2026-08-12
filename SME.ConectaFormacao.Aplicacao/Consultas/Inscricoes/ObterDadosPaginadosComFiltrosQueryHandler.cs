@@ -46,10 +46,10 @@ namespace SME.ConectaFormacao.Aplicacao
                 var inscricao = turmasFormacao?.Where(x => x.PropostaId == proposta.Id) ?? Enumerable.Empty<ListagemFormacaoComTurmaDTO>();
 
                 var turmas = inscricao
-                    .Where(i => (apenasSemCodaf != true) || !i.CodafId.HasValue)
+                    .Where(i => (apenasSemCodaf != true) || (!i.CodafId.HasValue && !i.CodafCursoNaoHomologadoId.HasValue))
                     .Select(i => new DadosListagemFormacaoTurma
                     {
-                        PropostaTurmaId = i.PropostaTurmaId,
+                        PropostaTurmaId = i.PropostaTurmaId,    
                         NomeTurma = i.NomeTurma,
                         QuantidadeVagas = i.QuantidadeVagas,
                         QuantidadeInscricoes = i.TotalInscricoes,
