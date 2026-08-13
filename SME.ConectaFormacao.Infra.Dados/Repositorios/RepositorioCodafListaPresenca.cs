@@ -313,6 +313,41 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
+        public async Task FinalizarAsync(long id)
+        {
+            var conn = conexao.Obter();
+            using var transaction = conn.BeginTransaction();
+
+            try
+            {
+                var parametrosAtualizacao = new
+                {
+                    Id = id,
+                    Status = StatusCodafListaPresenca.Finalizado,
+                    AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                    AlteradoPor = contexto.NomeUsuario,
+                    AlteradoLogin = contexto.UsuarioLogado
+                };
+
+                const string sqlListaPresenca = """
+                    UPDATE PUBLIC.CODAF_LISTA_PRESENCA
+                    SET    STATUS = @Status,
+                           ALTERADO_EM = @AlteradoEm,
+                           ALTERADO_POR = @AlteradoPor,
+                           ALTERADO_LOGIN = @AlteradoLogin
+                    WHERE  ID = @Id
+                    """;
+                await conn.ExecuteAsync(sqlListaPresenca, parametrosAtualizacao, transaction);
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
+
         public async Task<CodafListaPresenca?> ObterPorIdComPropostaEPropostaTurmaAsync(long id)
         {
             var conn = conexao.Obter();
