@@ -482,7 +482,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 SELECT 
                     i.id, i.situacao, i.origem, i.arquivo_id, i.criado_em, 
                     i.proposta_turma_id, pt.nome, 
-                    i.usuario_id, u.login, u.cpf, u.nome, 
+                    i.usuario_id, u.login, u.cpf, u.nome, u.nome_social,
                     i.cargo_id, i.funcao_id, 
                     CASE 
                         WHEN i.tipo_vinculo IS NOT NULL THEN TRIM(cf.nome) || ' - v' || CAST(i.tipo_vinculo AS VARCHAR(10))
