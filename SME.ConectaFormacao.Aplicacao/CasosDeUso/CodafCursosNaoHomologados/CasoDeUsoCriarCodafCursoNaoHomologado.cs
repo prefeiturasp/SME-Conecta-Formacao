@@ -40,6 +40,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
                 AlteradoEm = codafCursoNaoHomologado.AlteradoEm,
                 AlteradoLogin = codafCursoNaoHomologado.AlteradoLogin,
                 AlteradoPor = codafCursoNaoHomologado.AlteradoPor,
+                CodigoFormacao = codafCursoNaoHomologado.PropostaId,
                 CriadoEm = codafCursoNaoHomologado.CriadoEm,
                 CriadoLogin = codafCursoNaoHomologado.CriadoLogin,
                 CriadoPor = codafCursoNaoHomologado.CriadoPor,

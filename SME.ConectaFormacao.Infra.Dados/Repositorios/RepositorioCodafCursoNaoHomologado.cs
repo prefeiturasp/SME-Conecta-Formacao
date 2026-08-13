@@ -133,6 +133,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
                 -- 3. Inscritos (A lista grande)
                 {sqlObterInscricoesDaListaPorIdCodaf}
+
+                -- 4. Declarações
+                {sqlObterDeclaracoesPorIdCodaf}
                 """;
 
             var parametros = new { id };
@@ -151,7 +154,32 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 return null;
 
             codafCursoNaoHomologado.CodafAnexos = [.. await multi.ReadAsync<CodafCursoNaoHomologadoAnexo>()];
-            codafCursoNaoHomologado.CodafInscricoes = [.. await multi.ReadAsync<CodafCursoNaoHomologadoInscricao>()];
+
+            var inscricoesExtendidas = await multi.ReadAsync<CodafCursoNaoHomologadoInscricaoExtendidoDto>();
+
+            codafCursoNaoHomologado.CodafInscricoes = inscricoesExtendidas.Select(ie => new CodafCursoNaoHomologadoInscricao
+            {
+                Id = ie.Id,
+                CodafCursoNaoHomologadoId = ie.CodafCursoNaoHomologadoId,
+                InscricaoId = ie.InscricaoId,
+                Participou = ie.Participou,
+                CriadoEm = ie.CriadoEm,
+                CriadoPor = ie.CriadoPor,
+                CriadoLogin = ie.CriadoLogin,
+                Inscricao = new Inscricao
+                {
+                    Id = ie.InscricaoId,
+                    Usuario = new Usuario
+                    {
+                        Nome = ie.Nome ?? string.Empty,
+                        Login = ie.Login ?? string.Empty,
+                        Cpf = ie.Cpf ?? string.Empty,
+                        Email = string.Empty
+                    }
+                }
+            }).ToList();
+
+            codafCursoNaoHomologado.CodafDeclaracoes = [.. await multi.ReadAsync<CodafDeclaracao>()];
 
             return codafCursoNaoHomologado;
         }
@@ -252,13 +280,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         private const string sqlObterInscricoesDaListaPorIdCodaf = """
             SELECT CILP.ID, 
-                   CILP.CODAF_CURSO_NAO_HOM_ID AS codafCursoNaoHomologadoId,
+                   CILP.CODAF_CURSO_NAO_HOM_ID AS CodafCursoNaoHomologadoId,
                    CILP.INSCRICAO_ID AS InscricaoId,
                    CILP.PARTICIPOU AS Participou,
                    CILP.CRIADO_EM AS CriadoEm,
-                   CILP.CRIADO_POR AS CriadoPor
-            FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CILP 
+                   CILP.CRIADO_POR AS CriadoPor,
+                   CILP.CRIADO_LOGIN AS CriadoLogin,
+                   U.NOME AS Nome,
+                   U.LOGIN AS Login,
+                   U.CPF AS Cpf
+            FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CILP
+            INNER JOIN PUBLIC.INSCRICAO AS I ON CILP.INSCRICAO_ID = I.ID
+            INNER JOIN PUBLIC.USUARIO AS U ON I.USUARIO_ID = U.ID
             WHERE NOT CILP.EXCLUIDO AND CILP.CODAF_CURSO_NAO_HOM_ID = @id;
+            """;
+
+        private const string sqlObterDeclaracoesPorIdCodaf = """
+            SELECT CD.ID,
+                   CD.CODAF_CURSO_NAO_HOMOLOGADO_ID AS CodafCursoNaoHomologadoId
+            FROM PUBLIC.CODAF_DECLARACOES AS CD
+            WHERE NOT CD.EXCLUIDO AND CD.CODAF_CURSO_NAO_HOMOLOGADO_ID = @id;
             """;
     }
 }

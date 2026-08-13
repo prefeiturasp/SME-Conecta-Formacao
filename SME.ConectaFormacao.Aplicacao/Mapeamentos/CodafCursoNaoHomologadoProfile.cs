@@ -3,11 +3,21 @@ using SME.ConectaFormacao.Aplicacao.Dtos.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCursosNaoHomologados;
 using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
     public partial class CodafSuplementarProfile
     {
+        [ExcludeFromCodeCoverage]
+        private sealed class DocumentoResolver : IValueResolver<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto, CodafCursoNaoHomologadoInscritoTurmaDto, string>
+        {
+            public string Resolve(ResultadoInscritoTurmaCodafCursoNaoHomologadoDto source, CodafCursoNaoHomologadoInscritoTurmaDto destination, string destMember, ResolutionContext context)
+            {
+                return PerfilMapeamentoCodafBase.ResolverEFormatarDocumento(source.Login, source.Cpf);
+            }
+        }
+
         [ExcludeFromCodeCoverage]
         public class CodafCursoNaoHomologadoProfile : PerfilMapeamentoCodafBase
         {
@@ -16,6 +26,11 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 CreateMap<CodafCursoNaoHomologado, CodafCursoNaoHomologadoDetalhadoDto>()
                     .ForMember(dest => dest.PropostaId, opt => opt.MapFrom(src => src.PropostaId))
                     .ForMember(dest => dest.PropostaTurmaId, opt => opt.MapFrom(src => src.PropostaTurmaId))
+                    .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(src => src.Proposta != null ? src.Proposta.NomeFormacao : null))
+                    .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(src => src.Proposta != null ? (long?)src.Proposta.Id : null))
+                    .ForMember(dest => dest.NumeroHomologacao, opt => opt.MapFrom(src => src.Proposta != null ? src.Proposta.NumeroHomologacao : null))
+                    .ForMember(dest => dest.DeclaracaoEmitida, opt => opt.MapFrom(src => src.CodafDeclaracoes != null && src.CodafDeclaracoes.Count > 0))
+                    .ForMember(dest => dest.Turma, opt => opt.MapFrom(src => src.PropostaTurma))
                     .ForMember(dest => dest.Anexos, opt => opt.MapFrom(src => src.CodafAnexos))
                     .ForMember(dest => dest.Inscritos, opt => opt.MapFrom(src => src.CodafInscricoes));
 
@@ -36,11 +51,13 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
                 CreateMap<CodafCursoNaoHomologadoInscritoSalvarDto, CodafCursoNaoHomologadoInscricao>();
 
-                CreateMap<CodafCursoNaoHomologadoInscricao, CodafCursoNaoHomologadoInscritoDto>();
+                CreateMap<CodafCursoNaoHomologadoInscricao, CodafCursoNaoHomologadoInscritoDto>()
+                    .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Inscricao != null && src.Inscricao.Usuario != null ? src.Inscricao.Usuario.Nome : string.Empty))
+                    .ForMember(dest => dest.Documento, opt => opt.MapFrom(src => ResolverEFormatarDocumento(src.Inscricao)));
 
                 CreateMap<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto, CodafCursoNaoHomologadoInscritoTurmaDto>()
                     .ForMember(destino => destino.Nome, opt => opt.MapFrom(origem => origem.NomeExibicao))
-                    .ForMember(destino => destino.Documento, opt => opt.MapFrom(origem => ResolverEFormatarDocumento(origem.Login, origem.Cpf)));
+                    .ForMember(destino => destino.Documento, opt => opt.MapFrom<DocumentoResolver>());
 
             }
         }

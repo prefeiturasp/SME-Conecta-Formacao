@@ -23,5 +23,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         }
         public ICollection<CodafCursoNaoHomologadoInscricao> CodafInscricoes { get; set; } = [];
         public ICollection<CodafCursoNaoHomologadoAnexo>? CodafAnexos { get; set; }
+        public ICollection<CodafDeclaracao>? CodafDeclaracoes { get; set; }
     }
 }
