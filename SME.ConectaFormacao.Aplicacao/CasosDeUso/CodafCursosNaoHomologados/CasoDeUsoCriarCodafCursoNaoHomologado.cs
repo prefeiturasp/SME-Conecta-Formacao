@@ -26,6 +26,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
                 codafCursoNaoHomologado.Id = idCodafCursoNaoHomologado;
                 await SalvarInscritosAsync(codafCursoNaoHomologadoCadastroDto, idCodafCursoNaoHomologado);
                 await SalvarAnexosAsync(codafCursoNaoHomologadoCadastroDto, idCodafCursoNaoHomologado);
+                codafCursoNaoHomologado.DefinirStatus();
 
                 transacaoDb.Commit();
             }

@@ -38,6 +38,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
             }
 
             return codafCursoNaoHomologadoDto;
-        }       
+        }
     }
 }

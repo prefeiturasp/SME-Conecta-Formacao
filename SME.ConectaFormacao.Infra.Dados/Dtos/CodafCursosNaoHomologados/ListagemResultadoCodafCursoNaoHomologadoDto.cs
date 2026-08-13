@@ -11,5 +11,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCursosNaoHomologados
         public required string NomeTurma { get; set; }
         public required string NomeAreaPromotora { get; set; }
         public StatusCodafCursoNaoHomologado Status { get; set; }
+        public StatusDeclaracaoTurma StatusDeclaracaoTurma { get; set; }
     }
 }

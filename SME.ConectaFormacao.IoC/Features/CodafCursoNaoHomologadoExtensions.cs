@@ -21,6 +21,8 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoListarCodafCursoNaoHomologado, CasoDeUsoListarCodafCursoNaoHomologado>()
                 .AddScoped<ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado, CasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado>()
                 .AddScoped<ICasoDeUsoCriarCodafCursoNaoHomologado, CasoDeUsoCriarCodafCursoNaoHomologado>()
+                .AddScoped<ICasoDeUsoAtualizarCodafCursoNaoHomologado, CasoDeUsoAtualizarCodafCursoNaoHomologado>()
+                .AddScoped<ICasoDeUsoExcluirCodafCursoNaoHomologado, CasoDeUsoExcluirCodafCursoNaoHomologado>()
                 .AddScoped<CodafCursoNaoHomologadoDependencias>()
                 .AddScoped<IGerenciadorAnexosCodafCursoNaoHomologadoService, GerenciadorAnexosCodafCursoNaoHomologadoService>()
                 .AddScoped<ICodafCursoNaoHomologadoInscritosService, CodafCursoNaoHomologadoInscritosService>()

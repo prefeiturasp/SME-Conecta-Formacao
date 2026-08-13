@@ -6,6 +6,6 @@
         public CodafCursoNaoHomologado? CodafCursoNaoHomologado { get; set; }
         public long InscricaoId { get; set; }
         public Inscricao? Inscricao { get; set; }
-        public required bool Participou { get; set; }
+        public bool Participou { get; set; }
     }
 }

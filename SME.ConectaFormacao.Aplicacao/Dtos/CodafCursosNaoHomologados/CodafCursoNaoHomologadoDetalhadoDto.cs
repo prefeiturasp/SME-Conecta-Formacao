@@ -21,7 +21,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafCursosNaoHomologados
         public long? NumeroHomologacao { get; set; }
         public bool DeclaracaoEmitida { get; set; }
         public IList<CodafCursoNaoHomologadoAnexoDto>? Anexos { get; set; }
-        public IList<CodafCursoNaoHomologadoInscritoDto>? Inscritos { get; set; }
         public PropostaTurmaComCodafDto? Turma { get; set; }
     }
 }

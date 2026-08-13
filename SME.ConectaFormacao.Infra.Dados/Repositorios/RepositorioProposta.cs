@@ -2627,7 +2627,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 SELECT 
                     p.id AS Id, 
                     p.nome_formacao AS NomeFormacao, 
-                    p.numero_homologacao AS NumeroHomologacao, 
+                    p.numero_homologacao AS NumeroFormacao, 
                     pt.id AS Id, 
                     pt.nome AS Nome,
                     COALESCE(pgp.data_inicio, p.data_realizacao_inicio) AS DataInicio,

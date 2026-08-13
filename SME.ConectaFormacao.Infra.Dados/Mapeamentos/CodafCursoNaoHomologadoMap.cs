@@ -13,6 +13,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.Status).ToColumn("status");
             Map(c => c.Proposta).Ignore();
             Map(c => c.PropostaTurma).Ignore();
+            Map(c => c.DeclaracaoEmitida).Ignore();
         }
     }
 }

@@ -1,0 +1,1 @@
+ALTER TABLE codaf_curso_nao_homologado DROP CONSTRAINT ccnh_prop_turma_id_key
