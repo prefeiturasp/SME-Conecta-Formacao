@@ -28,6 +28,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
             if (codafCursoNaoHomologadoExistente.Status == StatusCodafCursoNaoHomologado.Finalizado)
                 return Erro.Negocio("Não é possível editar um Codaf com status 'Finalizado'.");
 
+            if (codafCursoNaoHomologadoExistente.DeclaracaoEmitida)
+                return Erro.Negocio("Não é possível editar um Codaf com declarações emitidas.");
+
             codafCursoNaoHomologadoExistente.AtualizarInformacoes(codafCursoNaoHomologadoCadastroDto.Observacao);
 
             using var transacaoDb = dependencias.Transacao.Iniciar();
@@ -57,9 +60,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
 
         public async Task SalvarInscritosAsync(CodafCursoNaoHomologadoCadastroDto codafCursoNaoHomologadoCadastroDto, CodafCursoNaoHomologado codafCursoNaoHomologado)
         {
-            if (codafCursoNaoHomologado.DeclaracaoEmitida || codafCursoNaoHomologado.Status == StatusCodafCursoNaoHomologado.Finalizado)
-                return;
-
             var inscritos = mapper.Map<List<CodafCursoNaoHomologadoInscricao>>(codafCursoNaoHomologadoCadastroDto.Inscritos);
             await dependencias.InscritosService.SalvarInscritosAsync(inscritos, codafCursoNaoHomologado.Id);
             codafCursoNaoHomologado.CodafInscricoes = inscritos;
