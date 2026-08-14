@@ -1,1 +1,1 @@
-ALTER TABLE codaf_curso_nao_homologado DROP CONSTRAINT ccnh_prop_turma_id_key
+ALTER TABLE codaf_curso_nao_homologado DROP CONSTRAINT IF EXISTS ccnh_prop_turma_id_key
