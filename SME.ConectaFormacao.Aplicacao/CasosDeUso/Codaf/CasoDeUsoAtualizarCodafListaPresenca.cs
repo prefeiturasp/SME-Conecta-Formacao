@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
     {
         public async Task<Resultado> ExecutarAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, long id)
         {
-            bool perfilRestrito = contextoAplicacao.IdPerfilUsuario != Perfis.ADMIN_DF && contextoAplicacao.IdPerfilUsuario != Perfis.EMFORPEF;
+            var perfilRestrito = !contextoAplicacao.EhAdministrador;
 
             var codafListaPresencaExistente = await dependencias.RepositorioLista.ObterNaoExcluidosPorIdAsync(id);
             if (codafListaPresencaExistente is null)

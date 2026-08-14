@@ -301,7 +301,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<Inscricao, DadosListagemInscricaoDto>()
                 .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(o => o.PropostaTurma.Nome))
-                .ForMember(dest => dest.NomeCursista, opt => opt.MapFrom(o => o.Usuario.Nome))
+                .ForMember(dest => dest.NomeCursista, opt => opt.MapFrom(o => o.Usuario.NomeExibicao))
                 .ForMember(dest => dest.RegistroFuncional, opt => opt.MapFrom(o => o.Usuario.Login))
                 .ForMember(dest => dest.Cpf, opt => opt.MapFrom(o => o.Usuario.Cpf))
                 .ForMember(dest => dest.CargoFuncao, opt => opt.MapFrom(o => o.Funcao.Nome))

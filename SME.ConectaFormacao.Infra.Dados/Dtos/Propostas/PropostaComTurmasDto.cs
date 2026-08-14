@@ -4,7 +4,7 @@
     {
         public long Id { get; set; }
         public string NomeFormacao { get; set; } = string.Empty;
-        public long? NumeroHomologacao { get; set; }
+        public long? NumeroFormacao { get; set; }
         public ICollection<PropostaTurmaDto> Turmas { get; set; } = [];
     }
 }
