@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
     [ExcludeFromCodeCoverage]
-    public partial class CodafSuplementarProfile : PerfilMapeamentoCodafBase
+    public class CodafSuplementarProfile : PerfilMapeamentoCodafBase
     {
         public CodafSuplementarProfile()
         {

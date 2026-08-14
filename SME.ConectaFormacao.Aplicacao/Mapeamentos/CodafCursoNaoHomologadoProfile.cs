@@ -6,35 +6,42 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
-    public partial class CodafSuplementarProfile
+    [ExcludeFromCodeCoverage]
+    public class CodafCursoNaoHomologadoProfile : PerfilMapeamentoCodafBase
     {
-        [ExcludeFromCodeCoverage]
-        public class CodafCursoNaoHomologadoProfile : PerfilMapeamentoCodafBase
+        public CodafCursoNaoHomologadoProfile()
         {
-            public CodafCursoNaoHomologadoProfile()
-            {
-                CreateMap<FiltroCodafCursoNaoHomologadoDto, FiltroListagemResultadoCodafCursoNaoHomologadoDto>()
-                    .AplicarMapeamentoFiltroPaginacao();
+            CreateMap<CodafCursoNaoHomologado, CodafCursoNaoHomologadoDetalhadoDto>()
+                .ForMember(dest => dest.PropostaId, opt => opt.MapFrom(src => src.PropostaId))
+                .ForMember(dest => dest.PropostaTurmaId, opt => opt.MapFrom(src => src.PropostaTurmaId))
+                .ForMember(dest => dest.NomeFormacao, opt => opt.MapFrom(src => src.Proposta != null ? src.Proposta.NomeFormacao : null))
+                .ForMember(dest => dest.CodigoFormacao, opt => opt.MapFrom(src => src.Proposta != null ? (long?)src.Proposta.Id : null))
+                .ForMember(dest => dest.NumeroHomologacao, opt => opt.MapFrom(src => src.Proposta != null ? src.Proposta.NumeroHomologacao : null))
+                .ForMember(dest => dest.DeclaracaoEmitida, opt => opt.MapFrom(src => src.CodafDeclaracoes != null && src.CodafDeclaracoes.Count > 0))
+                .ForMember(dest => dest.Turma, opt => opt.MapFrom(src => src.PropostaTurma))
+                .ForMember(dest => dest.Anexos, opt => opt.MapFrom(src => src.CodafAnexos));
 
-                CreateMap<CodafAnexoSalvarDto, CodafCursoNaoHomologadoAnexo>()
-                    .ForMember(dest => dest.Extensao, opt => opt.MapFrom(src => ObterExtensaoArquivo(src.NomeArquivo)));
+            CreateMap<PropostaTurma, PropostaTurmaComCodafDto>()
+                .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Nome))
+                .ForMember(dest => dest.CodafId, opt => opt.MapFrom(src => src.CodafListaPresenca != null ? src.CodafListaPresenca.Id : 0));
 
-                CreateMap<CodafCursoNaoHomologadoAnexo, CodafCursoNaoHomologadoAnexoDto>()
-                    .ForMember(dest => dest.UrlDownload, opt => opt.Ignore());
+            CreateMap<FiltroCodafCursoNaoHomologadoDto, FiltroListagemResultadoCodafCursoNaoHomologadoDto>()
+                .AplicarMapeamentoFiltroPaginacao();
 
-                CreateMap<ListagemResultadoCodafCursoNaoHomologadoDto, CodafCursoNaoHomologadoResumoDto>();
+            CreateMap<CodafAnexoSalvarDto, CodafCursoNaoHomologadoAnexo>()
+                .ForMember(dest => dest.Extensao, opt => opt.MapFrom(src => ObterExtensaoArquivo(src.NomeArquivo)));
 
-                CreateMap<CodafCursoNaoHomologadoInscritoSalvarDto, CodafCursoNaoHomologadoInscricao>();
+            CreateMap<CodafCursoNaoHomologadoAnexo, CodafCursoNaoHomologadoAnexoDto>()
+                .ForMember(dest => dest.UrlDownload, opt => opt.Ignore());
 
-                CreateMap<CodafCursoNaoHomologadoInscricao, CodafCursoNaoHomologadoInscritoDto>()
-                    .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Inscricao != null && src.Inscricao.Usuario != null ? src.Inscricao.Usuario.Nome : string.Empty))
-                    .ForMember(dest => dest.Documento, opt => opt.MapFrom(src => ResolverEFormatarDocumento(src.Inscricao)));
+            CreateMap<ListagemResultadoCodafCursoNaoHomologadoDto, CodafCursoNaoHomologadoResumoDto>();
 
-                CreateMap<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto, CodafCursoNaoHomologadoInscritoTurmaDto>()
-                    .ForMember(destino => destino.Nome, opt => opt.MapFrom(origem => origem.NomeExibicao))
-                    .ForMember(destino => destino.Documento, opt => opt.MapFrom(origem => ResolverEFormatarDocumento(origem.Login, origem.Cpf)));
+            CreateMap<CodafCursoNaoHomologadoInscritoSalvarDto, CodafCursoNaoHomologadoInscricao>();
 
-            }
+            CreateMap<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto, CodafCursoNaoHomologadoInscritoTurmaDto>()
+                .ForMember(destino => destino.Nome, opt => opt.MapFrom(origem => origem.NomeExibicao))
+                .ForMember(destino => destino.Documento, opt => opt.MapFrom(origem => ResolverEFormatarDocumento(origem.Login, origem.Cpf)));
+
         }
     }
 }

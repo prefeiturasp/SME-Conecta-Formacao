@@ -50,7 +50,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         }
 
         [Fact]
-        public async Task DadoDtoValido_QuandoChamarExecutar_EntaoDeveRetornarSucessoESalvarDados()
+        public async Task DadoDtoValido_QuandoExecutar_EntaoDeveSalvarERetornarSucesso()
         {
             // Arrange
             var codafCursoNaoHomologadoCadastroDto = new CodafCursoNaoHomologadoCadastroDto
@@ -67,13 +67,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _transacaoMock.Setup(t => t.Iniciar()).Returns(transacaoDbMock.Object);
             _repositorioCodafMock.Setup(r => r.Inserir(It.IsAny<CodafCursoNaoHomologado>())).ReturnsAsync(idEsperado);
-
             _mapperMock.Setup(m => m.Map<List<CodafCursoNaoHomologadoInscricao>>(codafCursoNaoHomologadoCadastroDto.Inscritos))
                        .Returns(new List<CodafCursoNaoHomologadoInscricao>());
-
             _mapperMock.Setup(m => m.Map<List<CodafCursoNaoHomologadoAnexo>>(codafCursoNaoHomologadoCadastroDto.Anexos))
                        .Returns(new List<CodafCursoNaoHomologadoAnexo>());
-
             _mapperMock.Setup(m => m.Map<CodafCursoNaoHomologadoDetalhadoDto>(It.IsAny<CodafCursoNaoHomologado>()))
                        .Returns(new CodafCursoNaoHomologadoDetalhadoDto { Id = idEsperado });
 
@@ -83,7 +80,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Assert
             resultado.Sucesso.Should().BeTrue();
             resultado.Dados.Id.Should().Be(idEsperado);
-
             transacaoDbMock.Verify(t => t.Commit(), Times.Once);
             transacaoDbMock.Verify(t => t.Rollback(), Times.Never);
             _repositorioCodafMock.Verify(r => r.Inserir(It.IsAny<CodafCursoNaoHomologado>()), Times.Once);
@@ -92,7 +88,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         }
 
         [Fact]
-        public async Task DadoErroAoInserir_QuandoChamarExecutar_EntaoDeveRetornarErroInternoERollback()
+        public async Task DadoErroAoInserir_QuandoExecutar_EntaoDeveRetornarErroInternoERollback()
         {
             // Arrange
             var codafCursoNaoHomologadoCadastroDto = new CodafCursoNaoHomologadoCadastroDto
@@ -114,7 +110,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             resultado.Sucesso.Should().BeFalse();
             resultado.TipoFalha.Should().Be(TipoFalha.ErroInterno);
             resultado.MensagensErro.Should().Contain("Erro ao salvar o codaf.");
-
             transacaoDbMock.Verify(t => t.Rollback(), Times.Once);
             transacaoDbMock.Verify(t => t.Commit(), Times.Never);
         }
