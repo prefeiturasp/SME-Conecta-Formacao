@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             ObterDadosParaEmissaoDeclaracoesCodafAsync(long codafNaoHomologadoId) =>
             await conexao.Obter()
                 .QueryAsync<DadosEmissaoDeclaracaoCodafDto>(CodafDeclaracaoQueries.ObterDadosParaEmissao,
-                new { codafNaoHomologadoId = codafNaoHomologadoId });
+                new { codafNaoHomologadoId });
 
         public async Task InserirLoteAsync(IEnumerable<CodafDeclaracao> declaracoes)
         {
@@ -74,7 +74,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     chaveObjetoArmazenamento,
                     erroProcessamento
                 });
-        }       
+        }
 
         public async Task<IList<CodafDeclaracao>> ObterDeclaracoesDisponiveisPorListaDeIdAsync(List<long> declaracoesId)
         {

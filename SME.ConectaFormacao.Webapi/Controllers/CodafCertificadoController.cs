@@ -8,10 +8,12 @@ using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
+using SME.ConectaFormacao.Webapi.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
+    [PadronizarRetornoFiltro]
     public class CodafCertificadoController(
         ICasoDeUsoEmitirCertificadoCodaf casoDeUsoEmitirCertificadoCodaf,
         ICasoDeUsoListarMeusCertificadosCodaf casoDeUsoListarMeusCertificadosCodaf,

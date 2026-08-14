@@ -10,3 +10,6 @@ ALTER COLUMN codigo_declaracao TYPE BIGINT,
 ALTER COLUMN codigo_declaracao SET DEFAULT nextval('public.seq_declaracoes_numero');
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_codaf_declaracoes_codigo ON public.codaf_declaracoes (codigo_declaracao);
+CREATE INDEX IF NOT EXISTS idx_codaf_declaracoes_inscricao ON public.codaf_declaracoes (codaf_curso_nao_homologado_inscricao_id);
+CREATE INDEX IF NOT EXISTS idx_codaf_declaracoes_data_emissao ON public.codaf_declaracoes (data_emissao);
+CREATE INDEX IF NOT EXISTS idx_codaf_declaracoes_status ON public.codaf_declaracoes (status_processamento);
