@@ -1,9 +1,11 @@
 ﻿using Dapper;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCursosNaoHomologados;
+using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -96,15 +98,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var registrosIgnorados = (filtro.Pagina - 1) * filtro.TamanhoPagina;
             parametros.Add("limite", filtro.TamanhoPagina);
             parametros.Add("registrosIgnorados", registrosIgnorados);
+            parametros.Add("statusPendente", StatusProcessamentoDeclaracaoCodaf.Pendente);
+            parametros.Add("statusEmProcessamento", StatusProcessamentoDeclaracaoCodaf.EmProcessamento);
+            parametros.Add("statusProcessadoComSucesso", StatusProcessamentoDeclaracaoCodaf.ProcessadoComSucesso);
+            parametros.Add("statusProcessadoComErro", StatusProcessamentoDeclaracaoCodaf.ProcessadoComErro);
 
             var sqlConsulta = new StringBuilder($"""
-                SELECT CCNH.ID,
-                       P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
-                       p.NOME_FORMACAO AS nomeFormacao,
-                       p.ID AS codigoFormacao,
-                       pt.NOME AS nomeTurma,
-                       ap.NOME AS nomeAreaPromotora,
-                       CCNH.STATUS
+                {CodafNaoHomologadoQueries.sqlObterListagemCodaf}
                 {sqlBaseJoins}
                 {condicoesWhere}
                 {sqlBaseOrderBy}
@@ -126,13 +126,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var conn = conexao.Obter();
             var sql = $"""
                 -- 1. Dados do Cabeçalho (CODAF + Proposta + Turma)
-                {sqlObterCodafPorIdComPropostaEPropostaTurma}
+                {CodafNaoHomologadoQueries.sqlObterCodafPorIdComPropostaEPropostaTurma}
 
                 -- 2. Anexos
-                {sqlObterAnexosPorIdCodaf}
+                {CodafNaoHomologadoQueries.sqlObterAnexosPorIdCodaf}
 
                 -- 3. Inscritos (A lista grande)
-                {sqlObterInscricoesDaListaPorIdCodaf}
+                {CodafNaoHomologadoQueries.sqlObterInscricoesDaListaPorIdCodaf}
+
+                -- 4. Declarações
+                {CodafNaoHomologadoQueries.sqlObterDeclaracoesPorIdCodaf}
                 """;
 
             var parametros = new { id };
@@ -152,6 +155,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             codafCursoNaoHomologado.CodafAnexos = [.. await multi.ReadAsync<CodafCursoNaoHomologadoAnexo>()];
             codafCursoNaoHomologado.CodafInscricoes = [.. await multi.ReadAsync<CodafCursoNaoHomologadoInscricao>()];
+            codafCursoNaoHomologado.CodafDeclaracoes = [.. await multi.ReadAsync<CodafDeclaracao>()];
 
             return codafCursoNaoHomologado;
         }
@@ -188,7 +192,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                            ALTERADO_EM = @AlteradoEm,
                            ALTERADO_POR = @AlteradoPor,
                            ALTERADO_LOGIN = @AlteradoLogin
-                    WHERE  CODAF_CURSO_NAO_HOMOLOGADO_ID = @Id and NOT EXCLUIDO
+                    WHERE  CODAF_CURSO_NAO_HOM_ID = @Id and NOT EXCLUIDO
                     """;
 
                 await conn.ExecuteAsync(sqlInscricoes, parametrosAtualizacao, transaction);
@@ -199,7 +203,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                            ALTERADO_EM = @AlteradoEm,
                            ALTERADO_POR = @AlteradoPor,
                            ALTERADO_LOGIN = @AlteradoLogin
-                    WHERE  CODAF_CURSO_NAO_HOMOLOGADO_ID = @Id and NOT EXCLUIDO
+                    WHERE  CODAF_CURSO_NAO_HOM_ID = @Id and NOT EXCLUIDO
                     """;
 
                 await conn.ExecuteAsync(sqlAnexos, parametrosAtualizacao, transaction);
@@ -212,56 +216,39 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
         }
 
-        private const string sqlObterCodafPorIdComPropostaEPropostaTurma = """
-            SELECT CCNH.ID,
-                   CCNH.PROPOSTA_ID AS propostaId,
-                   CCNH.PROPOSTA_TURMA_ID AS propostaTurmaId,
-                   CCNH.OBSERVACAO,
-                   CCNH.STATUS,
-                   CCNH.ALTERADO_EM AS alteradoEm,
-                   CCNH.ALTERADO_POR AS alteradoPor,
-                   CCNH.ALTERADO_LOGIN AS alteradoLogin,
-                   CCNH.CRIADO_EM AS criadoEm,
-                   CCNH.CRIADO_POR AS criadoPor,
-                   CCNH.CRIADO_LOGIN AS criadoLogin,
-           
-                   P.ID, 
-                   P.NOME_FORMACAO AS nomeFormacao,
-                   P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
-           
-                   PT.ID, 
-                   PT.NOME
-            FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH
-            INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CCNH.PROPOSTA_TURMA_ID = PT.ID
-            INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
-            WHERE NOT CCNH.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO 
-              AND CCNH.ID = @id;
-            """;
+        public override async Task<CodafCursoNaoHomologado?> ObterNaoExcluidosPorIdAsync(long id)
+        {
+            var conn = conexao.Obter();
+            var sql = $"""
+                -- 1. CODAF
+                SELECT CCNH.ID as Id,
+                       CCNH.PROPOSTA_ID AS propostaId,
+                       CCNH.PROPOSTA_TURMA_ID AS propostaTurmaId,
+                       CCNH.OBSERVACAO,
+                       CCNH.STATUS,
+                       CCNH.ALTERADO_EM AS alteradoEm,
+                       CCNH.ALTERADO_POR AS alteradoPor,
+                       CCNH.ALTERADO_LOGIN AS alteradoLogin,
+                       CCNH.CRIADO_EM AS criadoEm,
+                       CCNH.CRIADO_POR AS criadoPor,
+                       CCNH.CRIADO_LOGIN AS criadoLogin
+                FROM   PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH
+                WHERE  NOT CCNH.EXCLUIDO AND CCNH.ID = @id;
 
-        private const string sqlObterAnexosPorIdCodaf = """
-            SELECT CA.ID, 
-                   CA.CODAF_CURSO_NAO_HOMOLOGADO_ID AS CodafListaPresencaId,
-                   CA.ARQUIVO_CODIGO AS ArquivoCodigo,
-                   CA.NOME_ARQUIVO AS NomeArquivo,
-                   CA.EXTENSAO AS Extensao,
-                   CA.CRIADO_EM AS CriadoEm,
-                   CA.CRIADO_POR AS CriadoPor
-            FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_ANEXO AS CA 
-            WHERE NOT CA.EXCLUIDO AND CA.CODAF_CURSO_NAO_HOMOLOGADO_ID = @id;
-            """;
+                -- 5. Declaracoes
+                {CodafNaoHomologadoQueries.sqlObterDeclaracoesPorIdCodaf}
+                """;
 
-        private const string sqlObterInscricoesDaListaPorIdCodaf = """
-            SELECT CILP.ID, 
-                   CILP.CODAF_CURSO_NAO_HOMOLOGADO_ID AS CodafListaPresencaId,
-                   CILP.INSCRICAO_ID AS InscricaoId,
-                   CILP.PERCENTUAL_FREQUENCIA AS PercentualFrequencia,
-                   CILP.ATIVIDADE_OBRIGATORIO AS AtividadeObrigatorio,
-                   CILP.CONCEITO_FINAL AS ConceitoFinal,
-                   CILP.APROVADO AS Aprovado,
-                   CILP.CRIADO_EM AS CriadoEm,
-                   CILP.CRIADO_POR AS CriadoPor
-            FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CILP 
-            WHERE NOT CILP.EXCLUIDO AND CILP.CODAF_CURSO_NAO_HOMOLOGADO_ID = @id;
-            """;
+            var parametros = new { id };
+
+            using var multi = await conn.QueryMultipleAsync(sql, parametros);
+            var codafCursoNaoHomologado = (await multi.ReadAsync<CodafCursoNaoHomologado>()).SingleOrDefault();
+
+            if (codafCursoNaoHomologado is null)
+                return null;
+
+            codafCursoNaoHomologado.CodafDeclaracoes = [.. await multi.ReadAsync<CodafDeclaracao>()];
+            return codafCursoNaoHomologado;
+        }
     }
 }
