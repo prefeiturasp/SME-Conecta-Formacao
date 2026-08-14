@@ -1,4 +1,6 @@
-﻿using Moq;
+using FluentAssertions;
+using Moq;
+using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Contexto;
@@ -12,290 +14,199 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
     {
         private const long CodafListaPresencaId = 1;
         private const string LoginUsuario = "1234567";
+        private const string OutroLogin = "outro-usuario";
 
-        private readonly Mock<IRepositorioCodafListaPresenca> repositorioCodafListaPresenca;
-        private readonly Mock<IContextoAplicacao> contextoAplicacao;
-
-        private readonly CasoDeUsoFinalizarCodafListaPresenca casoDeUso;
+        private readonly Mock<IRepositorioCodafListaPresenca> _repositorioCodafListaPresencaMock;
+        private readonly Mock<IContextoAplicacao> _contextoAplicacaoMock;
+        private readonly CasoDeUsoFinalizarCodafListaPresenca _casoDeUso;
 
         public CasoDeUsoFinalizarCodafListaPresencaTestes()
         {
-            repositorioCodafListaPresenca = new Mock<IRepositorioCodafListaPresenca>();
-            contextoAplicacao = new Mock<IContextoAplicacao>();
-
-            casoDeUso = new CasoDeUsoFinalizarCodafListaPresenca(
-                repositorioCodafListaPresenca.Object,
-                contextoAplicacao.Object);
+            var mocker = new AutoMocker();
+            _repositorioCodafListaPresencaMock = mocker.GetMock<IRepositorioCodafListaPresenca>();
+            _contextoAplicacaoMock = mocker.GetMock<IContextoAplicacao>();
+            _casoDeUso = mocker.CreateInstance<CasoDeUsoFinalizarCodafListaPresenca>();
         }
 
         [Fact]
-        public async Task Deve_Retornar_NaoEncontrado_Quando_Lista_De_Presenca_Nao_Existir()
+        public async Task DadoListaPresencaInexistente_QuandoExecutar_EntaoDeveRetornarErroNaoEncontrado()
         {
             // Arrange
-            contextoAplicacao
-                .SetupGet(c => c.EhAdministrador)
-                .Returns(false);
-
-            repositorioCodafListaPresenca
+            _contextoAplicacaoMock.SetupGet(c => c.EhAdministrador).Returns(false);
+            _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId))
                 .ReturnsAsync((CodafListaPresenca?)null);
 
             // Act
-            var resultado = await casoDeUso.ExecutarAsync(CodafListaPresencaId);
+            var resultado = await _casoDeUso.ExecutarAsync(CodafListaPresencaId);
 
             // Assert
-            Assert.False(resultado.Sucesso);
-            Assert.Equal(TipoFalha.NaoEncontrado, resultado.TipoFalha);
-            Assert.Single(resultado.MensagensErro);
-            Assert.Contains(
-                "Lista de presença não encontrada.",
-                resultado.MensagensErro);
-
-            repositorioCodafListaPresenca.Verify(
-                r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId),
-                Times.Once);
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.NaoEncontrado);
+            resultado.MensagensErro.Should().ContainSingle()
+                .Which.Should().Be("Lista de presença não encontrada.");
+            _repositorioCodafListaPresencaMock.Verify(r => r.Atualizar(It.IsAny<CodafListaPresenca>()), Times.Never);
         }
 
         [Fact]
-        public async Task Deve_Retornar_Erro_Quando_Usuario_Nao_Administrador_Nao_For_Criador_Da_Lista()
+        public async Task DadoPerfilRestritoEListaCriadaPorOutroUsuario_QuandoExecutar_EntaoDeveRetornarErroDenegado()
         {
             // Arrange
-            var lista = CriarLista(
-                StatusCodafListaPresenca.AguardandoDf,
-                criadoLogin: "outro-usuario");
-
-            contextoAplicacao
-                .SetupGet(c => c.EhAdministrador)
-                .Returns(false);
-
-            contextoAplicacao
-                .SetupGet(c => c.LoginUsuario)
-                .Returns(LoginUsuario);
-
-            repositorioCodafListaPresenca
+            var lista = CriarLista(StatusCodafListaPresenca.AguardandoDf, criadoLogin: OutroLogin);
+            ConfigurarContexto(ehAdministrador: false, loginUsuario: LoginUsuario);
+            _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId))
                 .ReturnsAsync(lista);
 
             // Act
-            var resultado = await casoDeUso.ExecutarAsync(CodafListaPresencaId);
+            var resultado = await _casoDeUso.ExecutarAsync(CodafListaPresencaId);
 
             // Assert
-            Assert.False(resultado.Sucesso);
-            Assert.Equal(TipoFalha.RegraDeNegocio, resultado.TipoFalha);
-            Assert.Single(resultado.MensagensErro);
-            Assert.Contains(
-                "Você não tem permissão para finalizar esta lista de presença.",
-                resultado.MensagensErro);
-
-            Assert.Equal(
-                StatusCodafListaPresenca.AguardandoDf,
-                lista.Status);
-
-            repositorioCodafListaPresenca.Verify(
-                r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId),
-                Times.Once);
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.RegraDeNegocio);
+            resultado.MensagensErro.Should().ContainSingle()
+                .Which.Should().Be("Você não tem permissão para finalizar esta lista de presença.");
+            lista.Status.Should().Be(StatusCodafListaPresenca.AguardandoDf);
+            _repositorioCodafListaPresencaMock.Verify(r => r.Atualizar(It.IsAny<CodafListaPresenca>()), Times.Never);
         }
 
         [Fact]
-        public async Task Deve_Retornar_Erro_Quando_Lista_Ja_Estiver_Finalizada()
+        public async Task DadoListaJaFinalizada_QuandoExecutar_EntaoDeveRetornarErroDeNegocio()
         {
             // Arrange
-            var lista = CriarLista(
-                StatusCodafListaPresenca.Finalizado,
-                LoginUsuario);
-
-            contextoAplicacao
-                .SetupGet(c => c.EhAdministrador)
-                .Returns(false);
-
-            contextoAplicacao
-                .SetupGet(c => c.LoginUsuario)
-                .Returns(LoginUsuario);
-
-            repositorioCodafListaPresenca
+            var lista = CriarLista(StatusCodafListaPresenca.Finalizado, criadoLogin: LoginUsuario);
+            ConfigurarContexto(ehAdministrador: false, loginUsuario: LoginUsuario);
+            _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId))
                 .ReturnsAsync(lista);
 
             // Act
-            var resultado = await casoDeUso.ExecutarAsync(CodafListaPresencaId);
+            var resultado = await _casoDeUso.ExecutarAsync(CodafListaPresencaId);
 
             // Assert
-            Assert.False(resultado.Sucesso);
-            Assert.Equal(TipoFalha.RegraDeNegocio, resultado.TipoFalha);
-            Assert.Single(resultado.MensagensErro);
-            Assert.Contains(
-                "Não é possível finalizar uma lista de presença com a situação 'Finalizada'.",
-                resultado.MensagensErro);
-
-            Assert.True(lista.EstaFinalizado());
-            Assert.Equal(
-                StatusCodafListaPresenca.Finalizado,
-                lista.Status);
-
-            repositorioCodafListaPresenca.Verify(
-                r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId),
-                Times.Once);
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.RegraDeNegocio);
+            resultado.MensagensErro.Should().ContainSingle()
+                .Which.Should().Be("Não é possível finalizar uma lista de presença com a situação 'Finalizada'.");
+            lista.EstaFinalizado().Should().BeTrue();
+            _repositorioCodafListaPresencaMock.Verify(r => r.Atualizar(It.IsAny<CodafListaPresenca>()), Times.Never);
         }
 
         [Fact]
-        public async Task Deve_Retornar_Erro_Quando_Existir_Inscricao_Aprovada()
+        public async Task DadoListaComInscricaoAprovada_QuandoExecutar_EntaoDeveRetornarErroDeNegocio()
         {
             // Arrange
-            var lista = CriarLista(
-                StatusCodafListaPresenca.AguardandoDf,
-                LoginUsuario,
-                false,
-                true,
-                null);
-
-            contextoAplicacao
-                .SetupGet(c => c.EhAdministrador)
-                .Returns(false);
-
-            contextoAplicacao
-                .SetupGet(c => c.LoginUsuario)
-                .Returns(LoginUsuario);
-
-            repositorioCodafListaPresenca
+            var lista = CriarLista(StatusCodafListaPresenca.AguardandoDf, criadoLogin: LoginUsuario, aprovacoes: true);
+            ConfigurarContexto(ehAdministrador: false, loginUsuario: LoginUsuario);
+            _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId))
                 .ReturnsAsync(lista);
 
             // Act
-            var resultado = await casoDeUso.ExecutarAsync(CodafListaPresencaId);
+            var resultado = await _casoDeUso.ExecutarAsync(CodafListaPresencaId);
 
             // Assert
-            Assert.False(resultado.Sucesso);
-            Assert.Equal(TipoFalha.RegraDeNegocio, resultado.TipoFalha);
-            Assert.Single(resultado.MensagensErro);
-            Assert.Contains(
-                "Lista de presença só pode ser finalizada se não houver aprovações.",
-                resultado.MensagensErro);
-
-            Assert.False(lista.EstaFinalizado());
-            Assert.Equal(
-                StatusCodafListaPresenca.AguardandoDf,
-                lista.Status);
-
-            repositorioCodafListaPresenca.Verify(
-                r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId),
-                Times.Once);
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.RegraDeNegocio);
+            resultado.MensagensErro.Should().ContainSingle()
+                .Which.Should().Be("Lista de presença só pode ser finalizada se não houver aprovações.");
+            lista.EstaFinalizado().Should().BeFalse();
+            _repositorioCodafListaPresencaMock.Verify(r => r.Atualizar(It.IsAny<CodafListaPresenca>()), Times.Never);
         }
 
         [Fact]
-        public async Task Deve_Finalizar_Lista_Quando_Nao_Houver_Inscricoes()
+        public async Task DadoListaSemInscricoes_QuandoExecutar_EntaoDeveFinalizarComSucesso()
         {
             // Arrange
-            var lista = CriarLista(
-                StatusCodafListaPresenca.AguardandoDf,
-                LoginUsuario);
-
-            contextoAplicacao
-                .SetupGet(c => c.EhAdministrador)
-                .Returns(false);
-
-            contextoAplicacao
-                .SetupGet(c => c.LoginUsuario)
-                .Returns(LoginUsuario);
-
-            repositorioCodafListaPresenca
+            var lista = CriarLista(StatusCodafListaPresenca.AguardandoDf, criadoLogin: LoginUsuario);
+            ConfigurarContexto(ehAdministrador: false, loginUsuario: LoginUsuario);
+            _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId))
                 .ReturnsAsync(lista);
 
             // Act
-            var resultado = await casoDeUso.ExecutarAsync(CodafListaPresencaId);
+            var resultado = await _casoDeUso.ExecutarAsync(CodafListaPresencaId);
 
             // Assert
-            Assert.True(resultado.Sucesso);
-            Assert.Equal(TipoFalha.Nenhuma, resultado.TipoFalha);
-            Assert.Empty(resultado.MensagensErro);
-
-            Assert.True(lista.EstaFinalizado());
-            Assert.Equal(
-                StatusCodafListaPresenca.Finalizado,
-                lista.Status);
-
-            repositorioCodafListaPresenca.Verify(
-                r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId),
-                Times.Once);
+            resultado.Sucesso.Should().BeTrue();
+            resultado.TipoFalha.Should().Be(TipoFalha.Nenhuma);
+            resultado.MensagensErro.Should().BeEmpty();
+            lista.EstaFinalizado().Should().BeTrue();
+            lista.Status.Should().Be(StatusCodafListaPresenca.Finalizado);
+            _repositorioCodafListaPresencaMock.Verify(r => r.Atualizar(lista), Times.Once);
         }
 
         [Theory]
         [InlineData(false)]
         [InlineData(null)]
-        public async Task Deve_Finalizar_Lista_Quando_Inscricoes_Nao_Estiverem_Aprovadas(
-            bool? aprovado)
+        public async Task DadoListaComInscricoesNaoAprovadas_QuandoExecutar_EntaoDeveFinalizarComSucesso(bool? aprovado)
         {
             // Arrange
-            var lista = CriarLista(
-                StatusCodafListaPresenca.AguardandoDf,
-                LoginUsuario,
-                aprovado);
-
-            contextoAplicacao
-                .SetupGet(c => c.EhAdministrador)
-                .Returns(false);
-
-            contextoAplicacao
-                .SetupGet(c => c.LoginUsuario)
-                .Returns(LoginUsuario);
-
-            repositorioCodafListaPresenca
+            var lista = CriarLista(StatusCodafListaPresenca.AguardandoDf, criadoLogin: LoginUsuario, aprovacoes: aprovado);
+            ConfigurarContexto(ehAdministrador: false, loginUsuario: LoginUsuario);
+            _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId))
                 .ReturnsAsync(lista);
 
             // Act
-            var resultado = await casoDeUso.ExecutarAsync(CodafListaPresencaId);
+            var resultado = await _casoDeUso.ExecutarAsync(CodafListaPresencaId);
 
             // Assert
-            Assert.True(resultado.Sucesso);
-            Assert.Equal(TipoFalha.Nenhuma, resultado.TipoFalha);
-            Assert.Empty(resultado.MensagensErro);
-
-            Assert.True(lista.EstaFinalizado());
-            Assert.Equal(
-                StatusCodafListaPresenca.Finalizado,
-                lista.Status);
-
-            repositorioCodafListaPresenca.Verify(
-                r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId),
-                Times.Once);
+            resultado.Sucesso.Should().BeTrue();
+            resultado.TipoFalha.Should().Be(TipoFalha.Nenhuma);
+            resultado.MensagensErro.Should().BeEmpty();
+            lista.EstaFinalizado().Should().BeTrue();
+            lista.Status.Should().Be(StatusCodafListaPresenca.Finalizado);
+            _repositorioCodafListaPresencaMock.Verify(r => r.Atualizar(lista), Times.Once);
         }
 
         [Fact]
-        public async Task Deve_Permitir_Administrador_Finalizar_Lista_Criada_Por_Outro_Usuario()
+        public async Task DadoAdministradorEListaCriadaPorOutroUsuario_QuandoExecutar_EntaoDeveFinalizarComSucesso()
         {
             // Arrange
-            var lista = CriarLista(
-                StatusCodafListaPresenca.AguardandoDf,
-                criadoLogin: "outro-usuario");
-
-            contextoAplicacao
-                .SetupGet(c => c.EhAdministrador)
-                .Returns(true);
-
-            contextoAplicacao
-                .SetupGet(c => c.LoginUsuario)
-                .Returns(LoginUsuario);
-
-            repositorioCodafListaPresenca
+            var lista = CriarLista(StatusCodafListaPresenca.AguardandoDf, criadoLogin: OutroLogin);
+            ConfigurarContexto(ehAdministrador: true, loginUsuario: LoginUsuario);
+            _repositorioCodafListaPresencaMock
                 .Setup(r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId))
                 .ReturnsAsync(lista);
 
             // Act
-            var resultado = await casoDeUso.ExecutarAsync(CodafListaPresencaId);
+            var resultado = await _casoDeUso.ExecutarAsync(CodafListaPresencaId);
 
             // Assert
-            Assert.True(resultado.Sucesso);
-            Assert.Equal(TipoFalha.Nenhuma, resultado.TipoFalha);
+            resultado.Sucesso.Should().BeTrue();
+            resultado.TipoFalha.Should().Be(TipoFalha.Nenhuma);
+            lista.EstaFinalizado().Should().BeTrue();
+            lista.Status.Should().Be(StatusCodafListaPresenca.Finalizado);
+            _repositorioCodafListaPresencaMock.Verify(r => r.Atualizar(lista), Times.Once);
+        }
 
-            Assert.True(lista.EstaFinalizado());
-            Assert.Equal(
-                StatusCodafListaPresenca.Finalizado,
-                lista.Status);
+        [Fact]
+        public async Task DadoListaComStatusIncompativel_QuandoFinalizar_EntaoDeveRetornarErroDeNegocio()
+        {
+            // Arrange
+            var lista = CriarLista(StatusCodafListaPresenca.Iniciado, criadoLogin: LoginUsuario);
+            ConfigurarContexto(ehAdministrador: false, loginUsuario: LoginUsuario);
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId))
+                .ReturnsAsync(lista);
 
-            repositorioCodafListaPresenca.Verify(
-                r => r.ObterPorIdDetalhadoAsync(CodafListaPresencaId),
-                Times.Once);
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(CodafListaPresencaId);
+
+            // Assert
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.RegraDeNegocio);
+            resultado.MensagensErro.Should().ContainSingle()
+                .Which.Should().Be("Não foi possível finalizar a lista de presença.");
+            lista.EstaFinalizado().Should().BeFalse();
+            _repositorioCodafListaPresencaMock.Verify(r => r.Atualizar(It.IsAny<CodafListaPresenca>()), Times.Never);
+        }
+
+        private void ConfigurarContexto(bool ehAdministrador, string loginUsuario)
+        {
+            _contextoAplicacaoMock.SetupGet(c => c.EhAdministrador).Returns(ehAdministrador);
+            _contextoAplicacaoMock.SetupGet(c => c.LoginUsuario).Returns(loginUsuario);
         }
 
         private static CodafListaPresenca CriarLista(
@@ -313,11 +224,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             foreach (var aprovado in aprovacoes)
             {
-                lista.CodafInscricoes.Add(
-                    new CodafInscricaoListaPresenca
-                    {
-                        Aprovado = aprovado
-                    });
+                lista.CodafInscricoes.Add(new CodafInscricaoListaPresenca { Aprovado = aprovado });
             }
 
             return lista;

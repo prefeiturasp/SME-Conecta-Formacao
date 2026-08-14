@@ -29,6 +29,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 
             codafListaPresenca.Finalizar();
 
+            if (!codafListaPresenca.EstaFinalizado())
+                return Erro.Negocio("Não foi possível finalizar a lista de presença.");
+
+            await repositorioCodafListaPresenca.Atualizar(codafListaPresenca);
+
             return Resultado.DeSucesso();
         }
     }
