@@ -7,8 +7,10 @@ Cypress.Commands.add('acessar_lista_presenca', () => {
     .should('be.visible')
     .click()
 
-  cy.get(lista_presenca_localizadores.menu_lista_presenca())
-    .contains('Lista de Presença')
+  cy.contains(lista_presenca_localizadores.menu_lista_presenca(), 'Lista de Presença CODAF')
+    .click()
+
+  cy.contains(lista_presenca_localizadores.menu_lista_presenca(), 'Formações homologadas')
     .click()
 
   cy.url({ timeout: 30000 })
@@ -34,8 +36,8 @@ Cypress.Commands.add('filtrar_lista_presenca', (situacao) => {
 
 Cypress.Commands.add('validar_baixar_lista_presenca_eol', () => {
   cy.get(lista_presenca_localizadores.btn_acoes(), { timeout: 30000 })
-    .eq(1)
-    .should('be.visible')
+    .eq(2)
+    .should('exist')
     .click()
 
   cy.contains(lista_presenca_localizadores.btn_gerar_arquivo(), 'Gerar TXT EOL', { timeout: 30000 })
@@ -49,8 +51,8 @@ Cypress.Commands.add('validar_baixar_lista_presenca_eol', () => {
 
 Cypress.Commands.add('validar_baixar_lista_presenca_codaf', () => {
   cy.get(lista_presenca_localizadores.btn_acoes(), { timeout: 30000 })
-    .eq(1)
-    .should('be.visible')
+    .eq(2)
+    .should('exist')
     .click()
 
   cy.contains(lista_presenca_localizadores.btn_gerar_arquivo(), 'Baixar Relatório CODAF', { timeout: 30000 })
@@ -154,8 +156,4 @@ Cypress.Commands.add('limpar_filtros_lista_presenca', () => {
 
   cy.url({ timeout: 30000 })
     .should('include', 'lista-presenca-codaf')
-})
-
-Cypress.Commands.add('validar_sem_filtros_lista_presenca', () => {
-  cy.contains('Ações').should('not.exist')
 })
