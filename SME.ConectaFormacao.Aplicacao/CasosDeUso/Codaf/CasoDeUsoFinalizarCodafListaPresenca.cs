@@ -24,13 +24,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             if (codafListaPresenca.EstaFinalizado())
                 return Erro.Negocio("Não é possível finalizar uma lista de presença com a situação 'Finalizada'.");
 
-            if (!codafListaPresenca.PodeSerExcluido(contextoAplicacao.IdPerfilUsuario))
-                return Erro.Negocio("Essa lista não pode ser finalizada.");
-
             if (codafListaPresenca.CodafInscricoes.Count > 0 && codafListaPresenca.CodafInscricoes.Any(i => i.Aprovado == true))
-                return Erro.NaoEncontrado("Lista de presença só pode ser finalizada se não houver aprovações.");
+                return Erro.Negocio("Lista de presença só pode ser finalizada se não houver aprovações.");
 
-            await repositorioCodafListaPresenca.FinalizarAsync(codafListaPresencaId);
+            codafListaPresenca.Finalizar();
+
             return Resultado.DeSucesso();
         }
     }
