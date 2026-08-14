@@ -102,5 +102,16 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             var resultado = await casoDeUsoSalvarInscritosCodaf.ExecutarAsync(inscritos, codafId);
             return ProcessarResultado(resultado);
         }
+
+        [HttpPatch("{codafId:long}/finalizar")]
+        [ProducesResponseType(typeof(Resultado), 204)]
+        [ProducesResponseType(typeof(Resultado), 400)]
+        public async Task<IActionResult> FinalizarCodafAsync(
+           [FromRoute] long codafId,
+           [FromServices] ICasoDeUsoFinalizarCodafListaPresenca casoDeUsoFinalizarCodafListaPresenca)
+        {
+            var resultado = await casoDeUsoFinalizarCodafListaPresenca.ExecutarAsync(codafId);
+            return ProcessarResultado(resultado);
+        }
     }
 }
