@@ -41,7 +41,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             {
                 await writer.StartRowAsync();
 
-                await writer.WriteAsync(declaracao.CodigoDeclaracao, NpgsqlDbType.Bigint);
                 await writer.EscreverNuloOuValorAsync(declaracao.CodafCursoNaoHomologadoInscricaoId, NpgsqlDbType.Bigint);
                 await writer.EscreverNuloOuValorAsync(declaracao.CodafCursoNaoHomologadoId, NpgsqlDbType.Bigint);
                 await writer.EscreverNuloOuValorAsync(declaracao.PropostaRegenteTurmaId, NpgsqlDbType.Bigint);
@@ -52,11 +51,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 await writer.EscreverNuloOuStringAsync(declaracao.MetadadosJson, NpgsqlDbType.Jsonb);
 
                 await writer.WriteAsync((int)declaracao.StatusProcessamento, NpgsqlDbType.Integer);
-                await writer.WriteAsync(0, NpgsqlDbType.Integer);
+                await writer.WriteAsync(0, NpgsqlDbType.Integer); // tentativasProcessamento
                 await writer.WriteAsync(criadoEm, NpgsqlDbType.Timestamp);
                 await writer.WriteAsync(nomeUsuario, NpgsqlDbType.Varchar);
                 await writer.WriteAsync(usuarioLogado, NpgsqlDbType.Varchar);
-                await writer.WriteAsync(false, NpgsqlDbType.Boolean);
+                await writer.WriteAsync(false, NpgsqlDbType.Boolean); // excluido
             }
             await writer.CompleteAsync();
         }

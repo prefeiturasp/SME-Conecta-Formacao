@@ -31,6 +31,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             MetadadosJson = metadadosJson;
             DataEmissao = DateTime.UtcNow;
             StatusProcessamento = StatusProcessamentoDeclaracaoCodaf.Pendente;
+            CodafCursoNaoHomologadoId = codafCursoNaoHomologadoInscricaoId;
         }
 
         protected CodafDeclaracao()

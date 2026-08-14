@@ -171,7 +171,6 @@
 
         public const string InserirLoteCopy = """
         COPY public.codaf_declaracoes (
-            codigo_declaracao,
             codaf_curso_nao_homologado_inscricao_id,
             codaf_curso_nao_homologado_id,
             proposta_regente_turma_id,
