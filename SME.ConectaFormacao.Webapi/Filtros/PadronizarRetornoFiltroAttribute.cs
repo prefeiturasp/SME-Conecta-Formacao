@@ -4,9 +4,11 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Servicos.Log;
 using System.Net;
 using Elastic.Apm;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Webapi.Filtros
 {
+    [ExcludeFromCodeCoverage]
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
     public class PadronizarRetornoFiltroAttribute : ActionFilterAttribute, IExceptionFilter
     {
