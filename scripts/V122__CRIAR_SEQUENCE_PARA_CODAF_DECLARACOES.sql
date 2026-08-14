@@ -9,4 +9,4 @@ ALTER TABLE codaf_declaracoes
 ALTER COLUMN codigo_declaracao TYPE BIGINT,
 ALTER COLUMN codigo_declaracao SET DEFAULT nextval('public.seq_declaracoes_numero');
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_codaf_declaracoes_codigo ON public.codaf_declaracoes (codigo_declaracoes);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_codaf_declaracoes_codigo ON public.codaf_declaracoes (codigo_declaracao);
