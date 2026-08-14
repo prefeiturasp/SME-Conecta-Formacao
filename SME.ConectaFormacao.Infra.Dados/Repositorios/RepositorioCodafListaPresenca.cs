@@ -164,7 +164,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                            ELSE 2
                        END AS statusCertificacaoTurma,
                        CLP.CODIGO_CURSO_EOL codigoCursoEol,
-                       CLP.CODIGO_NIVEL codigoNivel
+                       CLP.CODIGO_NIVEL codigoNivel,
+                       CASE 
+                           WHEN EXISTS (
+                               SELECT 1
+                               FROM PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP
+                               WHERE CILP.CODAF_LISTA_PRESENCA_ID = CLP.ID AND CILP.APROVADO = TRUE
+                           ) THEN TRUE
+                           ELSE FALSE
+                       END AS possuiAprovacoes
                 {sqlBaseJoins}
                 {condicoesWhere}
                 {sqlBaseOrderBy}
@@ -303,7 +311,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 transaction.Rollback();
                 throw;
             }
-        }
+        }      
 
         public async Task<CodafListaPresenca?> ObterPorIdComPropostaEPropostaTurmaAsync(long id)
         {
