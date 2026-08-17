@@ -33,6 +33,8 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 
         public string Login { get; set; }
         public string Nome { get; set; }
+        public string? NomeSocial { get; set; }
+        public string NomeExibicao => string.IsNullOrWhiteSpace(NomeSocial) ? Nome : NomeSocial;
         public string Email { get; set; }
         public DateTime? UltimoLogin { get; set; }
         public Guid? TokenRecuperacaoSenha { get; set; }
@@ -46,9 +48,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public TipoEmail? TipoEmail { get; set; }
         public long? AreaPromotoraId { get; set; }
         public string? Telefone { get; set; }
-        public string? NomeSocial { get; set; }
-        public string NomeExibicao => string.IsNullOrWhiteSpace(NomeSocial) ? Nome : NomeSocial;
-
         public AreaPromotora? AreaPromotora { get; set; }
 
         public void Atualizar(string email, DateTime? dataHora, string? cpf, string nome, string? nomeSocial = null)

@@ -16,5 +16,6 @@
         public int? Excedidas { get; set; }
         public bool? PermiteSorteio { get; set; }
         public long? CodafId { get; set; }
+        public long? CodafCursoNaoHomologadoId { get; set; }
     }
 }

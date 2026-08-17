@@ -16,7 +16,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.CodafCertificados
             var titulo = @$"PARABÉNS! SEU CERTIFICADO FOI EMITIDO | {dados.NomeFormacao}";
 
             var corpo = $@"
-                <p>Olá <b>{dados.NomeCompleto}</b>! Parabéns!</p>
+                <p>Olá <b>{dados.NomeExibicao}</b>! Parabéns!</p>
                 <p>Você concluiu sua participação como <b>cursista</b> na formação <b>{dados.NomeFormacao}</b>.</p>
                 <p>O certificado pode ser visualizado na tela 'Meus certificados' na plataforma Conecta, clicando <a href='{urlAcesso}' target='_blank'>aqui</a>.</p>";
 
@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.CodafCertificados
 
         private static string GerarCorpoCertificado(DadosEmissaoCertificadoCodafDto dados)
         {
-            return $@"Declaramos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeExibicao)}</i></b>,
+            return $@"Certificamos para os devidos fins que o(a) servidor(a), <b><i>{StringExtensao.FormatarNomePessoa(dados.NomeExibicao)}</i></b>,
                     RF: <b><i>{StringExtensao.AplicarMascaraRf(dados.Documento)}</i></b>, participou do {dados.TipoFormacao} <b><i>{dados.NomeFormacao}</i></b> 
                     promovido pela {ObterTextoEmissorCorpo(dados)} da Secretaria Municipal de Educação, no período de {dados.DataInicio:dd/MM/yyyy} a {dados.DataFim:dd/MM/yyyy}, 
                     com carga horária de {dados.DefinirCargaHoraria()} horas,

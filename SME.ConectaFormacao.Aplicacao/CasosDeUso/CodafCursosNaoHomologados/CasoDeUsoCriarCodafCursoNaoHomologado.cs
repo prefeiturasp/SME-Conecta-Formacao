@@ -26,15 +26,31 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
                 codafCursoNaoHomologado.Id = idCodafCursoNaoHomologado;
                 await SalvarInscritosAsync(codafCursoNaoHomologadoCadastroDto, idCodafCursoNaoHomologado);
                 await SalvarAnexosAsync(codafCursoNaoHomologadoCadastroDto, idCodafCursoNaoHomologado);
+                codafCursoNaoHomologado.DefinirStatus();
 
                 transacaoDb.Commit();
-                return mapper.Map<CodafCursoNaoHomologadoDetalhadoDto>(codafCursoNaoHomologado);
             }
             catch
             {
                 transacaoDb.Rollback();
                 return new Erro(TipoFalha.ErroInterno, "Erro ao salvar o codaf.");
             }
+
+            return new CodafCursoNaoHomologadoDetalhadoDto
+            { 
+                AlteradoEm = codafCursoNaoHomologado.AlteradoEm,
+                AlteradoLogin = codafCursoNaoHomologado.AlteradoLogin,
+                AlteradoPor = codafCursoNaoHomologado.AlteradoPor,
+                CodigoFormacao = codafCursoNaoHomologado.PropostaId,
+                CriadoEm = codafCursoNaoHomologado.CriadoEm,
+                CriadoLogin = codafCursoNaoHomologado.CriadoLogin,
+                CriadoPor = codafCursoNaoHomologado.CriadoPor,
+                Id = codafCursoNaoHomologado.Id,
+                PropostaId = codafCursoNaoHomologado.PropostaId,
+                PropostaTurmaId = codafCursoNaoHomologado.PropostaTurmaId,
+                Observacao = codafCursoNaoHomologado.Observacao,
+                Status = codafCursoNaoHomologado.Status
+            };
         }
 
         private async Task SalvarInscritosAsync(CodafCursoNaoHomologadoCadastroDto codafCursoNaoHomologadoCadastroDto, long codafCursoNaoHomologadoId)

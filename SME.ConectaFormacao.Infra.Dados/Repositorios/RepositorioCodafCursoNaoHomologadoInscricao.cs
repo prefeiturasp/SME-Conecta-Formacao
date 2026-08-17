@@ -76,9 +76,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             await conexao.Obter().ExecuteAsync(@"
                 INSERT INTO PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO 
-                (CODAF_LISTA_PRESENCA_ID, INSCRICAO_ID, PARTICIPOU, criado_em, criado_por, alterado_em, alterado_por, criado_login, alterado_login, excluido) 
+                (codaf_curso_nao_hom_id, INSCRICAO_ID, PARTICIPOU, criado_em, criado_por, alterado_em, alterado_por, criado_login, alterado_login, excluido) 
                 VALUES 
-                (@CodafListaPresencaId, @InscricaoId, @Participou, @CriadoEm, @CriadoPor, @AlteradoEm, @AlteradoPor, @CriadoLogin, @AlteradoLogin, @Excluido);",
+                (@CodafCursoNaoHomologadoId, @InscricaoId, @Participou, @CriadoEm, @CriadoPor, @AlteradoEm, @AlteradoPor, @CriadoLogin, @AlteradoLogin, @Excluido);",
                 inscritosCursoNaoHomologado);
 
         }
@@ -88,7 +88,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             await conexao.Obter().ExecuteAsync(
                 """
                 DELETE FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO 
-                WHERE CODAF_CURSO_NAO_HOMOLOGADO_ID = @codafCursoNaoHomologadoId;
+                WHERE codaf_curso_nao_hom_id = @codafCursoNaoHomologadoId;
 
                 SELECT SETVAL('public.codaf_curso_nao_homologado_inscricao_id_seq', COALESCE((SELECT MAX(ID) FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO), 1));
                 """, new { codafCursoNaoHomologadoId });

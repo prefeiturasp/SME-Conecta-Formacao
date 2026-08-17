@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Webapi.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
+    [PadronizarRetornoFiltro]
     [Route("api/v1/CodafSuplementar")]
     public class CodafArquivoSuplementarController(
         ICasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar casoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar) : BaseController

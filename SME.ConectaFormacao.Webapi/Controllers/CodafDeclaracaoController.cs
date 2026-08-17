@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Webapi.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
+    [PadronizarRetornoFiltro]
     public class CodafDeclaracaoController(
         ICasoDeUsoEmitirDeclaracaoCodaf casoDeUsoEmitirDeclaracaoCodaf) : BaseController
     {

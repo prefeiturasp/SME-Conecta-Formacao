@@ -19,10 +19,14 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<IRepositorioCodafCursoNaoHomologadoAnexo, RepositorioCodafCursoNaoHomologadoAnexo>()
                 .AddScoped<IRepositorioCodafCursoNaoHomologadoInscricao, RepositorioCodafCursoNaoHomologadoInscricao>()
                 .AddScoped<ICasoDeUsoListarCodafCursoNaoHomologado, CasoDeUsoListarCodafCursoNaoHomologado>()
-                .AddScoped<ICodafCursoNaoHomologadoInscritosService, CodafCursoNaoHomologadoInscritosService>()
-                .AddScoped<CodafCursoNaoHomologadoDependencias>()
+                .AddScoped<ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado, CasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado>()
                 .AddScoped<ICasoDeUsoCriarCodafCursoNaoHomologado, CasoDeUsoCriarCodafCursoNaoHomologado>()
+                .AddScoped<ICasoDeUsoAtualizarCodafCursoNaoHomologado, CasoDeUsoAtualizarCodafCursoNaoHomologado>()
+                .AddScoped<ICasoDeUsoExcluirCodafCursoNaoHomologado, CasoDeUsoExcluirCodafCursoNaoHomologado>()
+                .AddScoped<CodafCursoNaoHomologadoDependencias>()
                 .AddScoped<IGerenciadorAnexosCodafCursoNaoHomologadoService, GerenciadorAnexosCodafCursoNaoHomologadoService>()
+                .AddScoped<ICodafCursoNaoHomologadoInscritosService, CodafCursoNaoHomologadoInscritosService>()
+                .AddScoped<ICasoDeUsoObterCodafCursoNaoHomologadoPorId, CasoDeUsoObterCodafCursoNaoHomologadoPorId>()
                 ;
         }
     }

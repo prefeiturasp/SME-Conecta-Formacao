@@ -21,8 +21,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
 
             var emissorRodape = ObterTextoEmissorRodape(dados);
             var dataEmissao = DateTime.Now.ToString("dd/MM/yyyy");
-            var numHomologacao = dados.NumeroHomologacao?.ToString() ?? "N/A";
-            var numCodigoDeclaracao = dados.NumeroCodigoDeclaracao?.ToString() ?? "N/A";
+            var numHomologacao = dados.IdReferencia.ToString() ?? "N/A";
 
             var imgHeader = templateService.ObterImagemBase64(IMAGEM_HEADER);
             var brasao = templateService.ObterImagemBase64(IMAGEM_BRASAO);
@@ -31,7 +30,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Base
 
             return layout
                 .Replace("{{EMISSOR}}", emissorRodape)
-                .Replace("{{NUM_CODIGO_DECLARACAO}}", numCodigoDeclaracao)
                 .Replace("{{NUM_HOM_FORMACAO}}", numHomologacao)
                 .Replace("{{HEADER}}", imgHeader)
                 .Replace("{{BRASAO}}", brasao)

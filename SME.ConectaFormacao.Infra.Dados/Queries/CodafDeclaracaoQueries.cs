@@ -167,8 +167,6 @@
 
         public const string InserirLoteCopy = """
         COPY public.codaf_declaracoes (
-            id,
-            codigo_declaracao,
             codaf_curso_nao_homologado_inscricao_id,
             codaf_curso_nao_homologado_id,
             proposta_regente_turma_id,
@@ -186,35 +184,9 @@
         """;
 
         public const string AtualizarCodigoDeclaracaoNoHtml = """
-            UPDATE PUBLIC.CODAF_DECLARACOES CC
-            SET HTML_CONTENT_SNAPSHOT = REPLACE(
-                REPLACE(CC.HTML_CONTENT_SNAPSHOT, 'NUM_CODIGO_DECLARACAO', CAST(CC.CODIGO_DECLARACAO AS TEXT)),
-                'NUM_HOM_FORMACAO',
-                (SELECT CAST(P.NUMERO_HOMOLOGACAO AS TEXT)
-                 FROM PUBLIC.PROPOSTA_TURMA PT
-                 JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
-                 WHERE (PT.ID = (
-                    SELECT PROPOSTA_TURMA_ID 
-                    FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO 
-                    WHERE ID = CC.CODAF_CURSO_NAO_HOMOLOGADO_ID
-                 ) OR PT.ID = (
-                    SELECT PRT.TURMA_ID 
-                    FROM PUBLIC.PROPOSTA_REGENTE_TURMA PRT 
-                    WHERE PRT.ID = CC.PROPOSTA_REGENTE_TURMA_ID
-                 ))
-                 LIMIT 1)
-            )
-            WHERE (CC.CODAF_CURSO_NAO_HOMOLOGADO_ID = @codafNaoHomologadoId
-                   OR CC.PROPOSTA_REGENTE_TURMA_ID IN (
-                       SELECT PRT.ID 
-                       FROM PUBLIC.PROPOSTA_REGENTE_TURMA PRT
-                       WHERE PRT.TURMA_ID IN (
-                           SELECT PROPOSTA_TURMA_ID 
-                           FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO 
-                           WHERE ID = @codafNaoHomologadoId
-                       )
-                   ))
-              AND NOT CC.EXCLUIDO
+            UPDATE PUBLIC.CODAF_DECLARACOES
+            SET HTML_CONTENT_SNAPSHOT = REPLACE(HTML_CONTENT_SNAPSHOT, '{{NUM_CODIGO_DECLARACAO}}', CAST(CODIGO_DECLARACAO AS TEXT))
+            WHERE CODAF_CURSO_NAO_HOMOLOGADO_ID = @codafNaoHomologadoId AND NOT EXCLUIDO
             """;
 
         public const string InativarDeclaracoesAnterioresDeCursistas = """

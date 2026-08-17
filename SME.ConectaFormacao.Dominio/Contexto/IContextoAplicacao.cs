@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+﻿using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Dominio.Contexto;
 
@@ -12,6 +13,7 @@ public interface IContextoAplicacao
     string PerfilUsuario { get; }
     Permissao[] Permissoes { get; }
     Guid? IdPerfilUsuario => !string.IsNullOrWhiteSpace(PerfilUsuario) ? Guid.Parse(PerfilUsuario) : null;
+    bool EhAdministrador => IdPerfilUsuario == Perfis.ADMIN_DF || IdPerfilUsuario == Perfis.EMFORPEF;
     string Administrador { get; }
     T? ObterVariavel<T>(string nome);
 

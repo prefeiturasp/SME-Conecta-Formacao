@@ -24,7 +24,7 @@ public static class RegistraAutenticacao
                 ValidIssuer = configuration.GetValue<string>("JwtTokenSettings:Issuer"),
                 ValidateIssuerSigningKey = true,
                 ClockSkew = TimeSpan.Zero,
-                IssuerSigningKey = new SymmetricSecurityKey(UTF8.GetBytes(configuration.GetValue<string>("JwtTokenSettings:IssuerSigningKey")))
+                IssuerSigningKey = new SymmetricSecurityKey(UTF8.GetBytes(configuration.GetValue<string>("JwtTokenSettings:IssuerSigningKey")!))
             };
         });
 
