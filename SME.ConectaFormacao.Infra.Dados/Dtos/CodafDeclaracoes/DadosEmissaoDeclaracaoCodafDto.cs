@@ -27,5 +27,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public long? NumeroHomologacao { get; set; }
+        public long? NumeroCodigoDeclaracao { get; set; }
     }
 }
