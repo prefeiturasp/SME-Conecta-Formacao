@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
 using Moq;
@@ -150,7 +150,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 CodafSuplementarId);
 
             // Assert
-            Assert.False(resultado is Erro);
+            Assert.True(resultado.Sucesso);
 
             validator.Verify(
                 v => v.ValidateAsync(
@@ -381,7 +381,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var resultado = await casoDeUso.ExecutarAsync(dto, CodafSuplementarId);
 
             // Assert
-            Assert.False(resultado is Erro);
+            Assert.True(resultado.Sucesso);
 
             validator.Verify(
                 v => v.ValidateAsync(dto, It.IsAny<CancellationToken>()),
@@ -462,7 +462,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var resultado = await casoDeUso.ExecutarAsync(dto, CodafSuplementarId);
 
             // Assert
-            Assert.False(resultado is Erro);
+            Assert.True(resultado.Sucesso);
 
             repositorioRetificacao.Verify(
                 r => r.Remover(retificacaoExistente),
@@ -499,7 +499,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var resultado = await casoDeUso.ExecutarAsync(dto, CodafSuplementarId);
 
             // Assert
-            Assert.False(resultado is Erro);
+            Assert.True(resultado.Sucesso);
 
             repositorioCodaf.Verify(
                 r => r.Atualizar(existente),

@@ -283,5 +283,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             var textInfo = CultureInfo.CurrentCulture.TextInfo;
             return textInfo.ToTitleCase(nome.ToLower());
         }
+
+        public static string MascararOuExibirValor(this long valor) => valor == 0 ? "***" : valor.ToString();
     }
 }

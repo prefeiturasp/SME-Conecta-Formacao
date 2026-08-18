@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
     {
         private readonly Mock<IRepositorioCodafListaPresenca> repositorioMock;
         private readonly Mock<IRepositorioCodafSuplementar> repositorioCodafMock;
-        private readonly Mock<IServicoRelatorio> servicoRelatorioMock;
+        private readonly Mock<SME.ConectaFormacao.Infra.Dados.Relatorios.IGeradorRelatorioCodafSuplementarExcelService> geradorRelatorioMock;
 
         private readonly CasoDeUsoGerarRelatorioCodafSuplementar casoDeUso;
 
@@ -19,12 +19,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             repositorioMock = new Mock<IRepositorioCodafListaPresenca>();
             repositorioCodafMock = new Mock<IRepositorioCodafSuplementar>();
-            servicoRelatorioMock = new Mock<IServicoRelatorio>();
+            geradorRelatorioMock = new Mock<SME.ConectaFormacao.Infra.Dados.Relatorios.IGeradorRelatorioCodafSuplementarExcelService>();
 
             casoDeUso = new CasoDeUsoGerarRelatorioCodafSuplementar(
                 repositorioMock.Object,
                 repositorioCodafMock.Object,
-                servicoRelatorioMock.Object);
+                geradorRelatorioMock.Object);
         }
 
         [Fact]
@@ -45,8 +45,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 r.Atualizar(It.IsAny<CodafSuplementar>()),
                 Times.Never);
 
-            servicoRelatorioMock.Verify(r =>
-                r.GerarRelatorioCodafSuplementarAsync(It.IsAny<long>()),
+            geradorRelatorioMock.Verify(r =>
+                r.GerarRelatorio(It.IsAny<SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.RelatorioCodafDto>()),
                 Times.Never);
         }
 
@@ -65,9 +65,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .Setup(r => r.ObterPorIdCodafListaPresenca(It.IsAny<long>()))
                 .ReturnsAsync(codafSuplementar);
 
-            servicoRelatorioMock
-                .Setup(r => r.GerarRelatorioCodafSuplementarAsync(It.IsAny<long>()))
-                .ReturnsAsync([1, 2, 3]);
+            repositorioCodafMock
+                .Setup(r => r.ObterDadosRelatorioSuplementarAsync(It.IsAny<long>()))
+                .ReturnsAsync(new SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.DadosPrincipaisRelatorioCodafDto { Participantes = new List<SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.DadosParticipanteRelatorioCodafDto>(), Retificacoes = new List<SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.DadosRetificacaoRelatorioCodafDto>() });
+
+            geradorRelatorioMock
+                .Setup(r => r.GerarRelatorio(It.IsAny<SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.RelatorioCodafDto>()))
+                .Returns([1, 2, 3]);
 
             // Act
             var resultado = await casoDeUso.ExecutarAsync(1);
@@ -86,8 +90,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             Assert.NotNull(resultado.Dados.Stream);
 
-            servicoRelatorioMock.Verify(r =>
-                r.GerarRelatorioCodafSuplementarAsync(1),
+            geradorRelatorioMock.Verify(r =>
+                r.GerarRelatorio(It.IsAny<SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.RelatorioCodafDto>()),
                 Times.Once);
 
             repositorioCodafMock.Verify(r =>
@@ -110,9 +114,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .Setup(r => r.ObterPorIdCodafListaPresenca(It.IsAny<long>()))
                 .ReturnsAsync(codafSuplementar);
 
-            servicoRelatorioMock
-                .Setup(r => r.GerarRelatorioCodafSuplementarAsync(It.IsAny<long>()))
-                .ReturnsAsync([1]);
+            repositorioCodafMock
+                .Setup(r => r.ObterDadosRelatorioSuplementarAsync(It.IsAny<long>()))
+                .ReturnsAsync(new SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.DadosPrincipaisRelatorioCodafDto { Participantes = new List<SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.DadosParticipanteRelatorioCodafDto>(), Retificacoes = new List<SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.DadosRetificacaoRelatorioCodafDto>() });
+
+            geradorRelatorioMock
+                .Setup(r => r.GerarRelatorio(It.IsAny<SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.RelatorioCodafDto>()))
+                .Returns([1]);
 
             // Act
             var resultado = await casoDeUso.ExecutarAsync(5);
@@ -124,8 +132,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 r.Atualizar(It.IsAny<CodafSuplementar>()),
                 Times.Never);
 
-            servicoRelatorioMock.Verify(r =>
-                r.GerarRelatorioCodafSuplementarAsync(5),
+            geradorRelatorioMock.Verify(r =>
+                r.GerarRelatorio(It.IsAny<SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares.RelatorioCodafDto>()),
                 Times.Once);
         }
 
