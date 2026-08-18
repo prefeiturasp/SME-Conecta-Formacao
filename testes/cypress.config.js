@@ -5,11 +5,12 @@ import dotenv from 'dotenv'
 
 import createBundler from '@bahmutov/cypress-esbuild-preprocessor'
 import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor'
-import { createEsbuildPlugin } from '@badeball/cypress-cucumber-preprocessor/esbuild' // ✅ CORREÇÃO FINAL
+import { createEsbuildPlugin } from '@badeball/cypress-cucumber-preprocessor/esbuild'
 
 import postgreSQL from 'cypress-postgresql'
 import pg from 'pg'
 import fs from 'fs'
+import path from 'path'
 import FormData from 'form-data'
 import axios from 'axios'
 
@@ -56,9 +57,9 @@ export default defineConfig({
       await addCucumberPreprocessorPlugin(on, config)
 
       on(
-        "file:preprocessor",
+        'file:preprocessor',
         createBundler({
-          plugins: [createEsbuildPlugin(config)], // ✅ CORREÇÃO
+          plugins: [createEsbuildPlugin(config)],
         })
       )
 
@@ -71,6 +72,19 @@ export default defineConfig({
 
       on('task', {
         ...dbTasks,
+
+      // Limpa a pasta cypress/downloads
+        clearDownloads() {
+          const downloadsFolder = path.join(process.cwd(), 'cypress', 'downloads')
+
+          if (fs.existsSync(downloadsFolder)) {
+            fs.readdirSync(downloadsFolder).forEach((file) => {
+              fs.unlinkSync(path.join(downloadsFolder, file))
+            })
+          }
+
+          return null
+        },
 
         async uploadFile({ method = 'POST', url, headers = {}, filePath }) {
 
@@ -123,7 +137,8 @@ export default defineConfig({
         'TIPO_VINCULO',
         'CODAF_ID',
         'CERTIFICADO_CODAF_ID',
-        'CERTIFICADO_ID'
+        'CERTIFICADO_ID',
+        'REGISTRO_FUNCIONAL'
       ]
 
       const customEnv = Object.fromEntries(
@@ -134,12 +149,12 @@ export default defineConfig({
         ...config.env,
         ...customEnv,
         cucumber: {
-          stepDefinitions: "cypress/support/step_definitions/**/*.js"
+          stepDefinitions: 'cypress/support/step_definitions/**/*.js'
         },
         db: dbConfig
       }
 
-      // Cypress Cloud (mantido conforme necessidade)
+      // Cypress Cloud
       const enhancedConfig = await cloudPlugin(on, config)
 
       return enhancedConfig

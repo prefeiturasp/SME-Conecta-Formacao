@@ -30,8 +30,8 @@ Cypress.Commands.add('criar_novo_usuario', (situacao) => {
     .click()
   
   cy.get(rede_parceria_Localizadores.filtro_area_promotora(), { timeout: 5000 })
-    .should('be.visible')
     .type('Teste')
+
 
   cy.contains(rede_parceria_Localizadores.select_area_promotora(), 'Teste', { timeout: 10000 })
     .should('to.exist')

@@ -40,5 +40,5 @@ Quando('removo os filtros na Lista Presença Codaf', () => {
 })
 
 Então('limpa na presença nas formações', () => {
-  cy.validar_sem_filtros_lista_presenca()
+  cy.validar_sem_dados_lista_presenca()
 })
