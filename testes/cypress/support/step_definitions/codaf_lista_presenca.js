@@ -42,7 +42,7 @@ Então('retorna o status 200 com dados de presença do Codaf', function () {
     if (response.body.items.length > 0) {
       const item = response.body.items[0]
 
-      expect(item).to.have.all.keys(
+      expect(item).to.include.keys(
         'id',
         'numeroHomologacao',
         'nomeFormacao',

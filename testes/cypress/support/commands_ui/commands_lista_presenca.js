@@ -13,21 +13,30 @@ Cypress.Commands.add('acessar_lista_presenca', () => {
   cy.contains(lista_presenca_localizadores.menu_lista_presenca(), 'Formações homologadas')
     .click()
 
+  cy.get(lista_presenca_localizadores.menu_lista_presenca())
+    .contains('Formações homologadas')
+    .click() 
+  
   cy.url({ timeout: 30000 })
     .should('include', 'lista-presenca-codaf')
 })
 
 Cypress.Commands.add('filtrar_lista_presenca', (situacao) => {
   cy.get(lista_presenca_localizadores.select_situacao(), { timeout: 10000 })
-    .should('exist')
     .click()
 
-  cy.contains(lista_presenca_localizadores.opcao_situacao(), situacao, { timeout: 10000 })
+  cy.contains(
+    lista_presenca_localizadores.opcao_situacao(), situacao, { timeout: 10000 })
     .should('exist')
     .click()
+  
+  cy.get(lista_presenca_localizadores.campo_codigo(), { timeout: 10000 })
+    .should('be.visible')
+    .clear()
+    .type('140')
 
   cy.get(lista_presenca_localizadores.btn_filtrar(), { timeout: 30000 })
-    .should('exist')
+    .should('be.visible')
     .click()
 
   cy.url({ timeout: 30000 })
@@ -36,8 +45,7 @@ Cypress.Commands.add('filtrar_lista_presenca', (situacao) => {
 
 Cypress.Commands.add('validar_baixar_lista_presenca_eol', () => {
   cy.get(lista_presenca_localizadores.btn_acoes(), { timeout: 30000 })
-    .eq(2)
-    .should('exist')
+    .eq(1)
     .click()
 
   cy.contains(lista_presenca_localizadores.btn_gerar_arquivo(), 'Gerar TXT EOL', { timeout: 30000 })
@@ -51,8 +59,7 @@ Cypress.Commands.add('validar_baixar_lista_presenca_eol', () => {
 
 Cypress.Commands.add('validar_baixar_lista_presenca_codaf', () => {
   cy.get(lista_presenca_localizadores.btn_acoes(), { timeout: 30000 })
-    .eq(2)
-    .should('exist')
+    .eq(1)
     .click()
 
   cy.contains(lista_presenca_localizadores.btn_gerar_arquivo(), 'Baixar Relatório CODAF', { timeout: 30000 })
@@ -157,3 +164,8 @@ Cypress.Commands.add('limpar_filtros_lista_presenca', () => {
   cy.url({ timeout: 30000 })
     .should('include', 'lista-presenca-codaf')
 })
+
+Cypress.Commands.add('validar_sem_filtros_lista_presenca', () => {
+  cy.contains('Não encontramos registros para os filtros aplicados').should('exist')
+})
+

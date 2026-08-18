@@ -128,9 +128,6 @@ Cypress.Commands.add('cancelar_proximas_formacoes', () => {
     .should('be.visible') 
     .click()
 
-  cy.get(nova_inscricao_localizadores.btn_nao_enviar_informacoes(), { timeout: 10000 })
-    .should('be.visible')
-    .click()
 
   cy.url({ timeout: 10000 }).should('include', 'area-publica')  
 })
