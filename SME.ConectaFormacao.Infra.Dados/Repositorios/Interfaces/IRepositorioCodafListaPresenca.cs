@@ -2,6 +2,7 @@
 using SME.ConectaFormacao.Dominio.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafListaPresencas;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
@@ -13,5 +14,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<CodafListaPresenca?> ObterPorIdComPropostaEPropostaTurmaAsync(long id);
         Task ExcluirAsync(long id);
         Task<IEnumerable<DadosConsultaParaTxtEolDto>?> ObterDadosRemessaConclusaoCodafAsync(long id);
+        Task<DadosPrincipaisRelatorioCodafDto?> ObterDadosRelatorioAsync(long codafId);
     }
 }
