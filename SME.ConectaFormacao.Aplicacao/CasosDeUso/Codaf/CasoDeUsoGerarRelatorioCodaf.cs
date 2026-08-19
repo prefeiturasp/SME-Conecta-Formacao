@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 {
     public class CasoDeUsoGerarRelatorioCodaf(
         IRepositorioCodafListaPresenca repositorioCodafListaPresenca,
-        IGeradorRelatorioCodafSuplementarExcelService geradorRelatorioCodafSuplementarExcelService,
+        IGeradorRelatorioCodafExcelService geradorRelatorioCodafSuplementarExcelService,
         IContextoAplicacao contextoAplicacao) :
         ICasoDeUsoGerarRelatorioCodaf
     {

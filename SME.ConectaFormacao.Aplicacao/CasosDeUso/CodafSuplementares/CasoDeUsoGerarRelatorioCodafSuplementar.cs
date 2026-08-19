@@ -10,7 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
     public class CasoDeUsoGerarRelatorioCodafSuplementar(
         IRepositorioCodafSuplementar repositorioCodafSuplementar,
-        IGeradorRelatorioCodafSuplementarExcelService geradorRelatorioCodafSuplementarExcelService) :
+        IGeradorRelatorioCodafExcelService geradorRelatorioCodafSuplementarExcelService) :
         ICasoDeUsoGerarRelatorioCodafSuplementar
     {
         public async Task<Resultado<ArquivoDto>> ExecutarAsync(long codafSuplementarId)

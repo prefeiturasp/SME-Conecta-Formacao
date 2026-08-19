@@ -1,8 +1,10 @@
 ﻿using ClosedXML.Excel;
 using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador.Intefaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador
 {
+    [ExcludeFromCodeCoverage]
     public class BlocoAssinaturaGerador : IBlocoAssinaturaGerador
     {
         public int Processar(IXLWorksheet sheet, int linhaInicial, object dados)

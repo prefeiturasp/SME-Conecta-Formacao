@@ -1,9 +1,11 @@
 ﻿using ClosedXML.Excel;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador.Intefaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador
 {
+    [ExcludeFromCodeCoverage]
     public class BlocoTituloGerador : IBlocoTituloGerador
     {
         public int Processar(IXLWorksheet sheet, int linhaInicial, TituloRelatorioCodafDto dados)

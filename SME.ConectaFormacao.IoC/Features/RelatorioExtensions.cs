@@ -17,7 +17,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 services
                     .AddScoped<IRepositorioRelatorios, RepositorioRelatorios>()
                     .AddScoped<IGeradorRelatorioInscritosExcelService, GeradorRelatorioInscritosExcelService>()
-                    .AddScoped<IGeradorRelatorioCodafSuplementarExcelService, GeradorRelatorioCodafSuplementarExcelService>()
+                    .AddScoped<IGeradorRelatorioCodafExcelService, GeradorRelatorioCodafExcelService>()
                     .AddScoped<ICasoDeUsoGerarRelatorioInscritosPorFormacao, CasoDeUsoGerarRelatorioInscritosPorFormacao>()
                     .AddScoped<ICasoDeUsoSolicitarGeracaoRelatorioInscritosPorFormacao, CasoDeUsoSolicitarGeracaoRelatorioInscritosPorFormacao>()
                     .AddSingleton<IBlocoTituloGerador, BlocoTituloGerador>()

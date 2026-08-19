@@ -3,9 +3,11 @@ using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador.Extensions;
 using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador.Intefaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador
 {
+    [ExcludeFromCodeCoverage]
     public class BlocoRegentesGerador : IBlocoRegentesGerador
     {
         private readonly XLColor _corFundoSubTitulo = XLColor.FromHtml("#E6E6E6");

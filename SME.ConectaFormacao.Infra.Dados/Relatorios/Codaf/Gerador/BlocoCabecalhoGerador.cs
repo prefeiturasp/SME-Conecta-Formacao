@@ -2,9 +2,11 @@
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador.Extensions;
 using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador.Intefaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador
 {
+    [ExcludeFromCodeCoverage]
     public class BlocoCabecalhoGerador : IBlocoCabecalhoGerador
     {
         public int Processar(IXLWorksheet sheet, int linhaInicial, CabecalhoRelatorioCodafDto dados)

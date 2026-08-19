@@ -1,19 +1,17 @@
-using ClosedXML.Excel;
+ï»¿using ClosedXML.Excel;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador.Intefaces;
 using SME.ConectaFormacao.Infra.Dados.Templates;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Infra.Dados.Relatorios
 {
-    [ExcludeFromCodeCoverage]
-    public class GeradorRelatorioCodafSuplementarExcelService(
+    public class GeradorRelatorioCodafExcelService(
         ITemplateService templateService,
         IBlocoTituloGerador blocoTitulo,
         IBlocoCabecalhoGerador blocoCabecalho,
         IBlocoRegentesGerador blocoRegentes,
         IBlocoAlunosGerador blocoAlunos,
-        IBlocoAssinaturaGerador blocoAssinatura) : IGeradorRelatorioCodafSuplementarExcelService
+        IBlocoAssinaturaGerador blocoAssinatura) : IGeradorRelatorioCodafExcelService
     {
         private const string NOME_ARQUIVO_TEMPLATE = "Template_Relatorio_Codaf_Modelo_2026.xlsx";
 
@@ -45,25 +43,25 @@ namespace SME.ConectaFormacao.Infra.Dados.Relatorios
 
                 var linhaAtual = 1;
 
-                // 1º Bloco: Título (Brasão)
+                // 1Âº Bloco: TÃ­tulo (BrasÃ£o)
                 linhaAtual = blocoTitulo.Processar(sheet, linhaAtual, new()
                 {
-                    Titulo1 = "SECRETARIA MUNICIPAL DE EDUCAÇÃO - SME",
-                    Titulo2 = ehCodafSuplementar ? "CONTROLE DE DOCUMENTAÇÃO DAS AÇÕES FORMATIVAS - CODAF SUPLEMENTAR" : "CONTROLE DE DOCUMENTAÇÃO DAS AÇÕES FORMATIVAS - CODAF",
-                    Titulo3 = "RELATÓRIO DE CONCLUSÃO DE TURMA - MODELO 2026 - REDE DIRETA"
+                    Titulo1 = "SECRETARIA MUNICIPAL DE EDUCAÃ‡ÃƒO - SME",
+                    Titulo2 = ehCodafSuplementar ? "CONTROLE DE DOCUMENTAÃ‡ÃƒO DAS AÃ‡Ã•ES FORMATIVAS - CODAF SUPLEMENTAR" : "CONTROLE DE DOCUMENTAÃ‡ÃƒO DAS AÃ‡Ã•ES FORMATIVAS - CODAF",
+                    Titulo3 = "RELATÃ“RIO DE CONCLUSÃƒO DE TURMA - MODELO 2026 - REDE DIRETA"
                 });
 
-                // 2º Bloco: Cabeçalho
+                // 2Âº Bloco: CabeÃ§alho
                 linhaAtual = blocoCabecalho.Processar(sheet, linhaAtual, turma.Cabecalho);
 
-                // 3º Bloco: Regentes
+                // 3Âº Bloco: Regentes
                 linhaAtual = blocoRegentes.Processar(sheet, linhaAtual, turma.RegentesDaTurma);
 
                 // Linha Vazia
                 sheet.Range(linhaAtual, 1, linhaAtual, 20);
                 linhaAtual++;
 
-                // 4º Bloco: Alunos
+                // 4Âº Bloco: Alunos
                 linhaAtual = blocoAlunos.Processar(sheet, linhaAtual, turma.AlunosAprovadosMunicipal);
                 linhaAtual = blocoAlunos.Processar(sheet, linhaAtual, turma.AlunosAprovadosParceira);
                 linhaAtual = blocoAlunos.Processar(sheet, linhaAtual, turma.AlunosReprovadosMunicipal);
@@ -72,7 +70,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Relatorios
                 var rangeBordaInferior = sheet.Range(6, 1, linhaAtual - 1, 20);
                 rangeBordaInferior.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
 
-                // 5º Bloco: Assinaturas
+                // 5Âº Bloco: Assinaturas
                 blocoAssinatura.Processar(sheet, linhaAtual, null);
             }
 

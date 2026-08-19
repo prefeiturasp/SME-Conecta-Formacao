@@ -22,16 +22,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares
             var previaInscritosSme = new PreviaInscritosRelatorioCodafDto
             {
                 TemRf = true,
-                TotalInscritos = dadosBruto.Participantes.Count(p => p.TemRf),
-                TotalAprovados = dadosBruto.Participantes.Count(p => p.TemRf && p.Aprovado),
-                TotalReprovados = dadosBruto.Participantes.Count(p => p.TemRf && !p.Aprovado)
+                TotalInscritos = dadosBruto.Participantes?.Count(p => p.TemRf) ?? 0,
+                TotalAprovados = dadosBruto.Participantes?.Count(p => p.TemRf && p.Aprovado) ?? 0,
+                TotalReprovados = dadosBruto.Participantes?.Count(p => p.TemRf && !p.Aprovado) ?? 0
             };
 
             var previaInscritosSemRf = new PreviaInscritosRelatorioCodafDto
             {
-                TotalInscritos = dadosBruto.Participantes.Count(p => !p.TemRf),
-                TotalAprovados = dadosBruto.Participantes.Count(p => !p.TemRf && p.Aprovado),
-                TotalReprovados = dadosBruto.Participantes.Count(p => !p.TemRf && !p.Aprovado)
+                TotalInscritos = dadosBruto.Participantes?.Count(p => !p.TemRf) ?? 0,
+                TotalAprovados = dadosBruto.Participantes?.Count(p => !p.TemRf && p.Aprovado) ?? 0,
+                TotalReprovados = dadosBruto.Participantes?.Count(p => !p.TemRf && !p.Aprovado) ?? 0
             };
 
             var numeroSequencial = 0;
