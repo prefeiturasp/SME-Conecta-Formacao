@@ -5,6 +5,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares
 {
     public interface ICasoDeUsoGerarRelatorioCodafSuplementar
     {
-        Task<Resultado<ArquivoDto>> ExecutarAsync(long codafListaPresencaId);
+        Task<Resultado<ArquivoDto>> ExecutarAsync(long codafSuplementarId);
     }
 }

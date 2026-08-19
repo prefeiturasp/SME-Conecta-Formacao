@@ -5,14 +5,14 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Relatorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 {
     public class CasoDeUsoGerarRelatorioCodaf(
         IRepositorioCodafListaPresenca repositorioCodafListaPresenca,
-        IServicoRelatorio servicoRelatorio, 
+        IGeradorRelatorioCodafExcelService geradorRelatorioCodafSuplementarExcelService,
         IContextoAplicacao contextoAplicacao) :
         ICasoDeUsoGerarRelatorioCodaf
     {
@@ -27,17 +27,17 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
             if (perfilRestrito && listaPresenca.CriadoLogin != contextoAplicacao.LoginUsuario)
                 return Erro.Negocio("Você não tem permissão para gerar relatório desta lista de presença.");
 
+            var dadosRelatorio = await repositorioCodafListaPresenca.ObterDadosRelatorioAsync(codafId);
+            if (dadosRelatorio == null)
+                return Erro.NaoEncontrado("Nenhuma informação encontrada para o codaf informado.");
+
+            var arquivoBytes = geradorRelatorioCodafSuplementarExcelService.GerarRelatorio(dadosRelatorio, ehCodafSuplementar: false);
+
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             var nomeArquivo = $"CODAF_{listaPresenca.Proposta.NumeroHomologacao}-{listaPresenca.PropostaTurma.Nome}.xlsx";
-            var arquivoDto = await GerarRelatorioCodafAsync(codafId, nomeArquivo);
+            var arquivoDto = new ArquivoDto(nomeArquivo, contentType, new MemoryStream(arquivoBytes, writable: false));
             await AtualizarStatusParaFinalizadoAsync(listaPresenca);
             return arquivoDto;
-        }
-
-        private async Task<ArquivoDto> GerarRelatorioCodafAsync(long codafId, string nomeArquivo)
-        {
-            var arquivoBytes = await servicoRelatorio.GerarRelatorioCodafAsync(codafId);
-            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            return new ArquivoDto(nomeArquivo, contentType, new MemoryStream(arquivoBytes, writable: false));
         }
 
         private async Task AtualizarStatusParaFinalizadoAsync(CodafListaPresenca listaPresenca)

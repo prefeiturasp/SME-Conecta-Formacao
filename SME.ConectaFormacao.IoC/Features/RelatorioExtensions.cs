@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Relatorios;
 using SME.ConectaFormacao.Infra.Dados.Relatorios;
+using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador;
+using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador.Intefaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -15,8 +17,14 @@ namespace SME.ConectaFormacao.IoC.Features
                 services
                     .AddScoped<IRepositorioRelatorios, RepositorioRelatorios>()
                     .AddScoped<IGeradorRelatorioInscritosExcelService, GeradorRelatorioInscritosExcelService>()
+                    .AddScoped<IGeradorRelatorioCodafExcelService, GeradorRelatorioCodafExcelService>()
                     .AddScoped<ICasoDeUsoGerarRelatorioInscritosPorFormacao, CasoDeUsoGerarRelatorioInscritosPorFormacao>()
                     .AddScoped<ICasoDeUsoSolicitarGeracaoRelatorioInscritosPorFormacao, CasoDeUsoSolicitarGeracaoRelatorioInscritosPorFormacao>()
+                    .AddSingleton<IBlocoTituloGerador, BlocoTituloGerador>()
+                    .AddSingleton<IBlocoCabecalhoGerador, BlocoCabecalhoGerador>()
+                    .AddSingleton<IBlocoRegentesGerador, BlocoRegentesGerador>()
+                    .AddSingleton<IBlocoAlunosGerador, BlocoAlunosGerador>()
+                    .AddSingleton<IBlocoAssinaturaGerador, BlocoAssinaturaGerador>()
                 ;
         }
     }

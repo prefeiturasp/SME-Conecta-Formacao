@@ -1,164 +1,149 @@
+using Bogus;
+using FluentAssertions;
 using Moq;
+using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
+using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
+using SME.ConectaFormacao.Infra.Dados.Relatorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
+using System.Reflection;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
     public class CasoDeUsoGerarRelatorioCodafSuplementarTestes
     {
-        private readonly Mock<IRepositorioCodafListaPresenca> repositorioMock;
-        private readonly Mock<IRepositorioCodafSuplementar> repositorioCodafMock;
-        private readonly Mock<IServicoRelatorio> servicoRelatorioMock;
-
-        private readonly CasoDeUsoGerarRelatorioCodafSuplementar casoDeUso;
+        private readonly Mock<IRepositorioCodafSuplementar> _repositorioCodafSuplementarMock;
+        private readonly Mock<IGeradorRelatorioCodafExcelService> _geradorRelatorioMock;
+        private readonly CasoDeUsoGerarRelatorioCodafSuplementar _sut;
+        private readonly Faker _faker;
 
         public CasoDeUsoGerarRelatorioCodafSuplementarTestes()
         {
-            repositorioMock = new Mock<IRepositorioCodafListaPresenca>();
-            repositorioCodafMock = new Mock<IRepositorioCodafSuplementar>();
-            servicoRelatorioMock = new Mock<IServicoRelatorio>();
-
-            casoDeUso = new CasoDeUsoGerarRelatorioCodafSuplementar(
-                repositorioMock.Object,
-                repositorioCodafMock.Object,
-                servicoRelatorioMock.Object);
+            var mocker = new AutoMocker();
+            _repositorioCodafSuplementarMock = mocker.GetMock<IRepositorioCodafSuplementar>();
+            _geradorRelatorioMock = mocker.GetMock<IGeradorRelatorioCodafExcelService>();
+            
+            _sut = mocker.CreateInstance<CasoDeUsoGerarRelatorioCodafSuplementar>();
+            _faker = new Faker();
         }
 
         [Fact]
-        public async Task Deve_retornar_nao_encontrado_quando_lista_nao_existir()
+        public async Task DadoCodafNaoExistente_QuandoChamarExecutar_EntaoDeveRetornarNaoEncontrado()
         {
             // Arrange
-            repositorioMock
-                .Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(It.IsAny<long>()))
-                .ReturnsAsync((CodafListaPresenca)null!);
+            var codafId = _faker.Random.Long(1, 1000);
+            _repositorioCodafSuplementarMock.Setup(r => r.ObterNaoExcluidosPorIdAsync(codafId))
+                .ReturnsAsync((CodafSuplementar?)null);
 
             // Act
-            var resultado = await casoDeUso.ExecutarAsync(10);
+            var resultado = await _sut.ExecutarAsync(codafId);
 
             // Assert
-            Assert.False(resultado.Sucesso);
-
-            repositorioCodafMock.Verify(r =>
-                r.Atualizar(It.IsAny<CodafSuplementar>()),
-                Times.Never);
-
-            servicoRelatorioMock.Verify(r =>
-                r.GerarRelatorioCodafSuplementarAsync(It.IsAny<long>()),
-                Times.Never);
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.NaoEncontrado);
+            resultado.MensagensErro.Should().Contain("Nenhuma informação encontrada para o codaf informado.");
         }
 
         [Fact]
-        public async Task Deve_gerar_relatorio_e_atualizar_status_quando_nao_estiver_finalizado()
+        public async Task DadoDadosRelatorioNaoExistente_QuandoChamarExecutar_EntaoDeveRetornarNaoEncontrado()
         {
             // Arrange
-            var lista = CriarLista(StatusCodafListaPresenca.AguardandoDf);
-            var codafSuplementar = CriarCodafSuplementar(StatusCodafSuplementar.Aguardando);
-
-            repositorioMock
-                .Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(It.IsAny<long>()))
-                .ReturnsAsync(lista);
-
-            repositorioCodafMock
-                .Setup(r => r.ObterPorIdCodafListaPresenca(It.IsAny<long>()))
+            var codafId = _faker.Random.Long(1, 1000);
+            var codafSuplementar = new CodafSuplementar(codafId);
+            
+            _repositorioCodafSuplementarMock.Setup(r => r.ObterNaoExcluidosPorIdAsync(codafId))
                 .ReturnsAsync(codafSuplementar);
 
-            servicoRelatorioMock
-                .Setup(r => r.GerarRelatorioCodafSuplementarAsync(It.IsAny<long>()))
-                .ReturnsAsync([1, 2, 3]);
+            _repositorioCodafSuplementarMock.Setup(r => r.ObterDadosRelatorioSuplementarAsync(codafId))
+                .ReturnsAsync((DadosPrincipaisRelatorioCodafDto?)null);
 
             // Act
-            var resultado = await casoDeUso.ExecutarAsync(1);
+            var resultado = await _sut.ExecutarAsync(codafId);
 
             // Assert
-            Assert.True(resultado.Sucesso);
-
-            Assert.NotNull(resultado.Dados);
-            Assert.Equal(
-                "CODAF_SUPLEMENTAR_123456-Turma A.xlsx",
-                resultado.Dados.Nome);
-
-            Assert.Equal(
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                resultado.Dados.ContentType);
-
-            Assert.NotNull(resultado.Dados.Stream);
-
-            servicoRelatorioMock.Verify(r =>
-                r.GerarRelatorioCodafSuplementarAsync(1),
-                Times.Once);
-
-            repositorioCodafMock.Verify(r =>
-                r.Atualizar(It.IsAny<CodafSuplementar>()),
-                Times.Once);
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.NaoEncontrado);
+            resultado.MensagensErro.Should().Contain("Nenhuma informação encontrada para o codaf informado.");
         }
 
         [Fact]
-        public async Task Nao_deve_atualizar_quando_status_ja_for_finalizado()
+        public async Task DadoDadosValidos_EStatusNaoFinalizado_QuandoChamarExecutar_EntaoDeveGerarRelatorioEAtualizarStatus()
         {
             // Arrange
-            var lista = CriarLista(StatusCodafListaPresenca.Finalizado);
-            var codafSuplementar = CriarCodafSuplementar(StatusCodafSuplementar.Finalizado);
-
-            repositorioMock
-                .Setup(r => r.ObterPorIdComPropostaEPropostaTurmaAsync(It.IsAny<long>()))
-                .ReturnsAsync(lista);
-
-            repositorioCodafMock
-                .Setup(r => r.ObterPorIdCodafListaPresenca(It.IsAny<long>()))
-                .ReturnsAsync(codafSuplementar);
-
-            servicoRelatorioMock
-                .Setup(r => r.GerarRelatorioCodafSuplementarAsync(It.IsAny<long>()))
-                .ReturnsAsync([1]);
-
-            // Act
-            var resultado = await casoDeUso.ExecutarAsync(5);
-
-            // Assert
-            Assert.True(resultado.Sucesso);
-
-            repositorioCodafMock.Verify(r =>
-                r.Atualizar(It.IsAny<CodafSuplementar>()),
-                Times.Never);
-
-            servicoRelatorioMock.Verify(r =>
-                r.GerarRelatorioCodafSuplementarAsync(5),
-                Times.Once);
-        }
-
-        private static CodafListaPresenca CriarLista(StatusCodafListaPresenca status)
-        {
-            var lista = new CodafListaPresenca
+            var codafId = _faker.Random.Long(1, 1000);
+            var codafSuplementar = new CodafSuplementar(codafId);
+            typeof(CodafSuplementar).GetProperty("Status")?.SetValue(codafSuplementar, StatusCodafSuplementar.Aguardando);
+            
+            var dadosRelatorio = new DadosPrincipaisRelatorioCodafDto
             {
-                Proposta = new Proposta
-                {
-                    NumeroHomologacao = 123456
-                },
-                PropostaTurma = new PropostaTurma
-                {
-                    Nome = "Turma A"
-                }
+                DataCodaf = new DateTime(2023, 10, 1),
+                NumeroHomologacao = 12345,
+                NomeTurma = "Turma A"
             };
 
-            typeof(CodafListaPresenca)
-                .GetProperty(nameof(CodafListaPresenca.Status))
-                ?.SetValue(lista, status);
+            var bytesRelatorio = new byte[] { 1, 2, 3 };
 
-            return lista;
+            _repositorioCodafSuplementarMock.Setup(r => r.ObterNaoExcluidosPorIdAsync(codafId))
+                .ReturnsAsync(codafSuplementar);
+
+            _repositorioCodafSuplementarMock.Setup(r => r.ObterDadosRelatorioSuplementarAsync(codafId))
+                .ReturnsAsync(dadosRelatorio);
+
+            _geradorRelatorioMock.Setup(g => g.GerarRelatorio(dadosRelatorio, true))
+                .Returns(bytesRelatorio);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafId);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            resultado.Dados.Should().NotBeNull();
+            resultado.Dados.ContentType.Should().Be("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            resultado.Dados.Nome.Should().Be("CODAF_SUPLEMENTAR_12345-Turma A.xlsx");
+            
+            dadosRelatorio.ObservacaoCodafSuplementar.Should().Be("Documento suplementar do arquivo gerado em 01/10/2023");
+            
+            codafSuplementar.Status.Should().Be(StatusCodafSuplementar.Finalizado);
+            _repositorioCodafSuplementarMock.Verify(r => r.Atualizar(codafSuplementar), Times.Once);
         }
 
-        private static CodafSuplementar CriarCodafSuplementar(StatusCodafSuplementar status)
+        [Fact]
+        public async Task DadoDadosValidos_EStatusJaFinalizado_QuandoChamarExecutar_EntaoDeveGerarRelatorioMasNaoAtualizarStatus()
         {
-            var codafSuplementar = new CodafSuplementar(1);
+            // Arrange
+            var codafId = _faker.Random.Long(1, 1000);
+            var codafSuplementar = new CodafSuplementar(codafId);
+            typeof(CodafSuplementar).GetProperty("Status")?.SetValue(codafSuplementar, StatusCodafSuplementar.Finalizado);
+            
+            var dadosRelatorio = new DadosPrincipaisRelatorioCodafDto
+            {
+                DataCodaf = new DateTime(2023, 10, 1),
+                NumeroHomologacao = 12345,
+                NomeTurma = "Turma A"
+            };
 
-            typeof(CodafSuplementar)
-                .GetProperty(nameof(CodafSuplementar.Status))
-                ?.SetValue(codafSuplementar, status);
+            var bytesRelatorio = new byte[] { 1, 2, 3 };
 
-            return codafSuplementar;
+            _repositorioCodafSuplementarMock.Setup(r => r.ObterNaoExcluidosPorIdAsync(codafId))
+                .ReturnsAsync(codafSuplementar);
+
+            _repositorioCodafSuplementarMock.Setup(r => r.ObterDadosRelatorioSuplementarAsync(codafId))
+                .ReturnsAsync(dadosRelatorio);
+
+            _geradorRelatorioMock.Setup(g => g.GerarRelatorio(dadosRelatorio, true))
+                .Returns(bytesRelatorio);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafId);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            resultado.Dados.Should().NotBeNull();
+            
+            _repositorioCodafSuplementarMock.Verify(r => r.Atualizar(codafSuplementar), Times.Never);
         }
     }
 }
