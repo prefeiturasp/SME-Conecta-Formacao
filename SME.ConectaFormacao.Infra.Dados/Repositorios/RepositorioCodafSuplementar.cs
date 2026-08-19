@@ -132,7 +132,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                            ELSE 2
                        END AS statusCertificacaoTurma,
                        CLP.CODIGO_CURSO_EOL codigoCursoEol,
-                       CLP.CODIGO_NIVEL codigoNivel
+                       CLP.CODIGO_NIVEL codigoNivel,
+                       CASE 
+                       WHEN EXISTS (
+                        SELECT 1
+                        FROM PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO AS CSI
+                        WHERE CSI.CODAF_SUPLEMENTAR_ID = CS.ID AND CSI.APROVADO = TRUE
+                        ) THEN TRUE
+                        ELSE FALSE
+                       END AS possuiAprovacoes
                 {sqlBaseJoins}
                 {condicoesWhere}
                 {sqlBaseOrderBy}
