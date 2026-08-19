@@ -552,9 +552,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.ID = CS.CODAF_LISTA_PRESENCA_ID
                        INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON PRT.TURMA_ID = CLP.PROPOSTA_TURMA_ID
                        INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PR.ID = PRT.PROPOSTA_REGENTE_ID 
-                       LEFT JOIN PUBLIC.USUARIO AS U ON U.LOGIN = PR.REGISTRO_FUNCIONAL
-                       LEFT JOIN PUBLIC.CODAF_CERTIFICADOS AS CC ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
-                WHERE  CS.ID = @codafSuplementarId;
+                       LEFT JOIN PUBLIC.USUARIO AS U ON U.LOGIN = PR.REGISTRO_FUNCIONAL AND NOT U.EXCLUIDO
+                       LEFT JOIN PUBLIC.CODAF_CERTIFICADOS AS CC ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID AND NOT CC.EXCLUIDO
+                WHERE  CS.ID = @codafSuplementarId
+                  AND  NOT CS.EXCLUIDO
+                  AND  NOT CLP.EXCLUIDO
+                  AND  NOT PRT.EXCLUIDO
+                  AND  NOT PR.EXCLUIDO;
 
                 -- Dados dos Participantes
                 SELECT U.LOGIN AS documento,
@@ -568,7 +572,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 FROM   PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO AS CSI 
                         INNER JOIN PUBLIC.INSCRICAO AS I ON I.ID = CSI.INSCRICAO_ID
                         INNER JOIN PUBLIC.USUARIO AS U ON U.ID = I.USUARIO_ID
-                        LEFT JOIN PUBLIC.CODAF_CERTIFICADOS AS CC ON CC.CODAF_SUPLEMENTAR_INSCRICAO_ID = CSI.ID 
+                        LEFT JOIN PUBLIC.CODAF_CERTIFICADOS AS CC ON CC.CODAF_SUPLEMENTAR_INSCRICAO_ID = CSI.ID AND NOT CC.EXCLUIDO
                 WHERE  NOT CSI.EXCLUIDO 
                     AND  CSI.CODAF_SUPLEMENTAR_ID = @codafSuplementarId
                     AND  NOT U.EXCLUIDO;
