@@ -2,6 +2,7 @@
 using RabbitMQ.Client;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
@@ -77,6 +78,7 @@ namespace SME.Conecta.Worker
             Comandos.Add(RotasRabbit.EnviarEmail, new ComandoRabbit("Enviar e-mail", typeof(ICasoDeUsoEnviarEmail), true));
             Comandos.Add(RotasRabbit.EnviarNotificacao, new ComandoRabbit("Enviar notificação via SignalR", typeof(ICasoDeUsoEnviarNotificacao), true));
             Comandos.Add(RotasRabbit.GerarArquivoCertificadosCodaf, new ComandoRabbit("Gerar arquivo de certificados CODAF", typeof(ICasoDeUsoGerarArquivoCertificadosCodaf), true));
+            Comandos.Add(RotasRabbit.GerarArquivoDeclaracoesCodaf, new ComandoRabbit("Gerar arquivo de declarações CODAF", typeof(ICasoDeUsoGerarArquivoDeclaracoesCodaf), true));
 
             Comandos.Add(RotasRabbit.GerarRelatorioInscritosExcel, new ComandoRabbit("Gerar relatório de inscritos em Excel", typeof(ICasoDeUsoGerarRelatorioInscritosPorFormacao), true));
         }

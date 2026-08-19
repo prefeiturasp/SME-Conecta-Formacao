@@ -1,6 +1,5 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
-using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -12,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
     {
         public async Task<Resultado> ExecutarAsync(long codafListaPresencaId)
         {
-            var perfilRestrito = contextoAplicacao.IdPerfilUsuario != Perfis.ADMIN_DF && contextoAplicacao.IdPerfilUsuario != Perfis.EMFORPEF;
+            var perfilRestrito = !contextoAplicacao.EhAdministrador;
 
             var codafListaPresenca = await repositorioCodafListaPresenca.ObterNaoExcluidosPorIdAsync(codafListaPresencaId);
 

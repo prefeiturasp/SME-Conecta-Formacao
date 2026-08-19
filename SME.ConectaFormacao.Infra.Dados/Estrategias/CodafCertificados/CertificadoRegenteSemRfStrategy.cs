@@ -1,11 +1,12 @@
 ﻿using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Base;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Templates;
 
-namespace SME.ConectaFormacao.Infra.Dados.Estrategias
+namespace SME.ConectaFormacao.Infra.Dados.Estrategias.CodafCertificados
 {
     public class CertificadoRegenteSemRfStrategy(ITemplateService templateService) : CertificadoEstrategiaBase(templateService), ICertificadoCodafGeradorConteudo
     {
@@ -27,12 +28,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Estrategias
             de {dados.DefinirCargaHoraria()} horas.</p>";
         }
 
-        public (string Titulo, string Corpo) GerarConteudoEmail(DadosProcessamentoCertificadoCodafDto dados, string urlAcesso)
+        public (string Titulo, string Corpo) GerarConteudoEmail(DadosProcessamentoCodafDto dados, string urlAcesso)
         {
             var titulo = @$"PARABÉNS! SEU CERTIFICADO FOI EMITIDO | {dados.NomeFormacao}";
 
             var corpo = $@"
-                <p>Olá <b>{dados.NomeCompleto}</b>! Parabéns!</p>
+                <p>Olá <b>{dados.NomeExibicao}</b>! Parabéns!</p>
                 <p>Você concluiu sua participação como <b>regente</b> na formação <b>{dados.NomeFormacao}</b>.</p>
                 <p>O certificado pode ser visualizado na tela 'Meus certificados' na plataforma Conecta, clicando <a href='{urlAcesso}' target='_blank'>aqui</a>.</p>";
 

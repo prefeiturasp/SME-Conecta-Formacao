@@ -82,7 +82,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var dadosEmissao = CriarDadosEmissaoDtoFake(TipoParticipacaoCodaf.Cursista, temRf: false);
             var periodo = CriarPeriodoFake();
 
-            SetupDependenciasDeGeracao(dadosEmissao, periodo, TipoEstrategiaCertificadoCodaf.CursistaSemRf);
+            SetupDependenciasDeGeracao(dadosEmissao, periodo, TipoEstrategiaCodaf.CursistaSemRf);
 
             _mocker.GetMock<IRepositorioCodafCertificado>()
                 .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafId))
@@ -110,7 +110,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var periodo = CriarPeriodoFake();
             var inscritosReprovados = new List<long> { _faker.Random.Long(1000, 2000) };
 
-            SetupDependenciasDeGeracao(dadosEmissao, periodo, TipoEstrategiaCertificadoCodaf.CursistaComRf);
+            SetupDependenciasDeGeracao(dadosEmissao, periodo, TipoEstrategiaCodaf.CursistaComRf);
 
             _mocker.GetMock<IRepositorioCodafCertificado>()
                 .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafSuplementarAsync(codafId))
@@ -142,7 +142,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var dadosEmissao = CriarDadosEmissaoDtoFake(TipoParticipacaoCodaf.Regente, temRf: true);
             var periodo = CriarPeriodoFake();
 
-            SetupDependenciasDeGeracao(dadosEmissao, periodo, TipoEstrategiaCertificadoCodaf.RegenteComRf);
+            SetupDependenciasDeGeracao(dadosEmissao, periodo, TipoEstrategiaCodaf.RegenteComRf);
 
             _mocker.GetMock<IRepositorioCodafCertificado>()
                 .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafId))
@@ -168,7 +168,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var codafId = _faker.Random.Long(1, 100);
             var dadosEmissao = CriarDadosEmissaoDtoFake(TipoParticipacaoCodaf.Regente, temRf: true);
 
-            SetupDependenciasDeGeracao(dadosEmissao, null, TipoEstrategiaCertificadoCodaf.RegenteComRf);
+            SetupDependenciasDeGeracao(dadosEmissao, null, TipoEstrategiaCodaf.RegenteComRf);
 
             _mocker.GetMock<IRepositorioCodafCertificado>()
                 .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafId))
@@ -179,7 +179,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             resultado.Sucesso.Should().BeTrue();
-            _mocker.GetMock<IKeyedServiceProvider>().Verify(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.RegenteComRf), Times.Once);
+            _mocker.GetMock<IKeyedServiceProvider>().Verify(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCodaf.RegenteComRf), Times.Once);
             _dbTransactionMock.Verify(t => t.Commit(), Times.Once);
         }
 
@@ -190,7 +190,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var codafId = _faker.Random.Long(1, 100);
             var dadosEmissao = CriarDadosEmissaoDtoFake(TipoParticipacaoCodaf.Regente, temRf: false);
 
-            SetupDependenciasDeGeracao(dadosEmissao, null, TipoEstrategiaCertificadoCodaf.RegenteSemRf);
+            SetupDependenciasDeGeracao(dadosEmissao, null, TipoEstrategiaCodaf.RegenteSemRf);
 
             _mocker.GetMock<IRepositorioCodafCertificado>()
                 .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafId))
@@ -201,7 +201,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             resultado.Sucesso.Should().BeTrue();
-            _mocker.GetMock<IKeyedServiceProvider>().Verify(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.RegenteSemRf), Times.Once);
+            _mocker.GetMock<IKeyedServiceProvider>().Verify(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCodaf.RegenteSemRf), Times.Once);
             _dbTransactionMock.Verify(t => t.Commit(), Times.Once);
         }
 
@@ -213,7 +213,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var dadosEmissao = CriarDadosEmissaoDtoFake(TipoParticipacaoCodaf.Cursista, temRf: false);
 
             // Força nulo para testar fluxo
-            SetupDependenciasDeGeracao(dadosEmissao, null, TipoEstrategiaCertificadoCodaf.CursistaSemRf);
+            SetupDependenciasDeGeracao(dadosEmissao, null, TipoEstrategiaCodaf.CursistaSemRf);
 
             _mocker.GetMock<IRepositorioCodafCertificado>()
                 .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafId))
@@ -240,7 +240,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             dadosEmissao.HorasTotais = null;
             dadosEmissao.CargaHorariaTotalOutra = "10h30m";
 
-            SetupDependenciasDeGeracao(dadosEmissao, CriarPeriodoFake(), TipoEstrategiaCertificadoCodaf.CursistaSemRf);
+            SetupDependenciasDeGeracao(dadosEmissao, CriarPeriodoFake(), TipoEstrategiaCodaf.CursistaSemRf);
 
             _mocker.GetMock<IRepositorioCodafCertificado>()
                 .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafId))
@@ -270,9 +270,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             var periodo = CriarPeriodoFake();
 
-            SetupDependenciasDeGeracao(dadosCursistaSemRf, periodo, TipoEstrategiaCertificadoCodaf.CursistaSemRf);
-            SetupDependenciasDeGeracao(dadosCursistaComRf, periodo, TipoEstrategiaCertificadoCodaf.CursistaComRf);
-            SetupDependenciasDeGeracao(dadosRegenteComRf, periodo, TipoEstrategiaCertificadoCodaf.RegenteComRf);
+            SetupDependenciasDeGeracao(dadosCursistaSemRf, periodo, TipoEstrategiaCodaf.CursistaSemRf);
+            SetupDependenciasDeGeracao(dadosCursistaComRf, periodo, TipoEstrategiaCodaf.CursistaComRf);
+            SetupDependenciasDeGeracao(dadosRegenteComRf, periodo, TipoEstrategiaCodaf.RegenteComRf);
 
             _mocker.GetMock<IRepositorioCodafCertificado>()
                 .Setup(x => x.ObterDadosParaEmissaoCertificadosCodafAsync(codafId))
@@ -285,9 +285,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             resultado.Sucesso.Should().BeTrue();
             _mocker.GetMock<IRepositorioCodafCertificado>().Verify(x => x.InserirLoteAsync(It.Is<IEnumerable<CodafCertificado>>(lista => lista.Count() == 3)), Times.Once);
 
-            _mocker.GetMock<IKeyedServiceProvider>().Verify(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.CursistaSemRf), Times.Once);
-            _mocker.GetMock<IKeyedServiceProvider>().Verify(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.CursistaComRf), Times.Once);
-            _mocker.GetMock<IKeyedServiceProvider>().Verify(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCertificadoCodaf.RegenteComRf), Times.Once);
+            _mocker.GetMock<IKeyedServiceProvider>().Verify(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCodaf.CursistaSemRf), Times.Once);
+            _mocker.GetMock<IKeyedServiceProvider>().Verify(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCodaf.CursistaComRf), Times.Once);
+            _mocker.GetMock<IKeyedServiceProvider>().Verify(x => x.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), (object)TipoEstrategiaCodaf.RegenteComRf), Times.Once);
         }
 
         private DadosEmissaoCertificadoCodafDto CriarDadosEmissaoDtoFake(TipoParticipacaoCodaf tipoParticipacao, bool temRf)
@@ -321,7 +321,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             };
         }
 
-        private void SetupDependenciasDeGeracao(DadosEmissaoCertificadoCodafDto dto, PeriodoRealizacao? periodo, TipoEstrategiaCertificadoCodaf estrategia)
+        private void SetupDependenciasDeGeracao(DadosEmissaoCertificadoCodafDto dto, PeriodoRealizacao? periodo, TipoEstrategiaCodaf estrategia)
         {
             var geradorMock = new Mock<ICertificadoCodafGeradorConteudo>();
             geradorMock

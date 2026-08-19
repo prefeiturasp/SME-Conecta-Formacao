@@ -24,6 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
             var dadosInscricao = new DadosInscricaoPropostaDto
             {
                 UsuarioNome = usuarioLogado.Nome,
+                UsuarioNomeSocial = usuarioLogado.NomeSocial,
                 UsuarioCpf = usuarioLogado.Cpf?.AplicarMascara(@"000\.000\.000\-00") ?? string.Empty,
                 UsuarioEmail = usuarioLogado.Email,
                 UsuarioRf = usuarioLogado.Login,

@@ -1,6 +1,6 @@
 ﻿namespace SME.ConectaFormacao.Dominio.Enumerados
 {
-    public enum TipoEstrategiaCertificadoCodaf
+    public enum TipoEstrategiaCodaf
     {
         CursistaComRf,
         CursistaSemRf,

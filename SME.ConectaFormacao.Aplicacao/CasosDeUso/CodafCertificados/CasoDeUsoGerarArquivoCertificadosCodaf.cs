@@ -1,18 +1,16 @@
-﻿using MediatR;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
-using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCertificados;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Infra;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
+using SME.ConectaFormacao.Dominio.Extensoes;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
-using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
@@ -23,22 +21,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
         IServicoRelatorio servicoRelatorio,
         IRepositorioCodafCertificado repositorioCodafCertificado,
         IServicoArmazenamento servicoArmazenamento,
-        IMediator mediator,
         IKeyedServiceProvider serviceProvider,
         IConfiguration configuration,
-        IServicoLogs servicoLogs) :
+        IUtilitariosCodaf utilitarios) :
         ICasoDeUsoGerarArquivoCertificadosCodaf
     {
-        private readonly Guid _identificadorRastreamento = Guid.NewGuid();
-
+        private readonly IUtilitariosCodaf _utilitarios = utilitarios;
         public async Task<bool> Executar(MensagemRabbit param)
         {
-            await SalvarLogAsync("Início do processamento de certificados Codaf");
+            await _utilitarios.SalvarLogAsync("Início do processamento de certificados Codaf");
             var temCertificadosParaProcessar = true;
 
-            var urlFrontEnd = configuration["UrlFrontEnd"];
-            var urlAcessoCertificados = $"{urlFrontEnd?.TrimEnd('/')}/certificados";
-            await SalvarLogAsync($"Url de acesso aos certificados: {urlAcessoCertificados}");
+            var urlFrontEnd = configuration["UrlFrontEnd"] ?? "/";
+            var urlAcessoCertificados = $"{urlFrontEnd.TrimEnd('/')}/certificados";
+            await _utilitarios.SalvarLogAsync($"Url de acesso aos certificados: {urlAcessoCertificados}");
 
             while (temCertificadosParaProcessar)
             {
@@ -53,7 +49,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 
                 foreach (var certificado in certificadosProcessados)
                 {
-                    var tipoEstrategia = DefinirEstrategia(certificado);
+                    var tipoEstrategia = _utilitarios.DefinirEstrategia(certificado);
                     var geradorCertificado = serviceProvider.GetRequiredKeyedService<ICertificadoCodafGeradorConteudo>(tipoEstrategia);
 
                     var (tituloEmail, textoEmail) = geradorCertificado.GerarConteudoEmail(certificado, urlAcessoCertificados);
@@ -70,31 +66,31 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     }
                 }
 
-                _ = EnviarEmailsAsync(notificacoesParaEnviar);
+                await _utilitarios.EnviarEmailsAsync(notificacoesParaEnviar);
             }
-            await SalvarLogAsync("Fim do processamento de certificados Codaf");
+            await _utilitarios.SalvarLogAsync("Fim do processamento de certificados Codaf");
 
             return true;
         }
 
-        private async Task<List<DadosProcessamentoCertificadoCodafDto>> ProcessarLoteAsync(IEnumerable<DadosProcessamentoCertificadoCodafDto> codafCertificados)
+        private async Task<List<DadosProcessamentoCodafDto>> ProcessarLoteAsync(IEnumerable<DadosProcessamentoCodafDto> codafCertificados)
         {
-            var certificadosProcessados = new List<DadosProcessamentoCertificadoCodafDto>();
+            var certificadosProcessados = new List<DadosProcessamentoCodafDto>();
 
             foreach (var certificado in codafCertificados)
             {
                 try
                 {
-                    var htmlComSequencial = InserirSequencialNoHtml(certificado.HtmlContentSnapshot, certificado.CodigoCertificado);
-                    var htmlComSigla = InserirEmissor(htmlComSequencial, certificado.Emissor);
-                    var htmlCertificadoDto = new HtmlCertificadoCodafDto
+                    var htmlComSequencial = certificado.HtmlContentSnapshot.InserirSequencialNoHtml(certificado.CodigoDeclaracaoOuCertificado);
+                    var htmlComSigla = htmlComSequencial.InserirEmissor(certificado.Emissor);
+                    var htmlCertificadoDto = new HtmlCodafDto
                     {
                         HtmlContent = htmlComSigla
                     };
-                    var arquivoPdf = await servicoRelatorio.ConveterHtmlCertificadoCodafParaPdfAsync(htmlCertificadoDto);
+                    var arquivoPdf = await servicoRelatorio.ConveterHtmlCodafParaPdfAsync(htmlCertificadoDto);
                     var certificadoIdGuid = Guid.NewGuid();
-                    var nomeDoArquivo = $"{DateTime.Now:yyyy/MM}/{certificado.CodigoCertificado}-{certificadoIdGuid}.pdf";
-                    var chaveObjetoArmazenamento = await servicoArmazenamento.UploadCertificadoCodafAsync(nomeDoArquivo, arquivoPdf);
+                    var nomeDoArquivo = $"{DateTime.Now:yyyy/MM}/{certificado.CodigoDeclaracaoOuCertificado}-{certificadoIdGuid}.pdf";
+                    var chaveObjetoArmazenamento = await servicoArmazenamento.UploadCodafAsync(nomeDoArquivo, arquivoPdf);
                     await repositorioCodafCertificado.AtualizarStatusProcessamentoAsync(
                         certificado.Id,
                         StatusProcessamentoCertificadoCodaf.ProcessadoComSucesso,
@@ -104,75 +100,11 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                 }
                 catch (Exception e)
                 {
-                    await SalvarLogAsync($"Erro ao processar certificado Codaf com Id {certificado.Id} e Código {certificado.CodigoCertificado}: {e.Message}", LogNivel.Critico, e);
+                    await _utilitarios.SalvarLogAsync($"Erro ao processar certificado Codaf com Id {certificado.Id} e Código {certificado.CodigoDeclaracaoOuCertificado}: {e.Message}", LogNivel.Critico, e);
                     await repositorioCodafCertificado.AtualizarStatusProcessamentoAsync(certificado.Id, StatusProcessamentoCertificadoCodaf.ProcessadoComErro, null, e.Message);
                 }
             }
             return certificadosProcessados;
-        }
-
-        private static string InserirSequencialNoHtml(string htmlContent, long sequencial)
-        {
-            var marcador = "{{NUM_SEQ}}";
-            if (htmlContent.Contains(marcador))
-                htmlContent = htmlContent.Replace(marcador, sequencial.ToString());
-            return htmlContent;
-        }
-
-        private static string InserirEmissor(string htmlContent, string sigla)
-        {
-            var marcador = "{{EMISSOR}}";
-            if (htmlContent.Contains(marcador))
-                htmlContent = htmlContent.Replace(marcador, sigla);
-            return htmlContent;
-        }
-
-        private static TipoEstrategiaCertificadoCodaf DefinirEstrategia(DadosProcessamentoCertificadoCodafDto certificado)
-        {
-            if (certificado.TipoParticipacao == TipoParticipacaoCodaf.Regente)
-                return TipoEstrategiaCertificadoCodaf.RegenteComRf;
-
-            return certificado.TemRf ? TipoEstrategiaCertificadoCodaf.CursistaComRf : TipoEstrategiaCertificadoCodaf.CursistaSemRf;
-        }
-
-        private async Task EnviarEmailsAsync(List<EnviarEmailDto> notificacoesParaEnviar)
-        {
-            foreach (var emailDto in notificacoesParaEnviar)
-            {
-                _ = mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, emailDto));
-            }
-        }
-
-        private async Task SalvarLogAsync(string mensagem, LogNivel nivelLog = LogNivel.Informacao, Exception? ex = null)
-        {
-            try
-            {
-                if (ex is null)
-                    await servicoLogs.Enviar(mensagem: $"[{_identificadorRastreamento}] {mensagem}", nivel: nivelLog);
-                else
-                    await servicoLogs.Enviar(ex, mensagem: $"[{_identificadorRastreamento}] {mensagem}");
-
-                var complemento = MontarComplementoExcecao(ex);
-                await mediator.Send(new SalvarLogCommand(
-                    entidade: typeof(CasoDeUsoGerarArquivoCertificadosCodaf).FullName!,
-                    nivelLog: nivelLog, mensagem: $"[{_identificadorRastreamento}] {mensagem}", complemento: complemento));
-            }
-            catch (Exception e)
-            {
-                await servicoLogs.Enviar(e, mensagem: $"[{_identificadorRastreamento}] Erro ao salvar log: {mensagem}");
-            }
-        }
-
-        private static string MontarComplementoExcecao(Exception? ex, int nivel = 0)
-        {
-            var complemento = string.Empty;
-            if (ex is not null)
-                complemento = $"{nivel + 1}: Exception: {ex.Message} | StackTrace: {ex.StackTrace}";
-
-            if (ex is not null && ex.InnerException is not null)
-                complemento += Environment.NewLine + MontarComplementoExcecao(ex.InnerException, nivel + 1);
-
-            return complemento;
-        }
+        }       
     }
 }

@@ -8,12 +8,15 @@ using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio;
 using SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces;
@@ -28,6 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<IKeyedServiceProvider> _mockServiceProvider;
         private readonly Mock<IConfiguration> _mockConfiguration;
         private readonly Mock<IMediator> _mockMediator;
+        private readonly Mock<IServicoLogs> _mockServicoLogs;
         private readonly CasoDeUsoGerarArquivoCertificadosCodaf _sut;
         private readonly Faker _faker;
 
@@ -40,6 +44,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mockServiceProvider = mocker.GetMock<IKeyedServiceProvider>();
             _mockConfiguration = mocker.GetMock<IConfiguration>();
             _mockMediator = mocker.GetMock<IMediator>();
+            _mockServicoLogs = mocker.GetMock<IServicoLogs>();
+
+            // Use real implementation of IUtilitariosCodaf with mocked dependencies
+            var utilitarios = new UtilitariosCodaf(_mockMediator.Object, _mockServicoLogs.Object);
+            mocker.Use<IUtilitariosCodaf>(utilitarios);
+
             _sut = mocker.CreateInstance<CasoDeUsoGerarArquivoCertificadosCodaf>();
             _faker = new();
         }
@@ -49,13 +59,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns(_faker.Internet.Url());
             _mockRepositorioCertificado.Setup(r => r.ObterCertificadosParaProcessamentoAsync())
-                .ReturnsAsync([]);
+                .ReturnsAsync(new List<DadosProcessamentoCodafDto>());
 
             var resultado = await _sut.Executar(new MensagemRabbit());
 
             resultado.Should().BeTrue();
             _mockRepositorioCertificado.Verify(x => x.ObterCertificadosParaProcessamentoAsync(), Times.Once);
-            _mockServicoRelatorio.Verify(x => x.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()), Times.Never);
+            _mockServicoRelatorio.Verify(x => x.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>()), Times.Never);
             _mockMediator.Verify(m => m.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
@@ -65,10 +75,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var urlFront = _faker.Internet.Url();
             _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns(urlFront);
 
-            var certificado = new DadosProcessamentoCertificadoCodafDto
+            var certificado = new DadosProcessamentoCodafDto
             {
                 Id = 1,
-                CodigoCertificado = 12345,
+                CodigoDeclaracaoOuCertificado = 12345,
                 HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{EMISSOR}}</div>",
                 NomeCompleto = "Fulano da Silva",
                 EmailUsuario = "fulano@exemplo.com",
@@ -87,16 +97,16 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             string htmlRecebido = null!;
             _mockServicoRelatorio
-                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()))
-                .Callback<HtmlCertificadoCodafDto>(h => htmlRecebido = h.HtmlContent)
+                .Setup(s => s.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>()))
+                .Callback<HtmlCodafDto>(h => htmlRecebido = h.HtmlContent)
                 .ReturnsAsync(retornoPdf);
 
             _mockServicoArmazenamento
-                .Setup(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), retornoPdf))
+                .Setup(a => a.UploadCodafAsync(It.IsAny<string>(), retornoPdf))
                 .ReturnsAsync(chaveArmazenamento);
 
             var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
-            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCertificadoCodafDto>(), It.IsAny<string>()))
+            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCodafDto>(), It.IsAny<string>()))
                 .Returns(("TITULO", "CORPO"));
             _mockServiceProvider
                 .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), It.IsAny<object>()))
@@ -112,10 +122,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             resultado.Should().BeTrue();
             _mockRepositorioCertificado.Verify(r => r.ObterCertificadosParaProcessamentoAsync(), Times.Exactly(2));
-            _mockServicoRelatorio.Verify(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()), Times.Once);
-            htmlRecebido.Should().Contain(certificado.CodigoCertificado.ToString())
+            _mockServicoRelatorio.Verify(s => s.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>()), Times.Once);
+            htmlRecebido.Should().Contain(certificado.CodigoDeclaracaoOuCertificado.ToString())
                                .And.Contain(certificado.Emissor);
-            _mockServicoArmazenamento.Verify(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), retornoPdf), Times.Once);
+            _mockServicoArmazenamento.Verify(a => a.UploadCodafAsync(It.IsAny<string>(), retornoPdf), Times.Once);
             _mockRepositorioCertificado.Verify(r => r.AtualizarStatusProcessamentoAsync(certificado.Id,
                 StatusProcessamentoCertificadoCodaf.ProcessadoComSucesso, It.IsAny<string>(), null), Times.Once);
 
@@ -129,10 +139,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns(_faker.Internet.Url());
 
-            var certificado = new DadosProcessamentoCertificadoCodafDto
+            var certificado = new DadosProcessamentoCodafDto
             {
                 Id = 99,
-                CodigoCertificado = 555,
+                CodigoDeclaracaoOuCertificado = 555,
                 HtmlContentSnapshot = "<p>{{NUM_SEQ}}</p>",
                 NomeCompleto = "Error Test",
                 EmailUsuario = "err@exemplo.com",
@@ -146,7 +156,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .ReturnsAsync([]);
 
             _mockServicoRelatorio
-                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()))
+                .Setup(s => s.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>()))
                 .ThrowsAsync(new Exception("Erro conversão"));
 
             var resultado = await _sut.Executar(new MensagemRabbit());
@@ -157,7 +167,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mockRepositorioCertificado.Verify(r => r.AtualizarStatusProcessamentoAsync(certificado.Id,
                 StatusProcessamentoCertificadoCodaf.ProcessadoComErro, null, It.Is<string>(m => m.Contains("Erro conversão"))), Times.Once);
 
-            _mockServicoArmazenamento.Verify(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
+            _mockServicoArmazenamento.Verify(a => a.UploadCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
             _mockMediator.Verify(m => m.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
@@ -166,10 +176,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns(_faker.Internet.Url());
 
-            var certificado = new DadosProcessamentoCertificadoCodafDto
+            var certificado = new DadosProcessamentoCodafDto
             {
                 Id = 2,
-                CodigoCertificado = 777,
+                CodigoDeclaracaoOuCertificado = 777,
                 HtmlContentSnapshot = "<div>Sem email {{NUM_SEQ}}</div>",
                 NomeCompleto = "Sem Email",
                 EmailUsuario = string.Empty, 
@@ -183,15 +193,15 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .ReturnsAsync([]);
 
             _mockServicoRelatorio
-                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()))
+                .Setup(s => s.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>()))
                 .ReturnsAsync([0x0]);
 
             _mockServicoArmazenamento
-                .Setup(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+                .Setup(a => a.UploadCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
                 .ReturnsAsync("chave");
 
             var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
-            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCertificadoCodafDto>(), It.IsAny<string>()))
+            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCodafDto>(), It.IsAny<string>()))
                 .Returns(("T", "C"));
             _mockServiceProvider
                 .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), It.IsAny<object>()))
@@ -213,10 +223,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns(_faker.Internet.Url());
 
-            var certificado = new DadosProcessamentoCertificadoCodafDto
+            var certificado = new DadosProcessamentoCodafDto
             {
                 Id = 3,
-                CodigoCertificado = 999,
+                CodigoDeclaracaoOuCertificado = 999,
                 HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{EMISSOR}}</div>",
                 NomeCompleto = "Regente Teste",
                 EmailUsuario = "regente@exemplo.com",
@@ -230,18 +240,19 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .ReturnsAsync([]);
 
             _mockServicoRelatorio
-                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()))
+                .Setup(s => s.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>()))
                 .ReturnsAsync([0x1]);
 
             _mockServicoArmazenamento
-                .Setup(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+                .Setup(a => a.UploadCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
                 .ReturnsAsync("chave-regente");
 
             var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
-            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCertificadoCodafDto>(), It.IsAny<string>()))
+            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCodafDto>(), It.IsAny<string>()))
                 .Returns(("T", "C"));
             _mockServiceProvider
-                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), It.IsAny<object>()))
+                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), 
+                    It.Is<object>(k => (TipoEstrategiaCodaf)k == TipoEstrategiaCodaf.RegenteComRf)))
                 .Returns(mockGerador.Object);
 
             _mockMediator
@@ -254,7 +265,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             resultado.Should().BeTrue();
             _mockServiceProvider.Verify(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo),
-                It.Is<object>(k => (TipoEstrategiaCertificadoCodaf)k == TipoEstrategiaCertificadoCodaf.RegenteComRf)), Times.Once);
+                It.Is<object>(k => (TipoEstrategiaCodaf)k == TipoEstrategiaCodaf.RegenteComRf)), Times.Once);
         }
 
         [Fact]
@@ -262,10 +273,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns(_faker.Internet.Url());
 
-            var certificado = new DadosProcessamentoCertificadoCodafDto
+            var certificado = new DadosProcessamentoCodafDto
             {
                 Id = 4,
-                CodigoCertificado = 1001,
+                CodigoDeclaracaoOuCertificado = 1001,
                 HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{EMISSOR}}</div>",
                 NomeCompleto = "Cursista Sem RF",
                 EmailUsuario = "cursista-sem-rf@exemplo.com",
@@ -279,18 +290,19 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .ReturnsAsync([]);
 
             _mockServicoRelatorio
-                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()))
+                .Setup(s => s.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>()))
                 .ReturnsAsync([0x2]);
 
             _mockServicoArmazenamento
-                .Setup(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+                .Setup(a => a.UploadCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
                 .ReturnsAsync("chave-cursista-sem-rf");
 
             var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
-            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCertificadoCodafDto>(), It.IsAny<string>()))
+            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCodafDto>(), It.IsAny<string>()))
                 .Returns(("T", "C"));
             _mockServiceProvider
-                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), It.IsAny<object>()))
+                .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), 
+                    It.Is<object>(k => (TipoEstrategiaCodaf)k == TipoEstrategiaCodaf.CursistaSemRf)))
                 .Returns(mockGerador.Object);
 
             _mockMediator
@@ -303,7 +315,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             resultado.Should().BeTrue();
             _mockServiceProvider.Verify(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo),
-                It.Is<object>(k => (TipoEstrategiaCertificadoCodaf)k == TipoEstrategiaCertificadoCodaf.CursistaSemRf)), Times.Once);
+                It.Is<object>(k => (TipoEstrategiaCodaf)k == TipoEstrategiaCodaf.CursistaSemRf)), Times.Once);
             _mockMediator.Verify(m => m.Send(It.Is<PublicarNaFilaRabbitCommand>(c => c.Rota == RotasRabbit.EnviarEmail && c.Filtros is EnviarEmailDto), It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -312,10 +324,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             _mockConfiguration.Setup(x => x["UrlFrontEnd"]).Returns((string?)null);
 
-            var certificado = new DadosProcessamentoCertificadoCodafDto
+            var certificado = new DadosProcessamentoCodafDto
             {
                 Id = 5,
-                CodigoCertificado = 2002,
+                CodigoDeclaracaoOuCertificado = 2002,
                 HtmlContentSnapshot = "<div>{{NUM_SEQ}} - {{EMISSOR}}</div>",
                 NomeCompleto = "Usuario Teste",
                 EmailUsuario = "usuario@exemplo.com",
@@ -329,15 +341,15 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .ReturnsAsync([]);
 
             _mockServicoRelatorio
-                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>()))
+                .Setup(s => s.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>()))
                 .ReturnsAsync([0x3]);
 
             _mockServicoArmazenamento
-                .Setup(a => a.UploadCertificadoCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+                .Setup(a => a.UploadCodafAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
                 .ReturnsAsync("chave-url-nula");
 
             var mockGerador = new Mock<ICertificadoCodafGeradorConteudo>();
-            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCertificadoCodafDto>(), It.IsAny<string>()))
+            mockGerador.Setup(g => g.GerarConteudoEmail(It.IsAny<DadosProcessamentoCodafDto>(), It.IsAny<string>()))
                 .Returns(("T", "C"));
             _mockServiceProvider
                 .Setup(sp => sp.GetRequiredKeyedService(typeof(ICertificadoCodafGeradorConteudo), It.IsAny<object>()))
@@ -353,7 +365,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             resultado.Should().BeTrue();
             mockGerador.Verify(g => g.GerarConteudoEmail(
-                It.IsAny<DadosProcessamentoCertificadoCodafDto>(),
+                It.IsAny<DadosProcessamentoCodafDto>(),
                 It.Is<string>(url => url == "/certificados")), Times.Once);
         }
     }

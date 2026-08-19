@@ -194,6 +194,7 @@
                CA.CODIGO_CERTIFICADO AS codigoCertificado,
                CA.HTML_CONTENT_SNAPSHOT AS htmlContentSnapshot,
                U.NOME AS nomeCompleto,
+               U.NOME_SOCIAL AS nomeSocial,
                (U.LOGIN <> U.CPF) AS temRf,
                1 AS tipoParticipacao, -- Cursista
                P.NOME_FORMACAO AS nomeFormacao,
@@ -214,6 +215,7 @@
                CA.CODIGO_CERTIFICADO AS codigoCertificado,
                CA.HTML_CONTENT_SNAPSHOT AS htmlContentSnapshot,
                U.NOME AS nomeCompleto,
+               U.NOME_SOCIAL AS nomeSocial,
                (U.LOGIN <> U.CPF) AS temRf,
                1 AS tipoParticipacao, -- Cursista
                P.NOME_FORMACAO AS nomeFormacao,
@@ -235,6 +237,7 @@
                CA.CODIGO_CERTIFICADO AS codigoCertificado,
                CA.HTML_CONTENT_SNAPSHOT AS htmlContentSnapshot,
                PR.NOME_REGENTE AS nomeCompleto,
+               CAST(NULL AS VARCHAR) AS nomeSocial,
                TRUE AS temRf, -- Regente sempre tem RF
                2 AS tipoParticipacao, -- Regente
                P.NOME_FORMACAO AS nomeFormacao,
@@ -401,7 +404,7 @@
                 SELECT 
                     CC.ID AS id, 
                     CC.CODIGO_CERTIFICADO AS codigoCertificado, 
-                    U.NOME AS nomeParticipante,
+                    COALESCE(NULLIF(TRIM(U.NOME_SOCIAL), ''), U.NOME) AS nomeParticipante,
                     @Cursista AS tipoCertificado, 
                     U.LOGIN AS documento, 
                     CC.DATA_EMISSAO AS dataEmissao,

@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
+using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
@@ -549,6 +550,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromQuery] int numeroRegistros = 10)
         {
             return ProcessarResultado(await casoDeUso.ExecutarAsync(propostaTurmaId, termo, numeroPagina, numeroRegistros));
+        }
+
+        [HttpGet("{id:long}/detalhes-com-turmas")]
+        [ProducesResponseType(typeof(Resultado<PropostaComTurmasDto>), 200)]
+        [ProducesResponseType(204)]
+        public async Task<IActionResult> ObterDetalhesPropostaComTurmasPorId(
+            [FromRoute] long id,
+            [FromQuery] bool formacoesHomologadas,
+            [FromServices] ICasoDeUsoObterDetalhesPropostaComTurmasPorId useCase)
+        {
+            var resultado = await useCase.ExecutarAsync(id, formacoesHomologadas);
+
+            return ProcessarResultado(resultado);
         }
     }
 }

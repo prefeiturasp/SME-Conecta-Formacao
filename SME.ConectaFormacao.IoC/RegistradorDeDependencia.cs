@@ -112,6 +112,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             .AdicionarModuloUe()
             .AdicionarModuloCoordenadoria()
             .AddCodafSuplementar()
+            .AddCodafCursoNaoHomologado()
             ;
     }
 
@@ -243,12 +244,17 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new CodafListaPresencaMap());
             config.AddMap(new CodafMovimentacaoListaPresencaMap());
             config.AddMap(new CodafCertificadoMap());
+            config.AddMap(new CodafDeclaracaoMap());
             config.AddMap(new CodafAnexoMap());
 
             config.AddMap(new CodafSuplementarAnexoMap());
             config.AddMap(new CodafSuplementarInscricaoMap());
             config.AddMap(new CodafSuplementarRetificacaoMap());
             config.AddMap(new CodafSuplementarMap());
+
+            config.AddMap(new CodafCursoNaoHomologadoMap());
+            config.AddMap(new CodafCursoNaoHomologadoAnexoMap());
+            config.AddMap(new CodafCursoNaoHomologadoInscricaoMap());
 
             config.AddMap(new UsuarioAcessibilidadeMap());
             config.AddMap(new UeMap());
