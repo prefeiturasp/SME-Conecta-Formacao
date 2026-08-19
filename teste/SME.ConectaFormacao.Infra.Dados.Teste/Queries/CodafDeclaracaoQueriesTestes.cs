@@ -29,7 +29,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Queries
                 "PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO",
                 "PUBLIC.INSCRICAO",
                 "PUBLIC.USUARIO",
-                "PUBLIC.CODAF_DECLARACOES",
                 "PUBLIC.DRE",
                 "PUBLIC.COORDENADORIA",
                 "@codafNaoHomologadoId",
@@ -229,8 +228,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Queries
             DeveConter(
                 query,
                 "COPY public.codaf_declaracoes",
-                "id",
-                "codigo_declaracao",
                 "codaf_curso_nao_homologado_inscricao_id",
                 "codaf_curso_nao_homologado_id",
                 "proposta_regente_turma_id",
@@ -257,10 +254,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Queries
             // Assert
             DeveConter(
                 query,
-                "UPDATE PUBLIC.CODAF_DECLARACOES CC",
+                "UPDATE PUBLIC.CODAF_DECLARACOES",
                 "SET HTML_CONTENT_SNAPSHOT = REPLACE",
                 "NUM_CODIGO_DECLARACAO",
-                "CAST(CC.CODIGO_DECLARACAO AS TEXT)");
+                "CAST(CODIGO_DECLARACAO AS TEXT)");
         }
 
         [Fact]
@@ -273,11 +270,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Queries
             // Assert
             DeveConter(
                 query,
-                "NUM_HOM_FORMACAO",
-                "P.NUMERO_HOMOLOGACAO",
-                "PUBLIC.PROPOSTA_TURMA",
-                "PUBLIC.PROPOSTA",
-                "PT.PROPOSTA_ID = P.ID");
+                "UPDATE PUBLIC.CODAF_DECLARACOES",
+                "SET HTML_CONTENT_SNAPSHOT = REPLACE",
+                "WHERE CODAF_CURSO_NAO_HOMOLOGADO_ID = @codafNaoHomologadoId",
+                "AND NOT EXCLUIDO");
         }
 
         [Fact]
@@ -290,12 +286,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Queries
             // Assert
             DeveConter(
                 query,
-                "CC.CODAF_CURSO_NAO_HOMOLOGADO_ID = @codafNaoHomologadoId",
-                "CC.PROPOSTA_REGENTE_TURMA_ID IN",
-                "PUBLIC.PROPOSTA_REGENTE_TURMA",
-                "PRT.TURMA_ID IN",
-                "WHERE ID = @codafNaoHomologadoId",
-                "AND NOT CC.EXCLUIDO");
+                "UPDATE PUBLIC.CODAF_DECLARACOES",
+                "SET HTML_CONTENT_SNAPSHOT = REPLACE",
+                "WHERE CODAF_CURSO_NAO_HOMOLOGADO_ID = @codafNaoHomologadoId",
+                "AND NOT EXCLUIDO");
         }
 
         [Fact]

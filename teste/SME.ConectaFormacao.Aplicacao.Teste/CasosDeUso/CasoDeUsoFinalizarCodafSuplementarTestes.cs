@@ -89,7 +89,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var codaf = CriarCodaf(
-                status: StatusCodafSuplementar.Iniciado,
+                status: StatusCodafSuplementar.Aguardando,
                 criadoLogin: "OUTRO_USUARIO");
 
             contextoAplicacaoMock
@@ -153,7 +153,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var codaf = CriarCodaf(
-                status: StatusCodafSuplementar.Iniciado,
+                status: StatusCodafSuplementar.Aguardando,
                 criadoLogin: LoginUsuario);
 
             codaf.CodafInscricoes.Add(CriarInscricao(aprovado: true));
@@ -186,7 +186,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var codaf = CriarCodaf(
-                status: StatusCodafSuplementar.Iniciado,
+                status: StatusCodafSuplementar.Aguardando,
                 criadoLogin: LoginUsuario);
 
             contextoAplicacaoMock
@@ -218,7 +218,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var codaf = CriarCodaf(
-                status: StatusCodafSuplementar.Iniciado,
+                status: StatusCodafSuplementar.Aguardando,
                 criadoLogin: LoginUsuario);
 
             codaf.CodafInscricoes.Add(CriarInscricao(aprovado: false));
@@ -253,7 +253,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var codaf = CriarCodaf(
-                status: StatusCodafSuplementar.Iniciado,
+                status: StatusCodafSuplementar.Aguardando,
                 criadoLogin: LoginUsuario);
 
             contextoAplicacaoMock
@@ -315,7 +315,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var codaf = CriarCodaf(
-                status: StatusCodafSuplementar.Iniciado,
+                status: StatusCodafSuplementar.Aguardando,
                 criadoLogin: LoginUsuario);
 
             var excecaoEsperada = new InvalidOperationException("Erro ao atualizar");
