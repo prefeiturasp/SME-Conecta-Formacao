@@ -24,11 +24,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
             if (codafOriginal is null)
                 return Erro.Validacao("Codaf não encontrado para a turma informada");
 
-            var codafSuplementarExistente = await dependencias.RepositorioCodaf.ObterPorExpressaoAsync(c => c.CodafId == codafOriginal.Id && !c.Excluido);
-
-            if (codafSuplementarExistente is not null)
-                return Erro.Validacao("Já existe um codaf suplementar para a turma informada");
-
             var codafSuplementar = new CodafSuplementar(codafSuplementarCadastroDto.CodafId,
                 new(codafSuplementarCadastroDto.DataPublicacao,
                     codafSuplementarCadastroDto.DataPublicacaoDom,

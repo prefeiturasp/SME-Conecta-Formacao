@@ -9,6 +9,7 @@ namespace SME.Conecta.Worker.Rabbbit
             logger.LogInformation("Worker de Resiliência CODAF iniciado.");
             while (!stoppingToken.IsCancellationRequested)
             {
+                logger.LogInformation("Iniciando ciclo de resiliência para recuperação de certificados travados CODAF.");
                 using (var scope = serviceScopeFactory.CreateScope())
                 {
                     try
