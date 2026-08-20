@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
@@ -10,14 +11,20 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
     public class CasoDeUsoAtualizarCodafSuplementar(
         CodafSuplementarDependencias dependencias,
-        IValidator<CodafSuplementarCadastroDto> validator) : ICasoDeUsoAtualizarCodafSuplementar
+        IValidator<CodafSuplementarCadastroDto> validator,
+        IContextoAplicacao contextoAplicacao) : ICasoDeUsoAtualizarCodafSuplementar
     {
         public async Task<Resultado> ExecutarAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto, long id)
         {
+            var perfilRestrito = !contextoAplicacao.EhAdministrador;
+
             var codafSuplementarExistente = await dependencias.RepositorioCodaf.ObterNaoExcluidosPorIdAsync(id);
 
             if (codafSuplementarExistente is null)
                 return Erro.NaoEncontrado("Codaf Suplementar não encontrado");
+
+            if (perfilRestrito && codafSuplementarExistente.CriadoLogin != contextoAplicacao.LoginUsuario)
+                return Erro.Negocio("Você não tem permissão para editar esta lista de presença.");
 
             var validationResult = await validator.ValidateAsync(codafSuplementarCadastroDto);
             if (!validationResult.IsValid)

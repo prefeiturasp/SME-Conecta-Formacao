@@ -208,7 +208,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 {sqlObterInscricoesDaListaPorIdCodaf}
                 
                 -- 5. Critérios de Certificação
-                {CodafQueries.SqlObterCriteriosCertificacaoPorIdCodaf}
+                {CodafQueries.SqlObterCriteriosCertificacaoPorIdCodaf}               
                 """;
 
             var parametros = new { id };
@@ -330,6 +330,35 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 parametros,
                 splitOn: "ID,ID");
             return codafListaPresenca.SingleOrDefault();
+        }
+
+        public override async Task<CodafListaPresenca?> ObterNaoExcluidosPorIdAsync(long id)
+        {
+            var conn = conexao.Obter();
+            var parametros = new { id };
+
+            var sql = $"""
+                {sqlObterCodafPorIdComPropostaEPropostaTurma}
+
+                {sqlCertificadosPorIdCodaf}
+                """;
+
+            using var multi = await conn.QueryMultipleAsync(sql, parametros);
+            var codafListaPresenca = multi.Read<CodafListaPresenca, Proposta, PropostaTurma, CodafListaPresenca>(
+                (clp, p, pt) =>
+                {
+                    clp.Proposta = p;
+                    clp.PropostaTurma = pt;
+                    return clp;
+                },
+                splitOn: "ID,ID").SingleOrDefault();
+
+            if (codafListaPresenca == null)
+                return null;
+
+            codafListaPresenca.CodafCertificados = [.. await multi.ReadAsync<CodafCertificado>()];
+
+            return codafListaPresenca;
         }
 
         public async Task<IEnumerable<DadosConsultaParaTxtEolDto>?> ObterDadosRemessaConclusaoCodafAsync(long id)
@@ -539,6 +568,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    CA.CRIADO_POR AS CriadoPor
             FROM PUBLIC.CODAF_ANEXO AS CA 
             WHERE NOT CA.EXCLUIDO AND CA.CODAF_LISTA_PRESENCA_ID = @id;
+            """;
+        private const string sqlCertificadosPorIdCodaf = """
+            SELECT CC.ID, 
+                   CC.CODAF_LISTA_PRESENCA_ID AS CodafListaPresencaId,
+                   CC.CODIGO_CERTIFICADO AS CodigoCertificado,
+                   CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID AS CodafInscricaoListaPresencaId,
+                   CC.PROPOSTA_REGENTE_TURMA_ID AS PropostaRegenteTurmaId,
+                   CC.TIPO_PARTICIPACAO AS TipoParticipacao,
+                   CC.STATUS_PROCESSAMENTO AS StatusProcessamento,
+                   CC.CRIADO_EM AS CriadoEm,
+                   CC.CRIADO_POR AS CriadoPor
+            FROM PUBLIC.CODAF_CERTIFICADOS AS CC
+            INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA CS ON CC.CODAF_LISTA_PRESENCA_ID = CS.ID
+            WHERE NOT CS.EXCLUIDO AND CC.CODAF_LISTA_PRESENCA_ID = @id;
             """;
 
         private const string sqlObterInscricoesDaListaPorIdCodaf = """

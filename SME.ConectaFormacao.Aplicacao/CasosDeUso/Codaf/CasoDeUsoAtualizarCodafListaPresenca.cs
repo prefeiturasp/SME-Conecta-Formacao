@@ -101,6 +101,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 
         private async Task SalvarInscritosAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, CodafListaPresenca codafListaPresenca)
         {
+            if (codafListaPresenca.CertificadoEmitido || codafListaPresenca.Status == Dominio.Enumerados.StatusCodafListaPresenca.Finalizado)
+                return;
+
             if (codafListaPresencaEdicaoDto.Inscritos == null || !codafListaPresencaEdicaoDto.Inscritos.Any())
                 return;
 
