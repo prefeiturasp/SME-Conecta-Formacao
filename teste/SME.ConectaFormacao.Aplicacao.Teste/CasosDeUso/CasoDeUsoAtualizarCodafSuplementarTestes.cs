@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados;
@@ -32,6 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<ITransacao> transacao;
         private readonly Mock<IDbTransaction> transacaoDb;
         private readonly Mock<IValidator<CodafSuplementarCadastroDto>> validator;
+        private readonly Mock<IContextoAplicacao> contextoAplicacao;
 
         private readonly CasoDeUsoAtualizarCodafSuplementar casoDeUso;
 
@@ -46,6 +48,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             transacao = new Mock<ITransacao>();
             transacaoDb = new Mock<IDbTransaction>();
             validator = new Mock<IValidator<CodafSuplementarCadastroDto>>();
+            contextoAplicacao = new Mock<IContextoAplicacao>();
 
             transacao
                 .Setup(t => t.Iniciar())
@@ -62,7 +65,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             casoDeUso = new CasoDeUsoAtualizarCodafSuplementar(
                 dependencias,
-                validator.Object);
+                validator.Object,
+                contextoAplicacao.Object);
         }
 
         [Fact]
