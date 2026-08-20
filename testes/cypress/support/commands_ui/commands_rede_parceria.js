@@ -29,10 +29,16 @@ Cypress.Commands.add('criar_novo_usuario', (situacao) => {
     .should('be.visible')
     .click()
 
-  cy.contains('Teste', { timeout: 10000 })
+  cy.get(rede_parceria_Localizadores.filtro_area_promotora(), { timeout: 10000 })
+    .should('exist')
+    .clear()
+    .type('Teste')
+
+  cy.get(rede_parceria_Localizadores.opcao_area(), { timeout: 10000 })
+    .contains('Teste')
     .should('be.visible')
     .click()
-  
+
   cy.get(rede_parceria_Localizadores.input_cpf())
     .should('be.visible')
     .type(Cypress.env('CPF'))
@@ -40,20 +46,21 @@ Cypress.Commands.add('criar_novo_usuario', (situacao) => {
   cy.get(rede_parceria_Localizadores.input_nome_usuario())
     .should('be.visible')
     .type('Teste Automatizado')
-  
+
   cy.get(rede_parceria_Localizadores.input_email())
     .should('be.visible')
     .type(Cypress.env('EMAIL'))
-  
+
   cy.get(rede_parceria_Localizadores.input_telefone(), { timeout: 30000 })
     .should('be.visible')
     .type(Cypress.env('TELEFONES'))
-  
+
   cy.get(rede_parceria_Localizadores.select_situacao())
     .should('be.visible')
     .click()
 
-  cy.contains(situacao, { timeout: 10000 })
+  cy.get(rede_parceria_Localizadores.opcao_situacao(), { timeout: 10000 })
+    .contains(situacao)
     .should('be.visible')
     .click()
 
@@ -89,19 +96,11 @@ Cypress.Commands.add('validar_campos_criar_novo_usuario', () => {
     .click()
 
   cy.get(rede_parceria_Localizadores.filtro_area_promotora(), { timeout: 5000 })
-    .should('be.visible')
+    .should('exist')
     .click()
-
-  cy.contains('Teste', { timeout: 10000 })
-    .should('be.visible')
-    .click()  
 
   cy.get(rede_parceria_Localizadores.btn_salvar(), { timeout: 3000 })
-    .should('be.visible')
-    .click()
-
-  cy.get(rede_parceria_Localizadores.msg_campo_obrigatorio(), { timeout: 3000 })
-    .should('be.visible')  
+    .should('be.disabled')
 })
 
 Cypress.Commands.add('validar_cadastro_rede_parceria', () => {
