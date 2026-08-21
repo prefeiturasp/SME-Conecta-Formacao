@@ -15,10 +15,6 @@ Cypress.Commands.add('acessar_lista_presenca', () => {
   cy.get(lista_presenca_localizadores.menu_lista_presenca())
     .contains('Formações homologadas')
     .click()
-
-  cy.get(lista_presenca_localizadores.menu_lista_presenca())
-    .contains('Formações homologadas')
-    .click() 
   
   cy.url({ timeout: 30000 })
     .should('include', 'lista-presenca-codaf')
@@ -36,10 +32,6 @@ Cypress.Commands.add('filtrar_lista_presenca', (situacao) => {
   cy.get(lista_presenca_localizadores.campo_codigo(), { timeout: 10000 })
     .should('be.visible')
     .clear()
-    .type('140')
-
-  cy.get(lista_presenca_localizadores.campo_codigo(), { timeout: 30000 })
-    .should('exist')
     .type('140')
 
   cy.get(lista_presenca_localizadores.btn_filtrar(), { timeout: 30000 })
@@ -175,4 +167,5 @@ Cypress.Commands.add('limpar_filtros_lista_presenca', () => {
 
 Cypress.Commands.add('validar_sem_filtros_lista_presenca', () => {
   cy.contains('Não encontramos registros para os filtros aplicados').should('exist')
+})
 

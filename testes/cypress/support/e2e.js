@@ -27,7 +27,6 @@ beforeEach(() => {
   cy.task('clearDownloads')
 })
 
-
 // Evita quebra por erro de front
 Cypress.on('uncaught:exception', () => {
   return false
