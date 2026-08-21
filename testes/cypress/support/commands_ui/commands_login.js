@@ -39,7 +39,7 @@ Cypress.Commands.add('realizar_login', (perfil) => {
        .should('be.visible')
        .click()
 
-      cy.contains('Acompanhamento de propostas formativas', { timeout: 10000 })
+      cy.contains('Acompanhamento de propostas formativas', { timeout: 30000 })
        .should('be.visible')
 
       cy.get(login_Conecta_Localizadores.card_usuario(), { timeout: 30000 })

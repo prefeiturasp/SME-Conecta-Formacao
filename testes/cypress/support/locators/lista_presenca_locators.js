@@ -8,15 +8,14 @@ class Lista_Presenca_Localizadores {
   campo_nome = () => '#CF_INPUT_NOME_FORMACAO'
   select_area = () => '#CF_SELECT_AREA_PROMOTORA'
   campo_codigo = () => '#CF_INPUT_CODIGO_FORMACAO'
-  campo_homologacao = () => '#CF_INPUT_NUMERO_HOMOLOGACAO'   
-  campo_envio = () => '#dataEnvio'  
-  select_situacao = () => '#situacao' 
+  campo_homologacao = () => '#CF_INPUT_NUMERO_HOMOLOGACAO'
+  campo_envio = () => '#dataEnvio'
+  select_situacao = () => '#situacao'
   opcao_situacao = () => '.ant-select-item-option-content'
-  tbl_lista_presenca = () => '.ant-table-thead > tr > :nth-child(1)' 
-  btn_acoes = () => 'button.ant-dropdown-trigger'
+  tbl_lista_presenca = () => '.ant-table-thead > tr > :nth-child(1)'
+  btn_acoes = () => '.ant-dropdown-trigger'
   btn_gerar_arquivo = () => 'span'
   msg_sucesso = () => '.ant-notification-notice-message'
-
 }
 
-export default Lista_Presenca_Localizadores 
+export default Lista_Presenca_Localizadores

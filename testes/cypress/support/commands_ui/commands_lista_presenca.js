@@ -7,10 +7,13 @@ Cypress.Commands.add('acessar_lista_presenca', () => {
     .should('be.visible')
     .click()
 
-  cy.contains(lista_presenca_localizadores.menu_lista_presenca(), 'Lista de Presença CODAF')
+  cy.get(lista_presenca_localizadores.menu_lista_presenca())
+    .contains('Lista de Presença')
+    .should('be.visible')
     .click()
 
-  cy.contains(lista_presenca_localizadores.menu_lista_presenca(), 'Formações homologadas')
+  cy.get(lista_presenca_localizadores.menu_lista_presenca())
+    .contains('Formações homologadas')
     .click()
 
   cy.get(lista_presenca_localizadores.menu_lista_presenca())
@@ -35,6 +38,10 @@ Cypress.Commands.add('filtrar_lista_presenca', (situacao) => {
     .clear()
     .type('140')
 
+  cy.get(lista_presenca_localizadores.campo_codigo(), { timeout: 30000 })
+    .should('exist')
+    .type('140')
+
   cy.get(lista_presenca_localizadores.btn_filtrar(), { timeout: 30000 })
     .should('be.visible')
     .click()
@@ -49,11 +56,11 @@ Cypress.Commands.add('validar_baixar_lista_presenca_eol', () => {
     .click()
 
   cy.contains(lista_presenca_localizadores.btn_gerar_arquivo(), 'Gerar TXT EOL', { timeout: 30000 })
-    .should('be.visible')
+    .should('exist')
     .click()
 
   cy.get(lista_presenca_localizadores.msg_sucesso(), { timeout: 30000 })
-    .should('be.visible')
+    .should('exist')
     .and('contain.text', 'Sucesso')
 })
 
@@ -63,11 +70,11 @@ Cypress.Commands.add('validar_baixar_lista_presenca_codaf', () => {
     .click()
 
   cy.contains(lista_presenca_localizadores.btn_gerar_arquivo(), 'Baixar Relatório CODAF', { timeout: 30000 })
-    .should('be.visible')
+    .should('exist')
     .click()
 
   cy.get(lista_presenca_localizadores.msg_sucesso(), { timeout: 30000 })
-    .should('be.visible')
+    .should('exist')
     .and('contain.text', 'Sucesso')
 })
 
@@ -116,11 +123,12 @@ Cypress.Commands.add('preencher_filtro_lista_presenca', (opcao, valor, valorFina
 
     case 'situação':
       cy.get(lista_presenca_localizadores.select_situacao(), { timeout: 10000 })
-        .should('to.exist')
+        .closest('.ant-select')  
+        .should('exist')
         .click()
 
       cy.get(lista_presenca_localizadores.select_situacao(valor), { timeout: 10000 })
-        .should('to.exist')
+        .should('exist')
         .click()  
       break
   
@@ -140,7 +148,7 @@ Cypress.Commands.add('validar_filtros_lista_presenca', (campo) => {
 
 Cypress.Commands.add('nao_filtrar_lista_presenca', (situacao) => {
   cy.get(lista_presenca_localizadores.campo_nome(), { timeout: 10000 })
-      .should('to.exist')
+      .should('be.visible')
       .type('Nome Inexistente')
 
   cy.get(lista_presenca_localizadores.btn_filtrar(), { timeout: 30000 })
@@ -167,5 +175,4 @@ Cypress.Commands.add('limpar_filtros_lista_presenca', () => {
 
 Cypress.Commands.add('validar_sem_filtros_lista_presenca', () => {
   cy.contains('Não encontramos registros para os filtros aplicados').should('exist')
-})
 

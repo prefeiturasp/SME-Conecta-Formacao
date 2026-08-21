@@ -19,12 +19,14 @@ import './commands_ui/commands_redefinir_senha'
 import './commands_ui/commands_notificacoes'
 import './commands_ui/commands_meus_certificados'
 import './commands_ui/commands_lista_presenca'
+import './commands_ui/commands_relatorios_inscritos_formacao'
 import './commands_ui/commands_pesquisar_certificados'
 
 // Limpa a pasta de downloads antes de cada teste
 beforeEach(() => {
   cy.task('clearDownloads')
 })
+
 
 // Evita quebra por erro de front
 Cypress.on('uncaught:exception', () => {
