@@ -12,8 +12,8 @@ Funcionalidade: Lista presença CODAF
     Então o sistema permite baixar o TXT CODAF
       
     Exemplos:
-      | situacao   |
-      | Finalizado | 
+      | situacao      |
+      | Aguardando DF | 
 
   Esquema do Cenário: Baixar relatório CODAF
     Quando acesso o menu Lista Presença Codaf

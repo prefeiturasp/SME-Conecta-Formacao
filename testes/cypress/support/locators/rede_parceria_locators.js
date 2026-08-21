@@ -13,6 +13,7 @@ class Rede_Parceria_Localizadores {
   msg_campo_obrigatorio = () => '#cpf_help > .ant-form-item-explain-error'
   tbl_cpf = () => '.ant-table-row > :nth-child(3)'
   filtro_area_promotora = () => '#CF_SELECT_AREA_PROMOTORA'
+  select_area_promotora = () => '.ant-select-item-option-content'
   filtro_nome = () => '#CF_INPUT_NOME_FORMACAO'
   opcao_area = () => '.ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option-content'
   opcao_situacao = () => '.ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option-content'

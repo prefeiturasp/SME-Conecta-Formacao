@@ -18,7 +18,6 @@ class Inscricoes_Localizadores {
   input_deficiencia = () => '#pessoaComDeficiencia'  
   btn_nova_inscricao = () => '#CF_BUTTON_NOVO > span'
   btn_salvar_informacoes = () => '.ant-modal-footer > .ant-btn-primary'
-  btn_nao_enviar_informacoes = () => '.ant-modal-confirm-btns > .ant-btn-text > span'
 }
 
 export default Inscricoes_Localizadores 

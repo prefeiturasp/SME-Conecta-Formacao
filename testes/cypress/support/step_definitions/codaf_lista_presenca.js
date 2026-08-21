@@ -32,6 +32,29 @@ Quando('envio uma requisição GET na lista presença do Codaf', function () {
 Então('retorna o status 200 com dados de presença do Codaf', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.eq(200)
+
+    expect(response.body).to.have.property('items')
+    expect(response.body).to.have.property('totalPaginas')
+    expect(response.body).to.have.property('totalRegistros')
+
+    expect(response.body.items).to.be.an('array')
+
+    if (response.body.items.length > 0) {
+      const item = response.body.items[0]
+
+      expect(item).to.include.keys(
+        'id',
+        'numeroHomologacao',
+        'nomeFormacao',
+        'codigoFormacao',
+        'nomeTurma',
+        'nomeAreaPromotora',
+        'status',
+        'statusCertificacaoTurma',
+        'codigoCursoEol',
+        'codigoNivel'
+      )
+    }
   })
 })
 

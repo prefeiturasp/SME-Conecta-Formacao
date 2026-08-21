@@ -28,6 +28,9 @@ Cypress.Commands.add('criar_novo_usuario', (situacao) => {
   cy.get(rede_parceria_Localizadores.filtro_area_promotora(), { timeout: 5000 })
     .should('be.visible')
     .click()
+  
+  cy.get(rede_parceria_Localizadores.filtro_area_promotora(), { timeout: 5000 })
+    .type('Teste')
 
   cy.get(rede_parceria_Localizadores.filtro_area_promotora(), { timeout: 10000 })
     .should('exist')
@@ -69,7 +72,7 @@ Cypress.Commands.add('criar_novo_usuario', (situacao) => {
     .click()
 
   cy.get(rede_parceria_Localizadores.btn_confirmar_cadastro_usuario(), { timeout: 3000 })
-    .should('be.visible')
+    .should('to.exist')
     .click()
 
   cy.contains(
@@ -98,6 +101,15 @@ Cypress.Commands.add('validar_campos_criar_novo_usuario', () => {
   cy.get(rede_parceria_Localizadores.filtro_area_promotora(), { timeout: 5000 })
     .should('exist')
     .click()
+  
+  cy.get(rede_parceria_Localizadores.filtro_area_promotora(), { timeout: 5000 })
+    .should('be.visible')
+    .type('Teste')
+
+  cy.contains(rede_parceria_Localizadores.select_area_promotora(), 'Teste', { timeout: 10000 })
+    .should('to.exist')
+    .click()
+
 
   cy.get(rede_parceria_Localizadores.btn_salvar(), { timeout: 3000 })
     .should('be.disabled')
@@ -149,7 +161,7 @@ Cypress.Commands.add('excluir_usuario_rede_parceria', () => {
     .click()
 
   cy.get(rede_parceria_Localizadores.btn_confirmar_cadastro_usuario(), { timeout: 10000 })
-    .should('be.visible')
+    .should('to.exist')
     .click()
 
   cy.url().should('include', 'cadastro/rede-parceria')

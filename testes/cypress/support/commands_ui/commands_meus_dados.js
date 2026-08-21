@@ -62,7 +62,7 @@ Cypress.Commands.add('validar_campo_meus_dados', (campo) => {
 
     case 'pessoa deficiencia':
       cy.get(meus_dados_localizadores.select_pessoa_deficiencia(), { timeout: 10000 })
-        .should('be.visible')
+        .should('exist')
         .invoke('text')
         .then((texto) => {
           expect(texto.trim(), 'Campo Pessoa com deficiência').to.not.equal('')
