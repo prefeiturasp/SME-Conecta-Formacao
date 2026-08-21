@@ -202,6 +202,87 @@
                 WHERE NOT CC.EXCLUIDO
                   AND CSI.INSCRICAO_ID = ANY(@inscricaoId)
             )
-        """;
+        """; 
+        
+        public const string ObterMinhasDeclaracoesCteBase = """
+            WITH BaseDeclaracoes AS (
+                -- 1. Cursista
+                SELECT 
+                    CD.ID, CD.CODIGO_DECLARACAO AS codigoDeclaracao, 
+                    (U.LOGIN <> U.CPF) AS temRf,
+                    1 AS tipoParticipacao, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    P.ID AS codigoFormacao,
+                    CD.DATA_EMISSAO AS dataEmissao, 
+                    U.LOGIN
+                FROM PUBLIC.CODAF_DECLARACOES AS CD
+                INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CCNHI ON CD.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO_ID  = CCNHI.ID
+                INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH ON CCNHI.CODAF_CURSO_NAO_HOM_ID = CCNH.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON CCNH.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.INSCRICAO AS I ON CCNHI.INSCRICAO_ID = I.ID 
+                INNER JOIN PUBLIC.USUARIO AS U ON I.USUARIO_ID = U.ID
+                WHERE NOT CD.EXCLUIDO AND CD.STATUS_PROCESSAMENTO = @statusProcessado
+
+                UNION ALL
+
+                -- 2. Regente
+                SELECT        
+                    CD.ID, CD.CODIGO_DECLARACAO AS codigoDeclaracao, 
+                    TRUE AS temRf, 
+                    2 AS tipoParticipacao, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    P.ID AS codigoFormacao, 
+                    CD.DATA_EMISSAO AS dataEmissao, 
+                    U.LOGIN
+                FROM PUBLIC.CODAF_DECLARACOES AS CD
+                INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON CD.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
+                INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PRT.TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.USUARIO AS U ON U.CPF = PR.REGISTRO_FUNCIONAL OR U.LOGIN = PR.REGISTRO_FUNCIONAL
+                WHERE NOT CD.EXCLUIDO AND CD.STATUS_PROCESSAMENTO = @statusProcessado
+            )
+            """;
+
+        public const string ObterDeclaracaoDisponivelDoUsuario = """
+            WITH DeclaracaoBase AS (
+                SELECT
+                    CD.ID, 
+                    CD.CODIGO_DECLARACAO AS codigoDeclaracao, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    U.NOME AS nomeCompleto, 
+                    CD.CHAVE_OBJETO_ARMAZENAMENTO AS chaveObjetoArmazenamento, 
+                    U.LOGIN AS loginParticipante
+                FROM PUBLIC.CODAF_DECLARACOES CD
+                INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CCNHI ON CD.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO_ID  = CCNHI.ID
+                INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO CCNH ON CCNHI.CODAF_CURSO_NAO_HOM_ID = CCNH.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON CCNH.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.INSCRICAO I ON CCNHI.INSCRICAO_ID = I.ID 
+                INNER JOIN PUBLIC.USUARIO U ON I.USUARIO_ID = U.ID
+                WHERE CD.ID = @declaracaoId AND CD.STATUS_PROCESSAMENTO = @statusProcessado AND NOT CD.EXCLUIDO
+
+                UNION ALL
+
+                SELECT
+                    CD.ID, 
+                    CD.CODIGO_DECLARACAO AS codigoDeclaracao, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    PR.NOME_REGENTE AS nomeCompleto, 
+                    CD.CHAVE_OBJETO_ARMAZENAMENTO AS chaveObjetoArmazenamento, 
+                    coalesce(PR.REGISTRO_FUNCIONAL, PR.CPF) AS loginParticipante
+                FROM PUBLIC.CODAF_DECLARACOES CD
+                INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA PRT ON CD.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
+                INNER JOIN PUBLIC.PROPOSTA_REGENTE PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON PRT.TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                WHERE CD.ID = @declaracaoId AND CD.STATUS_PROCESSAMENTO = @statusProcessado AND NOT CD.EXCLUIDO
+            )
+            SELECT ID, codigoDeclaracao, nomeFormacao, nomeCompleto, chaveObjetoArmazenamento
+            FROM DeclaracaoBase
+            WHERE (@login IS NULL OR loginParticipante = @login)
+            """;
     }
 }

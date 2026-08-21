@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
+using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
 using SME.ConectaFormacao.Webapi.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
@@ -9,7 +13,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     [Authorize("Bearer")]
     [PadronizarRetornoFiltro]
     public class CodafDeclaracaoController(
-        ICasoDeUsoEmitirDeclaracaoCodaf casoDeUsoEmitirDeclaracaoCodaf) : BaseController
+        ICasoDeUsoEmitirDeclaracaoCodaf casoDeUsoEmitirDeclaracaoCodaf,
+        ICasoDeUsoListarMinhasDeclaracoesCodaf casoDeUsoListarMinhasDeclaracoesCodaf,
+        ICasoDeUsoObterDeclaracaoCodafParaDownload casoDeUsoObterDeclaracaoCodafParaDownload) : BaseController
     {
         [HttpPost("{codafNaoHomologadoId:long}/emitir")]
         [ProducesResponseType(typeof(Resultado), 200)]
@@ -18,6 +24,24 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         {
             var resultado = await casoDeUsoEmitirDeclaracaoCodaf.ExecutarAsync(codafNaoHomologadoId);
             return ProcessarResultado(resultado);
-        }  
+        }
+
+        [HttpGet("minhas")]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<MinhasDeclaracoesCodafDto>>), 200)]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<MinhasDeclaracoesCodafDto>>), 404)]
+        public async Task<IActionResult> ListarMinhasDeclaracoes([FromQuery] FiltroListaMinhasDeclaracoesCodafDto filtro)
+        {
+            var resultado = await casoDeUsoListarMinhasDeclaracoesCodaf.ExecutarAsync(filtro);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpGet("{declaracaoCodafId}/download")]
+        [ProducesResponseType(typeof(Resultado<CodafDeclaracaoParaDownloadDto>), 200)]
+        [ProducesResponseType(typeof(Resultado<CodafDeclaracaoParaDownloadDto>), 422)]
+        public async Task<IActionResult> ObterCertificadoParaDownload(long declaracaoCodafId)
+        {
+            var resultado = await casoDeUsoObterDeclaracaoCodafParaDownload.ExecutarAsync(declaracaoCodafId);
+            return ProcessarResultado(resultado);
+        }
     }
 }

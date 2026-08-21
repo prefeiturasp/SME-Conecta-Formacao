@@ -80,8 +80,10 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var response = _controller.ProcessarResultado(resultado);
 
             // Assert
-            var notFoundResult = Assert.IsType<NotFoundObjectResult>(response);
-            Assert.Equal(404, notFoundResult.StatusCode);
+            // *Alterado para o 422 pois está sendo omitido o corpo da resposta com o 404, e o front não consegue ler a mensagem de erro (by Diego Moreno - 2026-08-21)
+            var notFoundResult = Assert.IsType<UnprocessableEntityObjectResult>(response);            
+            
+            Assert.Equal(422, notFoundResult.StatusCode);
             VerificarEstruturaDeErro(notFoundResult.Value, "Registro inexistente");
         }
 
