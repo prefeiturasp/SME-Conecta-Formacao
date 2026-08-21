@@ -99,7 +99,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             await conexao.Obter().ExecuteAsync(CodafCertificadoQueries.RecuperarCertificadosTravados, new
             {
                 statusPendente = (int)StatusProcessamentoCertificadoCodaf.Pendente,
-                statusProcessando = (int)StatusProcessamentoCertificadoCodaf.EmProcessamento,
+                statusProcessando = new[] { (int)StatusProcessamentoCertificadoCodaf.EmProcessamento, 
+                                            (int)StatusProcessamentoCertificadoCodaf.ProcessadoComErro },
                 statusErro = (int)StatusProcessamentoCertificadoCodaf.ProcessadoComErro
             });
         }

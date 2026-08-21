@@ -273,8 +273,8 @@
                     END,
                     ALTERADO_EM = NOW(),
                     ALTERADO_POR = 'WORKER-RESILIENCIA'
-                WHERE STATUS_PROCESSAMENTO = @statusProcessando
-                  AND ALTERADO_EM < (NOW() - INTERVAL '30 minutes'); -- Mas faz tempo demais, uai!;
+                WHERE STATUS_PROCESSAMENTO = ANY(@statusProcessando)
+                  AND ALTERADO_EM < (NOW() - INTERVAL '10 minutes'); -- Mas faz tempo demais, uai!;
                 """;
         public const string ObterMeusCertificadosCteBase = """
             WITH BaseCertificados AS (
