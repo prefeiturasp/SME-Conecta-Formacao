@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
@@ -33,7 +33,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
             var temDeclaracoesParaProcessar = true;
 
             var urlFrontEnd = configuration["UrlFrontEnd"];
-            var urlAcessoDeclaracoes = $"{urlFrontEnd?.TrimEnd('/')}/declaracoes";
+            var urlAcessoDeclaracoes = $"{urlFrontEnd?.TrimEnd('/')}/certificados";
             await _utilitarios.SalvarLogAsync($"Url de acesso aos declaracoes: {urlAcessoDeclaracoes}");
 
             while (temDeclaracoesParaProcessar)
