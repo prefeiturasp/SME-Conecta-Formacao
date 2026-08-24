@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
-using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
@@ -33,40 +33,47 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
             var temDeclaracoesParaProcessar = true;
 
             var urlFrontEnd = configuration["UrlFrontEnd"];
-            var urlAcessoDeclaracoes = $"{urlFrontEnd?.TrimEnd('/')}/declaracoes";
+            var urlAcessoDeclaracoes = $"{urlFrontEnd?.TrimEnd('/')}/certificados";
             await _utilitarios.SalvarLogAsync($"Url de acesso aos declaracoes: {urlAcessoDeclaracoes}");
 
             while (temDeclaracoesParaProcessar)
             {
-                var notificacoesParaEnviar = new List<EnviarEmailDto>();
-                var loteDeclaracoes = await repositorioCodafDeclaracao.ObterDeclaracoesParaProcessamentoAsync();
-                if (!loteDeclaracoes.Any())
+                try
                 {
-                    temDeclaracoesParaProcessar = false;
-                    continue;
-                }
-                var declaracoesProcessadas = await ProcessarLoteAsync(loteDeclaracoes);
 
-                foreach (var declaracao in declaracoesProcessadas)
-                {
-                    var tipoEstrategia = _utilitarios.DefinirEstrategia(declaracao);
-                    var geradorDeclaracao = serviceProvider.GetRequiredKeyedService<IDeclaracaoCodafGeradorConteudo>(tipoEstrategia);
-
-                    var (tituloEmail, textoEmail) = geradorDeclaracao.GerarConteudoEmail(declaracao, urlAcessoDeclaracoes);
-
-                    if (!string.IsNullOrEmpty(declaracao.EmailUsuario))
+                    var notificacoesParaEnviar = new List<EnviarEmailDto>();
+                    var loteDeclaracoes = await repositorioCodafDeclaracao.ObterDeclaracoesParaProcessamentoAsync();
+                    if (!loteDeclaracoes.Any())
                     {
-                        notificacoesParaEnviar.Add(new()
-                        {
-                            EmailDestinatario = declaracao.EmailUsuario!,
-                            NomeDestinatario = declaracao.NomeCompleto,
-                            Texto = textoEmail,
-                            Titulo = tituloEmail
-                        });
+                        temDeclaracoesParaProcessar = false;
+                        continue;
                     }
-                }
+                    var declaracoesProcessadas = await ProcessarLoteAsync(loteDeclaracoes);
 
-                _ = _utilitarios.EnviarEmailsAsync(notificacoesParaEnviar);
+                    foreach (var declaracao in declaracoesProcessadas)
+                    {
+                        var tipoEstrategia = _utilitarios.DefinirEstrategia(declaracao);
+                        var geradorDeclaracao = serviceProvider.GetRequiredKeyedService<IDeclaracaoCodafGeradorConteudo>(tipoEstrategia);
+
+                        var (tituloEmail, textoEmail) = geradorDeclaracao.GerarConteudoEmail(declaracao, urlAcessoDeclaracoes);
+
+                        if (!string.IsNullOrEmpty(declaracao.EmailUsuario))
+                        {
+                            notificacoesParaEnviar.Add(new()
+                            {
+                                EmailDestinatario = declaracao.EmailUsuario!,
+                                NomeDestinatario = declaracao.NomeCompleto,
+                                Texto = textoEmail,
+                                Titulo = tituloEmail
+                            });
+                        }
+                    }
+
+                    _ = _utilitarios.EnviarEmailsAsync(notificacoesParaEnviar);
+                }
+                catch (Exception e)
+                {
+                }
             }
             await _utilitarios.SalvarLogAsync("Fim do processamento de declarações Codaf");
 
