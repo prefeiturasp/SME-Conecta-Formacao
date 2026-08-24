@@ -71,7 +71,7 @@ namespace SME.ConectaFormacao.IoC.Features
                     .AddScoped<ICasoDeUsoObterCertificadoCodafParaDownload, CasoDeUsoObterCertificadoCodafParaDownload>()
                     .AddScoped<ICasoDeUsoGerarRelatorioCodaf, CasoDeUsoGerarRelatorioCodaf>()
                     .AddScoped<ICasoDeUsoListarTodosCertificadosCodaf, CasoDeUsoListarTodosCertificadosCodaf>()
-                    .AddScoped<ICasoDeUsoDownloadLoteCertificados, CasoDeUsoDownloadLoteDeclaracoes>();
+                    .AddScoped<ICasoDeUsoDownloadLoteCertificados, CasoDeUsoDownloadLoteCertificados>();
 
             public IServiceCollection AdicionarModuloCodafDeclaracao() =>
                 services
@@ -84,7 +84,8 @@ namespace SME.ConectaFormacao.IoC.Features
                     .AddScoped<ICasoDeUsoGerarArquivoDeclaracoesCodaf, CasoDeUsoGerarArquivoDeclaracoesCodaf>()
                     .AddScoped<ICasoDeUsoListarMinhasDeclaracoesCodaf, CasoDeUsoListarMinhasDeclaracoesCodaf>()
                     .AddScoped<ICasoDeUsoObterDeclaracaoCodafParaDownload, CasoDeUsoObterDeclaracaoCodafParaDownload>()
-                    .AddScoped<ICasoDeUsoListarTodasDeclaracoesCodaf, CasoDeUsoListarTodasDeclaracoesCodaf>();
+                    .AddScoped<ICasoDeUsoListarTodasDeclaracoesCodaf, CasoDeUsoListarTodasDeclaracoesCodaf>()
+                    .AddScoped<ICasoDeUsoDownloadLoteDeclaracoes, CasoDeUsoDownloadLoteDeclaracoes>();
         }
     }
 }

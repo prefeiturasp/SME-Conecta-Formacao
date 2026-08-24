@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -17,7 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
     public class CasoDeUsoDownloadLoteCertificadosTestes
     {
-        private readonly CasoDeUsoDownloadLoteDeclaracoes _sut;
+        private readonly CasoDeUsoDownloadLoteCertificados _sut;
         private readonly Faker _faker;
         private readonly AutoMocker _mocker;
 
@@ -36,7 +37,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _servicoCompactacaoMock = _mocker.GetMock<IServicoCompactacao>();
             _servicoRelatorioMock = _mocker.GetMock<IServicoRelatorio>();
 
-            _sut = _mocker.CreateInstance<CasoDeUsoDownloadLoteDeclaracoes>();
+            _sut = _mocker.CreateInstance<CasoDeUsoDownloadLoteCertificados>();
         }
 
         [Fact]
