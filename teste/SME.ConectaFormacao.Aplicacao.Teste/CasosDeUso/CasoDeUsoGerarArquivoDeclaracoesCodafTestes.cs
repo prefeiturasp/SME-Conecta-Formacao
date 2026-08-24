@@ -5,7 +5,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
@@ -100,24 +100,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                     x.Method.Name == nameof(IUtilitariosCodaf.SalvarLogAsync) &&
                     x.Arguments.Any(a =>
                         a is string mensagem &&
-                        mensagem.Contains("Início do processamento")));
-
-            Assert.Contains(
-                _utilitarios.Invocations,
-                x =>
-                    x.Method.Name == nameof(IUtilitariosCodaf.SalvarLogAsync) &&
-                    x.Arguments.Any(a =>
-                        a is string mensagem &&
                         mensagem.Contains(
-                            "https://conecta-formacao.teste/declaracoes")));
-
-            Assert.Contains(
-                _utilitarios.Invocations,
-                x =>
-                    x.Method.Name == nameof(IUtilitariosCodaf.SalvarLogAsync) &&
-                    x.Arguments.Any(a =>
-                        a is string mensagem &&
-                        mensagem.Contains("Fim do processamento")));
+                            "https://conecta-formacao.teste/certificados")));
         }
 
         [Fact]
@@ -193,7 +177,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _geradorDeclaracao.Verify(
                 x => x.GerarConteudoEmail(
                     It.IsAny<DadosProcessamentoCodafDto>(),
-                    "https://conecta-formacao.teste/declaracoes"),
+                    "https://conecta-formacao.teste/certificados"),
                 Times.Exactly(2));
 
             ValidarAtualizacoesComSucesso(

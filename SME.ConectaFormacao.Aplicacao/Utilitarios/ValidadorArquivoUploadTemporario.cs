@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+Ôªøusing Microsoft.AspNetCore.Http;
 using SME.ConectaFormacao.Dominio.Comum;
 
 namespace SME.ConectaFormacao.Aplicacao.Utilitarios
@@ -14,11 +14,11 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
                 return Erro.Validacao("Nenhum arquivo foi enviado.");
 
             if (arquivo.Length > LIMITE_TAMANHO_BYTES)
-                return Erro.Validacao($"O tamanho do arquivo excede o limite m·ximo de {LIMITE_TAMANHO_BYTES / (1024 * 1024)} MB.");
+                return Erro.Validacao($"O tamanho do arquivo excede o limite m√°ximo de {LIMITE_TAMANHO_BYTES / (1024 * 1024)} MB.");
 
             var extensao = Path.GetExtension(arquivo.FileName).ToLower();
             if (extensao != ".pdf" || arquivo.ContentType != "application/pdf")
-                return Erro.Validacao($"Extens„o de arquivo '{extensao}' n„o È permitida. Extensıes permitidas: .pdf");
+                return Erro.Validacao($"Extens√£o de arquivo '{extensao}' n√£o √© permitida. Extens√µes permitidas: .pdf");
 
             return null;
         }

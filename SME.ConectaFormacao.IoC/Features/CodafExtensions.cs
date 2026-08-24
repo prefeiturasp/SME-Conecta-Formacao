@@ -81,7 +81,10 @@ namespace SME.ConectaFormacao.IoC.Features
                     .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoRegenteComRfStrategy>(TipoEstrategiaCodaf.RegenteComRf)
                     .AddKeyedScoped<IDeclaracaoCodafGeradorConteudo, DeclaracaoRegenteSemRfStrategy>(TipoEstrategiaCodaf.RegenteSemRf)
                     .AddScoped<ICasoDeUsoEmitirDeclaracaoCodaf, CasoDeUsoEmitirDeclaracaoCodaf>()
-                    .AddScoped<ICasoDeUsoGerarArquivoDeclaracoesCodaf, CasoDeUsoGerarArquivoDeclaracoesCodaf>();
+                    .AddScoped<ICasoDeUsoGerarArquivoDeclaracoesCodaf, CasoDeUsoGerarArquivoDeclaracoesCodaf>()
+                    .AddScoped<ICasoDeUsoListarMinhasDeclaracoesCodaf, CasoDeUsoListarMinhasDeclaracoesCodaf>()
+                    .AddScoped<ICasoDeUsoObterDeclaracaoCodafParaDownload, CasoDeUsoObterDeclaracaoCodafParaDownload>()
+                ;
         }
     }
 }

@@ -71,9 +71,9 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var resultado = await _controller.ObterModeloTermoResponsabilidade();
 
             // Assert
-            var notFoundResult = resultado.Should().BeOfType<NotFoundObjectResult>().Subject;
-
-            notFoundResult.StatusCode.Should().Be(404);
+            // *Alterado para o 422 pois está sendo omitido o corpo da resposta com o 404, e o front não consegue ler a mensagem de erro (by Diego Moreno - 2026-08-21)
+            var notFoundResult = resultado.Should().BeOfType<UnprocessableEntityObjectResult>().Subject;
+            notFoundResult.StatusCode.Should().Be(422);
 
             var valorRetorno = notFoundResult.Value;
             valorRetorno.Should().NotBeNull();
@@ -134,9 +134,12 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .ReturnsAsync(erro);
             // Act
             var resultado = await _controller.GerarArquivoRemessaConclusaoCodaf(codafListaPresencaId);
+
             // Assert
-            var notFoundResult = resultado.Should().BeOfType<NotFoundObjectResult>().Subject;
-            notFoundResult.StatusCode.Should().Be(404);
+            // *Alterado para o 422 pois está sendo omitido o corpo da resposta com o 404, e o front não consegue ler a mensagem de erro (by Diego Moreno - 2026-08-21)
+            var notFoundResult = resultado.Should().BeOfType<UnprocessableEntityObjectResult>().Subject;
+
+            notFoundResult.StatusCode.Should().Be(422);
             var valorRetorno = notFoundResult.Value;
             valorRetorno.Should().NotBeNull();
             _mockCasoDeUsoGerarArquivoDeInscricoesDoCodafParaEol

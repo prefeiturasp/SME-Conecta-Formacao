@@ -2,6 +2,7 @@
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
@@ -15,5 +16,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task AtualizaCodigoDeclaracao(long codafNaoHomologadoId);
         Task InativarDeclaracoesAnterioresCursistaAsync(IEnumerable<long> idInscritos);
         Task<IEnumerable<DadosProcessamentoCodafDto>> ObterDeclaracoesParaProcessamentoAsync();
+        Task<ResultadoPaginado<MinhasDeclaracoesCodafDto>> ObterMinhasDeclaracoesPorFiltroAsync(FiltroMinhasDeclaracoesCodafDto filtro);
+        Task<DadosDeclaracaoUsuarioParaDownloadDto?> ObterDeclaracaoDisponivelDoUsuarioAsync(long codafDeclaracaoId);
     }
 }

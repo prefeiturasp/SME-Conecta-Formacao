@@ -43,7 +43,8 @@ public abstract class BaseController : ControllerBase
     {
         return resultado.TipoFalha switch
         {
-            TipoFalha.NaoEncontrado => NotFound(FormatarErro(resultado)),       // 404
+            // *Alterado para o 422 pois está sendo omitido o corpo da resposta com o 404, e o front não consegue ler a mensagem de erro (by Diego Moreno - 2026-08-21)
+            TipoFalha.NaoEncontrado => UnprocessableEntity(FormatarErro(resultado)),       // 404
             TipoFalha.Validacao => BadRequest(FormatarErro(resultado)),         // 400
             TipoFalha.RegraDeNegocio => UnprocessableEntity(FormatarErro(resultado)), // 422
             TipoFalha.NaoAutorizado => Forbid(resultado.MensagensErro.FirstOrDefault() ?? "Acesso negado"), // 403

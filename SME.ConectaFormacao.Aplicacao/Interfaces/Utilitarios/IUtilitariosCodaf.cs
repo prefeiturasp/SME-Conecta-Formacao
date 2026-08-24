@@ -1,6 +1,6 @@
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios
