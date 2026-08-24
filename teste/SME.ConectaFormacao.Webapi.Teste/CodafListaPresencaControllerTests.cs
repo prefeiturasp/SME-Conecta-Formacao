@@ -290,10 +290,12 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 .Setup(x => x.ExecutarAsync(codafId))
                 .ReturnsAsync(erro);
             // Act
-            var resultado = await _controller.ImprimirRelatorioCodafAsync(codafId, _mockCasoDeUsoGerarRelatorioCodaf.Object) as NotFoundObjectResult;
+            var resultado = await _controller.ImprimirRelatorioCodafAsync(codafId, _mockCasoDeUsoGerarRelatorioCodaf.Object) as UnprocessableEntityObjectResult;
             // Assert
             resultado.Should().NotBeNull();
-            resultado.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+
+            // *Alterado para o 422 pois está sendo omitido o corpo da resposta com o 404, e o front não consegue ler a mensagem de erro (by Diego Moreno - 2026-08-21)
+            resultado.StatusCode.Should().Be((int)HttpStatusCode.UnprocessableEntity);
         }
 
         [Fact]
