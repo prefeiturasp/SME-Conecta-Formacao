@@ -1959,7 +1959,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         p.data_inscricao_inicio,
                         p.data_inscricao_fim,
                         p.area_promotora_id,
-                        p.arquivo_imagem_divulgacao_id
+                        p.arquivo_imagem_divulgacao_id,
+                        p.curso_com_certificado, 
+                        p.codigo_evento_sigpec
                     from public.proposta p  
                     where p.id = any(@propostaIds);
 
