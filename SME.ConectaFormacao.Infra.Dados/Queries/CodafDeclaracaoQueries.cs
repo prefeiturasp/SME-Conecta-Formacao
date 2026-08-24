@@ -218,11 +218,39 @@
                 FROM PUBLIC.CODAF_DECLARACOES AS CD
                 INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CCNHI ON CD.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO_ID  = CCNHI.ID
                 INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH ON CCNHI.CODAF_CURSO_NAO_HOM_ID = CCNH.ID
+        """;
+
+        public const string ObterTodasDeclaracoesCteBase = """
+            WITH BaseDeclaracoes AS (
+                -- 1. Cursista (Lista Normal)
+                SELECT DISTINCT ON (CC.ID)
+                    CC.ID AS id, 
+                    CC.CODIGO_DECLARACAO AS codigoDeclaracao, 
+                    COALESCE(NULLIF(TRIM(U.NOME_SOCIAL), ''), U.NOME) AS nomeCursista,
+                    NULL::text AS nomeRegente,
+                    1 AS tipoDeclaracao,
+                    U.LOGIN AS documento, 
+                    CC.DATA_EMISSAO AS dataEmissao,
+                    P.NUMERO_HOMOLOGACAO AS numeroHomologacao, 
+                    P.ID AS codigoFormacao,
+                    P.NOME_FORMACAO AS nomeFormacao,
+                    P.TIPO_EMISSOR AS tipoEmissor,
+                    P.ID_EMISSOR AS emissorId,
+                    COALESCE(D_EMISSOR.NOME, C_EMISSOR.NOME) AS nomeEmissor,
+                    PT.ID AS turmaId
+                FROM PUBLIC.CODAF_DECLARACOES CC
+                INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO CCNHI ON CC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO_ID = CCNHI.ID
+                INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO CCNH ON CCNHI.CODAF_CURSO_NAO_HOM_ID = CCNH.ID
                 INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON CCNH.PROPOSTA_TURMA_ID = PT.ID
                 INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
                 INNER JOIN PUBLIC.INSCRICAO AS I ON CCNHI.INSCRICAO_ID = I.ID 
                 INNER JOIN PUBLIC.USUARIO AS U ON I.USUARIO_ID = U.ID
                 WHERE NOT CD.EXCLUIDO AND CD.STATUS_PROCESSAMENTO = @statusProcessado
+                LEFT JOIN PUBLIC.DRE AS D_EMISSOR ON D_EMISSOR.ID = P.ID_EMISSOR AND P.TIPO_EMISSOR = 1 AND NOT D_EMISSOR.EXCLUIDO
+                LEFT JOIN PUBLIC.COORDENADORIA AS C_EMISSOR ON C_EMISSOR.ID = P.ID_EMISSOR AND P.TIPO_EMISSOR = 2 AND NOT C_EMISSOR.EXCLUIDO
+                WHERE NOT CC.EXCLUIDO AND CC.STATUS_PROCESSAMENTO = @processadoComSucesso
+                    AND CCNHI.PARTICIPOU
+                    AND P.CURSO_COM_CERTIFICADO = false
 
                 UNION ALL
 

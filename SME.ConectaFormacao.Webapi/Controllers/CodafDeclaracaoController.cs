@@ -4,7 +4,9 @@ using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
+using SME.ConectaFormacao.Webapi.Controllers.Filtros;
 using SME.ConectaFormacao.Webapi.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
@@ -14,7 +16,8 @@ namespace SME.ConectaFormacao.Webapi.Controllers
     public class CodafDeclaracaoController(
         ICasoDeUsoEmitirDeclaracaoCodaf casoDeUsoEmitirDeclaracaoCodaf,
         ICasoDeUsoListarMinhasDeclaracoesCodaf casoDeUsoListarMinhasDeclaracoesCodaf,
-        ICasoDeUsoObterDeclaracaoCodafParaDownload casoDeUsoObterDeclaracaoCodafParaDownload) : BaseController
+        ICasoDeUsoObterDeclaracaoCodafParaDownload casoDeUsoObterDeclaracaoCodafParaDownload,
+        ICasoDeUsoListarTodasDeclaracoesCodaf casoDeUsoListarTodasDeclaracoesCodaf) : BaseController
     {
         [HttpPost("{codafNaoHomologadoId:long}/emitir")]
         [ProducesResponseType(typeof(Resultado), 200)]
@@ -37,9 +40,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [HttpGet("{declaracaoCodafId}/download")]
         [ProducesResponseType(typeof(Resultado<CodafDeclaracaoParaDownloadDto>), 200)]
         [ProducesResponseType(typeof(Resultado<CodafDeclaracaoParaDownloadDto>), 422)]
-        public async Task<IActionResult> ObterCertificadoParaDownload(long declaracaoCodafId)
+        public async Task<IActionResult> ObterDeclaracaoParaDownload(long declaracaoCodafId)
         {
             var resultado = await casoDeUsoObterDeclaracaoCodafParaDownload.ExecutarAsync(declaracaoCodafId);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemDeclaracoesCodafDto>>), 200)]
+        [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemDeclaracoesCodafDto>>), 404)]
+        [Permissao(Permissao.Codaf_I, Policy = "Bearer")]
+        public async Task<IActionResult> ListarTodasDeclaracoes([FromQuery] FiltroListagemTodasDeclaracoesCodafDto filtro)
+        {
+            var resultado = await casoDeUsoListarTodasDeclaracoesCodaf.ExecutarAsync(filtro);
             return ProcessarResultado(resultado);
         }
     }
