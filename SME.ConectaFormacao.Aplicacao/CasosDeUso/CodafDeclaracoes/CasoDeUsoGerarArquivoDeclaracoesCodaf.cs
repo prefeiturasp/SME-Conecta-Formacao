@@ -38,42 +38,35 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
 
             while (temDeclaracoesParaProcessar)
             {
-                try
+                var notificacoesParaEnviar = new List<EnviarEmailDto>();
+                var loteDeclaracoes = await repositorioCodafDeclaracao.ObterDeclaracoesParaProcessamentoAsync();
+                if (!loteDeclaracoes.Any())
                 {
+                    temDeclaracoesParaProcessar = false;
+                    continue;
+                }
+                var declaracoesProcessadas = await ProcessarLoteAsync(loteDeclaracoes);
 
-                    var notificacoesParaEnviar = new List<EnviarEmailDto>();
-                    var loteDeclaracoes = await repositorioCodafDeclaracao.ObterDeclaracoesParaProcessamentoAsync();
-                    if (!loteDeclaracoes.Any())
+                foreach (var declaracao in declaracoesProcessadas)
+                {
+                    var tipoEstrategia = _utilitarios.DefinirEstrategia(declaracao);
+                    var geradorDeclaracao = serviceProvider.GetRequiredKeyedService<IDeclaracaoCodafGeradorConteudo>(tipoEstrategia);
+
+                    var (tituloEmail, textoEmail) = geradorDeclaracao.GerarConteudoEmail(declaracao, urlAcessoDeclaracoes);
+
+                    if (!string.IsNullOrEmpty(declaracao.EmailUsuario))
                     {
-                        temDeclaracoesParaProcessar = false;
-                        continue;
-                    }
-                    var declaracoesProcessadas = await ProcessarLoteAsync(loteDeclaracoes);
-
-                    foreach (var declaracao in declaracoesProcessadas)
-                    {
-                        var tipoEstrategia = _utilitarios.DefinirEstrategia(declaracao);
-                        var geradorDeclaracao = serviceProvider.GetRequiredKeyedService<IDeclaracaoCodafGeradorConteudo>(tipoEstrategia);
-
-                        var (tituloEmail, textoEmail) = geradorDeclaracao.GerarConteudoEmail(declaracao, urlAcessoDeclaracoes);
-
-                        if (!string.IsNullOrEmpty(declaracao.EmailUsuario))
+                        notificacoesParaEnviar.Add(new()
                         {
-                            notificacoesParaEnviar.Add(new()
-                            {
-                                EmailDestinatario = declaracao.EmailUsuario!,
-                                NomeDestinatario = declaracao.NomeCompleto,
-                                Texto = textoEmail,
-                                Titulo = tituloEmail
-                            });
-                        }
+                            EmailDestinatario = declaracao.EmailUsuario!,
+                            NomeDestinatario = declaracao.NomeCompleto,
+                            Texto = textoEmail,
+                            Titulo = tituloEmail
+                        });
                     }
+                }
 
-                    _ = _utilitarios.EnviarEmailsAsync(notificacoesParaEnviar);
-                }
-                catch (Exception e)
-                {
-                }
+                _ = _utilitarios.EnviarEmailsAsync(notificacoesParaEnviar);
             }
             await _utilitarios.SalvarLogAsync("Fim do processamento de declarações Codaf");
 
