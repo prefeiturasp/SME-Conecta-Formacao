@@ -2014,6 +2014,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 p.justificativa,
                 p.formacao_homologada as FormacaoHomologada,
                 p.link_inscricoes_externa as LinkParaInscricoesExterna,
+                p.curso_com_certificado as CursoComCertificado,
+                p.codigo_evento_sigpec as CodigoEventoSigpec,
                 not exists(select 1 from public.proposta_tipo_inscricao pti where pti.proposta_id = p.id and pti.tipo_inscricao = 5) as PodeEnviarInscricao
             from proposta p
             inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id
