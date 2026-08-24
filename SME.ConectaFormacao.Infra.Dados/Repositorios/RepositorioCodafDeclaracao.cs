@@ -6,11 +6,13 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
 using SME.ConectaFormacao.Infra.Dados.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
@@ -136,5 +138,116 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 CodafDeclaracaoQueries.InativarDeclaracoesAnterioresDeCursistas,
                 new { inscricaoId = idInscritos.ToArray(), usuarioNome = contexto.NomeUsuario, usuarioLogin = contexto.UsuarioLogado });
         }
+
+        public async Task<ResultadoPaginado<MinhasDeclaracoesCodafDto>> ObterMinhasDeclaracoesPorFiltroAsync(FiltroMinhasDeclaracoesCodafDto filtro)
+        {
+            const string sqlCteBase = CodafDeclaracaoQueries.ObterMinhasDeclaracoesCteBase;
+
+            var condicoesWhere = new StringBuilder("WHERE LOGIN = @login ");
+            var parametros = new DynamicParameters();
+            parametros.Add("statusProcessado", (int)StatusProcessamentoDeclaracaoCodaf.ProcessadoComSucesso);
+            parametros.Add("login", contexto.UsuarioLogado);
+
+            if (filtro.CodigoDeclaracao.HasValue)
+            {
+                condicoesWhere.Append(" AND codigoDeclaracao = @codigoDeclaracao ");
+                parametros.Add("codigoDeclaracao", filtro.CodigoDeclaracao.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.CodigoFormacao))
+            {
+                condicoesWhere.Append(" AND CAST(codigoFormacao AS TEXT) ILIKE @codigoFormacao ");
+                parametros.Add("codigoFormacao", $"{filtro.CodigoFormacao.Trim()}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.NomeFormacao))
+            {
+                condicoesWhere.Append(" AND nomeFormacao ILIKE @nomeFormacao ");
+                parametros.Add("nomeFormacao", $"%{filtro.NomeFormacao.Trim()}%");
+            }
+
+            if (filtro.TipoParticipacao.HasValue)
+            {
+                condicoesWhere.Append(" AND tipoParticipacao = @tipoParticipacao ");
+                parametros.Add("tipoParticipacao", (int)filtro.TipoParticipacao.Value);
+            }
+
+            if (filtro.DataEmissaoInicio.HasValue)
+            {
+                condicoesWhere.Append(" AND dataEmissao >= @dataEmissaoInicio ");
+                parametros.Add("dataEmissaoInicio", filtro.DataEmissaoInicio.Value.Date);
+            }
+
+            if (filtro.DataEmissaoFim.HasValue)
+            {
+                condicoesWhere.Append(" AND dataEmissao <= @dataEmissaoFim ");
+                parametros.Add("dataEmissaoFim", filtro.DataEmissaoFim.Value.Date.AddDays(1).AddTicks(-1));
+            }
+
+            var conn = conexao.Obter();
+
+            var sqlCount = new StringBuilder($"""
+            {sqlCteBase}
+            SELECT COUNT(1)
+            FROM BaseDeclaracoes
+            {condicoesWhere}
+            """);
+
+            var totalRegistros = await conn.QueryFirstAsync<int>(sqlCount.ToString(), parametros);
+
+            if (totalRegistros == 0)
+            {
+                return new ResultadoPaginado<MinhasDeclaracoesCodafDto>
+                {
+                    Itens = [],
+                    PaginaAtual = filtro.Pagina,
+                    TamanhoPagina = filtro.TamanhoPagina,
+                    TotalRegistros = 0
+                };
+            }
+
+            var registrosIgnorados = (filtro.Pagina - 1) * filtro.TamanhoPagina;
+            parametros.Add("limite", filtro.TamanhoPagina);
+            parametros.Add("registrosIgnorados", registrosIgnorados);
+
+            const string sqlOrderBy = "ORDER BY dataEmissao DESC, codigoDeclaracao ASC";
+
+            var sqlConsulta = new StringBuilder($"""
+            {sqlCteBase}
+            SELECT 
+                ID,
+                codigoDeclaracao,
+                temRf,
+                tipoParticipacao,
+                nomeFormacao,
+                codigoFormacao,
+                dataEmissao
+            FROM BaseDeclaracoes
+            {condicoesWhere}
+            {sqlOrderBy}
+            LIMIT @limite OFFSET @registrosIgnorados
+            """);
+
+            var itens = await conn.QueryAsync<MinhasDeclaracoesCodafDto>(sqlConsulta.ToString(), parametros);
+
+            return new ResultadoPaginado<MinhasDeclaracoesCodafDto>
+            {
+                Itens = itens,
+                PaginaAtual = filtro.Pagina,
+                TamanhoPagina = filtro.TamanhoPagina,
+                TotalRegistros = totalRegistros
+            };
+        }
+
+        public async Task<DadosDeclaracaoUsuarioParaDownloadDto?> 
+            ObterDeclaracaoDisponivelDoUsuarioAsync(long codafDeclaracaoId) =>
+                await conexao.Obter().QueryFirstOrDefaultAsync<DadosDeclaracaoUsuarioParaDownloadDto>(
+                    CodafDeclaracaoQueries.ObterDeclaracaoDisponivelDoUsuario,
+                    new
+                    {
+                        declaracaoId = codafDeclaracaoId,
+                        statusProcessado = (int)StatusProcessamentoDeclaracaoCodaf.ProcessadoComSucesso,
+                        login = contexto.Permissoes.Any(p => p == Permissao.Codaf_I) ? null : contexto.UsuarioLogado
+                    });
     }
 }
