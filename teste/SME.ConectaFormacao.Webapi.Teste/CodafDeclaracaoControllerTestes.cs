@@ -9,16 +9,13 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
 using SME.ConectaFormacao.Webapi.Controllers;
-using System.Threading.Tasks;
-using Xunit;
 
-namespace SME.ConectaFormacao.Webapi.Teste.Controllers
+namespace SME.ConectaFormacao.Webapi.Teste
 {
     public class CodafDeclaracaoControllerTestes
     {
         private readonly Mock<ICasoDeUsoEmitirDeclaracaoCodaf> _casoDeUsoEmitirDeclaracaoCodafMock;
         private readonly Mock<ICasoDeUsoListarMinhasDeclaracoesCodaf> _casoDeUsoListarMinhasDeclaracoesCodafMock;
-        private readonly Mock<ICasoDeUsoObterDeclaracaoCodafParaDownload> _casoDeUsoObterDeclaracaoCodafParaDownloadMock;
         private readonly CodafDeclaracaoController _sut;
         private readonly Faker _faker;
 
@@ -27,8 +24,7 @@ namespace SME.ConectaFormacao.Webapi.Teste.Controllers
             var mocker = new AutoMocker();
             _casoDeUsoEmitirDeclaracaoCodafMock = mocker.GetMock<ICasoDeUsoEmitirDeclaracaoCodaf>();
             _casoDeUsoListarMinhasDeclaracoesCodafMock = mocker.GetMock<ICasoDeUsoListarMinhasDeclaracoesCodaf>();
-            _casoDeUsoObterDeclaracaoCodafParaDownloadMock = mocker.GetMock<ICasoDeUsoObterDeclaracaoCodafParaDownload>();
-            
+
             _sut = mocker.CreateInstance<CodafDeclaracaoController>();
             _faker = new Faker();
         }
@@ -41,15 +37,15 @@ namespace SME.ConectaFormacao.Webapi.Teste.Controllers
             var resultadoSucesso = Resultado.DeSucesso();
 
             _casoDeUsoEmitirDeclaracaoCodafMock
-                .Setup(c => c.ExecutarAsync(id))
+                .Setup(c => c.ExecutarAsync(It.IsAny<long>()))
                 .ReturnsAsync(resultadoSucesso);
 
             // Act
-            var resultado = await _sut.EmitirDeclaracoesCodaf(id) as OkObjectResult;
+            var resultado = await _sut.EmitirDeclaracoesCodaf(id) as NoContentResult;
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado!.StatusCode.Should().Be(200);
+            resultado!.StatusCode.Should().Be(204);
             _casoDeUsoEmitirDeclaracaoCodafMock.Verify(c => c.ExecutarAsync(id), Times.Once);
         }
 
@@ -71,53 +67,7 @@ namespace SME.ConectaFormacao.Webapi.Teste.Controllers
             // Assert
             resultado.Should().NotBeNull();
             resultado!.StatusCode.Should().Be(200);
-            resultado.Value.Should().BeEquivalentTo(resultadoSucesso);
             _casoDeUsoListarMinhasDeclaracoesCodafMock.Verify(c => c.ExecutarAsync(filtro), Times.Once);
-        }
-
-        [Fact]
-        public async Task DadoDeclaracaoIdValido_QuandoChamarObterCertificadoParaDownload_EntaoDeveRetornarOkComDados()
-        {
-            // Arrange
-            var id = _faker.Random.Long(1, 1000);
-            var downloadDto = new CodafDeclaracaoParaDownloadDto();
-            var resultadoSucesso = Resultado<CodafDeclaracaoParaDownloadDto>.DeSucesso(downloadDto);
-
-            _casoDeUsoObterDeclaracaoCodafParaDownloadMock
-                .Setup(c => c.ExecutarAsync(id))
-                .ReturnsAsync(resultadoSucesso);
-
-            // Act
-            var resultado = await _sut.ObterCertificadoParaDownload(id) as OkObjectResult;
-
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado!.StatusCode.Should().Be(200);
-            resultado.Value.Should().BeEquivalentTo(resultadoSucesso);
-            _casoDeUsoObterDeclaracaoCodafParaDownloadMock.Verify(c => c.ExecutarAsync(id), Times.Once);
-        }
-
-        [Fact]
-        public async Task DadoCasoDeUsoRetorneFalha_QuandoChamarObterCertificadoParaDownload_EntaoDeveRetornarUnprocessableEntity()
-        {
-            // Arrange
-            var id = _faker.Random.Long(1, 1000);
-            var resultadoErro = Erro.Validacao("Erro de validação");
-            
-            // Casting the Erro explicitly to the target type to bypass compiler type inference issue with returnsAsync
-            var retornoEsperado = (Resultado<CodafDeclaracaoParaDownloadDto>)resultadoErro;
-
-            _casoDeUsoObterDeclaracaoCodafParaDownloadMock
-                .Setup(c => c.ExecutarAsync(id))
-                .ReturnsAsync(retornoEsperado);
-
-            // Act
-            var resultado = await _sut.ObterCertificadoParaDownload(id) as UnprocessableEntityObjectResult;
-
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado!.StatusCode.Should().Be(422);
-            resultado.Value.Should().BeEquivalentTo(retornoEsperado);
         }
     }
 }

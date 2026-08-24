@@ -11,7 +11,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Webapi.Controllers;
 
-namespace SME.ConectaFormacao.Webapi.Teste.Controllers
+namespace SME.ConectaFormacao.Webapi.Teste
 {
     public class CodafCursoNaoHomologadoControllerTestes
     {

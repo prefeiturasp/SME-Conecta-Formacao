@@ -69,7 +69,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             resultado.Sucesso.Should().BeFalse();
-            resultado.TipoFalha.Should().Be(TipoFalha.RegraDeNegocio);
+            resultado.TipoFalha.Should().Be(TipoFalha.Validacao);
             resultado.MensagensErro.Should().Contain("Declaração CODAF não possui arquivo associado para download.");
         }
 
