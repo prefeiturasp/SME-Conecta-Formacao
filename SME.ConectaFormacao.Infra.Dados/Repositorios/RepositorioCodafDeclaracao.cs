@@ -142,20 +142,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             if (filtro.EmissorId.HasValue)
             {
-                condicoesWhere.Append(" AND emissorId = @emissorId AND tipoEmissor = 1 ");
-                parametros.Add("emissorId", filtro.EmissorId.Value);
+                condicoesWhere.Append(" AND emissorId = @emissorId");
+                parametros.Add("emissorId", filtro.EmissorId.Value);               
             }
 
             if (filtro.TurmaId.HasValue)
             {
                 condicoesWhere.Append(" AND turmaId = @turmaId ");
                 parametros.Add("turmaId", filtro.TurmaId.Value);
-            }
-
-            if (filtro.EmissorId.HasValue)
-            {
-                condicoesWhere.Append(" AND emissorId = @emissorId AND tipoEmissor = 2 ");
-                parametros.Add("emissorId", filtro.EmissorId.Value);
             }
 
             var conn = conexao.Obter();
@@ -220,7 +214,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             const string sql = """
                 SELECT id, 
                        codigo_declaracao AS codigoDeclaracao,
-                       codaf_inscricao_lista_presenca_id AS codafInscricaoListaPresencaId,
+                       codaf_curso_nao_homologado_inscricao_id AS CodafCursoNaoHomologadoInscricaoId,
                        proposta_regente_turma_id AS propostaRegenteTurmaId,
                        tipo_participacao AS tipoParticipacao,
                        data_emissao AS dataEmissao,
@@ -237,9 +231,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        chave_objeto_armazenamento AS chaveObjetoArmazenamento,
                        erro_processamento AS erroProcessamento,
                        tentativas_processamento AS tentativasProcessamento,
-                       codaf_lista_presenca_id AS codafListaPresencaId
-                FROM codaf_declaracaos
-                WHERE id = ANY(@declaracaosId) 
+                       codaf_curso_nao_homologado_id AS CodafCursoNaoHomologadoId
+                FROM codaf_declaracoes
+                WHERE id = ANY(@declaracoesId) 
                     AND status_processamento = @statusProcessamento 
                     AND NOT excluido
                 """;

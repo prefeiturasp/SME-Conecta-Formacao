@@ -245,32 +245,40 @@
                 INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
                 INNER JOIN PUBLIC.INSCRICAO AS I ON CCNHI.INSCRICAO_ID = I.ID 
                 INNER JOIN PUBLIC.USUARIO AS U ON I.USUARIO_ID = U.ID
-                WHERE NOT CD.EXCLUIDO AND CD.STATUS_PROCESSAMENTO = @statusProcessado
                 LEFT JOIN PUBLIC.DRE AS D_EMISSOR ON D_EMISSOR.ID = P.ID_EMISSOR AND P.TIPO_EMISSOR = 1 AND NOT D_EMISSOR.EXCLUIDO
                 LEFT JOIN PUBLIC.COORDENADORIA AS C_EMISSOR ON C_EMISSOR.ID = P.ID_EMISSOR AND P.TIPO_EMISSOR = 2 AND NOT C_EMISSOR.EXCLUIDO
                 WHERE NOT CC.EXCLUIDO AND CC.STATUS_PROCESSAMENTO = @processadoComSucesso
                     AND CCNHI.PARTICIPOU
-                    AND P.CURSO_COM_CERTIFICADO = false
+                    AND NOT PT.EXCLUIDO AND P.SITUACAO = 1
 
                 UNION ALL
 
                 -- 2. Regente
-                SELECT        
-                    CD.ID, CD.CODIGO_DECLARACAO AS codigoDeclaracao, 
-                    TRUE AS temRf, 
-                    2 AS tipoParticipacao, 
-                    P.NOME_FORMACAO AS nomeFormacao, 
-                    P.ID AS codigoFormacao, 
-                    CD.DATA_EMISSAO AS dataEmissao, 
-                    U.LOGIN
+                SELECT DISTINCT ON (CD.ID)
+                    CD.ID AS id,
+                    CD.CODIGO_DECLARACAO AS codigoDeclaracao,
+                    NULL::text AS nomeCursista,
+                    PR.NOME_REGENTE AS nomeRegente,
+                    2 AS tipoDeclaracao,
+                    COALESCE(PR.REGISTRO_FUNCIONAL, PR.CPF) AS documento,
+                    CD.DATA_EMISSAO AS dataEmissao,
+                    P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+                    P.ID AS codigoFormacao,
+                    P.NOME_FORMACAO AS nomeFormacao,
+                    P.TIPO_EMISSOR AS tipoEmissor,
+                    P.ID_EMISSOR AS emissorId,
+                    COALESCE(D_EMISSOR.NOME, C_EMISSOR.NOME) AS nomeEmissor,
+                    PT.ID AS turmaId
                 FROM PUBLIC.CODAF_DECLARACOES AS CD
                 INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON CD.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
                 INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
                 INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PRT.TURMA_ID = PT.ID
                 INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.PROPOSTA_TURMA_ID = PT.ID
                 INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
-                INNER JOIN PUBLIC.USUARIO AS U ON U.CPF = PR.REGISTRO_FUNCIONAL OR U.LOGIN = PR.REGISTRO_FUNCIONAL
-                WHERE NOT CD.EXCLUIDO AND CD.STATUS_PROCESSAMENTO = @statusProcessado
+                LEFT JOIN PUBLIC.DRE AS D_EMISSOR ON D_EMISSOR.ID = P.ID_EMISSOR AND P.TIPO_EMISSOR = 1 AND NOT D_EMISSOR.EXCLUIDO
+                LEFT JOIN PUBLIC.COORDENADORIA AS C_EMISSOR ON C_EMISSOR.ID = P.ID_EMISSOR AND P.TIPO_EMISSOR = 2 AND NOT C_EMISSOR.EXCLUIDO
+                WHERE NOT CD.EXCLUIDO AND CD.STATUS_PROCESSAMENTO = @processadoComSucesso
+                AND NOT PT.EXCLUIDO AND P.SITUACAO = 1
             )
             """;
 

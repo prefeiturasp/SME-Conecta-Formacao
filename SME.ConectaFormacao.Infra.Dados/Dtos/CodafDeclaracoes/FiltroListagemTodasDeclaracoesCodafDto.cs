@@ -14,6 +14,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes
         public string? NomeCursista { get; set; }
         public DateTime? DataEmissao { get; set; }
         public long? EmissorId { get; set; }
+        public TipoEmissor? TipoEmissor { get; set; }
         public long? TurmaId { get; set; }
         public required int Pagina { get; set; }
         public required int TamanhoPagina { get; set; }
