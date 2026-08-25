@@ -18,6 +18,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Dre;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Email;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Funcionario;
@@ -42,6 +43,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Dre;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario;
@@ -354,6 +356,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraListaRedeParceria, CasoDeUsoObterAreaPromotoraListaRedeParceria>();
 
         serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
+        serviceCollection.TryAddScoped<ICasoDeUsoObterDreListaUsuarioLogado, CasoDeUsoObterDreListaUsuarioLogado>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterUnidadePorCodigoEol, CasoDeUsoObterUnidadePorCodigoEol>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterFuncionarioExternoPorCpf, CasoDeUsoObterFuncionarioExternoPorCpf>();                                                        
         serviceCollection.TryAddScoped<ICasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar, CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar>();                                                       
