@@ -11,7 +11,7 @@ using System.Threading.Channels;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
 {
-    public class CasoDeUsoDownloadLoteDeclaracoes(
+    public class CasoDeUsoDownloadLoteCertificados(
         IRepositorioCodafCertificado repositorio,
         IServicoArmazenamento servicoArmazenamento,
         IServicoCompactacao servicoCompactacao,

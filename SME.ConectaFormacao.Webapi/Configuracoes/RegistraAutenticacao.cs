@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics.CodeAnalysis;
 using static System.Text.Encoding;
 
 namespace SME.ConectaFormacao.Webapi.Configuracoes;
 
+[ExcludeFromCodeCoverage]
 public static class RegistraAutenticacao
 {
     public static void Registrar(IServiceCollection services, IConfiguration configuration)
