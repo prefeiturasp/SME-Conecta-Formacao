@@ -1,91 +1,68 @@
-﻿using MediatR;
+using FluentAssertions;
 using Moq;
+using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Dre;
+using SME.ConectaFormacao.Dominio.Contexto;
+using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Excecoes;
+using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
     public class CasoDeUsoObterDreListaUsuarioLogadoTestes
     {
-        private readonly Mock<IMediator> mediator;
+        private readonly AutoMocker _mocker;
+        private readonly CasoDeUsoObterDreListaUsuarioLogado _sut;
 
         public CasoDeUsoObterDreListaUsuarioLogadoTestes()
         {
-            mediator = new Mock<IMediator>();
+            _mocker = new AutoMocker();
+            _sut = _mocker.CreateInstance<CasoDeUsoObterDreListaUsuarioLogado>();
         }
 
         [Fact]
-        public async Task Deve_Obter_Lista_De_Dres_Do_Usuario_Logado()
+        public async Task DadoUsuarioSemPerfil_QuandoExecutar_EntaoLancaExcecao()
         {
             // Arrange
-            var dres = new List<Dominio.Entidades.Dre>
+
+            // Act
+            Func<Task> acao = _sut.ExecutarAsync;
+
+            // Assert
+            await acao.Should().ThrowAsync<NegocioException>().WithMessage("Usuário não possui perfil de acesso.");
+        }
+
+        [Fact]
+        public async Task DadoUsuarioComPerfil_QuandoExecutar_EntaoRetornaDres()
+        {
+            // Arrange
+            Guid perfilId = Guid.NewGuid();
+            _mocker.GetMock<IContextoAplicacao>()
+                .Setup(m => m.IdPerfilUsuario)
+                .Returns(perfilId);
+
+            var dres = new List<Dre>
             {
-                new()
-                {
-                    Id = 1,
-                    Nome = "DRE Butantã"
-                },
-                new()
-                {
-                    Id = 2,
-                    Nome = "DRE Campo Limpo"
-                }
+                new() { Id = 1, Nome = "DRE 1" },
+                new() { Id = 2, Nome = "DRE 2" }
             };
 
-            mediator
-                .Setup(m => m.Send(
-                    It.IsAny<ObterDresPorGrupoUsuarioLogadoQuery>(),
-                    It.IsAny<CancellationToken>()))
+            _mocker.GetMock<IRepositorioAreaPromotora>()
+                .Setup(m => m.ObterDresPorGrupoIdAsync(perfilId))
                 .ReturnsAsync(dres);
 
-            var casoDeUso = new CasoDeUsoObterDreListaUsuarioLogado(mediator.Object);
-
             // Act
-            var retorno = (await casoDeUso.Executar()).ToList();
+            var resultado = await _sut.ExecutarAsync();
 
             // Assert
-            Assert.NotNull(retorno);
-            Assert.Equal(2, retorno.Count);
+            resultado.Should().NotBeNull();
+            resultado.Should().HaveCount(2);
 
-            Assert.Equal(dres[0].Id, retorno[0].Id);
-            Assert.Equal(dres[0].Nome, retorno[0].Descricao);
+            var primeiraDre = resultado.First();
+            primeiraDre.Id.Should().Be(1);
+            primeiraDre.Descricao.Should().Be("DRE 1");
 
-            Assert.Equal(dres[1].Id, retorno[1].Id);
-            Assert.Equal(dres[1].Nome, retorno[1].Descricao);
-
-            mediator.Verify(
-                m => m.Send(
-                    It.Is<ObterDresPorGrupoUsuarioLogadoQuery>(
-                        query => query == ObterDresPorGrupoUsuarioLogadoQuery.Instancia()),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-        }
-
-        [Fact]
-        public async Task Deve_Retornar_Lista_Vazia_Quando_Nao_Existirem_Dres()
-        {
-            // Arrange
-            var dres = Enumerable.Empty<Dominio.Entidades.Dre>();
-
-            mediator
-                .Setup(m => m.Send(
-                    It.IsAny<ObterDresPorGrupoUsuarioLogadoQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(dres);
-
-            var casoDeUso = new CasoDeUsoObterDreListaUsuarioLogado(mediator.Object);
-
-            // Act
-            var retorno = await casoDeUso.Executar();
-
-            // Assert
-            Assert.NotNull(retorno);
-            Assert.Empty(retorno);
-
-            mediator.Verify(
-                m => m.Send(
-                    It.IsAny<ObterDresPorGrupoUsuarioLogadoQuery>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+            _mocker.GetMock<IRepositorioAreaPromotora>().Verify(m => m.ObterDresPorGrupoIdAsync(perfilId), Times.Once);
         }
     }
 }

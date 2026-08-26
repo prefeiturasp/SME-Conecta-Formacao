@@ -34,7 +34,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         public async Task<IActionResult> ObterDreListaUsuarioLogado(
         [FromServices] ICasoDeUsoObterDreListaUsuarioLogado casoDeUsoObterDreListaUsuarioLogado)
         {
-            return Ok(await casoDeUsoObterDreListaUsuarioLogado.Executar());
+            return Ok(await casoDeUsoObterDreListaUsuarioLogado.ExecutarAsync());
         }
     }
 }

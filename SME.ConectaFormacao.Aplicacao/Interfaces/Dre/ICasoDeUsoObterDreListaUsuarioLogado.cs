@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Dre
 {
     public interface ICasoDeUsoObterDreListaUsuarioLogado
     {
-        Task<IEnumerable<RetornoListagemDTO>> Executar();
+        Task<IEnumerable<RetornoListagemDTO>> ExecutarAsync();
     }
 }
