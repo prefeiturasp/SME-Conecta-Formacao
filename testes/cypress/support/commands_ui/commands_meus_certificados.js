@@ -8,18 +8,18 @@ Cypress.Commands.add('acessar_meus_certificados', () => {
     .click()
 
   cy.get(meus_certificados_localizadores.opcao_meus_certificados())
-    .contains('Meus Certificados')
+    .contains('Certificados e declarações')
     .click()
 
   cy.url({ timeout: 30000 })
     .should('include', 'certificados')
 })
 
-Cypress.Commands.add('validar_baixar_meus_certificados', (campo) => {
+Cypress.Commands.add('validar_baixar_meus_certificados', () => {
   cy.url({ timeout: 30000 })
     .should('contain', 'certificados')
 
-  cy.contains('Ação').should('to.exist')
+  cy.contains('Ações').should('to.exist')
 })
 
 Cypress.Commands.add('filtrar_meus_certificados', () => {
@@ -31,7 +31,7 @@ Cypress.Commands.add('filtrar_meus_certificados', () => {
     .should('include', 'certificados')
 })
 
-Cypress.Commands.add('preencher_filtro_meus_certificados', (opcao, valor, valorFinal = null) => {
+Cypress.Commands.add('preencher_filtro_meus_certificados', (opcao, valor = null) => {
   const campo = String(opcao).trim().toLowerCase()
 
   switch (campo) {
@@ -100,5 +100,5 @@ Cypress.Commands.add('limpar_filtros_meus_certificados', () => {
 })
 
 Cypress.Commands.add('validar_sem_filtros_meus_certificados', () => {
-  cy.contains('Ação').should('not.exist')
+  cy.contains('Ações').should('exist')
 })

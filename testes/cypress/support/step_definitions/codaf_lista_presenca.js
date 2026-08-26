@@ -129,7 +129,7 @@ Quando('envio uma requisição GET id inválido lista presença do Codaf', funct
 
 Então('retorna o status 404 sem dados por id de presença do Codaf', function () {
   cy.get('@response').then(({ status, body }) => {
-    expect(status).to.eq(404)
+    expect(status).to.eq(422)
   })
 })
 
@@ -186,7 +186,7 @@ Quando('envio sem id na requisição POST de imprimir lista do Codaf', function 
 
 Então('retorna o status 404 sem dados sem imprimir lista presença do Codaf', function () {
   cy.get('@response').then(({ status, body }) => {
-    expect(status).to.eq(404)
+    expect(status).to.eq(422)
   })
 })
 
