@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Npgsql;
 using NpgsqlTypes;
 using SME.ConectaFormacao.Dominio.Contexto;

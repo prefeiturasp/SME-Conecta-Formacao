@@ -1,4 +1,3 @@
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Interfaces.SincronizacaoEOL;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;

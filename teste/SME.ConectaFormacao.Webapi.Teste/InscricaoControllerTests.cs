@@ -1,4 +1,4 @@
-﻿using Bogus;
+using Bogus;
 using Bogus.Extensions.Brazil;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -447,6 +447,23 @@ namespace SME.ConectaFormacao.Webapi.Teste
 
             // Act
             var resultado = await _controller.ReativarInscricoes(mockUseCase.Object, ids);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(resultado);
+            Assert.Equal(retorno, okResult.Value);
+        }
+        [Fact]
+        public async Task Dado_SolicitacaoValida_Quando_ObterCursistaInscricao_Entao_RetornarSucesso()
+        {
+            // Arrange
+            var mockUseCase = new Mock<ICasoDeUsoObterNomeCpfCursistaInscricao>();
+            var rf = "1234567";
+            var cpf = "12345678901";
+            var retorno = new SME.ConectaFormacao.Aplicacao.Dtos.RetornoUsuarioCpfNomeDTO { Nome = "Nome do Cursista" };
+            mockUseCase.Setup(x => x.Executar(rf, cpf)).ReturnsAsync(retorno);
+
+            // Act
+            var resultado = await _controller.ObterCursistaInscricao(mockUseCase.Object, rf, cpf);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(resultado);
