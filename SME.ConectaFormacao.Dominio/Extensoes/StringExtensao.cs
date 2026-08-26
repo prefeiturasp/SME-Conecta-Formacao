@@ -1,5 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
-using System.Buffers;
+﻿using System.Buffers;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -26,13 +25,13 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             return htmlLimpo.Trim();
         }
 
-        public static string SomenteNumeros(this string valor)
+        public static string? SomenteNumeros(this string? valor)
         {
             if (string.IsNullOrEmpty(valor)) return valor;
             return Regex.Replace(valor, "[^0-9]", "");
         }
 
-        public static string AplicarMascara(this string valor, string mascara)
+        public static string? AplicarMascara(this string? valor, string mascara)
         {
             if (string.IsNullOrEmpty(valor))
                 return valor;
@@ -261,7 +260,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 
         public static string AplicarMascaraRf(this string rf)
         {
-            return rf.EhRegistroFuncional() ? Convert.ToUInt64(rf).ToString("000\\.000\\.0") : rf ;
+            return rf.EhRegistroFuncional() ? Convert.ToUInt64(rf).ToString("000\\.000\\.0") : rf;
         }
 
         public static bool SaoStringsIguais(this string? str1, string? str2)

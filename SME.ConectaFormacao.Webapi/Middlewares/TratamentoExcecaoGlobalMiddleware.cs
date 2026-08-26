@@ -2,11 +2,13 @@
 using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Servicos.Log;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
 
 namespace SME.ConectaFormacao.Webapi.Middlewares
 {
+    [ExcludeFromCodeCoverage]
     public class TratamentoExcecaoGlobalMiddleware(RequestDelegate next, IServicoLogs servicoLogs, IWebHostEnvironment env)
     {
         public async Task Invoke(HttpContext context)
@@ -48,6 +50,7 @@ namespace SME.ConectaFormacao.Webapi.Middlewares
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public static class TratamentoExcecaoGlobalMiddlewareExtensions
     {
         public static IApplicationBuilder UseTratamentoExcecoesGlobalMiddleware(this IApplicationBuilder builder)

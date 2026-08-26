@@ -7,9 +7,11 @@ using SME.ConectaFormacao.Aplicacao.Servicos;
 using SME.ConectaFormacao.Aplicacao.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.IoC.Features
 {
+    [ExcludeFromCodeCoverage]
     public static class PropostaExtensions
     {
         extension(IServiceCollection services)

@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
@@ -16,9 +16,11 @@ using SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Servicos;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.IoC.Features
 {
+    [ExcludeFromCodeCoverage]
     public static class CodafExtensions
     {
         extension(IServiceCollection services)
@@ -89,3 +91,4 @@ namespace SME.ConectaFormacao.IoC.Features
         }
     }
 }
+

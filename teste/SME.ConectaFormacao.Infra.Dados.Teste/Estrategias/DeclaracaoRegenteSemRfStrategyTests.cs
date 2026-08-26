@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
 using SME.ConectaFormacao.Infra.Dados.Estrategias.CodafDeclaracoes;
 using SME.ConectaFormacao.Infra.Dados.Templates;

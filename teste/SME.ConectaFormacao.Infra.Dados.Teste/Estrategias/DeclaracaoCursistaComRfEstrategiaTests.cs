@@ -28,12 +28,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 Documento = "12345678910",
                 NomeFormacao = "Curso .NET 8",
                 DataRealizacao = new(2024, 01, 20, 0, 0, 0, DateTimeKind.Utc),
-                DataInicio = new(2024, 01, 20),
-                DataFim = new(2024, 01, 20),
+                DataInicio = new(2024, 01, 20, 0, 0, 0, DateTimeKind.Utc),
+                DataFim = new(2024, 01, 20, 0, 0, 0, DateTimeKind.Utc),
                 HorasTotais = 20,
                 TipoFormacao = "curso",
                 Emissor = "Secretaria Municipal",
-                DataPublicacao = new(2024, 01, 20),
+                DataPublicacao = new(2024, 01, 20, 0, 0, 0, DateTimeKind.Utc),
                 NumeroHomologacao = 789
             };
 
