@@ -1,16 +1,13 @@
 ﻿using FluentValidation;
-using System.Diagnostics.CodeAnalysis;
 using MediatR;
-using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Dominio.Entidades;
-using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
 [ExcludeFromCodeCoverage]
-    public class AlterarAnoTurmaCommand : IRequest<bool>
+public class AlterarAnoTurmaCommand : IRequest<bool>
 {
     public AlterarAnoTurmaCommand(AnoTurma anoTurma)
     {

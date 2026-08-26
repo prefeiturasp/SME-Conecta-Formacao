@@ -1,14 +1,12 @@
 ﻿using FluentValidation;
-using System.Diagnostics.CodeAnalysis;
 using MediatR;
-using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Dominio.Entidades;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
 [ExcludeFromCodeCoverage]
-    public class AlterarComponenteCurricularCommand : IRequest<bool>
+public class AlterarComponenteCurricularCommand : IRequest<bool>
 {
     public AlterarComponenteCurricularCommand(ComponenteCurricular componenteCurricular)
     {

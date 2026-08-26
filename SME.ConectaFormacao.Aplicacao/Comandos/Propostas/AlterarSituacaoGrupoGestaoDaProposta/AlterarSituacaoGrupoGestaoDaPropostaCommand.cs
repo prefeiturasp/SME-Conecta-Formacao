@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
-using System.Diagnostics.CodeAnalysis;
 using MediatR;
-using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using System.Diagnostics.CodeAnalysis;
 
