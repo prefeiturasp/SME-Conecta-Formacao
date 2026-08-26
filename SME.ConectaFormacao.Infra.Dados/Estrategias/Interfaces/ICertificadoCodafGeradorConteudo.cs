@@ -1,5 +1,4 @@
-﻿using SME.ConectaFormacao.Infra.Dados.Dtos;
-using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
+﻿using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
 
 namespace SME.ConectaFormacao.Infra.Dados.Estrategias.Interfaces
 {

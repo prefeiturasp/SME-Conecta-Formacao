@@ -1959,7 +1959,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         p.data_inscricao_inicio,
                         p.data_inscricao_fim,
                         p.area_promotora_id,
-                        p.arquivo_imagem_divulgacao_id
+                        p.arquivo_imagem_divulgacao_id,
+                        p.curso_com_certificado, 
+                        p.codigo_evento_sigpec
                     from public.proposta p  
                     where p.id = any(@propostaIds);
 
@@ -2014,6 +2016,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 p.justificativa,
                 p.formacao_homologada as FormacaoHomologada,
                 p.link_inscricoes_externa as LinkParaInscricoesExterna,
+                p.curso_com_certificado as CursoComCertificado,
+                p.codigo_evento_sigpec as CodigoEventoSigpec,
                 not exists(select 1 from public.proposta_tipo_inscricao pti where pti.proposta_id = p.id and pti.tipo_inscricao = 5) as PodeEnviarInscricao
             from proposta p
             inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id

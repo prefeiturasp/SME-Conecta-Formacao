@@ -24,5 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public bool PodeEnviarInscricao { get; set; }
         public IEnumerable<RetornoTurmaDetalheDTO> Turmas { get; set; } = [];
         public UsuarioAcessibilidadeDto? UsuarioAcessibilidade { get; set; }
+        public bool CursoComCertificado { get; set; }
+        public long? CodigoEventoSigpec { get; set; }
     }
 }

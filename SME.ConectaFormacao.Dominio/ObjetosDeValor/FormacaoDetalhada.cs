@@ -14,7 +14,6 @@ namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
         public DateTime? DataInscricaoFim { get; set; }
         public string Justificativa { get; set; }
         public FormacaoHomologada FormacaoHomologada { get; set; }
-
         public string? AreaPromotora { get; set; }
         public IEnumerable<string> PublicosAlvo { get; set; }
         public IEnumerable<string> PalavrasChaves { get; set; }
@@ -22,5 +21,7 @@ namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
         public Arquivo? ArquivoImagemDivulgacao { get; set; }
         public string? LinkParaInscricoesExterna { get; set; }
         public bool PodeEnviarInscricao { get; set; }
+        public bool CursoComCertificado { get; set; }
+        public long? CodigoEventoSigpec { get; set; }
     }
 }

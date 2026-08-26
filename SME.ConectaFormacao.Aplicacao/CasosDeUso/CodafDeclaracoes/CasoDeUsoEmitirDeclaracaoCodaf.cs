@@ -33,12 +33,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
 
             var listaDadosDeclaracao = await repositorioCodafDeclaracao.ObterDadosParaEmissaoDeclaracoesCodafAsync(codafNaoHomologadoId) ?? throw new InvalidOperationException("Os dados para emissão de declarações do Codaf não foram encontrados.");
             
-            await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirDeclaracaoCodaf).FullName!, LogNivel.Informacao, $"Finalizada consulta de dados para emissão de declaracoes do Codaf - {codafNaoHomologadoId}", identificadorRastreamento: _identificadorRastreamento));
-
             if (!listaDadosDeclaracao.Any())
                 return Erro.NaoEncontrado();
-            await mediator.Send(new SalvarLogCommand(typeof(CasoDeUsoEmitirDeclaracaoCodaf).FullName!, LogNivel.Informacao, $"Iniciando geração de declarações do Codaf - {codafNaoHomologadoId}", identificadorRastreamento: _identificadorRastreamento));
-
+            
             var entidadesParaSalvar = new List<CodafDeclaracao>();
 
             foreach (var dados in listaDadosDeclaracao)

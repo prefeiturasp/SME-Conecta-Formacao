@@ -129,10 +129,11 @@
                CA.CODIGO_DECLARACAO AS codigoDeclaracao,
                CA.HTML_CONTENT_SNAPSHOT AS htmlContentSnapshot,
                U.NOME AS nomeCompleto,
+               U.NOME_SOCIAL AS nomeSocial,
                (U.LOGIN <> U.CPF) AS temRf,
                1 AS tipoParticipacao, -- Cursista
                P.NOME_FORMACAO AS nomeFormacao,
-               U.EMAIL AS emailUsuario       
+               U.EMAIL AS emailUsuario
         FROM   declaracoes_atualizadas CA
                INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO CCNHI ON CA.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO_ID = CCNHI.ID
                INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO CCNH ON CCNHI.CODAF_CURSO_NAO_HOM_ID = CCNH.ID
@@ -151,6 +152,7 @@
                CA.CODIGO_DECLARACAO AS codigoDeclaracao,
                CA.HTML_CONTENT_SNAPSHOT AS htmlContentSnapshot,
                PR.NOME_REGENTE AS nomeCompleto,
+               CAST(NULL AS VARCHAR) AS nomeSocial,
                TRUE AS temRf, -- Regente sempre tem RF
                2 AS tipoParticipacao, -- Regente
                P.NOME_FORMACAO AS nomeFormacao,
@@ -160,7 +162,9 @@
                INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR  ON PRT.PROPOSTA_REGENTE_ID = PR.ID
                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PRT.TURMA_ID = PT.ID
                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
-               LEFT JOIN PUBLIC.USUARIO AS U ON U.CPF = PR.REGISTRO_FUNCIONAL OR U.LOGIN = PR.REGISTRO_FUNCIONAL
+               LEFT JOIN PUBLIC.USUARIO AS U ON U.LOGIN = PR.REGISTRO_FUNCIONAL OR 
+                                                U.CPF = PR.REGISTRO_FUNCIONAL OR 
+                                                U.CPF = PR.CPF 
         WHERE  NOT PRT.EXCLUIDO 
                AND  NOT PR.EXCLUIDO
         """;
