@@ -98,5 +98,35 @@ namespace SME.ConectaFormacao.Webapi.Teste.Controllers
             resultado.StatusCode.Should().Be((int)HttpStatusCode.OK);
             resultado.Value.Should().Be("Sincronização de Cargos EOL executada com sucesso!");
         }
+
+        [Fact]
+        public async Task DadoCodigoDreValido_QuandoSincronizarFuncaoAtividadePorDre_E_RetornarFalse_EntaoRetornaBadRequest()
+        {
+            // Arrange
+            _mockSincFuncaoPorDre.Setup(m => m.Executar(It.IsAny<MensagemRabbit>())).ReturnsAsync(false);
+
+            // Act
+            var resultado = await _sut.SincronizarFuncaoAtividadePorDre("DRE-BT") as BadRequestObjectResult;
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            resultado.Value.Should().Be("Erro ao executar sincronização para DRE DRE-BT");
+        }
+
+        [Fact]
+        public async Task DadoRequestValido_QuandoSincronizarCargos_E_RetornarFalse_EntaoRetornaBadRequest()
+        {
+            // Arrange
+            _mockSincCargos.Setup(m => m.Executar(It.IsAny<MensagemRabbit>())).ReturnsAsync(false);
+
+            // Act
+            var resultado = await _sut.SincronizarCargos() as BadRequestObjectResult;
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            resultado.Value.Should().Be("Erro ao executar sincronização");
+        }
     }
 }
