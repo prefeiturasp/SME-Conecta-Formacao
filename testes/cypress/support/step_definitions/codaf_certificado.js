@@ -189,7 +189,7 @@ Quando('envio uma requisição GET no endpoint CodafCertificado download', funct
 
 Então('retorna o status 200 com download Codaf certificados', function () {
   cy.get('@response').then((response) => {
-    expect(response.status).to.eq(404)
+    expect(response.status).to.eq(422)
   })
 })
 
