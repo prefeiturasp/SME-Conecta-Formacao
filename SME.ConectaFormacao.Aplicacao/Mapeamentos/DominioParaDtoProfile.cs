@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.AnoTurma;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
@@ -22,9 +22,11 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Infra.Servicos.Eol;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
+    [ExcludeFromCodeCoverage]
     public class DominioParaDtoProfile : Profile
     {
         private const string FormatoData = "dd/MM/yyyy";
@@ -188,8 +190,6 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 
             CreateMap<PropostaPareceristaConsideracao, PropostaPareceristaConsideracaoCadastroDTO>().ReverseMap();
 
-
-            CreateMap<PropostaParecerista, PropostaPareceristaDTO>();
 
             CreateMap<PropostaPareceristaConsideracao, PropostaPareceristaConsideracaoCompletoDTO>().ReverseMap();
 
@@ -465,11 +465,8 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
             CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista))
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional));
-
-            CreateMap<PropostaParecerista, PropostaPareceristaResumidoDTO>()
-                .ForMember(dest => dest.Login, opt => opt.MapFrom(o => o.RegistroFuncional))
-                .ForMember(dest => dest.Nome, opt => opt.MapFrom(o => o.NomeParecerista));
         }
+
         private static string FormatarPeriodoData(FormacaoTurmaData s) =>
             s.DataFim.HasValue
                 ? $"{s.DataInicio:dd/MM/yyyy} - {s.DataFim.Value:dd/MM/yyyy}"

@@ -230,5 +230,21 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return conexao.Obter().QueryFirstOrDefaultAsync<AreaPromotora>(query, new { propostaId });
         }
+
+        public async Task<IEnumerable<Dre>> ObterDresPorGrupoIdAsync(Guid grupoId)
+        {
+            const string query =
+                """
+                SELECT d.id, d.dre_id, d.abreviacao, d.nome, d.data_atualizacao, d.ordem
+                  FROM area_promotora ap 
+                       INNER JOIN dre d ON d.id = ap.dreid
+                 WHERE ap.grupo_id = @grupoId
+                       AND NOT ap.excluido
+                       AND NOT d.excluido
+                ORDER  BY d.ordem, d.nome
+                """;
+
+            return await conexao.Obter().QueryAsync<Dre>(query, new { grupoId });
+        }
     }
 }

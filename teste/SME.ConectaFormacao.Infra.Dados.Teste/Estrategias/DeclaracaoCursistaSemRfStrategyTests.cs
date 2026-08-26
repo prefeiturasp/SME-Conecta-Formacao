@@ -28,7 +28,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
                 Documento = "12345678910",
                 NomeFormacao = "Curso .NET 8",
                 DataRealizacao = new(2024, 01, 20, 0, 0, 0, DateTimeKind.Utc),
-                HorasTotais = 20
+                HorasTotais = 20,
+                DataInicio = new(2024, 01, 20, 0, 0, 0, DateTimeKind.Utc),
+                DataFim = new(2024, 01, 21, 0, 0, 0, DateTimeKind.Utc)
             };
 
             _mockTemplateService.Setup(x => x.ObterTemplate("SME.ConectaFormacao.Infra.Dados.Templates.layout-declaracao-codaf.html"))
@@ -52,8 +54,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
             htmlFinal.Should().Contain("participou do");
 
             htmlFinal.Should().Contain("img_header_base64");
-          
-            htmlFinal.Should().Contain("01/01/0001");
+
+            htmlFinal.Should().Contain("20/01/2024");
+            htmlFinal.Should().Contain("21/01/2024");
         }
 
         [Fact]

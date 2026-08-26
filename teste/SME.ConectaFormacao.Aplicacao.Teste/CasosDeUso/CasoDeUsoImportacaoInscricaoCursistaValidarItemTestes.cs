@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Moq;
 using Moq.AutoMock;
@@ -142,6 +142,65 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mocker.GetMock<IMediator>()
                 .Setup(m => m.Send(It.IsAny<ObterPropostaFuncoesEspecificasPorIdQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<PropostaFuncaoEspecifica>());
+        }
+
+        [Fact]
+        public async Task DadoUsuarioComCargosEFuncoes_QuandoMapear_DeveValidarCorretamente()
+        {
+            // Arrange
+            var (mensagemRabbit, dto) = MontarMensagemRabbitPadrao(isRf: true);
+            var propostaId = 5;
+            var usuarioMapeado = new Usuario { Id = 99, Login = dto.RegistroFuncional, Tipo = TipoUsuario.Interno };
+
+            ConfigurarMocksBasicos(propostaId, usuarioMapeado, encontrarUsuarioLocalmente: true);
+
+            var cargosFuncoesEol = new List<SME.ConectaFormacao.Infra.Servicos.Eol.CursistaCargoServicoEol>
+            {
+                new SME.ConectaFormacao.Infra.Servicos.Eol.CursistaCargoServicoEol
+                {
+                    CdCargoSobreposto = 1,
+                    CdDreCargoSobreposto = "DRE1",
+                    CdUeCargoSobreposto = "UE1",
+                    TipoVinculoCargoSobreposto = 1,
+                    CdFuncaoAtividade = 2,
+                    CdDreFuncaoAtividade = "DRE2",
+                    CdUeFuncaoAtividade = "UE2",
+                    TipoVinculoFuncaoAtividade = 1
+                }
+            };
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterCargosFuncoesDresFuncionarioServicoEolQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(cargosFuncoesEol);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaPublicosAlvosPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<PropostaPublicoAlvo> { new PropostaPublicoAlvo { CargoFuncaoId = 10 } });
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaFuncoesEspecificasPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<PropostaFuncaoEspecifica> { new PropostaFuncaoEspecifica { CargoFuncaoId = 20 } });
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterCargoFuncaoOutrosQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CargoFuncao { Id = 999 });
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.Is<ObterCargoFuncaoPorCodigoEolQuery>(q => q.CodigosCargosEol.Contains(1)), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<CargoFuncao> 
+                { 
+                    new CargoFuncao { Id = 10, Tipo = CargoFuncaoTipo.Cargo },
+                    new CargoFuncao { Id = 20, Tipo = CargoFuncaoTipo.Funcao }
+                });
+
+            // Act
+            await _casoDeUso.Executar(mensagemRabbit);
+
+            // Assert
+            _mocker.GetMock<IMediator>().Verify(m => m.Send(
+                It.Is<AlterarImportacaoRegistroCommand>(c =>
+                    c.AlterarImportacaoRegistroDto.Situacao == SituacaoImportacaoArquivoRegistro.Validado
+                ), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

@@ -77,12 +77,144 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 });
         }
 
+        public async Task<ResultadoPaginado<ListagemDeclaracoesCodafDto>>
+           ObterTodasDeclaracoesAsync(FiltroListagemTodasDeclaracoesCodafDto filtro)
+        {
+            var condicoesWhere = new StringBuilder("WHERE 1=1 ");
+            var parametros = new DynamicParameters();
+            parametros.Add("processadoComSucesso", (int)StatusProcessamentoDeclaracaoCodaf.ProcessadoComSucesso);
+            parametros.Add("Cursista", (int)TipoDeclaracaoCodaf.Cursista);
+            parametros.Add("Regente", (int)TipoDeclaracaoCodaf.Regente);
+
+            if (!string.IsNullOrWhiteSpace(filtro.CodigoFormacao))
+            {
+                condicoesWhere.Append(" AND CAST(codigoFormacao AS TEXT) ILIKE @codigoFormacao ");
+                parametros.Add("codigoFormacao", $"{filtro.CodigoFormacao.Trim()}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.NumeroHomologacao))
+            {
+                condicoesWhere.Append(" AND CAST(numeroHomologacao AS TEXT) ILIKE @numeroHomologacao ");
+                parametros.Add("numeroHomologacao", $"{filtro.NumeroHomologacao.Trim()}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.NomeFormacao))
+            {
+                condicoesWhere.Append(" AND f_unaccent(nomeFormacao) ILIKE f_unaccent(@nomeFormacao) ");
+                parametros.Add("nomeFormacao", $"%{filtro.NomeFormacao.Trim()}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.CodigoDeclaracao))
+            {
+                condicoesWhere.Append(" AND CAST(codigoDeclaracao AS TEXT) ILIKE @codigoDeclaracao ");
+                parametros.Add("codigoDeclaracao", $"{filtro.CodigoDeclaracao.Trim()}%");
+            }
+
+            if (filtro.TipoDeclaracao == TipoDeclaracaoCodaf.Cursista || filtro.TipoDeclaracao == TipoDeclaracaoCodaf.Regente)
+            {
+                condicoesWhere.Append(" AND tipoDeclaracao = @tipoDeclaracaoFiltro ");
+                parametros.Add("tipoDeclaracaoFiltro", (int)filtro.TipoDeclaracao);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.DocumentoCursista))
+            {
+                condicoesWhere.Append(" AND documento = @documentoCursista AND tipoDeclaracao = @Cursista ");
+                parametros.Add("documentoCursista", filtro.DocumentoCursista.Trim());
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.DocumentoRegente))
+            {
+                condicoesWhere.Append(" AND documento = @documentoRegente AND tipoDeclaracao = @Regente ");
+                parametros.Add("documentoRegente", filtro.DocumentoRegente.Trim());
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro.NomeCursista))
+            {
+                condicoesWhere.Append(" AND f_unaccent(nomeCursista) ILIKE f_unaccent(@nomeCursista) AND tipoDeclaracao = @Cursista ");
+                parametros.Add("nomeCursista", $"%{filtro.NomeCursista.Trim()}%");
+            }
+
+            if (filtro.DataEmissao.HasValue)
+            {
+                condicoesWhere.Append(" AND CAST(dataEmissao AS DATE) = CAST(@dataEmissao AS DATE) ");
+                parametros.Add("dataEmissao", filtro.DataEmissao.Value);
+            }
+
+            if (filtro.EmissorId.HasValue)
+            {
+                condicoesWhere.Append(" AND emissorId = @emissorId");
+                parametros.Add("emissorId", filtro.EmissorId.Value);               
+            }
+
+            if (filtro.TurmaId.HasValue)
+            {
+                condicoesWhere.Append(" AND turmaId = @turmaId ");
+                parametros.Add("turmaId", filtro.TurmaId.Value);
+            }
+
+            var conn = conexao.Obter();
+            var sqlCount = new StringBuilder($"""
+                {CodafDeclaracaoQueries.ObterTodasDeclaracoesCteBase}
+                SELECT COUNT(1)
+                FROM BaseDeclaracoes
+                {condicoesWhere}
+                """);
+
+            var totalRegistros = await conn.QueryFirstAsync<int>(sqlCount.ToString(), parametros);
+            if (totalRegistros == 0)
+                return new ResultadoPaginado<ListagemDeclaracoesCodafDto>
+                {
+                    Itens = [],
+                    PaginaAtual = filtro.Pagina,
+                    TamanhoPagina = filtro.TamanhoPagina,
+                    TotalRegistros = totalRegistros
+                };
+
+            var registrosIgnorados = (filtro.Pagina - 1) * filtro.TamanhoPagina;
+            parametros.Add("limite", filtro.TamanhoPagina);
+            parametros.Add("registrosIgnorados", registrosIgnorados);
+
+            var sqlConsulta = new StringBuilder($"""
+                {CodafDeclaracaoQueries.ObterTodasDeclaracoesCteBase}
+                SELECT 
+                    id, 
+                    codigoDeclaracao, 
+                    nomeCursista, 
+                    nomeRegente,
+                    tipoDeclaracao, 
+                    CASE WHEN tipoDeclaracao = 1 THEN documento ELSE NULL END AS documentoCursista,
+                    CASE WHEN tipoDeclaracao = 2 THEN documento ELSE NULL END AS documentoRegente,
+                    dataEmissao, 
+                    numeroHomologacao, 
+                    codigoFormacao, 
+                    nomeFormacao, 
+                    tipoEmissor, 
+                    emissorId, 
+                    nomeEmissor, 
+                    turmaId
+                FROM BaseDeclaracoes
+                {condicoesWhere}
+                ORDER BY dataEmissao DESC, codigoDeclaracao ASC
+                LIMIT @limite OFFSET @registrosIgnorados
+                """);
+
+            var itens =
+                await conn.QueryAsync<ListagemDeclaracoesCodafDto>(sqlConsulta.ToString(), parametros);
+            return new ResultadoPaginado<ListagemDeclaracoesCodafDto>
+            {
+                Itens = itens,
+                PaginaAtual = filtro.Pagina,
+                TamanhoPagina = filtro.TamanhoPagina,
+                TotalRegistros = totalRegistros
+            };
+        }
+
         public async Task<IList<CodafDeclaracao>> ObterDeclaracoesDisponiveisPorListaDeIdAsync(List<long> declaracoesId)
         {
             const string sql = """
                 SELECT id, 
                        codigo_declaracao AS codigoDeclaracao,
-                       codaf_inscricao_lista_presenca_id AS codafInscricaoListaPresencaId,
+                       codaf_curso_nao_homologado_inscricao_id AS CodafCursoNaoHomologadoInscricaoId,
                        proposta_regente_turma_id AS propostaRegenteTurmaId,
                        tipo_participacao AS tipoParticipacao,
                        data_emissao AS dataEmissao,
@@ -99,9 +231,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        chave_objeto_armazenamento AS chaveObjetoArmazenamento,
                        erro_processamento AS erroProcessamento,
                        tentativas_processamento AS tentativasProcessamento,
-                       codaf_lista_presenca_id AS codafListaPresencaId
-                FROM codaf_declaracaos
-                WHERE id = ANY(@declaracaosId) 
+                       codaf_curso_nao_homologado_id AS CodafCursoNaoHomologadoId
+                FROM codaf_declaracoes
+                WHERE id = ANY(@declaracoesId) 
                     AND status_processamento = @statusProcessamento 
                     AND NOT excluido
                 """;
