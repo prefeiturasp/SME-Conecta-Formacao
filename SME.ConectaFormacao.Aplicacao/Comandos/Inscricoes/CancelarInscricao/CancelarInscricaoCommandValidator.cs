@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.CancelarInscricao
 {
+    [ExcludeFromCodeCoverage]
     public class CancelarInscricaoCommandValidator : AbstractValidator<CancelarInscricaoCommand>
     {
         public CancelarInscricaoCommandValidator()
@@ -17,3 +19,4 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.CancelarInscricao
         }
     }
 }
+

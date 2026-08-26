@@ -1,8 +1,11 @@
-using FluentValidation;
+﻿using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class AlterarEmailEduAoAlterarNomeTipoEmailCommand : IRequest<bool>
     {
         public AlterarEmailEduAoAlterarNomeTipoEmailCommand(string login)
@@ -13,6 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Login { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class AlterarEmailEduAoAlterarNomeCommandValidator : AbstractValidator<AlterarEmailEduAoAlterarNomeTipoEmailCommand>
     {
         public AlterarEmailEduAoAlterarNomeCommandValidator()

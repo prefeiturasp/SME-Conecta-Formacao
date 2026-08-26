@@ -5,7 +5,6 @@ using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados;
-using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -23,7 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<IGerenciadorAnexosCodafCursoNaoHomologadoService> _anexoServiceMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<ITransacao> _transacaoMock;
-        
+
         private readonly CasoDeUsoCriarCodafCursoNaoHomologado _sut;
         private readonly Faker _faker;
 
@@ -58,8 +57,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 PropostaId = _faker.Random.Long(1, long.MaxValue),
                 PropostaTurmaId = _faker.Random.Long(1, long.MaxValue),
                 Observacao = _faker.Lorem.Sentence(),
-                Inscritos = new List<CodafCursoNaoHomologadoInscritoSalvarDto>(),
-                Anexos = new List<CodafAnexoSalvarDto>()
+                Inscritos = [],
+                Anexos = []
             };
 
             var idEsperado = _faker.Random.Long(1, long.MaxValue);
@@ -68,9 +67,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _transacaoMock.Setup(t => t.Iniciar()).Returns(transacaoDbMock.Object);
             _repositorioCodafMock.Setup(r => r.Inserir(It.IsAny<CodafCursoNaoHomologado>())).ReturnsAsync(idEsperado);
             _mapperMock.Setup(m => m.Map<List<CodafCursoNaoHomologadoInscricao>>(codafCursoNaoHomologadoCadastroDto.Inscritos))
-                       .Returns(new List<CodafCursoNaoHomologadoInscricao>());
+                       .Returns([]);
             _mapperMock.Setup(m => m.Map<List<CodafCursoNaoHomologadoAnexo>>(codafCursoNaoHomologadoCadastroDto.Anexos))
-                       .Returns(new List<CodafCursoNaoHomologadoAnexo>());
+                       .Returns([]);
             _mapperMock.Setup(m => m.Map<CodafCursoNaoHomologadoDetalhadoDto>(It.IsAny<CodafCursoNaoHomologado>()))
                        .Returns(new CodafCursoNaoHomologadoDetalhadoDto { Id = idEsperado });
 

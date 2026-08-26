@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
+using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
+    [ExcludeFromCodeCoverage]
     public class ComumProfile : Profile
     {
         public ComumProfile()

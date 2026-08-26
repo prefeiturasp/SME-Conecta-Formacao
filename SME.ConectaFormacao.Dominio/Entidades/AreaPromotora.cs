@@ -1,7 +1,9 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
+    [ExcludeFromCodeCoverage]
     public class AreaPromotora : EntidadeBaseAuditavel
     {
         public string Nome { get; set; }

@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.ImportacaoInscricao.AlterarSituacaoImportacaoArquivo
 {
+    [ExcludeFromCodeCoverage]
     public class AlterarSituacaoImportacaoArquivoCommandValidator : AbstractValidator<AlterarSituacaoImportacaoArquivoCommand>
     {
         public AlterarSituacaoImportacaoArquivoCommandValidator()
@@ -16,3 +18,4 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.ImportacaoInscricao.AlterarSitu
         }
     }
 }
+

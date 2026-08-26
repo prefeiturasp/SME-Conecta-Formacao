@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
+using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
 {
+    [ExcludeFromCodeCoverage]
     public class CodafDeclaracoesProfile : Profile
     {
         public CodafDeclaracoesProfile()

@@ -1,8 +1,11 @@
 ﻿using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class AlterarSenhaServicoAcessosPorTokenCommand : IRequest<string>
     {
         public AlterarSenhaServicoAcessosPorTokenCommand(Guid token, string novaSenha)
@@ -15,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string NovaSenha { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class AlterarSenhaServicoAcessosPorTokenCommandValidator : AbstractValidator<AlterarSenhaServicoAcessosPorTokenCommand>
     {
         public AlterarSenhaServicoAcessosPorTokenCommandValidator()
@@ -29,3 +33,4 @@ namespace SME.ConectaFormacao.Aplicacao
         }
     }
 }
+

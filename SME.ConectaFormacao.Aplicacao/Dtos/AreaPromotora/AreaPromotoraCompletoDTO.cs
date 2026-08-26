@@ -1,9 +1,13 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Dtos.Coordenadorias;
+using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Dominio.Extensoes;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora
 {
+    [ExcludeFromCodeCoverage]
     public class AreaPromotoraCompletoDTO
     {
         public string Nome { get; set; }
@@ -19,3 +23,4 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora
         public CoordenadoriaDto? Coordenadoria { get; set; }
     }
 }
+
