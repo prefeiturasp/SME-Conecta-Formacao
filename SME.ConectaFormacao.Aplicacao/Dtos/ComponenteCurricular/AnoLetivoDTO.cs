@@ -1,5 +1,7 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Dtos
+﻿using System.Diagnostics.CodeAnalysis;
+namespace SME.ConectaFormacao.Aplicacao.Dtos
 {
+    [ExcludeFromCodeCoverage]
     public class AnoLetivoDTO
     {
         public AnoLetivoDTO(int anoLetivo)
@@ -10,3 +12,4 @@
         public int AnoLetivo { get; set; }
     }
 }
+

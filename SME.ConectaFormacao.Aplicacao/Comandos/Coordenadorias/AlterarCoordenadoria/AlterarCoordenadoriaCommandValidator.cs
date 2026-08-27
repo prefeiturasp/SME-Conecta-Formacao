@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
-using SME.ConectaFormacao.Dominio.Comum;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.AlterarCoordenadoria
 {
+    [ExcludeFromCodeCoverage]
     public class AlterarCoordenadoriaCommandValidator : AbstractValidator<AlterarCoordenadoriaCommand>
     {
         public AlterarCoordenadoriaCommandValidator()
@@ -13,3 +14,4 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.AlterarCoordenad
         }
     }
 }
+
