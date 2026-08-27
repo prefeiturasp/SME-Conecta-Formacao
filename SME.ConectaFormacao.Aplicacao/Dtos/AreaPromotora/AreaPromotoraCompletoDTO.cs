@@ -1,7 +1,5 @@
 ﻿using SME.ConectaFormacao.Aplicacao.Dtos.Coordenadorias;
-using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using System.Diagnostics.CodeAnalysis;
 

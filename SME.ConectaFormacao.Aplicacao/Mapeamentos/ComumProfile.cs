@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
-using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Dominio.Entidades;
 using System.Diagnostics.CodeAnalysis;
 

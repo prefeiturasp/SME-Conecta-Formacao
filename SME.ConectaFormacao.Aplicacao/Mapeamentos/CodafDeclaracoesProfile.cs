@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
-using System.Diagnostics.CodeAnalysis;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
 using System.Diagnostics.CodeAnalysis;
 

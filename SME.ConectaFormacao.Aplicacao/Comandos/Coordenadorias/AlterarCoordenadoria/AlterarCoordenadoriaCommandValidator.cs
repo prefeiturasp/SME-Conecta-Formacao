@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
 using System.Diagnostics.CodeAnalysis;
-using SME.ConectaFormacao.Dominio.Comum;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.AlterarCoordenadoria
 {
