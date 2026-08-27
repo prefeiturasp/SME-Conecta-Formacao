@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class AlterarUnidadeEolUsuarioCommand : IRequest<bool>
     {
         public AlterarUnidadeEolUsuarioCommand(string login, string codigoEolUnidade)
@@ -15,6 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string CodigoEolUnidade { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class AlterarUnidadeEolUsuarioCommandValidator : AbstractValidator<AlterarUnidadeEolUsuarioCommand>
     {
         public AlterarUnidadeEolUsuarioCommandValidator()
@@ -24,3 +27,4 @@ namespace SME.ConectaFormacao.Aplicacao
         }
     }
 }
+

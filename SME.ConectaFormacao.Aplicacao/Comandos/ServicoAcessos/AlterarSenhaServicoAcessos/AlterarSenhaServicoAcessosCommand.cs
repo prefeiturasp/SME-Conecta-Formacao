@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class AlterarSenhaServicoAcessosCommand : IRequest<bool>
     {
         public AlterarSenhaServicoAcessosCommand(string login, string senhaAtual, string novaSenha)
@@ -17,6 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string NovaSenha { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class AlterarSenhaServicoAcessosCommandValidator : AbstractValidator<AlterarSenhaServicoAcessosCommand>
     {
         public AlterarSenhaServicoAcessosCommandValidator()
@@ -35,3 +38,4 @@ namespace SME.ConectaFormacao.Aplicacao
         }
     }
 }
+

@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
 {
+    [ExcludeFromCodeCoverage]
     public class CodafSuplementarInscritoSalvarValidator : AbstractValidator<CodafSuplementarInscritoSalvarDto>
     {
         public CodafSuplementarInscritoSalvarValidator()
@@ -23,3 +25,4 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
         }
     }
 }
+

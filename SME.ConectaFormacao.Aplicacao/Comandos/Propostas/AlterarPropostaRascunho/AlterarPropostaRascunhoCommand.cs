@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class AlterarPropostaRascunhoCommand : IRequest<RetornoDTO>
     {
         public AlterarPropostaRascunhoCommand(long id, PropostaDTO propostaDTO)
@@ -17,6 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public PropostaDTO PropostaDTO { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class AlterarPropostaRascunhoCommandValidator : AbstractValidator<AlterarPropostaRascunhoCommand>
     {
         public AlterarPropostaRascunhoCommandValidator()
@@ -27,3 +30,4 @@ namespace SME.ConectaFormacao.Aplicacao
         }
     }
 }
+

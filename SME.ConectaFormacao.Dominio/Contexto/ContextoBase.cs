@@ -1,4 +1,5 @@
 ﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Contexto;
 
@@ -30,3 +31,4 @@ public abstract class ContextoBase : IContextoAplicacao
         return default;
     }
 }
+
