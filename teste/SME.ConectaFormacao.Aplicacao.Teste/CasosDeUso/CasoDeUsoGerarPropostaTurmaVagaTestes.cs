@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var propostaId = _faker.Random.Long(1);
-            var qtdVagasTurma = _faker.Random.Int(10, 50);
+            var qtdVagasTurma = (short)_faker.Random.Int(10, 50);
             var param = new MensagemRabbit(propostaId.ToString());
             
             var proposta = new SME.ConectaFormacao.Dominio.Entidades.Proposta { QuantidadeVagasTurma = qtdVagasTurma };

@@ -48,6 +48,8 @@ namespace SME.ConectaFormacao.Infra.Servicos.Emails
             try
             {
                 var configuracaoEmail = await _servicoAcessos.ObterConfiguracaoEmail();
+                var envioRealizado = false;
+
                 await _retryPolicy.ExecuteAsync(async (token) =>
                 {
                     using var client = _smtpClientFactory.Criar();
@@ -60,14 +62,31 @@ namespace SME.ConectaFormacao.Infra.Servicos.Emails
                         await client.AuthenticateAsync(configuracaoEmail.Usuario, configuracaoEmail.Senha, token);
 
                         await client.SendAsync(mensagem, token);
+                        envioRealizado = true; // Marca que o envio foi bem-sucedido
+
                         await client.DisconnectAsync(true, token);
                     }
                     catch (Exception ex)
                     {
                         _logger.LogError(ex, "Erro ao enviar e-mail para {Destinatario}. Tentativa falhou.", mensagem.To);
+
+                        // Tenta desconectar se ainda estiver conectado
                         if (client.IsConnected)
-                            await client.DisconnectAsync(false, token);
-                        throw;
+                        {
+                            try
+                            {
+                                await client.DisconnectAsync(false, token);
+                            }
+                            catch (Exception exDisconnect)
+                            {
+                                _logger.LogWarning(exDisconnect, "Erro ao desconectar cliente SMTP após falha no envio");
+                            }
+                        }
+
+                        // Só relança a exceção se o envio não foi realizado com sucesso
+                        // Isso evita retry quando o envio foi bem-sucedido mas a desconexão falhou
+                        if (!envioRealizado)
+                            throw;
                     }
                 }, cancellationToken);
             }

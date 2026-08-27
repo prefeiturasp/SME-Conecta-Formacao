@@ -1,3 +1,4 @@
+using System;
 using Bogus;
 using FluentAssertions;
 using MediatR;
@@ -35,8 +36,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var propostaDTO = new PropostaDTO { Situacao = SituacaoProposta.Rascunho };
-            var grupoUsuarioLogadoId = _faker.Random.Long(1);
-            var dres = new long[] { _faker.Random.Long(1) };
+            var grupoUsuarioLogadoId = Guid.NewGuid();
+            var dres = new string[] { "DRE_1" };
             var areaPromotora = new AreaPromotora { Id = _faker.Random.Long(1) };
             var parametroDescricao = new ParametroSistema { Valor = "Descricao" };
             var parametroUrl = new ParametroSistema { Valor = "http://url.com" };
@@ -45,10 +46,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(grupoUsuarioLogadoId);
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterDresUsuarioLogadoQuery>(), default)).ReturnsAsync(dres);
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterAreaPromotoraPorGrupoIdEDresQuery>(), default)).ReturnsAsync(areaPromotora);
-            _mediatorMock.Setup(m => m.Send(It.Is<ObterParametroSistemaPorTipoEAnoQuery>(q => q.Tipo == TipoParametroSistema.ComunicadoAcaoFormativaDescricao), default)).ReturnsAsync(parametroDescricao);
-            _mediatorMock.Setup(m => m.Send(It.Is<ObterParametroSistemaPorTipoEAnoQuery>(q => q.Tipo == TipoParametroSistema.ComunicadoAcaoFormativaUrl), default)).ReturnsAsync(parametroUrl);
+            _mediatorMock.Setup(m => m.Send(It.Is<ObterParametroSistemaPorTipoEAnoQuery>(q => q.TipoParametroSistema == TipoParametroSistema.ComunicadoAcaoFormativaDescricao), default)).ReturnsAsync(parametroDescricao);
+            _mediatorMock.Setup(m => m.Send(It.Is<ObterParametroSistemaPorTipoEAnoQuery>(q => q.TipoParametroSistema == TipoParametroSistema.ComunicadoAcaoFormativaUrl), default)).ReturnsAsync(parametroUrl);
             _mediatorMock.Setup(m => m.Send(It.IsAny<InserirPropostaRascunhoCommand>(), default)).ReturnsAsync(retornoDto);
-            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaMovimentacaoCommand>(), default)).ReturnsAsync(new RetornoDTO { Sucesso = true });
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaMovimentacaoCommand>(), default)).ReturnsAsync(true);
 
             // Act
             var resultado = await _sut.Executar(propostaDTO);
@@ -67,8 +68,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var propostaDTO = new PropostaDTO { Situacao = SituacaoProposta.Cadastrada };
-            var grupoUsuarioLogadoId = _faker.Random.Long(1);
-            var dres = new long[] { _faker.Random.Long(1) };
+            var grupoUsuarioLogadoId = Guid.NewGuid();
+            var dres = new string[] { "DRE_1" };
             var areaPromotora = new AreaPromotora { Id = _faker.Random.Long(1) };
             var parametroDescricao = new ParametroSistema { Valor = "Descricao" };
             var parametroUrl = new ParametroSistema { Valor = "http://url.com" };
@@ -77,10 +78,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(grupoUsuarioLogadoId);
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterDresUsuarioLogadoQuery>(), default)).ReturnsAsync(dres);
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterAreaPromotoraPorGrupoIdEDresQuery>(), default)).ReturnsAsync(areaPromotora);
-            _mediatorMock.Setup(m => m.Send(It.Is<ObterParametroSistemaPorTipoEAnoQuery>(q => q.Tipo == TipoParametroSistema.ComunicadoAcaoFormativaDescricao), default)).ReturnsAsync(parametroDescricao);
-            _mediatorMock.Setup(m => m.Send(It.Is<ObterParametroSistemaPorTipoEAnoQuery>(q => q.Tipo == TipoParametroSistema.ComunicadoAcaoFormativaUrl), default)).ReturnsAsync(parametroUrl);
+            _mediatorMock.Setup(m => m.Send(It.Is<ObterParametroSistemaPorTipoEAnoQuery>(q => q.TipoParametroSistema == TipoParametroSistema.ComunicadoAcaoFormativaDescricao), default)).ReturnsAsync(parametroDescricao);
+            _mediatorMock.Setup(m => m.Send(It.Is<ObterParametroSistemaPorTipoEAnoQuery>(q => q.TipoParametroSistema == TipoParametroSistema.ComunicadoAcaoFormativaUrl), default)).ReturnsAsync(parametroUrl);
             _mediatorMock.Setup(m => m.Send(It.IsAny<InserirPropostaCommand>(), default)).ReturnsAsync(retornoDto);
-            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaMovimentacaoCommand>(), default)).ReturnsAsync(new RetornoDTO { Sucesso = true });
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaMovimentacaoCommand>(), default)).ReturnsAsync(true);
 
             // Act
             var resultado = await _sut.Executar(propostaDTO);
@@ -97,8 +98,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         {
             // Arrange
             var propostaDTO = new PropostaDTO { Situacao = SituacaoProposta.Cadastrada };
-            var grupoUsuarioLogadoId = _faker.Random.Long(1);
-            var dres = new long[] { _faker.Random.Long(1) };
+            var grupoUsuarioLogadoId = Guid.NewGuid();
+            var dres = new string[] { "DRE_1" };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(grupoUsuarioLogadoId);
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterDresUsuarioLogadoQuery>(), default)).ReturnsAsync(dres);

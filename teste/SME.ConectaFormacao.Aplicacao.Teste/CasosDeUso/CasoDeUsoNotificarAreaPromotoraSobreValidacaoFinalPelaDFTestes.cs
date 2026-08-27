@@ -14,42 +14,61 @@ using Xunit;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
-    public class CasoDeUsoNotificarAreaPromotoraParaAnaliseParecerTestes
+    public class CasoDeUsoNotificarAreaPromotoraSobreValidacaoFinalPelaDFTestes
     {
         private readonly Mock<IMediator> _mediatorMock;
-        private readonly CasoDeUsoNotificarAreaPromotoraParaAnaliseParecer _sut;
+        private readonly CasoDeUsoNotificarAreaPromotoraSobreValidacaoFinalPelaDF _sut;
         private readonly Faker _faker;
 
-        public CasoDeUsoNotificarAreaPromotoraParaAnaliseParecerTestes()
+        public CasoDeUsoNotificarAreaPromotoraSobreValidacaoFinalPelaDFTestes()
         {
             var mocker = new AutoMocker();
             _mediatorMock = mocker.GetMock<IMediator>();
 
-            _sut = mocker.CreateInstance<CasoDeUsoNotificarAreaPromotoraParaAnaliseParecer>();
+            _sut = mocker.CreateInstance<CasoDeUsoNotificarAreaPromotoraSobreValidacaoFinalPelaDF>();
             _faker = new Faker();
         }
 
         [Fact]
-        public async Task DadoPropostaComSituacaoAnaliseParecer_QuandoChamarExecutar_EntaoDeveGerarNotificacao()
+        public async Task DadoPropostaAprovada_QuandoChamarExecutar_EntaoDeveGerarNotificacao()
         {
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var param = new MensagemRabbit(propostaId.ToString());
-            var proposta = new SME.ConectaFormacao.Dominio.Entidades.Proposta { Situacao = SituacaoProposta.AnaliseParecerPelaAreaPromotora };
+            var proposta = new SME.ConectaFormacao.Dominio.Entidades.Proposta { Situacao = SituacaoProposta.Aprovada };
 
             _mediatorMock.Setup(m => m.Send(It.Is<ObterPropostaPorIdQuery>(q => q.Id == propostaId), default)).ReturnsAsync(proposta);
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GerarNotificacaoAreaPromotoraCommand>(), default)).ReturnsAsync(true);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GerarNotificacaoAreaPromotoraSobreValidacaoFinalCommand>(), default)).ReturnsAsync(true);
 
             // Act
             var resultado = await _sut.Executar(param);
 
             // Assert
             resultado.Should().BeTrue();
-            _mediatorMock.Verify(m => m.Send(It.IsAny<GerarNotificacaoAreaPromotoraCommand>(), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GerarNotificacaoAreaPromotoraSobreValidacaoFinalCommand>(), default), Times.Once);
         }
 
         [Fact]
-        public async Task DadoPropostaComSituacaoDiferenteDeAnaliseParecer_QuandoChamarExecutar_EntaoNaoDeveGerarNotificacaoERetornarFalse()
+        public async Task DadoPropostaRecusada_QuandoChamarExecutar_EntaoDeveGerarNotificacao()
+        {
+            // Arrange
+            var propostaId = _faker.Random.Long(1);
+            var param = new MensagemRabbit(propostaId.ToString());
+            var proposta = new SME.ConectaFormacao.Dominio.Entidades.Proposta { Situacao = SituacaoProposta.Recusada };
+
+            _mediatorMock.Setup(m => m.Send(It.Is<ObterPropostaPorIdQuery>(q => q.Id == propostaId), default)).ReturnsAsync(proposta);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GerarNotificacaoAreaPromotoraSobreValidacaoFinalCommand>(), default)).ReturnsAsync(true);
+
+            // Act
+            var resultado = await _sut.Executar(param);
+
+            // Assert
+            resultado.Should().BeTrue();
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GerarNotificacaoAreaPromotoraSobreValidacaoFinalCommand>(), default), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoPropostaComSituacaoDiferenteDeAprovadaOuRecusada_QuandoChamarExecutar_EntaoNaoDeveGerarNotificacaoERetornarFalse()
         {
             // Arrange
             var propostaId = _faker.Random.Long(1);
@@ -63,7 +82,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             resultado.Should().BeFalse();
-            _mediatorMock.Verify(m => m.Send(It.IsAny<GerarNotificacaoAreaPromotoraCommand>(), default), Times.Never);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GerarNotificacaoAreaPromotoraSobreValidacaoFinalCommand>(), default), Times.Never);
         }
 
         [Fact]
