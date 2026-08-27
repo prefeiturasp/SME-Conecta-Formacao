@@ -10,26 +10,13 @@ using SME.ConectaFormacao.Infra.Servicos.Emails.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.ServicoAcessos.EnviarEmailAdminSolicitacaoResetSenha
 {
-    public class EnviarEmailAdminSolicitacaoResetSenhaCommandHandler
-        : IRequestHandler<EnviarEmailAdminSolicitacaoResetSenhaCommand, bool>
+    public class EnviarEmailAdminSolicitacaoResetSenhaCommandHandler(
+        IRepositorioUsuario repositorioUsuario,
+        IServicoEnvioEmail servicoEnvioEmail,
+        IServicoAcessos servicoAcessos,
+        IHostEnvironment hostEnvironment)
+                : IRequestHandler<EnviarEmailAdminSolicitacaoResetSenhaCommand, bool>
     {
-        private readonly IRepositorioUsuario repositorioUsuario;
-        private readonly IServicoEnvioEmail servicoEnvioEmail;
-        private readonly IServicoAcessos servicoAcessos;
-        private readonly IHostEnvironment hostEnvironment;
-
-        public EnviarEmailAdminSolicitacaoResetSenhaCommandHandler(
-            IRepositorioUsuario repositorioUsuario,
-            IServicoEnvioEmail servicoEnvioEmail,
-            IServicoAcessos servicoAcessos,
-            IHostEnvironment hostEnvironment)
-        {
-            this.repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
-            this.servicoEnvioEmail = servicoEnvioEmail ?? throw new ArgumentNullException(nameof(servicoEnvioEmail));
-            this.servicoAcessos = servicoAcessos;
-            this.hostEnvironment = hostEnvironment;
-        }
-
         public async Task<bool> Handle(
             EnviarEmailAdminSolicitacaoResetSenhaCommand request,
             CancellationToken cancellationToken)

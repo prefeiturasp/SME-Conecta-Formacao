@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
+using SME.ConectaFormacao.Aplicacao.Servicos;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -23,6 +24,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoSalvarUsuarioAcessibilidade, CasoDeUsoSalvarUsuarioAcessibilidade>()
                 .AddScoped<ICasoDeUsoPesquisarCursistaPorPropostaTurmaId, CasoDeUsoPesquisarCursistaPorPropostaTurmaId>()
                 .AddScoped<ICasoDeUsoUsuarioAlterarNomeSocial, CasoDeUsoUsuarioAlterarNomeSocial>()
+                .AddScoped<IServicoNotificacao, ServicoNotificacao>()
                 ;
         }
     }

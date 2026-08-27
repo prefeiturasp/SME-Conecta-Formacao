@@ -12,61 +12,41 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class GerarNotificacaoAreaPromotoraCommandHandler : IRequestHandler<GerarNotificacaoAreaPromotoraCommand, bool>
+    public class GerarNotificacaoAreaPromotoraCommandHandler(ITransacao transacao, IRepositorioNotificacao repositorioNotificacao,
+        IRepositorioNotificacaoUsuario repositorioNotificacaoUsuario, IMediator mediator, IMapper mapper, IRepositorioAreaPromotora repositorioAreaPromotora,
+        IRepositorioUsuario repositorioUsuario) : IRequestHandler<GerarNotificacaoAreaPromotoraCommand, bool>
     {
-        private readonly IRepositorioNotificacao _repositorioNotificacao;
-        private readonly IRepositorioNotificacaoUsuario _repositorioNotificacaoUsuario;
-        private readonly IRepositorioAreaPromotora _repositorioAreaPromotora;
-        private readonly IRepositorioUsuario _repositorioUsuario;
-        private readonly ITransacao _transacao;
-        private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
-
-        public GerarNotificacaoAreaPromotoraCommandHandler(ITransacao transacao, IRepositorioNotificacao repositorioNotificacao,
-            IRepositorioNotificacaoUsuario repositorioNotificacaoUsuario, IMediator mediator, IMapper mapper, IRepositorioAreaPromotora repositorioAreaPromotora,
-            IRepositorioUsuario repositorioUsuario)
-        {
-            _repositorioNotificacao = repositorioNotificacao ?? throw new ArgumentNullException(nameof(repositorioNotificacao));
-            _repositorioNotificacaoUsuario = repositorioNotificacaoUsuario ?? throw new ArgumentNullException(nameof(repositorioNotificacaoUsuario));
-            _repositorioAreaPromotora = repositorioAreaPromotora ?? throw new ArgumentNullException(nameof(repositorioAreaPromotora));
-            _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        }
-
         public async Task<bool> Handle(GerarNotificacaoAreaPromotoraCommand request, CancellationToken cancellationToken)
         {
             var notificacao = await ObterNotificacao(request.Proposta);
 
-            var transacao = _transacao.Iniciar();
+            var transacaoDb = transacao.Iniciar();
             try
             {
-                var notificacaoId = await _repositorioNotificacao.Inserir(notificacao);
+                var notificacaoId = await repositorioNotificacao.Inserir(notificacao);
 
-                await _repositorioNotificacaoUsuario.InserirUsuarios(transacao, notificacao.Usuarios, notificacaoId);
+                await repositorioNotificacaoUsuario.InserirUsuarios(transacaoDb, notificacao.Usuarios, notificacaoId);
 
-                transacao.Commit();
+                transacaoDb.Commit();
 
-                // Remove duplicatas por e-mail para evitar envio múltiplo para o mesmo destinatário
-                var usuariosUnicos = notificacao.Usuarios.RemoverDuplicatasPorEmailPreenchido();
+                var usuariosUnicos = notificacao.Usuarios.RemoverDuplicatasPorEmail();
 
                 foreach (var usuario in usuariosUnicos)
                 {
-                    var destinatario = _mapper.Map<EnviarEmailDto>(usuario);
+                    var destinatario = mapper.Map<EnviarEmailDto>(usuario);
                     destinatario.Titulo = notificacao.Titulo;
                     destinatario.Texto = notificacao.Mensagem;
-                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario));
+                    await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario), cancellationToken);
                 }
             }
             catch
             {
-                transacao.Rollback();
+                transacaoDb.Rollback();
                 throw;
             }
             finally
             {
-                transacao.Dispose();
+                transacaoDb.Dispose();
             }
 
             return true;
@@ -74,16 +54,16 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private async Task<Notificacao> ObterNotificacao(Proposta proposta)
         {
-            var linkSistema = await _mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacaoEdicaoProposta, DateTimeExtension.HorarioBrasilia().Year));
+            var linkSistema = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.UrlConectaFormacaoEdicaoProposta, DateTimeExtension.HorarioBrasilia().Year));
 
-            var areaPromotora = await _repositorioAreaPromotora.ObterAreaPromotoraPorPropostaId(proposta.Id);
+            var areaPromotora = await repositorioAreaPromotora.ObterAreaPromotoraPorPropostaId(proposta.Id);
 
-            var usuarioCriadorProposta = await _repositorioUsuario.ObterPorLogin(proposta.CriadoLogin);
+            var usuarioCriadorProposta = await repositorioUsuario.ObterPorLogin(proposta.CriadoLogin!);
             
             var destinatarios = new List<NotificacaoUsuario>()
             {
                 new (areaPromotora.Nome,areaPromotora.Email),
-                new (usuarioCriadorProposta.Login, usuarioCriadorProposta.Nome, usuarioCriadorProposta.Email)
+                new (usuarioCriadorProposta!.Login, usuarioCriadorProposta.Nome, usuarioCriadorProposta.Email)
             };
 
             return new Notificacao()

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using MimeKit;
+using SME.ConectaFormacao.Dominio.Utilitarios;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Emails.Interfaces;
 
@@ -13,8 +14,18 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Enviar.EnviarEmail
         {
             var configuracaoEmail = await servicoAcessos.ObterConfiguracaoEmail();
             var message = MontarMensagem(request, configuracaoEmail);
-            await servicoEnvioEmail.EnviarAsync(message, cancellationToken);
-            return true;
+
+            var chaveIdempotencia = GeradorChaveIdempotencia.Gerar(
+                request.EmailDestinatario,
+                request.Assunto,
+                comJanelaTemporal: false);
+
+            var resultado = await servicoEnvioEmail.EnviarComIdempotenciaAsync(
+                message,
+                chaveIdempotencia,
+                cancellationToken);
+
+            return resultado.Enviado || resultado.JaEnviado;
         }
 
         private static MimeMessage MontarMensagem(EnviarEmailCommand request, dynamic configuracaoEmail)

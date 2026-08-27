@@ -47,7 +47,6 @@ namespace SME.ConectaFormacao.Aplicacao.Eventos.Codaf
                     await repositorioCodafComentario.Atualizar(eventoNotificacao.Comentario);
                     scope.Commit();
 
-                // Remove duplicatas por e-mail para evitar envio múltiplo para o mesmo destinatário
                 var usuariosUnicos = notificacao.Usuarios.RemoverDuplicatasPorEmail();
 
                 foreach (var usuario in usuariosUnicos)
