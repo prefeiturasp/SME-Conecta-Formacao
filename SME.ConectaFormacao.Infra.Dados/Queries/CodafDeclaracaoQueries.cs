@@ -206,8 +206,8 @@
                 WHERE NOT CC.EXCLUIDO
                   AND CSI.INSCRICAO_ID = ANY(@inscricaoId)
             )
-        """; 
-        
+        """;
+
         public const string ObterMinhasDeclaracoesCteBase = """
             WITH BaseDeclaracoes AS (
                 -- 1. Cursista
@@ -222,17 +222,43 @@
                 FROM PUBLIC.CODAF_DECLARACOES AS CD
                 INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CCNHI ON CD.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO_ID  = CCNHI.ID
                 INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH ON CCNHI.CODAF_CURSO_NAO_HOM_ID = CCNH.ID
-        """;
+                INNER JOIN PUBLIC.PROPOSTA_TURMA PT ON CCNH.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.INSCRICAO AS I ON CCNHI.INSCRICAO_ID = I.ID 
+                INNER JOIN PUBLIC.USUARIO AS U ON I.USUARIO_ID = U.ID
+                WHERE NOT CD.EXCLUIDO AND CD.STATUS_PROCESSAMENTO = @statusProcessado
+
+                UNION ALL
+
+                -- 2. Regente
+                SELECT        
+                    CD.ID, CD.CODIGO_DECLARACAO AS codigoDeclaracao, 
+                    TRUE AS temRf, 
+                    2 AS tipoParticipacao, 
+                    P.NOME_FORMACAO AS nomeFormacao, 
+                    P.ID AS codigoFormacao, 
+                    CD.DATA_EMISSAO AS dataEmissao, 
+                    U.LOGIN
+                FROM PUBLIC.CODAF_DECLARACOES AS CD
+                INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON CD.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
+                INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PRT.TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
+                INNER JOIN PUBLIC.USUARIO AS U ON U.CPF = PR.REGISTRO_FUNCIONAL OR U.LOGIN = PR.REGISTRO_FUNCIONAL
+                WHERE NOT CD.EXCLUIDO AND CD.STATUS_PROCESSAMENTO = @statusProcessado
+            )
+            """;
 
         public const string ObterTodasDeclaracoesCteBase = """
             WITH BaseDeclaracoes AS (
                 -- 1. Cursista (Lista Normal)
-                SELECT DISTINCT ON (CC.ID)
+                SELECT
                     CC.ID AS id, 
                     CC.CODIGO_DECLARACAO AS codigoDeclaracao, 
                     COALESCE(NULLIF(TRIM(U.NOME_SOCIAL), ''), U.NOME) AS nomeCursista,
                     NULL::text AS nomeRegente,
-                    1 AS tipoDeclaracao,
+                    @Cursista AS tipoDeclaracao,
                     U.LOGIN AS documento, 
                     CC.DATA_EMISSAO AS dataEmissao,
                     P.NUMERO_HOMOLOGACAO AS numeroHomologacao, 
@@ -251,19 +277,20 @@
                 INNER JOIN PUBLIC.USUARIO AS U ON I.USUARIO_ID = U.ID
                 LEFT JOIN PUBLIC.DRE AS D_EMISSOR ON D_EMISSOR.ID = P.ID_EMISSOR AND P.TIPO_EMISSOR = 1 AND NOT D_EMISSOR.EXCLUIDO
                 LEFT JOIN PUBLIC.COORDENADORIA AS C_EMISSOR ON C_EMISSOR.ID = P.ID_EMISSOR AND P.TIPO_EMISSOR = 2 AND NOT C_EMISSOR.EXCLUIDO
-                WHERE NOT CC.EXCLUIDO AND CC.STATUS_PROCESSAMENTO = @processadoComSucesso
-                    AND CCNHI.PARTICIPOU
-                    AND NOT PT.EXCLUIDO AND P.SITUACAO = 1
+                WHERE NOT CC.EXCLUIDO 
+                  AND CC.STATUS_PROCESSAMENTO = @processadoComSucesso
+                  AND CCNHI.PARTICIPOU
+                  AND NOT PT.EXCLUIDO
 
                 UNION ALL
 
                 -- 2. Regente
-                SELECT DISTINCT ON (CD.ID)
+                SELECT
                     CD.ID AS id,
                     CD.CODIGO_DECLARACAO AS codigoDeclaracao,
                     NULL::text AS nomeCursista,
                     PR.NOME_REGENTE AS nomeRegente,
-                    2 AS tipoDeclaracao,
+                    @Regente AS tipoDeclaracao,
                     COALESCE(PR.REGISTRO_FUNCIONAL, PR.CPF) AS documento,
                     CD.DATA_EMISSAO AS dataEmissao,
                     P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
@@ -277,12 +304,12 @@
                 INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON CD.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
                 INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
                 INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PRT.TURMA_ID = PT.ID
-                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.PROPOSTA_TURMA_ID = PT.ID
                 INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
                 LEFT JOIN PUBLIC.DRE AS D_EMISSOR ON D_EMISSOR.ID = P.ID_EMISSOR AND P.TIPO_EMISSOR = 1 AND NOT D_EMISSOR.EXCLUIDO
                 LEFT JOIN PUBLIC.COORDENADORIA AS C_EMISSOR ON C_EMISSOR.ID = P.ID_EMISSOR AND P.TIPO_EMISSOR = 2 AND NOT C_EMISSOR.EXCLUIDO
-                WHERE NOT CD.EXCLUIDO AND CD.STATUS_PROCESSAMENTO = @processadoComSucesso
-                AND NOT PT.EXCLUIDO AND P.SITUACAO = 1
+                WHERE NOT CD.EXCLUIDO 
+                  AND CD.STATUS_PROCESSAMENTO = @processadoComSucesso
+                  AND NOT PT.EXCLUIDO
             )
             """;
 
