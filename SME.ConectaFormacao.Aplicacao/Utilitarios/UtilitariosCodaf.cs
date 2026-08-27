@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Aplicacao.Extensoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
@@ -27,7 +28,10 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
 
         public async Task EnviarEmailsAsync(List<EnviarEmailDto> notificacoesParaEnviar)
         {
-            foreach (var emailDto in notificacoesParaEnviar)
+            // Remove duplicatas por e-mail para evitar envio múltiplo para o mesmo destinatário
+            var notificacoesUnicas = notificacoesParaEnviar.RemoverDuplicatasPorEmailDestinatario();
+
+            foreach (var emailDto in notificacoesUnicas)
             {
                 _ = await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, emailDto));
             }

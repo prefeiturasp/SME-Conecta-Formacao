@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Aplicacao.Extensoes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -46,7 +47,10 @@ namespace SME.ConectaFormacao.Aplicacao.Eventos.Codaf
                     await repositorioCodafComentario.Atualizar(eventoNotificacao.Comentario);
                     scope.Commit();
 
-                foreach (var usuario in notificacao.Usuarios.Where(u => !string.IsNullOrWhiteSpace(u.Email)))
+                // Remove duplicatas por e-mail para evitar envio múltiplo para o mesmo destinatário
+                var usuariosUnicos = notificacao.Usuarios.RemoverDuplicatasPorEmail();
+
+                foreach (var usuario in usuariosUnicos)
                 {
                     var emailDto = mapper.Map<EnviarEmailDto>(usuario);
                     emailDto.Titulo = notificacao.Titulo;

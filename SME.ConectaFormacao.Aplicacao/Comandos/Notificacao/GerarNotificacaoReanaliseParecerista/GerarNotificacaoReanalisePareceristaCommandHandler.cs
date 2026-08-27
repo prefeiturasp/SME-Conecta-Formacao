@@ -3,6 +3,7 @@ using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Aplicacao.Extensoes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
@@ -45,15 +46,15 @@ namespace SME.ConectaFormacao.Aplicacao
 
                 transacao.Commit();
 
-                foreach (var usuario in notificacao.Usuarios)
+                // Remove duplicatas por e-mail para eviar envio múltiplo para o mesmo destinatário
+                var usuariosUnicos = notificacao.Usuarios.RemoverDuplicatasPorEmailPreenchido();
+
+                foreach (var usuario in usuariosUnicos)
                 {
-                    if (usuario.Email.EstaPreenchido())
-                    {
-                        var destinatario = _mapper.Map<EnviarEmailDto>(usuario);
-                        destinatario.Titulo = notificacao.Titulo;
-                        destinatario.Texto = notificacao.Mensagem;
-                        await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario));
-                    }
+                    var destinatario = _mapper.Map<EnviarEmailDto>(usuario);
+                    destinatario.Titulo = notificacao.Titulo;
+                    destinatario.Texto = notificacao.Mensagem;
+                    await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, destinatario));
                 }
             }
             catch
