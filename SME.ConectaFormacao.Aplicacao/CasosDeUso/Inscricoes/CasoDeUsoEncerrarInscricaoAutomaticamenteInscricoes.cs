@@ -16,27 +16,21 @@ namespace SME.ConectaFormacao.Aplicacao
         {
             if (param.Mensagem == null)
                 return true;
-            
+
             var mensagem = param.Mensagem.ToString();
             if (string.IsNullOrWhiteSpace(mensagem))
                 return true;
 
-            try
-            {
-                var turmaIds = mensagem.JsonParaObjeto<long>();
-                var inscricoes = await repositorioInscricao.ObterInscricoesUsuariosInternosPorPropostasTurmasId(
-                    [turmaIds],
-                    SituacaoInscricao.Confirmada, SituacaoInscricao.AguardandoAnalise, SituacaoInscricao.Enviada, SituacaoInscricao.EmEspera);
+            var turmaIds = mensagem.JsonParaObjeto<long>();
+            var inscricoes = await repositorioInscricao.ObterInscricoesUsuariosInternosPorPropostasTurmasId(
+                [turmaIds],
+                SituacaoInscricao.Confirmada, SituacaoInscricao.AguardandoAnalise, SituacaoInscricao.Enviada, SituacaoInscricao.EmEspera);
 
-                if (inscricoes.Any())
-                {
-                    await mediator.Send(
-                        new PublicarNaFilaRabbitCommand(RotasRabbit.EncerrarInscricaoAutomaticamenteUsuarios, inscricoes,
-                            Guid.NewGuid(), new Dominio.Entidades.Usuario("Sistema", "Sistema", string.Empty)));
-                }
-            }
-            catch (Exception e)
+            if (inscricoes.Any())
             {
+                await mediator.Send(
+                    new PublicarNaFilaRabbitCommand(RotasRabbit.EncerrarInscricaoAutomaticamenteUsuarios, inscricoes,
+                        Guid.NewGuid(), new Dominio.Entidades.Usuario("Sistema", "Sistema", string.Empty)));
             }
 
             return true;
