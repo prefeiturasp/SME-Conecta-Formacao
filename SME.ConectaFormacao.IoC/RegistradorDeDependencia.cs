@@ -265,6 +265,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
 
             config.AddMap(new CoordenadoriaMap());
 
+            config.AddMap(new EmailEnviadoMap());
+
             config.ForDommel();
         });
     }

@@ -13,7 +13,7 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
 using System.Data;
 
-namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.AreaPromotora
+namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.AreaPromotoras
 {
     public class AlterarAreaPromotoraCommandHandlerTestes
     {

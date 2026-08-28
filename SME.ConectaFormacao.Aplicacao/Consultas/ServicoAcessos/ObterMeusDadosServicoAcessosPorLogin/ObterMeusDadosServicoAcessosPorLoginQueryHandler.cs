@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Consultas.Eol.ObterNomesFuncionarioPorRf;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
@@ -41,7 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao
             acessoDadosUsuario.Login = acessoDadosUsuario.Login ?? request.Login;
 
             var pattern = @"@edu\.sme\.prefeitura\.sp\.gov\.br$";
-            if (!string.IsNullOrEmpty(acessoDadosUsuario.Email) && Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase) &&
+            if (!string.IsNullOrEmpty(acessoDadosUsuario.Email) && Regex.IsMatch(acessoDadosUsuario.Email, pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(500)) &&
                  string.IsNullOrEmpty(acessoDadosUsuario.EmailEducacional))
 
                 acessoDadosUsuario.EmailEducacional = acessoDadosUsuario.Email;

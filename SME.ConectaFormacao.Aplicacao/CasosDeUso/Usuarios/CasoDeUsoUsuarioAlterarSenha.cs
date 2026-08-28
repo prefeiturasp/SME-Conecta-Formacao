@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios
         private static bool SenhaAtendeCriteriosDeSeguranca(string senha)
         {
             string regexPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\w)(?!.*[áàâãéèêíïóôõöúçñ])(?=.*[a-zA-Z\d\w]).{8,12}$";
-            Regex regex = new(regexPattern);
+            Regex regex = new(regexPattern, RegexOptions.None, TimeSpan.FromMilliseconds(500));
 
             return regex.IsMatch(senha);
         }

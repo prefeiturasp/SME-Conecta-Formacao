@@ -3,8 +3,10 @@ using Microsoft.Extensions.Logging;
 using MimeKit;
 using Polly;
 using Polly.Retry;
+using SME.ConectaFormacao.Dominio.Dtos;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Emails.Interfaces;
+using System.Collections.Concurrent;
 using System.Net.Sockets;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Emails
@@ -16,8 +18,12 @@ namespace SME.ConectaFormacao.Infra.Servicos.Emails
         private readonly AsyncRetryPolicy _retryPolicy;
         private readonly ISmtpClientFactory _smtpClientFactory;
         private static readonly SemaphoreSlim _semaphore = new(2, 2);
+        private static readonly ConcurrentDictionary<string, byte> _chavesEnviadas = new();
 
-        public ServicoEnvioEmail(IServicoAcessos servicoAcessos, ISmtpClientFactory smtpClientFactory, ILogger<ServicoEnvioEmail> logger)
+        public ServicoEnvioEmail(
+            IServicoAcessos servicoAcessos,
+            ISmtpClientFactory smtpClientFactory,
+            ILogger<ServicoEnvioEmail> logger)
         {
             _servicoAcessos = servicoAcessos;
             _logger = logger;
@@ -48,6 +54,8 @@ namespace SME.ConectaFormacao.Infra.Servicos.Emails
             try
             {
                 var configuracaoEmail = await _servicoAcessos.ObterConfiguracaoEmail();
+                var envioRealizado = false;
+
                 await _retryPolicy.ExecuteAsync(async (token) =>
                 {
                     using var client = _smtpClientFactory.Criar();
@@ -60,20 +68,77 @@ namespace SME.ConectaFormacao.Infra.Servicos.Emails
                         await client.AuthenticateAsync(configuracaoEmail.Usuario, configuracaoEmail.Senha, token);
 
                         await client.SendAsync(mensagem, token);
+                        envioRealizado = true; // Marca que o envio foi bem-sucedido
+
                         await client.DisconnectAsync(true, token);
                     }
                     catch (Exception ex)
                     {
                         _logger.LogError(ex, "Erro ao enviar e-mail para {Destinatario}. Tentativa falhou.", mensagem.To);
+
+                        // Tenta desconectar se ainda estiver conectado
                         if (client.IsConnected)
-                            await client.DisconnectAsync(false, token);
-                        throw;
+                        {
+                            try
+                            {
+                                await client.DisconnectAsync(false, token);
+                            }
+                            catch (Exception exDisconnect)
+                            {
+                                _logger.LogWarning(exDisconnect, "Erro ao desconectar cliente SMTP após falha no envio");
+                            }
+                        }
+
+                        // Só relança a exceção se o envio não foi realizado com sucesso
+                        if (!envioRealizado)
+                            throw;
                     }
                 }, cancellationToken);
             }
             finally
             {
                 _semaphore.Release();
+            }
+        }
+
+        public async Task<ResultadoEnvioEmail> EnviarComIdempotenciaAsync(
+            MimeMessage mensagem,
+            string chaveIdempotencia,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(chaveIdempotencia))
+                throw new ArgumentException("Chave de idempotência é obrigatória", nameof(chaveIdempotencia));
+
+            try
+            {
+                // Verificação rápida em memória para evitar duplicatas na mesma execução
+                if (!_chavesEnviadas.TryAdd(chaveIdempotencia, 0))
+                {
+                    _logger.LogInformation(
+                        "E-mail com chave de idempotência {ChaveIdempotencia} já foi enviado nesta execução. Pulando reenvio.",
+                        chaveIdempotencia);
+
+                    return ResultadoEnvioEmail.JaEnviadoAnteriormente(chaveIdempotencia);
+                }
+
+                await EnviarAsync(mensagem, cancellationToken);
+
+                _logger.LogInformation(
+                    "E-mail enviado com sucesso. Chave: {ChaveIdempotencia}, Destinatário: {Destinatario}",
+                    chaveIdempotencia,
+                    mensagem.To);
+
+                return ResultadoEnvioEmail.Sucesso(chaveIdempotencia);
+            }
+            catch (Exception ex)
+            {
+                var mensagemErro = $"Erro ao enviar e-mail: {ex.Message}";
+
+                _logger.LogError(ex, "Falha no envio de e-mail com idempotência. Chave: {ChaveIdempotencia}", chaveIdempotencia);
+
+                _chavesEnviadas.TryRemove(chaveIdempotencia, out _);
+
+                return ResultadoEnvioEmail.Erro(mensagemErro, chaveIdempotencia);
             }
         }
     }

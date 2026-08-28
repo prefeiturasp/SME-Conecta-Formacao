@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.CancelarInscricao;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Excecoes;
@@ -52,13 +52,12 @@ namespace SME.ConectaFormacao.Aplicacao
 
         private static (IEnumerable<long>, IEnumerable<long>) SortearInscricoes(int vagas, IEnumerable<long> idsInscricoesAguardandoAnalise)
         {
-            var random = new Random();
             var numerosSorteados = new List<long>();
             var listaSorteio = idsInscricoesAguardandoAnalise.ToList();
 
             for (int i = 0; i < vagas; i++)
             {
-                int indice = random.Next(listaSorteio.Count);
+                int indice = System.Security.Cryptography.RandomNumberGenerator.GetInt32(listaSorteio.Count);
                 if (!listaSorteio.Any()) continue;
                 numerosSorteados.Add(listaSorteio[indice]);
                 listaSorteio.RemoveAt(indice);
