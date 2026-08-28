@@ -59,7 +59,12 @@ namespace SME.ConectaFormacao.Aplicacao
             var usuarios = mapper.Map<IEnumerable<NotificacaoUsuario>>(pareceristas);
 
             foreach (var usuario in usuarios)
-                usuario.Email = (await repositorioUsuario.ObterPorLogin(usuario.Login)).Email;
+            {
+                var usuarioDb = await repositorioUsuario.ObterPorLogin(usuario.Login);
+                if (usuarioDb is not null)
+                    usuario.Email = usuarioDb.Email;
+            }
+                
 
             return new Notificacao()
             {

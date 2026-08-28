@@ -4,6 +4,7 @@ using SME.ConectaFormacao.Aplicacao.Servicos;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
@@ -30,17 +31,19 @@ namespace SME.ConectaFormacao.Aplicacao
             var propostaMovimentacao = await repositorioPropostaMovimentacao.ObterPorPropostaId(proposta.Id);
 
             if (propostaMovimentacao.EhNulo())
-                throw new Exception(MensagemNegocio.MOVIMENTACAO_PROPOSTA_NAO_ENCONTRADA);
+                throw new NegocioException(MensagemNegocio.MOVIMENTACAO_PROPOSTA_NAO_ENCONTRADA);
 
-            var motivo = propostaMovimentacao.Justificativa.EstaPreenchido() ? $"\nMotivo: {propostaMovimentacao.Justificativa}" : string.Empty;
+            var motivo = !string.IsNullOrWhiteSpace(propostaMovimentacao.Justificativa) ? $"\nMotivo: {propostaMovimentacao.Justificativa}" : string.Empty;
 
-            var usuarioCriadorProposta = await repositorioUsuario.ObterPorLogin(proposta.CriadoLogin);
+            var usuarioCriadorProposta = await repositorioUsuario.ObterPorLogin(proposta.CriadoLogin!);
 
-            var destinatarios = new List<NotificacaoUsuario>()
-            {
-                new (areaPromotora.Nome,areaPromotora.Email),
-                new (usuarioCriadorProposta.Login, usuarioCriadorProposta.Nome, usuarioCriadorProposta.Email)
-            };
+            var destinatarios = (usuarioCriadorProposta is null)
+                ? []
+                : new List<NotificacaoUsuario>()
+                {
+                    new (areaPromotora.Nome,areaPromotora.Email),
+                    new (usuarioCriadorProposta.Login, usuarioCriadorProposta.Nome, usuarioCriadorProposta.Email)
+                };
 
             return new Notificacao()
             {
