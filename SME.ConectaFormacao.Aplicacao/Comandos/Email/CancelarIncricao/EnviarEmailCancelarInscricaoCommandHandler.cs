@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         public async Task<bool> Handle(EnviarEmailCancelarInscricaoCommand request, CancellationToken cancellationToken)
         {
-            var dadosParaEmail = await repositorioInscricao.ObterDadosInscricaoPorInscricaoId(request.InscricaoId);
+            var dadosParaEmail = await repositorioInscricao.ObterDadosEmailInscricaoPorInscricaoId(request.InscricaoId);
             if (dadosParaEmail == null || !dadosParaEmail.Any())
                 return true;
 

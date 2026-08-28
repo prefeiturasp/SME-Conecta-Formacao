@@ -17,6 +17,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.NotificacaoUsuarioId).ToColumn("notificacao_usuario_id");
             Map(c => c.TentativasEnvio).ToColumn("tentativas_envio");
             Map(c => c.MensagemErro).ToColumn("mensagem_erro");
+            Map(c => c.Enviado).ToColumn("enviado");
 
             Map(c => c.NotificacaoUsuario).Ignore();
         }

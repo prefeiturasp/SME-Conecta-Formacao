@@ -1,5 +1,6 @@
 using System.Buffers;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -299,6 +300,12 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             if (htmlContent.Contains(marcador))
                 htmlContent = htmlContent.Replace(marcador, sigla);
             return htmlContent;
+        }
+        public static string GerarHashSHA256(this string input)
+        {
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var hash = SHA256.HashData(bytes);
+            return Convert.ToHexString(hash).ToLowerInvariant();
         }
     }
 }

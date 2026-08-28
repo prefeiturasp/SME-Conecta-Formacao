@@ -89,11 +89,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Email
 
         #region Factory Methods
 
-        private static List<InscricaoDadosEmailConfirmacao> CriarDadosInscricao(string email, string nomeFormacao, string nomeDestinatario)
+        private static List<DadosEmailInscricaoDto> CriarDadosInscricao(string email, string nomeFormacao, string nomeDestinatario)
         {
             return
             [
-                new InscricaoDadosEmailConfirmacao
+                new()
                 {
                     Email = email,
                     NomeFormacao = nomeFormacao,
@@ -102,10 +102,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Email
             ];
         }
 
-        private void ConfigurarRetornoRepositorio(long inscricaoId, List<InscricaoDadosEmailConfirmacao> retorno)
+        private void ConfigurarRetornoRepositorio(long inscricaoId, List<DadosEmailInscricaoDto> retorno)
         {
             _repositorioInscricao
-                .Setup(r => r.ObterDadosInscricaoPorInscricaoId(inscricaoId))
+                .Setup(r => r.ObterDadosEmailInscricaoPorInscricaoId(inscricaoId))
                 .ReturnsAsync(retorno);
         }
 

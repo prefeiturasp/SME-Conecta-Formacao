@@ -34,5 +34,6 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public int TentativasEnvio { get; set; }
 
         public string? MensagemErro { get; set; }
+        public bool Enviado { get; set; }
     }
 }

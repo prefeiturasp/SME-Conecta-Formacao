@@ -819,5 +819,22 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 TamanhoPagina = numeroRegistros
             };
         }
+
+        public async Task<IEnumerable<DadosEmailInscricaoDto>> ObterDadosEmailInscricaoPorInscricaoId(long inscricaoId)
+        {
+            const string query = """
+            SELECT 
+                u.email AS Email,
+                u.nome AS NomeDestinatario,
+                p.id ||' - ' || p.nome_formacao AS NomeFormacao
+            FROM inscricao i
+                INNER JOIN usuario u ON i.usuario_id = u.id
+                INNER JOIN proposta_turma pt ON i.proposta_turma_id = pt.id
+                INNER JOIN proposta p ON pt.proposta_id = p.id
+            WHERE i.id = @inscricaoId;
+            """;
+            var conn = conexao.Obter();
+            return await conn.QueryAsync<DadosEmailInscricaoDto>(query, new { inscricaoId });
+        }
     }
 }

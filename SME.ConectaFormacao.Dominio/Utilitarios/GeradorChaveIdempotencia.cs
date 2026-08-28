@@ -1,5 +1,4 @@
-using System.Security.Cryptography;
-using System.Text;
+using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Utilitarios
 {
@@ -32,7 +31,7 @@ namespace SME.ConectaFormacao.Dominio.Utilitarios
                 ? $"{correlacao}-{emailNormalizado}-{tituloNormalizado}-{janela}"
                 : $"{correlacao}-{emailNormalizado}-{tituloNormalizado}";
 
-            return GerarHashSHA256(chaveBase);
+            return chaveBase.GerarHashSHA256();
         }
 
         /// <summary>
@@ -49,14 +48,7 @@ namespace SME.ConectaFormacao.Dominio.Utilitarios
 
             var chaveBase = $"{notificacaoId}-{notificacaoUsuarioId}-{emailNormalizado}-{tituloNormalizado}";
 
-            return GerarHashSHA256(chaveBase);
-        }
-
-        private static string GerarHashSHA256(string input)
-        {
-            var bytes = Encoding.UTF8.GetBytes(input);
-            var hash = SHA256.HashData(bytes);
-            return Convert.ToHexString(hash).ToLowerInvariant();
+            return chaveBase.GerarHashSHA256();
         }
 
         private static (string emailNormalizado, string tituloNormalizado) PrepararInformacoesEssenciais(string emailDestinatario, string titulo)
