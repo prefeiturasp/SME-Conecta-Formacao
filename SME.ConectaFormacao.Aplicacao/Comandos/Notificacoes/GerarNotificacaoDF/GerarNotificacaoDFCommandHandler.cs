@@ -25,37 +25,37 @@ namespace SME.ConectaFormacao.Aplicacao
         public GerarNotificacaoDFCommandHandler(ITransacao transacao, IRepositorioNotificacao repositorioNotificacao,
             IRepositorioNotificacaoUsuario repositorioNotificacaoUsuario, IMediator mediator, IMapper mapper, IRepositorioUsuario repositorioUsuario)
         {
-            _repositorioNotificacao = repositorioNotificacao ?? throw new ArgumentNullException(nameof(repositorioNotificacao));
-            _repositorioNotificacaoUsuario = repositorioNotificacaoUsuario ?? throw new ArgumentNullException(nameof(repositorioNotificacaoUsuario));
-            _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
+            _repositorioNotificacao = repositorioNotificacao;
+            _repositorioNotificacaoUsuario = repositorioNotificacaoUsuario;
+            _transacao = transacao;
+            _mediator = mediator;
+            _mapper = mapper;
+            _repositorioUsuario = repositorioUsuario;
         }
 
         public async Task<bool> Handle(GerarNotificacaoDFCommand request, CancellationToken cancellationToken)
         {
             var notificacao = await ObterNotificacao(request.Proposta, request.Parecerista);
 
-            var transacao = _transacao.Iniciar();
+            var transacaoDb = _transacao.Iniciar();
             try
             {
                 var notificacaoId = await _repositorioNotificacao.Inserir(notificacao);
 
-                await _repositorioNotificacaoUsuario.InserirUsuarios(transacao, notificacao.Usuarios, notificacaoId);
+                await _repositorioNotificacaoUsuario.InserirUsuarios(transacaoDb, notificacao.Usuarios, notificacaoId);
 
-                transacao.Commit();
+                transacaoDb.Commit();
 
                 await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarNotificacao, _mapper.Map<NotificacaoSignalRDTO>(notificacao)));
             }
             catch
             {
-                transacao.Rollback();
+                transacaoDb.Rollback();
                 throw;
             }
             finally
             {
-                transacao.Dispose();
+                transacaoDb.Dispose();
             }
 
             return true;
