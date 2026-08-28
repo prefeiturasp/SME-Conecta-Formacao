@@ -126,7 +126,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Usuarios
             if (senhaNova.Length > 12)
                 erros.Add(MensagemNegocio.A_SENHA_DEVE_TER_NO_MÁXIMO_12_CARACTERES);
 
-            var regexSenha = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)[^áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ]{8,12}$");
+            var regexSenha = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)[^áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ]{8,12}$", RegexOptions.None, TimeSpan.FromMilliseconds(500));
 
             if (!regexSenha.IsMatch(senhaNova))
                 erros.Add(MensagemNegocio.A_SENHA_DEVE_CONTER_SOMENTE);

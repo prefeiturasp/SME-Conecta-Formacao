@@ -1,5 +1,4 @@
-﻿using Bogus;
-using Elastic.Apm.Api;
+using Bogus;
 using MailKit;
 using MailKit.Net.Smtp;
 using MimeKit;
@@ -9,10 +8,6 @@ using SME.ConectaFormacao.Infra.Servicos.Acessos;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Emails;
 using SME.ConectaFormacao.Infra.Servicos.Emails.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Servicos.Teste.Emails
 {
@@ -38,127 +33,138 @@ namespace SME.ConectaFormacao.Infra.Servicos.Teste.Emails
         }
 
         [Fact]
-        public async Task DeveEnviarEmailComSucesso()
+        public async Task DadoPrimeiroEnvio_QuandoEnviarComIdempotencia_EntaoDeveEnviarComSucesso()
         {
             // Arrange
-            var emailOrigem = _faker.Internet.Email();
             var destinatario = _faker.Internet.Email();
             var assunto = _faker.Lorem.Sentence();
-            var conteudo = _faker.Lorem.Paragraph();
+            var chaveIdempotencia = "chave-teste-123";
 
             var mensagem = new MimeMessage();
-            mensagem.From.Add(new MailboxAddress("Origem", emailOrigem));
+            mensagem.From.Add(new MailboxAddress("Origem", _faker.Internet.Email()));
             mensagem.To.Add(new MailboxAddress("Destino", destinatario));
             mensagem.Subject = assunto;
-            mensagem.Body = new TextPart("plain")
+            mensagem.Body = new TextPart("plain") { Text = _faker.Lorem.Paragraph() };
+
+            var configuracao = new AcessosConfiguracaoEmailRetorno
             {
-                Text = conteudo
+                Smtp = "smtp.teste.com",
+                Porta = 587,
+                Usuario = "usuario",
+                Senha = "senha",
+                TLS = true
             };
 
-            _servicoAcessosMock
-                .Setup(x => x.ObterConfiguracaoEmail())
-                .ReturnsAsync(new AcessosConfiguracaoEmailRetorno
-                {
-                    Email = emailOrigem,
-                    Nome = "Conecta Formação - Não responder",
-                    Porta = 587,
-                    Senha = _faker.Internet.Password(),
-                    Smtp = "smtp.exemplo.com",
-                    TLS = true,
-                    Usuario = emailOrigem
-                });
+            _servicoAcessosMock.Setup(x => x.ObterConfiguracaoEmail()).ReturnsAsync(configuracao);
 
-            // Act
-            await _sut.EnviarAsync(mensagem, CancellationToken.None);
-
-            // Assert
-            _smtpClientMock.Verify(x => x.ConnectAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Once);
-            _smtpClientMock.Verify(x => x.AuthenticateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
-            _smtpClientMock.Verify(x => x.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()), Times.Once);
-            _smtpClientMock.Verify(x => x.DisconnectAsync(true, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task DeveTentarNovamenteAoFalharConexao()
-        {
-            // Arrange
-            var emailOrigem = _faker.Internet.Email();
-            var destinatario = _faker.Internet.Email();
-            var assunto = _faker.Lorem.Sentence();
-            var conteudo = _faker.Lorem.Paragraph();
-            var mensagem = new MimeMessage();
-            mensagem.From.Add(new MailboxAddress("Origem", emailOrigem));
-            mensagem.To.Add(new MailboxAddress("Destino", destinatario));
-            mensagem.Subject = assunto;
-            mensagem.Body = new TextPart("plain")
-            {
-                Text = conteudo
-            };
-            _servicoAcessosMock
-                .Setup(x => x.ObterConfiguracaoEmail())
-                .ReturnsAsync(new AcessosConfiguracaoEmailRetorno
-                {
-                    Email = emailOrigem,
-                    Nome = "Conecta Formação - Não responder",
-                    Porta = 587,
-                    Senha = _faker.Internet.Password(),
-                    Smtp = "smtp.exemplo.com",
-                    TLS = true,
-                    Usuario = emailOrigem
-                });
-            _smtpClientMock
-                .SetupSequence(x => x.ConnectAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new IOException("Falha de rede simulada 1"))
-                .ThrowsAsync(new IOException("Falha de rede simulada 2"))
+           _smtpClientMock.Setup(x => x.ConnectAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            _smtpClientMock.Setup(x => x.AuthenticateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            _smtpClientMock.Setup(x => x.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()))
+                .Returns(Task.FromResult(string.Empty));
+            _smtpClientMock.Setup(x => x.DisconnectAsync(It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             // Act
-            await _sut.EnviarAsync(mensagem, CancellationToken.None);
+            var resultado = await _sut.EnviarComIdempotenciaAsync(mensagem, chaveIdempotencia);
 
             // Assert
-            _smtpClientMock.Verify(x => x.ConnectAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+            Assert.True(resultado.Enviado);
+            Assert.False(resultado.JaEnviado);
+            Assert.Null(resultado.MensagemErro);
+            Assert.Equal(chaveIdempotencia, resultado.ChaveIdempotencia);
+        }
+
+        [Fact]
+        public async Task DadoEmailJaEnviadoNaMesmaExecucao_QuandoEnviarComIdempotencia_EntaoDeveRetornarJaEnviado()
+        {
+            // Arrange
+            var destinatario = _faker.Internet.Email();
+            var assunto = _faker.Lorem.Sentence();
+            var chaveIdempotencia = "chave-duplicada-456";
+
+            var mensagem = new MimeMessage();
+            mensagem.From.Add(new MailboxAddress("Origem", _faker.Internet.Email()));
+            mensagem.To.Add(new MailboxAddress("Destino", destinatario));
+            mensagem.Subject = assunto;
+            mensagem.Body = new TextPart("plain") { Text = _faker.Lorem.Paragraph() };
+
+            var configuracao = new AcessosConfiguracaoEmailRetorno
+            {
+                Smtp = "smtp.teste.com",
+                Porta = 587,
+                Usuario = "usuario",
+                Senha = "senha",
+                TLS = true
+            };
+
+            _servicoAcessosMock.Setup(x => x.ObterConfiguracaoEmail()).ReturnsAsync(configuracao);
+
+            _smtpClientMock.Setup(x => x.ConnectAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            _smtpClientMock.Setup(x => x.AuthenticateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            _smtpClientMock.Setup(x => x.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()))
+                .Returns(Task.FromResult(string.Empty));
+            _smtpClientMock.Setup(x => x.DisconnectAsync(It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act - Primeiro envio
+            await _sut.EnviarComIdempotenciaAsync(mensagem, chaveIdempotencia);
+
+            // Act - Segundo envio (duplicata)
+            var resultado = await _sut.EnviarComIdempotenciaAsync(mensagem, chaveIdempotencia);
+
+            // Assert
+            Assert.False(resultado.Enviado);
+            Assert.True(resultado.JaEnviado);
+            Assert.Null(resultado.MensagemErro);
+            Assert.Equal(chaveIdempotencia, resultado.ChaveIdempotencia);
+            // Verifica que o SMTP foi chamado apenas uma vez
             _smtpClientMock.Verify(x => x.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()), Times.Once);
         }
 
         [Fact]
-        public async Task DeveRetornarExcecaoAoEsgotarTentativas()
+        public async Task DadoErroNoEnvio_QuandoEnviarComIdempotencia_EntaoDeveRetornarErro()
         {
             // Arrange
-            var emailOrigem = _faker.Internet.Email();
             var destinatario = _faker.Internet.Email();
             var assunto = _faker.Lorem.Sentence();
-            var conteudo = _faker.Lorem.Paragraph();
+            var chaveIdempotencia = "chave-erro-789";
+
             var mensagem = new MimeMessage();
-            mensagem.From.Add(new MailboxAddress("Origem", emailOrigem));
+            mensagem.From.Add(new MailboxAddress("Origem", _faker.Internet.Email()));
             mensagem.To.Add(new MailboxAddress("Destino", destinatario));
             mensagem.Subject = assunto;
-            mensagem.Body = new TextPart("plain")
-            {
-                Text = conteudo
-            };
-            _servicoAcessosMock
-                .Setup(x => x.ObterConfiguracaoEmail())
-                .ReturnsAsync(new AcessosConfiguracaoEmailRetorno
-                {
-                    Email = emailOrigem,
-                    Nome = "Conecta Formação - Não responder",
-                    Porta = 587,
-                    Senha = _faker.Internet.Password(),
-                    Smtp = "smtp.exemplo.com",
-                    TLS = true,
-                    Usuario = emailOrigem
-                });
-            _smtpClientMock
-                .SetupSequence(x => x.ConnectAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new IOException("Falha de rede simulada 1"))
-                .ThrowsAsync(new SocketException())
-                .ThrowsAsync(new IOException("Falha de rede simulada 3"));
+            mensagem.Body = new TextPart("plain") { Text = _faker.Lorem.Paragraph() };
 
-            // Act & Assert
-            await Assert.ThrowsAnyAsync<Exception>(() => _sut.EnviarAsync(mensagem, CancellationToken.None));
-            _smtpClientMock
-                .Verify(x => x.ConnectAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>())
-                , Times.Exactly(4));
+            var configuracao = new AcessosConfiguracaoEmailRetorno
+            {
+                Smtp = "smtp.teste.com",
+                Porta = 587,
+                Usuario = "usuario",
+                Senha = "senha",
+                TLS = true
+            };
+
+            _servicoAcessosMock.Setup(x => x.ObterConfiguracaoEmail()).ReturnsAsync(configuracao);
+
+            _smtpClientMock.Setup(x => x.ConnectAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            _smtpClientMock.Setup(x => x.AuthenticateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            _smtpClientMock.Setup(x => x.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()))
+                .ThrowsAsync(new SmtpCommandException(SmtpErrorCode.MessageNotAccepted, SmtpStatusCode.TransactionFailed, "Erro no servidor SMTP"));
+
+            // Act
+            var resultado = await _sut.EnviarComIdempotenciaAsync(mensagem, chaveIdempotencia);
+
+            // Assert
+            Assert.False(resultado.Enviado);
+            Assert.False(resultado.JaEnviado);
+            Assert.NotNull(resultado.MensagemErro);
+            Assert.Contains("Erro ao enviar e-mail", resultado.MensagemErro);
         }
     }
 }

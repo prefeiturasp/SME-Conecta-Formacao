@@ -677,16 +677,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                }, new { situacao = (int)SituacaoInscricao.Confirmada }, splitOn: "id, login");
         }
 
-        public async Task<IEnumerable<InscricaoUsuarioInternoDto>> ObterInscricoesPorPropostasTurmasIdUsuariosInternos(long[] propostasTurmasId)
+        public async Task<IEnumerable<InscricaoUsuarioInternoDto>> ObterInscricoesUsuariosInternosPorPropostasTurmasId(long[] propostasTurmasId, params SituacaoInscricao?[] situacoes)
         {
             var tipoUsuario = (int)TipoUsuario.Interno;
-            var query = @$"
-                            select i.id as InscricaoId ,u.id as UsuarioId, u.login from inscricao i 
-                            inner join usuario u on i.usuario_id = u.id 
-                            where not i.excluido  and u.tipo = @tipoUsuario
-                            and i.proposta_turma_id = any(@propostasTurmasId)
-                        ";
-            return await conexao.Obter().QueryAsync<InscricaoUsuarioInternoDto>(query, new { propostasTurmasId, tipoUsuario });
+            var situacoesInt = situacoes.Select(s => s.HasValue ? (int?)s.Value : null).ToArray();
+            var query = $"""
+                select i.id as InscricaoId ,u.id as UsuarioId, u.login 
+                  from inscricao i 
+                       inner join usuario u on i.usuario_id = u.id
+                 where not i.excluido  and u.tipo = @tipoUsuario
+                   and i.proposta_turma_id = any(@propostasTurmasId)
+                   and (i.situacao = any(@situacoesInt) or @situacoesInt is null)
+            """;
+            return await conexao.Obter().QueryAsync<InscricaoUsuarioInternoDto>(query, new { propostasTurmasId, tipoUsuario, situacoesInt });
         }
 
         public async Task<IEnumerable<InscricaoPossuiAnexoDTO>> ObterSeInscricaoPossuiAnexoPorPropostasIds(long[] inscricoesId)
@@ -815,6 +818,23 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PaginaAtual = numeroPagina,
                 TamanhoPagina = numeroRegistros
             };
+        }
+
+        public async Task<IEnumerable<DadosEmailInscricaoDto>> ObterDadosEmailInscricaoPorInscricaoId(long inscricaoId)
+        {
+            const string query = """
+            SELECT 
+                u.email AS Email,
+                u.nome AS NomeDestinatario,
+                p.id ||' - ' || p.nome_formacao AS NomeFormacao
+            FROM inscricao i
+                INNER JOIN usuario u ON i.usuario_id = u.id
+                INNER JOIN proposta_turma pt ON i.proposta_turma_id = pt.id
+                INNER JOIN proposta p ON pt.proposta_id = p.id
+            WHERE i.id = @inscricaoId;
+            """;
+            var conn = conexao.Obter();
+            return await conn.QueryAsync<DadosEmailInscricaoDto>(query, new { inscricaoId });
         }
     }
 }

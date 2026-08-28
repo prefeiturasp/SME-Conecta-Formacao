@@ -3,6 +3,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes;
 using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
 using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Aplicacao.Extensoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra;
@@ -12,24 +13,17 @@ using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao.Utilitarios
 {
-    public class UtilitariosCodaf : IUtilitariosCodaf
+    public class UtilitariosCodaf(IMediator mediator, IServicoLogs servicoLogs) : IUtilitariosCodaf
     {
-        private readonly IMediator _mediator;
-        private readonly IServicoLogs _servicoLogs;
-        private readonly string _identificadorRastreamento;
-
-        public UtilitariosCodaf(IMediator mediator, IServicoLogs servicoLogs)
-        {
-            _mediator = mediator;
-            _servicoLogs = servicoLogs;
-            _identificadorRastreamento = Guid.NewGuid().ToString();
-        }       
+        private readonly string _identificadorRastreamento = Guid.NewGuid().ToString();
 
         public async Task EnviarEmailsAsync(List<EnviarEmailDto> notificacoesParaEnviar)
         {
-            foreach (var emailDto in notificacoesParaEnviar)
+            var notificacoesUnicas = notificacoesParaEnviar.RemoverDuplicatasPorEmailDestinatario();
+
+            foreach (var emailDto in notificacoesUnicas)
             {
-                _ = await _mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, emailDto));
+                _ = await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, emailDto));
             }
         }
 
@@ -38,18 +32,18 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
             try
             {
                 if (ex is null)
-                    await _servicoLogs.Enviar(mensagem: $"[{_identificadorRastreamento}] {mensagem}", nivel: nivelLog);
+                    await servicoLogs.Enviar(mensagem: $"[{_identificadorRastreamento}] {mensagem}", nivel: nivelLog);
                 else
-                    await _servicoLogs.Enviar(ex, mensagem: $"[{_identificadorRastreamento}] {mensagem}");
+                    await servicoLogs.Enviar(ex, mensagem: $"[{_identificadorRastreamento}] {mensagem}");
 
                 var complemento = MontarComplementoExcecao(ex);
-                await _mediator.Send(new SalvarLogCommand(
+                await mediator.Send(new SalvarLogCommand(
                     entidade: typeof(CasoDeUsoGerarArquivoDeclaracoesCodaf).FullName!,
                     nivelLog: nivelLog, mensagem: $"[{_identificadorRastreamento}] {mensagem}", complemento: complemento));
             }
             catch (Exception e)
             {
-                await _servicoLogs.Enviar(e, mensagem: $"[{_identificadorRastreamento}] Erro ao salvar log: {mensagem}");
+                await servicoLogs.Enviar(e, mensagem: $"[{_identificadorRastreamento}] Erro ao salvar log: {mensagem}");
             }
         }
 

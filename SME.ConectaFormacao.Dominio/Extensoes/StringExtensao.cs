@@ -1,5 +1,6 @@
-﻿using System.Buffers;
+using System.Buffers;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -7,15 +8,15 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
 {
     public static partial class StringExtensao
     {
-        public static readonly Regex RegexTagsBR = new("<br[^>]*>", RegexOptions.Compiled);
-        public static readonly Regex RegexTagsP = new("<p[^>]*>", RegexOptions.Compiled);
-        public static readonly Regex RegexTagsLI = new("<li[^>]*>", RegexOptions.Compiled);
-        public static readonly Regex RegexTagsDIV = new("<div[^>]*>", RegexOptions.Compiled);
-        public static readonly Regex RegexTagsHTMLQualquer = new("<[^>]*>", RegexOptions.Compiled);
-        public static readonly Regex RegexEspacosEmBranco = new("&nbsp;", RegexOptions.Compiled);
-        [GeneratedRegex(@">\s+<", RegexOptions.Compiled)]
+        public static readonly Regex RegexTagsBR = new("<br[^>]*>", RegexOptions.Compiled, TimeSpan.FromMilliseconds(500));
+        public static readonly Regex RegexTagsP = new("<p[^>]*>", RegexOptions.Compiled, TimeSpan.FromMilliseconds(500));
+        public static readonly Regex RegexTagsLI = new("<li[^>]*>", RegexOptions.Compiled, TimeSpan.FromMilliseconds(500));
+        public static readonly Regex RegexTagsDIV = new("<div[^>]*>", RegexOptions.Compiled, TimeSpan.FromMilliseconds(500));
+        public static readonly Regex RegexTagsHTMLQualquer = new("<[^>]*>", RegexOptions.Compiled, TimeSpan.FromMilliseconds(500));
+        public static readonly Regex RegexEspacosEmBranco = new("&nbsp;", RegexOptions.Compiled, TimeSpan.FromMilliseconds(500));
+        [GeneratedRegex(@">\s+<", RegexOptions.Compiled, 500)]
         private static partial Regex RegexEspacosEntreTags();
-        [GeneratedRegex(@"\s+", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\s+", RegexOptions.Compiled, 500)]
         private static partial Regex RegexEspacosDuplos();
         public static string MinificarHtml(this string html)
         {
@@ -28,7 +29,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         public static string? SomenteNumeros(this string? valor)
         {
             if (string.IsNullOrEmpty(valor)) return valor;
-            return Regex.Replace(valor, "[^0-9]", "");
+            return Regex.Replace(valor, "[^0-9]", "", RegexOptions.None, TimeSpan.FromMilliseconds(500));
         }
 
         public static string? AplicarMascara(this string? valor, string mascara)
@@ -51,7 +52,7 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         public static bool EmailEhValido(this string email)
         {
             var regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-            return Regex.IsMatch(email, regex);
+            return Regex.IsMatch(email, regex, RegexOptions.None, TimeSpan.FromMilliseconds(500));
         }
 
         public static string Limite(this string str, int limite)
@@ -299,6 +300,12 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
             if (htmlContent.Contains(marcador))
                 htmlContent = htmlContent.Replace(marcador, sigla);
             return htmlContent;
+        }
+        public static string GerarHashSHA256(this string input)
+        {
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var hash = SHA256.HashData(bytes);
+            return Convert.ToHexString(hash).ToLowerInvariant();
         }
     }
 }

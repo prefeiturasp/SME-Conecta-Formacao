@@ -189,5 +189,83 @@ namespace SME.ConectaFormacao.Domino.Teste.Extensoes
             var resultado = html.InserirEmissor("SME");
             resultado.Should().Be("Texto SME Texto");
         }
+
+        [Theory]
+        [InlineData("<div>   <p> Teste </p>  </div>", "<div><p> Teste </p></div>")]
+        [InlineData("  ", "")]
+        [InlineData(null, null)]
+        public void DadoHtml_QuandoChamarMinificarHtml_EntaoDeveRemoverEspacosExtras(string? html, string? esperado)
+        {
+            var resultado = html?.MinificarHtml();
+            resultado.Should().Be(esperado);
+        }
+
+        [Theory]
+        [InlineData("12345678900", @"000\.000\.000\-00", "123.456.789-00")]
+        [InlineData(null, "000", null)]
+        [InlineData("abc", "000", "")]
+        public void DadoValor_QuandoChamarAplicarMascara_EntaoDeveRetornarValorComMascara(string? valor, string mascara, string? esperado)
+        {
+            var resultado = valor?.AplicarMascara(mascara);
+            resultado.Should().Be(esperado);
+        }
+
+        [Theory]
+        [InlineData("teste@gmail.com", "tes**@gmail.com")]
+        [InlineData("joao.silva@empresa.com", "joa*******@empresa.com")]
+        public void DadoEmail_QuandoChamarTratarEmail_EntaoDeveMascararParteDoEmail(string email, string esperado)
+        {
+            var resultado = email.TratarEmail();
+            resultado.Should().Be(esperado);
+        }
+
+        [Theory]
+        [InlineData("teste@gmail.com", true)]
+        [InlineData("email.invalido", false)]
+        [InlineData("@gmail.com", false)]
+        public void DadoEmail_QuandoChamarEmailEhValido_EntaoDeveValidarCorretamente(string email, bool esperado)
+        {
+            var resultado = email.EmailEhValido();
+            resultado.Should().Be(esperado);
+        }
+
+        [Theory]
+        [InlineData("Teste longo", 5, "Teste")]
+        [InlineData("Curto", 10, "Curto")]
+        public void DadoTexto_QuandoChamarLimite_EntaoDeveRetornarTextoLimitado(string texto, int limite, string esperado)
+        {
+            var resultado = texto.Limite(limite);
+            resultado.Should().Be(esperado);
+        }
+
+        [Theory]
+        [InlineData("Texto", true)]
+        [InlineData("", false)]
+        [InlineData(null, false)]
+        public void DadoTexto_QuandoChamarEstaPreenchido_EntaoDeveValidarCorretamente(string? texto, bool esperado)
+        {
+#pragma warning disable CS0618
+            var resultado = texto.EstaPreenchido();
+            var resultadoNao = texto.NaoEstaPreenchido();
+#pragma warning restore CS0618
+            resultado.Should().Be(esperado);
+            resultadoNao.Should().Be(!esperado);
+        }
+
+        [Fact]
+        public void DadoTexto_QuandoChamarParametros_EntaoDeveFormatarCorretamente()
+        {
+            var texto = "Valor 1: {0}, Valor 2: {1}";
+            var resultado = texto.Parametros("A", 2);
+            resultado.Should().Be("Valor 1: A, Valor 2: 2");
+        }
+
+        [Fact]
+        public void DadoTexto_QuandoChamarGerarHashSHA256_EntaoDeveRetornarHashCorreto()
+        {
+            var texto = "teste123";
+            var resultado = texto.GerarHashSHA256();
+            resultado.Should().Be("289160db0d9f39f9ae1754c4ec9c16f90b50e32e09c5fb5481ae642b3d3d1a36");
+        }
     }
 }
