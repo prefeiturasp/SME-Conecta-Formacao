@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterSugestoesPareceristas
 {
@@ -14,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterSugestoesParecer
         public long PropostaId { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterSugestoesPareceristasQueryValidator : AbstractValidator<ObterSugestoesPareceristasQuery>
     {
         public ObterSugestoesPareceristasQueryValidator()

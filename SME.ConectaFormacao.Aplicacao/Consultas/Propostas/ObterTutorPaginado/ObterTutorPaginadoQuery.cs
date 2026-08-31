@@ -2,9 +2,11 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterTutorPaginadoQuery : IRequest<PaginacaoResultadoDto<PropostaTutorDTO>>
     {
         public ObterTutorPaginadoQuery(long propostaId, int numeroPagina, int numeroRegistros)
@@ -18,6 +20,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public int NumeroPagina { get; set; }
         public int NumeroRegistros { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public class ObterTutorPaginadoQueryValidator : AbstractValidator<ObterTutorPaginadoQuery>
         {
             public ObterTutorPaginadoQueryValidator()

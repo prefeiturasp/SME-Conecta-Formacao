@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -12,6 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Cpf { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class UsuarioExisteNoCoreSsoQueryValidator : AbstractValidator<UsuarioExisteNoCoreSsoQuery>
     {
         public UsuarioExisteNoCoreSsoQueryValidator()
