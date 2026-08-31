@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -23,6 +24,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Desativado = 7
     }
 
+    [ExcludeFromCodeCoverage]
     public static class SituacaoPareceristaExtensao
     {
         public static bool EstaAprovada(this SituacaoParecerista valor)

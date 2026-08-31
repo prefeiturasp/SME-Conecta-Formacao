@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -15,6 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public long PropostaId { get; }
         public PropostaTutorDTO PropostaTutorDto { get; }
     }
+
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaTutorCommandValidator : AbstractValidator<SalvarPropostaTutorCommand>
     {
         public SalvarPropostaTutorCommandValidator()

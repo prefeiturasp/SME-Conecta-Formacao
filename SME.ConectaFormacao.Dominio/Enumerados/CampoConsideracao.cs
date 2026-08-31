@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -101,6 +102,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         DescricaoCriteriosValidacaoInscricaoOutros = 32
     }
 
+    [ExcludeFromCodeCoverage]
     public static class CampoParecerExtensao
     {
         public static bool EhCampoFormacaoHomologada(this CampoConsideracao valor)

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -19,6 +20,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public string MensagemHtml { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class EnviarEmailCommandValidator : AbstractValidator<EnviarEmailCommand>
     {
         public EnviarEmailCommandValidator()

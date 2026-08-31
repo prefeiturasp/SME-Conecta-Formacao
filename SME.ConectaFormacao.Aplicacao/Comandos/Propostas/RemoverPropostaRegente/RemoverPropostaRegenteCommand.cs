@@ -1,8 +1,10 @@
 using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class RemoverPropostaRegenteCommand : IRequest<bool>
     {
         public RemoverPropostaRegenteCommand(long regenteId)
@@ -12,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public long RegenteId { get; set; }
     }
+    [ExcludeFromCodeCoverage]
     public class RemoverPropostaRegenteCommandValidator : AbstractValidator<RemoverPropostaRegenteCommand>
     {
         public RemoverPropostaRegenteCommandValidator()

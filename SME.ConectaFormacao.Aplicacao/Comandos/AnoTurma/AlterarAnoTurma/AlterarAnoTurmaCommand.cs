@@ -2,6 +2,7 @@
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
@@ -13,6 +14,8 @@ public class AlterarAnoTurmaCommand : IRequest<bool>
     }
     public AnoTurma AnoTurma { get; set; }
 
+
+    [ExcludeFromCodeCoverage]
     public class AlterarAnoTurmaCommandValidator : AbstractValidator<AlterarAnoTurmaCommand>
     {
         public AlterarAnoTurmaCommandValidator()

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontro
 {
@@ -10,6 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaEncontr
         public PropostaEncontroDto EncontroDto { get; } = encontroDto;
     }
 
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaEncontroCommandValidator : AbstractValidator<SalvarPropostaEncontroCommand>
     {
         public SalvarPropostaEncontroCommandValidator()

@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class EnviarParecerAreaPromotoraCommand : IRequest<bool>
     {
         public EnviarParecerAreaPromotoraCommand(long idProposta)
@@ -12,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long IdProposta { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class EnviarParecerAreaPromotoraCommandValidator : AbstractValidator<EnviarParecerAreaPromotoraCommand>
     {
         public EnviarParecerAreaPromotoraCommandValidator()

@@ -25,7 +25,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             foreach (var inscricao in inscricoesParaCancelar)
             {
-                await mediator.Send(new CancelarInscricaoCommand(inscricao.InscricaoId, null));
+                await mediator.Send(new CancelarInscricaoCommand(inscricao.InscricaoId, "Usuário inativo no EOL"));
             }
 
             return true;

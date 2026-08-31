@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -16,6 +17,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public AlterarCargoFuncaoVinculoIncricaoDTO AlterarCargoFuncaoVinculoIncricao { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class AlterarCargoFuncaoVinculoInscricaoCommandValidator : AbstractValidator<AlterarCargoFuncaoVinculoInscricaoCommand>
     {
         public AlterarCargoFuncaoVinculoInscricaoCommandValidator()

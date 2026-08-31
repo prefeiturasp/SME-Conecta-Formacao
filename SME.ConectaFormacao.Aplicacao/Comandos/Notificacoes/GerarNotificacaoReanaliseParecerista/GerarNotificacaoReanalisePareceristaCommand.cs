@@ -2,6 +2,7 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -17,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<PropostaPareceristaResumidoDTO> Pareceristas { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class GerarNotificacaoReanalisePareceristaCommandValidator : AbstractValidator<GerarNotificacaoReanalisePareceristaCommand>
     {
         public GerarNotificacaoReanalisePareceristaCommandValidator()

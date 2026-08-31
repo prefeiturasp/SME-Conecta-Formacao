@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -20,6 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Justificativa { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class EnviarParecerPareceristasCommandValidator : AbstractValidator<EnviarParecerPareceristaCommand>
     {
         public EnviarParecerPareceristasCommandValidator()

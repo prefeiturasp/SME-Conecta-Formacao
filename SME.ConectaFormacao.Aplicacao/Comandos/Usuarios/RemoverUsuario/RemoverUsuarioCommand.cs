@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class RemoverUsuarioCommand : IRequest<bool>
     {
         public RemoverUsuarioCommand(long id)
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long Id { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class RemoverUsuarioCommandValidator : AbstractValidator<RemoverUsuarioCommand>
     {
         public RemoverUsuarioCommandValidator()
