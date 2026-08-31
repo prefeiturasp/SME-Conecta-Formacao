@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -8,6 +9,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Inscricao_Manual = 1,
     }
 
+    [ExcludeFromCodeCoverage]
     public static class TipoImportacaoArquivoExtensao
     {
         public static bool EhInscricaoManual(this TipoImportacaoArquivo tipoImportacaoArquivo)

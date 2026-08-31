@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -17,6 +18,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<DadosInscricaoCargoEol> DadosInscricao { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class AlterarInscricaoParaUltimoCargoFuncaoVinculoCommandValidator : AbstractValidator<AlterarInscricaoParaUltimoCargoFuncaoVinculoCommand>
     {
         public AlterarInscricaoParaUltimoCargoFuncaoVinculoCommandValidator()

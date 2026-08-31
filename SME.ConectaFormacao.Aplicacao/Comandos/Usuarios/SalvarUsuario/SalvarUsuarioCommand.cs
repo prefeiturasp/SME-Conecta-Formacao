@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -16,6 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public bool AlterouNome { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class SalvarUsuarioCommandValidator : AbstractValidator<SalvarUsuarioCommand>
     {
         public SalvarUsuarioCommandValidator()

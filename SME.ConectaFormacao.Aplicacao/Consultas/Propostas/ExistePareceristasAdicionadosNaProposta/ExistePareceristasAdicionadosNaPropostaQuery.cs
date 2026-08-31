@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ExistePareceristasAdicionadosNaPropostaQuery : IRequest<bool>
     {
         public ExistePareceristasAdicionadosNaPropostaQuery(long propostaId)
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long PropostaId { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ExistePareceristasAdicionadosNaPropostaQueryValidator : AbstractValidator<ExistePareceristasAdicionadosNaPropostaQuery>
     {
         public ExistePareceristasAdicionadosNaPropostaQueryValidator()

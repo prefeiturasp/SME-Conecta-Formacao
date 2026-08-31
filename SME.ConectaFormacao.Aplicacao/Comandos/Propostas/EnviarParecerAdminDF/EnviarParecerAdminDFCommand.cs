@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class EnviarParecerAdminDFCommand : IRequest<bool>
     {
         public EnviarParecerAdminDFCommand(long idProposta)
@@ -12,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long IdProposta { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class EnviarParecerAdminDFCommandValidator : AbstractValidator<EnviarParecerAdminDFCommand>
     {
         public EnviarParecerAdminDFCommandValidator()

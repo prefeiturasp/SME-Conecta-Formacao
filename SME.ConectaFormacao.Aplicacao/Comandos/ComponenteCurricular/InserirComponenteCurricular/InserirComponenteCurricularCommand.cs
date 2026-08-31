@@ -1,9 +1,12 @@
 using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
+
+[ExcludeFromCodeCoverage]
 public class InserirComponenteCurricularCommand : IRequest<long>
 {
     public InserirComponenteCurricularCommand(ComponenteCurricular componenteCurricular)
@@ -12,6 +15,8 @@ public class InserirComponenteCurricularCommand : IRequest<long>
     }
     public ComponenteCurricular ComponenteCurricular { get; set; }
 
+
+    [ExcludeFromCodeCoverage]
     public class InserirComponenteCurricularCommandValidator : AbstractValidator<InserirComponenteCurricularCommand>
     {
         public InserirComponenteCurricularCommandValidator()

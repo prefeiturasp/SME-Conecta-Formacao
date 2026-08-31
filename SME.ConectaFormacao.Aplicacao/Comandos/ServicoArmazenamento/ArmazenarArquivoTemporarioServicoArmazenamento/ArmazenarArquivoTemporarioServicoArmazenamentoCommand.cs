@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -14,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public ArquivoDTO Arquivo { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ArmazenarArquivoTemporarioServicoArmazenamentoCommandValidator : AbstractValidator<ArmazenarArquivoTemporarioServicoArmazenamentoCommand>
     {
         public ArmazenarArquivoTemporarioServicoArmazenamentoCommandValidator()

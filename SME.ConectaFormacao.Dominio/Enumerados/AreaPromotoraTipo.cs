@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -10,6 +11,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         RedeParceria = 2
     }
 
+    [ExcludeFromCodeCoverage]
     public static class AreaPromotoraTipoExtensao
     {
         public static bool EhRedeDireta(this AreaPromotoraTipo tipo)

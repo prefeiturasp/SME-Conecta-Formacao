@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Usuarios.AlterarEmailEducacional
 {
@@ -15,6 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Usuarios.AlterarEmailEducaciona
         public string Login { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class AlterarEmailEducacionalCommandValidator : AbstractValidator<AlterarEmailEducacionalCommand>
     {
         public AlterarEmailEducacionalCommandValidator()

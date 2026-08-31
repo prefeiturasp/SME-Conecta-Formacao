@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -15,6 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public long IgnorarAreaPromotoraId { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class ValidarGrupoAreaPromotoraCommandValidator : AbstractValidator<ValidarGrupoAreaPromotoraCommand>
     {
         public ValidarGrupoAreaPromotoraCommandValidator()

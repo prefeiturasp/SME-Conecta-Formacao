@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -10,6 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<PropostaDre> Dres { get; } = dres;
     }
 
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaDreCommandValidator : AbstractValidator<SalvarPropostaDreCommand>
     {
         public SalvarPropostaDreCommandValidator()

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Notificacao;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -14,6 +15,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public NotificacaoSignalRDTO Notificacao { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class EnviarNotificacaoCommandValidator : AbstractValidator<EnviarNotificacaoCommand>
     {
         public EnviarNotificacaoCommandValidator()

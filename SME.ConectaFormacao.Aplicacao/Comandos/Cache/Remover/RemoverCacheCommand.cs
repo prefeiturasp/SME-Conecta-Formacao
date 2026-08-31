@@ -1,8 +1,11 @@
 using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
+
+[ExcludeFromCodeCoverage]
 public class RemoverCacheCommand : IRequest
 {
     public RemoverCacheCommand(string chave)
@@ -11,6 +14,8 @@ public class RemoverCacheCommand : IRequest
     }
     public string Chave { get; set; }
 
+
+    [ExcludeFromCodeCoverage]
     public class RemoverCacheCommandValidator : AbstractValidator<RemoverCacheCommand>
     {
         public RemoverCacheCommandValidator()

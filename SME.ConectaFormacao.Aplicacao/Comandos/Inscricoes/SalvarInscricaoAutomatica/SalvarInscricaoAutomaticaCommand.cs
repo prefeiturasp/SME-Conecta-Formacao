@@ -1,9 +1,12 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+
+    [ExcludeFromCodeCoverage]
     public class SalvarInscricaoAutomaticaCommand : IRequest<long>
     {
         public SalvarInscricaoAutomaticaCommand(InscricaoAutomaticaDTO inscricaoAutomaticaDto)
@@ -14,6 +17,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public InscricaoAutomaticaDTO InscricaoAutomaticaDTO { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class SalvarInscricaoAutomaticaCommandValidator : AbstractValidator<SalvarInscricaoAutomaticaCommand>
     {
         public SalvarInscricaoAutomaticaCommandValidator()

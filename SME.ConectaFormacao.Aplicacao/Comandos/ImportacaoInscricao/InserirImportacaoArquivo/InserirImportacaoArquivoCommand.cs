@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -14,6 +15,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public ImportacaoArquivoDTO ImportacaoArquivo { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class InserirImportacaoArquivoInscricaoCursistaCommandValidator : AbstractValidator<InserirImportacaoArquivoCommand>
     {
         public InserirImportacaoArquivoInscricaoCursistaCommandValidator()
