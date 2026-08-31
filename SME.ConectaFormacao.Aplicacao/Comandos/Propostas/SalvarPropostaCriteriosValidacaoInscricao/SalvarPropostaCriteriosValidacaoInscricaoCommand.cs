@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaCriteriosValidacaoInscricaoCommand : IRequest<bool>
     {
         public SalvarPropostaCriteriosValidacaoInscricaoCommand(long propostaId, IEnumerable<PropostaCriterioValidacaoInscricao> criteriosValidacaoInscricao)
@@ -16,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<PropostaCriterioValidacaoInscricao> CriteriosValidacaoInscricao { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaCriteriosValidacaoInscricaoCommandValidator : AbstractValidator<SalvarPropostaCriteriosValidacaoInscricaoCommand>
     {
         public SalvarPropostaCriteriosValidacaoInscricaoCommandValidator()

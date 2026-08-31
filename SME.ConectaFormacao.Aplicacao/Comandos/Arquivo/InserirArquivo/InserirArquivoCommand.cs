@@ -1,9 +1,12 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Arquivo;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+
+    [ExcludeFromCodeCoverage]
     public class InserirArquivoCommand : IRequest<long>
     {
         public InserirArquivoCommand(ArquivoDTO arquivo)
@@ -14,6 +17,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public ArquivoDTO Arquivo { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class InserirArquivoCommandValidator : AbstractValidator<InserirArquivoCommand>
     {
         public InserirArquivoCommandValidator()

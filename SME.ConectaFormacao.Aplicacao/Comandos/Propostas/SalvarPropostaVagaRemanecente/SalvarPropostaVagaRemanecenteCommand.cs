@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaVagaRemanecenteCommand : IRequest<bool>
     {
         public SalvarPropostaVagaRemanecenteCommand(long propostaId, IEnumerable<PropostaVagaRemanecente> vagasRemanecentes)
@@ -16,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<PropostaVagaRemanecente> VagasRemanecentes { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaVagaRemanecenteCommandValidator : AbstractValidator<SalvarPropostaVagaRemanecenteCommand>
     {
         public SalvarPropostaVagaRemanecenteCommandValidator()

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -12,10 +13,9 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         NaoCursosExtras = 3
     }
 
+    [ExcludeFromCodeCoverage]
     public static class FormacaoHomologadaExtensao
     {
-
-
 
         public static bool EstaHomologada(this FormacaoHomologada? valor)
         {

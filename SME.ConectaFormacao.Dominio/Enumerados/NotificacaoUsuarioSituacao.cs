@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -11,6 +12,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Lida = 2
     }
 
+    [ExcludeFromCodeCoverage]
     public static class NotificacaoUsuarioSituacaoExtensao
     {
         public static bool EhNaoLida(this NotificacaoUsuarioSituacao notificacaoUsuarioSituacao)

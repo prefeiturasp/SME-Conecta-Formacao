@@ -1,5 +1,6 @@
 ﻿using SME.ConectaFormacao.Dominio.Extensoes;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -17,6 +18,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         Externa = 5
     }
 
+    [ExcludeFromCodeCoverage]
     public static class TipoInscricaoExtensao
     {
         public static bool EhAutomaticaOuJEIF(this TipoInscricao? valor)

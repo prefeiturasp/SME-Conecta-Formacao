@@ -1,7 +1,10 @@
 ﻿using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Coordenadorias.InserirCoordenadoria
 {
+
+    [ExcludeFromCodeCoverage]
     public class InserirCoordenadoriaCommandValidator : AbstractValidator<InserirCoordenadoriaCommand>
     {
         public InserirCoordenadoriaCommandValidator()

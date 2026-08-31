@@ -1,8 +1,10 @@
 ﻿using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Contexto;
 
+[ExcludeFromCodeCoverage]
 public interface IContextoAplicacao
 {
     IDictionary<string, object> Variaveis { get; set; }

@@ -2,9 +2,12 @@ using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao;
 
+
+[ExcludeFromCodeCoverage]
 public class InserirAnoTurmaCommand : IRequest<long>
 {
     public InserirAnoTurmaCommand(AnoTurma anoTurma)
@@ -13,6 +16,8 @@ public class InserirAnoTurmaCommand : IRequest<long>
     }
     public AnoTurma AnoTurma { get; set; }
 
+
+    [ExcludeFromCodeCoverage]
     public class InserirAnoTurmaCommandValidator : AbstractValidator<InserirAnoTurmaCommand>
     {
         public InserirAnoTurmaCommandValidator()

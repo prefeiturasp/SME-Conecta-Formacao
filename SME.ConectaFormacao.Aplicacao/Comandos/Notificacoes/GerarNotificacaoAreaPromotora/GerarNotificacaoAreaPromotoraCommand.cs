@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -14,6 +15,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public Proposta Proposta { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class GerarNotificacaoAreaPromotoraCommandValidator : AbstractValidator<GerarNotificacaoAreaPromotoraCommand>
     {
         public GerarNotificacaoAreaPromotoraCommandValidator()

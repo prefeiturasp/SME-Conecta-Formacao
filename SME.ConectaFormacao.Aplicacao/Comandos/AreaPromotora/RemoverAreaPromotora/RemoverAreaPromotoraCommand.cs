@@ -1,8 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+
+    [ExcludeFromCodeCoverage]
     public class RemoverAreaPromotoraCommand : IRequest<bool>
     {
         public RemoverAreaPromotoraCommand(long id)
@@ -13,6 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public long Id { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class RemoverAreaPromotoraCommandValidator : AbstractValidator<RemoverAreaPromotoraCommand>
     {
         public RemoverAreaPromotoraCommandValidator()

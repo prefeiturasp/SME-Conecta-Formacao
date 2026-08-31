@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class RemoverArquivoServicoArmazenamentoCommand : IRequest<bool>
     {
         public RemoverArquivoServicoArmazenamentoCommand(string nome)
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Nome { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class RemoverArquivoServicoArmazenamentoCommandValidator : AbstractValidator<RemoverArquivoServicoArmazenamentoCommand>
     {
         public RemoverArquivoServicoArmazenamentoCommandValidator()

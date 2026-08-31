@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Contexto;
 
+[ExcludeFromCodeCoverage]
 public abstract class ContextoBase : IContextoAplicacao
 {
     protected ContextoBase()

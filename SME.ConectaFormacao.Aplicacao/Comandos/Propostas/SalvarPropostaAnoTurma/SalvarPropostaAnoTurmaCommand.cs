@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaAnoTurmaCommand : IRequest<bool>
     {
         public SalvarPropostaAnoTurmaCommand(long propostaId, IEnumerable<PropostaAnoTurma> anosTurmas)
@@ -16,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<PropostaAnoTurma> AnosTurmas { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaAnoTurmaCommandValidator : AbstractValidator<SalvarPropostaAnoTurmaCommand>
     {
         public SalvarPropostaAnoTurmaCommandValidator()
