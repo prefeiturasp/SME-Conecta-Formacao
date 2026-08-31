@@ -1,4 +1,5 @@
 using Dapper;
+using Microsoft.Extensions.Logging;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -7,12 +8,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 {
     [ExcludeFromCodeCoverage]
-    public class RepositorioEmailEnviado(IContextoAplicacao contexto, IConectaFormacaoConexao conexao) : 
+    public class RepositorioEmailEnviado(IContextoAplicacao contexto, IConectaFormacaoConexao conexao, ILogger<RepositorioEmailEnviado> logger) : 
         RepositorioBaseAuditavel<EmailEnviado>(contexto, conexao), IRepositorioEmailEnviado
     {
         public async Task<bool> ExistePorChaveIdempotenciaAsync(string chaveIdempotencia)
         {
-            var query = """
+            try
+            {
+                var query = """
                 select exists(                
                             select 1 
                             from email_enviado 
@@ -21,7 +24,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                           )
                 """;
 
-            return await conexao.Obter().ExecuteScalarAsync<bool>(query, new { chaveIdempotencia });
+                return await conexao.Obter().ExecuteScalarAsync<bool>(query, new { chaveIdempotencia });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Erro ao verificar chave de idempotencia");
+                // Fail-Open - caso ocorra algum erro na consulta, assume-se que o email não foi enviado
+                return false;
+            }
         }
 
         public async Task<EmailEnviado?> ObterPorChaveIdempotenciaAsync(string chaveIdempotencia)
@@ -105,6 +115,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 """;
 
             return await conexao.Obter().QueryAsync<EmailEnviado>(query, new { notificacaoUsuarioId });
+        }
+
+        public override Task<long> Inserir(EmailEnviado entidade)
+        {
+            try
+            {
+                return base.Inserir(entidade);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Erro inserir na tabela de email enviado");
+                // Fail-Open - caso ocorra algum erro na inserção, não para a execução do processo, apenas ignora o erro e retorna 0
+                return Task.FromResult(0L);
+            }
         }
     }
 }
