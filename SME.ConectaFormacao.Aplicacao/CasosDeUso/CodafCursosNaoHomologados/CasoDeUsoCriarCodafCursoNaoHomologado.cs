@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCursosNaoHomologados;
@@ -10,8 +9,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
 {
     public class CasoDeUsoCriarCodafCursoNaoHomologado(
         CodafCursoNaoHomologadoDependencias dependencias,
-        IMapper mapper,
-        ITransacao transacao) : ICasoDeUsoCriarCodafCursoNaoHomologado
+        ITransacao transacao) : CasoDeUsoCodafCursoNaoHomologadoBase(dependencias), ICasoDeUsoCriarCodafCursoNaoHomologado
     {
         public async Task<Resultado<CodafCursoNaoHomologadoDetalhadoDto>> ExecutarAsync(CodafCursoNaoHomologadoCadastroDto codafCursoNaoHomologadoCadastroDto)
         {
@@ -24,9 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
             {
                 var idCodafCursoNaoHomologado = await dependencias.RepositorioCodaf.Inserir(codafCursoNaoHomologado);
                 codafCursoNaoHomologado.Id = idCodafCursoNaoHomologado;
-                await SalvarInscritosAsync(codafCursoNaoHomologadoCadastroDto, codafCursoNaoHomologado);
-                await SalvarAnexosAsync(codafCursoNaoHomologadoCadastroDto, codafCursoNaoHomologado);
-                codafCursoNaoHomologado.DefinirStatus();
+                await SalvarDependenciasCodafAsync(codafCursoNaoHomologadoCadastroDto, codafCursoNaoHomologado);
 
                 transacaoDb.Commit();
             }
@@ -51,20 +47,6 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
                 Observacao = codafCursoNaoHomologado.Observacao,
                 Status = codafCursoNaoHomologado.Status
             };
-        }
-
-        private async Task SalvarAnexosAsync(CodafCursoNaoHomologadoCadastroDto codafCursoNaoHomologadoCadastroDto, CodafCursoNaoHomologado codafCursoNaoHomologadoExistente)
-        {
-            var anexos = dependencias.Mapper.Map<List<CodafCursoNaoHomologadoAnexo>>(codafCursoNaoHomologadoCadastroDto.Anexos);
-            await dependencias.AnexoService.ProcessarAnexosAsync(codafCursoNaoHomologadoExistente.Id, anexos);
-            codafCursoNaoHomologadoExistente.CodafAnexos = anexos;
-        }
-
-        public async Task SalvarInscritosAsync(CodafCursoNaoHomologadoCadastroDto codafCursoNaoHomologadoCadastroDto, CodafCursoNaoHomologado codafCursoNaoHomologado)
-        {
-            var inscritos = mapper.Map<List<CodafCursoNaoHomologadoInscricao>>(codafCursoNaoHomologadoCadastroDto.Inscritos);
-            await dependencias.InscritosService.SalvarInscritosAsync(inscritos, codafCursoNaoHomologado.Id);
-            codafCursoNaoHomologado.CodafInscricoes = inscritos;
         }
     }
 }
