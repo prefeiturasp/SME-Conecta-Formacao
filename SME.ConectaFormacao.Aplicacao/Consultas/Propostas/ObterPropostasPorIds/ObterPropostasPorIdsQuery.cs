@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -14,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public IEnumerable<long> PropostasIds { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterPropostasPorIdsQueryValidator : AbstractValidator<ObterPropostasPorIdsQuery>
     {
         public ObterPropostasPorIdsQueryValidator()

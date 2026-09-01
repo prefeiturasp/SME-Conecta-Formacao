@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Autenticacao;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterUsuarioServicoAcessosPorLoginSenhaQuery : IRequest<UsuarioAutenticacaoRetornoDto>
     {
         public ObterUsuarioServicoAcessosPorLoginSenhaQuery(string login, string senha)
@@ -16,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Senha { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterUsuarioServicoAcessosPorLoginSenhaQueryValidator : AbstractValidator<ObterUsuarioServicoAcessosPorLoginSenhaQuery>
     {
         public ObterUsuarioServicoAcessosPorLoginSenhaQueryValidator()

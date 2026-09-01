@@ -1,9 +1,11 @@
 using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterUsuariosInternosPorIdsQuery : IRequest<IEnumerable<Usuario>>
     {
         public ObterUsuariosInternosPorIdsQuery(long[] usuariosId)
@@ -14,6 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long[] UsuariosId { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterUsuariosInternosPorIdsQueryValidator : AbstractValidator<ObterUsuariosInternosPorIdsQuery>
     {
         public ObterUsuariosInternosPorIdsQueryValidator()

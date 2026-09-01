@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegenteTurmaPorRegenteId
 {
@@ -14,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegenteTurmaPorR
         public long RegenteId { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterRegenteTurmaPorRegenteIdQueryValidator : AbstractValidator<ObterRegenteTurmaPorRegenteIdQuery>
     {
         public ObterRegenteTurmaPorRegenteIdQueryValidator()

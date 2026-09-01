@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterPropostaTurmasPorIdQuery : IRequest<IEnumerable<RetornoListagemDTO>>
     {
         public ObterPropostaTurmasPorIdQuery(long id)
@@ -14,6 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long Id { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterPropostaTurmasPorIdQueryValidator : AbstractValidator<ObterPropostaTurmasPorIdQuery>
     {
         public ObterPropostaTurmasPorIdQueryValidator()

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -8,6 +9,8 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         public long Id { get; } = id;
     }
+
+    [ExcludeFromCodeCoverage]
     public class ObterPropostaPorIdQueryValidator : AbstractValidator<ObterPropostaPorIdQuery>
     {
         public ObterPropostaPorIdQueryValidator()

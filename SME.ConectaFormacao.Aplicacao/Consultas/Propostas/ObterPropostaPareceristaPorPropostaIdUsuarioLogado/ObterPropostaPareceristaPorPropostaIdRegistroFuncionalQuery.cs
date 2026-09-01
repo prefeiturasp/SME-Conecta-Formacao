@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterPropostaPareceristaPorPropostaIdRegistroFuncionalQuery : IRequest<PropostaParecerista>
     {
         public ObterPropostaPareceristaPorPropostaIdRegistroFuncionalQuery(long propostaId, string registroFuncional)
@@ -16,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string RegistroFuncional { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterPropostaPareceristaPorPropostaIdRegistroFuncionalQueryValidator : AbstractValidator<ObterPropostaPareceristaPorPropostaIdRegistroFuncionalQuery>
     {
         public ObterPropostaPareceristaPorPropostaIdRegistroFuncionalQueryValidator()

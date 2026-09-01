@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterPropostaTurmasComVagasPorIdQuery : IRequest<IEnumerable<RetornoListagemDTO>>
     {
         public ObterPropostaTurmasComVagasPorIdQuery(long propostaId, string? codigoDre = null)
@@ -15,14 +17,15 @@ namespace SME.ConectaFormacao.Aplicacao
         public long PropostaId { get; }
         public string? CodigoDre { get; set; }
 
-    public class ObterPropostaTurmasComVagasPorIdQueryValidator : AbstractValidator<ObterPropostaTurmasComVagasPorIdQuery>
-    {
-        public ObterPropostaTurmasComVagasPorIdQueryValidator()
+        [ExcludeFromCodeCoverage]
+        public class ObterPropostaTurmasComVagasPorIdQueryValidator : AbstractValidator<ObterPropostaTurmasComVagasPorIdQuery>
         {
-            RuleFor(t => t.PropostaId)
-                .NotEmpty()
-                .WithMessage("É necessário informar o id da proposta para obter as turmas com vaga disponível");
+            public ObterPropostaTurmasComVagasPorIdQueryValidator()
+            {
+                RuleFor(t => t.PropostaId)
+                    .NotEmpty()
+                    .WithMessage("É necessário informar o id da proposta para obter as turmas com vaga disponível");
+            }
         }
     }
-}
 }

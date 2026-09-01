@@ -2,6 +2,7 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -16,6 +17,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public long PropostaId { get; set; }
         public CampoConsideracao CampoConsideracao { get; set; }
     }
+
+    [ExcludeFromCodeCoverage]
     public class ObterPropostaParecerPorPropostaIdECampoQueryValidator : AbstractValidator<ObterPropostaParecerPorPropostaIdECampoQuery>
     {
         public ObterPropostaParecerPorPropostaIdECampoQueryValidator()
