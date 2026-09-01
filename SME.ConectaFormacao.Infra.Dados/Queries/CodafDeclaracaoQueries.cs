@@ -43,11 +43,10 @@
           AND  CILP.PARTICIPOU 
           AND  NOT CILP.EXCLUIDO
           AND  CLP.ID = @codafNaoHomologadoId
-          AND  P.CURSO_COM_CERTIFICADO = false
         UNION ALL
         SELECT 
                PRT.ID AS idReferencia,
-               PRT.ID AS idReferencia,
+               0 AS inscricaoId,
                PT.ID AS propostaTurmaId,
                PR.NOME_REGENTE AS nomeCompleto,
                NULL AS nomeSocial,
@@ -85,7 +84,6 @@
           AND  NOT PRT.EXCLUIDO 
           AND  NOT PR.EXCLUIDO
           AND  CLP.ID = @codafNaoHomologadoId
-          AND  P.CURSO_COM_CERTIFICADO = false
         """;
 
         public const string AtualizarStatusProcessamento = """
@@ -243,7 +241,6 @@
                 INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON CD.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
                 INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID
                 INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PRT.TURMA_ID = PT.ID
-                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.PROPOSTA_TURMA_ID = PT.ID
                 INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
                 INNER JOIN PUBLIC.USUARIO AS U ON U.CPF = PR.REGISTRO_FUNCIONAL OR U.LOGIN = PR.REGISTRO_FUNCIONAL
                 WHERE NOT CD.EXCLUIDO AND CD.STATUS_PROCESSAMENTO = @statusProcessado
