@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterUsuarioRedeParceriaPorIdQuery : IRequest<UsuarioRedeParceriaDTO>
     {
         public ObterUsuarioRedeParceriaPorIdQuery(long id)
@@ -14,6 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long Id { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterUsuarioRedeParceriaPorIdQueryValidator : AbstractValidator<ObterUsuarioRedeParceriaPorIdQuery>
     {
         public ObterUsuarioRedeParceriaPorIdQueryValidator()

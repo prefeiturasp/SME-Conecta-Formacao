@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ValidarUsuarioTokenServicoAcessosQuery : IRequest<bool>
     {
         public ValidarUsuarioTokenServicoAcessosQuery(Guid token)
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public Guid Token { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ValidarTokenRecuperacaoSenhaServicoAcessosQueryValidator : AbstractValidator<ValidarUsuarioTokenServicoAcessosQuery>
     {
         public ValidarTokenRecuperacaoSenhaServicoAcessosQueryValidator()

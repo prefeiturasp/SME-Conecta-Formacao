@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterTodosOsAnosTurmaPorAnoLetivoQuery : IRequest<IEnumerable<AnoTurma>>
     {
         public ObterTodosOsAnosTurmaPorAnoLetivoQuery(int anoLetivo)
@@ -14,6 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public int AnoLetivo { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterTodosOsAnosTurmaQueryValidator : AbstractValidator<ObterTodosOsAnosTurmaPorAnoLetivoQuery>
     {
         public ObterTodosOsAnosTurmaQueryValidator()

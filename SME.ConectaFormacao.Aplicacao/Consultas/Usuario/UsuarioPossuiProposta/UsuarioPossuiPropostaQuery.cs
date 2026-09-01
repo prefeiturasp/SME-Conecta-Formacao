@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class UsuarioPossuiPropostaQuery : IRequest<bool>
     {
         public UsuarioPossuiPropostaQuery(string login)
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Login { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class UsuarioPossuiPropostaQueryValidator : AbstractValidator<UsuarioPossuiPropostaQuery>
     {
         public UsuarioPossuiPropostaQueryValidator()

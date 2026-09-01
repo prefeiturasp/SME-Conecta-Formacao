@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class UsuarioEstaInscritoNaPropostaQuery : IRequest<bool>
     {
         public UsuarioEstaInscritoNaPropostaQuery(long usuarioId, long propostaId)
@@ -15,6 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long PropostaId { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ValidarUsuarioExisteInscricaoNaPropostaQueryValidator : AbstractValidator<UsuarioEstaInscritoNaPropostaQuery>
     {
         public ValidarUsuarioExisteInscricaoNaPropostaQueryValidator()

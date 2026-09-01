@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -13,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long PropostaId { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterRelatorioProspostaLaudaPublicacaoQueryValidator : AbstractValidator<ObterRelatorioProspostaLaudaPublicacaoQuery>
     {
         public ObterRelatorioProspostaLaudaPublicacaoQueryValidator()

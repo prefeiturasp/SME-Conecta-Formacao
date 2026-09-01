@@ -2,6 +2,7 @@ using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas
 {
@@ -18,6 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas
         public int NumeroPagina { get; set; }
         public int NumeroRegistros { get; set; }
     }
+    [ExcludeFromCodeCoverage]
     public class ObterRegentesPaginadoQueryValidator : AbstractValidator<ObterRegentesPaginadoQuery>
     {
         public ObterRegentesPaginadoQueryValidator()
