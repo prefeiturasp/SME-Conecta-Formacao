@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -2672,6 +2672,109 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             );
 
             return propostaDictionary.Values.FirstOrDefault();
+        }
+
+        public async Task<PropostaLaudaCompletaDto?> ObterDadosLaudaCompletaAsync(long propostaId)
+        {
+            const string query =
+            """
+            SELECT 
+                p.id as Id,
+                p.numero_homologacao as NumeroHomologacao,
+                p.tipo_formacao as TipoFormacaoConecta,
+                ap.nome as NomeAreaPromotora,
+                p.nome_formacao as NomeFormacao,
+                p.formato as Modalidade,
+                p.carga_horaria_presencial as CargaHorariaPresencial,
+                p.carga_horaria_sincrona as CargaHorariaSincrona,
+                p.carga_horaria_distancia as CargaHorariaDistancia,
+                p.justificativa as Justificativa,
+                p.objetivos as Objetivos,
+                p.conteudo_programatico as ConteudoProgramatico,
+                p.procedimento_metodologico as Procedimentos,
+                p.quantidade_vagas_turma as QuantidadeVagasTurmas,
+                p.quantidade_turmas as QuantidadeTurmas,
+                p.descricao_atividade as DescricaoAtividade,
+                p.referencia as Referencias,
+                p.data_inscricao_inicio as DataInscricaoInicio,
+                p.data_inscricao_fim as DataInscricaoFim,
+                p.link_inscricoes_externa as LinkInscricaoExterna,
+                p.publico_alvo_outros as PublicoAlvo_Outros,
+                p.funcao_especifica_outros as FuncaoEspecifica_Outros,
+                p.outros_criterios as Criterios_Outros,
+                p.criterio_validacao_inscricao_outros as CriteriosValidacao_Outros,
+                p.codigo_evento_sigpec as CodigoEventoSigpec
+            FROM proposta p
+            INNER JOIN area_promotora ap on ap.id = p.area_promotora_id
+            WHERE p.id = @propostaId AND NOT p.excluido;
+
+            SELECT cf.nome as Nome 
+            FROM proposta_publico_alvo ppa
+            INNER JOIN cargo_funcao cf on cf.id = ppa.cargo_funcao_id
+            WHERE NOT ppa.excluido AND NOT cf.excluido AND ppa.proposta_id = @propostaId;
+
+            SELECT cf.nome as Nome 
+            FROM proposta_funcao_especifica pfe
+            INNER JOIN cargo_funcao cf on cf.id = pfe.cargo_funcao_id 
+            WHERE NOT pfe.excluido AND NOT cf.excluido AND pfe.proposta_id = @propostaId;
+
+            SELECT cvi.nome as Nome 
+            FROM proposta_criterio_validacao_inscricao pcv 
+            INNER JOIN criterio_validacao_inscricao cvi on cvi.id = pcv.criterio_validacao_inscricao_id 
+            WHERE NOT pcv.excluido AND NOT cvi.excluido AND pcv.proposta_id = @propostaId;
+
+            SELECT cc.descricao as Nome  
+            FROM proposta_criterio_certificacao pcc 
+            INNER JOIN criterio_certificacao cc on cc.id = pcc.criterio_certificacao_id 
+            WHERE NOT pcc.excluido AND NOT cc.excluido AND pcc.proposta_id = @propostaId;
+
+            SELECT nome_regente as Nome, registro_funcional as Rf, mini_biografia as MiniBio, profissional_rede_municipal as ProfissionalDaRede
+            FROM proposta_regente
+            WHERE NOT excluido AND proposta_id = @propostaId;
+
+            SELECT cf.nome as Nome  
+            FROM proposta_vaga_remanecente pvr
+            INNER JOIN cargo_funcao cf ON cf.id = pvr.cargo_funcao_id 
+            WHERE NOT pvr.excluido AND NOT cf.excluido AND pvr.proposta_id = @propostaId;
+
+            SELECT apt.telefone 
+            FROM proposta p
+            INNER JOIN area_promotora ap on ap.id = p.area_promotora_id
+            INNER JOIN area_promotora_telefone apt on apt.area_promotora_id = ap.id
+            WHERE NOT ap.excluido AND NOT apt.excluido AND NOT p.excluido AND p.id = @propostaId;
+
+            SELECT 
+                pt.nome as Identificacao, 
+                pe.local as Local, 
+                ped.data_inicio as DataInicio, 
+                ped.data_fim as DataFim, 
+                coalesce(ped.hora_inicio, pe.hora_inicio) as HoraInicio, 
+                coalesce(ped.hora_fim, pe.hora_fim) as HoraFim  
+            FROM proposta_encontro pe
+            INNER JOIN proposta_encontro_turma pet ON pet.proposta_encontro_id = pe.id 
+            INNER JOIN proposta_encontro_data ped ON ped.proposta_encontro_id = pe.id
+            INNER JOIN proposta_turma pt on pt.id = pet.turma_id 
+            WHERE NOT pe.excluido AND NOT pet.excluido AND NOT ped.excluido AND pe.proposta_id = @propostaId;
+            """;
+
+            using var conn = conexao.Obter();
+            using var multi = await conn.QueryMultipleAsync(query, new { propostaId });
+
+            var proposta = await multi.ReadFirstOrDefaultAsync<PropostaLaudaCompletaDto>();
+            
+            if (proposta != null)
+            {
+                proposta.PublicosAlvo = await multi.ReadAsync<PropostaPublicoAlvoDto>();
+                proposta.FuncaoEspecifica = await multi.ReadAsync<PropostaPublicoAlvoDto>();
+                proposta.CriteriosValidacao = await multi.ReadAsync<PropostaPublicoAlvoDto>();
+                proposta.CriteriosCertificacao = await multi.ReadAsync<PropostaPublicoAlvoDto>();
+                proposta.Regentes = await multi.ReadAsync<RegenteLaudaDto>();
+                proposta.VagasRemanecentes = await multi.ReadAsync<PropostaPublicoAlvoDto>();
+                proposta.TelefonesAreaPromotora = await multi.ReadAsync<string>();
+                proposta.CronogramaTurmas = await multi.ReadAsync<TurmaLaudaDto>();
+            }
+
+            return proposta;
         }
     }
 }
