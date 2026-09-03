@@ -98,5 +98,85 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Servicos.Formatadores
             // Assert
             resultado.Should().Contain("<hr>");
         }
+
+        [Fact]
+        public void DadoTurmasComNumeros_QuandoChamarFormatar_EntaoAplicaOrdenacaoNumerica()
+        {
+            // Arrange
+            var dados = new PropostaLaudaCompletaDto
+            {
+                CronogramaTurmas = new List<TurmaLaudaDto>
+                {
+                    new TurmaLaudaDto { Identificacao = "Turma 10", Local = "Local Único" },
+                    new TurmaLaudaDto { Identificacao = "Turma 2", Local = "Local Único" }
+                }
+            };
+
+            // Act
+            var resultado = CronogramaHtmlFormatter.Formatar(dados);
+
+            // Assert
+            var indiceTurma2 = resultado.IndexOf("TURMA 2");
+            var indiceTurma10 = resultado.IndexOf("TURMA 10");
+            
+            indiceTurma2.Should().BeGreaterThan(-1);
+            indiceTurma10.Should().BeGreaterThan(-1);
+            indiceTurma2.Should().BeLessThan(indiceTurma10);
+        }
+
+        [Fact]
+        public void DadoPropostaSemDatasDeRealizacao_QuandoChamarFormatar_EntaoRetornaPeriodoVazio()
+        {
+            // Arrange
+            var dados = new PropostaLaudaCompletaDto
+            {
+                DataRealizacaoInicio = null,
+                DataRealizacaoFim = null,
+                CronogramaTurmas = new List<TurmaLaudaDto>()
+            };
+
+            // Act
+            var resultado = CronogramaHtmlFormatter.Formatar(dados);
+
+            // Assert
+            resultado.Should().Contain("PERÍODO DE REALIZAÇÃO:  ATÉ ");
+        }
+
+        [Fact]
+        public void DadoTurmaComMultiplosHorariosEHorarioVazio_QuandoChamarFormatar_EntaoFormataCorretamente()
+        {
+            // Arrange
+            var dados = new PropostaLaudaCompletaDto
+            {
+                CronogramaTurmas = new List<TurmaLaudaDto>
+                {
+                    new TurmaLaudaDto 
+                    { 
+                        Identificacao = "Turma Multipla", 
+                        Local = "Local", 
+                        DataInicio = new DateTime(2026, 1, 1),
+                        HoraInicio = "10:00",
+                        HoraFim = "12:00"
+                    },
+                    new TurmaLaudaDto 
+                    { 
+                        Identificacao = "Turma Multipla", 
+                        Local = "Local", 
+                        DataInicio = new DateTime(2026, 1, 2),
+                        HoraInicio = "", // Horário vazio para testar branch
+                        HoraFim = ""
+                    }
+                }
+            };
+
+            // Act
+            var resultado = CronogramaHtmlFormatter.Formatar(dados);
+
+            // Assert
+            resultado.Should().Contain("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"); 
+            // O grupo com horário vazio vem primeiro na ordenação (alfabética) e o grupo com horário preenchido vem depois
+            resultado.Should().Contain("<strong>TURMA MULTIPLA:</strong> 02/01<br>");
+            resultado.Should().Contain("01/01 - "); 
+        }
     }
 }

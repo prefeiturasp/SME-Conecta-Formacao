@@ -50,21 +50,35 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Propostas
         public string Nome { get; set; } = string.Empty;
     }
 
-    public class RegenteLaudaDto
+    public partial class RegenteLaudaDto
     {
         public string Nome { get; set; } = string.Empty;
         public string Rf { get; set; } = string.Empty;
         public string MiniBio { get; set; } = string.Empty;
         public bool ProfissionalDaRede { get; set; }
 
+        [System.Text.RegularExpressions.GeneratedRegex("<.*?>")]
+        private static partial System.Text.RegularExpressions.Regex HtmlTagsRegex();
+
         public string ObterDescricaoCompleta()
         {
-            var texto = "Nome Completo: {0}<br>RF: {1}<br>Profissional da Rede Municipal: {2}<br>Minibiografia: {3}<br><br>";
-            return string.Format(texto,
-                Nome.ToUpper(),
-                string.IsNullOrEmpty(Rf) ? "-" : Rf,
-                ProfissionalDaRede ? "SIM" : "NÃO",
-                string.IsNullOrEmpty(MiniBio) ? "-" : MiniBio.ToUpper());
+            var descricao = new System.Text.StringBuilder(Nome.ToUpper());
+
+            if (!string.IsNullOrWhiteSpace(Rf))
+            {
+                descricao.Append($" - RF: {Rf}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(MiniBio))
+            {
+                var miniBioTexto = HtmlTagsRegex().Replace(MiniBio, string.Empty).Trim();
+                if (!string.IsNullOrWhiteSpace(miniBioTexto) && miniBioTexto != "-")
+                {
+                    descricao.Append($" - {miniBioTexto}");
+                }
+            }
+
+            return descricao.ToString();
         }
     }
 

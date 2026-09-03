@@ -12,7 +12,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
     public class GeradorLaudaDocxService : IGeradorLaudaDocxService
     {
         private const string NOME_TEMPLATE = "SME.ConectaFormacao.Infra.Dados.Templates.Template_Lauda_Completa.docx";
-        private const string FONTE_PADRAO = "Courier New";
+        private const string FONTE_PADRAO = "Consolas";
         private const string TAMANHO_FONTE_PADRAO = "21"; // 10.5pt
         private const string COR_FONTE_PADRAO = "42474A";
         private const string TEXTO_OUTROS = "OUTROS";
@@ -76,11 +76,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
 
             foreach (var item in substituicoes)
             {
-                var valorSeguro = SecurityElement.Escape(item.Value ?? string.Empty);
-                // Para quebra de linha ser válida no MS Word, ela deve sair do <w:t> atual,
-                // inserir o <w:br/> no <w:r> pai, e reabrir o <w:t>
-                valorSeguro = valorSeguro.Replace("&lt;br&gt;", "</w:t><w:br/><w:t>");
-                textoXmlDocumento = textoXmlDocumento.Replace(item.Key, valorSeguro);
+                var valor = SecurityElement.Escape(item.Value ?? string.Empty);
+                valor = valor.Replace("&lt;br&gt;", "</w:t><w:br/><w:t>");
+                textoXmlDocumento = textoXmlDocumento.Replace(item.Key, valor);
             }
 
             body.InnerXml = textoXmlDocumento;
@@ -98,39 +96,39 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
 
             foreach (var texto in textos)
             {
-                var paragrafoOrigem = texto.Ancestors<Paragraph>().FirstOrDefault();
-                if (paragrafoOrigem != null && paragrafoOrigem.Parent != null)
+                InserirHtmlNoTexto(tag, elementosHtml, texto);
+            }
+        }
+
+        private static void InserirHtmlNoTexto(string tag, System.Collections.Generic.IList<DocumentFormat.OpenXml.OpenXmlCompositeElement> elementosHtml, Text texto)
+        {
+            var paragrafoOrigem = texto.Ancestors<Paragraph>().FirstOrDefault();
+            if (paragrafoOrigem?.Parent == null) return;
+
+            var parent = paragrafoOrigem.Parent;
+            OpenXmlElement nodeReferencia = paragrafoOrigem;
+
+            foreach (var elem in elementosHtml)
+            {
+                var clone = elem.CloneNode(true);
+                AplicarFormatacaoPadrao(clone);
+                parent.InsertAfter(clone, nodeReferencia);
+                nodeReferencia = clone;
+            }
+
+            texto.Text = texto.Text.Replace(tag, string.Empty);
+
+            if (string.IsNullOrWhiteSpace(paragrafoOrigem.InnerText))
+            {
+                paragrafoOrigem.Remove();
+            }
+
+            if (parent is TableCell)
+            {
+                var lastChild = parent.Elements().LastOrDefault();
+                if (lastChild != null && lastChild is not Paragraph)
                 {
-                    var parent = paragrafoOrigem.Parent;
-                    OpenXmlElement nodeReferencia = paragrafoOrigem;
-
-                    foreach (var elem in elementosHtml)
-                    {
-                        var clone = elem.CloneNode(true);
-                        AplicarFormatacaoPadrao(clone);
-
-                        // Insere DEPOIS do parágrafo de origem, para manter a label "JUSTIFICATIVA:" no topo
-                        parent.InsertAfter(clone, nodeReferencia);
-                        nodeReferencia = clone;
-                    }
-
-                    texto.Text = texto.Text.Replace(tag, string.Empty);
-
-                    if (string.IsNullOrWhiteSpace(paragrafoOrigem.InnerText))
-                    {
-                        paragrafoOrigem.Remove();
-                    }
-
-                    // Prevenção de corrompimento OpenXML: O TableCell (tc) DEVE sempre terminar com um Paragraph (p).
-                    // Se o último elemento do parent (que pode ser um TableCell) não for Paragraph, precisamos forçar um Paragraph vazio.
-                    if (parent is TableCell)
-                    {
-                        var lastChild = parent.Elements().LastOrDefault();
-                        if (lastChild != null && lastChild is not Paragraph)
-                        {
-                            parent.AppendChild(new Paragraph());
-                        }
-                    }
+                    parent.AppendChild(new Paragraph());
                 }
             }
         }
@@ -212,7 +210,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
         private static string ObterCorpoDocente(PropostaLaudaCompletaDto dados)
         {
             var list = dados.Regentes.Select(r => r.ObterDescricaoCompleta()).ToList();
-            return string.Join("", list);
+            return string.Join(" ", list);
         }
 
         private static Dictionary<string, string> ObterDicionarioDeSubstituicoes(PropostaLaudaCompletaDto dados)

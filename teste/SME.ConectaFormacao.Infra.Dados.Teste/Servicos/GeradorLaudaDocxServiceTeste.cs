@@ -100,5 +100,46 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Servicos
 
             conteudo.Should().NotContain("{{CH_PRESENCIAL}}");
         }
+        [Fact]
+        public async Task DadoCargaHorariaSincronaZerada_QuandoGerarArquivo_EntaoRemoveTabelaDeCargaSincrona()
+        {
+            // Arrange
+            var dados = new PropostaLaudaCompletaDto
+            {
+                NomeFormacao = "Teste Sem Carga Sincrona",
+                CargaHorariaSincrona = "00:00"
+            };
+
+            // Act
+            var resultado = await _sut.GerarArquivoLaudaCompletaAsync(dados);
+
+            // Assert
+            using var stream = new MemoryStream(resultado);
+            using var word = WordprocessingDocument.Open(stream, false);
+            var conteudo = word.MainDocumentPart?.Document.Body?.InnerText;
+
+            conteudo.Should().NotContain("{{CH_SINCRONA}}");
+        }
+
+        [Fact]
+        public async Task DadoCargaHorariaDistanciaZerada_QuandoGerarArquivo_EntaoRemoveTabelaDeCargaDistancia()
+        {
+            // Arrange
+            var dados = new PropostaLaudaCompletaDto
+            {
+                NomeFormacao = "Teste Sem Carga Distancia",
+                CargaHorariaDistancia = "00:00"
+            };
+
+            // Act
+            var resultado = await _sut.GerarArquivoLaudaCompletaAsync(dados);
+
+            // Assert
+            using var stream = new MemoryStream(resultado);
+            using var word = WordprocessingDocument.Open(stream, false);
+            var conteudo = word.MainDocumentPart?.Document.Body?.InnerText;
+
+            conteudo.Should().NotContain("{{CH_DISTANCIA}}");
+        }
     }
 }
