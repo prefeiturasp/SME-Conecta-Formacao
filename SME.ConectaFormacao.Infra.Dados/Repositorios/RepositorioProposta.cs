@@ -2013,7 +2013,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 p.data_realizacao_fim dataRealizacaoFim,                            
                 p.data_inscricao_inicio dataInscricaoInicio,
                 p.data_inscricao_fim dataInscricaoFim,
-                p.justificativa,
+                p.sobre_este_curso as sobreEsteCurso,
                 p.formacao_homologada as FormacaoHomologada,
                 p.link_inscricoes_externa as LinkParaInscricoesExterna,
                 p.curso_com_certificado as CursoComCertificado,
