@@ -86,6 +86,10 @@ namespace SME.ConectaFormacao.Aplicacao
                 .NotEmpty()
                 .WithMessage("É necessário informar os objetivos para inserir a proposta");
 
+            RuleFor(f => f.PropostaDTO.SobreEsteCurso)
+                .NotEmpty()
+                .WithMessage("É necessário informar sobre este curso para inserir a proposta");
+
             RuleFor(f => f.PropostaDTO.ConteudoProgramatico)
                 .NotEmpty()
                 .WithMessage("É necessário informar o conteúdo programático para inserir a proposta");

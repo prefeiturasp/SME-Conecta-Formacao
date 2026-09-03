@@ -523,6 +523,43 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             resultado.UltimaJustificativaAprovacaoRecusa.Should().Be("Proposta excelente, aprovada.");
         }
 
+        [Fact]
+        public async Task DadoPropostaComSobreEsteCursoPreenchido_QuandoProcessarQuery_EntaoDeveTrazerOCampo()
+        {
+            // Arrange
+            var query = new ObterPropostaCompletaPorIdQuery(1);
+            var proposta = CriarPropostaValida();
+            const string sobreEsteCursoEsperado = "Este é um curso sobre aprimoramento de práticas pedagógicas na educação infantil com foco em desenvolvimento integral.";
+            proposta.SobreEsteCurso = sobreEsteCursoEsperado;
+
+            ConfigurarDependenciasComunsParaSucesso(proposta);
+            ConfigurarPerfilEUsuarioLogado(Guid.NewGuid(), "usuario_comum");
+
+            // Act
+            var resultado = await _sut.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.SobreEsteCurso.Should().Be(sobreEsteCursoEsperado);
+        }
+
+        [Fact]
+        public async Task DadoPropostaSemSobreEsteCurso_QuandoProcessarQuery_EntaoDeveTrazerCampoVazio()
+        {
+            // Arrange
+            var query = new ObterPropostaCompletaPorIdQuery(1);
+            var proposta = CriarPropostaValida();
+            proposta.SobreEsteCurso = string.Empty;
+
+            ConfigurarDependenciasComunsParaSucesso(proposta);
+            ConfigurarPerfilEUsuarioLogado(Guid.NewGuid(), "usuario_comum");
+
+            // Act
+            var resultado = await _sut.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.SobreEsteCurso.Should().BeEmpty();
+        }
+
         #region Factory Methods
 
         private void ConfigurarPerfilEUsuarioLogado(Guid perfilId, string loginUsuario)
@@ -546,7 +583,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 PublicosAlvo = [],
                 FuncoesEspecificas = [],
                 PublicoAlvoOutros = string.Empty,
-                FuncaoEspecificaOutros = string.Empty
+                FuncaoEspecificaOutros = string.Empty,
+                SobreEsteCurso = string.Empty
             };
         }
 
