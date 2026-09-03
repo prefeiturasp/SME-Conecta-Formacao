@@ -34,7 +34,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 ConteudoProgramatico = "Conteúdo",
                 ProcedimentoMetadologico = "Procedimentos",
                 Referencia = "Referência",
-                PalavrasChaves = new List<PropostaPalavraChaveDTO> { new PropostaPalavraChaveDTO() }
+                PalavrasChaves = new List<PropostaPalavraChaveDTO> { new PropostaPalavraChaveDTO() },
+                SobreEsteCurso = "Sobre"
             };
 
             return new AlterarPropostaCommand(1, dto);

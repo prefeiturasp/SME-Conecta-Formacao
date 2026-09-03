@@ -282,6 +282,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
                 ConteudoProgramatico = "Conteúdo",
                 ProcedimentoMetadologico = "Procedimento",
                 Referencia = "Referência",
+                SobreEsteCurso = "Sobre este curso",
 
                 Dres =
                 [
