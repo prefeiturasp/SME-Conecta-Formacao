@@ -120,6 +120,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
                     {
                         paragrafoOrigem.Remove();
                     }
+
+                    // Prevenção de corrompimento OpenXML: O TableCell (tc) DEVE sempre terminar com um Paragraph (p).
+                    // Se o último elemento do parent (que pode ser um TableCell) não for Paragraph, precisamos forçar um Paragraph vazio.
+                    if (parent is TableCell)
+                    {
+                        var lastChild = parent.Elements().LastOrDefault();
+                        if (lastChild != null && lastChild is not Paragraph)
+                        {
+                            parent.AppendChild(new Paragraph());
+                        }
+                    }
                 }
             }
         }

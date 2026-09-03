@@ -32,9 +32,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos.Formatadores
             foreach (var localEncontro in locaisAgrupados)
             {
                 var descricaoCronogramaLocais = new StringBuilder();
+                var comparer = StringComparer.Create(new System.Globalization.CultureInfo("pt-BR"), System.Globalization.CompareOptions.NumericOrdering);
+
                 var turmasAgrupadas = localEncontro
                     .GroupBy(e => e.Identificacao)
-                    .OrderBy(g => g.Key);
+                    .OrderBy(g => g.Key, comparer);
 
                 foreach (var turma in turmasAgrupadas)
                 {
