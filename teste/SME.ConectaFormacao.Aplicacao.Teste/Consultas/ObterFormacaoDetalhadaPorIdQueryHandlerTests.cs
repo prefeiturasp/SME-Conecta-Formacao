@@ -52,7 +52,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             var formacaoDetalhada = new FormacaoDetalhada
             {
                 NomeFormacao = _faker.Lorem.Sentence(),
-                Justificativa = _faker.Lorem.Paragraph(),
+                SobreEsteCurso = _faker.Lorem.Paragraph(),
                 DataInscricaoInicio = DateTime.Now.AddDays(-10),
                 DataInscricaoFim = DateTime.Now.AddDays(10),
                 FormacaoHomologada = FormacaoHomologada.Sim,
@@ -74,10 +74,14 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             var formacaoDetalhadaDto = new RetornoFormacaoDetalhadaDTO
             {
                 Titulo = formacaoDetalhada.NomeFormacao,
-                Justificativa = formacaoDetalhada.Justificativa,
+                SobreEsteCurso = formacaoDetalhada.SobreEsteCurso,
                 FormacaoHomologada = formacaoDetalhada.FormacaoHomologada,
                 UsuarioAcessibilidade = acessibilidadeDto
             };
+
+            _mockCacheDistribuido
+                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>()))
+                .ReturnsAsync((RetornoFormacaoDetalhadaDTO)null);
 
             _mockRepositorioProposta
                 .Setup(r => r.ObterFormacaoDetalhadaPorIdAsync(query.Id))
@@ -92,7 +96,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 .Returns(formacaoDetalhadaDto);
 
             _mockMapper
-                .Setup(m => m.Map<UsuarioAcessibilidadeDto>(It.IsAny<UsuarioAcessibilidadeDto>()))
+                .Setup(m => m.Map<UsuarioAcessibilidadeDto>(It.IsAny<UsuarioAcessibilidade>()))
                 .Returns(acessibilidadeDto);
 
             // Act
@@ -101,8 +105,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             // Assert
             resposta.Should().BeEquivalentTo(formacaoDetalhadaDto);
             _mockCacheDistribuido
-                .Verify(c => c.SalvarAsync(It.IsAny<string>(), formacaoDetalhadaDto), Times.Once);
-            _mockRepositorioProposta.Verify(p => p.ObterTurmasComVagaPorId(It.IsAny<long>()), Times.Never);
+                .Verify(c => c.SalvarAsync(It.IsAny<string>(), It.IsAny<RetornoFormacaoDetalhadaDTO>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
+            _mockRepositorioProposta.Verify(p => p.ObterTurmasComVagaPorId(It.IsAny<long>(), null), Times.Never);
         }
 
         [Fact]
@@ -113,7 +117,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             var formacaoDetalhada = new FormacaoDetalhada
             {
                 NomeFormacao = _faker.Lorem.Sentence(),
-                Justificativa = _faker.Lorem.Paragraph(),
+                SobreEsteCurso = _faker.Lorem.Paragraph(),
                 DataInscricaoInicio = DateTime.Now.AddDays(-10),
                 DataInscricaoFim = DateTime.Now.AddDays(10),
                 FormacaoHomologada = FormacaoHomologada.NaoCursosPorIN,
@@ -123,7 +127,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             var formacaoDetalhadaDto = new RetornoFormacaoDetalhadaDTO
             {
                 Titulo = formacaoDetalhada.NomeFormacao,
-                Justificativa = formacaoDetalhada.Justificativa,
+                SobreEsteCurso = formacaoDetalhada.SobreEsteCurso,
                 FormacaoHomologada = formacaoDetalhada.FormacaoHomologada,
                 Turmas =
                 [
@@ -141,7 +145,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 .ReturnsAsync(formacaoDetalhadaDto);
 
             _mockRepositorioProposta
-                .Setup(r => r.ObterTurmasComVagaPorId(query.Id))
+                .Setup(r => r.ObterTurmasComVagaPorId(query.Id, null))
                 .ReturnsAsync([new() { Id = _faker.Random.Long(1) }]);
 
             // Act
@@ -153,8 +157,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             resposta.Turmas.First().Id.Should().Be(formacaoDetalhadaDto.Turmas.First().Id);
             resposta.Turmas.First().InscricaoEncerrada.Should().BeTrue();
             _mockCacheDistribuido
-                .Verify(c => c.SalvarAsync(It.IsAny<string>(), It.IsAny<RetornoFormacaoDetalhadaDTO>()), Times.Never);
-            _mockRepositorioProposta.Verify(p => p.ObterTurmasComVagaPorId(It.IsAny<long>()), Times.Once);
+                .Verify(c => c.SalvarAsync(It.IsAny<string>(), It.IsAny<RetornoFormacaoDetalhadaDTO>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Never);
+            _mockRepositorioProposta.Verify(p => p.ObterTurmasComVagaPorId(It.IsAny<long>(), null), Times.Once);
         }
     }
 }
