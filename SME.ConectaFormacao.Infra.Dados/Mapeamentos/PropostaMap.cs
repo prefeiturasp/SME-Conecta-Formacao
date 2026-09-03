@@ -29,6 +29,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.CargaHorariaDistancia).ToColumn("carga_horaria_distancia");
             Map(c => c.Justificativa).ToColumn("justificativa");
             Map(c => c.Objetivos).ToColumn("objetivos");
+            Map(c => c.SobreEsteCurso).ToColumn("sobre_este_curso");
             Map(c => c.ConteudoProgramatico).ToColumn("conteudo_programatico");
             Map(c => c.ProcedimentoMetadologico).ToColumn("procedimento_metodologico");
             Map(c => c.Referencia).ToColumn("referencia");
