@@ -1,4 +1,4 @@
-﻿using Bogus;
+using Bogus;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Moq.AutoMock;
@@ -60,28 +60,54 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Arrange
             var filtro = new FiltroRelatorioInscritosPorFormacaoDto
             {
-                PropostaId = _faker.Random.Long(1, 1000),
-                NumeroHomologacao = _faker.Random.Long(1, 1000),
-                NomeFormacao = _faker.Random.Word(),
-                PropostaTurmaId = _faker.Random.Long(1, 1000),
-                Formato = _faker.PickRandom<Formato>(),
-                AreaPromotoraId = _faker.Random.Long(1, 1000),
-                PeriodoDeRealizacaoInicial = _faker.Date.Past(),
-                PeriodoDeRealizacaoFinal = _faker.Date.Future(),
-                SituacaoProposta = _faker.PickRandom<SituacaoProposta>(),
-                SituacaoInscricao = _faker.PickRandom<SituacaoInscricao>(),
-                CargoPublicoAlvoId = _faker.Random.Long(1, 1000),
-                FuncaoId = _faker.Random.Long(1, 1000)
+                PropostaId = _faker.Random.Long(1, 1000)
             };
             var mensagemErro = "Erro ao gerar relatório";
             _casoDeUsoRelatorioInscritosPorFormacaoMock
                 .Setup(c => c.ExecutarAsync(It.IsAny<FiltroRelatorioInscritosPorFormacaoDto>()))
                 .ReturnsAsync(Erro.Validacao(mensagemErro));
+            
             // Act
             var result = await _controller.GerarRelatorioInscritosPorFormacao(filtro);
+            
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             badRequestResult.StatusCode.Should().Be(400);
+        }
+
+        [Fact]
+        public async Task DadoBytesValidos_QuandoObterRelatorioLaudaCompletaDocx_EntaoRetornaFileContentResult()
+        {
+            // Arrange
+            var casoDeUsoMock = new Mock<ICasoDeUsoObterRelatorioLaudaCompletaDocx>();
+            var propostaId = _faker.Random.Long(1, 1000);
+            var bytes = new byte[] { 1, 2, 3 };
+            casoDeUsoMock.Setup(c => c.ExecutarAsync(propostaId)).ReturnsAsync(bytes);
+
+            // Act
+            var result = await _controller.ObterRelatorioLaudaCompletaDocx(casoDeUsoMock.Object, propostaId);
+
+            // Assert
+            var fileResult = Assert.IsType<FileContentResult>(result);
+            fileResult.FileContents.Should().BeEquivalentTo(bytes);
+            fileResult.ContentType.Should().Be("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+            fileResult.FileDownloadName.Should().Be($"Lauda_Completa_Proposta_{propostaId}.docx");
+        }
+
+        [Fact]
+        public async Task DadoBytesVazios_QuandoObterRelatorioLaudaCompletaDocx_EntaoRetornaNotFound()
+        {
+            // Arrange
+            var casoDeUsoMock = new Mock<ICasoDeUsoObterRelatorioLaudaCompletaDocx>();
+            var propostaId = _faker.Random.Long(1, 1000);
+            casoDeUsoMock.Setup(c => c.ExecutarAsync(propostaId)).ReturnsAsync(Array.Empty<byte>());
+
+            // Act
+            var result = await _controller.ObterRelatorioLaudaCompletaDocx(casoDeUsoMock.Object, propostaId);
+
+            // Assert
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            notFoundResult.StatusCode.Should().Be(404);
         }
     }
 }
