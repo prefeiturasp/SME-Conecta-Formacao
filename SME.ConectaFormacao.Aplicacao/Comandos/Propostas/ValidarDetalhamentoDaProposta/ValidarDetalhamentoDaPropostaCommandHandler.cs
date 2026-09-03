@@ -17,9 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao
             if (proposta.Formato is Formato.Presencial && string.IsNullOrEmpty(proposta.CargaHorariaPresencial) || proposta.CargaHorariaPresencial == HORA_INVALIDA)
                 erros.Add(MensagemNegocio.CARGA_HORARIA_NAO_INFORMADA);
             if (string.IsNullOrEmpty(proposta.Justificativa))
-                erros.Add(MensagemNegocio.SOBRE_ESTE_CURSO_NAO_INFORMADO);
-            if (string.IsNullOrEmpty(proposta.SobreEsteCurso))
                 erros.Add(MensagemNegocio.JUSTIFICATIVA_NAO_INFORMADA);
+            if (string.IsNullOrEmpty(proposta.SobreEsteCurso))
+                erros.Add(MensagemNegocio.SOBRE_ESTE_CURSO_NAO_INFORMADO);
             if (string.IsNullOrEmpty(proposta.Objetivos))
                 erros.Add(MensagemNegocio.OBJETIVO_NAO_INFORMADO);
             if (string.IsNullOrEmpty(proposta.ConteudoProgramatico))
