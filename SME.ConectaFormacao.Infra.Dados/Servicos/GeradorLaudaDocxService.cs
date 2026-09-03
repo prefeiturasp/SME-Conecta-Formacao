@@ -5,7 +5,6 @@ using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Infra.Dados.Relatorios;
 using SME.ConectaFormacao.Infra.Dados.Servicos.Formatadores;
-using System.Reflection;
 using System.Security;
 
 namespace SME.ConectaFormacao.Infra.Dados.Servicos
@@ -60,7 +59,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
 
         private static void ProcessarTagsHtml(MainDocumentPart mainPart, Dictionary<string, string> substituicoes)
         {
-            var tagsHtml = new[] { "{{JUSTIFICATIVA}}", "{{OBJETIVOS}}", "{{CONTEUDO_PROGRAMATICO}}", "{{PROCEDIMENTOS}}", "{{ATIVIDADE_OBRIGATÓRIA}}", "{{CRONOGRAMA}}" };
+            var tagsHtml = new[] { "{{JUSTIFICATIVA}}", "{{OBJETIVOS}}", "{{CONTEUDO_PROGRAMATICO}}", "{{PROCEDIMENTOS}}", "{{ATIVIDADE_OBRIGATÓRIA}}", "{{CRONOGRAMA}}", "{{BIBLIOGRAFIA}}" };
             foreach (var tag in tagsHtml.Where(substituicoes.ContainsKey))
             {
                 if (substituicoes.TryGetValue(tag, out var valor))
@@ -140,7 +139,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
                 };
 
                 run.RunProperties.FontSize ??= new FontSize() { Val = TAMANHO_FONTE_PADRAO };
-                
+
                 run.RunProperties.FontSizeComplexScript ??= new FontSizeComplexScript() { Val = TAMANHO_FONTE_PADRAO };
 
                 run.RunProperties.Color ??= new Color() { Val = COR_FONTE_PADRAO };
@@ -172,7 +171,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
             return $"{periodo}{link}{criteriosStr}";
         }
 
-        private static string ObterCritCertificacao(PropostaLaudaCompletaDto dados)
+        private static string ObterCriteriosCertificacao(PropostaLaudaCompletaDto dados)
         {
             var list = dados.CriteriosCertificacao.Select(c =>
                 string.Equals(c.Nome, TEXTO_OUTROS, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(dados.Criterios_Outros)
@@ -227,7 +226,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
                 { "{{CONTEUDO_PROGRAMATICO}}", dados.ConteudoProgramatico },
                 { "{{PROCEDIMENTOS}}", dados.Procedimentos },
                 { "{{ATIVIDADE_OBRIGATÓRIA}}", dados.DescricaoAtividade },
-                { "{{CRITERIOS_AVALIACAO}}", ObterCritCertificacao(dados) },
+                { "{{CRITERIOS_AVALIACAO}}", ObterCriteriosCertificacao(dados) },
                 { "{{BIBLIOGRAFIA}}", dados.Referencias },
                 { "{{QTD_TURMAS}}", dados.QuantidadeTurmas.ToString() },
                 { "{{VAGAS_POR_TURMA}}", dados.QuantidadeVagasTurmas.ToString() },

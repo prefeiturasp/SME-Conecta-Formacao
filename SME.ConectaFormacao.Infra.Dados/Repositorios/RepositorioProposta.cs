@@ -2764,6 +2764,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             
             if (proposta != null)
             {
+                if (Enum.TryParse<SME.ConectaFormacao.Dominio.Enumerados.TipoFormacao>(proposta.TipoFormacaoConecta, out var tipoFormacao))
+                    proposta.TipoFormacaoConecta = tipoFormacao.Nome();
+
+                if (Enum.TryParse<SME.ConectaFormacao.Dominio.Enumerados.Formato>(proposta.Modalidade, out var formato))
+                    proposta.Modalidade = formato.Nome();
+
                 proposta.PublicosAlvo = await multi.ReadAsync<PropostaPublicoAlvoDto>();
                 proposta.FuncaoEspecifica = await multi.ReadAsync<PropostaPublicoAlvoDto>();
                 proposta.CriteriosValidacao = await multi.ReadAsync<PropostaPublicoAlvoDto>();

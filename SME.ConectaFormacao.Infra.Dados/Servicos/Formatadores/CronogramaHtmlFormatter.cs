@@ -1,7 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
+using System.Text;
 
 namespace SME.ConectaFormacao.Infra.Dados.Servicos.Formatadores
 {
@@ -16,7 +14,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos.Formatadores
             descricao.AppendLine($"<p>PERÍODO DE REALIZAÇÃO: {periodoInicio} ATÉ {periodoFim}</p>");
             descricao.AppendLine("<p>DATAS E HORÁRIOS DOS ENCONTROS:</p>");
 
-            var turmas = dados.CronogramaTurmas.Select(t => {
+            var turmas = dados.CronogramaTurmas.Select(t =>
+            {
                 if (string.IsNullOrEmpty(t.Local)) t.Local = "A DEFINIR";
                 return t;
             }).ToList();

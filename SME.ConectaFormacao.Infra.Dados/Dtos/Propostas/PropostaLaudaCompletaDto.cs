@@ -1,7 +1,3 @@
-using System.Text;
-using System.Linq;
-using System.Collections.Generic;
-
 namespace SME.ConectaFormacao.Infra.Dados.Dtos.Propostas
 {
     public class PropostaLaudaCompletaDto
@@ -26,12 +22,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Propostas
         public int QuantidadeTurmas { get; set; }
         public int QuantidadeVagasTurmas { get; set; }
         public string NumeroHomologacao { get; set; } = string.Empty;
-        
+
 
         public DateTime DataInscricaoInicio { get; set; }
         public DateTime DataInscricaoFim { get; set; }
         public string LinkInscricaoExterna { get; set; } = string.Empty;
-        
+
         public string PublicoAlvo_Outros { get; set; } = string.Empty;
         public string FuncaoEspecifica_Outros { get; set; } = string.Empty;
         public string Criterios_Outros { get; set; } = string.Empty;
@@ -60,14 +56,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Propostas
         public string Rf { get; set; } = string.Empty;
         public string MiniBio { get; set; } = string.Empty;
         public bool ProfissionalDaRede { get; set; }
-        
+
         public string ObterDescricaoCompleta()
         {
             var texto = "Nome Completo: {0}<br>RF: {1}<br>Profissional da Rede Municipal: {2}<br>Minibiografia: {3}<br><br>";
-            return string.Format(texto, 
-                Nome.ToUpper(), 
-                string.IsNullOrEmpty(Rf) ? "-" : Rf, 
-                ProfissionalDaRede ? "SIM" : "NÃO", 
+            return string.Format(texto,
+                Nome.ToUpper(),
+                string.IsNullOrEmpty(Rf) ? "-" : Rf,
+                ProfissionalDaRede ? "SIM" : "NÃO",
                 string.IsNullOrEmpty(MiniBio) ? "-" : MiniBio.ToUpper());
         }
     }
