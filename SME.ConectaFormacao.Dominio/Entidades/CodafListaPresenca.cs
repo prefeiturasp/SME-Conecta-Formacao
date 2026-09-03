@@ -16,13 +16,14 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public int? CodigoNivel { get; private set; }
         public string? Observacao { get; private set; }
         public StatusCodafListaPresenca Status { get; private set; }
-
+        public bool CertificadoEmitido => CodafCertificados is not null && CodafCertificados.Count > 0;
         public Proposta Proposta { get; set; } = null!;
         public PropostaTurma PropostaTurma { get; set; } = null!;
         public ICollection<CodafComentarioListaPresenca> CodafComentarios { get; set; } = [];
         public ICollection<CodafInscricaoListaPresenca> CodafInscricoes { get; set; } = [];
         public ICollection<CodafRetificacaoListaPresenca> CodafRetificacoes { get; set; } = [];
         public ICollection<CodafAnexo>? CodafAnexos { get; set; }
+        public ICollection<CodafCertificado>? CodafCertificados { get; set; }
 
         public CodafListaPresenca() { }
         public CodafListaPresenca(long propostaId, long propostaTurmaId, StatusCodafListaPresenca status)

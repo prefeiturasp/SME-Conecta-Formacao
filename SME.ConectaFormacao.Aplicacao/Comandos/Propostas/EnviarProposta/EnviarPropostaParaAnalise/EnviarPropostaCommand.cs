@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -17,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public SituacaoProposta Situacao { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class EnviarPropostaCommandValidator : AbstractValidator<EnviarPropostaCommand>
     {
         public EnviarPropostaCommandValidator()

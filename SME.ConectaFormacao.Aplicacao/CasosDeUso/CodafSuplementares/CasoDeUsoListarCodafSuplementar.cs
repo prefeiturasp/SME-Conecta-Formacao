@@ -5,11 +5,9 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
-    [ExcludeFromCodeCoverage]
     public class CasoDeUsoListarCodafSuplementar(
         IRepositorioCodafSuplementar repositorioCodafSuplementar,
         IMapper mapper) : ICasoDeUsoListarCodafSuplementar

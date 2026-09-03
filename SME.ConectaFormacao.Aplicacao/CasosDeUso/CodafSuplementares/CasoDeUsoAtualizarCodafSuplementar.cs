@@ -3,22 +3,28 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 {
     public class CasoDeUsoAtualizarCodafSuplementar(
         CodafSuplementarDependencias dependencias,
-        IValidator<CodafSuplementarCadastroDto> validator) : ICasoDeUsoAtualizarCodafSuplementar
+        IValidator<CodafSuplementarCadastroDto> validator,
+        IContextoAplicacao contextoAplicacao) : ICasoDeUsoAtualizarCodafSuplementar
     {
         public async Task<Resultado> ExecutarAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto, long id)
         {
+            var perfilRestrito = !contextoAplicacao.EhAdministrador;
+
             var codafSuplementarExistente = await dependencias.RepositorioCodaf.ObterNaoExcluidosPorIdAsync(id);
 
             if (codafSuplementarExistente is null)
                 return Erro.NaoEncontrado("Codaf Suplementar não encontrado");
 
-            bool possuiCertificadoEmitido = codafSuplementarExistente.CertificadoEmitido;
+            if (perfilRestrito && codafSuplementarExistente.CriadoLogin != contextoAplicacao.LoginUsuario)
+                return Erro.Negocio("Você não tem permissão para editar esta lista de presença.");
 
             var validationResult = await validator.ValidateAsync(codafSuplementarCadastroDto);
             if (!validationResult.IsValid)
@@ -37,9 +43,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
             try
             {
-                if (!possuiCertificadoEmitido && codafSuplementarExistente.Status != Dominio.Enumerados.StatusCodafSuplementar.Finalizado)
-                    await SalvarInscritosAsync(codafSuplementarCadastroDto, codafSuplementarExistente);
-
+                await SalvarInscritosAsync(codafSuplementarCadastroDto, codafSuplementarExistente);
                 await SalvarRetificacoesAsync(codafSuplementarCadastroDto, codafSuplementarExistente.Id);
                 var anexos = dependencias.Mapper.Map<List<CodafSuplementarAnexo>>(codafSuplementarCadastroDto.Anexos);
                 await dependencias.AnexoService.ProcessarAnexosAsync(codafSuplementarExistente.Id, anexos);
@@ -58,6 +62,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
 
         private async Task SalvarInscritosAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto, CodafSuplementar codafSuplementar)
         {
+            if (codafSuplementar.CertificadoEmitido || codafSuplementar.Status == StatusCodafSuplementar.Finalizado)
+                return;
+
             var inscritos = dependencias.Mapper.Map<List<CodafSuplementarInscricao>>(codafSuplementarCadastroDto.Inscritos);
             await dependencias.InscritosService.SalvarInscritosAsync(inscritos, codafSuplementar.Id);
             codafSuplementar.CodafInscricoes = inscritos;

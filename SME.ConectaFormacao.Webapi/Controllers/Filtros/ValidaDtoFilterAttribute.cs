@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SME.ConectaFormacao.Aplicacao.DTOS;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Webapi.Filtros
 {
+    [ExcludeFromCodeCoverage]
     public class ValidaDtoAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)

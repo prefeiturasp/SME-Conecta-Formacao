@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics.CodeAnalysis;
 using static System.Text.Encoding;
 
 namespace SME.ConectaFormacao.Webapi.Configuracoes;
 
+[ExcludeFromCodeCoverage]
 public static class RegistraAutenticacao
 {
     public static void Registrar(IServiceCollection services, IConfiguration configuration)
@@ -24,7 +26,7 @@ public static class RegistraAutenticacao
                 ValidIssuer = configuration.GetValue<string>("JwtTokenSettings:Issuer"),
                 ValidateIssuerSigningKey = true,
                 ClockSkew = TimeSpan.Zero,
-                IssuerSigningKey = new SymmetricSecurityKey(UTF8.GetBytes(configuration.GetValue<string>("JwtTokenSettings:IssuerSigningKey")))
+                IssuerSigningKey = new SymmetricSecurityKey(UTF8.GetBytes(configuration.GetValue<string>("JwtTokenSettings:IssuerSigningKey")!))
             };
         });
 

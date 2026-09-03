@@ -80,7 +80,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados
                     return new(nomeArquivo, storageResultado.Dados!);
             }
 
-            var pdfResultado = await servicoRelatorio.ConveterHtmlCertificadoCodafParaPdfAsync(new HtmlCertificadoCodafDto
+            var pdfResultado = await servicoRelatorio.ConveterHtmlCodafParaPdfAsync(new HtmlCodafDto
             {
                 HtmlContent = certificado.HtmlContentSnapshot
             }, cancellationToken);

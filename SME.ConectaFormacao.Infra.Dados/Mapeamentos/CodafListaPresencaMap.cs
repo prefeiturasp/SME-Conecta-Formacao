@@ -17,6 +17,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.CodigoNivel).ToColumn("codigo_nivel");
             Map(c => c.Observacao).ToColumn("observacao");
             Map(c => c.Status).ToColumn("status");
+            Map(c => c.CertificadoEmitido).Ignore();
             Map(c => c.Proposta).Ignore();
             Map(c => c.PropostaTurma).Ignore();
         }

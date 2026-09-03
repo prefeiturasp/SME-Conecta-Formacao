@@ -1,9 +1,11 @@
 using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaPareceristaConsideracaoCommand : IRequest<RetornoDTO>
     {
         public SalvarPropostaPareceristaConsideracaoCommand(PropostaPareceristaConsideracaoCadastroDTO propostaPareceristaConsideracaoCadastroDto, string login)
@@ -15,6 +17,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public PropostaPareceristaConsideracaoCadastroDTO PropostaPareceristaConsideracaoCadastroDto { get; }
         public string Login { get; set; }
     }
+
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaPareceristaConsideracaoCommandValidator : AbstractValidator<SalvarPropostaPareceristaConsideracaoCommand>
     {
         public SalvarPropostaPareceristaConsideracaoCommandValidator()

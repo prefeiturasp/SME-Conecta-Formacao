@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Diagnostics.CodeAnalysis;
 
 
 namespace SME.ConectaFormacao.Webapi.Middlewares
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    [ExcludeFromCodeCoverage]
     public class ChaveIntegracaoApi : Attribute, IAsyncActionFilter
     {
         private const string ChaveIntegracaoHeader = "x-conecta-formacao-api-key";

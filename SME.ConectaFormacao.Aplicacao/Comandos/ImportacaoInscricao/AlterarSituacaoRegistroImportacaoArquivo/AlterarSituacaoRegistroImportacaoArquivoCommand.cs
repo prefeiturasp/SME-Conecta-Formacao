@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -16,6 +17,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public SituacaoImportacaoArquivoRegistro Situacao { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class AlterarSituacaoRegistroImportacaoArquivoCommandValidator : AbstractValidator<AlterarSituacaoRegistroImportacaoArquivoCommand>
     {
         public AlterarSituacaoRegistroImportacaoArquivoCommandValidator()

@@ -1,9 +1,10 @@
 using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class
-        EnviarEmailConfirmacaoInscricaoCommandValidador : AbstractValidator<EnviarEmailConfirmacaoInscricaoCommand>
+    [ExcludeFromCodeCoverage]
+    public class EnviarEmailConfirmacaoInscricaoCommandValidador : AbstractValidator<EnviarEmailConfirmacaoInscricaoCommand>
     {
         public EnviarEmailConfirmacaoInscricaoCommandValidador()
         {

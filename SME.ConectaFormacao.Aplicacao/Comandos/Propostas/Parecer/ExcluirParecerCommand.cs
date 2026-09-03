@@ -1,8 +1,10 @@
 using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ExcluirParecerCommand : IRequest<bool>
     {
         public ExcluirParecerCommand(long parecerId)
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long ParecerId { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ExcluirParecerCommandValidator : AbstractValidator<ExcluirParecerCommand>
     {
         public ExcluirParecerCommandValidator()

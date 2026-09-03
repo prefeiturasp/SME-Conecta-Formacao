@@ -1,5 +1,8 @@
-﻿namespace SME.ConectaFormacao.Infra
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SME.ConectaFormacao.Infra
 {
+    [ExcludeFromCodeCoverage]
     public class ComandoRabbit
     {
         public ComandoRabbit(string nomeProcesso, Type tipoCasoUso, ulong quantidadeReprocessamentoDeadLetter = 3, int ttl = 10 * 60 * 1000)

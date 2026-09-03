@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class AlterarNomeServicoAcessosCommand : IRequest<bool>
     {
         public AlterarNomeServicoAcessosCommand(string login, string nome)
@@ -15,6 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Nome { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class AlterarNomeServicoAcessosCommandValidator : AbstractValidator<AlterarNomeServicoAcessosCommand>
     {
         public AlterarNomeServicoAcessosCommandValidator()
@@ -29,3 +32,4 @@ namespace SME.ConectaFormacao.Aplicacao
         }
     }
 }
+

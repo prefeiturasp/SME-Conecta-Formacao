@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -15,6 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public short QuantidadeTurmas { get; set; }
 
     }
+    [ExcludeFromCodeCoverage]
     public class ValidarSeExisteRegenteTurmaCommandValidator : AbstractValidator<ValidarSeExisteRegenteTurmaCommand>
     {
         public ValidarSeExisteRegenteTurmaCommandValidator()

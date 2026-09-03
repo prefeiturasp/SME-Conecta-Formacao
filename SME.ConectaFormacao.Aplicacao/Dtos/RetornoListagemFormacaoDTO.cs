@@ -17,5 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public string? FormatoDescricao { get; set; }
         public string? ImagemUrl { get; set; }
         public bool InscricaoEncerrada { get; set; }
+        public bool CursoComCertificado { get; set; }
+        public long? CodigoEventoSigpec { get; set; }
     }
 }

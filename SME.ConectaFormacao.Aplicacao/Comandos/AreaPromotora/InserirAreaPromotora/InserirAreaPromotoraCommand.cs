@@ -1,9 +1,12 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+
+    [ExcludeFromCodeCoverage]
     public class InserirAreaPromotoraCommand : IRequest<long>
     {
         public InserirAreaPromotoraCommand(AreaPromotoraDTO areaPromotoraDTO)
@@ -14,6 +17,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public AreaPromotoraDTO AreaPromotoraDTO { get; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class InserirAreaPromotoraCommandValidator : AbstractValidator<InserirAreaPromotoraCommand>
     {
         public InserirAreaPromotoraCommandValidator()

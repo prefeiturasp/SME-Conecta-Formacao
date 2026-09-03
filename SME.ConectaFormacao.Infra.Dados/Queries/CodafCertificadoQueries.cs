@@ -194,6 +194,7 @@
                CA.CODIGO_CERTIFICADO AS codigoCertificado,
                CA.HTML_CONTENT_SNAPSHOT AS htmlContentSnapshot,
                U.NOME AS nomeCompleto,
+               U.NOME_SOCIAL AS nomeSocial,
                (U.LOGIN <> U.CPF) AS temRf,
                1 AS tipoParticipacao, -- Cursista
                P.NOME_FORMACAO AS nomeFormacao,
@@ -214,6 +215,7 @@
                CA.CODIGO_CERTIFICADO AS codigoCertificado,
                CA.HTML_CONTENT_SNAPSHOT AS htmlContentSnapshot,
                U.NOME AS nomeCompleto,
+               U.NOME_SOCIAL AS nomeSocial,
                (U.LOGIN <> U.CPF) AS temRf,
                1 AS tipoParticipacao, -- Cursista
                P.NOME_FORMACAO AS nomeFormacao,
@@ -235,6 +237,7 @@
                CA.CODIGO_CERTIFICADO AS codigoCertificado,
                CA.HTML_CONTENT_SNAPSHOT AS htmlContentSnapshot,
                PR.NOME_REGENTE AS nomeCompleto,
+               CAST(NULL AS VARCHAR) AS nomeSocial,
                TRUE AS temRf, -- Regente sempre tem RF
                2 AS tipoParticipacao, -- Regente
                P.NOME_FORMACAO AS nomeFormacao,
@@ -245,7 +248,9 @@
                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PRT.TURMA_ID = PT.ID
                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.PROPOSTA_TURMA_ID = PT.ID
                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
-               LEFT JOIN PUBLIC.USUARIO AS U ON U.CPF = PR.REGISTRO_FUNCIONAL OR U.LOGIN = PR.REGISTRO_FUNCIONAL
+               LEFT JOIN PUBLIC.USUARIO AS U ON U.LOGIN = PR.REGISTRO_FUNCIONAL OR 
+                                                U.CPF = PR.REGISTRO_FUNCIONAL OR 
+                                                U.CPF = PR.CPF 
         """;
         public const string AtualizarStatusProcessamento = """
                 UPDATE PUBLIC.CODAF_CERTIFICADOS
@@ -270,8 +275,8 @@
                     END,
                     ALTERADO_EM = NOW(),
                     ALTERADO_POR = 'WORKER-RESILIENCIA'
-                WHERE STATUS_PROCESSAMENTO = @statusProcessando
-                  AND ALTERADO_EM < (NOW() - INTERVAL '30 minutes'); -- Mas faz tempo demais, uai!;
+                WHERE STATUS_PROCESSAMENTO = ANY(@statusProcessando)
+                  AND ALTERADO_EM < (NOW() - INTERVAL '10 minutes'); -- Mas faz tempo demais, uai!;
                 """;
         public const string ObterMeusCertificadosCteBase = """
             WITH BaseCertificados AS (
@@ -401,7 +406,7 @@
                 SELECT 
                     CC.ID AS id, 
                     CC.CODIGO_CERTIFICADO AS codigoCertificado, 
-                    U.NOME AS nomeParticipante,
+                    COALESCE(NULLIF(TRIM(U.NOME_SOCIAL), ''), U.NOME) AS nomeParticipante,
                     @Cursista AS tipoCertificado, 
                     U.LOGIN AS documento, 
                     CC.DATA_EMISSAO AS dataEmissao,

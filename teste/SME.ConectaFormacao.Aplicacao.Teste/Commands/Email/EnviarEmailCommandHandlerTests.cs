@@ -3,12 +3,10 @@ using MimeKit;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.Comandos.Enviar.EnviarEmail;
+using SME.ConectaFormacao.Dominio.Dtos;
 using SME.ConectaFormacao.Infra.Servicos.Acessos;
 using SME.ConectaFormacao.Infra.Servicos.Acessos.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Emails.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Email
 {
@@ -29,7 +27,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Email
         }
 
         [Fact]
-        public async Task DadoComandoValido_QuandoProcessado_DeveChamarServicoEnvioEmail()
+        public async Task DadoComandoValido_QuandoProcessado_DeveChamarServicoEnvioEmailComIdempotencia()
         {
             // Arrange
             var comando = new EnviarEmailCommand(_faker.Person.FullName, _faker.Internet.Email(), "Assunto Teste", "<h1>Mensagem de Teste</h1>");
@@ -49,12 +47,22 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Email
                 .Setup(x => x.ObterConfiguracaoEmail())
                 .ReturnsAsync(configEmailMock);
 
+            _mockServicoEnvioEmail
+                .Setup(x => x.EnviarComIdempotenciaAsync(
+                    It.IsAny<MimeMessage>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(ResultadoEnvioEmail.Sucesso(_faker.Random.AlphaNumeric(64)));
+
             // Act
             var resultado = await _handler.Handle(comando, CancellationToken.None);
 
             // Assert
             Assert.True(resultado);
-            _mockServicoEnvioEmail.Verify(x => x.EnviarAsync(It.IsAny<MimeMessage>(), CancellationToken.None), Times.Once);
+            _mockServicoEnvioEmail.Verify(x => x.EnviarComIdempotenciaAsync(
+                It.IsAny<MimeMessage>(),
+                It.IsAny<string>(),
+                CancellationToken.None), Times.Once);
         }
     }
 }

@@ -6,9 +6,9 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio.Interfaces
     {
         Task<string> ObterRelatorioPropostaLaudaDePublicacao(long propostaId);
         Task<string> ObterRelatorioPropostaLaudaCompleta(long propostaId);
-        Task<byte[]> ConveterHtmlCertificadoCodafParaPdfAsync(HtmlCertificadoCodafDto htmlCertificadoCodafDto);
-        Task<Resultado<Stream>> ConveterHtmlCertificadoCodafParaPdfAsync(
-            HtmlCertificadoCodafDto htmlCertificadoCodafDto,
+        Task<byte[]> ConveterHtmlCodafParaPdfAsync(HtmlCodafDto htmlCertificadoCodafDto);
+        Task<Resultado<Stream>> ConveterHtmlCodafParaPdfAsync(
+            HtmlCodafDto htmlCertificadoCodafDto,
             CancellationToken cancellationToken);
         Task<byte[]> GerarRelatorioCodafAsync(long codafId);
         Task<byte[]> GerarRelatorioCodafSuplementarAsync(long codafListaPresencaId);

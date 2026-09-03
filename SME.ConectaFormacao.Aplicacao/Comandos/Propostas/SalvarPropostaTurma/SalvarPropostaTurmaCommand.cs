@@ -2,9 +2,11 @@
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaTurmaCommand : IRequest<bool>
     {
         public SalvarPropostaTurmaCommand(long propostaId, IEnumerable<PropostaTurma> turmas, SituacaoProposta situacao)
@@ -19,6 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public SituacaoProposta Situacao { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class SalvarPropostaTurmaCommandValidator : AbstractValidator<SalvarPropostaTurmaCommand>
     {
         public SalvarPropostaTurmaCommandValidator()

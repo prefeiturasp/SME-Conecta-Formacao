@@ -67,8 +67,9 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var resultado = await sut.GerarArquivoRemessaConclusaoCodaf(codafSuplementarId);
 
             // Assert
-            var notFoundResult = resultado.Should().BeOfType<NotFoundObjectResult>().Subject;
-            notFoundResult.StatusCode.Should().Be(404);
+            // *Alterado para o 422 pois está sendo omitido o corpo da resposta com o 404, e o front não consegue ler a mensagem de erro (by Diego Moreno - 2026-08-21)
+            var notFoundResult = resultado.Should().BeOfType<UnprocessableEntityObjectResult>().Subject;
+            notFoundResult.StatusCode.Should().Be(422);
 
             casoDeUsoGerarArquivoRemessaConclusaoCodafSuplementarMock.Verify(c => c.ExecutarAsync(codafSuplementarId), Times.Once);
         }

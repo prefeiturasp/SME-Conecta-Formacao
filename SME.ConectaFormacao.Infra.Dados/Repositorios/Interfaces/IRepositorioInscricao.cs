@@ -24,12 +24,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> ObterDadosPaginadosComFiltrosTotalRegistros(long? areaPromotoraIdUsuarioLogado, long? codigoDaFormacao, string? nomeFormacao, long? numeroHomologacao);
         Task<IEnumerable<PropostaTipoInscricao>> ObterTiposInscricaoPorPropostaIds(long[] codigosFormacao);
         Task<IEnumerable<Inscricao>> ObterInscricoesConfirmadas();
-        Task<IEnumerable<InscricaoUsuarioInternoDto>> ObterInscricoesPorPropostasTurmasIdUsuariosInternos(long[] propostasTurmasId);
+        Task<IEnumerable<InscricaoUsuarioInternoDto>> ObterInscricoesUsuariosInternosPorPropostasTurmasId(long[] propostasTurmasId, params SituacaoInscricao?[] situacoes);
         Task<IEnumerable<InscricaoPossuiAnexoDTO>> ObterSeInscricaoPossuiAnexoPorPropostasIds(long[] inscricoesId);
         Task<IEnumerable<InscricaoDadosEmailConfirmacao>> ObterDadosInscricaoPorInscricaoId(long inscricoeId);
         Task<IEnumerable<long>> ObterIdsInscricoesAguardandoAnalise(long id);
         Task AtualizarSituacao(long inscricaoId, SituacaoInscricao situacao);
         Task<IEnumerable<CargoFuncaoUsuarioDto>> ObterCargosFuncoesPorUsuarioId(long usuarioId);
         Task<ResultadoPaginado<InscricaoDadosCursistaDto>> PesquisarCursistaPorPropostaTurmaIdAsync(long propostaTurmaId, string termoBusca, int numeroPagina, int numeroRegistros);
+        Task<IEnumerable<DadosEmailInscricaoDto>> ObterDadosEmailInscricaoPorInscricaoId(long inscricaoId);
     }
 }

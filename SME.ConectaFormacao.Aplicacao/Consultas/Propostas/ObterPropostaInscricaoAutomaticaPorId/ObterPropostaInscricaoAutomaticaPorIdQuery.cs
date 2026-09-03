@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterPropostaInscricaoAutomaticaPorIdQuery : IRequest<PropostaInscricaoAutomatica>
     {
         public ObterPropostaInscricaoAutomaticaPorIdQuery(long propostaId)
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public long PropostaId { get; set; }
     }
+    [ExcludeFromCodeCoverage]
     public class ObterPropostaInscricaoAutomaticaPorIdQueryValidator : AbstractValidator<ObterPropostaInscricaoAutomaticaPorIdQuery>
     {
         public ObterPropostaInscricaoAutomaticaPorIdQueryValidator()

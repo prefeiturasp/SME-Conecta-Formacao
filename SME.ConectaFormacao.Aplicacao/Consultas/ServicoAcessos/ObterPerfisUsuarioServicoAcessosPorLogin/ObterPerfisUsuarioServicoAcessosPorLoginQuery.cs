@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -16,6 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public Guid? PerfilUsuarioId { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterPerfisUsuarioServicoAcessosPorLoginQueryValidator : AbstractValidator<ObterPerfisUsuarioServicoAcessosPorLoginQuery>
     {
         public ObterPerfisUsuarioServicoAcessosPorLoginQueryValidator()

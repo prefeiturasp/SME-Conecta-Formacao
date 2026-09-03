@@ -2,9 +2,11 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterAnosPorModalidadeAnoLetivoQuery : IRequest<IEnumerable<RetornoListagemTodosDTO>>
     {
         public ObterAnosPorModalidadeAnoLetivoQuery(Modalidade[] modalidade, int? anoLetivo, bool exibirTodos)
@@ -19,6 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public bool ExibirTodos { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterAnoPorModalidadeAnoLetivoQueryValidator : AbstractValidator<ObterAnosPorModalidadeAnoLetivoQuery>
     {
         public ObterAnoPorModalidadeAnoLetivoQueryValidator()

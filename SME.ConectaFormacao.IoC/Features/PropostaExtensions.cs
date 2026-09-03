@@ -1,14 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Aplicacao.Servicos;
 using SME.ConectaFormacao.Aplicacao.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.IoC.Features
 {
+    [ExcludeFromCodeCoverage]
     public static class PropostaExtensions
     {
         extension(IServiceCollection services)
@@ -70,6 +73,7 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>()
             .AddScoped<ICasoDeUsoObterCriterioValidacaoInscricao, CasoDeUsoObterCriterioValidacaoInscricao>()
                 .AddScoped<IRepositorioPropostaGrupoPeriodo, RepositorioPropostaGrupoPeriodo>()
+                .AddScoped<ICasoDeUsoObterDetalhesPropostaComTurmasPorId, CasoDeUsoObterDetalhesPropostaComTurmasPorId>()
             ;
 
             public IServiceCollection AdicionarModuloPropostaEncontro() =>

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Enumerados
 {
@@ -29,6 +30,7 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         AguardandoProcessamento = 8
     }
 
+    [ExcludeFromCodeCoverage]
     public static class SituacaoImportacaoArquivoExtensao
     {
         public static bool EhCarregamentoInicial(this SituacaoImportacaoArquivo situacaoImportacaoArquivo)

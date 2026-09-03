@@ -13,6 +13,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.Email).ToColumn("email");
             Map(c => c.Situacao).ToColumn("situacao");
 
+            Map(c => c.EmailEnviadoEm).ToColumn("email_enviado_em");
+            Map(c => c.EmailEnviado).ToColumn("email_enviado");
+            Map(c => c.EmailHash).ToColumn("email_hash");
+            Map(c => c.TentativasEnvioEmail).ToColumn("tentativas_envio_email");
+            Map(c => c.EmailErro).ToColumn("email_erro");
+
             Map(c => c.Notificacao).Ignore();
         }
     }

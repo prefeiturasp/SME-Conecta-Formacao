@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -104,7 +105,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             VerificarCompactacaoExecutada(Times.Once());
-            _servicoRelatorioMock.Verify(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>(), It.IsAny<CancellationToken>()), Times.Never);
+            _servicoRelatorioMock.Verify(s => s.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Fact]
@@ -147,7 +148,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             // Assert
             _servicoArmazenamentoMock.Verify(s => s.ObterArquivoPorChaveAsync(certificado.ChaveObjetoArmazenamento!, It.IsAny<CancellationToken>()), Times.Once);
-            _servicoRelatorioMock.Verify(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>(), It.IsAny<CancellationToken>()), Times.Once);
+            _servicoRelatorioMock.Verify(s => s.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>(), It.IsAny<CancellationToken>()), Times.Once);
             VerificarCompactacaoExecutada(Times.Once());
         }
 
@@ -207,7 +208,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private void SetupRelatorioRetornando(Resultado<Stream> retorno)
         {
             _servicoRelatorioMock
-                .Setup(s => s.ConveterHtmlCertificadoCodafParaPdfAsync(It.IsAny<HtmlCertificadoCodafDto>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.ConveterHtmlCodafParaPdfAsync(It.IsAny<HtmlCodafDto>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(retorno);
         }
 

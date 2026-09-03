@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
     {
         public async Task<Resultado> ExecutarAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, long id)
         {
-            bool perfilRestrito = contextoAplicacao.IdPerfilUsuario != Perfis.ADMIN_DF && contextoAplicacao.IdPerfilUsuario != Perfis.EMFORPEF;
+            var perfilRestrito = !contextoAplicacao.EhAdministrador;
 
             var codafListaPresencaExistente = await dependencias.RepositorioLista.ObterNaoExcluidosPorIdAsync(id);
             if (codafListaPresencaExistente is null)
@@ -101,6 +101,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 
         private async Task SalvarInscritosAsync(CodafListaPresencaEdicaoDto codafListaPresencaEdicaoDto, CodafListaPresenca codafListaPresenca)
         {
+            if (codafListaPresenca.CertificadoEmitido || codafListaPresenca.Status == Dominio.Enumerados.StatusCodafListaPresenca.Finalizado)
+                return;
+
             if (codafListaPresencaEdicaoDto.Inscritos == null || !codafListaPresencaEdicaoDto.Inscritos.Any())
                 return;
 

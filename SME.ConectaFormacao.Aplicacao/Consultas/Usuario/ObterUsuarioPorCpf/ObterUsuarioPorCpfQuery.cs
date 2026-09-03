@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Usuario.ObterUsuarioPorCpf
 {
@@ -9,6 +10,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Usuario.ObterUsuarioPorCpf
 
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterUsuarioPorCpfQueryValidator : AbstractValidator<ObterUsuarioPorCpfQuery>
     {
         public ObterUsuarioPorCpfQueryValidator()

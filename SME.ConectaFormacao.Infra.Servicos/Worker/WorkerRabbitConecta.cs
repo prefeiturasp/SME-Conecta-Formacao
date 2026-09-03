@@ -13,10 +13,12 @@ using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.Options;
 using SME.ConectaFormacao.Infra.Servicos.Utilitarios;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace SME.ConectaFormacao.Infra
 {
+    [ExcludeFromCodeCoverage]
     public abstract class WorkerRabbitConecta : IHostedService
     {
         protected readonly IModel canalRabbit;
