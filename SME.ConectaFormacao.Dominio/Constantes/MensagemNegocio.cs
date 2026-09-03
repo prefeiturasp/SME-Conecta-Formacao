@@ -31,6 +31,7 @@ public static class MensagemNegocio
 
     public const string CARGA_HORARIA_NAO_INFORMADA = "É necessário informar a carga horária presencial";
     public const string JUSTIFICATIVA_NAO_INFORMADA = "É necessário informar a justificativa";
+    public const string SOBRE_ESTE_CURSO_NAO_INFORMADO = "É necessário informar sobre este curso";
     public const string OBJETIVO_NAO_INFORMADO = "É necessário informar os objetivos";
     public const string CONTEUDO_PROGRAMATICO_NAO_INFORMADO = "É necessário informar o conteúdo programático";
     public const string PROCEDIMENTOS_METODOLOGICOS_NAO_INFORMADO = "É necessário informar os procedimentos metodológicos";
