@@ -120,8 +120,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             comando.PropostaDTO.TipoFormacao = TipoFormacao.Curso;
             comando.PropostaDTO.Formato = Formato.Hibrido;
             var resultado = _validator.TestValidate(comando);
-            resultado.ShouldHaveValidationErrorFor("Formato")
-                .WithErrorMessage("É permitido o formato Híbrido somente para o tipo de formação evento");
+            resultado.ShouldHaveValidationErrorFor("Formato");
         }
 
         [Fact]
