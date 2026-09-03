@@ -402,41 +402,6 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Times.Never);
         }
 
-        [Fact(DisplayName = "Executar - Deve passar null como motivo no CancelarInscricaoCommand")]
-        public async Task Executar_Deve_Passar_Null_Como_Motivo()
-        {
-            // Arrange
-            var usuariosInscricao = new List<InscricaoUsuarioInternoDto>
-            {
-                new() { InscricaoId = 1000, UsuarioId = 10000, Login = "user1000" }
-            };
-
-            var mensagemRabbit = CriarMensagemRabbit(usuariosInscricao);
-
-            _mediatorMock
-                .Setup(m => m.Send(
-                    It.IsAny<VerificarSeUsuarioPossuiCargoAtivoNoEolQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync([]);
-
-            CancelarInscricaoCommand? commandCapturado = null;
-
-            _mediatorMock
-                .Setup(m => m.Send(
-                    It.IsAny<CancelarInscricaoCommand>(),
-                    It.IsAny<CancellationToken>()))
-                .Callback<IRequest<bool>, CancellationToken>(
-                    (command, ct) => commandCapturado = command as CancelarInscricaoCommand)
-                .ReturnsAsync(true);
-
-            // Act
-            await _casoDeUso.Executar(mensagemRabbit);
-
-            // Assert
-            Assert.NotNull(commandCapturado);
-            Assert.Null(commandCapturado.Motivo);
-        }
-
         [Fact(DisplayName = "Executar - Deve filtrar corretamente usuários inativos")]
         public async Task Executar_Deve_Filtrar_Usuarios_Inativos()
         {

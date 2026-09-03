@@ -643,6 +643,40 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
             resultado.Items.First().Turmas.Should().HaveCount(2);
         }
 
+        [Fact(DisplayName = "Handle - Deve filtrar turmas com CodafCursoNaoHomologadoId quando ApenasSemCodaf é true")]
+        public async Task Handle_Deve_Filtrar_Turmas_Com_CodafCursoNaoHomologado_Quando_True()
+        {
+            // Arrange
+            var query = new ObterDadosPaginadosComFiltrosQuery(
+                numeroPagina: 1,
+                numeroRegistros: 10,
+                codigoFormacao: null,
+                nomeFormacao: null,
+                areaPromotoraIdUsuarioLogado: null,
+                numeroHomologacao: null,
+                apenasSemCodaf: true);
+
+            var formacaoDto = CriarDadosListagemFormacao(1);
+            var propostasOriginais = new List<Proposta> { CriarFormacaoDTO(1) };
+            var propostasDto = new List<DadosListagemFormacaoComTurmaDTO> { formacaoDto };
+
+            var turmasFormacao = new List<ListagemFormacaoComTurmaDTO>
+            {
+                CriarTurmaFormacao(propostaId: 1, nomeTurma: "Turma Sem Nenhum Codaf", propostaTurmaId: 1, codafId: null, codafCursoNaoHomologadoId: null),
+                CriarTurmaFormacao(propostaId: 1, nomeTurma: "Turma Com Codaf Homologado", propostaTurmaId: 2, codafId: 123, codafCursoNaoHomologadoId: null),
+                CriarTurmaFormacao(propostaId: 1, nomeTurma: "Turma Com Codaf Nao Homologado", propostaTurmaId: 3, codafId: null, codafCursoNaoHomologadoId: 456)
+            };
+
+            ConfigurarMocksComSucesso(3, propostasOriginais, propostasDto, turmasFormacao, new List<PropostaTipoInscricao>());
+
+            // Act
+            var resultado = await _sut.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.Items.First().Turmas.Should().HaveCount(1);
+            resultado.Items.First().Turmas.First().NomeTurma.Should().Be("Turma Sem Nenhum Codaf");
+        }
+
         #endregion
 
         #region Testes - Fluxo Completo
@@ -874,7 +908,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
             int? aguardandoAnalise = 0,
             string? datas = null,
             long? propostaTurmaId = 0,
-            long? codafId = null)
+            long? codafId = null,
+            long? codafCursoNaoHomologadoId = null)
         {
             return new ListagemFormacaoComTurmaDTO
             {
@@ -888,6 +923,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas.Inscricoes
                 PropostaTurmaId = propostaTurmaId,
                 Disponiveis = vagar,
                 CodafId = codafId,
+                CodafCursoNaoHomologadoId = codafCursoNaoHomologadoId,
                 TotalInscricoes = 0,
                 Confirmadas = 0,
                 EmEspera = 0,

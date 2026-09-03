@@ -1,4 +1,4 @@
-using ConectaFormacao.Dominio.Servicos;
+﻿using ConectaFormacao.Dominio.Servicos;
 using Dapper;
 using Dapper.FluentMap;
 using Dapper.FluentMap.Dommel;
@@ -18,6 +18,7 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.Dre;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Email;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Funcionario;
@@ -42,6 +43,7 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CargoFuncao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.ComponenteCurricular;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CriterioCertificacao;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Dre;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Email;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Formacao;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Funcionario;
@@ -78,9 +80,11 @@ using SME.ConectaFormacao.Infra.Servicos.Polly;
 using SME.ConectaFormacao.Infra.Servicos.Telemetria.IoC;
 using SME.ConectaFormacao.IoC.Extensions;
 using SME.ConectaFormacao.IoC.Features;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.IoC;
 
+[ExcludeFromCodeCoverage]
 public class RegistradorDeDependencia(IServiceCollection serviceCollection, IConfiguration configuration)
 {
     public virtual void Registrar()
@@ -112,6 +116,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             .AdicionarModuloUe()
             .AdicionarModuloCoordenadoria()
             .AddCodafSuplementar()
+            .AddCodafCursoNaoHomologado()
             ;
     }
 
@@ -155,8 +160,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.AddSingleton<ConfiguracaoRabbitLogsOptions>();
         serviceCollection.AddSingleton<IConexoesRabbitLogs>(serviceProvider =>
         {
-            var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitLogsOptions>>().Value;
-            var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>().Value;
+            var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitLogsOptions>>()!.Value;
+            var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>()!.Value;
             return new ConexoesRabbitLogs(options, provider);
         });
 
@@ -170,8 +175,8 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.AddSingleton<ConfiguracaoRabbitOptions>();
         serviceCollection.AddSingleton<IConexoesRabbit>(serviceProvider =>
         {
-            var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitOptions>>().Value;
-            var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>().Value;
+            var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitOptions>>()!.Value;
+            var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>()!.Value;
             return new ConexoesRabbitAcessos(options, provider);
         });
 
@@ -243,6 +248,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new CodafListaPresencaMap());
             config.AddMap(new CodafMovimentacaoListaPresencaMap());
             config.AddMap(new CodafCertificadoMap());
+            config.AddMap(new CodafDeclaracaoMap());
             config.AddMap(new CodafAnexoMap());
 
             config.AddMap(new CodafSuplementarAnexoMap());
@@ -250,10 +256,16 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
             config.AddMap(new CodafSuplementarRetificacaoMap());
             config.AddMap(new CodafSuplementarMap());
 
+            config.AddMap(new CodafCursoNaoHomologadoMap());
+            config.AddMap(new CodafCursoNaoHomologadoAnexoMap());
+            config.AddMap(new CodafCursoNaoHomologadoInscricaoMap());
+
             config.AddMap(new UsuarioAcessibilidadeMap());
             config.AddMap(new UeMap());
 
             config.AddMap(new CoordenadoriaMap());
+
+            config.AddMap(new EmailEnviadoMap());
 
             config.ForDommel();
         });
@@ -271,7 +283,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
 
     protected virtual void RegistrarConexao()
     {
-        serviceCollection.AddScoped<IConectaFormacaoConexao, ConectaFormacaoConexao>(_ => new ConectaFormacaoConexao(configuration.GetConnectionString("conexao")));
+        serviceCollection.AddScoped<IConectaFormacaoConexao, ConectaFormacaoConexao>(_ => new ConectaFormacaoConexao(configuration.GetConnectionString("conexao")!));
         serviceCollection.AddScoped<ITransacao, Transacao>();
     }
 
@@ -284,19 +296,19 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
     {
         serviceCollection.TryAddScoped<IRepositorioCriterioValidacaoInscricao, RepositorioCriterioValidacaoInscricao>();
         serviceCollection.TryAddScoped<IRepositorioRoteiroPropostaFormativa, RepositorioRoteiroPropostaFormativa>();
-        serviceCollection.TryAddScoped<IRepositorioCargoFuncao, RepositorioCargoFuncao>();        
+        serviceCollection.TryAddScoped<IRepositorioCargoFuncao, RepositorioCargoFuncao>();
         serviceCollection.TryAddScoped<IRepositorioAreaPromotora, RepositorioAreaPromotora>();
         serviceCollection.TryAddScoped<IRepositorioArquivo, RepositorioArquivo>();
         serviceCollection.TryAddScoped<IRepositorioPalavraChave, RepositorioPalavraChave>();
         serviceCollection.TryAddScoped<IRepositorioCriterioCertificacao, RepositorioCriterioCertificacao>();
-        serviceCollection.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();                
-        serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();        
+        serviceCollection.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();
+        serviceCollection.TryAddScoped<IRepositorioDre, RepositorioDre>();
         serviceCollection.TryAddScoped<IRepositorioAnoTurma, RepositorioAnoTurma>();
         serviceCollection.TryAddScoped<IRepositorioComponenteCurricular, RepositorioComponenteCurricular>();
         serviceCollection.TryAddScoped<IRepositorioCargoFuncaoDeparaEol, RepositorioCargoFuncaoDeparaEol>();
         serviceCollection.TryAddScoped<IRepositorioInscricao, RepositorioInscricao>();
         serviceCollection.TryAddScoped<IRepositorioImportacaoArquivo, RepositorioImportacaoArquivo>();
-        serviceCollection.TryAddScoped<IRepositorioImportacaoArquivoRegistro, RepositorioImportacaoArquivoRegistro>();        
+        serviceCollection.TryAddScoped<IRepositorioImportacaoArquivoRegistro, RepositorioImportacaoArquivoRegistro>();
         serviceCollection.TryAddScoped<IRepositorioNotificacao, RepositorioNotificacao>();
         serviceCollection.TryAddScoped<IRepositorioNotificacaoUsuario, RepositorioNotificacaoUsuario>();
         serviceCollection.AddScoped<IRepositorioCargoEol, RepositorioCargoEol>();
@@ -348,17 +360,18 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<ICasoDeUsoObterAreaPromotoraListaRedeParceria, CasoDeUsoObterAreaPromotoraListaRedeParceria>();
 
         serviceCollection.TryAddScoped<ICasoDeUsoObterListaDre, CasoDeUsoObterListaDre>();
+        serviceCollection.TryAddScoped<ICasoDeUsoObterDreListaUsuarioLogado, CasoDeUsoObterDreListaUsuarioLogado>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterUnidadePorCodigoEol, CasoDeUsoObterUnidadePorCodigoEol>();
-        serviceCollection.TryAddScoped<ICasoDeUsoObterFuncionarioExternoPorCpf, CasoDeUsoObterFuncionarioExternoPorCpf>();                                                        
-        serviceCollection.TryAddScoped<ICasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar, CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar>();                                                       
-        serviceCollection.TryAddScoped<ICasoDeUsoSalvarLog, CasoDeUsoSalvarLog>(); 
+        serviceCollection.TryAddScoped<ICasoDeUsoObterFuncionarioExternoPorCpf, CasoDeUsoObterFuncionarioExternoPorCpf>();
+        serviceCollection.TryAddScoped<ICasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar, CasoDeUsoGerarArquivoRemessaConclusaoCodafSuplementar>();
+        serviceCollection.TryAddScoped<ICasoDeUsoSalvarLog, CasoDeUsoSalvarLog>();
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoCarregarTemporario, CasoDeUsoArquivoCarregarTemporario>();
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoExcluir, CasoDeUsoArquivoExcluir>();
         serviceCollection.TryAddScoped<ICasoDeUsoArquivoBaixar, CasoDeUsoArquivoBaixar>();
 
         serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreSyncUseCase, ExecutarSincronizacaoInstitucionalDreSyncUseCase>();
-        serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();        
-        
+        serviceCollection.TryAddScoped<IExecutarSincronizacaoInstitucionalDreTratarUseCase, ExecutarSincronizacaoInstitucionalDreTratarUseCase>();
+
 
         serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoHomologada, CasoDeUsoObterFormacaoHomologada>();
 
@@ -368,13 +381,13 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<IExecutarSincronizacaoComponentesCurricularesEAnosTurmaEOLUseCase, ExecutarSincronizacaoComponentesCurricularesEAnosTurmaEolUseCase>();
 
         serviceCollection.TryAddScoped<ICasoDeUsoObterModalidade, CasoDeUsoObterModalidade>();
-        
+
 
         serviceCollection.TryAddScoped<ICasoDeUsoObterListagemFormacaoPaginada, CasoDeUsoObterListagemFormacaoPaginada>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterFormacaoDetalhada, CasoDeUsoObterFormacaoDetalhada>();
 
         serviceCollection.AddScoped<ICasoDeUsoObterDadosInscricao, CasoDeUsoObterDadosInscricao>();
-        
+
         serviceCollection.TryAddScoped<ICasoDeUsoSalvarInscricao, CasoDeUsoSalvarInscricao>();
         serviceCollection.TryAddScoped<ICasoDeUsoCancelarInscricao, CasoDeUsoCancelarInscricao>();
         serviceCollection.TryAddScoped<ICasoDeUsoTransferirInscricao, CasoDeUsoTransferirInscricao>();
@@ -419,7 +432,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<ICasoDeUsoEncerrarInscricaoAutomaticamenteTurma, CasoDeUsoEncerrarInscricaoAutomaticamenteTurma>();
         serviceCollection.TryAddScoped<ICasoDeUsoEncerrarInscricaoAutomaticamenteInscricoes, CasoDeUsoEncerrarInscricaoAutomaticamenteInscricoes>();
         serviceCollection.TryAddScoped<ICasoDeUsoEncerrarInscricaoAutomaticamenteUsuarios, CasoDeUsoEncerrarInscricaoAutomaticamenteUsuarios>();
-        serviceCollection.TryAddScoped<ICasoDeUsoObterParecerista, CasoDeUsoObterParecerista>();                                        
+        serviceCollection.TryAddScoped<ICasoDeUsoObterParecerista, CasoDeUsoObterParecerista>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterSituacaoUsuarioRedeParceria, CasoDeUsoObterSituacaoUsuarioRedeParceria>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterUsuarioRedeParceriaPaginada, CasoDeUsoObterUsuarioRedeParceriaPaginada>();
         serviceCollection.TryAddScoped<ICasoDeUsoObterUsuarioRedeParceriaPorId, CasoDeUsoObterUsuarioRedeParceriaPorId>();
@@ -435,7 +448,7 @@ public class RegistradorDeDependencia(IServiceCollection serviceCollection, ICon
         serviceCollection.TryAddScoped<ICasoDeUsoObterSituacaoNotificacao, CasoDeUsoObterSituacaoNotificacao>();
 
         serviceCollection.TryAddScoped<ICasoDeUsoEnviarEmail, CasoDeUsoEnviarEmail>();
-        serviceCollection.TryAddScoped<ICasoDeUsoEnviarNotificacao, CasoDeUsoEnviarNotificacao>();                                                
+        serviceCollection.TryAddScoped<ICasoDeUsoEnviarNotificacao, CasoDeUsoEnviarNotificacao>();
 
         serviceCollection.TryAddScoped<ICasoDeUsoConfirmarInscricoes, CasoDeUsoConfirmarInscricoes>();
         serviceCollection.TryAddScoped<ICasoDeUsoEmEsperaInscricoes, CasoDeUsoEmEsperaInscricoes>();

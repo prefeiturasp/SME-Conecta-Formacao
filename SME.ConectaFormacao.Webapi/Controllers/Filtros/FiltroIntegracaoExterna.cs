@@ -2,9 +2,11 @@
 using Microsoft.OpenApi.Models;
 using SME.ConectaFormacao.Webapi.Middlewares;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Webapi.Controllers.Filtros
 {
+    [ExcludeFromCodeCoverage]
     public class FiltroIntegracaoExterna : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)

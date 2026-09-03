@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
+using SME.ConectaFormacao.Webapi.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
+    [PadronizarRetornoFiltro]
     [Route("api/v1/CodafListaPresenca")]
     public class CodafWorkflowController(ICasoDeUsoEnviarParaDfCodafListaPresenca casoDeUsoEnviarParaDfCodafListaPresenca,
         ICasoDeUsoDevolverParaCorrecaoCodafListaPresenca casoDeUsoDevolverParaCorrecaoCodafListaPresenca) : BaseController

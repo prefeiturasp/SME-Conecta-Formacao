@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -15,6 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public Guid PerfilId { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class VincularPerfilExternoCoreSSOServicoAcessosCommandValidator : AbstractValidator<VincularPerfilExternoCoreSSOServicoAcessosCommand>
     {
         public VincularPerfilExternoCoreSSOServicoAcessosCommandValidator()

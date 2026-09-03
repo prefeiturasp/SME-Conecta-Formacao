@@ -44,6 +44,7 @@ namespace SME.ConectaFormacao.Infra
         public const string EnviarNotificacao = "conecta.enviar.notificacao";
 
         public const string GerarArquivoCertificadosCodaf = "conecta.gerar.arquivo.certificados.codaf";
+        public const string GerarArquivoDeclaracoesCodaf = "conecta.gerar.arquivo.declaracoes.codaf";
 
         public const string GerarRelatorioInscritosExcel = "conecta.gerar.relatorio.inscritos.excel";
     }

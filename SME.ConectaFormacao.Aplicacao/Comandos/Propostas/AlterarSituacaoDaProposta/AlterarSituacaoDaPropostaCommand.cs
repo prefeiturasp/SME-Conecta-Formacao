@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class AlterarSituacaoDaPropostaCommand : IRequest<bool>
     {
         public AlterarSituacaoDaPropostaCommand(long id, SituacaoProposta situacaoProposta)
@@ -17,6 +19,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public SituacaoProposta SituacaoProposta { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class AlterarSituacaoDaPropostaCommandValidator : AbstractValidator<AlterarSituacaoDaPropostaCommand>
     {
         public AlterarSituacaoDaPropostaCommandValidator()
@@ -31,3 +34,4 @@ namespace SME.ConectaFormacao.Aplicacao
         }
     }
 }
+

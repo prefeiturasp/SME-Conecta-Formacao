@@ -1959,7 +1959,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         p.data_inscricao_inicio,
                         p.data_inscricao_fim,
                         p.area_promotora_id,
-                        p.arquivo_imagem_divulgacao_id
+                        p.arquivo_imagem_divulgacao_id,
+                        p.curso_com_certificado, 
+                        p.codigo_evento_sigpec
                     from public.proposta p  
                     where p.id = any(@propostaIds);
 
@@ -2014,6 +2016,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 p.justificativa,
                 p.formacao_homologada as FormacaoHomologada,
                 p.link_inscricoes_externa as LinkParaInscricoesExterna,
+                p.curso_com_certificado as CursoComCertificado,
+                p.codigo_evento_sigpec as CodigoEventoSigpec,
                 not exists(select 1 from public.proposta_tipo_inscricao pti where pti.proposta_id = p.id and pti.tipo_inscricao = 5) as PodeEnviarInscricao
             from proposta p
             inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id
@@ -2620,6 +2624,54 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 PaginaAtual = numeroPagina,
                 TamanhoPagina = numeroRegistros
             };
+        }
+        public async Task<PropostaComTurmasDto?> ObterDetalhesPropostaComTurmasPorIdAsync(long propostaId, bool formacoesHomologadas)
+        {
+            var query = @"
+                SELECT 
+                    p.id AS Id, 
+                    p.nome_formacao AS NomeFormacao, 
+                    p.numero_homologacao AS NumeroFormacao, 
+                    pt.id AS Id, 
+                    pt.nome AS Nome,
+                    COALESCE(pgp.data_inicio, p.data_realizacao_inicio) AS DataInicio,
+                    COALESCE(pgp.data_fim, p.data_realizacao_fim) AS DataFim
+                FROM proposta p
+                INNER JOIN public.proposta_turma AS pt ON pt.proposta_id = p.id
+                LEFT JOIN public.proposta_grupo_periodo_turma AS pgpt ON pt.id = pgpt.proposta_turma_id
+                LEFT JOIN public.proposta_grupo_periodo AS pgp ON pgp.id = pgpt.grupo_periodo_id AND pgp.proposta_id = p.id
+                WHERE p.id = @propostaId
+                  AND p.FORMACAO_HOMOLOGADA = ANY(@formacoesHomologadas)
+                  AND NOT p.excluido;";
+
+            var formacoesValidas = formacoesHomologadas 
+                ? new[] { (int)FormacaoHomologada.Sim } 
+                : [(int)FormacaoHomologada.NaoCursosPorIN, (int)FormacaoHomologada.NaoCursosExtras];
+
+            var parameters = new { propostaId, formacoesHomologadas = formacoesValidas };
+            var propostaDictionary = new Dictionary<long, PropostaComTurmasDto>();
+
+            await conexao.Obter().QueryAsync<PropostaComTurmasDto, PropostaTurmaDto, PropostaComTurmasDto>(
+                query,
+                (proposta, turma) =>
+                {
+                    if (!propostaDictionary.TryGetValue(proposta.Id, out var propostaEntry))
+                    {
+                        propostaEntry = proposta;
+                        propostaEntry.Turmas = [];
+                        propostaDictionary.Add(propostaEntry.Id, propostaEntry);
+                    }
+
+                    if (turma != null && turma.Id > 0)
+                        propostaEntry.Turmas.Add(turma);
+
+                    propostaEntry.Turmas = [.. propostaEntry.Turmas.OrderBy(t => t.Descricao)];
+
+                    return propostaEntry;
+                }, parameters, splitOn: "Id"
+            );
+
+            return propostaDictionary.Values.FirstOrDefault();
         }
     }
 }

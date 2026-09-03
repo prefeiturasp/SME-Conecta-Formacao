@@ -1,9 +1,11 @@
 using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Entidades;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentePorId
 {
+    [ExcludeFromCodeCoverage]
     public class ObterRegentePorIdQuery : IRequest<PropostaRegente>
     {
         public ObterRegentePorIdQuery(long regenteId)
@@ -14,6 +16,7 @@ namespace SME.ConectaFormacao.Aplicacao.Consultas.Proposta.ObterRegentePorId
         public long RegenteId { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterRegentePorIdQueryValidator : AbstractValidator<ObterRegentePorIdQuery>
     {
         public ObterRegentePorIdQueryValidator()

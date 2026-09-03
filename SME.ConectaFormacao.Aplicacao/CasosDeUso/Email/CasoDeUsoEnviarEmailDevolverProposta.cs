@@ -17,8 +17,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Email
         {
             var enviarEmail = param.ObterObjetoMensagem<EnviarEmailDevolverPropostaDto>() ?? throw new NegocioException(MensagemNegocio.DADOS_ENVIO_EMAIL_NAO_LOCALIZADO);
 
-            await mediator.Send(new EnviarEmailCommand(enviarEmail.NomeDestinatario, enviarEmail.EmailDestinatario,
-                enviarEmail.Titulo, ObterMensagemHtml(enviarEmail.Texto, enviarEmail.Motivo)));
+            if (!string.IsNullOrWhiteSpace(enviarEmail.EmailDestinatario) && enviarEmail.EmailDestinatario.Contains('@'))
+                await mediator.Send(new EnviarEmailCommand(enviarEmail.NomeDestinatario, enviarEmail.EmailDestinatario,
+                    enviarEmail.Titulo, ObterMensagemHtml(enviarEmail.Texto, enviarEmail.Motivo)));
 
             return true;
         }

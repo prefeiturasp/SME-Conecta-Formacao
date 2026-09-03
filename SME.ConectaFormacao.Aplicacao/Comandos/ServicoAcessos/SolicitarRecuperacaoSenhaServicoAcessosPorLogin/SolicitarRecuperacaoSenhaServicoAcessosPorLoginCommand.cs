@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class SolicitarRecuperacaoSenhaServicoAcessosPorLoginCommand : IRequest<string>
     {
         public SolicitarRecuperacaoSenhaServicoAcessosPorLoginCommand(string login)
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Login { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterTokenRecuperacaoSenhaAcessosPorLoginQueryValidator : AbstractValidator<SolicitarRecuperacaoSenhaServicoAcessosPorLoginCommand>
     {
         public ObterTokenRecuperacaoSenhaAcessosPorLoginQueryValidator()

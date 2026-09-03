@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class RemoverPropostaTutorCommand : IRequest<bool>
     {
         public RemoverPropostaTutorCommand(long tutorId)
@@ -12,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public long TutorId { get; set; }
     }
+    [ExcludeFromCodeCoverage]
     public class RemoverPropostaTutorCommandValidator : AbstractValidator<RemoverPropostaTutorCommand>
     {
         public RemoverPropostaTutorCommandValidator()

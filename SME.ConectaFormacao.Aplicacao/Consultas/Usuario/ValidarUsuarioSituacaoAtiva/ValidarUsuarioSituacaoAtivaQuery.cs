@@ -1,8 +1,10 @@
 using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ValidarUsuarioSituacaoAtivaQuery : IRequest
     {
         public ValidarUsuarioSituacaoAtivaQuery(string login)
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public string Login { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ValidarUsuarioSituacaoAtivaQueryValidator : AbstractValidator<ValidarUsuarioSituacaoAtivaQuery>
     {
         public ValidarUsuarioSituacaoAtivaQueryValidator()

@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        CI.CONCEITO_FINAL AS conceitoFinal,
                        CI.APROVADO
                 {sqlBase}
-                ORDER BY U.NOME, U.CPF
+                ORDER BY COALESCE(U.NOME_SOCIAL, U.NOME), U.CPF
                 LIMIT @limit OFFSET @offset;
                 """;
             const string sqlCount = $"SELECT COUNT(1) {sqlBase}";

@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Bogus;
+using FluentAssertions;
 using Moq;
+using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
@@ -10,87 +13,121 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
     public class CasoDeUsoListarCodafSuplementarTestes
     {
-        private readonly Mock<IRepositorioCodafSuplementar> repositorio;
-        private readonly Mock<IMapper> mapper;
-
-        private readonly CasoDeUsoListarCodafSuplementar casoDeUso;
+        private readonly AutoMocker _mocker;
+        private readonly CasoDeUsoListarCodafSuplementar _sut;
+        private readonly Faker _faker;
 
         public CasoDeUsoListarCodafSuplementarTestes()
         {
-            repositorio = new Mock<IRepositorioCodafSuplementar>();
-            mapper = new Mock<IMapper>();
-
-            casoDeUso = new CasoDeUsoListarCodafSuplementar(
-                repositorio.Object,
-                mapper.Object);
+            _mocker = new AutoMocker();
+            _sut = _mocker.CreateInstance<CasoDeUsoListarCodafSuplementar>();
+            _faker = new Faker("pt_BR");
         }
-
         [Fact]
-        public async Task Deve_listar_codaf_suplementar_com_sucesso()
+        public async Task DadoFiltroValido_QuandoExecutarAsync_EntaoDeveRetornarListagemPaginadaComSucesso()
         {
-            var filtro = new FiltroCodafSuplementarDto
-            {
-                NumeroPagina = 1,
-                NumeroRegistros = 10
-            };
+            // Arrange
+            var filtro = new Faker<FiltroCodafSuplementarDto>("pt_BR")
+                .RuleFor(f => f.NumeroPagina, f => f.Random.Int(1, 10))
+                .RuleFor(f => f.NumeroRegistros, f => f.Random.Int(10, 50))
+                .Generate();
 
-            var filtroRepositorio = new FiltroListagemResultadoCodafSuplementarDto
-            {
-                Pagina = 1,
-                TamanhoPagina = 10
-            };
+            var filtroRepositorio = new Faker<FiltroListagemResultadoCodafSuplementarDto>("pt_BR")
+                .RuleFor(f => f.Pagina, filtro.NumeroPagina)
+                .RuleFor(f => f.TamanhoPagina, filtro.NumeroRegistros)
+                .Generate();
 
-            mapper.Setup(x =>
-                    x.Map<FiltroListagemResultadoCodafSuplementarDto>(filtro))
-                .Returns(filtroRepositorio);
-
-            var itensRepositorio = new List<ListagemResultadoCodafSuplementarDto>();
+            var listagemResultadoRepositorio = new Faker<ListagemResultadoCodafSuplementarDto>("pt_BR").Generate(5);
 
             var resultadoRepositorio = new ResultadoPaginado<ListagemResultadoCodafSuplementarDto>
             {
-                Itens = itensRepositorio,
-                TotalRegistros = 25,
-                TamanhoPagina = 10,
-                PaginaAtual = 1
+                Itens = listagemResultadoRepositorio,
+                TotalRegistros = _faker.Random.Int(100, 500),
+                PaginaAtual = filtro.NumeroPagina,
+                TamanhoPagina = filtro.NumeroRegistros
             };
 
-            repositorio.Setup(x =>
-                    x.ObterListagemResultadoCodafSuplementarPorFiltroAsync(filtroRepositorio))
+            var listagemResumoDto = new Faker<CodafSuplementarResumoDto>("pt_BR")
+                .RuleFor(c => c.Id, f => f.Random.Long(1))
+                .RuleFor(c => c.NomeTurma, f => f.Random.Word())
+                .RuleFor(c => c.NomeAreaPromotora, f => f.Company.CompanyName())
+                .Generate(5);
+
+            _mocker.GetMock<IMapper>()
+                .Setup(m => m.Map<FiltroListagemResultadoCodafSuplementarDto>(filtro))
+                .Returns(filtroRepositorio);
+
+            _mocker.GetMock<IRepositorioCodafSuplementar>()
+                .Setup(r => r.ObterListagemResultadoCodafSuplementarPorFiltroAsync(filtroRepositorio))
                 .ReturnsAsync(resultadoRepositorio);
 
-            var itensDto = new List<CodafSuplementarResumoDto>
+            _mocker.GetMock<IMapper>()
+                .Setup(m => m.Map<List<CodafSuplementarResumoDto>>(resultadoRepositorio.Itens))
+                .Returns(listagemResumoDto);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(filtro);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeTrue();
+            resultado.Dados.Should().NotBeNull();
+            resultado.Dados!.TotalRegistros.Should().Be(resultadoRepositorio.TotalRegistros);
+            resultado.Dados.Items.Should().HaveCount(5);
+            resultado.Dados.Items.Should().BeEquivalentTo(listagemResumoDto);
+
+            _mocker.GetMock<IMapper>().Verify(m => m.Map<FiltroListagemResultadoCodafSuplementarDto>(filtro), Times.Once);
+            _mocker.GetMock<IRepositorioCodafSuplementar>().Verify(r => r.ObterListagemResultadoCodafSuplementarPorFiltroAsync(filtroRepositorio), Times.Once);
+            _mocker.GetMock<IMapper>().Verify(m => m.Map<List<CodafSuplementarResumoDto>>(resultadoRepositorio.Itens), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoNenhumRegistroEncontrado_QuandoExecutarAsync_EntaoDeveRetornarListagemPaginadaVazia()
         {
-            new()
+            // Arrange
+            var filtro = new Faker<FiltroCodafSuplementarDto>("pt_BR")
+                .RuleFor(f => f.NumeroPagina, 1)
+                .RuleFor(f => f.NumeroRegistros, 10)
+                .Generate();
+
+            var filtroRepositorio = new Faker<FiltroListagemResultadoCodafSuplementarDto>("pt_BR")
+                .RuleFor(f => f.Pagina, 1)
+                .RuleFor(f => f.TamanhoPagina, 10)
+                .Generate();
+
+            var resultadoRepositorio = new ResultadoPaginado<ListagemResultadoCodafSuplementarDto>
             {
-                Id = 1,
-                NomeTurma = "Turma",
-                NomeAreaPromotora = "Área"
-            }
-        };
+                Itens = [],
+                TotalRegistros = 0,
+                PaginaAtual = 1,
+                TamanhoPagina = 10
+            };
 
-            mapper.Setup(x =>
-                    x.Map<List<CodafSuplementarResumoDto>>(itensRepositorio))
-                .Returns(itensDto);
+            _mocker.GetMock<IMapper>()
+                .Setup(m => m.Map<FiltroListagemResultadoCodafSuplementarDto>(filtro))
+                .Returns(filtroRepositorio);
 
-            var resultado = await casoDeUso.ExecutarAsync(filtro);
+            _mocker.GetMock<IRepositorioCodafSuplementar>()
+                .Setup(r => r.ObterListagemResultadoCodafSuplementarPorFiltroAsync(filtroRepositorio))
+                .ReturnsAsync(resultadoRepositorio);
 
-            Assert.True(resultado.Sucesso);
+            _mocker.GetMock<IMapper>()
+                .Setup(m => m.Map<List<CodafSuplementarResumoDto>>(resultadoRepositorio.Itens))
+                .Returns([]);
 
-            Assert.Single(resultado.Dados!.Items);
-            Assert.Equal(25, resultado.Dados!.TotalRegistros);
-            Assert.Equal(3, resultado.Dados!.TotalPaginas);
+            // Act
+            var resultado = await _sut.ExecutarAsync(filtro);
 
-            mapper.Verify(x =>
-                x.Map<FiltroListagemResultadoCodafSuplementarDto>(filtro),
-                Times.Once);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeTrue();
+            resultado.Dados.Should().NotBeNull();
+            resultado.Dados!.TotalRegistros.Should().Be(0);
+            resultado.Dados.Items.Should().BeEmpty();
 
-            mapper.Verify(x =>
-                x.Map<List<CodafSuplementarResumoDto>>(itensRepositorio),
-                Times.Once);
-
-            repositorio.Verify(x =>
-                x.ObterListagemResultadoCodafSuplementarPorFiltroAsync(filtroRepositorio),
-                Times.Once);
+            _mocker.GetMock<IMapper>().Verify(m => m.Map<FiltroListagemResultadoCodafSuplementarDto>(filtro), Times.Once);
+            _mocker.GetMock<IRepositorioCodafSuplementar>().Verify(r => r.ObterListagemResultadoCodafSuplementarPorFiltroAsync(filtroRepositorio), Times.Once);
+            _mocker.GetMock<IMapper>().Verify(m => m.Map<List<CodafSuplementarResumoDto>>(resultadoRepositorio.Itens), Times.Once);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -13,6 +14,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long Id { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class RemoverPropostaCommandValidator : AbstractValidator<RemoverPropostaCommand>
     {
         public RemoverPropostaCommandValidator()

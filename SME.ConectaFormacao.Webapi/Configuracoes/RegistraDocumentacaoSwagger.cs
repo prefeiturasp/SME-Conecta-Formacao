@@ -1,9 +1,11 @@
 ﻿using Microsoft.OpenApi.Models;
 using SME.ConectaFormacao.Infra.Servicos.GitHub.Interfaces;
 using SME.ConectaFormacao.Webapi.Controllers.Filtros;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Webapi.Configuracoes;
 
+[ExcludeFromCodeCoverage]
 public static class RegistraDocumentacaoSwagger
 {
     public static void Registrar(IServiceCollection services)

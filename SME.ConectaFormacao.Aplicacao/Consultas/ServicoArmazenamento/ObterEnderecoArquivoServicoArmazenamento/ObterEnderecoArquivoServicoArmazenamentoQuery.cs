@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class ObterEnderecoArquivoServicoArmazenamentoQuery : IRequest<string>
     {
         public ObterEnderecoArquivoServicoArmazenamentoQuery(string nomeArquivoFisico, bool ehTemp)
@@ -15,6 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public bool EhTemp { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterEnderecoArquivoServicoArmazenamentoQueryValidator : AbstractValidator<ObterEnderecoArquivoServicoArmazenamentoQuery>
     {
         public ObterEnderecoArquivoServicoArmazenamentoQueryValidator()

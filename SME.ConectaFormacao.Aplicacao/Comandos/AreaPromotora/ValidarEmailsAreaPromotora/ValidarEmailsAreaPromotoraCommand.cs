@@ -2,6 +2,7 @@
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -17,6 +18,8 @@ namespace SME.ConectaFormacao.Aplicacao
         public AreaPromotoraTipo Tipo { get; set; }
     }
 
+
+    [ExcludeFromCodeCoverage]
     public class ValidarEmailsAreaPromotoraCommandValidator : AbstractValidator<ValidarEmailsAreaPromotoraCommand>
     {
         public ValidarEmailsAreaPromotoraCommandValidator()

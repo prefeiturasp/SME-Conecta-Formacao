@@ -1,0 +1,70 @@
+﻿using MediatR;
+using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes;
+using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
+using SME.ConectaFormacao.Aplicacao.Comandos.SalvarLog;
+using SME.ConectaFormacao.Aplicacao.Dtos.Email;
+using SME.ConectaFormacao.Aplicacao.Extensoes;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
+using SME.ConectaFormacao.Infra.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Servicos.Log;
+
+namespace SME.ConectaFormacao.Aplicacao.Utilitarios
+{
+    public class UtilitariosCodaf(IMediator mediator, IServicoLogs servicoLogs) : IUtilitariosCodaf
+    {
+        private readonly string _identificadorRastreamento = Guid.NewGuid().ToString();
+
+        public async Task EnviarEmailsAsync(List<EnviarEmailDto> notificacoesParaEnviar)
+        {
+            var notificacoesUnicas = notificacoesParaEnviar.RemoverDuplicatasPorEmailDestinatario();
+
+            foreach (var emailDto in notificacoesUnicas)
+            {
+                _ = await mediator.Send(new PublicarNaFilaRabbitCommand(RotasRabbit.EnviarEmail, emailDto));
+            }
+        }
+
+        public async Task SalvarLogAsync(string mensagem, LogNivel nivelLog = LogNivel.Informacao, Exception? ex = null)
+        {
+            try
+            {
+                if (ex is null)
+                    await servicoLogs.Enviar(mensagem: $"[{_identificadorRastreamento}] {mensagem}", nivel: nivelLog);
+                else
+                    await servicoLogs.Enviar(ex, mensagem: $"[{_identificadorRastreamento}] {mensagem}");
+
+                var complemento = MontarComplementoExcecao(ex);
+                await mediator.Send(new SalvarLogCommand(
+                    entidade: typeof(CasoDeUsoGerarArquivoDeclaracoesCodaf).FullName!,
+                    nivelLog: nivelLog, mensagem: $"[{_identificadorRastreamento}] {mensagem}", complemento: complemento));
+            }
+            catch (Exception e)
+            {
+                await servicoLogs.Enviar(e, mensagem: $"[{_identificadorRastreamento}] Erro ao salvar log: {mensagem}");
+            }
+        }
+
+        private static string MontarComplementoExcecao(Exception? ex, int nivel = 0)
+        {
+            var complemento = string.Empty;
+            if (ex is not null)
+                complemento = $"{nivel + 1}: Exception: {ex.Message} | StackTrace: {ex.StackTrace}";
+
+            if (ex is not null && ex.InnerException is not null)
+                complemento += Environment.NewLine + MontarComplementoExcecao(ex.InnerException, nivel + 1);
+
+            return complemento;
+        }
+
+        public TipoEstrategiaCodaf DefinirEstrategia(DadosProcessamentoCodafDto declaracao)
+        {
+            if (declaracao.TipoParticipacao == TipoParticipacaoCodaf.Regente)
+                return TipoEstrategiaCodaf.RegenteComRf;
+
+            return declaracao.TemRf ? TipoEstrategiaCodaf.CursistaComRf : TipoEstrategiaCodaf.CursistaSemRf;
+        }
+    }
+}

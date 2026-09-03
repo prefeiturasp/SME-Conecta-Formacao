@@ -1,5 +1,8 @@
-﻿namespace SME.ConectaFormacao.Dominio.Extensoes
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SME.ConectaFormacao.Dominio.Extensoes
 {
+    [ExcludeFromCodeCoverage]
     public static class IntExtensao
     {
         public static string GerarAte(this int valor, int ateValor)

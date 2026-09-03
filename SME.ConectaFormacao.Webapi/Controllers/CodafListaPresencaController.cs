@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Webapi.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
+    [PadronizarRetornoFiltro]
     [Route("api/v1/CodafListaPresenca")]
     public class CodafListaPresencaController : BaseController
     {
@@ -100,6 +102,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromServices] ICasoDeUsoSalvarInscritosCodaf casoDeUsoSalvarInscritosCodaf)
         {
             var resultado = await casoDeUsoSalvarInscritosCodaf.ExecutarAsync(inscritos, codafId);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpPatch("{codafId:long}/finalizar")]
+        [ProducesResponseType(typeof(Resultado), 204)]
+        [ProducesResponseType(typeof(Resultado), 400)]
+        public async Task<IActionResult> FinalizarCodafAsync(
+           [FromRoute] long codafId,
+           [FromServices] ICasoDeUsoFinalizarCodafListaPresenca casoDeUsoFinalizarCodafListaPresenca)
+        {
+            var resultado = await casoDeUsoFinalizarCodafListaPresenca.ExecutarAsync(codafId);
             return ProcessarResultado(resultado);
         }
     }

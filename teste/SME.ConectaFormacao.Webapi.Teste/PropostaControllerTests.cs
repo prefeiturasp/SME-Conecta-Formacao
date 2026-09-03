@@ -1,4 +1,4 @@
-﻿using Bogus;
+using Bogus;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SME.ConectaFormacao.Aplicacao.Dtos;
@@ -9,6 +9,9 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Webapi.Controllers;
+using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
+using SME.ConectaFormacao.Dominio.Comum;
 
 namespace SME.ConectaFormacao.Webapi.Teste
 {
@@ -730,8 +733,46 @@ namespace SME.ConectaFormacao.Webapi.Teste
             mockUseCase.Setup(x => x.ExecutarAsync(It.IsAny<FiltroAutocompletarNumeroHomologacaoDto>())).ReturnsAsync(resultadoDto);
             // Act
             var resultado = await _controller.AutocompletarFormacao(mockUseCase.Object, new() { NumeroPagina = 1, NumeroRegistros = 10, TermoBusca = termoDeBusca });
+            Assert.IsType<OkObjectResult>(resultado);
+        }
+
+        [Fact]
+        public async Task DadoPropostaTurmaId_QuandoObterCursistasPorPropostaTurmaId_EntaoDeveRetornarOk()
+        {
+            // Arrange
+            var mockUseCase = new Mock<ICasoDeUsoPesquisarCursistaPorPropostaTurmaId>();
+            var propostaTurmaId = _faker.Random.Long();
+            var termo = "termo";
+            var numeroPagina = 1;
+            var numeroRegistros = 10;
+            var dto = new PaginacaoResultadoDto<DadosInscricaoCursistaRetornoDto>([], 0, 10);
+            mockUseCase.Setup(x => x.ExecutarAsync(propostaTurmaId, termo, numeroPagina, numeroRegistros)).ReturnsAsync(dto);
+
+            // Act
+            var resultado = await _controller.ObterCursistasPorPropostaTurmaId(mockUseCase.Object, propostaTurmaId, termo, numeroPagina, numeroRegistros);
+
             // Assert
             Assert.IsType<OkObjectResult>(resultado);
+            mockUseCase.Verify(x => x.ExecutarAsync(propostaTurmaId, termo, numeroPagina, numeroRegistros), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoId_QuandoObterDetalhesPropostaComTurmasPorId_EntaoDeveRetornarOk()
+        {
+            // Arrange
+            var mockUseCase = new Mock<ICasoDeUsoObterDetalhesPropostaComTurmasPorId>();
+            var id = _faker.Random.Long();
+            var homologadas = true;
+            var dto = new PropostaComTurmasDto();
+            var resultadoSucesso = Resultado<PropostaComTurmasDto>.DeSucesso(dto);
+            mockUseCase.Setup(x => x.ExecutarAsync(id, homologadas)).ReturnsAsync(resultadoSucesso);
+
+            // Act
+            var resultado = await _controller.ObterDetalhesPropostaComTurmasPorId(id, homologadas, mockUseCase.Object);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(resultado);
+            mockUseCase.Verify(x => x.ExecutarAsync(id, homologadas), Times.Once);
         }
     }
 }

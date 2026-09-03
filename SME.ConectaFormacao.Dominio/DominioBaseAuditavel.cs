@@ -1,7 +1,9 @@
 using SME.ConectaFormacao.Dominio.Repositorios;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Entidades;
 
+[ExcludeFromCodeCoverage]
 public abstract class DominioBaseAuditavel<TEntidade> : IDominioBaseAuditavel<TEntidade>
     where TEntidade : EntidadeBaseAuditavel
 {

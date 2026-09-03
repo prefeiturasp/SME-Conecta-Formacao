@@ -1,5 +1,8 @@
-﻿namespace SME.ConectaFormacao.Aplicacao.Dtos.Grupo
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SME.ConectaFormacao.Aplicacao.Dtos.Grupo
 {
+    [ExcludeFromCodeCoverage]
     public class GrupoDTO : IEquatable<GrupoDTO>
     {
         public Guid Id { get; set; }

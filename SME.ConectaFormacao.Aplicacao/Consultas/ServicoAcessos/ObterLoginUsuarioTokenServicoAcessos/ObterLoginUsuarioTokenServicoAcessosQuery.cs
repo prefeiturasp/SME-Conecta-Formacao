@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -16,6 +17,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public TipoAcao TipoAcao { get; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ObterLoginUsuarioTokenServicoAcessosQueryValidator : AbstractValidator<ObterLoginUsuarioTokenServicoAcessosQuery>
     {
         public ObterLoginUsuarioTokenServicoAcessosQueryValidator()

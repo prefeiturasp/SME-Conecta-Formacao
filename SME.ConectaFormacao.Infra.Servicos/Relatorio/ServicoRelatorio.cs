@@ -23,7 +23,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio
             _relatorioOptions = relatorioOptions ?? throw new ArgumentNullException(nameof(relatorioOptions));
         }
 
-        public async Task<byte[]> ConveterHtmlCertificadoCodafParaPdfAsync(HtmlCertificadoCodafDto htmlCertificadoCodafDto)
+        public async Task<byte[]> ConveterHtmlCodafParaPdfAsync(HtmlCodafDto htmlCertificadoCodafDto)
         {
             var resposta = await _httpClient.PostAsJsonAsync(EndpointRelatoriosConstants.RELATORIO_CERTIFICADO_CODAF, htmlCertificadoCodafDto);
             resposta.EnsureSuccessStatusCode();
@@ -31,7 +31,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Relatorio
             return arquivoBytes;
         }
 
-        public async Task<Resultado<Stream>> ConveterHtmlCertificadoCodafParaPdfAsync(HtmlCertificadoCodafDto htmlCertificadoCodafDto, CancellationToken cancellationToken)
+        public async Task<Resultado<Stream>> ConveterHtmlCodafParaPdfAsync(HtmlCodafDto htmlCertificadoCodafDto, CancellationToken cancellationToken)
         {
             try
             {

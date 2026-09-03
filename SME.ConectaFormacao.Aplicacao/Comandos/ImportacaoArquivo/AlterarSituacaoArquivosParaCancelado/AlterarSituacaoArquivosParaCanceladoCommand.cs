@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
+    [ExcludeFromCodeCoverage]
     public class AlterarSituacaoArquivosParaCanceladoCommand : IRequest<bool>
     {
         public AlterarSituacaoArquivosParaCanceladoCommand(long arquivoImportacaoId)
@@ -13,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public long ArquivoImportacaoId { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class AlterarSituacaoArquivosParaCanceladoCommandValidator : AbstractValidator<AlterarSituacaoArquivosParaCanceladoCommand>
     {
         public AlterarSituacaoArquivosParaCanceladoCommandValidator()
@@ -21,3 +24,4 @@ namespace SME.ConectaFormacao.Aplicacao
         }
     }
 }
+

@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Primitives;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace SME.ConectaFormacao.Webapi.Contexto;
 
+[ExcludeFromCodeCoverage]
 public class ContextoHttp : ContextoBase
 {
     readonly IHttpContextAccessor httpContextAccessor;
@@ -26,7 +28,7 @@ public class ContextoHttp : ContextoBase
         Variaveis.Add("NomeUsuario", userContext?.FindFirst("Nome")?.Value ?? userContext?.FindFirst("nome")?.Value ?? "Sistema");
         Variaveis.Add("PerfilUsuario", ObterPerfilAtual());
         Variaveis.Add("EmailUsuario", userContext?.Claims?.FirstOrDefault(a => a.Type == "email")?.Value ?? string.Empty);
-        Variaveis.Add("Dres", userContext?.Claims?.Where(a => a.Type == "dres").Select(s => s.Value).ToArray());
+        Variaveis.Add("Dres", userContext?.Claims?.Where(a => a.Type == "dres").Select(s => s.Value).ToArray() ?? []);
         Variaveis.Add("Permissoes", ObterPermissoes());
 
         var authorizationHeader = httpContextAccessor.HttpContext?.Request?.Headers["authorization"];
@@ -39,7 +41,7 @@ public class ContextoHttp : ContextoBase
         else
         {
             Variaveis.Add("TemAuthorizationHeader", true);
-            Variaveis.Add("TokenAtual", authorizationHeader.Value.Single().Split(' ').Last());
+            Variaveis.Add("TokenAtual", authorizationHeader.Value.Single()!.Split(' ')[^1]);
         }
 
         var numeroPagina = httpContextAccessor.HttpContext?.Request?.Headers["numeroPagina"].ToString();
@@ -80,3 +82,4 @@ public class ContextoHttp : ContextoBase
                 .OfType<Permissao>()];
     }
 }
+

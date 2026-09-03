@@ -1,7 +1,8 @@
 ﻿using FluentAssertions;
 using Moq;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
-using SME.ConectaFormacao.Infra.Dados.Estrategias;
+using SME.ConectaFormacao.Infra.Dados.Estrategias.CodafCertificados;
 using SME.ConectaFormacao.Infra.Dados.Templates;
 
 namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
@@ -60,7 +61,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Estrategias
         public void GerarConteudoEmail_DeveRetornarTextoPersonalizado_ParaRegente()
         {
             // Arrange
-            var dados = new DadosProcessamentoCertificadoCodafDto
+            var dados = new DadosProcessamentoCodafDto
             {
                 NomeCompleto = "Maria",
                 NomeFormacao = "Curso Docker"

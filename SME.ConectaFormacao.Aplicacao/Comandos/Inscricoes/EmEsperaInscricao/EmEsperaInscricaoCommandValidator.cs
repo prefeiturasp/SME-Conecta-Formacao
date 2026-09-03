@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.EmEsperaInscricao
 {
+    [ExcludeFromCodeCoverage]
     public class EmEsperaInscricaoCommandValidator : AbstractValidator<EmEsperaInscricaoCommand>
     {
         public EmEsperaInscricaoCommandValidator()

@@ -15,7 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
         public async Task<IEnumerable<InscricaoUsuarioInternoDto>> Handle(ObtertInscricoesPorPropostaTurmaQuery request, CancellationToken cancellationToken)
         {
-            return await _repositorioInscricao.ObterInscricoesPorPropostasTurmasIdUsuariosInternos(request.TurmasIds);
+            return await _repositorioInscricao.ObterInscricoesUsuariosInternosPorPropostasTurmasId(request.TurmasIds);
         }
     }
 }

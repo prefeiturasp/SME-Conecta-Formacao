@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
-using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Webapi.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
 {
     [Authorize("Bearer")]
+    [PadronizarRetornoFiltro]
     public class CodafSuplementarController : BaseController
     {
         [HttpGet("codaf/{codafId:long}")]
@@ -108,6 +109,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             if (resultado.Sucesso)
                 return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
 
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpPatch("{codafSuplementarId:long}/finalizar")]
+        [ProducesResponseType(typeof(Resultado), 204)]
+        [ProducesResponseType(typeof(Resultado), 400)]
+        public async Task<IActionResult> FinalizarCodafAsync(
+           [FromRoute] long codafSuplementarId,
+           [FromServices] ICasoDeUsoFinalizarCodafSuplementar casoDeUsoFinalizarCodafSuplementar)
+        {
+            var resultado = await casoDeUsoFinalizarCodafSuplementar.ExecutarAsync(codafSuplementarId);
             return ProcessarResultado(resultado);
         }
     }
