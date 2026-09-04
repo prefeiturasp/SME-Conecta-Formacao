@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Codaf;
 using SME.ConectaFormacao.Dominio.Comum;
@@ -15,6 +15,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
         IServicoArmazenamento servicoArmazenamento,
         IRepositorioCodafComentarioListaPresenca repositorioCodafComentarioListaPresenca,
         IRepositorioCodafInscritosListaPresenca repositorioCodafInscritos,
+        IRepositorioCodafMovimentacaoListaPresenca repositorioCodafMovimentacaoListaPresenca,
         IMapper mapper,
         IContextoAplicacao contextoAplicacao) : ICasoDeUsoObterCodafListaPresencaPorId
     {
@@ -41,6 +42,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
 
             await ObterComentarioDfAsync(listaPresencaDto);
             await ObterDeltaInscritosAsync(listaPresencaDto);
+            await ObterMovimentacaoEnvioDfAsync(listaPresencaDto);
 
             return listaPresencaDto;
         }
@@ -82,6 +84,19 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf
                         InscritosRemovidos = removidos
                     };
                 }
+            }
+        }
+
+        private async Task ObterMovimentacaoEnvioDfAsync(CodafListaPresencaDto listaPresencaDto)
+        {
+            var primeiraMovimentacaoEnvio = await repositorioCodafMovimentacaoListaPresenca.ObterPrimeiraMovimentacaoPorListaPresencaStatusAsync(
+                listaPresencaDto.Id, StatusCodafListaPresenca.AguardandoDf);
+
+            if (primeiraMovimentacaoEnvio != null)
+            {
+                listaPresencaDto.EnviadoParaDfPor = primeiraMovimentacaoEnvio.CriadoPor;
+                listaPresencaDto.EnviadoParaDfLogin = primeiraMovimentacaoEnvio.CriadoLogin;
+                listaPresencaDto.EnviadoParaDfEm = primeiraMovimentacaoEnvio.CriadoEm;
             }
         }
     }
