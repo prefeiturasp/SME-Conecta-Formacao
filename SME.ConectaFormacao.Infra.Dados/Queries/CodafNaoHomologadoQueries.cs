@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Infra.Dados.Queries
+namespace SME.ConectaFormacao.Infra.Dados.Queries
 {
     public static class CodafNaoHomologadoQueries
     {
@@ -10,6 +10,11 @@
                    pt.NOME AS nomeTurma,
                    ap.NOME AS nomeAreaPromotora,
                    CCNH.STATUS,
+                   EXISTS (SELECT 1 
+                           FROM   CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CCNHI 
+                           WHERE  NOT CCNHI.EXCLUIDO 
+                             AND  CCNHI.CODAF_CURSO_NAO_HOM_ID = CCNH.ID 
+                             AND  CCNHI.PARTICIPOU) AS PossuiAprovacoes,
                    CASE       	
                    	-- 1: Não emitidas
                    	WHEN CCNH.STATUS = 1 THEN 1
