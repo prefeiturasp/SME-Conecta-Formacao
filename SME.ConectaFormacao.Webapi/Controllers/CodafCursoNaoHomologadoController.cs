@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Dominio.Comum;
@@ -85,7 +86,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(Resultado), 404)]
         public async Task<IActionResult> FinalizarCodafAsync(
            long id,
-           [FromBody] SME.ConectaFormacao.Aplicacao.Dtos.Codaf.FinalizarCodafDto dto,
+           [FromBody] FinalizarCodafDto dto,
            [FromServices] ICasoDeUsoFinalizarCodafCursoNaoHomologado casoDeUsoFinalizarCodaf)
         {
             var resultado = await casoDeUsoFinalizarCodaf.ExecutarAsync(id, dto);

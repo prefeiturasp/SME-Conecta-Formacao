@@ -3,11 +3,13 @@ using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
 {
     public class CasoDeUsoFinalizarCodafCursoNaoHomologado(
         IRepositorioCodafCursoNaoHomologado repositorioCodafCursoNaoHomologado,
+        ICasoDeUsoEmitirDeclaracaoCodaf casoDeUsoEmitirDeclaracaoCodaf,
         IContextoAplicacao contextoAplicacao) : ICasoDeUsoFinalizarCodafCursoNaoHomologado
     {
         public async Task<Resultado> ExecutarAsync(long codafCursoNaoHomologadoId, FinalizarCodafDto dto)
@@ -35,7 +37,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
 
             await repositorioCodafCursoNaoHomologado.Atualizar(codaf);
 
+            await casoDeUsoEmitirDeclaracaoCodaf.ExecutarAsync(codafCursoNaoHomologadoId);
+
             return Resultado.DeSucesso();
         }
     }
 }
+
