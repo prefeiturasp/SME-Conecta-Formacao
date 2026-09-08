@@ -14,11 +14,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
         IMediator mediator, IContextoAplicacao contextoAplicacao, IUtilitariosPerfis utilitarios, ICacheDistribuido cacheDistribuido, IRepositorioProposta repositorioProposta) :
         CasoDeUsoAbstratoPaginado(mediator, contextoAplicacao), ICasoDeUsoObterListagemFormacaoPaginada
     {
-        private const string CHAVE_FILTRO_LISTAGEM_FORMACAO = "filtro_listagem_formacao";
 
         public async Task<PaginacaoResultadoDto<RetornoListagemFormacaoDTO>> Executar(FiltroListagemFormacaoDTO filtroListagemFormacaoDTO)
         {
-            var chaveRedisFiltro = CacheDistribuidoNomes.FormacaoFiltro.Parametros(CHAVE_FILTRO_LISTAGEM_FORMACAO);
+            var chaveRedisFiltro = CacheDistribuidoNomes.FormacaoFiltro.Parametros(CacheFiltroFormacaoNomes.CHAVE_FILTRO_LISTAGEM_FORMACAO, contextoAplicacao.LoginUsuario);
 
             var propostasPaginadas = await repositorioProposta.ObterListagemFormacoesPorFiltro(new()
             {

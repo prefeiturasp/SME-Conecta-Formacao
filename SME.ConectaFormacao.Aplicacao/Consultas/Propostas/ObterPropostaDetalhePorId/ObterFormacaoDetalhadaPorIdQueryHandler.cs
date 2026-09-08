@@ -17,7 +17,6 @@ namespace SME.ConectaFormacao.Aplicacao
         IMediator mediator, ICacheDistribuido cacheDistribuido, IRepositorioUsuarioAcessibilidade repositorioUsuarioAcessibilidade) : 
         IRequestHandler<ObterFormacaoDetalhadaPorIdQuery, RetornoFormacaoDetalhadaDTO>
     {
-        private const string CHAVE_FILTRO_LISTAGEM_FORMACAO = "filtro_listagem_formacao";
 
         public async Task<RetornoFormacaoDetalhadaDTO> Handle(ObterFormacaoDetalhadaPorIdQuery request, CancellationToken cancellationToken)
         {
@@ -25,7 +24,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var retornoFormacaoDetalhadaDto = await cacheDistribuido.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(chaveRedis);
 
             // Recuperar o filtro do cache
-            var chaveRedisFiltro = CacheDistribuidoNomes.FormacaoFiltro.Parametros(CHAVE_FILTRO_LISTAGEM_FORMACAO);
+            var chaveRedisFiltro = CacheDistribuidoNomes.FormacaoFiltro.Parametros(CacheFiltroFormacaoNomes.CHAVE_FILTRO_LISTAGEM_FORMACAO);
             var filtroListagemFormacaoDTO = await cacheDistribuido.ObterObjetoAsync<FiltroListagemFormacaoDTO>(chaveRedisFiltro);
 
             // Se não houver filtro no cache, usar valores padrão

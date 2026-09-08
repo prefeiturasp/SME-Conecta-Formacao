@@ -27,7 +27,7 @@
         /// <summary>
         /// 0 - Filtro da formação
         /// </summary>
-        public const string FormacaoFiltro = "formacao-filtro:{0}";
+        public const string FormacaoFiltro = "formacao-filtro:{0}:usuario:{1}";
         /// <summary>
         /// 0 - Registro funcional
         /// </summary>
