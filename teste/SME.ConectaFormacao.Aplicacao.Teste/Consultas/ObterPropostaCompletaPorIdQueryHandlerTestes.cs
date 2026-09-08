@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using MediatR;
 using Moq;
 using Moq.AutoMock;
+using SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterSePropostaPossuiCodaf;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
@@ -558,6 +559,29 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 
             // Assert
             resultado.SobreEsteCurso.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task DadoPropostaValida_QuandoProcessarQuery_EntaoDeveConsultarSePossuiCodafEPopularDTO(bool possuiCodaf)
+        {
+            // Arrange
+            var query = new ObterPropostaCompletaPorIdQuery(1);
+            var proposta = CriarPropostaValida();
+
+            ConfigurarDependenciasComunsParaSucesso(proposta);
+            ConfigurarPerfilEUsuarioLogado(Guid.NewGuid(), "usuario_comum");
+
+            _mediator.Setup(m => m.Send(It.Is<ObterSePropostaPossuiCodafQuery>(q => q.PropostaId == 1), It.IsAny<CancellationToken>()))
+                     .ReturnsAsync(possuiCodaf);
+
+            // Act
+            var resultado = await _sut.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.PossuiCodaf.Should().Be(possuiCodaf);
+            _mediator.Verify(m => m.Send(It.Is<ObterSePropostaPossuiCodafQuery>(q => q.PropostaId == 1), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         #region Factory Methods
