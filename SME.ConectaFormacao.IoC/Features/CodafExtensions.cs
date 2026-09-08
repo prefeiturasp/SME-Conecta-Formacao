@@ -56,7 +56,6 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoObterPropostaTurmaComCodaf, CasoDeUsoObterPropostaTurmaComCodaf>()
                 .AddScoped<ICasoDeUsoFinalizarCodafListaPresenca, CasoDeUsoFinalizarCodafListaPresenca>()
                 .AddScoped<IUtilitariosCodaf, UtilitariosCodaf>()
-                .AddScoped<IUtilitariosPerfis, UtilitariosPerfis>()
                 .AdicionarModuloCodafCertificado()
                 .AdicionarModuloCodafDeclaracao();
 
@@ -88,7 +87,8 @@ namespace SME.ConectaFormacao.IoC.Features
                     .AddScoped<ICasoDeUsoListarMinhasDeclaracoesCodaf, CasoDeUsoListarMinhasDeclaracoesCodaf>()
                     .AddScoped<ICasoDeUsoObterDeclaracaoCodafParaDownload, CasoDeUsoObterDeclaracaoCodafParaDownload>()
                     .AddScoped<ICasoDeUsoListarTodasDeclaracoesCodaf, CasoDeUsoListarTodasDeclaracoesCodaf>()
-                    .AddScoped<ICasoDeUsoDownloadLoteDeclaracoes, CasoDeUsoDownloadLoteDeclaracoes>();
+                    .AddScoped<ICasoDeUsoDownloadLoteDeclaracoes, CasoDeUsoDownloadLoteDeclaracoes>()
+                    .AddScoped<IUtilitariosPerfis, UtilitariosPerfis>();
         }
     }
 }
