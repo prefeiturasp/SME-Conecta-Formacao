@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Dominio.Comum;
@@ -76,6 +77,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromQuery] int numeroPagina = 1, [FromQuery] int numeroRegistros = 10)
         {
             var resultado = await casoDeUso.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpPatch("{id:long}/finalizar")]
+        [ProducesResponseType(typeof(Resultado), 204)]
+        [ProducesResponseType(typeof(Resultado), 400)]
+        [ProducesResponseType(typeof(Resultado), 404)]
+        public async Task<IActionResult> FinalizarCodafAsync(
+           long id,
+           [FromBody] FinalizarCodafDto dto,
+           [FromServices] ICasoDeUsoFinalizarCodafCursoNaoHomologado casoDeUsoFinalizarCodaf)
+        {
+            var resultado = await casoDeUsoFinalizarCodaf.ExecutarAsync(id, dto);
             return ProcessarResultado(resultado);
         }
     }
