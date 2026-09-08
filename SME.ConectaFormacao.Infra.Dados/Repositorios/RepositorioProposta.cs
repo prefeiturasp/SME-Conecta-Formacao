@@ -2725,32 +2725,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 new { propostaId, dataAtual, tipoInscricao, situacao });
         }
 
-        public async Task<(long? FormacaoAnterior, long? FormacaoPosterior)> ObterFormacoesSeguintesEAnteriorPorIdAsync(long propostaId, FiltroListaFormacaoPropostaDto filtro)
+        public async Task<(long? formacaoAnteriorId, long? formacaoPosteriorId)> ObterFormacoesSeguintesEAnteriorPorIdAsync(long propostaId, FiltroListaFormacaoPropostaDto filtro)
         {
-            if (filtro == null)
-                return (null, null);
+            long? formacaoAnteriorId = await ObterFormacaoAnteriorPorIdAsync(propostaId);
+            long? formacaoPosteriorId = await ObterFormacaoPosteriorPorIdAsync(propostaId);
 
-            var resultado = await ObterListagemFormacoesPorFiltro(filtro);
-
-            if (!resultado.Itens.Any())
-                return (null, null);
-
-            var listaIds = resultado.Itens.ToList();
-            var posicaoAtual = listaIds.IndexOf(propostaId);
-
-            if (posicaoAtual == -1)
-                return (null, null);
-
-            var quantidadeItens = listaIds.Count;
-
-            if (quantidadeItens == 1)
-                return (null, null);
-
-            var posicaoAnterior = posicaoAtual == 0 ? quantidadeItens - 1 : posicaoAtual - 1;
-            var posicaoPosterior = posicaoAtual == quantidadeItens - 1 ? 0 : posicaoAtual + 1;
-
-            return (listaIds[posicaoAnterior], listaIds[posicaoPosterior]);
-
+            return (formacaoAnteriorId, formacaoPosteriorId);
         }
         public async Task<PropostaLaudaCompletaDto?> ObterDadosLaudaCompletaAsync(long propostaId)
         {
