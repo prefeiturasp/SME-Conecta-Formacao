@@ -110,5 +110,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task AtualizarIntegrarNoSGA(long propostaId, bool valor);
         Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, bool comCodaf, int numeroPagina, int numeroRegistros);
         Task<PropostaComTurmasDto?> ObterDetalhesPropostaComTurmasPorIdAsync(long propostaId, bool formacoesHomologadas);
+        Task<(long? FormacaoAnterior, long? FormacaoPosterior)> ObterFormacoesSeguintesEAnteriorPorIdAsync(long propostaId, FiltroListaFormacaoPropostaDto filtro);
     }
 }

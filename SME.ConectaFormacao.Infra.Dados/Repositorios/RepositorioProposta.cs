@@ -2644,8 +2644,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                   AND p.FORMACAO_HOMOLOGADA = ANY(@formacoesHomologadas)
                   AND NOT p.excluido;";
 
-            var formacoesValidas = formacoesHomologadas 
-                ? new[] { (int)FormacaoHomologada.Sim } 
+            var formacoesValidas = formacoesHomologadas
+                ? new[] { (int)FormacaoHomologada.Sim }
                 : [(int)FormacaoHomologada.NaoCursosPorIN, (int)FormacaoHomologada.NaoCursosExtras];
 
             var parameters = new { propostaId, formacoesHomologadas = formacoesValidas };
@@ -2672,6 +2672,85 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             );
 
             return propostaDictionary.Values.FirstOrDefault();
+        }
+
+        public async Task<long?> ObterFormacaoAnteriorPorIdAsync(long propostaId)
+        {
+            var dataAtual = DateTimeExtension.HorarioBrasilia().Date;
+            var tipoInscricao = new[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
+            var situacao = (int)SituacaoProposta.Publicada;
+
+            var query = @"
+        SELECT p.id
+        FROM proposta p
+        INNER JOIN proposta_tipo_inscricao pti ON pti.proposta_id = p.id AND NOT pti.excluido
+        WHERE NOT p.excluido
+          AND pti.tipo_inscricao = ANY(@tipoInscricao)
+          AND p.situacao = @situacao
+          AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date
+          AND p.data_realizacao_fim < (
+              SELECT data_realizacao_fim 
+              FROM proposta 
+              WHERE id = @propostaId AND NOT excluido
+          )
+        ORDER BY data_realizacao_inicio, data_realizacao_fim
+        LIMIT 1";
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<long?>(query,
+                new { propostaId, dataAtual, tipoInscricao, situacao });
+        }
+
+        public async Task<long?> ObterFormacaoPosteriorPorIdAsync(long propostaId)
+        {
+            var dataAtual = DateTimeExtension.HorarioBrasilia().Date;
+            var tipoInscricao = new[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
+            var situacao = (int)SituacaoProposta.Publicada;
+
+            var query = @"
+        SELECT p.id
+        FROM proposta p
+        INNER JOIN proposta_tipo_inscricao pti ON pti.proposta_id = p.id AND NOT pti.excluido
+        WHERE NOT p.excluido
+          AND pti.tipo_inscricao = ANY(@tipoInscricao)
+          AND p.situacao = @situacao
+          AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date
+          AND p.data_realizacao_inicio > (
+              SELECT data_realizacao_inicio 
+              FROM proposta 
+              WHERE id = @propostaId AND NOT excluido
+          )
+        ORDER BY data_realizacao_inicio, data_realizacao_fim
+        LIMIT 1";
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<long?>(query,
+                new { propostaId, dataAtual, tipoInscricao, situacao });
+        } 
+
+        public async Task<(long? FormacaoAnterior, long? FormacaoPosterior)> ObterFormacoesSeguintesEAnteriorPorIdAsync(long propostaId, FiltroListaFormacaoPropostaDto filtro)
+        {
+            if (filtro == null)
+                return (null, null);
+
+            var resultado = await ObterListagemFormacoesPorFiltro(filtro);
+            
+            if (!resultado.Itens.Any())
+                return (null, null);
+
+            var listaIds = resultado.Itens.ToList();
+            var posicaoAtual = listaIds.IndexOf(propostaId);
+
+            if (posicaoAtual == -1)
+                return (null, null);
+
+            var quantidadeItens = listaIds.Count;
+
+            if (quantidadeItens == 1)
+                return (null, null);
+
+            var posicaoAnterior = posicaoAtual == 0 ? quantidadeItens - 1 : posicaoAtual - 1;
+            var posicaoPosterior = posicaoAtual == quantidadeItens - 1 ? 0 : posicaoAtual + 1;
+
+            return (listaIds[posicaoAnterior], listaIds[posicaoPosterior]);
         }
     }
 }

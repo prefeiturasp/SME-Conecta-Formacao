@@ -14,13 +14,23 @@ namespace SME.ConectaFormacao.Aplicacao
 {
     public class ObterFormacaoDetalhadaPorIdQueryHandler(
         IRepositorioProposta repositorioProposta, IMapper mapper,
-        IMediator mediator, ICacheDistribuido cacheDistribuido, IRepositorioUsuarioAcessibilidade repositorioUsuarioAcessibilidade) :
+        IMediator mediator, ICacheDistribuido cacheDistribuido, IRepositorioUsuarioAcessibilidade repositorioUsuarioAcessibilidade) : 
         IRequestHandler<ObterFormacaoDetalhadaPorIdQuery, RetornoFormacaoDetalhadaDTO>
     {
+        private const string CHAVE_FILTRO_LISTAGEM_FORMACAO = "filtro_listagem_formacao";
+
         public async Task<RetornoFormacaoDetalhadaDTO> Handle(ObterFormacaoDetalhadaPorIdQuery request, CancellationToken cancellationToken)
         {
             var chaveRedis = CacheDistribuidoNomes.FormacaoDetalhada.Parametros(request.Id);
             var retornoFormacaoDetalhadaDto = await cacheDistribuido.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(chaveRedis);
+
+            // Recuperar o filtro do cache
+            var chaveRedisFiltro = CacheDistribuidoNomes.FormacaoFiltro.Parametros(CHAVE_FILTRO_LISTAGEM_FORMACAO);
+            var filtroListagemFormacaoDTO = await cacheDistribuido.ObterObjetoAsync<FiltroListagemFormacaoDTO>(chaveRedisFiltro);
+
+            // Se não houver filtro no cache, usar valores padrão
+            if (filtroListagemFormacaoDTO == null)
+                filtroListagemFormacaoDTO = new FiltroListagemFormacaoDTO();
 
             if (retornoFormacaoDetalhadaDto.EhNulo())
             {
@@ -28,6 +38,24 @@ namespace SME.ConectaFormacao.Aplicacao
                                         throw new NegocioException(MensagemNegocio.FORMACAO_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
                 retornoFormacaoDetalhadaDto = mapper.Map<RetornoFormacaoDetalhadaDTO>(formacaoDetalhada);
+
+                var (formacaoAnterior, formacaoPosterior) = await repositorioProposta.ObterFormacoesSeguintesEAnteriorPorIdAsync(request.Id, new Infra.Dados.Dtos.FiltroListaFormacaoPropostaDto
+                {
+                    AreasPromotorasIds = filtroListagemFormacaoDTO.AreasPromotorasIds,
+                    DataFinal = filtroListagemFormacaoDTO.DataFinal,
+                    DataInicial = filtroListagemFormacaoDTO.DataInicial,
+                    FiltrarPorPerfil = false,
+                    FormatosIds = filtroListagemFormacaoDTO.FormatosIds,
+                    Pagina = 1,
+                    PalavrasChavesIds = filtroListagemFormacaoDTO.PalavrasChavesIds,
+                    TamanhoPagina = 1000, 
+                    PublicosAlvosIds = filtroListagemFormacaoDTO.PublicosAlvosIds,
+                    RfServidor = string.Empty,
+                    Titulo = filtroListagemFormacaoDTO.Titulo
+                });
+
+                retornoFormacaoDetalhadaDto.FormacaoAnteriorId = formacaoAnterior;
+                retornoFormacaoDetalhadaDto.FormacaoPosteriorId = formacaoPosterior;
 
                 if (formacaoDetalhada.ArquivoImagemDivulgacao is not null)
                     retornoFormacaoDetalhadaDto.ImagemUrl = await mediator.Send(new ObterEnderecoArquivoServicoArmazenamentoQuery(formacaoDetalhada.ArquivoImagemDivulgacao.NomeArquivoFisico, false), cancellationToken);

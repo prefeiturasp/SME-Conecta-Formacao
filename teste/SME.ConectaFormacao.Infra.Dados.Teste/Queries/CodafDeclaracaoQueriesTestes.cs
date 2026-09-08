@@ -32,7 +32,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Queries
                 "PUBLIC.DRE",
                 "PUBLIC.COORDENADORIA",
                 "@codafNaoHomologadoId",
-                "P.CURSO_COM_CERTIFICADO = false",
                 "UNION ALL");
         }
 

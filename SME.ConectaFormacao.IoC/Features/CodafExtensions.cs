@@ -56,6 +56,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoObterPropostaTurmaComCodaf, CasoDeUsoObterPropostaTurmaComCodaf>()
                 .AddScoped<ICasoDeUsoFinalizarCodafListaPresenca, CasoDeUsoFinalizarCodafListaPresenca>()
                 .AddScoped<IUtilitariosCodaf, UtilitariosCodaf>()
+                .AddScoped<IUtilitariosPerfis, UtilitariosPerfis>()
                 .AdicionarModuloCodafCertificado()
                 .AdicionarModuloCodafDeclaracao();
 

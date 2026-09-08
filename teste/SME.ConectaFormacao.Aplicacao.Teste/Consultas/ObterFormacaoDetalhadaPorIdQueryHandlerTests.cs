@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         public async Task DadoCacheVazioEFormacaoNaoEncontrada_QuandoObter_EntaoDeveLancarExcecao()
         {
             // Arrange
-            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100));
+            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100), null!);
 
             // Act & Assert
             await Assert.ThrowsAsync<NegocioException>(() => _handler.Handle(query, CancellationToken.None));
@@ -48,7 +48,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         public async Task DadoCacheVazioEFormacaoEncontrada_QuandoObter_EntaoDeveRetornarFormacaoDetalhada()
         {
             // Arrange
-            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100));
+            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100), null!);
             var formacaoDetalhada = new FormacaoDetalhada
             {
                 NomeFormacao = _faker.Lorem.Sentence(),
@@ -80,7 +80,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             };
 
             _mockCacheDistribuido
-                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>()))
+                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>(), false))
                 .ReturnsAsync((RetornoFormacaoDetalhadaDTO)null);
 
             _mockRepositorioProposta
@@ -113,7 +113,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         public async Task DadoFormacaoNaoHomologadaNoCache_QuandoObter_EntaoDeveValidarVagasEAtualizarTurmas()
         {
             // Arrange
-            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100));
+            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100), null!);
             var formacaoDetalhada = new FormacaoDetalhada
             {
                 NomeFormacao = _faker.Lorem.Sentence(),
@@ -141,7 +141,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             };
 
             _mockCacheDistribuido
-                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>()))
+                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>(), false))
                 .ReturnsAsync(formacaoDetalhadaDto);
 
             _mockRepositorioProposta
