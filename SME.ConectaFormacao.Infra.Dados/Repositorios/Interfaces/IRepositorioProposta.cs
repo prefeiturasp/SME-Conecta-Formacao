@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
 using SME.ConectaFormacao.Dominio.Repositorios;
@@ -111,5 +111,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<ResultadoPaginado<AutocompletarNumeroHomologacaoDto>> ObterAutocompletarNumeroHomologacaoAsync(string termo, bool comCodaf, int numeroPagina, int numeroRegistros);
         Task<PropostaComTurmasDto?> ObterDetalhesPropostaComTurmasPorIdAsync(long propostaId, bool formacoesHomologadas);
         Task<(long? FormacaoAnterior, long? FormacaoPosterior)> ObterFormacoesSeguintesEAnteriorPorIdAsync(long propostaId, FiltroListaFormacaoPropostaDto filtro);
+        Task<PropostaLaudaCompletaDto?> ObterDadosLaudaCompletaAsync(long propostaId);
     }
 }

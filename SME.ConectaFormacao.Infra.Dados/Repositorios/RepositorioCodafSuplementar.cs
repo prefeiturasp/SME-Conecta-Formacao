@@ -28,7 +28,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 """;
             const string sqlBaseOrderBy = """
                 ORDER  BY
-                        CS.CRIADO_EM
+                        CS.CRIADO_EM DESC
                 """;
 
             var condicoesWhere = new StringBuilder("WHERE NOT CS.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO ");
@@ -133,14 +133,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        END AS statusCertificacaoTurma,
                        CLP.CODIGO_CURSO_EOL codigoCursoEol,
                        CLP.CODIGO_NIVEL codigoNivel,
-                       CASE 
-                       WHEN EXISTS (
-                        SELECT 1
-                        FROM PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO AS CSI
-                        WHERE CSI.CODAF_SUPLEMENTAR_ID = CS.ID AND CSI.APROVADO = TRUE
-                        ) THEN TRUE
-                        ELSE FALSE
-                       END AS possuiAprovacoes
+                        CASE 
+                        WHEN EXISTS (
+                         SELECT 1
+                         FROM PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO AS CSI
+                         WHERE CSI.CODAF_SUPLEMENTAR_ID = CS.ID AND CSI.APROVADO = TRUE
+                         ) THEN TRUE
+                         ELSE FALSE
+                        END AS possuiAprovacoes,
+                        CS.CRIADO_EM AS CriadoEm
                 {sqlBaseJoins}
                 {condicoesWhere}
                 {sqlBaseOrderBy}

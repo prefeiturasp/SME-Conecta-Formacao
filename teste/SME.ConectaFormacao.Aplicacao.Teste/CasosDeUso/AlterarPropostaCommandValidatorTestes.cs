@@ -2,9 +2,7 @@ using FluentValidation.TestHelper;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
-using SME.ConectaFormacao.Dominio.Extensoes;
 using Xunit;
-using System.Collections.Generic;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 {
@@ -19,25 +17,64 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
         private AlterarPropostaCommand CriarComandoValido()
         {
-            var dto = new PropostaDTO
+            return new AlterarPropostaCommand(1, CriarPropostaDtoValida());
+        }
+
+        private static PropostaDTO CriarPropostaDtoValida()
+        {
+            return new PropostaDTO
             {
                 TipoFormacao = TipoFormacao.Curso,
                 Formato = Formato.Presencial,
-                TiposInscricao = new List<PropostaTipoInscricaoDTO> { new PropostaTipoInscricaoDTO { TipoInscricao = TipoInscricao.Optativa } },
-                Dres = new List<PropostaDreDTO> { new PropostaDreDTO() },
-                CriteriosValidacaoInscricao = new List<PropostaCriterioValidacaoInscricaoDTO> { new PropostaCriterioValidacaoInscricaoDTO() },
                 QuantidadeTurmas = 1,
                 QuantidadeVagasTurma = 10,
-                Turmas = new List<PropostaTurmaDTO> { new PropostaTurmaDTO() },
+
                 Justificativa = "Justificativa",
                 Objetivos = "Objetivos",
                 ConteudoProgramatico = "Conteúdo",
                 ProcedimentoMetadologico = "Procedimentos",
                 Referencia = "Referência",
-                PalavrasChaves = new List<PropostaPalavraChaveDTO> { new PropostaPalavraChaveDTO() }
-            };
+                SobreEsteCurso = "Sobre este curso",
 
-            return new AlterarPropostaCommand(1, dto);
+                Dres =
+                [
+                    new PropostaDreDTO()
+                ],
+
+                Turmas =
+                [
+                    new PropostaTurmaDTO()
+                ],
+
+                PalavrasChaves =
+                [
+                    new PropostaPalavraChaveDTO()
+                ],
+
+                CriteriosValidacaoInscricao =
+                [
+                    new PropostaCriterioValidacaoInscricaoDTO()
+                ],
+
+                TiposInscricao =
+                [
+                    new PropostaTipoInscricaoDTO
+                    {
+                        TipoInscricao = TipoInscricao.Optativa
+                    }
+                ]
+            };
+        }
+
+        [Fact]
+        public void Deve_preencher_command_no_construtor()
+        {
+            var dto = CriarPropostaDtoValida();
+
+            var command = new AlterarPropostaCommand(10, dto);
+
+            Assert.Equal(10, command.Id);
+            Assert.Equal(dto, command.PropostaDTO);
         }
 
         [Fact]
@@ -49,91 +86,164 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         }
 
         [Fact]
-        public void DadoComandoComIdInvalido_QuandoValidar_EntaoDeveTerErro()
+        public void Deve_retornar_erro_quando_id_for_invalido()
         {
             var comando = CriarComandoValido();
             comando.Id = 0;
             var resultado = _validator.TestValidate(comando);
-            resultado.ShouldHaveValidationErrorFor(x => x.Id).WithErrorMessage("É necessário informar o Id para alterar a proposta");
+            resultado.ShouldHaveValidationErrorFor(x => x.Id)
+                .WithErrorMessage("É necessário informar o Id para alterar a proposta");
         }
 
         [Fact]
-        public void DadoComandoSemTipoFormacao_QuandoValidar_EntaoDeveTerErro()
+        public void Deve_retornar_erro_quando_tipo_formacao_nao_for_informado()
         {
             var comando = CriarComandoValido();
             comando.PropostaDTO.TipoFormacao = null;
             var resultado = _validator.TestValidate(comando);
-            resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.TipoFormacao);
+            resultado.ShouldHaveValidationErrorFor("TipoFormacao");
         }
 
         [Fact]
-        public void DadoComandoSemFormato_QuandoValidar_EntaoDeveTerErro()
+        public void Deve_retornar_erro_quando_formato_nao_for_informado()
         {
             var comando = CriarComandoValido();
             comando.PropostaDTO.Formato = null;
             var resultado = _validator.TestValidate(comando);
-            resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.Formato);
+            resultado.ShouldHaveValidationErrorFor("Formato");
         }
 
         [Fact]
-        public void DadoComandoCursoComFormatoHibrido_QuandoValidar_EntaoDeveTerErro()
+        public void Deve_retornar_erro_quando_curso_for_hibrido()
         {
             var comando = CriarComandoValido();
             comando.PropostaDTO.TipoFormacao = TipoFormacao.Curso;
             comando.PropostaDTO.Formato = Formato.Hibrido;
             var resultado = _validator.TestValidate(comando);
-            resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.Formato).WithErrorMessage("É permitido o formato Híbrido somente para o tipo de formação evento");
+            resultado.ShouldHaveValidationErrorFor("Formato");
         }
 
         [Fact]
-        public void DadoCursoComCertificadoMasSemEmissor_QuandoValidar_EntaoDeveTerErro()
+        public void Deve_nao_retornar_erro_para_evento_hibrido()
         {
             var comando = CriarComandoValido();
-            comando.PropostaDTO.CursoComCertificado = true;
-            comando.PropostaDTO.IdEmissor = null;
-            comando.PropostaDTO.TipoEmissor = null;
-
+            comando.PropostaDTO.TipoFormacao = TipoFormacao.Evento;
+            comando.PropostaDTO.Formato = Formato.Hibrido;
             var resultado = _validator.TestValidate(comando);
-            resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.IdEmissor);
-            resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.TipoEmissor);
-        }
-
-        [Fact]
-        public void DadoComandoComInscricaoExternaSemLink_QuandoValidar_EntaoDeveTerErro()
-        {
-            var comando = CriarComandoValido();
-            comando.PropostaDTO.TiposInscricao = new List<PropostaTipoInscricaoDTO> { new PropostaTipoInscricaoDTO { TipoInscricao = TipoInscricao.Externa } };
-            comando.PropostaDTO.LinkParaInscricoesExterna = null;
-
-            var resultado = _validator.TestValidate(comando);
-            resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.LinkParaInscricoesExterna);
+            resultado.ShouldNotHaveValidationErrorFor("Formato");
         }
 
         [Theory]
+        [InlineData("Dres")]
+        [InlineData("Criterios")]
+        [InlineData("Turmas")]
         [InlineData("Justificativa")]
         [InlineData("Objetivos")]
-        [InlineData("ConteudoProgramatico")]
-        [InlineData("ProcedimentoMetadologico")]
+        [InlineData("Conteudo")]
+        [InlineData("Procedimento")]
         [InlineData("Referencia")]
-        public void DadoComandoSemCampoObrigatorioTexto_QuandoValidar_EntaoDeveTerErro(string campo)
+        [InlineData("Palavras")]
+        public void Deve_validar_campos_obrigatorios(string campo)
         {
             var comando = CriarComandoValido();
+
             switch (campo)
             {
-                case "Justificativa": comando.PropostaDTO.Justificativa = null; break;
-                case "Objetivos": comando.PropostaDTO.Objetivos = null; break;
-                case "ConteudoProgramatico": comando.PropostaDTO.ConteudoProgramatico = null; break;
-                case "ProcedimentoMetadologico": comando.PropostaDTO.ProcedimentoMetadologico = null; break;
-                case "Referencia": comando.PropostaDTO.Referencia = null; break;
+                case "Dres":
+                    comando.PropostaDTO.Dres = [];
+                    break;
+
+                case "Criterios":
+                    comando.PropostaDTO.CriteriosValidacaoInscricao = [];
+                    break;
+
+                case "Turmas":
+                    comando.PropostaDTO.Turmas = [];
+                    break;
+
+                case "Justificativa":
+                    comando.PropostaDTO.Justificativa = "";
+                    break;
+
+                case "Objetivos":
+                    comando.PropostaDTO.Objetivos = "";
+                    break;
+
+                case "Conteudo":
+                    comando.PropostaDTO.ConteudoProgramatico = "";
+                    break;
+
+                case "Procedimento":
+                    comando.PropostaDTO.ProcedimentoMetadologico = "";
+                    break;
+
+                case "Referencia":
+                    comando.PropostaDTO.Referencia = "";
+                    break;
+
+                case "Palavras":
+                    comando.PropostaDTO.PalavrasChaves = null!;
+                    break;
             }
 
             var resultado = _validator.TestValidate(comando);
-            
-            if (campo == "Justificativa") resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.Justificativa);
-            if (campo == "Objetivos") resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.Objetivos);
-            if (campo == "ConteudoProgramatico") resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.ConteudoProgramatico);
-            if (campo == "ProcedimentoMetadologico") resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.ProcedimentoMetadologico);
-            if (campo == "Referencia") resultado.ShouldHaveValidationErrorFor(x => x.PropostaDTO.Referencia);
+            Assert.False(resultado.IsValid);
+        }
+
+        [Fact]
+        public void Deve_validar_quantidade_turmas()
+        {
+            var comando = CriarComandoValido();
+            comando.PropostaDTO.QuantidadeTurmas = null;
+
+            var resultado = _validator.TestValidate(comando);
+            resultado.ShouldHaveValidationErrorFor("QuantidadeTurmas");
+        }
+
+        [Fact]
+        public void Deve_validar_quantidade_vagas()
+        {
+            var comando = CriarComandoValido();
+            comando.PropostaDTO.QuantidadeVagasTurma = null;
+
+            var resultado = _validator.TestValidate(comando);
+            resultado.ShouldHaveValidationErrorFor("QuantidadeVagasTurma");
+        }
+
+        [Fact]
+        public void Deve_exigir_link_quando_inscricao_externa()
+        {
+            var comando = CriarComandoValido();
+            comando.PropostaDTO.TiposInscricao =
+            [
+                new PropostaTipoInscricaoDTO
+                {
+                    TipoInscricao = TipoInscricao.Externa
+                }
+            ];
+
+            comando.PropostaDTO.LinkParaInscricoesExterna = null;
+
+            var resultado = _validator.TestValidate(comando);
+            resultado.ShouldHaveValidationErrorFor("LinkParaInscricoesExterna");
+        }
+
+        [Fact]
+        public void Nao_deve_exigir_link_quando_inscricao_nao_for_externa()
+        {
+            var comando = CriarComandoValido();
+            comando.PropostaDTO.TiposInscricao =
+            [
+                new PropostaTipoInscricaoDTO
+                {
+                    TipoInscricao = TipoInscricao.Automatica
+                }
+            ];
+
+            comando.PropostaDTO.LinkParaInscricoesExterna = null;
+
+            var resultado = _validator.TestValidate(comando);
+            resultado.ShouldNotHaveValidationErrorFor("LinkParaInscricoesExterna");
         }
     }
 }

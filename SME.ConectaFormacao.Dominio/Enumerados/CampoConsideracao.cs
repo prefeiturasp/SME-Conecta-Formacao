@@ -99,7 +99,10 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         DescricaoFuncoesEspecificasOutros = 31,
 
         [Display(Name = "DescriÃ§Ã£o dos critÃ©rios para validaÃ§Ã£o das inscriÃ§Ãµes (outros)")]
-        DescricaoCriteriosValidacaoInscricaoOutros = 32
+        DescricaoCriteriosValidacaoInscricaoOutros = 32,
+
+        [Display(Name = "Sobre este curso")]
+        SobreEsteCurso = 33
     }
 
     [ExcludeFromCodeCoverage]

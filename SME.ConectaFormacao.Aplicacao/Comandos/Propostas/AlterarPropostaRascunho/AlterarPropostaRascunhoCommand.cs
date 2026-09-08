@@ -27,6 +27,10 @@ namespace SME.ConectaFormacao.Aplicacao
             RuleFor(f => f.Id)
                 .GreaterThan(0)
                 .WithMessage("É necessário informar o Id para alterar a proposta");
+
+            RuleFor(f => f.PropostaDTO.SobreEsteCurso)
+                .NotEmpty()
+                .WithMessage("É necessário informar sobre este curso para alterar a proposta");
         }
     }
 }

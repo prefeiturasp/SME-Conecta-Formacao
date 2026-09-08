@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Relatorios;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -20,6 +20,25 @@ namespace SME.ConectaFormacao.Webapi.Controllers
                 return Accepted();
 
             return ProcessarResultado(resultado);
+        }
+
+        [HttpGet("propostas/{propostaId:long}/lauda-completa/docx")]
+        [ProducesResponseType(typeof(FileContentResult), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 404)]
+        public async Task<IActionResult> ObterRelatorioLaudaCompletaDocx(
+            [FromServices] ICasoDeUsoObterRelatorioLaudaCompletaDocx casoDeUso,
+            [FromRoute] long propostaId)
+        {
+            var arquivoBytes = await casoDeUso.ExecutarAsync(propostaId);
+            
+            if (arquivoBytes == null || arquivoBytes.Length == 0)
+                return NotFound("Proposta não encontrada ou não possui dados para geração do relatório.");
+
+            var contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            var nomeArquivo = $"Lauda_Completa_Proposta_{propostaId}.docx";
+
+            return File(arquivoBytes, contentType, nomeArquivo);
         }
     }
 }

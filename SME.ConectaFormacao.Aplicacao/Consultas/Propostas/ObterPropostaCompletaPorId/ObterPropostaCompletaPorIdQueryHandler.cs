@@ -93,6 +93,7 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaCompletaDTO.OutrosCriterios = proposta.OutrosCriterios;
             propostaCompletaDTO.HorasTotais = proposta.HorasTotais;
             propostaCompletaDTO.CargaHorariaTotalOutra = proposta.CargaHorariaTotalOutra;
+            propostaCompletaDTO.SobreEsteCurso = proposta.SobreEsteCurso;
 
             if (proposta.ArquivoImagemDivulgacaoId.HasValue)
             {

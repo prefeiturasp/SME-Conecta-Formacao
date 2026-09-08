@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
 {
@@ -15,5 +15,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
         public string? CodigoCursoEol { get; set; }
         public string? CodigoNivel { get; set; }
         public bool PossuiAprovacoes { get; set; }
+        public DateTime CriadoEm { get; set; }
     }
 }

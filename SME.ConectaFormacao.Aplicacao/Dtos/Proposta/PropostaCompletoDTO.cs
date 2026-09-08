@@ -22,6 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string CargaHorariaDistancia { get; set; }
         public string Justificativa { get; set; }
         public string Objetivos { get; set; }
+        public string SobreEsteCurso { get; set; } = string.Empty;
         public string ConteudoProgramatico { get; set; }
         public string ProcedimentoMetadologico { get; set; }
         public string Referencia { get; set; }

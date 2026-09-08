@@ -1,5 +1,8 @@
-﻿namespace SME.ConectaFormacao.Infra.Dados.Queries
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SME.ConectaFormacao.Infra.Dados.Queries
 {
+    [ExcludeFromCodeCoverage]
     public static class RelatoriosInscritosQueries
     {
         public const string ObterInscritosPorFormacao =

@@ -532,6 +532,63 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             transacaoDbMock.Verify(t => t.Commit(), Times.Never);
         }
 
+        [Fact]
+        public async Task DadoPropostaSemSobreEsteCurso_QuandoProcessarComando_EntaoDeveAcumularFalhaELancarNegocioException()
+        {
+            // Arrange
+            var comando = CriarComandoValidoParaValidacoesFinais();
+            comando.PropostaDTO.SobreEsteCurso = string.Empty;
+            var mensagemErro = MensagemNegocio.SOBRE_ESTE_CURSO_NAO_INFORMADO;
+
+            ConfigurarDependenciasIniciaisComSucesso();
+            ConfigurarMapeamentoEComandosIntermediarios();
+
+            _mediator
+                .Setup(m => m.Send(It.IsAny<ValidarDetalhamentoDaPropostaCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync([mensagemErro]);
+
+            // Act
+            var act = async () => await _sut.Handle(comando, CancellationToken.None);
+
+            // Assert
+            var excecao = await act.Should().ThrowAsync<NegocioException>();
+
+            excecao.Which.Mensagens.Should().Contain(mensagemErro);
+        }
+
+        [Fact]
+        public async Task DadoPropostaComSobreEsteCursoPreenchido_QuandoProcessarComando_EntaoDevePassarNaValidacao()
+        {
+            // Arrange
+            var comando = CriarComandoValidoParaValidacoesFinais();
+            const string sobreEsteCursoEsperado = "Este curso aborda os principais conceitos de formação pedagógica.";
+            comando.PropostaDTO.SobreEsteCurso = sobreEsteCursoEsperado;
+
+            var transacaoDbMock = ConfigurarTransacaoComSucesso();
+
+            ConfigurarDependenciasIniciaisComSucesso();
+            ConfigurarMapeamentoEComandosIntermediarios();
+
+            _repositorioProposta
+                .Setup(r => r.Atualizar(It.IsAny<Proposta>()))
+                .ReturnsAsync(CriarPropostaValida());
+
+            _mediator
+                .Setup(m => m.Send(It.IsAny<SalvarPropostaCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            // Act
+            var resultado = await _sut.Handle(comando, CancellationToken.None);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            resultado.Mensagem.Should().Be(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, comando.Id));
+
+            transacaoDbMock.Verify(t => t.Commit(), Times.Once);
+            transacaoDbMock.Verify(t => t.Dispose(), Times.Once);
+            transacaoDbMock.Verify(t => t.Rollback(), Times.Never);
+        }
+
         #region Factory Methods
 
         private Mock<System.Data.IDbTransaction> ConfigurarTransacaoComSucesso()

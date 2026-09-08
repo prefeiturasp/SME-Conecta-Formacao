@@ -25,6 +25,9 @@ namespace SME.ConectaFormacao.Aplicacao
     {
         public SalvarPropostaCommandValidator()
         {
+            RuleFor(f => f.Proposta.SobreEsteCurso)
+            .NotEmpty()
+            .WithMessage("É necessário informar sobre este curso para inserir a proposta");
         }
     }
 }

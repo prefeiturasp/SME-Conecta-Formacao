@@ -16,5 +16,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares
         public string? CodigoCursoEol { get; set; }
         public string? CodigoNivel { get; set; }
         public bool PossuiAprovacoes { get; set; }
+        public DateTime CriadoEm { get; set; }
     }
 }

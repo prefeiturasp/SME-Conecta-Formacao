@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador;
 using SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador.Intefaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Infra.Dados.Servicos;
 
 namespace SME.ConectaFormacao.IoC.Features
 {
@@ -25,6 +26,8 @@ namespace SME.ConectaFormacao.IoC.Features
                     .AddSingleton<IBlocoRegentesGerador, BlocoRegentesGerador>()
                     .AddSingleton<IBlocoAlunosGerador, BlocoAlunosGerador>()
                     .AddSingleton<IBlocoAssinaturaGerador, BlocoAssinaturaGerador>()
+                    .AddScoped<ICasoDeUsoObterRelatorioLaudaCompletaDocx, CasoDeUsoObterRelatorioLaudaCompletaDocx>()
+                    .AddScoped<IGeradorLaudaDocxService, GeradorLaudaDocxService>()
                 ;
         }
     }
