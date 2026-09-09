@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
 
@@ -38,7 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         public async Task DadoCacheVazioEFormacaoNaoEncontrada_QuandoObter_EntaoDeveLancarExcecao()
         {
             // Arrange
-            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100));
+            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100), null!);
 
             // Act & Assert
             await Assert.ThrowsAsync<NegocioException>(() => _handler.Handle(query, CancellationToken.None));
@@ -48,7 +49,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         public async Task DadoCacheVazioEFormacaoEncontrada_QuandoObter_EntaoDeveRetornarFormacaoDetalhada()
         {
             // Arrange
-            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100));
+            var formacaoId = _faker.Random.Long(1, 100);
+            var query = new ObterFormacaoDetalhadaPorIdQuery(formacaoId, null!);
             var formacaoDetalhada = new FormacaoDetalhada
             {
                 NomeFormacao = _faker.Lorem.Sentence(),
@@ -76,16 +78,27 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 Titulo = formacaoDetalhada.NomeFormacao,
                 SobreEsteCurso = formacaoDetalhada.SobreEsteCurso,
                 FormacaoHomologada = formacaoDetalhada.FormacaoHomologada,
-                UsuarioAcessibilidade = acessibilidadeDto
+                UsuarioAcessibilidade = acessibilidadeDto,
+                Turmas = []
             };
 
             _mockCacheDistribuido
-                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>()))
+                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>(), false))
                 .ReturnsAsync((RetornoFormacaoDetalhadaDTO)null);
 
             _mockRepositorioProposta
                 .Setup(r => r.ObterFormacaoDetalhadaPorIdAsync(query.Id))
                 .ReturnsAsync(formacaoDetalhada);
+
+            _mockRepositorioProposta
+                .Setup(r => r.ObterListagemFormacoesPorFiltro(It.IsAny<Infra.Dados.Dtos.FiltroListaFormacaoPropostaDto>()))
+                .ReturnsAsync(new ResultadoPaginado<long>
+                {
+                    Itens = [formacaoId],
+                    TotalRegistros = 1,
+                    PaginaAtual = 1,
+                    TamanhoPagina = 1000
+                });
 
             _mockRepositorioUsuarioAcessibilidade
                 .Setup(u => u.ObterAcessibilidadeAtualDoUsuarioAsync())
@@ -113,7 +126,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         public async Task DadoFormacaoNaoHomologadaNoCache_QuandoObter_EntaoDeveValidarVagasEAtualizarTurmas()
         {
             // Arrange
-            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100));
+            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100), null!);
             var formacaoDetalhada = new FormacaoDetalhada
             {
                 NomeFormacao = _faker.Lorem.Sentence(),
@@ -141,7 +154,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             };
 
             _mockCacheDistribuido
-                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>()))
+                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>(), false))
                 .ReturnsAsync(formacaoDetalhadaDto);
 
             _mockRepositorioProposta
