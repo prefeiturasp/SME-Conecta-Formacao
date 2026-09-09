@@ -105,14 +105,17 @@ namespace SME.ConectaFormacao.Aplicacao
             if (errosDatas.Any())
                 erros.AddRange(errosDatas);
 
-            var errosDetalhamento = await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
-            if (errosDetalhamento.Any())
-                erros.AddRange(errosDetalhamento);
+            // ✅ Validar detalhamento apenas quando NÃO for rascunho/próximo passo
+            if (!request.PropostaDTO.Situacao.EhParaSalvarRascunho())
+            {
+                var errosDetalhamento = await _mediator.Send(new ValidarDetalhamentoDaPropostaCommand(request.PropostaDTO), cancellationToken);
+                if (errosDetalhamento.Any())
+                    erros.AddRange(errosDetalhamento);
+            }
 
             var errosCritériosCertificacao = await _mediator.Send(new ValidarCertificacaoPropostaCommand(request.PropostaDTO), cancellationToken);
             if (errosCritériosCertificacao.Any())
                 erros.AddRange(errosCritériosCertificacao);
-
 
             if (erros.Any())
                 throw new NegocioException(erros);
