@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
@@ -362,6 +362,19 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromRoute] long propostaId)
         {
             return Ok(await useCase.Executar(propostaId));
+        }
+
+        [HttpPatch("{id}/numero-homologacao")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        [Permissao(Permissao.Proposta_A, Policy = "Bearer")]
+        public async Task<IActionResult> SalvarNumeroHomologacao(
+            [FromServices] ICasoDeUsoSalvarNumeroHomologacaoProposta useCase,
+            [FromRoute] long id,
+            [FromBody] PropostaNumeroHomologacaoDto dto)
+        {
+            return Ok(await useCase.Executar(id, dto));
         }
 
         [HttpGet("dashboard")]

@@ -774,5 +774,23 @@ namespace SME.ConectaFormacao.Webapi.Teste
             Assert.IsType<OkObjectResult>(resultado);
             mockUseCase.Verify(x => x.ExecutarAsync(id, homologadas), Times.Once);
         }
+
+        [Fact]
+        public async Task DadoIdEDtoValidos_QuandoSalvarNumeroHomologacao_EntaoDeveRetornarOk()
+        {
+            // Arrange
+            var mockUseCase = new Mock<ICasoDeUsoSalvarNumeroHomologacaoProposta>();
+            var id = _faker.Random.Long();
+            var dto = new PropostaNumeroHomologacaoDto { NumeroHomologacao = 12345 };
+            mockUseCase.Setup(x => x.Executar(id, dto)).ReturnsAsync(true);
+
+            // Act
+            var resultado = await _controller.SalvarNumeroHomologacao(mockUseCase.Object, id, dto);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(resultado);
+            Assert.Equal(true, okResult.Value);
+            mockUseCase.Verify(x => x.Executar(id, dto), Times.Once);
+        }
     }
 }
