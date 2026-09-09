@@ -87,7 +87,8 @@ namespace SME.ConectaFormacao.IoC.Features
                     .AddScoped<ICasoDeUsoListarMinhasDeclaracoesCodaf, CasoDeUsoListarMinhasDeclaracoesCodaf>()
                     .AddScoped<ICasoDeUsoObterDeclaracaoCodafParaDownload, CasoDeUsoObterDeclaracaoCodafParaDownload>()
                     .AddScoped<ICasoDeUsoListarTodasDeclaracoesCodaf, CasoDeUsoListarTodasDeclaracoesCodaf>()
-                    .AddScoped<ICasoDeUsoDownloadLoteDeclaracoes, CasoDeUsoDownloadLoteDeclaracoes>();
+                    .AddScoped<ICasoDeUsoDownloadLoteDeclaracoes, CasoDeUsoDownloadLoteDeclaracoes>()
+                    .AddScoped<IUtilitariosPerfis, UtilitariosPerfis>();
         }
     }
 }
