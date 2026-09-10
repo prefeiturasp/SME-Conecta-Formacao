@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Moq;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.UsuariosRedeParceria;
 using SME.ConectaFormacao.Aplicacao.Dtos.UsuarioRedeParceria;
@@ -121,7 +121,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 .Setup(m => m.Send(
                     It.Is<ObterAreaPromotoraPorIdQuery>(q => q.Id == dto.AreaPromotoraId),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((AreaPromotora)null!);
+                .ReturnsAsync((SME.ConectaFormacao.Dominio.Entidades.AreaPromotora)null!);
 
             var excecao = await Assert.ThrowsAsync<NegocioException>(
                 () => sut.Executar(UsuarioId, dto));
@@ -353,9 +353,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             };
         }
 
-        private static AreaPromotora CriarAreaPromotora(long id, Guid grupoId)
+        private static SME.ConectaFormacao.Dominio.Entidades.AreaPromotora CriarAreaPromotora(long id, Guid grupoId)
         {
-            return new AreaPromotora
+            return new SME.ConectaFormacao.Dominio.Entidades.AreaPromotora
             {
                 Id = id,
                 Nome = $"Área Promotora {id}",
