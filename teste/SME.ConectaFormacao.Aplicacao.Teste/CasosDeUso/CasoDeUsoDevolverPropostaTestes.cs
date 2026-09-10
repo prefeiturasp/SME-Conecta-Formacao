@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using EntidadeProposta = SME.ConectaFormacao.Dominio.Entidades.Proposta;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra;
 
@@ -34,7 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var devolverPropostaDto = new DevolverPropostaDTO { Justificativa = _faker.Lorem.Sentence() };
-            var proposta = new Proposta
+            var proposta = new EntidadeProposta
             {
                 Id = propostaId,
                 NomeFormacao = _faker.Commerce.ProductName(),
@@ -81,7 +82,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var devolverPropostaDto = new DevolverPropostaDTO { Justificativa = string.Empty };
-            var proposta = new Proposta { Id = propostaId };
+            var proposta = new EntidadeProposta { Id = propostaId };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterPropostaPorIdQuery>(), default)).ReturnsAsync(proposta);
 

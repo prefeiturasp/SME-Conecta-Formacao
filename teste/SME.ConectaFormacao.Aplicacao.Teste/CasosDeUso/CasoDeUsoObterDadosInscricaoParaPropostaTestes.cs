@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using MediatR;
@@ -8,6 +8,8 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using EntidadeProposta = SME.ConectaFormacao.Dominio.Entidades.Proposta;
+using EntidadeCargoFuncao = SME.ConectaFormacao.Dominio.Entidades.CargoFuncao;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -122,7 +124,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _repositorioPropostaMock
                 .Setup(r => r.ObterPorId(propostaId))
-                .ReturnsAsync((Proposta?)null);
+                .ReturnsAsync((EntidadeProposta?)null);
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () => await _casoDeUso.ExecutarAsync(propostaId));
@@ -148,7 +150,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Tipo = TipoUsuario.Interno
             };
 
-            var proposta = new Proposta { Id = propostaId };
+            var proposta = new EntidadeProposta { Id = propostaId };
             
             var cargosFuncoes = new List<CargoFuncaoEolDto>
             {
@@ -221,7 +223,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Tipo = TipoUsuario.Interno
             };
 
-            var proposta = new Proposta { Id = propostaId };
+            var proposta = new EntidadeProposta { Id = propostaId };
 
             var cargosFuncoes = new List<CargoFuncaoEolDto>
             {
@@ -311,7 +313,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Tipo = TipoUsuario.Interno
             };
 
-            var proposta = new Proposta { Id = propostaId };
+            var proposta = new EntidadeProposta { Id = propostaId };
 
             var cargosFuncoes = new List<CargoFuncaoEolDto>
             {
@@ -372,7 +374,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Tipo = TipoUsuario.Interno
             };
 
-            var proposta = new Proposta { Id = propostaId };
+            var proposta = new EntidadeProposta { Id = propostaId };
 
             var cargosFuncoes = new List<CargoFuncaoEolDto>
             {
@@ -438,7 +440,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Tipo = TipoUsuario.Interno
             };
 
-            var proposta = new Proposta { Id = propostaId };
+            var proposta = new EntidadeProposta { Id = propostaId };
 
             var cargosFuncoes = new List<CargoFuncaoEolDto>
             {
@@ -542,7 +544,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Tipo = TipoUsuario.Interno
             };
 
-            var proposta = new Proposta { Id = propostaId };
+            var proposta = new EntidadeProposta { Id = propostaId };
 
             var cargosFuncoes = new List<CargoFuncaoEolDto>
             {
@@ -620,7 +622,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Tipo = TipoUsuario.Interno
             };
 
-            var proposta = new Proposta { Id = propostaId };
+            var proposta = new EntidadeProposta { Id = propostaId };
 
             var cargosFuncoes = new List<CargoFuncaoEolDto>
             {
@@ -701,7 +703,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Tipo = TipoUsuario.Interno
             };
 
-            var proposta = new Proposta { Id = propostaId };
+            var proposta = new EntidadeProposta { Id = propostaId };
 
             var cargosFuncoes = new List<CargoFuncaoEolDto>
             {
@@ -820,7 +822,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 Tipo = TipoUsuario.Interno
             };
 
-            var proposta = new Proposta { Id = propostaId };
+            var proposta = new EntidadeProposta { Id = propostaId };
 
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<ObterUsuarioLogadoQuery>(), It.IsAny<CancellationToken>()))
