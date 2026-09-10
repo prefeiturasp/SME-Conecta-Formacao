@@ -1,6 +1,7 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterPropostaGrupoPeriodoPorPropostaId;
+using SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterSePropostaPossuiCodaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -102,6 +103,7 @@ namespace SME.ConectaFormacao.Aplicacao
             }
 
             propostaCompletaDTO.GruposPeriodos = await mediator.Send(new ObterPropostaGrupoPeriodoPorPropostaIdQuery(proposta.Id), cancellationToken);
+            propostaCompletaDTO.PossuiCodaf = await mediator.Send(new ObterSePropostaPossuiCodafQuery(proposta.Id), cancellationToken);
 
             return propostaCompletaDTO;
         }
