@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Dtos.Usuario;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using EntidadeCargoFuncao = SME.ConectaFormacao.Dominio.Entidades.CargoFuncao;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Rabbit.Dto;
 using System.Text.Json;
@@ -183,14 +184,14 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             _mocker.GetMock<IMediator>()
                 .Setup(m => m.Send(It.IsAny<ObterCargoFuncaoOutrosQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new CargoFuncao { Id = 999 });
+                .ReturnsAsync(new EntidadeCargoFuncao { Id = 999 });
 
             _mocker.GetMock<IMediator>()
                 .Setup(m => m.Send(It.Is<ObterCargoFuncaoPorCodigoEolQuery>(q => q.CodigosCargosEol.Contains(1)), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<CargoFuncao> 
+                .ReturnsAsync(new List<EntidadeCargoFuncao> 
                 { 
-                    new CargoFuncao { Id = 10, Tipo = CargoFuncaoTipo.Cargo },
-                    new CargoFuncao { Id = 20, Tipo = CargoFuncaoTipo.Funcao }
+                    new EntidadeCargoFuncao { Id = 10, Tipo = CargoFuncaoTipo.Cargo },
+                    new EntidadeCargoFuncao { Id = 20, Tipo = CargoFuncaoTipo.Funcao }
                 });
 
             // Act

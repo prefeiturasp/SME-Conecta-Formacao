@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using EntidadeProposta = SME.ConectaFormacao.Dominio.Entidades.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Relatorios;
@@ -111,7 +112,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var codafId = _faker.Random.Long(1, 1000);
             var listaPresenca = new CodafListaPresenca 
             { 
-                Proposta = new Proposta { NumeroHomologacao = 999 },
+                Proposta = new EntidadeProposta { NumeroHomologacao = 999 },
                 PropostaTurma = new PropostaTurma { Nome = "Turma X" }
             };
             typeof(CodafListaPresenca).GetProperty("Status")?.SetValue(listaPresenca, StatusCodafListaPresenca.AguardandoDf);
@@ -150,7 +151,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             var codafId = _faker.Random.Long(1, 1000);
             var listaPresenca = new CodafListaPresenca 
             { 
-                Proposta = new Proposta { NumeroHomologacao = 999 },
+                Proposta = new EntidadeProposta { NumeroHomologacao = 999 },
                 PropostaTurma = new PropostaTurma { Nome = "Turma X" }
             };
             typeof(CodafListaPresenca).GetProperty("Status")?.SetValue(listaPresenca, StatusCodafListaPresenca.Finalizado);
