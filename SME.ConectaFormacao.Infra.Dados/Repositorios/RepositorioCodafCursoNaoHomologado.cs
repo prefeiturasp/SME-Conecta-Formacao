@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -249,6 +249,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             codafCursoNaoHomologado.CodafDeclaracoes = [.. await multi.ReadAsync<CodafDeclaracao>()];
             return codafCursoNaoHomologado;
+        }
+
+        public async Task<bool> PossuiPorPropostaIdAsync(long propostaId)
+        {
+            const string query = """
+                SELECT 1
+                FROM CODAF_CURSO_NAO_HOMOLOGADO
+                WHERE PROPOSTA_ID = @propostaId
+                  AND NOT EXCLUIDO
+                LIMIT 1
+                """;
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, new { propostaId });
         }
     }
 }

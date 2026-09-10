@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
@@ -57,6 +57,7 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoObterRelatorioPropostaLaudaCompleta, CasoDeUsoObterRelatorioPropostaLaudaCompleta>()
             .AddScoped<ICasoDeUsoEnviarProposta, CasoDeUsoEnviarProposta>()
             .AddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>()
+            .AddScoped<ICasoDeUsoSalvarNumeroHomologacaoProposta, CasoDeUsoSalvarNumeroHomologacaoProposta>()
             .AddScoped<ICasoDeUsoObterTodosFormatos, CasoDeUsoObterTodosFormatos>()
             .AddScoped<ICasoDeUsoGerarPropostaTurmaVaga, CasoDeUsoGerarPropostaTurmaVaga>()
             .AddScoped<ICasoDeUsoRemoverParecerDaProposta, CasoDeUsoRemoverParecerDaProposta>()

@@ -845,6 +845,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             });
         }
 
+        public async Task<int> AtualizarNumeroHomologacao(long id, long? numeroHomologacao)
+        {
+            var query = @"update proposta 
+                          set 
+                            numero_homologacao = @numeroHomologacao, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = @id";
+
+            return await conexao.Obter().ExecuteAsync(query, new
+            {
+                id,
+                numeroHomologacao,
+                AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                AlteradoPor = contexto.NomeUsuario,
+                AlteradoLogin = contexto.UsuarioLogado
+            });
+        }
+
         public async Task InserirPalavraChave(long id, IEnumerable<PropostaPalavraChave> palavrasChaves)
         {
             foreach (var palavraChave in palavrasChaves)
