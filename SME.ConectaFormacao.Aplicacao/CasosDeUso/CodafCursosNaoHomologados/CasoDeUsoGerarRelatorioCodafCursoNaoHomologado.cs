@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
             var arquivoBytes = geradorRelatorioExcelService.GerarRelatorio(dadosRelatorio);
 
             const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            var nomeArquivo = $"CODAF_{codaf.Proposta.NumeroHomologacao}_{codaf.PropostaTurma.Nome}.xlsx";
+            var nomeArquivo = $"CODAF_{codaf.PropostaId}_{codaf.PropostaTurma.Nome}.xlsx";
             var arquivoDto = new ArquivoDto(nomeArquivo, contentType, new MemoryStream(arquivoBytes, writable: false));
 
             codaf.Finalizar();
