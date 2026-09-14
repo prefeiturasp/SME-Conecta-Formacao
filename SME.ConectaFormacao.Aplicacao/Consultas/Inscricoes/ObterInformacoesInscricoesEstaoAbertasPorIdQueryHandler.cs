@@ -25,10 +25,13 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
 
             var estaEmPeriodoDeInscricao = proposta.EstaEmPeriodoDeInscricao;
+            var tiposInscricao = await _repositorioProposta.ObterTiposInscricaoPorId(request.PropostaId);
 
             return new PodeInscreverMensagemDTO
             {
                 PodeInscrever = estaEmPeriodoDeInscricao,
+                NomeFormacao = proposta.NomeFormacao,
+                TiposInscricao = tiposInscricao.Select(t => (int)t.TipoInscricao).ToList(),
                 Mensagem = estaEmPeriodoDeInscricao
                     ? string.Empty
                     : MensagemNegocio.AS_INSCRICOES_PARA_ESTA_PROPOSTA_NAO_ESTAO_ABERTAS
