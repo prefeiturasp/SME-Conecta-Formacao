@@ -286,6 +286,8 @@ namespace SME.ConectaFormacao.Dominio.Extensoes
         }
 
         public static string MascararOuExibirValor(this long valor) => valor == 0 ? "***" : valor.ToString();
+        public static string MascararOuExibirValor(this long? valor) => valor is null or 0 ? "***" : valor.Value.ToString();
+
         public static string InserirSequencialNoHtml(this string htmlContent, long sequencial)
         {
             var marcador = "{{NUM_SEQ}}";

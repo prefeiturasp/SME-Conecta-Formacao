@@ -78,5 +78,20 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             var resultado = await casoDeUso.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros);
             return ProcessarResultado(resultado);
         }
+
+        [HttpPost("{id:long}/relatorio")]
+        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 200)]
+        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 404)]
+        [ProducesResponseType(typeof(Resultado<ArquivoDto>), 422)]
+        public async Task<IActionResult> GerarRelatorioCodaf(long id,
+            [FromServices] ICasoDeUsoGerarRelatorioCodafCursoNaoHomologado casoDeUsoGerarRelatorioCodafCursoNaoHomologado)
+        {
+            var resultado = await casoDeUsoGerarRelatorioCodafCursoNaoHomologado.ExecutarAsync(id);
+
+            if (resultado.Sucesso)
+                return File(resultado.Dados!.Stream, resultado.Dados.ContentType, resultado.Dados.Nome);
+
+            return ProcessarResultado(resultado);
+        }
     }
 }

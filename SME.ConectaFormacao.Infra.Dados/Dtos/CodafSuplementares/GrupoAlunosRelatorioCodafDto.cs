@@ -8,6 +8,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares
         public string TituloBloco { get; set; }
         public bool EhRedeParceira { get; set; }
         public List<AlunoRelatorioCodafDto> Alunos { get; set; }
+        public bool EhCodafNaoHomologado { get; set; }
     }
 }
 

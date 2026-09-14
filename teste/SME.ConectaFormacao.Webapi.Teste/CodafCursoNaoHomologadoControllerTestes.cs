@@ -21,6 +21,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoListarCodafCursoNaoHomologado> _casoDeUsoListarMock;
         private readonly Mock<ICasoDeUsoObterCodafCursoNaoHomologadoPorId> _casoDeUsoObterPorIdMock;
         private readonly Mock<ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado> _casoDeUsoListarInscritosTurmaMock;
+        private readonly Mock<ICasoDeUsoGerarRelatorioCodafCursoNaoHomologado> _casoDeUsoGerarRelatorioMock;
         private readonly CodafCursoNaoHomologadoController _sut;
         private readonly Faker _faker;
 
@@ -33,6 +34,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _casoDeUsoListarMock = mocker.GetMock<ICasoDeUsoListarCodafCursoNaoHomologado>();
             _casoDeUsoObterPorIdMock = mocker.GetMock<ICasoDeUsoObterCodafCursoNaoHomologadoPorId>();
             _casoDeUsoListarInscritosTurmaMock = mocker.GetMock<ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado>();
+            _casoDeUsoGerarRelatorioMock = mocker.GetMock<ICasoDeUsoGerarRelatorioCodafCursoNaoHomologado>();
 
             _sut = mocker.CreateInstance<CodafCursoNaoHomologadoController>();
             _faker = new Faker();
@@ -153,6 +155,43 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var objectResult = resultado.Should().BeOfType<OkObjectResult>().Subject;
             objectResult.StatusCode.Should().Be(200);
             _casoDeUsoListarInscritosTurmaMock.Verify(c => c.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoIdValido_QuandoGerarRelatorioCodaf_EntaoDeveRetornarFileResult()
+        {
+            // Arrange
+            var id = _faker.Random.Long(1, 100);
+            var arquivoDto = new ArquivoDto("relatorio.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", new MemoryStream());
+            var resultadoSucesso = Resultado<ArquivoDto>.DeSucesso(arquivoDto);
+
+            _casoDeUsoGerarRelatorioMock.Setup(c => c.ExecutarAsync(id)).ReturnsAsync(resultadoSucesso);
+
+            // Act
+            var resultado = await _sut.GerarRelatorioCodaf(id, _casoDeUsoGerarRelatorioMock.Object);
+
+            // Assert
+            var fileResult = resultado.Should().BeOfType<FileStreamResult>().Subject;
+            fileResult.FileDownloadName.Should().Be(arquivoDto.Nome);
+            fileResult.ContentType.Should().Be(arquivoDto.ContentType);
+            _casoDeUsoGerarRelatorioMock.Verify(c => c.ExecutarAsync(id), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoIdInvalido_QuandoGerarRelatorioCodaf_EntaoDeveRetornarResultadoDeErro()
+        {
+            // Arrange
+            var id = _faker.Random.Long(1, 100);
+            var resultadoErro = Resultado<ArquivoDto>.DeFalha(TipoFalha.NaoEncontrado, "Registro não encontrado.");
+
+            _casoDeUsoGerarRelatorioMock.Setup(c => c.ExecutarAsync(id)).ReturnsAsync(resultadoErro);
+
+            // Act
+            var resultado = await _sut.GerarRelatorioCodaf(id, _casoDeUsoGerarRelatorioMock.Object);
+
+            // Assert
+            resultado.Should().NotBeOfType<FileStreamResult>();
+            _casoDeUsoGerarRelatorioMock.Verify(c => c.ExecutarAsync(id), Times.Once);
         }
     }
 }
