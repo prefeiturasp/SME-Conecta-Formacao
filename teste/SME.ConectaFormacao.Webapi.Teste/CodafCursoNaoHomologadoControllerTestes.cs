@@ -1,12 +1,12 @@
 using Bogus;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafCursosNaoHomologados;
+using SME.ConectaFormacao.Aplicacao.DTOS;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Webapi.Controllers;
@@ -21,6 +21,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoListarCodafCursoNaoHomologado> _casoDeUsoListarMock;
         private readonly Mock<ICasoDeUsoObterCodafCursoNaoHomologadoPorId> _casoDeUsoObterPorIdMock;
         private readonly Mock<ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado> _casoDeUsoListarInscritosTurmaMock;
+        private readonly Mock<ICasoDeUsoFinalizarCodafCursoNaoHomologado> _casoDeUsoFinalizarMock;
         private readonly Mock<ICasoDeUsoGerarRelatorioCodafCursoNaoHomologado> _casoDeUsoGerarRelatorioMock;
         private readonly CodafCursoNaoHomologadoController _sut;
         private readonly Faker _faker;
@@ -35,6 +36,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _casoDeUsoObterPorIdMock = mocker.GetMock<ICasoDeUsoObterCodafCursoNaoHomologadoPorId>();
             _casoDeUsoListarInscritosTurmaMock = mocker.GetMock<ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado>();
             _casoDeUsoGerarRelatorioMock = mocker.GetMock<ICasoDeUsoGerarRelatorioCodafCursoNaoHomologado>();
+            _casoDeUsoFinalizarMock = mocker.GetMock<ICasoDeUsoFinalizarCodafCursoNaoHomologado>();
 
             _sut = mocker.CreateInstance<CodafCursoNaoHomologadoController>();
             _faker = new Faker();
@@ -85,7 +87,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 NumeroPagina = 1,
                 NumeroRegistros = 10
             };
-            var paginacaoDto = new PaginacaoResultadoDto<CodafCursoNaoHomologadoResumoDto>(new List<CodafCursoNaoHomologadoResumoDto>(), 0, 10);
+            var paginacaoDto = new PaginacaoResultadoDto<CodafCursoNaoHomologadoResumoDto>([], 0, 10);
             var resultadoSucesso = Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoResumoDto>>.DeSucesso(paginacaoDto);
 
             _casoDeUsoListarMock.Setup(c => c.ExecutarAsync(filtro)).ReturnsAsync(resultadoSucesso);
@@ -158,6 +160,23 @@ namespace SME.ConectaFormacao.Webapi.Teste
         }
 
         [Fact]
+        public async Task DadoDtoValido_QuandoFinalizar_EntaoDeveRetornarNoContent()
+        {
+            // Arrange
+            var id = _faker.Random.Int(1, 100);
+            var dto = new FinalizarCodafDto { ConfirmacaoCiencia = true };
+            var resultadoSucesso = Resultado.DeSucesso();
+
+            _casoDeUsoFinalizarMock.Setup(c => c.ExecutarAsync(id, dto)).ReturnsAsync(resultadoSucesso);
+
+            // Act
+            var resultado = await _sut.FinalizarCodafAsync(id, dto, _casoDeUsoFinalizarMock.Object);
+
+            // Assert
+            resultado.Should().BeOfType<NoContentResult>();
+        }
+
+        [Fact]
         public async Task DadoIdValido_QuandoGerarRelatorioCodaf_EntaoDeveRetornarFileResult()
         {
             // Arrange
@@ -195,3 +214,5 @@ namespace SME.ConectaFormacao.Webapi.Teste
         }
     }
 }
+
+

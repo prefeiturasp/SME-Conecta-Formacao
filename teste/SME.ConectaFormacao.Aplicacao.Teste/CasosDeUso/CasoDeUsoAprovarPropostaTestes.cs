@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using EntidadeProposta = SME.ConectaFormacao.Dominio.Entidades.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra;
@@ -35,7 +36,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var justificativaDto = new PropostaJustificativaDTO { Justificativa = _faker.Lorem.Sentence() };
-            var proposta = new Proposta { Id = propostaId, Situacao = SituacaoProposta.AguardandoAnaliseParecerPelaDF, Excluido = false };
+            var proposta = new EntidadeProposta { Id = propostaId, Situacao = SituacaoProposta.AguardandoAnaliseParecerPelaDF, Excluido = false };
             var perfilAdminDF = Perfis.ADMIN_DF;
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterPropostaPorIdQuery>(), default)).ReturnsAsync(proposta);
@@ -74,7 +75,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             var propostaId = _faker.Random.Long(1);
             var justificativaDto = new PropostaJustificativaDTO { Justificativa = _faker.Lorem.Sentence() };
-            var proposta = new Proposta { Id = propostaId, Situacao = SituacaoProposta.Publicada, Excluido = false };
+            var proposta = new EntidadeProposta { Id = propostaId, Situacao = SituacaoProposta.Publicada, Excluido = false };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterPropostaPorIdQuery>(), default)).ReturnsAsync(proposta);
 

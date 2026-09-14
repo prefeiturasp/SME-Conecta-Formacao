@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Npgsql;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -36,6 +36,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return await conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, parametros);
         }
+
+        public async Task<bool> PossuiPorPropostaIdAsync(long propostaId)
+        {
+            const string query = """
+                SELECT 1
+                FROM CODAF_LISTA_PRESENCA
+                WHERE PROPOSTA_ID = @propostaId
+                  AND NOT EXCLUIDO
+                LIMIT 1
+                """;
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, new { propostaId });
+        }
+
         public async Task<ResultadoPaginado<ListagemResultadoCodafListaPresencaDto>> ObterListagemResultadoCodafListaPresencaPorFiltroAsync(FiltroListagemResultadoCodafListaPresencaDto filtro)
         {
             const string sqlBaseJoins = """

@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCursosNaoHomologados
 {
@@ -12,5 +12,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCursosNaoHomologados
         public required string NomeAreaPromotora { get; set; }
         public StatusCodafCursoNaoHomologado Status { get; set; }
         public StatusDeclaracaoTurma StatusDeclaracaoTurma { get; set; }
+        public bool PossuiAprovacoes { get; set; }
     }
 }

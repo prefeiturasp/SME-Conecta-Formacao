@@ -22,6 +22,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public DateTime DataInscricaoFim { get; set; }
         public string? LinkParaInscricoesExterna { get; set; }
         public bool PodeEnviarInscricao { get; set; }
+        public long? FormacaoAnteriorId { get; set; }
+        public long? FormacaoPosteriorId { get; set; }
         public IEnumerable<RetornoTurmaDetalheDTO> Turmas { get; set; } = [];
         public UsuarioAcessibilidadeDto? UsuarioAcessibilidade { get; set; }
         public bool CursoComCertificado { get; set; }

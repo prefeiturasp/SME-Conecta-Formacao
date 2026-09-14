@@ -405,3 +405,4 @@ SME.Conecta.Notificacao.Worker/.env
 
 .github/*
 .github/copilot-instructions.md
+.agents/*
