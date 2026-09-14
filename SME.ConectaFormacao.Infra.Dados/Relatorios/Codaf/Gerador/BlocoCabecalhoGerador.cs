@@ -87,9 +87,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador
         {
             // Linha 10 - Comunicado, Data do Comunicado, Publicação do DOM
             CriarCampoChaveValor(sheet, linha, "A:B", "COMUNICADO N°:", "C:D", dados.NumeroComunicado.ToString());
-            CriarCampoChaveValor(sheet, linha, "E", "DATA:", "F:H", dados.DataComunicado.ToString("dd/MM/yyyy"));
+            CriarCampoChaveValor(sheet, linha, "E", "DATA:", "F:H", dados.DataComunicado?.ToString("dd/MM/yyyy"));
             CriarCampoChaveValor(sheet, linha, "I:K", "PUBLICAÇÃO DO D.O.C:", null, null); // Apenas label
-            CriarCampoChaveValor(sheet, linha, "L", "DATA:", "M:N", dados.DataPublicacaoDom.ToString("dd/MM/yyyy"));
+            CriarCampoChaveValor(sheet, linha, "L", "DATA:", "M:N", dados.DataPublicacaoDom?.ToString("dd/MM/yyyy"));
             CriarCampoChaveValor(sheet, linha++, "O", "PÁGINA:", "P", dados.PaginaDom.ToString());
         }
 
@@ -124,12 +124,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador
 
         private static void RenderizarDadosAulas(IXLWorksheet sheet, ref int linha, CabecalhoRelatorioCodafDto dados)
         {
-            var periodo = $"{dados.DataPeriodoRealizacaoInicio:dd/MM/yyyy} a {dados.DataPeriodoRealizacaoFim:dd/MM/yyyy}";
+            var periodo = $"{FormatarDataOuMascara(dados.DataPeriodoRealizacaoInicio)} a {FormatarDataOuMascara(dados.DataPeriodoRealizacaoFim)}";
             CriarCampoChaveValor(sheet, linha, "A:B", "PERÍODO DE REALIZAÇÃO:", "C:G", periodo);
 
             string textoDatas = FormatarDatasAulas(dados.DataDasAulasSincronas);
             CriarCampoChaveValor(sheet, linha++, "H:L", "DATAS DAS AULAS SÍNCRONAS/ PRESENCIAIS:", "M:T", textoDatas);
         }
+        private static string FormatarDataOuMascara(DateTime? data) => data?.ToString("dd/MM/yyyy") ?? "***";
 
         private static void RenderizarCargaHoraria(IXLWorksheet sheet, ref int linha, CabecalhoRelatorioCodafDto dados)
         {
