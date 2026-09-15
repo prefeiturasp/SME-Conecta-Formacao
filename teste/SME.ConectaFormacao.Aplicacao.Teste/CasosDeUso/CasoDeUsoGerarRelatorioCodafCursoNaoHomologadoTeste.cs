@@ -166,9 +166,9 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         public async Task Deve_Gerar_Arquivo_Finalizar_E_Atualizar_Codaf_Quando_Tudo_Correto()
         {
             var id = faker.Random.Long(1);
-            var numeroHomologacao = faker.Random.Long(1, 9999);
+            var propostaId = faker.Random.Long(1, 9999);
             var nomeTurma = faker.Random.Word();
-            var codaf = CriarCodaf(criadoLogin: "usuario.logado", numeroHomologacao: numeroHomologacao, nomeTurma: nomeTurma);
+            var codaf = CriarCodaf(criadoLogin: "usuario.logado", propostaId: propostaId, nomeTurma: nomeTurma);
 
             var dadosRelatorio = new DadosPrincipaisRelatorioCodafCursoNaoHomologadoDto();
             var arquivoBytes = faker.Random.Bytes(10);
@@ -204,7 +204,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             var arquivo = resultado.Dados;
             arquivo.Should().NotBeNull();
-            arquivo!.Nome.Should().Be($"CODAF_{numeroHomologacao}_{nomeTurma}.xlsx");
+            arquivo!.Nome.Should().Be($"CODAF_{propostaId}_{nomeTurma}.xlsx");
             arquivo.ContentType.Should().Be("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
             mocker.GetMock<IGeradorRelatorioCodafCursoNaoHomologadoExcelService>()
@@ -221,13 +221,13 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         /// </summary>
         private static CodafCursoNaoHomologado CriarCodaf(
             string criadoLogin,
-            long numeroHomologacao = 123,
+            long propostaId = 123,
             string nomeTurma = "Turma Teste")
         {
-            return new CodafCursoNaoHomologado
+            return new CodafCursoNaoHomologado(propostaId, propostaTurmaId: 1, observacao: null)
             {
                 CriadoLogin = criadoLogin,
-                Proposta = new Proposta { NumeroHomologacao = numeroHomologacao },
+                Proposta = new Proposta { Id = propostaId },
                 PropostaTurma = new PropostaTurma { Nome = nomeTurma }
             };
         }
