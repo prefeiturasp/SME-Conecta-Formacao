@@ -1753,7 +1753,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             // 1. Configuração Básica e Paginação
             var offset = (filtro.Pagina - 1) * filtro.TamanhoPagina;
 
-            parametros.Add("@dataAtual", DateTimeExtension.HorarioBrasilia().Date);
+            parametros.Add("@dataAtual", DateTimeExtension.HorarioBrasilia());
             parametros.Add("@situacao", SituacaoProposta.Publicada);
             parametros.Add("@tipoInscricao", new int[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa });
 
@@ -1786,7 +1786,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 WHERE NOT p.excluido 
                       AND pti.tipo_inscricao = ANY(@tipoInscricao)
                       AND p.situacao = @situacao 
-                      AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date                
+                      AND @dataAtual BETWEEN p.data_inscricao_inicio AND p.data_inscricao_fim             
                 """);
 
             if (filtro.FiltrarPorPerfil)
@@ -2023,6 +2023,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var tipoInscricao = new[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
             var situacao = (int)SituacaoProposta.Publicada;
 
+            DateTime dataAtual = DateTimeExtension.HorarioBrasilia();
+
             const string query = """
             -- Formação Detalhada
             select
@@ -2044,7 +2046,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             where p.id = @propostaId 
                 and not p.excluido
                 and pti.tipo_inscricao = any(@tipoInscricao) 
-                and p.situacao = @situacao;
+                and p.situacao = @situacao
+                and @dataAtual BETWEEN p.data_inscricao_inicio AND p.data_inscricao_fim;
 
             -- Area Promotora
             select ap.nome
@@ -2130,7 +2133,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             );
             """;
 
-            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao });
+            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao, dataAtual });
 
             var formacaoDetalhe = await queryMultiple.ReadFirstOrDefaultAsync<FormacaoDetalhada>();
 
