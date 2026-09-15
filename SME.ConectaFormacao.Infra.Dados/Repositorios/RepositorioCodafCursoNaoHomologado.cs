@@ -348,7 +348,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                LEFT JOIN PUBLIC.PROPOSTA_GRUPO_PERIODO PGP ON PGP.ID = PGPT.GRUPO_PERIODO_ID AND NOT PGP.EXCLUIDO
         WHERE  CCNH.ID = @codafId AND NOT CCNH.EXCLUIDO;
 
-        -- Data das Aulas (mesma lógica do homologado — ligado direto por PROPOSTA_TURMA_ID)
+        -- Data das Aulas
         SELECT PED.DATA_INICIO AS dataInicio, PED.DATA_FIM AS dataFim
         FROM   PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH
                INNER JOIN PUBLIC.PROPOSTA_ENCONTRO_TURMA AS PET ON PET.TURMA_ID = CCNH.PROPOSTA_TURMA_ID
@@ -360,21 +360,24 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
           AND NOT PET.EXCLUIDO
           AND NOT PED.EXCLUIDO;
 
-        -- Regentes (idêntico ao homologado)
+        -- Regentes
         SELECT COALESCE(U.NOME, PR.NOME_REGENTE) AS nome,
                COALESCE(PR.REGISTRO_FUNCIONAL, PR.CPF) AS registroFuncional,
-               CC.CODIGO_CERTIFICADO AS codigoCertificado
+               CD.CODIGO_DECLARACAO AS codigoCertificado
         FROM   PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH
                INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON PRT.TURMA_ID = CCNH.PROPOSTA_TURMA_ID
                INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PR.ID = PRT.PROPOSTA_REGENTE_ID
                LEFT JOIN PUBLIC.USUARIO AS U ON U.LOGIN = PR.REGISTRO_FUNCIONAL AND NOT U.EXCLUIDO
-               LEFT JOIN PUBLIC.CODAF_CERTIFICADOS AS CC ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID AND NOT CC.EXCLUIDO
+               LEFT JOIN PUBLIC.CODAF_DECLARACOES AS CD
+                      ON CD.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
+                     AND CD.CODAF_CURSO_NAO_HOMOLOGADO_ID = CCNH.ID
+                     AND NOT CD.EXCLUIDO
         WHERE  CCNH.ID = @codafId
           AND  NOT CCNH.EXCLUIDO
           AND  NOT PRT.EXCLUIDO
           AND  NOT PR.EXCLUIDO;
 
-        -- Participantes (schema PRÓPRIO do não homologado)
+        -- Participantes
         SELECT U.LOGIN AS documento,
                (U.LOGIN <> U.CPF) AS temRf,
                U.NOME,
