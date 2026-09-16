@@ -28,7 +28,7 @@ export default defineConfig({
 
     watchForFileChanges: true,
 
-    baseUrl: 'https://hom-conectaformacao.sme.prefeitura.sp.gov.br',
+    baseUrl: 'https://qa-conectaformacao.sme.prefeitura.sp.gov.br',
 
     viewportWidth: 1920,
     viewportHeight: 1080,

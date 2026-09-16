@@ -1,6 +1,6 @@
 # language: pt
 
-Funcionalidade: Cadastro de Nova inscrição
+Funcionalidade: Cadastro de nova inscrição
 
   Contexto:
     Dado eu acesso o sistema com a visualização web

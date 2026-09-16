@@ -10,9 +10,10 @@ class Inscricoes_Localizadores {
   btn_buscar_formacoes = () => '.ant-row > .ant-btn'  
   btn_detalhes_formacoes = () => 'button.ant-btn-primary:contains("Saiba mais")'
   card_proximas_formacoes = () => '.ant-card > .ant-card-body'
+  opcoes_filtro = () => '.ant-select-item-option-content'
 
   // cadastrar
-  btn_enviar_inscricao = () => '.ant-col > .ant-btn'
+  btn_enviar_inscricao = () => '.ant-btn > strong'
   btn_voltar = () => '#CF_BUTTON_VOLTAR'
   input_turma = () => '#CF_SELECT_TURMA_INSCRICAO'
   input_deficiencia = () => '#pessoaComDeficiencia'  

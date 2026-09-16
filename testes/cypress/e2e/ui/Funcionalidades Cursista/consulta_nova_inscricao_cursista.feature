@@ -1,6 +1,6 @@
 # language: pt
 
-Funcionalidade: Consulta de Nova inscrição
+Funcionalidade: Consulta de nova inscrição
 
   Contexto:
     Dado eu acesso o sistema com a visualização web
@@ -16,10 +16,10 @@ Funcionalidade: Consulta de Nova inscrição
       | campo   | valor          | caso                      |
       | público | AGENTE ESCOLAR | Selecionar público alvo   |
       | título  | Teste          | Buscar título             |
-      | área    | Teste          | Selecionar área promotora |
+      | área    | APROFEM        | Selecionar área promotora |
       | data    | 01/01/2026     | Filtrar data              |
       | formato | Presencial     | Selecionar formato        |
-      | palavra |  DF            | Selecionar palavra chave  |
+      | palavra | ARTE           | Selecionar palavra chave  |
 
   Esquema do Cenário: Validar a consulta de: <caso>
     Quando acesso o menu Minhas Inscrições

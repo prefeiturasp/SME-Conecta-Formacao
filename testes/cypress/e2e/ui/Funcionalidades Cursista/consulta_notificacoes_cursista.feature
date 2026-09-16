@@ -1,6 +1,6 @@
 # language: pt
 
-Funcionalidade: Consulta de Notificações
+Funcionalidade: Consulta de notificações
 
   Contexto:
     Dado eu acesso o sistema com a visualização web
