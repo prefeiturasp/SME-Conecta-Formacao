@@ -1,6 +1,6 @@
 # language: pt
 
-Funcionalidade: Consulta de Minhas Inscrições
+Funcionalidade: Consulta de minhas inscrições
 
   Contexto:
     Dado eu acesso o sistema com a visualização web

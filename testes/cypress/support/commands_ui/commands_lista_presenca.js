@@ -32,7 +32,7 @@ Cypress.Commands.add('filtrar_lista_presenca', (situacao) => {
   cy.get(lista_presenca_localizadores.campo_codigo(), { timeout: 10000 })
     .should('be.visible')
     .clear()
-    .type('390')
+    .type('359')
 
   cy.get(lista_presenca_localizadores.btn_filtrar(), { timeout: 30000 })
     .should('be.visible')

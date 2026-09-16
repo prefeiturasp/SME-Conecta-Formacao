@@ -13,6 +13,10 @@ Cypress.Commands.add('validar_filtros_nova_inscricao', (campo, valor) => {
     'palavra': nova_inscricao_localizadores.select_palavras_chave()
   }
 
+  if (!filtros[campo]) {
+    throw new Error(`Filtro "${campo}" não está configurado no comando.`)
+  }
+
   cy.get(filtros[campo], { timeout: 10000 })
     .should('be.visible')
     .click()
@@ -25,12 +29,16 @@ Cypress.Commands.add('validar_filtros_nova_inscricao', (campo, valor) => {
 
   } else {
 
-    cy.contains(valor)
+    cy.get(nova_inscricao_localizadores.opcoes_filtro(), { timeout: 10000 })
+      .contains(valor)
       .should('be.visible')
+      .click()
+
+    cy.get(filtros[campo])
       .click()
   }
 
-  cy.get(nova_inscricao_localizadores.btn_buscar_formacoes())
+  cy.get(nova_inscricao_localizadores.btn_buscar_formacoes(), { timeout: 10000 })
     .should('be.visible')
     .click()
 })
@@ -118,10 +126,6 @@ Cypress.Commands.add('cancelar_proximas_formacoes', () => {
   cy.get(nova_inscricao_localizadores.btn_detalhes_formacoes(), { timeout: 10000 })
     .should('be.visible')
     .first()
-    .click()
-
-  cy.get(nova_inscricao_localizadores.btn_enviar_inscricao(), { timeout: 10000 })
-    .should('be.visible') 
     .click()
 
   cy.get(nova_inscricao_localizadores.btn_voltar(), { timeout: 10000 })
