@@ -7,11 +7,11 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares
         public int NumeroHomologacao { get; set; }
         public int CodigoEventoSigpec { get; set; }
         public int NumeroComunicado { get; set; }
-        public DateTime DataComunicado { get; set; }
-        public DateTime DataPublicacaoDom { get; set; }
+        public DateTime? DataComunicado { get; set; }
+        public DateTime? DataPublicacaoDom { get; set; }
         public int PaginaDom { get; set; }
-        public DateTime DataPeriodoRealizacaoInicio { get; set; }
-        public DateTime DataPeriodoRealizacaoFim { get; set; }
+        public DateTime? DataPeriodoRealizacaoInicio { get; set; }
+        public DateTime? DataPeriodoRealizacaoFim { get; set; }
         public List<DateTime> DataDasAulasSincronas { get; set; } = [];
         public int CargaHorariaTotal { get; set; }
         public int CargaHorariaDistancia { get; set; }

@@ -13,7 +13,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public string? FormatoDescricao { get; set; }
         public string? Periodo { get; set; }
         public string? PeriodoInscricao { get; set; }
-        public string? Justificativa { get; set; }
+        public string? SobreEsteCurso { get; set; }
         public string[]? PublicosAlvo { get; set; }
         public string[]? PalavrasChaves { get; set; } //Publicos Alvo para vagas remanescentes
         public bool InscricaoEncerrada { get; set; }
@@ -22,6 +22,8 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public DateTime DataInscricaoFim { get; set; }
         public string? LinkParaInscricoesExterna { get; set; }
         public bool PodeEnviarInscricao { get; set; }
+        public long? FormacaoAnteriorId { get; set; }
+        public long? FormacaoPosteriorId { get; set; }
         public IEnumerable<RetornoTurmaDetalheDTO> Turmas { get; set; } = [];
         public UsuarioAcessibilidadeDto? UsuarioAcessibilidade { get; set; }
         public bool CursoComCertificado { get; set; }

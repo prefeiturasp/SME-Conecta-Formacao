@@ -1,18 +1,12 @@
 ﻿using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
-    public class ObterFormacaoDetalhadaPorIdQuery : IRequest<RetornoFormacaoDetalhadaDTO>
-    {
-        public ObterFormacaoDetalhadaPorIdQuery(long id)
-        {
-            Id = id;
-        }
+    public record ObterFormacaoDetalhadaPorIdQuery(long Id, FiltroListaFormacaoPropostaDto Filtro) : IRequest<RetornoFormacaoDetalhadaDTO>;
 
-        public long Id { get; }
-    }
     public class ObterFormacaoDetalhadaPorIdQueryValidator : AbstractValidator<ObterFormacaoDetalhadaPorIdQuery>
     {
         public ObterFormacaoDetalhadaPorIdQueryValidator()

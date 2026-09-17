@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Dommel;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
@@ -839,6 +839,26 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 id,
                 situacaoProposta,
                 grupoGestaoId,
+                AlteradoEm = DateTimeExtension.HorarioBrasilia(),
+                AlteradoPor = contexto.NomeUsuario,
+                AlteradoLogin = contexto.UsuarioLogado
+            });
+        }
+
+        public async Task<int> AtualizarNumeroHomologacao(long id, long? numeroHomologacao)
+        {
+            var query = @"update proposta 
+                          set 
+                            numero_homologacao = @numeroHomologacao, 
+                            alterado_em = @AlteradoEm, 
+                            alterado_por = @AlteradoPor, 
+                            alterado_login = @AlteradoLogin 
+                          where not excluido and id = @id";
+
+            return await conexao.Obter().ExecuteAsync(query, new
+            {
+                id,
+                numeroHomologacao,
                 AlteradoEm = DateTimeExtension.HorarioBrasilia(),
                 AlteradoPor = contexto.NomeUsuario,
                 AlteradoLogin = contexto.UsuarioLogado
@@ -1733,7 +1753,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             // 1. Configuração Básica e Paginação
             var offset = (filtro.Pagina - 1) * filtro.TamanhoPagina;
 
-            parametros.Add("@dataAtual", DateTimeExtension.HorarioBrasilia().Date);
+            parametros.Add("@dataAtual", DateTimeExtension.HorarioBrasilia());
             parametros.Add("@situacao", SituacaoProposta.Publicada);
             parametros.Add("@tipoInscricao", new int[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa });
 
@@ -1766,7 +1786,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 WHERE NOT p.excluido 
                       AND pti.tipo_inscricao = ANY(@tipoInscricao)
                       AND p.situacao = @situacao 
-                      AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date                
+                      AND @dataAtual BETWEEN p.data_inscricao_inicio AND p.data_inscricao_fim             
                 """);
 
             if (filtro.FiltrarPorPerfil)
@@ -2003,6 +2023,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var tipoInscricao = new[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
             var situacao = (int)SituacaoProposta.Publicada;
 
+            DateTime dataAtual = DateTimeExtension.HorarioBrasilia();
+
             const string query = """
             -- Formação Detalhada
             select
@@ -2013,7 +2035,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 p.data_realizacao_fim dataRealizacaoFim,                            
                 p.data_inscricao_inicio dataInscricaoInicio,
                 p.data_inscricao_fim dataInscricaoFim,
-                p.justificativa,
+                p.sobre_este_curso as sobreEsteCurso,
                 p.formacao_homologada as FormacaoHomologada,
                 p.link_inscricoes_externa as LinkParaInscricoesExterna,
                 p.curso_com_certificado as CursoComCertificado,
@@ -2024,7 +2046,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             where p.id = @propostaId 
                 and not p.excluido
                 and pti.tipo_inscricao = any(@tipoInscricao) 
-                and p.situacao = @situacao;
+                and p.situacao = @situacao
+                and @dataAtual BETWEEN p.data_inscricao_inicio AND p.data_inscricao_fim;
 
             -- Area Promotora
             select ap.nome
@@ -2110,7 +2133,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             );
             """;
 
-            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao });
+            var queryMultiple = await conexao.Obter().QueryMultipleAsync(query, new { propostaId, tipoInscricao, situacao, dataAtual });
 
             var formacaoDetalhe = await queryMultiple.ReadFirstOrDefaultAsync<FormacaoDetalhada>();
 
@@ -2644,8 +2667,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                   AND p.FORMACAO_HOMOLOGADA = ANY(@formacoesHomologadas)
                   AND NOT p.excluido;";
 
-            var formacoesValidas = formacoesHomologadas 
-                ? new[] { (int)FormacaoHomologada.Sim } 
+            var formacoesValidas = formacoesHomologadas
+                ? new[] { (int)FormacaoHomologada.Sim }
                 : [(int)FormacaoHomologada.NaoCursosPorIN, (int)FormacaoHomologada.NaoCursosExtras];
 
             var parameters = new { propostaId, formacoesHomologadas = formacoesValidas };
@@ -2672,6 +2695,173 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             );
 
             return propostaDictionary.Values.FirstOrDefault();
+        }
+        public async Task<long?> ObterFormacaoAnteriorPorIdAsync(long propostaId)
+        {
+            var dataAtual = DateTimeExtension.HorarioBrasilia().Date;
+            var tipoInscricao = new[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
+            var situacao = (int)SituacaoProposta.Publicada;
+
+            var query = @"
+        SELECT p.id
+        FROM proposta p
+        INNER JOIN proposta_tipo_inscricao pti ON pti.proposta_id = p.id AND NOT pti.excluido
+        WHERE NOT p.excluido
+          AND pti.tipo_inscricao = ANY(@tipoInscricao)
+          AND p.situacao = @situacao
+          AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date
+          AND p.data_realizacao_fim < (
+              SELECT data_realizacao_fim 
+              FROM proposta 
+              WHERE id = @propostaId AND NOT excluido
+          )
+        ORDER BY data_realizacao_inicio, data_realizacao_fim
+        LIMIT 1";
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<long?>(query,
+                new { propostaId, dataAtual, tipoInscricao, situacao });
+        }
+
+        public async Task<long?> ObterFormacaoPosteriorPorIdAsync(long propostaId)
+        {
+            var dataAtual = DateTimeExtension.HorarioBrasilia().Date;
+            var tipoInscricao = new[] { (int)TipoInscricao.Optativa, (int)TipoInscricao.Externa };
+            var situacao = (int)SituacaoProposta.Publicada;
+
+            var query = @"
+        SELECT p.id
+        FROM proposta p
+        INNER JOIN proposta_tipo_inscricao pti ON pti.proposta_id = p.id AND NOT pti.excluido
+        WHERE NOT p.excluido
+          AND pti.tipo_inscricao = ANY(@tipoInscricao)
+          AND p.situacao = @situacao
+          AND @dataAtual BETWEEN p.data_inscricao_inicio::date AND p.data_inscricao_fim::date
+          AND p.data_realizacao_inicio > (
+              SELECT data_realizacao_inicio 
+              FROM proposta 
+              WHERE id = @propostaId AND NOT excluido
+          )
+        ORDER BY data_realizacao_inicio, data_realizacao_fim
+        LIMIT 1";
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<long?>(query,
+                new { propostaId, dataAtual, tipoInscricao, situacao });
+        }
+
+        public async Task<(long? formacaoAnteriorId, long? formacaoPosteriorId)> ObterFormacoesSeguintesEAnteriorPorIdAsync(long propostaId, FiltroListaFormacaoPropostaDto filtro)
+        {
+            long? formacaoAnteriorId = await ObterFormacaoAnteriorPorIdAsync(propostaId);
+            long? formacaoPosteriorId = await ObterFormacaoPosteriorPorIdAsync(propostaId);
+
+            return (formacaoAnteriorId, formacaoPosteriorId);
+        }
+        public async Task<PropostaLaudaCompletaDto?> ObterDadosLaudaCompletaAsync(long propostaId)
+        {
+            const string query =
+            """
+            SELECT 
+                p.id as Id,
+                p.numero_homologacao as NumeroHomologacao,
+                p.tipo_formacao as TipoFormacaoConecta,
+                ap.nome as NomeAreaPromotora,
+                p.nome_formacao as NomeFormacao,
+                p.formato as Modalidade,
+                p.carga_horaria_presencial as CargaHorariaPresencial,
+                p.carga_horaria_sincrona as CargaHorariaSincrona,
+                p.carga_horaria_distancia as CargaHorariaDistancia,
+                p.justificativa as Justificativa,
+                p.objetivos as Objetivos,
+                p.conteudo_programatico as ConteudoProgramatico,
+                p.procedimento_metodologico as Procedimentos,
+                p.quantidade_vagas_turma as QuantidadeVagasTurmas,
+                p.quantidade_turmas as QuantidadeTurmas,
+                p.descricao_atividade as DescricaoAtividade,
+                p.referencia as Referencias,
+                p.data_inscricao_inicio as DataInscricaoInicio,
+                p.data_inscricao_fim as DataInscricaoFim,
+                p.link_inscricoes_externa as LinkInscricaoExterna,
+                p.publico_alvo_outros as PublicoAlvo_Outros,
+                p.funcao_especifica_outros as FuncaoEspecifica_Outros,
+                p.outros_criterios as Criterios_Outros,
+                p.criterio_validacao_inscricao_outros as CriteriosValidacao_Outros,
+                p.codigo_evento_sigpec as CodigoEventoSigpec
+            FROM proposta p
+            INNER JOIN area_promotora ap on ap.id = p.area_promotora_id
+            WHERE p.id = @propostaId AND NOT p.excluido;
+
+            SELECT cf.nome as Nome 
+            FROM proposta_publico_alvo ppa
+            INNER JOIN cargo_funcao cf on cf.id = ppa.cargo_funcao_id
+            WHERE NOT ppa.excluido AND NOT cf.excluido AND ppa.proposta_id = @propostaId;
+
+            SELECT cf.nome as Nome 
+            FROM proposta_funcao_especifica pfe
+            INNER JOIN cargo_funcao cf on cf.id = pfe.cargo_funcao_id 
+            WHERE NOT pfe.excluido AND NOT cf.excluido AND pfe.proposta_id = @propostaId;
+
+            SELECT cvi.nome as Nome 
+            FROM proposta_criterio_validacao_inscricao pcv 
+            INNER JOIN criterio_validacao_inscricao cvi on cvi.id = pcv.criterio_validacao_inscricao_id 
+            WHERE NOT pcv.excluido AND NOT cvi.excluido AND pcv.proposta_id = @propostaId;
+
+            SELECT cc.descricao as Nome  
+            FROM proposta_criterio_certificacao pcc 
+            INNER JOIN criterio_certificacao cc on cc.id = pcc.criterio_certificacao_id 
+            WHERE NOT pcc.excluido AND NOT cc.excluido AND pcc.proposta_id = @propostaId;
+
+            SELECT nome_regente as Nome, registro_funcional as Rf, mini_biografia as MiniBio, profissional_rede_municipal as ProfissionalDaRede
+            FROM proposta_regente
+            WHERE NOT excluido AND proposta_id = @propostaId;
+
+            SELECT cf.nome as Nome  
+            FROM proposta_vaga_remanecente pvr
+            INNER JOIN cargo_funcao cf ON cf.id = pvr.cargo_funcao_id 
+            WHERE NOT pvr.excluido AND NOT cf.excluido AND pvr.proposta_id = @propostaId;
+
+            SELECT apt.telefone 
+            FROM proposta p
+            INNER JOIN area_promotora ap on ap.id = p.area_promotora_id
+            INNER JOIN area_promotora_telefone apt on apt.area_promotora_id = ap.id
+            WHERE NOT ap.excluido AND NOT apt.excluido AND NOT p.excluido AND p.id = @propostaId;
+
+            SELECT 
+                pt.nome as Identificacao, 
+                pe.local as Local, 
+                ped.data_inicio as DataInicio, 
+                ped.data_fim as DataFim, 
+                coalesce(ped.hora_inicio, pe.hora_inicio) as HoraInicio, 
+                coalesce(ped.hora_fim, pe.hora_fim) as HoraFim  
+            FROM proposta_encontro pe
+            INNER JOIN proposta_encontro_turma pet ON pet.proposta_encontro_id = pe.id 
+            INNER JOIN proposta_encontro_data ped ON ped.proposta_encontro_id = pe.id
+            INNER JOIN proposta_turma pt on pt.id = pet.turma_id 
+            WHERE NOT pe.excluido AND NOT pet.excluido AND NOT ped.excluido AND pe.proposta_id = @propostaId;
+            """;
+
+            using var conn = conexao.Obter();
+            using var multi = await conn.QueryMultipleAsync(query, new { propostaId });
+
+            var proposta = await multi.ReadFirstOrDefaultAsync<PropostaLaudaCompletaDto>();
+            
+            if (proposta != null)
+            {
+                if (Enum.TryParse<SME.ConectaFormacao.Dominio.Enumerados.TipoFormacao>(proposta.TipoFormacaoConecta, out var tipoFormacao))
+                    proposta.TipoFormacaoConecta = tipoFormacao.Nome();
+
+                if (Enum.TryParse<SME.ConectaFormacao.Dominio.Enumerados.Formato>(proposta.Modalidade, out var formato))
+                    proposta.Modalidade = formato.Nome();
+
+                proposta.PublicosAlvo = await multi.ReadAsync<PropostaPublicoAlvoDto>();
+                proposta.FuncaoEspecifica = await multi.ReadAsync<PropostaPublicoAlvoDto>();
+                proposta.CriteriosValidacao = await multi.ReadAsync<PropostaPublicoAlvoDto>();
+                proposta.CriteriosCertificacao = await multi.ReadAsync<PropostaPublicoAlvoDto>();
+                proposta.Regentes = await multi.ReadAsync<RegenteLaudaDto>();
+                proposta.VagasRemanecentes = await multi.ReadAsync<PropostaPublicoAlvoDto>();
+                proposta.TelefonesAreaPromotora = await multi.ReadAsync<string>();
+                proposta.CronogramaTurmas = await multi.ReadAsync<TurmaLaudaDto>();
+            }
+
+            return proposta;
         }
     }
 }

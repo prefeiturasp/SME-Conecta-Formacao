@@ -25,6 +25,10 @@
         /// </summary>
         public const string FormacaoDetalhada = "formacao-detalhada:{0}";
         /// <summary>
+        /// 0 - Filtro da formação
+        /// </summary>
+        public const string FormacaoFiltro = "formacao-filtro:{0}:usuario:{1}";
+        /// <summary>
         /// 0 - Registro funcional
         /// </summary>
         public const string CargosFuncoesDresEolFuncionario = "cargos-funcao-dre-eol-funcionario:{0}";

@@ -11,7 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao
 
         public async Task<RetornoFormacaoDetalhadaDTO> Executar(long propostaId)
         {
-            return await mediator.Send(new ObterFormacaoDetalhadaPorIdQuery(propostaId));
+            return await mediator.Send(new ObterFormacaoDetalhadaPorIdQuery(propostaId, null!));
         }
     }
 }

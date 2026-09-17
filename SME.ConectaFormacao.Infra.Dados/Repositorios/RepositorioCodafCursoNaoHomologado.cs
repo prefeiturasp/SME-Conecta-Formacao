@@ -1,10 +1,11 @@
-﻿using Dapper;
+using Dapper;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCursosNaoHomologados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
@@ -249,6 +250,169 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             codafCursoNaoHomologado.CodafDeclaracoes = [.. await multi.ReadAsync<CodafDeclaracao>()];
             return codafCursoNaoHomologado;
+        }
+
+        public async Task<bool> PossuiPorPropostaIdAsync(long propostaId)
+        {
+            const string query = """
+                SELECT 1
+                FROM CODAF_CURSO_NAO_HOMOLOGADO
+                WHERE PROPOSTA_ID = @propostaId
+                  AND NOT EXCLUIDO
+                LIMIT 1
+                """;
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, new { propostaId });
+        }
+
+        public async Task<int> ObterStatusDeclaracaoTurmaAsync(long id)
+        {
+            var conn = conexao.Obter();
+            const string sql = """
+        SELECT
+            CASE
+                WHEN CCNH.STATUS = 1 THEN 1
+                WHEN NOT EXISTS (SELECT 1
+                                 FROM   CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CCNHI
+                                 WHERE  NOT CCNHI.EXCLUIDO
+                                   AND  CCNHI.CODAF_CURSO_NAO_HOM_ID = CCNH.ID
+                                   AND  CCNHI.PARTICIPOU) THEN 0
+                WHEN EXISTS (SELECT 1
+                             FROM   CODAF_DECLARACOES CD
+                             WHERE  NOT CD.EXCLUIDO
+                               AND  CD.CODAF_CURSO_NAO_HOMOLOGADO_ID = CCNH.ID
+                               AND  CD.STATUS_PROCESSAMENTO IN (@statusPendente, @statusEmProcessamento)) THEN 3
+                WHEN EXISTS (SELECT 1
+                             FROM   CODAF_DECLARACOES CD
+                             WHERE  NOT CD.EXCLUIDO
+                               AND  CD.CODAF_CURSO_NAO_HOMOLOGADO_ID = CCNH.ID
+                               AND  CD.STATUS_PROCESSAMENTO IN (@statusProcessadoComSucesso, @statusProcessadoComErro)) THEN 4
+                ELSE 2
+            END AS status
+        FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH
+        WHERE NOT CCNH.EXCLUIDO AND CCNH.ID = @id
+        """;
+
+            var parametros = new DynamicParameters();
+            parametros.Add("id", id);
+            parametros.Add("statusPendente", StatusProcessamentoDeclaracaoCodaf.Pendente);
+            parametros.Add("statusEmProcessamento", StatusProcessamentoDeclaracaoCodaf.EmProcessamento);
+            parametros.Add("statusProcessadoComSucesso", StatusProcessamentoDeclaracaoCodaf.ProcessadoComSucesso);
+            parametros.Add("statusProcessadoComErro", StatusProcessamentoDeclaracaoCodaf.ProcessadoComErro);
+
+            return await conn.QueryFirstAsync<int>(sql, parametros);
+        }
+
+        public async Task<DadosPrincipaisRelatorioCodafCursoNaoHomologadoDto?> ObterDadosRelatorioAsync(long codafId)
+        {
+            const string sql = """
+        -- Dados Principais da Turma
+        SELECT DISTINCT
+               CCNH.ID AS codafId,
+               PT.ID AS turmaId,
+               PT.NOME AS nomeTurma,
+               P.QUANTIDADE_VAGAS_TURMA AS quantidadeVagasTurma,
+               AP.NOME AS nomeAreaPromotora,
+               P.TIPO_FORMACAO AS tipoFormacao,
+               P.NOME_FORMACAO AS nomeFormacao,
+               P.QUANTIDADE_TURMAS AS quantidadeTurmas,
+               COALESCE(PGP.DATA_INICIO, P.DATA_REALIZACAO_INICIO) AS periodoRealizacaoInicio,
+               COALESCE(PGP.DATA_FIM, P.DATA_REALIZACAO_FIM) AS periodoRealizacaoFim,
+               P.CURSO_COM_CERTIFICADO AS cursoComCertificado,
+               P.NUMERO_HOMOLOGACAO AS numeroHomologacao,
+               P.CODIGO_EVENTO_SIGPEC AS codigoEventoSigpec,
+               CAST(
+                    EXTRACT(HOUR FROM
+                        CASE
+                            WHEN P.CARGA_HORARIA_TOTAL_OUTRA IS NOT NULL AND P.CARGA_HORARIA_TOTAL_OUTRA <> ''
+                            THEN P.CARGA_HORARIA_TOTAL_OUTRA::interval
+                            ELSE COALESCE(NULLIF(P.CARGA_HORARIA_PRESENCIAL, ''), '00:00')::interval +
+                                 COALESCE(NULLIF(P.CARGA_HORARIA_DISTANCIA, ''), '00:00')::interval
+                        END
+                    ) AS INTEGER
+               ) AS cargaHorariaTotal,
+               P.CARGA_HORARIA_DISTANCIA AS cargaHorariaDistancia,
+               P.CARGA_HORARIA_SINCRONA AS cargaHorariaSincrona,
+               P.CARGA_HORARIA_PRESENCIAL AS cargaHorariaPresencial,
+               P.FORMATO AS tipoFormato,
+               CASE WHEN D.DRE_ID IS NULL THEN '' ELSE D.NOME END AS nomeDre,
+               CCNH.CRIADO_EM AS dataCodaf,
+               CCNH.OBSERVACAO
+        FROM   PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH
+               INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.ID = CCNH.PROPOSTA_TURMA_ID
+               INNER JOIN PUBLIC.PROPOSTA AS P ON P.ID = PT.PROPOSTA_ID
+               INNER JOIN PUBLIC.AREA_PROMOTORA AS AP ON AP.ID = P.AREA_PROMOTORA_ID
+               LEFT JOIN PUBLIC.PROPOSTA_DRE AS PD ON PD.PROPOSTA_ID = P.ID
+               LEFT JOIN PUBLIC.DRE AS D ON D.ID = PD.DRE_ID
+               LEFT JOIN PUBLIC.PROPOSTA_GRUPO_PERIODO_TURMA PGPT ON PGPT.PROPOSTA_TURMA_ID = PT.ID AND NOT PGPT.EXCLUIDO
+               LEFT JOIN PUBLIC.PROPOSTA_GRUPO_PERIODO PGP ON PGP.ID = PGPT.GRUPO_PERIODO_ID AND NOT PGP.EXCLUIDO
+        WHERE  CCNH.ID = @codafId AND NOT CCNH.EXCLUIDO;
+
+        -- Data das Aulas
+        SELECT PED.DATA_INICIO AS dataInicio, PED.DATA_FIM AS dataFim
+        FROM   PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH
+               INNER JOIN PUBLIC.PROPOSTA_ENCONTRO_TURMA AS PET ON PET.TURMA_ID = CCNH.PROPOSTA_TURMA_ID
+               INNER JOIN PUBLIC.PROPOSTA_ENCONTRO AS PE ON PE.ID = PET.PROPOSTA_ENCONTRO_ID
+               INNER JOIN PUBLIC.PROPOSTA_ENCONTRO_DATA AS PED ON PED.PROPOSTA_ENCONTRO_ID = PE.ID
+        WHERE  CCNH.ID = @codafId
+          AND  PE.TIPO IN (@presencial, @sincrono)
+          AND NOT PE.EXCLUIDO
+          AND NOT PET.EXCLUIDO
+          AND NOT PED.EXCLUIDO;
+
+        -- Regentes
+        SELECT COALESCE(U.NOME, PR.NOME_REGENTE) AS nome,
+               COALESCE(PR.REGISTRO_FUNCIONAL, PR.CPF) AS registroFuncional,
+               CD.CODIGO_DECLARACAO AS codigoCertificado
+        FROM   PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH
+               INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON PRT.TURMA_ID = CCNH.PROPOSTA_TURMA_ID
+               INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PR.ID = PRT.PROPOSTA_REGENTE_ID
+               LEFT JOIN PUBLIC.USUARIO AS U ON U.LOGIN = PR.REGISTRO_FUNCIONAL AND NOT U.EXCLUIDO
+               LEFT JOIN PUBLIC.CODAF_DECLARACOES AS CD
+                      ON CD.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
+                     AND CD.CODAF_CURSO_NAO_HOMOLOGADO_ID = CCNH.ID
+                     AND NOT CD.EXCLUIDO
+        WHERE  CCNH.ID = @codafId
+          AND  NOT CCNH.EXCLUIDO
+          AND  NOT PRT.EXCLUIDO
+          AND  NOT PR.EXCLUIDO;
+
+        -- Participantes
+        SELECT U.LOGIN AS documento,
+               (U.LOGIN <> U.CPF) AS temRf,
+               U.NOME,
+               CCNHI.PARTICIPOU AS participou,
+               CD.CODIGO_DECLARACAO AS codigoCertificadoDeclaracao
+        FROM   PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CCNHI
+               INNER JOIN PUBLIC.INSCRICAO AS I ON I.ID = CCNHI.INSCRICAO_ID
+               INNER JOIN PUBLIC.USUARIO AS U ON U.ID = I.USUARIO_ID
+               LEFT JOIN PUBLIC.CODAF_DECLARACOES AS CD
+                      ON CD.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO_ID = CCNHI.ID
+                     AND CD.TIPO_PARTICIPACAO = @tipoParticipacaoCursista
+                     AND NOT CD.EXCLUIDO
+        WHERE  CCNHI.CODAF_CURSO_NAO_HOM_ID = @codafId
+          AND  NOT U.EXCLUIDO
+          AND  NOT CCNHI.EXCLUIDO;
+        """;
+
+            var parametros = new
+            {
+                codafId,
+                presencial = (int)TipoEncontro.Presencial,
+                sincrono = (int)TipoEncontro.Sincrono,
+                tipoParticipacaoCursista = (int)TipoParticipacaoCodaf.Cursista
+            };
+
+            var conn = conexao.Obter();
+            using var multi = await conn.QueryMultipleAsync(sql, parametros);
+            var dadosRelatorio = await multi.ReadFirstOrDefaultAsync<DadosPrincipaisRelatorioCodafCursoNaoHomologadoDto>();
+
+            if (dadosRelatorio == null) return null;
+
+            dadosRelatorio.DataAulas = await multi.ReadAsync<DataAulaTurmaRelatorioCodafDto>();
+            dadosRelatorio.RegentesTurma = await multi.ReadAsync<DadosRegenteTurmaRelatorioCodafDto>();
+            dadosRelatorio.Participantes = await multi.ReadAsync<DadosParticipanteRelatorioCodafCursoNaoHomologadoDto>();
+            return dadosRelatorio;
         }
     }
 }

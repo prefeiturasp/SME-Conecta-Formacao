@@ -40,8 +40,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             if (Status == StatusCodafCursoNaoHomologado.Finalizado)
                 return;
 
-            if (CodafInscricoes is not null && CodafInscricoes.Count != 0 &&
-                CodafAnexos is not null && CodafAnexos.Count != 0)
+            if (CodafInscricoes is not null && CodafInscricoes.Count != 0)
             {
                 Status = StatusCodafCursoNaoHomologado.Aguardando;
             }

@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
+using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
@@ -22,6 +22,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string CargaHorariaDistancia { get; set; }
         public string Justificativa { get; set; }
         public string Objetivos { get; set; }
+        public string SobreEsteCurso { get; set; } = string.Empty;
         public string ConteudoProgramatico { get; set; }
         public string ProcedimentoMetadologico { get; set; }
         public string Referencia { get; set; }
@@ -86,5 +87,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public string? JustificativaRevalidacao { get; set; }
         public IEnumerable<PropostaGrupoPeriodoDto> GruposPeriodos { get; set; } = [];
         public string? AnexoUrl { get; set; }
+        public bool PossuiCodaf { get; set; }
     }
 }

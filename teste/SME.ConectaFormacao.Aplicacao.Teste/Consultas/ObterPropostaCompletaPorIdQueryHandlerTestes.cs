@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using MediatR;
 using Moq;
 using Moq.AutoMock;
+using SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterSePropostaPossuiCodaf;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.AreaPromotora;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
@@ -523,6 +524,66 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             resultado.UltimaJustificativaAprovacaoRecusa.Should().Be("Proposta excelente, aprovada.");
         }
 
+        [Fact]
+        public async Task DadoPropostaComSobreEsteCursoPreenchido_QuandoProcessarQuery_EntaoDeveTrazerOCampo()
+        {
+            // Arrange
+            var query = new ObterPropostaCompletaPorIdQuery(1);
+            var proposta = CriarPropostaValida();
+            const string sobreEsteCursoEsperado = "Este é um curso sobre aprimoramento de práticas pedagógicas na educação infantil com foco em desenvolvimento integral.";
+            proposta.SobreEsteCurso = sobreEsteCursoEsperado;
+
+            ConfigurarDependenciasComunsParaSucesso(proposta);
+            ConfigurarPerfilEUsuarioLogado(Guid.NewGuid(), "usuario_comum");
+
+            // Act
+            var resultado = await _sut.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.SobreEsteCurso.Should().Be(sobreEsteCursoEsperado);
+        }
+
+        [Fact]
+        public async Task DadoPropostaSemSobreEsteCurso_QuandoProcessarQuery_EntaoDeveTrazerCampoVazio()
+        {
+            // Arrange
+            var query = new ObterPropostaCompletaPorIdQuery(1);
+            var proposta = CriarPropostaValida();
+            proposta.SobreEsteCurso = string.Empty;
+
+            ConfigurarDependenciasComunsParaSucesso(proposta);
+            ConfigurarPerfilEUsuarioLogado(Guid.NewGuid(), "usuario_comum");
+
+            // Act
+            var resultado = await _sut.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.SobreEsteCurso.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task DadoPropostaValida_QuandoProcessarQuery_EntaoDeveConsultarSePossuiCodafEPopularDTO(bool possuiCodaf)
+        {
+            // Arrange
+            var query = new ObterPropostaCompletaPorIdQuery(1);
+            var proposta = CriarPropostaValida();
+
+            ConfigurarDependenciasComunsParaSucesso(proposta);
+            ConfigurarPerfilEUsuarioLogado(Guid.NewGuid(), "usuario_comum");
+
+            _mediator.Setup(m => m.Send(It.Is<ObterSePropostaPossuiCodafQuery>(q => q.PropostaId == 1), It.IsAny<CancellationToken>()))
+                     .ReturnsAsync(possuiCodaf);
+
+            // Act
+            var resultado = await _sut.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.PossuiCodaf.Should().Be(possuiCodaf);
+            _mediator.Verify(m => m.Send(It.Is<ObterSePropostaPossuiCodafQuery>(q => q.PropostaId == 1), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
         #region Factory Methods
 
         private void ConfigurarPerfilEUsuarioLogado(Guid perfilId, string loginUsuario)
@@ -546,7 +607,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 PublicosAlvo = [],
                 FuncoesEspecificas = [],
                 PublicoAlvoOutros = string.Empty,
-                FuncaoEspecificaOutros = string.Empty
+                FuncaoEspecificaOutros = string.Empty,
+                SobreEsteCurso = string.Empty
             };
         }
 

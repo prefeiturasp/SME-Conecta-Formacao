@@ -31,6 +31,7 @@ public static class MensagemNegocio
 
     public const string CARGA_HORARIA_NAO_INFORMADA = "É necessário informar a carga horária presencial";
     public const string JUSTIFICATIVA_NAO_INFORMADA = "É necessário informar a justificativa";
+    public const string SOBRE_ESTE_CURSO_NAO_INFORMADO = "É necessário informar sobre este curso";
     public const string OBJETIVO_NAO_INFORMADO = "É necessário informar os objetivos";
     public const string CONTEUDO_PROGRAMATICO_NAO_INFORMADO = "É necessário informar o conteúdo programático";
     public const string PROCEDIMENTOS_METODOLOGICOS_NAO_INFORMADO = "É necessário informar os procedimentos metodológicos";
@@ -217,4 +218,6 @@ public static class MensagemNegocio
     public const string ERRO_FUNCAO_ATIVIDADE_EOL_POR_DRE = "Não foi possivel obter os dados de funcao atividade";
     public const string ERRO_OBTER_TODAS_AS_UES = "Não foi possível obter as unidades escolares do EOL";
     public const string USUARIO_SEM_PERMISSAO_PARA_EDITAR_PROPOSTA = "Os dados desta proposta podem ser alterados apenas pela Divisão de Formação (DF) ou pelo usuário que realizou o cadastro: {0}";
+    public const string USUARIO_SEM_PERMISSAO_PARA_ALTERAR_NUMERO_HOMOLOGACAO = "Apenas o perfil Administrador tem permissão para alterar o número de homologação da proposta.";
+    public const string PROPOSTA_POSSUI_CODAF_NAO_PERMITE_ALTERAR_NUMERO_HOMOLOGACAO = "Não é permitido alterar o número de homologação se a proposta possuir CODAF.";
 }

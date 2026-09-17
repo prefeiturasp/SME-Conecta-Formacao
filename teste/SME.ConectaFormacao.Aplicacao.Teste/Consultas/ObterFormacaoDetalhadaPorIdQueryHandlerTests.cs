@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.ObjetosDeValor;
+using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Cache;
 
@@ -38,7 +39,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         public async Task DadoCacheVazioEFormacaoNaoEncontrada_QuandoObter_EntaoDeveLancarExcecao()
         {
             // Arrange
-            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100));
+            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100), null!);
 
             // Act & Assert
             await Assert.ThrowsAsync<NegocioException>(() => _handler.Handle(query, CancellationToken.None));
@@ -48,11 +49,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
         public async Task DadoCacheVazioEFormacaoEncontrada_QuandoObter_EntaoDeveRetornarFormacaoDetalhada()
         {
             // Arrange
-            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100));
+            var formacaoId = _faker.Random.Long(1, 100);
+            var query = new ObterFormacaoDetalhadaPorIdQuery(formacaoId, null!);
             var formacaoDetalhada = new FormacaoDetalhada
             {
                 NomeFormacao = _faker.Lorem.Sentence(),
-                Justificativa = _faker.Lorem.Paragraph(),
+                SobreEsteCurso = _faker.Lorem.Paragraph(),
                 DataInscricaoInicio = DateTime.Now.AddDays(-10),
                 DataInscricaoFim = DateTime.Now.AddDays(10),
                 FormacaoHomologada = FormacaoHomologada.Sim,
@@ -74,14 +76,29 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             var formacaoDetalhadaDto = new RetornoFormacaoDetalhadaDTO
             {
                 Titulo = formacaoDetalhada.NomeFormacao,
-                Justificativa = formacaoDetalhada.Justificativa,
+                SobreEsteCurso = formacaoDetalhada.SobreEsteCurso,
                 FormacaoHomologada = formacaoDetalhada.FormacaoHomologada,
-                UsuarioAcessibilidade = acessibilidadeDto
+                UsuarioAcessibilidade = acessibilidadeDto,
+                Turmas = []
             };
+
+            _mockCacheDistribuido
+                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>(), false))
+                .ReturnsAsync((RetornoFormacaoDetalhadaDTO)null);
 
             _mockRepositorioProposta
                 .Setup(r => r.ObterFormacaoDetalhadaPorIdAsync(query.Id))
                 .ReturnsAsync(formacaoDetalhada);
+
+            _mockRepositorioProposta
+                .Setup(r => r.ObterListagemFormacoesPorFiltro(It.IsAny<Infra.Dados.Dtos.FiltroListaFormacaoPropostaDto>()))
+                .ReturnsAsync(new ResultadoPaginado<long>
+                {
+                    Itens = [formacaoId],
+                    TotalRegistros = 1,
+                    PaginaAtual = 1,
+                    TamanhoPagina = 1000
+                });
 
             _mockRepositorioUsuarioAcessibilidade
                 .Setup(u => u.ObterAcessibilidadeAtualDoUsuarioAsync())
@@ -92,7 +109,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 .Returns(formacaoDetalhadaDto);
 
             _mockMapper
-                .Setup(m => m.Map<UsuarioAcessibilidadeDto>(It.IsAny<UsuarioAcessibilidadeDto>()))
+                .Setup(m => m.Map<UsuarioAcessibilidadeDto>(It.IsAny<UsuarioAcessibilidade>()))
                 .Returns(acessibilidadeDto);
 
             // Act
@@ -101,19 +118,19 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             // Assert
             resposta.Should().BeEquivalentTo(formacaoDetalhadaDto);
             _mockCacheDistribuido
-                .Verify(c => c.SalvarAsync(It.IsAny<string>(), formacaoDetalhadaDto), Times.Once);
-            _mockRepositorioProposta.Verify(p => p.ObterTurmasComVagaPorId(It.IsAny<long>()), Times.Never);
+                .Verify(c => c.SalvarAsync(It.IsAny<string>(), It.IsAny<RetornoFormacaoDetalhadaDTO>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
+            _mockRepositorioProposta.Verify(p => p.ObterTurmasComVagaPorId(It.IsAny<long>(), null), Times.Never);
         }
 
         [Fact]
         public async Task DadoFormacaoNaoHomologadaNoCache_QuandoObter_EntaoDeveValidarVagasEAtualizarTurmas()
         {
             // Arrange
-            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100));
+            var query = new ObterFormacaoDetalhadaPorIdQuery(_faker.Random.Long(1, 100), null!);
             var formacaoDetalhada = new FormacaoDetalhada
             {
                 NomeFormacao = _faker.Lorem.Sentence(),
-                Justificativa = _faker.Lorem.Paragraph(),
+                SobreEsteCurso = _faker.Lorem.Paragraph(),
                 DataInscricaoInicio = DateTime.Now.AddDays(-10),
                 DataInscricaoFim = DateTime.Now.AddDays(10),
                 FormacaoHomologada = FormacaoHomologada.NaoCursosPorIN,
@@ -123,7 +140,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             var formacaoDetalhadaDto = new RetornoFormacaoDetalhadaDTO
             {
                 Titulo = formacaoDetalhada.NomeFormacao,
-                Justificativa = formacaoDetalhada.Justificativa,
+                SobreEsteCurso = formacaoDetalhada.SobreEsteCurso,
                 FormacaoHomologada = formacaoDetalhada.FormacaoHomologada,
                 Turmas =
                 [
@@ -137,11 +154,11 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             };
 
             _mockCacheDistribuido
-                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>()))
+                .Setup(c => c.ObterObjetoAsync<RetornoFormacaoDetalhadaDTO>(It.IsAny<string>(), false))
                 .ReturnsAsync(formacaoDetalhadaDto);
 
             _mockRepositorioProposta
-                .Setup(r => r.ObterTurmasComVagaPorId(query.Id))
+                .Setup(r => r.ObterTurmasComVagaPorId(query.Id, null))
                 .ReturnsAsync([new() { Id = _faker.Random.Long(1) }]);
 
             // Act
@@ -153,8 +170,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             resposta.Turmas.First().Id.Should().Be(formacaoDetalhadaDto.Turmas.First().Id);
             resposta.Turmas.First().InscricaoEncerrada.Should().BeTrue();
             _mockCacheDistribuido
-                .Verify(c => c.SalvarAsync(It.IsAny<string>(), It.IsAny<RetornoFormacaoDetalhadaDTO>()), Times.Never);
-            _mockRepositorioProposta.Verify(p => p.ObterTurmasComVagaPorId(It.IsAny<long>()), Times.Once);
+                .Verify(c => c.SalvarAsync(It.IsAny<string>(), It.IsAny<RetornoFormacaoDetalhadaDTO>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Never);
+            _mockRepositorioProposta.Verify(p => p.ObterTurmasComVagaPorId(It.IsAny<long>(), null), Times.Once);
         }
     }
 }

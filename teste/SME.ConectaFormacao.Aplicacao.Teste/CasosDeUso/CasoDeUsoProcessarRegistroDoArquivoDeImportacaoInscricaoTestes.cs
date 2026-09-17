@@ -1,4 +1,4 @@
-﻿using Bogus;
+using Bogus;
 using Bogus.Extensions.Brazil;
 using MediatR;
 using Moq;
@@ -11,6 +11,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.ImportacaoArquivo;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using EntidadeProposta = SME.ConectaFormacao.Dominio.Entidades.Proposta;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra;
@@ -55,7 +56,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Mock: Proposta encontrada
             _mocker.GetMock<IMediator>()
                 .Setup(m => m.Send(It.IsAny<ObterPropostaPorIdQuery>(), CancellationToken.None))
-                .ReturnsAsync(new Proposta { Id = 1 });
+                .ReturnsAsync(new EntidadeProposta { Id = 1 });
 
             // Mock: Não há registros validados no banco (Verificação do Finally)
             _mocker.GetMock<IMediator>()

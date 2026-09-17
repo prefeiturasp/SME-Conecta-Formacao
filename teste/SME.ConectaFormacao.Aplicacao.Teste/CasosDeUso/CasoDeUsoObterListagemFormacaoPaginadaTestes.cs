@@ -5,6 +5,7 @@ using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Formacao;
 using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Interfaces.Utilitarios;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
@@ -17,6 +18,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
         private readonly Mock<IMediator> _mediatorMock;
         private readonly Mock<IContextoAplicacao> _contextoAplicacaoMock;
         private readonly Mock<IRepositorioProposta> _repositorioPropostaMock;
+        private readonly Mock<IUtilitariosPerfis> _utilitariosPerfisMock;
         private readonly CasoDeUsoObterListagemFormacaoPaginada _useCase;
         private readonly Faker _faker;
 
@@ -26,6 +28,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mediatorMock = mocker.GetMock<IMediator>();
             _contextoAplicacaoMock = mocker.GetMock<IContextoAplicacao>();
             _repositorioPropostaMock = mocker.GetMock<IRepositorioProposta>();
+            _utilitariosPerfisMock = mocker.GetMock<IUtilitariosPerfis>();
             _faker = new Faker("pt_BR");
 
             _useCase = mocker.CreateInstance<CasoDeUsoObterListagemFormacaoPaginada>();
@@ -129,9 +132,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 TotalRegistros = 0
             };
 
-            // Setup Contexto com GUID do Perfil Cursista
-            _contextoAplicacaoMock.Setup(x => x.IdPerfilUsuario).Returns(PerfilAutomatico.PERIL_CURSISTA_CODIGO);
-            _contextoAplicacaoMock.Setup(x => x.LoginUsuario).Returns("cursista");
+            // Setup Mock de UtilitariosPerfis para retornar true (filtrar por perfil cursista)
+            _utilitariosPerfisMock.Setup(x => x.FiltrarPorPerfil()).Returns(true);
 
             _repositorioPropostaMock
                 .Setup(x => x.ObterListagemFormacoesPorFiltro(It.IsAny<FiltroListaFormacaoPropostaDto>()))

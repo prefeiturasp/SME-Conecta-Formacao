@@ -17,16 +17,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador
         {
             var linha = linhaInicial;
 
-            // 1. Título do Grupo (Ex: PARTICIPANTES APROVADOS)
             RenderizarTituloBloco(sheet, ref linha, grupo.TituloBloco);
+            RenderizarCabecalhoTabela(sheet, ref linha, grupo.EhRedeParceira, grupo.EhCodafNaoHomologado);
 
-            // 2. Cabeçalho da Tabela
-            RenderizarCabecalhoTabela(sheet, ref linha, grupo.EhRedeParceira);
-
-            // 3. Linhas dos Alunos
             foreach (var aluno in grupo.Alunos)
             {
-                RenderizarLinhaAluno(sheet, linha, aluno);
+                RenderizarLinhaAluno(sheet, linha, aluno, grupo.EhCodafNaoHomologado);
                 linha++;
             }
 
@@ -51,7 +47,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador
             linha++;
         }
 
-        private static void RenderizarCabecalhoTabela(IXLWorksheet sheet, ref int linha, bool ehRedeParceira)
+        private static void RenderizarCabecalhoTabela(IXLWorksheet sheet, ref int linha, bool ehRedeParceira, bool ehCodafNaoHomologado)
         {
             var tituloDoc = ehRedeParceira ? "CPF" : "REGISTRO FUNCIONAL";
             var tituloNome = ehRedeParceira
@@ -61,27 +57,44 @@ namespace SME.ConectaFormacao.Infra.Dados.Relatorios.Codaf.Gerador
             CriarHeader(sheet, linha, "A", "Nº");
             CriarHeader(sheet, linha, "B:C", tituloDoc);
             CriarHeader(sheet, linha, "D:N", tituloNome);
-            CriarHeader(sheet, linha, "O", "FREQUÊNCIA (%)");
-            CriarHeader(sheet, linha, "P", "ATIVIDADE OBRIGATÓRIA S/N");
-            CriarHeader(sheet, linha, "Q:R", "CONCEITO FINAL");
-            CriarHeader(sheet, linha, "S:T", "NÚMERO DE REGISTRO DO CERTIFICADO");
+
+            if (ehCodafNaoHomologado)
+            {
+                CriarHeader(sheet, linha, "O:P", "PARTICIPAÇÃO");
+                CriarHeader(sheet, linha, "Q:T", "NÚMERO DE REGISTRO DA DECLARAÇÃO");
+            }
+            else
+            {
+                CriarHeader(sheet, linha, "O", "FREQUÊNCIA (%)");
+                CriarHeader(sheet, linha, "P", "ATIVIDADE OBRIGATÓRIA S/N");
+                CriarHeader(sheet, linha, "Q:R", "CONCEITO FINAL");
+                CriarHeader(sheet, linha, "S:T", "NÚMERO DE REGISTRO DO CERTIFICADO");
+            }
 
             sheet.Row(linha).Height = 45;
             sheet.Row(linha).Style.Alignment.WrapText = true;
             linha++;
         }
 
-        private static void RenderizarLinhaAluno(IXLWorksheet sheet, int linha, AlunoRelatorioCodafDto aluno)
+        private static void RenderizarLinhaAluno(IXLWorksheet sheet, int linha, AlunoRelatorioCodafDto aluno, bool ehCodafNaoHomologado)
         {
             ConfigurarCelulaDados(sheet, linha, "A", aluno.NumeroSequencial.ToString());
             ConfigurarCelulaDados(sheet, linha, "B:C", FormatarDocumento(aluno.DocumentoAluno));
             ConfigurarCelulaDados(sheet, linha, "D:N", aluno.NomeAluno, alinharEsquerda: true);
-            ConfigurarCelulaDados(sheet, linha, "O", $"{aluno.PercentualFrequencia:F2}%");
-            ConfigurarCelulaDados(sheet, linha, "P", aluno.AtividadeObrigatoria ? "S" : "N");
-            ConfigurarCelulaDados(sheet, linha, "Q:R", aluno.ConceitoFinal);
-            ConfigurarCelulaDados(sheet, linha, "S:T", aluno.CodigoCertificado.MascararOuExibirValor());
 
-            // Borda inferior da linha
+            if (ehCodafNaoHomologado)
+            {
+                ConfigurarCelulaDados(sheet, linha, "O:P", aluno.Participacao);
+                ConfigurarCelulaDados(sheet, linha, "Q:T", aluno.NumeroRegistroDeclaracao);
+            }
+            else
+            {
+                ConfigurarCelulaDados(sheet, linha, "O", $"{aluno.PercentualFrequencia:F2}%");
+                ConfigurarCelulaDados(sheet, linha, "P", aluno.AtividadeObrigatoria == true ? "S" : "N");
+                ConfigurarCelulaDados(sheet, linha, "Q:R", aluno.ConceitoFinal);
+                ConfigurarCelulaDados(sheet, linha, "S:T", aluno.CodigoCertificado.MascararOuExibirValor());
+            }
+
             sheet.Range(linha, 1, linha, 20).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
         }
 

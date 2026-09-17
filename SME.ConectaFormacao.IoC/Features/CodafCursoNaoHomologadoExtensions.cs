@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf.Dependencias;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafCursosNaoHomologados;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
+using SME.ConectaFormacao.Infra.Dados.Relatorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Servicos;
@@ -27,7 +28,9 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<IGerenciadorAnexosCodafCursoNaoHomologadoService, GerenciadorAnexosCodafCursoNaoHomologadoService>()
                 .AddScoped<ICodafCursoNaoHomologadoInscritosService, CodafCursoNaoHomologadoInscritosService>()
                 .AddScoped<ICasoDeUsoObterCodafCursoNaoHomologadoPorId, CasoDeUsoObterCodafCursoNaoHomologadoPorId>()
-                ;
+                .AddScoped<ICasoDeUsoFinalizarCodafCursoNaoHomologado, CasoDeUsoFinalizarCodafCursoNaoHomologado>()
+                .AddScoped<ICasoDeUsoGerarRelatorioCodafCursoNaoHomologado, CasoDeUsoGerarRelatorioCodafCursoNaoHomologado>()
+                .AddScoped<IGeradorRelatorioCodafCursoNaoHomologadoExcelService, GeradorRelatorioCodafCursoNaoHomologadoExcelService>();
         }
     }
 }

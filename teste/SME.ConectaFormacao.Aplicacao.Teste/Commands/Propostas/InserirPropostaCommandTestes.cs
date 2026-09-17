@@ -44,7 +44,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldHaveValidationErrorFor(x => x.PropostaDTO.TipoFormacao);
+            result.ShouldHaveValidationErrorFor("TipoFormacao");
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldHaveValidationErrorFor(x => x.PropostaDTO.Formato);
+            result.ShouldHaveValidationErrorFor("Formato");
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldHaveValidationErrorFor(x => x.PropostaDTO.Formato);
+            result.ShouldHaveValidationErrorFor("Formato");
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldNotHaveValidationErrorFor(x => x.PropostaDTO.Formato);
+            result.ShouldNotHaveValidationErrorFor("Formato");
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldHaveValidationErrorFor(x => x.PropostaDTO.IdEmissor);
+            result.ShouldHaveValidationErrorFor("IdEmissor");
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldHaveValidationErrorFor(x => x.PropostaDTO.IdEmissor);
+            result.ShouldHaveValidationErrorFor("IdEmissor");
         }
 
         [Fact]
@@ -120,7 +120,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldHaveValidationErrorFor(x => x.PropostaDTO.TipoEmissor);
+            result.ShouldHaveValidationErrorFor("TipoEmissor");
         }
 
         [Fact]
@@ -134,8 +134,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldNotHaveValidationErrorFor(x => x.PropostaDTO.IdEmissor);
-            result.ShouldNotHaveValidationErrorFor(x => x.PropostaDTO.TipoEmissor);
+            result.ShouldNotHaveValidationErrorFor("IdEmissor");
+            result.ShouldNotHaveValidationErrorFor("TipoEmissor");
         }
 
         [Theory]
@@ -204,7 +204,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldHaveValidationErrorFor(x => x.PropostaDTO.QuantidadeTurmas);
+            result.ShouldHaveValidationErrorFor("QuantidadeTurmas");
         }
 
         [Fact]
@@ -215,7 +215,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldHaveValidationErrorFor(x => x.PropostaDTO.QuantidadeVagasTurma);
+            result.ShouldHaveValidationErrorFor("QuantidadeVagasTurma");
         }
 
         [Fact]
@@ -235,7 +235,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldHaveValidationErrorFor(x => x.PropostaDTO.LinkParaInscricoesExterna);
+            result.ShouldHaveValidationErrorFor("LinkParaInscricoesExterna");
         }
 
         [Fact]
@@ -255,7 +255,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
 
-            result.ShouldNotHaveValidationErrorFor(x => x.PropostaDTO.LinkParaInscricoesExterna);
+            result.ShouldNotHaveValidationErrorFor("LinkParaInscricoesExterna");
         }
 
         [Fact]
@@ -282,6 +282,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
                 ConteudoProgramatico = "Conteúdo",
                 ProcedimentoMetadologico = "Procedimento",
                 Referencia = "Referência",
+                SobreEsteCurso = "Sobre este curso",
 
                 Dres =
                 [

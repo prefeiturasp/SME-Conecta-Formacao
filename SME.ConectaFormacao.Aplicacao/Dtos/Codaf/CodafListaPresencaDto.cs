@@ -26,6 +26,9 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
         public string? NomeFormacao { get; set; }
         public long? CodigoFormacao { get; set; }
         public long? NumeroHomologacao { get; set; }
+        public string? EnviadoParaDfPor { get; set; }
+        public string? EnviadoParaDfLogin { get; set; }
+        public DateTime? EnviadoParaDfEm { get; set; }
         public IList<CodafRetificacaoListaPresencaDto>? Retificacoes { get; set; }
         public IList<CodafAnexoDto>? Anexos { get; set; }
         public DeltaInscritoCodafDto? DeltaInscritos { get; set; }
