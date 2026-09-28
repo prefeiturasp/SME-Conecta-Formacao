@@ -169,3 +169,75 @@ Cypress.Commands.add('validar_sem_filtros_lista_presenca', () => {
   cy.contains('Não encontramos registros para os filtros aplicados').should('exist')
 })
 
+Cypress.Commands.add('criar_lista_presenca', () => {
+
+  cy.get(lista_presenca_localizadores.btn_novo_registro(), { timeout: 30000 })
+    .should('be.visible')
+    .click()
+
+  cy.get(lista_presenca_localizadores.btn_continuar_registro(), { timeout: 30000 })
+    .should('be.visible')
+    .click()
+
+  cy.get(lista_presenca_localizadores.campo_homologacao(), { timeout: 30000 })
+    .should('be.visible')
+    .first()
+    .type('123', { scrollBehavior: false })
+
+  cy.get(lista_presenca_localizadores.opcao_situacao(), { timeout: 30000 })
+    .contains('123')
+    .should('be.visible')
+    .click({ scrollBehavior: false })
+
+  cy.intercept('GET', '**/api/v1/CodafListaPresenca/turmas/*/possui-lista').as('listar_turmas')
+
+  cy.get(lista_presenca_localizadores.campo_turma(), { timeout: 30000 })
+    .click({ scrollBehavior: false })
+
+  cy.wait('@listar_turmas', { timeout: 30000 })
+    .its('response.statusCode')
+    .should('eq', 200)
+
+  cy.get(lista_presenca_localizadores.opcao_turma(), { timeout: 30000 })
+    .should('be.visible')
+    .first()
+    .click({ scrollBehavior: false })
+
+  cy.get(lista_presenca_localizadores.btn_salvar(), { timeout: 30000 })
+    .should('be.visible')
+    .click()
+})
+
+Cypress.Commands.add('validar_cadastro_lista_presenca', () => {
+  cy.contains('Registro salvo com sucesso!')
+    .should('be.visible')
+})
+
+Cypress.Commands.add('excluir_lista_presenca', () => {
+
+  cy.get(lista_presenca_localizadores.campo_nome(), { timeout: 30000 })
+    .should('be.visible')
+    .type('Teste automação')
+
+  cy.get(lista_presenca_localizadores.btn_filtrar(), { timeout: 30000 })
+    .should('be.visible')
+    .click()  
+
+  cy.get(lista_presenca_localizadores.tbl_lista_presenca(), { timeout: 30000 })
+    .first()
+    .should('be.visible')
+    .click()
+
+  cy.get(lista_presenca_localizadores.btn_excluir(), { timeout: 30000 })
+    .should('be.visible')
+    .click()
+    
+  cy.get(lista_presenca_localizadores.btn_confirmar_exclusao(), { timeout: 30000 })
+    .should('be.visible')
+    .click()  
+})
+
+Cypress.Commands.add('validar_exclusao_lista_presenca', () => {
+  cy.contains('Registro excluído com sucesso!')
+    .should('be.visible')
+})
