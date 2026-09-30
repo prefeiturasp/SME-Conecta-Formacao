@@ -138,7 +138,9 @@ export default defineConfig({
         'CODAF_ID',
         'CERTIFICADO_CODAF_ID',
         'CERTIFICADO_ID',
-        'REGISTRO_FUNCIONAL'
+        'REGISTRO_FUNCIONAL',
+        'CODAF_PROPOSTA_ID',
+        'CODAF_TURMA_ID'
       ]
 
       const customEnv = Object.fromEntries(

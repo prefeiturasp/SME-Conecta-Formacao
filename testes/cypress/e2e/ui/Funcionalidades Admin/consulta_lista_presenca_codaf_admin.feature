@@ -1,6 +1,6 @@
 # language: pt
 
-Funcionalidade: Lista presença CODAF
+Funcionalidade: Consulta de lista de presença CODAF
 
   Contexto:
     Dado eu acesso o sistema com a visualização web

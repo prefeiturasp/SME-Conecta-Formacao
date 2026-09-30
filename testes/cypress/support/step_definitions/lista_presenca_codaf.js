@@ -42,3 +42,19 @@ Quando('removo os filtros na Lista Presença Codaf', () => {
 Então('limpa na presença nas formações', () => {
   cy.validar_sem_dados_lista_presenca()
 })
+
+Quando('cadastro um Codaf homologado', () => {
+  cy.criar_lista_presenca()  
+})
+
+Então('o sistema salva a nova lista de presença CODAF', () => {
+  cy.validar_cadastro_lista_presenca()  
+})
+
+Quando('clico no Codaf homologado para exclusão', () => {
+  cy.excluir_lista_presenca()
+})
+
+Então('o sistema exclui a lista de presença CODAF', () => {
+  cy.validar_exclusao_lista_presenca() 
+})

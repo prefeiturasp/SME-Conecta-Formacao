@@ -5,6 +5,7 @@ const Quando = When
 const Então = Then
 
 let token
+let codafListaPresencaId
 
 Before(() => {
   cy.gerar_token().then((token_valido) => {
@@ -205,6 +206,247 @@ Quando('tento a requisição POST de imprimir lista do Codaf', function () {
 
 Então('retorna o status 401 sem imprimir lista presença do Codaf', function () {
   cy.get('@response').then((response) => {
+    expect(response.status).to.eq(401)
+  })
+})
+
+// Criar lista de presença do Codaf
+Quando('envio uma requisição POST na lista presença do Codaf', function () {
+  return cy.request({
+    method: 'POST',
+    url: Cypress.config('baseUrl') + '/api/v1/CodafListaPresenca',
+    headers: {
+      accept: 'application/json, text/plain, */*',
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: {
+      propostaId: Cypress.env('CODAF_PROPOSTA_ID'),
+      propostaTurmaId: Cypress.env('CODAF_TURMA_ID'),
+      dataPublicacao: '2026-01-01',
+      dataPublicacaoDom: null,
+      numeroComunicado: 1,
+      paginaComunicadoDom: 0,
+      codigoCursoEol: null,
+      codigoNivel: null,
+      observacao: '',
+      inscritos: [],
+      anexos: [],
+      retificacoes: []
+    },
+    failOnStatusCode: false
+  }).as('response')
+})
+
+Então('retorna o status 201 com os dados da lista de presença do Codaf', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(201)
+
+    expect(response.body).to.include.keys(
+      'id',
+      'propostaId',
+      'propostaTurmaId',
+      'dataPublicacao',
+      'status'
+    )
+
+    codafListaPresencaId = response.body.id
+  })
+})
+
+// Não criar lista de presença do Codaf sem campos obrigatórios
+Quando('envio a requisição POST na lista do Codaf sem campos', function () {
+  return cy.request({
+    method: 'POST',
+    url: Cypress.config('baseUrl') + '/api/v1/CodafListaPresenca',
+    headers: {
+      accept: 'application/json, text/plain, */*',
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: {
+      propostaId: null,
+      propostaTurmaId: null,
+      dataPublicacao: null,
+      dataPublicacaoDom: null,
+      numeroComunicado: 1,
+      paginaComunicadoDom: 0,
+      codigoCursoEol: null,
+      codigoNivel: null,
+      observacao: '',
+      inscritos: [],
+      anexos: [],
+      retificacoes: []
+    },
+    failOnStatusCode: false
+  }).as('response')
+})
+
+Então('retorna o status 422 sem criar lista de presença do Codaf sem campos obrigatórios', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(422)
+  })
+})
+
+// Não criar lista de presença do Codaf sem autenticação
+Quando('tento uma requisição POST na lista presença do Codaf', function () {
+  return cy.request({
+    method: 'POST',
+    url: Cypress.config('baseUrl') + '/api/v1/CodafListaPresenca',
+    headers: {
+      accept: 'application/json, text/plain, */*',
+      Authorization: `token_invalido`,
+      'Content-Type': 'application/json'
+    },
+    body: {
+      propostaId: null,
+      propostaTurmaId: null,
+      dataPublicacao: null,
+      dataPublicacaoDom: null,
+      numeroComunicado: 1,
+      paginaComunicadoDom: 0,
+      codigoCursoEol: null,
+      codigoNivel: null,
+      observacao: '',
+      inscritos: [],
+      anexos: [],
+      retificacoes: []
+    },
+    failOnStatusCode: false
+  }).as('response')
+})
+
+Então('retorna o status 401 sem criar lista de presença do Codaf', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(401)
+  })
+})
+
+// Alterar lista de presença do Codaf
+Quando('envio uma requisição PUT na lista presença do Codaf', function () {
+  cy.request({
+    method: 'PUT',
+    url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/${codafListaPresencaId}`,
+    headers: {
+      accept: 'application/json, text/plain, */*',
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: {
+      propostaId: Cypress.env('CODAF_PROPOSTA_ID'),
+      propostaTurmaId: Cypress.env('CODAF_TURMA_ID'),
+      dataPublicacao: '2026-01-01',
+      dataPublicacaoDom: null,
+      numeroComunicado: 1,
+      paginaComunicadoDom: 0,
+      codigoCursoEol: null,
+      codigoNivel: null,
+      observacao: '',
+      inscritos: [],
+      anexos: [],
+      retificacoes: []
+    },
+    failOnStatusCode: false
+  }).as('response')
+})
+
+Então('retorna o status 204 ao alterar a lista de presença do Codaf', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(204)
+  })
+})
+
+// Não alterar lista de presença do Codaf sem id
+Quando('envio uma requisição PUT na lista presença do Codaf sem id', function () {
+  cy.request({
+    method: 'PUT',
+    url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/`,
+    headers: {
+      accept: '*/*',
+      Authorization: `Bearer ${token}`
+    },
+    failOnStatusCode: false
+  }).as('response')
+})
+
+Então('retorna o status 405 sem alterar a lista de presença do Codaf', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(405)
+  })
+})
+
+// Não altera lista de presença do Codaf sem autenticação
+Quando('tento uma requisição PUT na lista presença do Codaf', function () {
+  cy.request({
+    method: 'PUT',
+    url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/${codafListaPresencaId}`,
+    headers: {
+      accept: '*/*',
+      Authorization: `token_invalido`,
+    },
+    failOnStatusCode: false
+  }).as('response')
+})
+
+Então('retorna o status 401 sem alterar a lista de presença do Codaf', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(401)
+  })
+})
+
+// Deletar lista de presença do Codaf
+Quando('envio uma requisição DELETE na lista presença do Codaf', function () {
+  cy.request({
+    method: 'DELETE',
+    url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/${codafListaPresencaId}`,
+    headers: {
+      accept: '*/*',
+      Authorization: `Bearer ${token}`
+    },
+    failOnStatusCode: false
+  }).as('responseDelete')
+})
+
+Então('retorna o status 204 ao deletar a lista de presença do Codaf', function () {
+  cy.get('@responseDelete').then((response) => {
+    expect(response.status).to.eq(204)
+  })
+})
+
+// Não deletar lista de presença do Codaf sem id
+Quando('envio uma requisição DELETE na lista presença do Codaf sem id', function () {
+  cy.request({
+    method: 'DELETE',
+    url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/`,
+    headers: {
+      accept: '*/*',
+      Authorization: `Bearer ${token}`
+    },
+    failOnStatusCode: false
+  }).as('response')
+})
+
+Então('retorna o status 405 sem deletar a lista de presença do Codaf', function () {
+  cy.get('@response').then((response) => {
+    expect(response.status).to.eq(405)
+  })
+})
+
+// Não deletar lista de presença do Codaf sem autenticação
+Quando('tento uma requisição DELETE na lista presença do Codaf', function () {
+  cy.request({
+    method: 'DELETE',
+    url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/${codafListaPresencaId}`,
+    headers: {
+      accept: '*/*',
+      Authorization: `token_invalido`,
+    },
+    failOnStatusCode: false
+  }).as('responseDelete')
+})
+
+Então('retorna o status 401 sem deletar a lista de presença do Codaf', function () {
+  cy.get('@responseDelete').then((response) => {
     expect(response.status).to.eq(401)
   })
 })
