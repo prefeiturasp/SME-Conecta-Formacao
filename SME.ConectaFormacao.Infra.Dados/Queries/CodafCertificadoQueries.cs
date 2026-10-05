@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Infra.Dados.Queries
+namespace SME.ConectaFormacao.Infra.Dados.Queries
 {
     public static class CodafCertificadoQueries
     {
@@ -414,6 +414,7 @@
                     P.ID AS codigoFormacao,
                     P.NOME_FORMACAO AS nomeFormacao, 
                     PD.DRE_ID AS dreId, 
+                    P.AREA_PROMOTORA_ID AS areaPromotoraId,
                     CLP.PROPOSTA_TURMA_ID AS propostaTurmaId
                 FROM PUBLIC.CODAF_CERTIFICADOS CC
                 INNER JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA CILP ON CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID = CILP.ID
@@ -439,6 +440,7 @@
                     P.ID AS codigoFormacao,
                     P.NOME_FORMACAO AS nomeFormacao, 
                     PD.DRE_ID AS dreId, 
+                    P.AREA_PROMOTORA_ID AS areaPromotoraId,
                     CLP.PROPOSTA_TURMA_ID AS propostaTurmaId
                 FROM PUBLIC.CODAF_CERTIFICADOS CC
                 INNER JOIN PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO CSI ON CC.CODAF_SUPLEMENTAR_INSCRICAO_ID = CSI.ID
@@ -465,6 +467,7 @@
                     P.ID AS codigoFormacao,
                     P.NOME_FORMACAO AS nomeFormacao, 
                     PD.DRE_ID AS dreId, 
+                    P.AREA_PROMOTORA_ID AS areaPromotoraId,
                     CLP.PROPOSTA_TURMA_ID AS propostaTurmaId
                 FROM PUBLIC.CODAF_CERTIFICADOS CC
                 INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA PRT ON CC.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
