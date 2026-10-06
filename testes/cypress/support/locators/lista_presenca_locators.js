@@ -4,6 +4,8 @@ class Lista_Presenca_Localizadores {
   btn_novo_registro = () => '#CF_BUTTON_NOVO'
   btn_continuar_registro = () => '.ant-modal-footer > .ant-btn-primary'
   btn_salvar = () => '#CF_BUTTON_SALVAR'
+  btn_cancelar = () => '#CF_BUTTON_CANCELAR'
+  btn_voltar = () => '#CF_BUTTON_VOLTAR'
   campo_turma = () => '#turmaId'
   opcao_turma = () => '.ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option-content'
 
