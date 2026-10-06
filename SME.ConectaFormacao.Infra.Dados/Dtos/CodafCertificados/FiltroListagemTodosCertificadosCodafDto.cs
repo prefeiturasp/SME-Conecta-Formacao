@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
 {
@@ -15,6 +15,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados
         public string? NomeCursista { get; set; }
         public DateTime? DataEmissao { get; set; }
         public long? DreId { get; set; }
+        public long? AreaPromotoraId { get; set; }
         public required int Pagina { get; set; }
         public required int TamanhoPagina { get; set; }
     }

@@ -1,9 +1,11 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Bogus;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCertificados;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafCertificados;
@@ -288,6 +290,104 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             Assert.NotNull(resultado.Dados);
             Assert.Equal(string.Empty, resultado.Dados.Items.First().Documento);
             Assert.Equal("   ", resultado.Dados.Items.Last().Documento);
+        }
+
+        [Fact]
+        public async Task DadoUsuarioNaoAdminComAreaPromotora_QuandoExecutarAsync_EntaoDeveFiltrarPorAreaPromotora()
+        {
+            // Arrange
+            var filtro = new FiltroListaTodosCertificadosCodafDto
+            {
+                NumeroPagina = 1,
+                NumeroRegistros = 10
+            };
+
+            var filtroRepositorio = new FiltroListagemTodosCertificadosCodafDto
+            {
+                Pagina = 1,
+                TamanhoPagina = 10
+            };
+
+            var areaPromotora = new Dominio.Entidades.AreaPromotora
+            {
+                Id = 42,
+                Nome = "NEER DC"
+            };
+
+            _mocker.GetMock<IContextoAplicacao>()
+                .Setup(c => c.IdPerfilUsuario)
+                .Returns(Guid.NewGuid()); // Perfil diferente de ADMIN_DF
+
+            _mocker.GetMock<MediatR.IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterAreaPromotoraUsuarioLogadoQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(areaPromotora);
+
+            _mocker.GetMock<IMapper>()
+                .Setup(m => m.Map<FiltroListagemTodosCertificadosCodafDto>(filtro))
+                .Returns(filtroRepositorio);
+
+            _mocker.GetMock<IRepositorioCodafCertificado>()
+                .Setup(r => r.ObterTodosCertificadosAsync(It.Is<FiltroListagemTodosCertificadosCodafDto>(f => f.AreaPromotoraId == 42)))
+                .ReturnsAsync(new ResultadoPaginado<ListagemCertificadosCodafDto>
+                {
+                    Itens = new List<ListagemCertificadosCodafDto>(),
+                    TotalRegistros = 0,
+                    TamanhoPagina = 10
+                });
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(filtro);
+
+            // Assert
+            Assert.True(resultado.Sucesso);
+            Assert.Equal(42, filtroRepositorio.AreaPromotoraId);
+            _mocker.GetMock<IRepositorioCodafCertificado>()
+                .Verify(r => r.ObterTodosCertificadosAsync(It.Is<FiltroListagemTodosCertificadosCodafDto>(f => f.AreaPromotoraId == 42)), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUsuarioAdminDf_QuandoExecutarAsync_EntaoNaoDeveFiltrarPorAreaPromotora()
+        {
+            // Arrange
+            var filtro = new FiltroListaTodosCertificadosCodafDto
+            {
+                NumeroPagina = 1,
+                NumeroRegistros = 10
+            };
+
+            var filtroRepositorio = new FiltroListagemTodosCertificadosCodafDto
+            {
+                Pagina = 1,
+                TamanhoPagina = 10
+            };
+
+            _mocker.GetMock<IContextoAplicacao>()
+                .Setup(c => c.IdPerfilUsuario)
+                .Returns(Perfis.ADMIN_DF);
+
+            _mocker.GetMock<IMapper>()
+                .Setup(m => m.Map<FiltroListagemTodosCertificadosCodafDto>(filtro))
+                .Returns(filtroRepositorio);
+
+            _mocker.GetMock<IRepositorioCodafCertificado>()
+                .Setup(r => r.ObterTodosCertificadosAsync(It.Is<FiltroListagemTodosCertificadosCodafDto>(f => !f.AreaPromotoraId.HasValue)))
+                .ReturnsAsync(new ResultadoPaginado<ListagemCertificadosCodafDto>
+                {
+                    Itens = new List<ListagemCertificadosCodafDto>(),
+                    TotalRegistros = 0,
+                    TamanhoPagina = 10
+                });
+
+            // Act
+            var resultado = await _casoDeUso.ExecutarAsync(filtro);
+
+            // Assert
+            Assert.True(resultado.Sucesso);
+            Assert.Null(filtroRepositorio.AreaPromotoraId);
+            _mocker.GetMock<MediatR.IMediator>()
+                .Verify(m => m.Send(It.IsAny<ObterAreaPromotoraUsuarioLogadoQuery>(), It.IsAny<CancellationToken>()), Times.Never);
+            _mocker.GetMock<IRepositorioCodafCertificado>()
+                .Verify(r => r.ObterTodosCertificadosAsync(It.Is<FiltroListagemTodosCertificadosCodafDto>(f => !f.AreaPromotoraId.HasValue)), Times.Once);
         }
     }
 }
