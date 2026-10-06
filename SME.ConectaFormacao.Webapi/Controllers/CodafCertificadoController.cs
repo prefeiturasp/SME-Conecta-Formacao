@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using SME.ConectaFormacao.Aplicacao.Dtos;
@@ -51,7 +51,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemCertificadosCodafDto>>), 200)]
         [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<ListagemCertificadosCodafDto>>), 404)]
-        [Permissao(Permissao.Codaf_I, Policy = "Bearer")]
+        [Permissao(Permissao.PesquisaCertificados_C, Permissao.PesquisaCertificados_I, Permissao.PesquisaCertificados_A, Permissao.PesquisaCertificados_E, Permissao.Codaf_I, Policy = "Bearer")]
         public async Task<IActionResult> ListarTodosCertificados([FromQuery] FiltroListaTodosCertificadosCodafDto filtro)
         {
             var resultado = await casoDeUsoListarTodosCertificadosCodaf.ExecutarAsync(filtro);
@@ -61,7 +61,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [HttpPost("download-lote")]
         [ProducesResponseType(typeof(FileStreamResult), 200)]
         [ProducesResponseType(typeof(Resultado), 404)]
-        [Permissao(Permissao.Codaf_I, Policy = "Bearer")]
+        [Permissao(Permissao.PesquisaCertificados_C, Permissao.PesquisaCertificados_I, Permissao.PesquisaCertificados_A, Permissao.PesquisaCertificados_E, Permissao.Codaf_I, Policy = "Bearer")]
         public async Task DownloadLoteCertificados([FromBody] List<long> ids, CancellationToken cancellationToken)
         {
             var syncIoFeature = HttpContext.Features.Get<IHttpBodyControlFeature>();
