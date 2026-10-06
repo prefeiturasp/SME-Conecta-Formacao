@@ -152,6 +152,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 parametros.Add("turmaId", filtro.TurmaId.Value);
             }
 
+            if (!string.IsNullOrWhiteSpace(filtro.CriadoLogin))
+            {
+                condicoesWhere.Append(" AND criadoLogin = @criadoLogin ");
+                parametros.Add("criadoLogin", filtro.CriadoLogin.Trim());
+            }
+
             var conn = conexao.Obter();
             var sqlCount = new StringBuilder($"""
                 {CodafDeclaracaoQueries.ObterTodasDeclaracoesCteBase}

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Infra.Dados.Queries
 {
@@ -267,7 +267,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Queries
                     P.TIPO_EMISSOR AS tipoEmissor,
                     P.ID_EMISSOR AS emissorId,
                     COALESCE(D_EMISSOR.NOME, C_EMISSOR.NOME) AS nomeEmissor,
-                    PT.ID AS turmaId
+                    PT.ID AS turmaId,
+                    CC.CRIADO_LOGIN AS criadoLogin
                 FROM PUBLIC.CODAF_DECLARACOES CC
                 INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO CCNHI ON CC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO_ID = CCNHI.ID
                 INNER JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO CCNH ON CCNHI.CODAF_CURSO_NAO_HOM_ID = CCNH.ID
@@ -299,7 +300,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Queries
                     P.TIPO_EMISSOR AS tipoEmissor,
                     P.ID_EMISSOR AS emissorId,
                     COALESCE(D_EMISSOR.NOME, C_EMISSOR.NOME) AS nomeEmissor,
-                    PT.ID AS turmaId
+                    PT.ID AS turmaId,
+                    CD.CRIADO_LOGIN AS criadoLogin
                 FROM PUBLIC.CODAF_DECLARACOES AS CD
                 INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON CD.PROPOSTA_REGENTE_TURMA_ID = PRT.ID
                 INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PRT.PROPOSTA_REGENTE_ID = PR.ID

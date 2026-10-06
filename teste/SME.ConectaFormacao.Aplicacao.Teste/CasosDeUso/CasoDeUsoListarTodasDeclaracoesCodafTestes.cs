@@ -1,6 +1,8 @@
-﻿using Moq;
+using Moq;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
@@ -11,14 +13,17 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
     public class CasoDeUsoListarTodasDeclaracoesCodafTestes
     {
         private readonly Mock<IRepositorioCodafDeclaracao> repositorioCodafDeclaracao;
+        private readonly Mock<IContextoAplicacao> contextoAplicacao;
         private readonly CasoDeUsoListarTodasDeclaracoesCodaf casoDeUso;
 
         public CasoDeUsoListarTodasDeclaracoesCodafTestes()
         {
             repositorioCodafDeclaracao = new Mock<IRepositorioCodafDeclaracao>(MockBehavior.Strict);
+            contextoAplicacao = new Mock<IContextoAplicacao>();
 
             casoDeUso = new CasoDeUsoListarTodasDeclaracoesCodaf(
-                repositorioCodafDeclaracao.Object);
+                repositorioCodafDeclaracao.Object,
+                contextoAplicacao.Object);
         }
 
         [Fact]
@@ -190,6 +195,74 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
 
             repositorioCodafDeclaracao.Verify(
                 x => x.ObterTodasDeclaracoesAsync(filtro),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task ExecutarAsync_Quando_Usuario_For_NEER_DC_Deve_Filtrar_Por_CriadoLogin_Do_Usuario_Logado()
+        {
+            // Arrange
+            var filtro = CriarFiltro();
+            var loginUsuario = "9876543";
+
+            contextoAplicacao.Setup(c => c.EhNeerDc).Returns(true);
+            contextoAplicacao.Setup(c => c.IdPerfilUsuario).Returns(Perfis.NEER_DC);
+            contextoAplicacao.Setup(c => c.LoginUsuario).Returns(loginUsuario);
+
+            var retornoRepositorio = new ResultadoPaginado<ListagemDeclaracoesCodafDto>
+            {
+                Itens = [],
+                TotalRegistros = 0,
+                TamanhoPagina = filtro.TamanhoPagina,
+                PaginaAtual = 1
+            };
+
+            repositorioCodafDeclaracao
+                .Setup(x => x.ObterTodasDeclaracoesAsync(It.Is<FiltroListagemTodasDeclaracoesCodafDto>(f => f.CriadoLogin == loginUsuario)))
+                .ReturnsAsync(retornoRepositorio);
+
+            // Act
+            var resultado = await casoDeUso.ExecutarAsync(filtro);
+
+            // Assert
+            Assert.NotNull(resultado);
+            Assert.Equal(loginUsuario, filtro.CriadoLogin);
+
+            repositorioCodafDeclaracao.Verify(
+                x => x.ObterTodasDeclaracoesAsync(It.Is<FiltroListagemTodasDeclaracoesCodafDto>(f => f.CriadoLogin == loginUsuario)),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task ExecutarAsync_Quando_Usuario_Nao_For_NEER_DC_Nao_Deve_Definir_CriadoLogin_Automaticamente()
+        {
+            // Arrange
+            var filtro = CriarFiltro();
+
+            contextoAplicacao.Setup(c => c.IdPerfilUsuario).Returns(Perfis.ADMIN_DF);
+            contextoAplicacao.Setup(c => c.LoginUsuario).Returns("1234567");
+
+            var retornoRepositorio = new ResultadoPaginado<ListagemDeclaracoesCodafDto>
+            {
+                Itens = [],
+                TotalRegistros = 0,
+                TamanhoPagina = filtro.TamanhoPagina,
+                PaginaAtual = 1
+            };
+
+            repositorioCodafDeclaracao
+                .Setup(x => x.ObterTodasDeclaracoesAsync(It.Is<FiltroListagemTodasDeclaracoesCodafDto>(f => f.CriadoLogin == null)))
+                .ReturnsAsync(retornoRepositorio);
+
+            // Act
+            var resultado = await casoDeUso.ExecutarAsync(filtro);
+
+            // Assert
+            Assert.NotNull(resultado);
+            Assert.Null(filtro.CriadoLogin);
+
+            repositorioCodafDeclaracao.Verify(
+                x => x.ObterTodasDeclaracoesAsync(It.Is<FiltroListagemTodasDeclaracoesCodafDto>(f => f.CriadoLogin == null)),
                 Times.Once);
         }
 
