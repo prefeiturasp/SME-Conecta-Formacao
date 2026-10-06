@@ -241,3 +241,50 @@ Cypress.Commands.add('validar_exclusao_lista_presenca', () => {
   cy.contains('Registro excluído com sucesso!')
     .should('be.visible')
 })
+
+Cypress.Commands.add('criar_lista_presenca_sem_preencher', () => {
+  cy.get(lista_presenca_localizadores.btn_novo_registro(), { timeout: 30000 })
+    .should('be.visible')
+    .click()
+
+  cy.get(lista_presenca_localizadores.btn_continuar_registro(), { timeout: 30000 })
+    .should('be.visible')
+    .click()  
+
+  cy.get(lista_presenca_localizadores.btn_salvar(), { timeout: 30000 })
+    .should('be.visible')
+    .click()
+})
+
+Cypress.Commands.add('validar_campos_obrigatorios_lista_presenca', () => {
+  cy.contains('Campo obrigatório', { timeout: 30000 })
+    .should('be.visible')
+})
+
+Cypress.Commands.add('cancelar_lista_presenca_sem_preencher', () => {
+  cy.get(lista_presenca_localizadores.btn_novo_registro(), { timeout: 30000 })
+    .should('be.visible')
+    .click()
+
+  cy.get(lista_presenca_localizadores.btn_continuar_registro(), { timeout: 30000 })
+    .should('be.visible')
+    .click()  
+
+  cy.get(lista_presenca_localizadores.btn_cancelar(), { timeout: 30000 })
+    .should('be.visible')
+    .click()
+})
+
+Cypress.Commands.add('retornar_lista_presenca_sem_preencher', () => {
+  cy.get(lista_presenca_localizadores.btn_novo_registro(), { timeout: 30000 })
+    .should('be.visible')
+    .click()
+
+  cy.get(lista_presenca_localizadores.btn_continuar_registro(), { timeout: 30000 })
+    .should('be.visible')
+    .click()  
+
+  cy.get(lista_presenca_localizadores.btn_voltar(), { timeout: 30000 })
+    .should('be.visible')
+    .click()
+})
