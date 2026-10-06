@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Dominio.Constantes
+namespace SME.ConectaFormacao.Dominio.Constantes
 {
     public static class Perfis
     {
@@ -7,5 +7,6 @@
         public static readonly Guid SINPEEM = Guid.Parse("AAA08B83-5DEC-4930-BF5B-44DE9876843F");
         public static readonly Guid COPED = Guid.Parse("3a934680-be27-49be-a12f-cf8765602ebe");
         public static readonly Guid EMFORPEF = Guid.Parse("2358698A-D07B-471C-A76B-0AC8324C2FEE");
+        public static readonly Guid NEER_DC = Guid.Parse("99E6D374-F85E-42B2-B3AE-EA4410F671D1");
     }
 }

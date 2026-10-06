@@ -1,16 +1,25 @@
-﻿using SME.ConectaFormacao.Aplicacao.Dtos;
+using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafDeclaracoes;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafDeclaracoes
 {
     public class CasoDeUsoListarTodasDeclaracoesCodaf(
-        IRepositorioCodafDeclaracao repositorioCodafDeclaracao) : ICasoDeUsoListarTodasDeclaracoesCodaf
+        IRepositorioCodafDeclaracao repositorioCodafDeclaracao,
+        IContextoAplicacao contextoAplicacao) : ICasoDeUsoListarTodasDeclaracoesCodaf
     {
         public async Task<Resultado<PaginacaoResultadoDto<ListagemDeclaracoesCodafDto>>> ExecutarAsync(FiltroListagemTodasDeclaracoesCodafDto filtro)
         {
+            if (contextoAplicacao.EhNeerDc)
+            {
+                filtro.CriadoLogin = !string.IsNullOrWhiteSpace(contextoAplicacao.LoginUsuario) && contextoAplicacao.LoginUsuario != "Sistema"
+                    ? contextoAplicacao.LoginUsuario
+                    : contextoAplicacao.UsuarioLogado;
+            }
+
             var resultado = await repositorioCodafDeclaracao.ObterTodasDeclaracoesAsync(filtro);
             AplicarMascaraDeDocumento(resultado.Itens);
             var resultadoDto = new PaginacaoResultadoDto<ListagemDeclaracoesCodafDto>(
