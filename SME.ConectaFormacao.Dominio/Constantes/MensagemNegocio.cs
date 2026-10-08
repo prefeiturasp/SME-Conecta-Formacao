@@ -125,6 +125,7 @@ public static class MensagemNegocio
     public const string DRE_NAO_INFORMADA_PARA_TODAS_AS_TURMAS = "É necessário informar pelo menos uma DRE para as turmas selecionadas ou opçao todas";
     public const string TODAS_AS_TURMAS_DEVEM_POSSUIR_DRE_OU_OPCAO_TODOS = "Todas as turmas devem possuir uma DRE selecionada ou a opção de todas";
     public const string DATAFIM_INSCRICAO_NAO_PODE_SER_MAIOR_QUE_DATAFIM_REALIZACAO = "A Data Inscrição fim não pode ser maior que a data Realização fim";
+    public const string DATA_INSCRICAO_INICIO_MAIOR_QUE_DATA_INSCRICAO_FIM = "A data de início da inscrição não pode ser maior que a data final";
     public const string CONFIRMACAO_SENHA_DEVE_SER_IGUAL_A_SENHA = "Confirmação da senha: Deve ser igual a senha";
     public const string A_SENHA_DEVE_TER_NO_MÍNIMO_8_CARACTERES = "A senha deve conter no minimo 8 caracteres";
     public const string A_SENHA_DEVE_TER_NO_MÁXIMO_12_CARACTERES = "A senha deve conter no máximo 12 caracteres";

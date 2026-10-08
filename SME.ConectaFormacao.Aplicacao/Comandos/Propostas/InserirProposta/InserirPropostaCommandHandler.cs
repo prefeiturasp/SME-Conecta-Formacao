@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -34,6 +34,7 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var proposta = _mapper.Map<Proposta>(request.PropostaDTO);
             proposta.AreaPromotoraId = request.AreaPromotoraId;
+            proposta.AjustarDatasInscricao();
 
             await _mediator.Send(new ValidarAreaPromotoraCommand(proposta.AreaPromotoraId, proposta.IntegrarNoSGA), cancellationToken);
 
