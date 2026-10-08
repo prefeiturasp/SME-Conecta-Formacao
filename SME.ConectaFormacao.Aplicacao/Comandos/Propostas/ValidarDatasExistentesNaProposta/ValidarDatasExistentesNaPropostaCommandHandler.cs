@@ -16,6 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
             if (proposta.DataInscricaoInicio == null || proposta.DataInscricaoFim == null)
                 erros.Add(MensagemNegocio.PERIODO_INCRICAO_NAO_INFORMADO);
+            else if (proposta.DataInscricaoInicio > proposta.DataInscricaoFim)
+                erros.Add(MensagemNegocio.DATA_INSCRICAO_INICIO_MAIOR_QUE_DATA_INSCRICAO_FIM);
 
             var quantidadeDeTurmasComEncontro = await repositorioPropostaEncontro.ObterQuantidadeDeTurmasComEncontroAsync(request.PropostaId);
             if (quantidadeDeTurmasComEncontro != proposta.QuantidadeTurmas)
