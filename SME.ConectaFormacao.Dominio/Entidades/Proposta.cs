@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
@@ -90,6 +90,14 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         }
         public IEnumerable<PropostaTipoInscricao> TiposInscricao { get; set; } = [];
 
+        public void AjustarDatasInscricao()
+        {
+            if (DataInscricaoFim.HasValue && DataInscricaoFim.Value.TimeOfDay == TimeSpan.Zero)
+            {
+                DataInscricaoFim = DataInscricaoFim.Value.Date.AddDays(1).AddMilliseconds(-1);
+            }
+        }
+
         public bool EstaEmPeriodoDeInscricao
         {
             get
@@ -97,8 +105,9 @@ namespace SME.ConectaFormacao.Dominio.Entidades
                 if (!DataInscricaoInicio.HasValue && !DataInscricaoFim.HasValue)
                     return false;
 
-                return DataInscricaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date &&
-                       DataInscricaoFim.Value.Date >= DateTimeExtension.HorarioBrasilia().Date;
+                var agora = DateTimeExtension.HorarioBrasilia();
+                return DataInscricaoInicio.GetValueOrDefault() <= agora &&
+                       DataInscricaoFim.GetValueOrDefault() >= agora;
             }
         }
 
