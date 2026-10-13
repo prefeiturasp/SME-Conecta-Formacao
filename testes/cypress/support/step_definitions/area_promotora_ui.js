@@ -1,6 +1,5 @@
-import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor'
+import { When, Then } from '@badeball/cypress-cucumber-preprocessor'
 
-const Dado = Given
 const Quando = When
 const Então = Then
 

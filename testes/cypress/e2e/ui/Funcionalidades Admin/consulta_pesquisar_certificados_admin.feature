@@ -34,14 +34,14 @@ Funcionalidade: Pesquisar certificados
     Então busca nas pequisa de certificado com "<campo>"
 
     Exemplos:
-      | campo                 | opcao       | valor              | caso                           |
-      | Nome da formação      | nome        | Nome               | Nome da formação               |
-      | Tipo de certificado   | tipo        | Cursista           | Tipo de certificado            |
-      | Código da formação    | código      | 1                  | Código da formação             |
-      | Número de homologação | número      | 1                  | Número de homologação          |
-      | Código do certificado | certificado | 1                  | Código do certificado          |
-      | RF ou CPF do cursista | documento   | REGISTRO_FUNCIONAL | RF ou CPF do cursista          |
-      | RF do regente         | regente     | REGISTRO_FUNCIONAL | RF do regente                  |
-      | Nome do cursista      | cursista    | Nome               | Nome do cursista               |     
-      | Data de finalização   | data        | 01/01/2026         | Data de envio para finalização |
-      | DRE                   | diretoria   | TODAS              | DRE                            | 
+      | campo                 | opcao       | valor                                  | caso                           |
+      | Nome da formação      | nome        | Nome                                   | Nome da formação               |
+      | Tipo de certificado   | tipo        | Cursista                               | Tipo de certificado            |
+      | Código da formação    | código      | 1                                      | Código da formação             |
+      | Número de homologação | número      | 1                                      | Número de homologação          |
+      | Código do certificado | certificado | 1                                      | Código do certificado          |
+      | RF ou CPF do cursista | documento   | REGISTRO_FUNCIONAL                     | RF ou CPF do cursista          |
+      | RF do regente         | regente     | REGISTRO_FUNCIONAL                     | RF do regente                  |
+      | Nome do cursista      | cursista    | Nome                                   | Nome do cursista               |     
+      | Data de finalização   | data        | 01/01/2026                             | Data de envio para finalização |
+      | DRE                   | diretoria   | DIRETORIA REGIONAL DE EDUCACAO BUTANTA | DRE                            | 

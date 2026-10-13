@@ -82,7 +82,7 @@ Então('retorna o status 401 sem dados de presença do Codaf', function () {
 Quando('envio uma requisição GET id lista presença do Codaf', function () { 
   return cy.request({
     method: 'GET',
-    url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/100`,
+    url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/1`,
     headers: {
       accept: 'text/plain',
       Authorization: `Bearer ${token}`
@@ -157,7 +157,7 @@ Então('retorna o status 401 sem dados por id de presença do Codaf', function (
 Quando('envio uma requisição POST de imprimir lista presença do Codaf', function () { 
   return cy.request({
     method: 'POST',
-    url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/100/imprimir`,
+    url: Cypress.config('baseUrl') + `/api/v1/CodafListaPresenca/1/imprimir`,
     headers: {
       accept: 'text/plain',
       Authorization: `Bearer ${token}`
