@@ -13,13 +13,13 @@ Funcionalidade: Consulta de nova inscrição
     Então mostra o "<campo>" no filtro "<valor>" de nova inscrição disponíveis
     
     Exemplos:
-      | campo   | valor          | caso                      |
-      | público | AGENTE ESCOLAR | Selecionar público alvo   |
-      | título  | Teste          | Buscar título             |
-      | área    | APROFEM        | Selecionar área promotora |
-      | data    | 01/01/2026     | Filtrar data              |
-      | formato | Presencial     | Selecionar formato        |
-      | palavra | ARTE           | Selecionar palavra chave  |
+      | campo   | valor                   | caso                      |
+      | público | AGENTE ESCOLAR          | Selecionar público alvo   |
+      | título  | Teste                   | Buscar título             |
+      | área    | Área Promotora de Teste | Selecionar área promotora |
+      | data    | 01/01/2026              | Filtrar data              |
+      | formato | Presencial              | Selecionar formato        |
+      | palavra | ARTE                    | Selecionar palavra chave  |
 
   Esquema do Cenário: Validar a consulta de: <caso>
     Quando acesso o menu Minhas Inscrições

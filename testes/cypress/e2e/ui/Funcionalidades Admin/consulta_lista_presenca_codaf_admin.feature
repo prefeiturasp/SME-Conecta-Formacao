@@ -33,8 +33,8 @@ Funcionalidade: Consulta de lista de presença CODAF
       | campo                 | opcao    | valor      | caso                           |
       | Nome da formação      | nome     | Teste      | Nome da formação               |
       | Área promotora        | área     | Teste      | Área promotora                 |
-      | Código da formação    | código   | 123        | Código da formação             |
-      | Número de homologação | número   | 572        | Número de homologação          |
+      | Código da formação    | código   | 245        | Código da formação             |
+      | Número de homologação | número   | 123456     | Número de homologação          |
       | Data de finalização   | data     | 01/01/2026 | Data de envio para finalização | 
 
   Esquema do Cenário: Filtrar a situação: <caso>

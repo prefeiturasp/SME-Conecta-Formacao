@@ -51,6 +51,22 @@ Então('o sistema salva a nova lista de presença CODAF', () => {
   cy.validar_cadastro_lista_presenca()  
 })
 
+Quando('seleciono o Codaf homologado para exclusão', () => {
+  cy.selecionar_excluir_lista_presenca()
+})
+
+Então('cancelo sem excluir a lista de presença CODAF', () => {
+  cy.validar_cancelar_exclusao_lista_presenca() 
+})
+
+Quando('seleciono o Codaf homologado diferente de iniciado', () => {
+  cy.validar_nao_cancelar_exclusao_lista_presenca()
+})
+
+Então('não permite excluir a lista de presença CODAF', () => {
+  cy.validar_nao_cancelar_exclusao_lista_presenca() 
+})
+
 Quando('clico no Codaf homologado para exclusão', () => {
   cy.excluir_lista_presenca()
 })
