@@ -6,7 +6,7 @@ Funcionalidade: Excluir Área Promotora
     Dado eu acesso o sistema com a visualização web
     E realizo login no sistema Conecta Formação com perfil "Admin" 
 
-  Esquema do Cenário: Validar a: <caso>
+  Esquema do Cenário: Validar: <caso>
     E visualizo a tela "Área Promotora"
     Quando clico no cadastro da Área Promotora
     E depois clico para excluir da promotora

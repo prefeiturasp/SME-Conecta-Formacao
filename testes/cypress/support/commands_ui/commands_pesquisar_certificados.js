@@ -141,7 +141,7 @@ Cypress.Commands.add('preencher_filtro_pesquisa_certificados', (opcao, valor, va
         .should('to.exist')
         .click()
 
-      cy.contains(pesquisar_certificados_localizadores.select_opcao(), 'TODAS', { timeout: 10000 })
+      cy.contains(pesquisar_certificados_localizadores.select_opcao(), 'DIRETORIA REGIONAL DE EDUCACAO BUTANTA', { timeout: 10000 })
         .should('be.visible')
         .click()  
       break

@@ -51,10 +51,50 @@ Então('o sistema salva a nova lista de presença CODAF', () => {
   cy.validar_cadastro_lista_presenca()  
 })
 
+Quando('seleciono o Codaf homologado para exclusão', () => {
+  cy.selecionar_excluir_lista_presenca()
+})
+
+Então('cancelo sem excluir a lista de presença CODAF', () => {
+  cy.validar_cancelar_exclusao_lista_presenca() 
+})
+
+Quando('seleciono o Codaf homologado diferente de iniciado', () => {
+  cy.validar_nao_cancelar_exclusao_lista_presenca()
+})
+
+Então('não permite excluir a lista de presença CODAF', () => {
+  cy.validar_nao_cancelar_exclusao_lista_presenca() 
+})
+
 Quando('clico no Codaf homologado para exclusão', () => {
   cy.excluir_lista_presenca()
 })
 
 Então('o sistema exclui a lista de presença CODAF', () => {
   cy.validar_exclusao_lista_presenca() 
+})
+
+Quando('tento cadastrar um Codaf homologado sem preenchimento', () => {
+  cy.criar_lista_presenca_sem_preencher()
+})
+
+Então('o sistema informa campos obrigatórios na nova lista de presença CODAF', () => {
+  cy.validar_campos_obrigatorios_lista_presenca() 
+})
+
+Quando('cancelo o cadastro do Codaf homologado', () => {
+  cy.cancelar_lista_presenca_sem_preencher()
+})
+
+Então('o sistema retorna a lista de presença CODAF', () => {
+  cy.validar_filtros_lista_presenca() 
+})
+
+Quando('clico em voltar no Codaf homologado', () => {
+  cy.retornar_lista_presenca_sem_preencher()
+})
+
+Então('o sistema retorna a listagem de presença CODAF', () => {
+  cy.validar_filtros_lista_presenca() 
 })

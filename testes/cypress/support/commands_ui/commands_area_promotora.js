@@ -111,7 +111,7 @@ Cypress.Commands.add('criar_area_promotora_por_tipo', (tipo) => {
       'Rede Parceria',
       'Rede Direta',
       'Arquivo Histórico Municipal'
-    ])
+    ])    
 
     cy.get(inputSelector, { timeout: 10000 })
       .should('exist')
@@ -209,102 +209,6 @@ Cypress.Commands.add('criar_sem_dados_area_promotora', () => {
   cy.contains('button', 'Salvar', { timeout: 5000 })
     .should('be.visible')
     .click()
-})
-
-Cypress.Commands.add('excluir_area_promotora', (tipo = 'Rede Parceria') => {
-  expect(tipo).to.be.a('string').and.not.be.empty
-
-  const tipoTexto = tipo.trim()
-
-  const agora = new Date()
-  const dia = String(agora.getDate()).padStart(2, '0')
-  const mes = String(agora.getMonth() + 1).padStart(2, '0')
-  const ano = agora.getFullYear()
-  const hora = String(agora.getHours()).padStart(2, '0')
-  const minuto = String(agora.getMinutes()).padStart(2, '0')
-
-  const nomeAreaPromotora = `Teste automatizado ${dia}/${mes}/${ano} ${hora}:${minuto}`
-  const emailTeste = `testeautomatizado${dia}${mes}${ano}${hora}${minuto}@sme.com`
-
-  function selecionarOpcaoAnt(inputSelector, textoOpcao) {
-    const opcao = String(textoOpcao).trim()
-
-    cy.get(inputSelector, { timeout: 8000 })
-      .should('exist')
-      .parents('.ant-select')
-      .first()
-      .find('.ant-select-selector')
-      .trigger('mousedown', { which: 1, force: true })
-
-    cy.contains('.ant-select-item-option', opcao, { timeout: 8000 })
-      .click()
-  }
-
-  cy.get(area_promotora_localizadores.btn_salvar_area_promotora(), { timeout: 5000 })
-    .should('be.visible')
-    .click()
-
-  cy.get(area_promotora_localizadores.btn_novo_nome_area_promotora(), { timeout: 5000 })
-    .should('be.visible')
-    .clear()
-    .type(nomeAreaPromotora)
-
-  selecionarOpcaoAnt(area_promotora_localizadores.btn_novo_tipo_area_promotora(), tipoTexto)
-  selecionarOpcaoAnt(area_promotora_localizadores.btn_novo_perfil_area_promotora(), 'Arquivo Histórico Municipal')
-
-  cy.get(area_promotora_localizadores.btn_novo_telefone_area_promotora(), { timeout: 5000 })
-    .should('be.visible')
-    .clear()
-    .type('31999999999')
-
-  cy.get(area_promotora_localizadores.btn_novo_email_area_promotora(), { timeout: 5000 })
-    .should('be.visible')
-    .clear()
-    .type(emailTeste)
-
-  cy.contains('button', 'Salvar', { timeout: 5000 })
-    .should('be.visible')
-    .click()
-
-  cy.get(area_promotora_localizadores.msg_sucesso_area_promotora(), { timeout: 5000 })
-    .should('be.visible')
-
-  cy.get(area_promotora_localizadores.input_nome(), { timeout: 5000 })
-    .should('be.visible')
-    .clear()
-    .type(nomeAreaPromotora)
-
-  cy.wait(1000)
-
-  cy.get(area_promotora_localizadores.tbl_nome_teste(), { timeout: 5000 })
-    .should('be.visible')
-    .click()
-
-  cy.get(area_promotora_localizadores.btn_exclui_area_promotora(), { timeout: 5000 })
-    .should('be.visible')
-    .click()
-
-  cy.get(area_promotora_localizadores.btn_confirmar_modal_area_promotora(), { timeout: 5000 })
-    .should('be.visible')
-    .click()
-
-  cy.wait(1000)
-
-  cy.get(area_promotora_localizadores.input_nome(), { timeout: 5000 })
-    .should('be.visible')
-    .clear()
-    .type(nomeAreaPromotora)
-
-  cy.wait(1000)
-
-  cy.get('body').then(($body) => {
-    const linhaExiste = $body.find(area_promotora_localizadores.tbl_nome_teste()).length > 0
-    expect(linhaExiste, `área promotora ${nomeAreaPromotora} não deveria existir após exclusão`).to.eq(false)
-  })
-
-  cy.get(area_promotora_localizadores.input_nome(), { timeout: 5000 })
-    .should('be.visible')
-    .clear()
 })
 
 Cypress.Commands.add('validar_campos_area_promotora', () => {
@@ -458,7 +362,7 @@ Cypress.Commands.add('validar_cancelamento_exclusao_area_promotora', () => {
 })
 
 Cypress.Commands.add('tentar_excluir_area_promotora', () => {
-  const nome = 'COPED - Núcleo de Formação'
+  const nome = 'COCEU'
 
   cy.get(area_promotora_localizadores.input_nome(), { timeout: 10000 })
     .should('be.visible')
