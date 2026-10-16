@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes
 {
@@ -16,6 +16,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafDeclaracoes
         public long? EmissorId { get; set; }
         public TipoEmissor? TipoEmissor { get; set; }
         public long? TurmaId { get; set; }
+        public string? CriadoLogin { get; set; }
         public required int Pagina { get; set; }
         public required int TamanhoPagina { get; set; }
     }

@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Constantes;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Dominio.Contexto;
@@ -19,6 +20,9 @@ public abstract class ContextoBase : IContextoAplicacao
     public Permissao[] Permissoes => ObterVariavel<Permissao[]>("Permissoes") ?? [];
 
     public string LoginUsuario => ObterVariavel<string>("login") ?? "Sistema";
+    public virtual Guid? IdPerfilUsuario => !string.IsNullOrWhiteSpace(PerfilUsuario) && Guid.TryParse(PerfilUsuario, out var id) ? id : null;
+    public virtual bool EhAdministrador => IdPerfilUsuario == Perfis.ADMIN_DF || IdPerfilUsuario == Perfis.EMFORPEF;
+    public virtual bool EhNeerDc => IdPerfilUsuario == Perfis.NEER_DC;
 
     public abstract void AdicionarVariaveis(IDictionary<string, object> variaveis);
     public abstract IContextoAplicacao AtribuirContexto(IContextoAplicacao contexto);

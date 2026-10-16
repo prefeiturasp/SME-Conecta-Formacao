@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Dominio.Enumerados
+namespace SME.ConectaFormacao.Dominio.Enumerados
 {
     public enum Permissao
     {
@@ -26,5 +26,10 @@
         Codaf_I = 290,
         Codaf_E = 291,
         Codaf_A = 292,
+
+        PesquisaCertificados_C = 307,
+        PesquisaCertificados_I = 308,
+        PesquisaCertificados_E = 309,
+        PesquisaCertificados_A = 310,
     }
 }
