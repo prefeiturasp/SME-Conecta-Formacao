@@ -2,6 +2,36 @@
 
 Funcionalidade: API - Proposta
 
+  Cenário: Criar uma nova proposta
+    Dado que possuo um token válido no endpoint Proposta
+    Quando envio uma requisição POST em Proposta
+    Então retorna o status 200 criando uma nova proposta
+
+  Cenário: Não criar proposta sem dados obrigatórios
+    Dado que possuo um token válido no endpoint Proposta
+    Quando envio uma requisição POST em Proposta sem dados
+    Então retorna o status 400 sem criar proposta
+
+  Cenário: Não criar proposta sem autenticação
+    Dado que possuo um token válido no endpoint Proposta
+    Quando tento uma requisição POST em Proposta
+    Então retorna o status 401 sem criar proposta
+
+  Cenário: Atualizar proposta
+    Dado que cadastro uma proposta para atualização via API
+    Quando envio uma requisição PUT em Proposta
+    Então retorna o status 200 atualizando a proposta
+
+  Cenário: Não atualizar proposta sem o id
+    Dado que cadastro uma proposta para atualização via API
+    Quando envio uma requisição PUT em Proposta sem id
+    Então retorna o status 400 sem atualizar a proposta
+
+  Cenário: Não atualizar proposta sem autenticação
+    Dado que cadastro uma proposta para atualização via API
+    Quando tento uma requisição PUT em Proposta
+    Então retorna o status 401 sem atualizar a proposta 
+
   Cenário: Buscar informações do cadastrante
     Dado que possuo um token válido no endpoint Proposta
     Quando envio uma requisição GET na informações cadastrante
@@ -121,3 +151,18 @@ Funcionalidade: API - Proposta
     Dado que não possuo um token válido
     Quando tento a requisição GET autocompletar formacao
     Então retorna o status 401 sem autocompletar formação
+
+  Cenário: Excluir proposta
+    Dado que cadastro uma proposta para exclusão via API
+    Quando envio uma requisição DELETE em Proposta
+    Então retorna o status 204 com exclusão da proposta
+
+  Cenário: Não excluir proposta sem o id
+    Dado que cadastro uma proposta para exclusão via API
+    Quando envio uma requisição DELETE em Proposta sem id
+    Então retorna o status 400 sem excluir proposta
+
+  Cenário: Não excluir proposta sem autenticação
+    Dado que cadastro uma proposta para exclusão via API
+    Quando tento uma requisição DELETE em Proposta
+    Então retorna o status 401 sem excluir a proposta
