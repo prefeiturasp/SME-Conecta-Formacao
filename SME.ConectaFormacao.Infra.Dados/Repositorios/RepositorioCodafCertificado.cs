@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Npgsql;
 using NpgsqlTypes;
 using SME.ConectaFormacao.Dominio.Contexto;
@@ -290,6 +290,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             {
                 condicoesWhere.Append(" AND dreId = @dreId ");
                 parametros.Add("dreId", filtro.DreId.Value);
+            }
+
+            if (filtro.AreaPromotoraId.HasValue)
+            {
+                condicoesWhere.Append(" AND areaPromotoraId = @areaPromotoraId ");
+                parametros.Add("areaPromotoraId", filtro.AreaPromotoraId.Value);
             }
 
             var conn = conexao.Obter();

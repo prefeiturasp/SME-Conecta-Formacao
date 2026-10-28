@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -29,6 +29,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var proposta = _mapper.Map<Proposta>(request.PropostaDTO);
             proposta.AreaPromotoraId = request.AreaPromotoraId;
             proposta.Situacao = SituacaoProposta.Rascunho;
+            proposta.AjustarDatasInscricao();
 
             var transacao = _transacao.Iniciar();
 
