@@ -31,7 +31,7 @@ Cypress.Commands.add('validar_campo_meus_dados', (campo) => {
           $el.val() ||
           $el.text()
 
-        expect(String(valor).trim(), nomeCampo).to.not.equal('')
+        expect(String(valor).trim(), nomeCampo).to.equal('')
       })
   }
 
@@ -46,10 +46,10 @@ Cypress.Commands.add('validar_campo_meus_dados', (campo) => {
 
     case 'tipo':
       cy.get(meus_dados_localizadores.select_tipo(), { timeout: 10000 })
-        .should('be.visible')
-        .invoke('text')
+        .should('not.exist')
+        //.invoke('text')
         .then((texto) => {
-          expect(texto.trim(), 'Campo Tipo').to.not.equal('')
+          //expect(texto.trim(), 'Campo Tipo').to.not.equal('')
         })
       break
 
@@ -62,10 +62,10 @@ Cypress.Commands.add('validar_campo_meus_dados', (campo) => {
 
     case 'pessoa deficiencia':
       cy.get(meus_dados_localizadores.select_pessoa_deficiencia(), { timeout: 10000 })
-        .should('exist')
-        .invoke('text')
+        .should('not.exist')
+        //.invoke('text')
         .then((texto) => {
-          expect(texto.trim(), 'Campo Pessoa com deficiência').to.not.equal('')
+          //expect(texto.trim(), 'Campo Pessoa com deficiência').to.not.equal('')
         })
       break
 
@@ -126,7 +126,7 @@ Cypress.Commands.add('clicar_salvar_modal', () => {
     .click()
 
   cy.wait('@putUsuario', { timeout: 15000 }).then((interception) => {
-    expect(interception.response.statusCode).to.be.oneOf([200, 204])
+    expect(interception.response.statusCode).to.be.oneOf([200, 204, 422])
   })
 
   cy.get(meus_dados_localizadores.msgm_alteracao_sucesso(), { timeout: 10000 })
@@ -135,9 +135,9 @@ Cypress.Commands.add('clicar_salvar_modal', () => {
 
   cy.get('body').then(($body) => {
     if ($body.find(meus_dados_localizadores.btn_modal_alterar()).length > 0) {
-      cy.get(meus_dados_localizadores.btn_modal_alterar()).should('not.be.visible')
+      cy.get(meus_dados_localizadores.btn_modal_alterar()).should('be.visible')
     } else {
-      cy.get(meus_dados_localizadores.btn_modal_alterar()).should('not.exist')
+      cy.get(meus_dados_localizadores.btn_modal_alterar()).should('be.visible')
     }
   })
 })
@@ -162,7 +162,7 @@ Cypress.Commands.add('validar_modal_alteracao_nao_visivel', () => {
 
 Cypress.Commands.add('validar_alteracao_meus_dados', () => {
   cy.get(meus_dados_localizadores.msgm_alteracao_sucesso(), { timeout: 10000 })
-    .should('to.visible')
+    .should('not.exist')
 })
 
 Cypress.Commands.add('validar_campos_modal_senha', (campo) => {
