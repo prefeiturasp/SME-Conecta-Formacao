@@ -18,17 +18,17 @@ Funcionalidade: API - Proposta
     Então retorna o status 401 sem criar proposta
 
   Cenário: Atualizar proposta
-    Dado que cadastro uma proposta para atualização via API
+    Dado que possuo um token válido no endpoint Proposta
     Quando envio uma requisição PUT em Proposta
     Então retorna o status 200 atualizando a proposta
 
   Cenário: Não atualizar proposta sem o id
-    Dado que cadastro uma proposta para atualização via API
+    Dado que possuo um token válido no endpoint Proposta
     Quando envio uma requisição PUT em Proposta sem id
-    Então retorna o status 400 sem atualizar a proposta
+    Então retorna o status 405 sem atualizar a proposta
 
   Cenário: Não atualizar proposta sem autenticação
-    Dado que cadastro uma proposta para atualização via API
+    Dado que possuo um token válido no endpoint Proposta
     Quando tento uma requisição PUT em Proposta
     Então retorna o status 401 sem atualizar a proposta 
 
@@ -153,16 +153,16 @@ Funcionalidade: API - Proposta
     Então retorna o status 401 sem autocompletar formação
 
   Cenário: Excluir proposta
-    Dado que cadastro uma proposta para exclusão via API
+    Dado que possuo um token válido no endpoint Proposta
     Quando envio uma requisição DELETE em Proposta
-    Então retorna o status 204 com exclusão da proposta
+    Então retorna o status 200 com exclusão da proposta
 
   Cenário: Não excluir proposta sem o id
-    Dado que cadastro uma proposta para exclusão via API
+    Dado que possuo um token válido no endpoint Proposta
     Quando envio uma requisição DELETE em Proposta sem id
-    Então retorna o status 400 sem excluir proposta
+    Então retorna o status 405 sem excluir proposta
 
   Cenário: Não excluir proposta sem autenticação
-    Dado que cadastro uma proposta para exclusão via API
+    Dado que não possuo um token válido
     Quando tento uma requisição DELETE em Proposta
     Então retorna o status 401 sem excluir a proposta

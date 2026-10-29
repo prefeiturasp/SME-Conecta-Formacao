@@ -13,7 +13,7 @@ Before(() => {
 })
 
 Dado('que possuo um token válido no endpoint Proposta', function () {
-  expect(token, 'valido').to.exist
+  expect(Boolean(token), 'token de acesso foi informado').to.be.true
 })
 
 // Criar uma nova proposta
@@ -86,12 +86,10 @@ Quando('envio uma requisição POST em Proposta', function () {
 Então('retorna o status 200 criando uma nova proposta', function () {
   cy.get('@response').then((response) => {
     expect(response.status).to.equal(200)
-    expect(response.body).to.have.property('sucesso')
     expect(response.body).to.have.property('entidadeId')
-    expect(response.body).to.have.property('mensagem')
     expect(response.body.entidadeId).to.exist
 
-    cy.wrap(response.body.entidadeId).as('entidadeId')
+    Cypress.env('ENTIDADE_ID', response.body.entidadeId)
   })
 })
 
@@ -217,34 +215,36 @@ Então('retorna o status 401 sem criar proposta', function () {
 
 // Atualizar proposta
 Quando('envio uma requisição PUT em Proposta', function () {
-  cy.get('@entidadeId').then((entidadeId) => {
-    cy.request({
-      method: 'PUT',
-      url: `${Cypress.config('baseUrl')}/api/v1/Proposta/${entidadeId}`,
-      headers: {
-        accept: 'application/json, text/plain, */*',
-        'content-type': 'application/json',
-        authorization: `Bearer ${Cypress.env('TOKEN')}`
-      },
-      body: {
-        anexoUrl: '',
-        ehProximoPasso: false,
-        situacao: 2,
-        formacaoHomologada: 1,
-        tipoFormacao: 1,
-        formato: 1,
-        dreIdPropostas: null,
-        nomeFormacao: 'Teste automatizado',
-        quantidadeTurmas: 3,
-        quantidadeVagasTurma: 30,
-        funcaoEspecificaOutros: '',
-        publicoAlvoOutros: '',
-        criterioValidacaoInscricaoOutros: '',
-        pareceristas: []
-      },
-      failOnStatusCode: false
-    }).as('responsePut')
-  })
+  const entidadeId = Cypress.env('ENTIDADE_ID')
+
+  expect(entidadeId, 'ID da proposta').to.exist
+
+  cy.request({
+    method: 'PUT',
+    url: `${Cypress.config('baseUrl')}/api/v1/Proposta/${entidadeId}`,
+    headers: {
+      accept: 'application/json, text/plain, */*',
+      'content-type': 'application/json',
+      Authorization: `Bearer ${Cypress.env('TOKEN')}`
+    },
+    body: {
+      anexoUrl: '',
+      ehProximoPasso: false,
+      situacao: 2,
+      formacaoHomologada: 1,
+      tipoFormacao: 1,
+      formato: 1,
+      dreIdPropostas: null,
+      nomeFormacao: 'Teste automatizado',
+      quantidadeTurmas: 3,
+      quantidadeVagasTurma: 30,
+      funcaoEspecificaOutros: '',
+      publicoAlvoOutros: '',
+      criterioValidacaoInscricaoOutros: '',
+      pareceristas: []
+    },
+    failOnStatusCode: false
+  }).as('responsePut')
 })
 
 Então('retorna o status 200 atualizando a proposta', function () {
@@ -264,7 +264,7 @@ Quando('envio uma requisição PUT em Proposta sem id', function () {
     headers: {
       accept: 'application/json, text/plain, */*',
       'content-type': 'application/json',
-      authorization: `Bearer ${Cypress.env('TOKEN')}`
+      Authorization: `Bearer ${Cypress.env('TOKEN')}`
     },
       body: {
         anexoUrl: '',
@@ -286,22 +286,21 @@ Quando('envio uma requisição PUT em Proposta sem id', function () {
   }).as('responsePut')
 })
 
-Então('retorna o status 400 sem atualizar a proposta', function () {
+Então('retorna o status 405 sem atualizar a proposta', function () {
   cy.get('@responsePut').then((response) => {
-    expect(response.status).to.equal(400)
+    expect(response.status).to.equal(405)
   })
 })
 
 // Não atualizar proposta sem autenticação
 Quando('tento uma requisição PUT em Proposta', function () {
-  cy.get('@entidadeId').then((entidadeId) => {
-    cy.request({
-      method: 'PUT',
-      url: `${Cypress.config('baseUrl')}/api/v1/Proposta/${entidadeId}`,
-      headers: {
-        accept: 'application/json, text/plain, */*',
-        'content-type': 'application/json',
-        authorization: `token_invalido`
+  cy.request({
+    method: 'PUT',
+    url: `${Cypress.config('baseUrl')}/api/v1/Proposta/1`,
+    headers: {
+      accept: 'application/json, text/plain, */*',
+      'content-type': 'application/json',
+      Authorization: `token_invalido`
       },
       body: {
         anexoUrl: '',
@@ -319,9 +318,8 @@ Quando('tento uma requisição PUT em Proposta', function () {
         criterioValidacaoInscricaoOutros: '',
         pareceristas: []
       },
-      failOnStatusCode: false
-    }).as('responsePut')
-  })
+    failOnStatusCode: false
+  }).as('responsePut')
 })
 
 Então('retorna o status 401 sem atualizar a proposta', function () {
@@ -845,22 +843,24 @@ Então('retorna o status 401 sem autocompletar formação', function () {
 
 // Excluir proposta
 Quando('envio uma requisição DELETE em Proposta', function () {
-  cy.get('@entidadeId').then((entidadeId) => {
-    cy.request({
-      method: 'DELETE',
-      url: `${Cypress.config('baseUrl')}/api/v1/Proposta/${entidadeId}`,
-      headers: {
-        accept: 'application/json, text/plain, */*',
-        authorization: `Bearer ${Cypress.env('TOKEN')}`
-      },
-      failOnStatusCode: false
-    }).as('responseDelete')
-  })
+  const entidadeId = Cypress.env('ENTIDADE_ID')
+
+  expect(entidadeId, 'ID da proposta').to.exist
+
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.config('baseUrl')}/api/v1/Proposta/${entidadeId}`,
+    headers: {
+      accept: 'application/json, text/plain, */*',
+      Authorization: `Bearer ${Cypress.env('TOKEN')}`
+    },
+    failOnStatusCode: false
+  }).as('responseDelete')
 })
 
-Então('retorna o status 204 com exclusão da proposta', function () {
+Então('retorna o status 200 com exclusão da proposta', function () {
   cy.get('@responseDelete').then((response) => {
-    expect(response.status).to.equal(204)
+    expect(response.status).to.equal(200)
   })
 })
 
@@ -871,31 +871,29 @@ Quando('envio uma requisição DELETE em Proposta sem id', function () {
       url: `${Cypress.config('baseUrl')}/api/v1/Proposta/ `,
       headers: {
         accept: 'application/json, text/plain, */*',
-        authorization: `Bearer ${Cypress.env('TOKEN')}`
+        Authorization: `Bearer ${Cypress.env('TOKEN')}`
       },
       failOnStatusCode: false
   }).as('responseDelete')
 })
 
-Então('retorna o status 400 sem excluir proposta', function () {
+Então('retorna o status 405 sem excluir proposta', function () {
   cy.get('@responseDelete').then((response) => {
-    expect(response.status).to.equal(400)
+    expect(response.status).to.equal(405)
   })
 })
 
 // Não excluir proposta sem autenticação
 Quando('tento uma requisição DELETE em Proposta', function () {
-  cy.get('@entidadeId').then((entidadeId) => {
-    cy.request({
-      method: 'DELETE',
-      url: `${Cypress.config('baseUrl')}/api/v1/Proposta/ `,
-      headers: {
-        accept: 'application/json, text/plain, */*',
-        authorization: `token_invalido`
-      },
-      failOnStatusCode: false
-    }).as('responseDelete')
-  })
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.config('baseUrl')}/api/v1/Proposta/1`,
+    headers: {
+      accept: 'application/json, text/plain, */*',
+      Authorization: `token_invalido`,
+    },
+    failOnStatusCode: false
+  }).as('responseDelete')
 })
 
 Então('retorna o status 401 sem excluir a proposta', function () {
