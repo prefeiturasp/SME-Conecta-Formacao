@@ -1,5 +1,6 @@
-﻿using MediatR;
+using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPeriodo;
+using SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPeriodoInscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Aplicacao.Interfaces.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -29,6 +30,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             if (!resultadoSalvarGrupoPeriodo.Sucesso)
                 throw new NegocioException(resultadoSalvarGrupoPeriodo.MensagensErro);
+
+            var resultadoSalvarGrupoPeriodoInscricao = await mediator.Send(new SalvarPropostaGrupoPeriodoInscricaoCommand(retornoDto.EntidadeId, propostaDTO));
+
+            if (!resultadoSalvarGrupoPeriodoInscricao.Sucesso)
+                throw new NegocioException(resultadoSalvarGrupoPeriodoInscricao.MensagensErro);
+
             return retornoDto;
         }
 

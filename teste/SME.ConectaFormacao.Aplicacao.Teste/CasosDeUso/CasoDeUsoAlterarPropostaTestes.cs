@@ -5,6 +5,7 @@ using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
 using SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPeriodo;
+using SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPeriodoInscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -40,6 +41,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(perfilAdminDF);
             _mediatorMock.Setup(m => m.Send(It.IsAny<AlterarPropostaRascunhoCommand>(), default)).ReturnsAsync(retornoDto);
             _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoCommand>(), default)).ReturnsAsync(Resultado.DeSucesso());
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoInscricaoCommand>(), default)).ReturnsAsync(Resultado.DeSucesso());
 
             // Act
             var resultado = await _sut.Executar(propostaId, propostaDTO);
@@ -50,6 +52,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             resultado.EntidadeId.Should().Be(propostaId);
             _mediatorMock.Verify(m => m.Send(It.IsAny<AlterarPropostaRascunhoCommand>(), default), Times.Once);
             _mediatorMock.Verify(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoCommand>(), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoInscricaoCommand>(), default), Times.Once);
         }
 
         [Fact]
@@ -82,6 +85,27 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(perfilAdminDF);
             _mediatorMock.Setup(m => m.Send(It.IsAny<AlterarPropostaCommand>(), default)).ReturnsAsync(retornoDto);
             _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoCommand>(), default)).ReturnsAsync(Erro.NaoEncontrado());
+
+            // Act
+            var act = async () => await _sut.Executar(propostaId, propostaDTO);
+
+            // Assert
+            await act.Should().ThrowAsync<NegocioException>();
+        }
+
+        [Fact]
+        public async Task DadoErroAoSalvarGrupoPeriodoInscricao_QuandoChamarExecutar_EntaoDeveLancarNegocioException()
+        {
+            // Arrange
+            var propostaId = _faker.Random.Long(1);
+            var propostaDTO = new PropostaDTO { Situacao = SituacaoProposta.Cadastrada };
+            var perfilAdminDF = Perfis.ADMIN_DF;
+            var retornoDto = new RetornoDTO { Sucesso = true, EntidadeId = propostaId };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(perfilAdminDF);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<AlterarPropostaCommand>(), default)).ReturnsAsync(retornoDto);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoCommand>(), default)).ReturnsAsync(Resultado.DeSucesso());
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoInscricaoCommand>(), default)).ReturnsAsync(Erro.NaoEncontrado());
 
             // Act
             var act = async () => await _sut.Executar(propostaId, propostaDTO);
