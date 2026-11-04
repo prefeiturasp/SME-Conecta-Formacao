@@ -4,6 +4,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.Inscricoes
 {
     public interface ICasoDeUsoObterTurmasInscricao
     {
-        Task<IEnumerable<RetornoListagemDTO>> Executar(long propostaId, string? codigoDre = null, bool comCodaf = false);
+        Task<IEnumerable<RetornoListagemDTO>> Executar(long propostaId, string? codigoDre = null, bool comCodaf = false, bool apenasPeriodoInscricaoVigente = false);
     }
 }

@@ -6,9 +6,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes
 {
     public class CasoDeUsoObterTurmasInscricao(IMediator mediator) : CasoDeUsoAbstrato(mediator), ICasoDeUsoObterTurmasInscricao
     {
-        public async Task<IEnumerable<RetornoListagemDTO>> Executar(long propostaId, string? codigoDre = null, bool comCodaf = false)
+        public async Task<IEnumerable<RetornoListagemDTO>> Executar(long propostaId, string? codigoDre = null, bool comCodaf = false, bool apenasPeriodoInscricaoVigente = false)
         {
-            return await mediator.Send(new ObterPropostaTurmasComVagasPorIdQuery(propostaId, codigoDre));
+            return await mediator.Send(new ObterPropostaTurmasComVagasPorIdQuery(propostaId, codigoDre, apenasPeriodoInscricaoVigente));
         }
     }
 }

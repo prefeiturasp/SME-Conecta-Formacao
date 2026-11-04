@@ -8,14 +8,16 @@ namespace SME.ConectaFormacao.Aplicacao
     [ExcludeFromCodeCoverage]
     public class ObterPropostaTurmasComVagasPorIdQuery : IRequest<IEnumerable<RetornoListagemDTO>>
     {
-        public ObterPropostaTurmasComVagasPorIdQuery(long propostaId, string? codigoDre = null)
+        public ObterPropostaTurmasComVagasPorIdQuery(long propostaId, string? codigoDre = null, bool apenasPeriodoInscricaoVigente = false)
         {
             PropostaId = propostaId;
             CodigoDre = codigoDre;
+            ApenasPeriodoInscricaoVigente = apenasPeriodoInscricaoVigente;
         }
 
         public long PropostaId { get; }
         public string? CodigoDre { get; set; }
+        public bool ApenasPeriodoInscricaoVigente { get; }
 
         [ExcludeFromCodeCoverage]
         public class ObterPropostaTurmasComVagasPorIdQueryValidator : AbstractValidator<ObterPropostaTurmasComVagasPorIdQuery>

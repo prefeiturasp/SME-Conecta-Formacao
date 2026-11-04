@@ -13,7 +13,8 @@ namespace SME.ConectaFormacao.Aplicacao
     public class ObterPropostaTurmasComVagasPorIdQueryHandler(
         IRepositorioProposta repositorioProposta,
         IMapper mapper,
-        IServicoPeriodoEncontroProposta servicoPeriodoEncontroProposta) : IRequestHandler<ObterPropostaTurmasComVagasPorIdQuery, IEnumerable<RetornoListagemDTO>>
+        IServicoPeriodoEncontroProposta servicoPeriodoEncontroProposta,
+        IRepositorioPropostaGrupoPeriodoInscricao repositorioPropostaGrupoPeriodoInscricao) : IRequestHandler<ObterPropostaTurmasComVagasPorIdQuery, IEnumerable<RetornoListagemDTO>>
     {
         public async Task<IEnumerable<RetornoListagemDTO>> Handle(ObterPropostaTurmasComVagasPorIdQuery request, CancellationToken cancellationToken)
         {
@@ -28,6 +29,12 @@ namespace SME.ConectaFormacao.Aplicacao
                 turmas = await repositorioProposta.ObterTurmasComVagaPorId(request.PropostaId, request.CodigoDre);
                 if (turmas.NaoPossuiElementos())
                     throw new NegocioException(MensagemNegocio.NENHUMA_TURMA_COM_VAGA_DISPONIVEL, System.Net.HttpStatusCode.NotFound);
+            }
+
+            if (request.ApenasPeriodoInscricaoVigente)
+            {
+                var gruposInscricao = await repositorioPropostaGrupoPeriodoInscricao.ObterPorPropostaIdAsync(request.PropostaId);
+                turmas = turmas.Where(t => proposta.TurmaEstaEmPeriodoDeInscricao(t.Id, gruposInscricao)).ToList();
             }
 
             foreach (var turma in turmas)

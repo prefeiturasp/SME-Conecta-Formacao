@@ -111,5 +111,24 @@ namespace SME.ConectaFormacao.Dominio.Entidades
             }
         }
 
+        public bool TurmaEstaEmPeriodoDeInscricao(long turmaId, IEnumerable<PropostaGrupoPeriodoInscricao>? gruposInscricao, DateTime? dataReferencia = null)
+        {
+            var agora = dataReferencia ?? DateTimeExtension.HorarioBrasilia();
+            var grupoTurma = gruposInscricao?
+                .FirstOrDefault(g => !g.Excluido && g.TurmasVinculadas.Any(t => !t.Excluido && t.PropostaTurmaId == turmaId));
+
+            if (grupoTurma != null)
+                return grupoTurma.EstaEmPeriodo(agora);
+
+            if (!DataInscricaoInicio.HasValue || !DataInscricaoFim.HasValue)
+                return false;
+
+            var fimGlobal = DataInscricaoFim.Value.TimeOfDay == TimeSpan.Zero
+                ? DataInscricaoFim.Value.Date.AddDays(1).AddMilliseconds(-1)
+                : DataInscricaoFim.Value;
+
+            return agora >= DataInscricaoInicio.Value && agora <= fimGlobal;
+        }
+
     }
 }

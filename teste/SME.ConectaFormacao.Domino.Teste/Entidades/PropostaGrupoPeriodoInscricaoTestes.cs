@@ -144,5 +144,43 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
             vinculo.GrupoPeriodoInscricao.Should().Be(grupo);
             vinculo.PropostaTurma.Nome.Should().Be("Turma 10");
         }
+
+        [Theory]
+        [InlineData("2026-11-04 10:00:00", true)]
+        [InlineData("2026-11-01 00:00:00", true)]
+        [InlineData("2026-11-10 23:59:59", true)]
+        [InlineData("2026-10-31 23:59:59", false)]
+        [InlineData("2026-11-11 00:00:00", false)]
+        public void DadoPeriodoComHoraZerada_QuandoVerificarEstaEmPeriodo_EntaoDeveConsiderarAteFinalDoDia(string dataRefStr, bool esperado)
+        {
+            // Arrange
+            var grupo = new PropostaGrupoPeriodoInscricao
+            {
+                DataInicio = new DateTime(2026, 11, 1, 0, 0, 0),
+                DataFim = new DateTime(2026, 11, 10, 0, 0, 0)
+            };
+            var dataRef = DateTime.Parse(dataRefStr);
+
+            // Act
+            var resultado = grupo.EstaEmPeriodo(dataRef);
+
+            // Assert
+            resultado.Should().Be(esperado);
+        }
+
+        [Fact]
+        public void DadoPeriodoComHoraEspecificada_QuandoVerificarEstaEmPeriodo_EntaoDeveRespeitarHoraExata()
+        {
+            // Arrange
+            var grupo = new PropostaGrupoPeriodoInscricao
+            {
+                DataInicio = new DateTime(2026, 11, 1, 8, 0, 0),
+                DataFim = new DateTime(2026, 11, 10, 18, 0, 0)
+            };
+
+            // Act & Assert
+            grupo.EstaEmPeriodo(new DateTime(2026, 11, 10, 17, 59, 59)).Should().BeTrue();
+            grupo.EstaEmPeriodo(new DateTime(2026, 11, 10, 18, 0, 1)).Should().BeFalse();
+        }
     }
 }

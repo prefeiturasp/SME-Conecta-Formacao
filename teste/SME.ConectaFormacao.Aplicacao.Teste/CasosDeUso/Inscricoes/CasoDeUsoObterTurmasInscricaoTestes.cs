@@ -133,5 +133,39 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricoes
                 q.CodigoDre == null
             ), It.IsAny<CancellationToken>()), Times.Once);
         }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task DadoApenasPeriodoInscricaoVigente_QuandoExecutar_EntaoDeveRepassarParametroParaQuery(bool apenasPeriodoInscricaoVigente)
+        {
+            // Arrange
+            var propostaId = _faker.Random.Long(1, 1000);
+            var codigoDre = _faker.Random.AlphaNumeric(6);
+            var comCodaf = _faker.Random.Bool();
+            var turmasEsperadas = new List<RetornoListagemDTO>
+            {
+                new RetornoListagemDTO { Id = 1, Descricao = "Turma 1" }
+            };
+
+            _mediatorMock
+                .Setup(m => m.Send(It.Is<ObterPropostaTurmasComVagasPorIdQuery>(q =>
+                    q.PropostaId == propostaId &&
+                    q.CodigoDre == codigoDre &&
+                    q.ApenasPeriodoInscricaoVigente == apenasPeriodoInscricaoVigente
+                ), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(turmasEsperadas);
+
+            // Act
+            var resultado = await _sut.Executar(propostaId, codigoDre, comCodaf, apenasPeriodoInscricaoVigente);
+
+            // Assert
+            resultado.Should().BeEquivalentTo(turmasEsperadas);
+            _mediatorMock.Verify(m => m.Send(It.Is<ObterPropostaTurmasComVagasPorIdQuery>(q =>
+                q.PropostaId == propostaId &&
+                q.CodigoDre == codigoDre &&
+                q.ApenasPeriodoInscricaoVigente == apenasPeriodoInscricaoVigente
+            ), It.IsAny<CancellationToken>()), Times.Once);
+        }
     }
 }

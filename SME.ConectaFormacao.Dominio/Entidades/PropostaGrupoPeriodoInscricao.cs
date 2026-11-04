@@ -48,5 +48,15 @@ namespace SME.ConectaFormacao.Dominio.Entidades
                 turma.Excluido = true;
             }
         }
+
+        public bool EstaEmPeriodo(DateTime? dataReferencia = null)
+        {
+            var agora = dataReferencia ?? Extensoes.DateTimeExtension.HorarioBrasilia();
+            var fim = DataFim.TimeOfDay == TimeSpan.Zero
+                ? DataFim.Date.AddDays(1).AddMilliseconds(-1)
+                : DataFim;
+
+            return agora >= DataInicio && agora <= fim;
+        }
     }
 }
