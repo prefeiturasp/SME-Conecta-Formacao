@@ -119,7 +119,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
             var usuario = GerarUsuarioValido(TipoUsuario.Externo);
             var inscricaoFake = new Inscricao { PropostaTurmaId = 1, UsuarioId = usuario.Id };
             var propostaTurmaFake = new PropostaTurma { PropostaId = 10 };
-            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.Sim };
+            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.Sim, DataInscricaoInicio = DateTime.Today.AddDays(-1), DataInscricaoFim = DateTime.Today.AddDays(1) };
 
             ConfigurarMockMapeamento(comando.InscricaoDto, inscricaoFake);
 
@@ -165,7 +165,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
 
             var inscricaoFake = new Inscricao { PropostaTurmaId = 1, UsuarioId = usuario.Id };
             var propostaTurmaFake = new PropostaTurma { PropostaId = 10 };
-            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.Sim };
+            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.Sim, DataInscricaoInicio = DateTime.Today.AddDays(-1), DataInscricaoFim = DateTime.Today.AddDays(1) };
 
             ConfigurarMockMapeamento(comando.InscricaoDto, inscricaoFake);
 
@@ -206,7 +206,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
             var usuario = GerarUsuarioValido(TipoUsuario.Interno);
             var inscricaoFake = new Inscricao { PropostaTurmaId = 1, UsuarioId = usuario.Id, CargoCodigo = "123", FuncaoCodigo = "456" };
             var propostaTurmaFake = new PropostaTurma { PropostaId = 10 };
-            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.NaoCursosExtras };
+            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.NaoCursosExtras, DataInscricaoInicio = DateTime.Today.AddDays(-1), DataInscricaoFim = DateTime.Today.AddDays(1) };
 
             var cargoFuncoes = new List<CargoFuncao>
             {
@@ -273,7 +273,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
             var usuario = GerarUsuarioValido(TipoUsuario.Externo);
             var inscricaoFake = new Inscricao { PropostaTurmaId = 1, UsuarioId = usuario.Id };
             var propostaTurmaFake = new PropostaTurma { PropostaId = 10 };
-            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.NaoCursosPorIN };
+            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.NaoCursosPorIN, DataInscricaoInicio = DateTime.Today.AddDays(-1), DataInscricaoFim = DateTime.Today.AddDays(1) };
 
             ConfigurarMockMapeamento(comando.InscricaoDto, inscricaoFake);
 
@@ -321,7 +321,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
             var usuario = GerarUsuarioValido(TipoUsuario.Externo);
             var inscricaoFake = new Inscricao { PropostaTurmaId = 1, UsuarioId = usuario.Id };
             var propostaTurmaFake = new PropostaTurma { PropostaId = 10 };
-            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.NaoCursosPorIN };
+            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.NaoCursosPorIN, DataInscricaoInicio = DateTime.Today.AddDays(-1), DataInscricaoFim = DateTime.Today.AddDays(1) };
 
             ConfigurarMockMapeamento(comando.InscricaoDto, inscricaoFake);
 
@@ -365,7 +365,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
 
             var inscricaoFake = new Inscricao { PropostaTurmaId = 1, UsuarioId = usuario.Id };
             var propostaTurmaFake = new PropostaTurma { PropostaId = 10 };
-            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.Sim };
+            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.Sim, DataInscricaoInicio = DateTime.Today.AddDays(-1), DataInscricaoFim = DateTime.Today.AddDays(1) };
 
             var drePropostaTurma = new List<PropostaTurmaDre>
             {
@@ -424,7 +424,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
             var usuario = GerarUsuarioValido(TipoUsuario.Externo);
             var inscricaoFake = new Inscricao { PropostaTurmaId = 1, UsuarioId = usuario.Id, Id = 100 };
             var propostaTurmaFake = new PropostaTurma { PropostaId = 10 };
-            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.Sim };
+            var propostaFake = new Proposta { Id = 10, FormacaoHomologada = FormacaoHomologada.Sim, DataInscricaoInicio = DateTime.Today.AddDays(-1), DataInscricaoFim = DateTime.Today.AddDays(1) };
 
             ConfigurarMockMapeamento(comando.InscricaoDto, inscricaoFake);
 
@@ -455,6 +455,173 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
             _mocker.GetMock<IMediator>().Verify(
                 m => m.Send(It.IsAny<EnviarEmailInscricaoEmEsperaCommand>(), It.IsAny<CancellationToken>()),
                 Times.Once);
+        }
+
+
+        [Fact]
+        public async Task DadoTurmaForaDoPeriodoCustomizado_QuandoSalvarInscricao_EntaoDeveLancarNegocioExceptionInscricaoForaDoPeriodo()
+        {
+            // Arrange
+            var comando = GerarComandoValido(vagaRemanescente: true);
+            var usuario = GerarUsuarioValido(TipoUsuario.Externo);
+            var inscricaoFake = new Inscricao { PropostaTurmaId = 1, UsuarioId = usuario.Id };
+            var propostaTurmaFake = new PropostaTurma { PropostaId = 10 };
+            var propostaFake = new Proposta
+            {
+                Id = 10,
+                FormacaoHomologada = FormacaoHomologada.Sim,
+                DataInscricaoInicio = DateTime.Today.AddDays(-10),
+                DataInscricaoFim = DateTime.Today.AddDays(10)
+            };
+
+            var grupoExpirado = new PropostaGrupoPeriodoInscricao
+            {
+                Id = 1,
+                DataInicio = DateTime.Today.AddDays(-5),
+                DataFim = DateTime.Today.AddDays(-1)
+            };
+            grupoExpirado.AdicionarTurma(1);
+
+            ConfigurarMockMapeamento(comando.InscricaoDto, inscricaoFake);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterUsuarioLogadoQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(usuario);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaTurmaPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(propostaTurmaFake);
+
+            _mocker.GetMock<IRepositorioInscricao>()
+                .Setup(r => r.UsuarioEstaInscritoNaProposta(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync(false);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaTurmaDresPorPropostaTurmaIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync([]);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(propostaFake);
+
+            _mocker.GetMock<IRepositorioPropostaGrupoPeriodoInscricao>()
+                .Setup(r => r.ObterPorPropostaIdAsync(propostaFake.Id))
+                .ReturnsAsync(new[] { grupoExpirado });
+
+            // Act
+            var act = () => _handler.Handle(comando, CancellationToken.None);
+
+            // Assert
+            var ex = await Assert.ThrowsAsync<NegocioException>(act);
+            Assert.Equal(Dominio.Constantes.MensagemNegocio.INSCRICAO_FORA_DO_PERIODO_INSCRICAO, ex.Message);
+        }
+
+        [Fact]
+        public async Task DadoTurmaSemPeriodoCustomizadoEForaDoPeriodoGlobal_QuandoSalvarInscricao_EntaoDeveLancarNegocioExceptionInscricaoForaDoPeriodo()
+        {
+            // Arrange
+            var comando = GerarComandoValido(vagaRemanescente: true);
+            var usuario = GerarUsuarioValido(TipoUsuario.Externo);
+            var inscricaoFake = new Inscricao { PropostaTurmaId = 1, UsuarioId = usuario.Id };
+            var propostaTurmaFake = new PropostaTurma { PropostaId = 10 };
+            var propostaFake = new Proposta
+            {
+                Id = 10,
+                FormacaoHomologada = FormacaoHomologada.Sim,
+                DataInscricaoInicio = DateTime.Today.AddDays(-10),
+                DataInscricaoFim = DateTime.Today.AddDays(-1)
+            };
+
+            ConfigurarMockMapeamento(comando.InscricaoDto, inscricaoFake);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterUsuarioLogadoQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(usuario);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaTurmaPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(propostaTurmaFake);
+
+            _mocker.GetMock<IRepositorioInscricao>()
+                .Setup(r => r.UsuarioEstaInscritoNaProposta(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync(false);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaTurmaDresPorPropostaTurmaIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync([]);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(propostaFake);
+
+            _mocker.GetMock<IRepositorioPropostaGrupoPeriodoInscricao>()
+                .Setup(r => r.ObterPorPropostaIdAsync(propostaFake.Id))
+                .ReturnsAsync(Enumerable.Empty<PropostaGrupoPeriodoInscricao>());
+
+            // Act
+            var act = () => _handler.Handle(comando, CancellationToken.None);
+
+            // Assert
+            var ex = await Assert.ThrowsAsync<NegocioException>(act);
+            Assert.Equal(Dominio.Constantes.MensagemNegocio.INSCRICAO_FORA_DO_PERIODO_INSCRICAO, ex.Message);
+        }
+
+        [Fact]
+        public async Task DadoTurmaDentroDoPeriodoCustomizado_QuandoSalvarInscricao_EntaoDeveSalvarComSucesso()
+        {
+            // Arrange
+            var comando = GerarComandoValido(vagaRemanescente: true);
+            var usuario = GerarUsuarioValido(TipoUsuario.Externo);
+            var inscricaoFake = new Inscricao { PropostaTurmaId = 1, UsuarioId = usuario.Id };
+            var propostaTurmaFake = new PropostaTurma { PropostaId = 10 };
+            var propostaFake = new Proposta
+            {
+                Id = 10,
+                FormacaoHomologada = FormacaoHomologada.Sim,
+                DataInscricaoInicio = DateTime.Today.AddDays(-10),
+                DataInscricaoFim = DateTime.Today.AddDays(-5) // fora do global!
+            };
+
+            var grupoVigente = new PropostaGrupoPeriodoInscricao
+            {
+                Id = 1,
+                DataInicio = DateTime.Today.AddDays(-1),
+                DataFim = DateTime.Today.AddDays(1)
+            };
+            grupoVigente.AdicionarTurma(1);
+
+            ConfigurarMockMapeamento(comando.InscricaoDto, inscricaoFake);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterUsuarioLogadoQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(usuario);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaTurmaPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(propostaTurmaFake);
+
+            _mocker.GetMock<IRepositorioInscricao>()
+                .Setup(r => r.UsuarioEstaInscritoNaProposta(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync(false);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaTurmaDresPorPropostaTurmaIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync([]);
+
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaPorIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(propostaFake);
+
+            _mocker.GetMock<IRepositorioPropostaGrupoPeriodoInscricao>()
+                .Setup(r => r.ObterPorPropostaIdAsync(propostaFake.Id))
+                .ReturnsAsync(new[] { grupoVigente });
+
+            // Act
+            var resultado = await _handler.Handle(comando, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(resultado);
+            _mocker.GetMock<IRepositorioInscricao>().Verify(r => r.Inserir(It.IsAny<Inscricao>()), Times.Once);
         }
 
         #region Métodos Privados (Helpers)

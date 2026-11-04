@@ -22,7 +22,8 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
         ITransacao transacao,
         IUsuarioAcessibilidadeService usuarioAcessibilidadeService,
         IUsuarioCacheService usuarioCacheService,
-        IContextoAplicacao contextoAplicacao) :
+        IContextoAplicacao contextoAplicacao,
+        IRepositorioPropostaGrupoPeriodoInscricao repositorioPropostaGrupoPeriodoInscricao) :
         IRequestHandler<SalvarInscricaoCommand, RetornoDTO>
     {
         private readonly ITransacao _transacao = transacao;
@@ -67,6 +68,10 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
+
+            var gruposInscricao = await repositorioPropostaGrupoPeriodoInscricao.ObterPorPropostaIdAsync(proposta.Id);
+            if (!proposta.TurmaEstaEmPeriodoDeInscricao(inscricao.PropostaTurmaId, gruposInscricao))
+                throw new NegocioException(MensagemNegocio.INSCRICAO_FORA_DO_PERIODO_INSCRICAO);
 
             var formacaoHomologada = proposta.FormacaoHomologada == FormacaoHomologada.Sim;
             await PersistirInscricao(formacaoHomologada, inscricao);
