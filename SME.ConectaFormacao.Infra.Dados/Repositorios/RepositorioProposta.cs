@@ -2089,16 +2089,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             join proposta p on p.id = pt.proposta_id
             left join proposta_grupo_periodo_turma pgpt on pgpt.proposta_turma_id = pt.id and not pgpt.excluido 
             left join public.proposta_grupo_periodo pgp on pgp.id = pgpt.grupo_periodo_id and not pgp.excluido
-            left join public.proposta_grupo_periodo_inscricao_turma pgpit on pgpit.proposta_turma_id = pt.id and not pgpit.excluido
-            left join public.proposta_grupo_periodo_inscricao pgpi on pgpi.id = pgpit.grupo_periodo_inscricao_id and not pgpi.excluido
             where pt.proposta_id = @propostaId
                 and not pt.excluido
                 and not pet.excluido
                 and not pe.excluido
-                and @dataAtual >= coalesce(pgpi.data_inicio, p.data_inscricao_inicio)
-                and @dataAtual <= case when coalesce(pgpi.data_fim, p.data_inscricao_fim)::time = '00:00:00' 
-                                       then coalesce(pgpi.data_fim, p.data_inscricao_fim) + interval '1 day' - interval '1 millisecond'
-                                       else coalesce(pgpi.data_fim, p.data_inscricao_fim) end
             order by pt.nome, dataInicio, pe.hora_inicio;
 
             -- Turmas Datas
