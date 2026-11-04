@@ -113,5 +113,28 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Assert
             await act.Should().ThrowAsync<NegocioException>();
         }
+
+        [Fact]
+        public async Task DadoErroAoSalvarGrupoPeriodoInscricaoEEhProximoPassoVerdadeiro_QuandoChamarExecutar_EntaoNaoDeveLancarExcecao()
+        {
+            // Arrange
+            var propostaId = _faker.Random.Long(1);
+            var propostaDTO = new PropostaDTO { Situacao = SituacaoProposta.Cadastrada, EhProximoPasso = true };
+            var perfilAdminDF = Perfis.ADMIN_DF;
+            var retornoDto = new RetornoDTO { Sucesso = true, EntidadeId = propostaId };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(perfilAdminDF);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<AlterarPropostaRascunhoCommand>(), default)).ReturnsAsync(retornoDto);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoCommand>(), default)).ReturnsAsync(Resultado.DeSucesso());
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoInscricaoCommand>(), default)).ReturnsAsync(Erro.Validacao("Erro"));
+
+            // Act
+            var resultado = await _sut.Executar(propostaId, propostaDTO);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeTrue();
+        }
     }
 }
+

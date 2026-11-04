@@ -28,12 +28,12 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
 
             var resultadoSalvarGrupoPeriodo = await mediator.Send(new SalvarPropostaGrupoPeriodoCommand(retornoDto.EntidadeId, propostaDTO));
 
-            if (!resultadoSalvarGrupoPeriodo.Sucesso)
+            if (!resultadoSalvarGrupoPeriodo.Sucesso && !propostaDTO.EhProximoPasso)
                 throw new NegocioException(resultadoSalvarGrupoPeriodo.MensagensErro);
 
             var resultadoSalvarGrupoPeriodoInscricao = await mediator.Send(new SalvarPropostaGrupoPeriodoInscricaoCommand(retornoDto.EntidadeId, propostaDTO));
 
-            if (!resultadoSalvarGrupoPeriodoInscricao.Sucesso)
+            if (!resultadoSalvarGrupoPeriodoInscricao.Sucesso && !propostaDTO.EhProximoPasso)
                 throw new NegocioException(resultadoSalvarGrupoPeriodoInscricao.MensagensErro);
 
             return retornoDto;

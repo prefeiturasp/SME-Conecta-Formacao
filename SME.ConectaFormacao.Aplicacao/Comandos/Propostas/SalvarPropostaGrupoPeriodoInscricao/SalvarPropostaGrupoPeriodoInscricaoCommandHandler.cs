@@ -15,6 +15,8 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPe
         {
             var gruposDto = request.PropostaDto.GruposPeriodosInscricao ?? [];
 
+            AjustarDatasGruposInscricao(request.PropostaDto);
+
             if (!ValidarPeriodos(request.PropostaDto))
                 return Erro.Validacao("Os períodos informados não são válidos.");
 
@@ -39,17 +41,48 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPe
             return Resultado.DeSucesso();
         }
 
+        private static void AjustarDatasGruposInscricao(PropostaDTO propostaDto)
+        {
+            if (propostaDto.GruposPeriodosInscricao is null || !propostaDto.GruposPeriodosInscricao.Any())
+                return;
+
+            var dataInscricaoFimEfetivo = propostaDto.DataInscricaoFim.HasValue
+                ? (propostaDto.DataInscricaoFim.Value.TimeOfDay == TimeSpan.Zero
+                    ? propostaDto.DataInscricaoFim.Value.Date.AddDays(1).AddMilliseconds(-1)
+                    : propostaDto.DataInscricaoFim.Value)
+                : (DateTime?)null;
+
+            var horaInicioGeral = propostaDto.DataInscricaoInicio?.TimeOfDay ?? TimeSpan.Zero;
+            var horaFimGeral = dataInscricaoFimEfetivo?.TimeOfDay ?? new TimeSpan(23, 59, 59);
+
+            foreach (var gp in propostaDto.GruposPeriodosInscricao)
+            {
+                gp.DataInicio = gp.DataInicio.Date.Add(horaInicioGeral);
+                gp.DataFim = gp.DataFim.Date.Add(horaFimGeral);
+
+                if (gp.DataInicio.Date == gp.DataFim.Date && gp.DataFim < gp.DataInicio)
+                {
+                    gp.DataFim = gp.DataInicio;
+                }
+            }
+        }
+
         private static bool ValidarPeriodos(PropostaDTO propostaDto)
         {
             if (propostaDto.GruposPeriodosInscricao is null || !propostaDto.GruposPeriodosInscricao.Any())
                 return true;
 
+            var dataInscricaoInicio = propostaDto.DataInscricaoInicio;
+            var dataInscricaoFim = propostaDto.DataInscricaoFim.HasValue
+                ? (propostaDto.DataInscricaoFim.Value.TimeOfDay == TimeSpan.Zero
+                    ? propostaDto.DataInscricaoFim.Value.Date.AddDays(1).AddMilliseconds(-1)
+                    : propostaDto.DataInscricaoFim.Value)
+                : (DateTime?)null;
+
             return propostaDto.GruposPeriodosInscricao.All(gp =>
                 gp.DataInicio <= gp.DataFim &&
-                gp.DataInicio >= propostaDto.DataInscricaoInicio &&
-                gp.DataInicio <= propostaDto.DataInscricaoFim &&
-                gp.DataFim >= propostaDto.DataInscricaoInicio &&
-                gp.DataFim <= propostaDto.DataInscricaoFim);
+                (!dataInscricaoInicio.HasValue || (gp.DataInicio >= dataInscricaoInicio.Value && gp.DataFim >= dataInscricaoInicio.Value)) &&
+                (!dataInscricaoFim.HasValue || ((gp.DataInicio <= dataInscricaoFim.Value && gp.DataFim <= dataInscricaoFim.Value) || gp.DataFim == gp.DataInicio)));
         }
 
         private static Resultado ValidarTurmas(PropostaDTO propostaDto, Dictionary<long, string> dicionarioTurmasValidas)

@@ -210,5 +210,37 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Assert
             await act.Should().ThrowAsync<NegocioException>();
         }
+
+        [Fact]
+        public async Task DadoErroAoSalvarGrupoPeriodoInscricaoEEhProximoPasso_QuandoChamarExecutar_EntaoNaoDeveLancarNegocioException()
+        {
+            // Arrange
+            var propostaDTO = new PropostaDTO
+            {
+                Situacao = SituacaoProposta.Cadastrada,
+                EhProximoPasso = true,
+                GruposPeriodosInscricao = [new PropostaGrupoPeriodoInscricaoDto { DataInicio = DateTime.Today, DataFim = DateTime.Today.AddDays(2) }]
+            };
+            var grupoUsuarioLogadoId = Guid.NewGuid();
+            var dres = new string[] { "DRE_1" };
+            var areaPromotora = new AreaPromotora { Id = _faker.Random.Long(1) };
+            var retornoDto = new RetornoDTO { Sucesso = true, EntidadeId = _faker.Random.Long(1) };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(grupoUsuarioLogadoId);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterDresUsuarioLogadoQuery>(), default)).ReturnsAsync(dres);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterAreaPromotoraPorGrupoIdEDresQuery>(), default)).ReturnsAsync(areaPromotora);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterParametroSistemaPorTipoEAnoQuery>(), default)).ReturnsAsync(new ParametroSistema { Valor = "val" });
+            _mediatorMock.Setup(m => m.Send(It.IsAny<InserirPropostaCommand>(), default)).ReturnsAsync(retornoDto);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaMovimentacaoCommand>(), default)).ReturnsAsync(true);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoInscricaoCommand>(), default)).ReturnsAsync(Erro.Validacao("Erro"));
+
+            // Act
+            var resultado = await _sut.Executar(propostaDTO);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeTrue();
+        }
     }
 }
+

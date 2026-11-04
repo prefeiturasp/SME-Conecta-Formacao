@@ -43,14 +43,14 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta
             if (propostaDTO.GruposPeriodos != null && propostaDTO.GruposPeriodos.Any())
             {
                 var resultadoGrupo = await mediator.Send(new SalvarPropostaGrupoPeriodoCommand(retornoDto.EntidadeId, propostaDTO));
-                if (!resultadoGrupo.Sucesso)
+                if (!resultadoGrupo.Sucesso && !propostaDTO.EhProximoPasso)
                     throw new NegocioException(resultadoGrupo.MensagensErro);
             }
 
             if (propostaDTO.GruposPeriodosInscricao != null && propostaDTO.GruposPeriodosInscricao.Any())
             {
                 var resultadoGrupoInscricao = await mediator.Send(new SalvarPropostaGrupoPeriodoInscricaoCommand(retornoDto.EntidadeId, propostaDTO));
-                if (!resultadoGrupoInscricao.Sucesso)
+                if (!resultadoGrupoInscricao.Sucesso && !propostaDTO.EhProximoPasso)
                     throw new NegocioException(resultadoGrupoInscricao.MensagensErro);
             }
 
