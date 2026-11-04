@@ -2656,13 +2656,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     p.nome_formacao AS NomeFormacao, 
                     p.numero_homologacao AS NumeroFormacao, 
                     pt.id AS Id, 
-                    pt.nome AS Nome,
-                    COALESCE(pgp.data_inicio, p.data_realizacao_inicio) AS DataInicio,
-                    COALESCE(pgp.data_fim, p.data_realizacao_fim) AS DataFim
+                    pt.nome AS Nome
                 FROM proposta p
-                INNER JOIN public.proposta_turma AS pt ON pt.proposta_id = p.id
-                LEFT JOIN public.proposta_grupo_periodo_turma AS pgpt ON pt.id = pgpt.proposta_turma_id
-                LEFT JOIN public.proposta_grupo_periodo AS pgp ON pgp.id = pgpt.grupo_periodo_id AND pgp.proposta_id = p.id
+                LEFT JOIN public.proposta_turma AS pt ON pt.proposta_id = p.id AND NOT pt.excluido
                 WHERE p.id = @propostaId
                   AND p.FORMACAO_HOMOLOGADA = ANY(@formacoesHomologadas)
                   AND NOT p.excluido;";
@@ -2685,10 +2681,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         propostaDictionary.Add(propostaEntry.Id, propostaEntry);
                     }
 
-                    if (turma != null && turma.Id > 0)
+                    if (turma != null && turma.Id > 0 && !propostaEntry.Turmas.Any(t => t.Id == turma.Id))
                         propostaEntry.Turmas.Add(turma);
-
-                    propostaEntry.Turmas = [.. propostaEntry.Turmas.OrderBy(t => t.Descricao)];
 
                     return propostaEntry;
                 }, parameters, splitOn: "Id"
