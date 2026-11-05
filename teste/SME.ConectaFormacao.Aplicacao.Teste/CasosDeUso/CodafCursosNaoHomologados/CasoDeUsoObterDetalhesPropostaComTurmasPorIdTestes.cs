@@ -122,8 +122,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafCursosNaoHomologad
             var propostaId = _faker.Random.Long(1, long.MaxValue);
             var formacoesHomologadas = _faker.Random.Bool();
 
-            var turma1 = new PropostaTurmaDto { Id = 10, Nome = "Turma 1" };
-            var turma2 = new PropostaTurmaDto { Id = 20, Nome = "Turma 2" };
+            var turma1 = new PropostaTurmaDto { Id = 10, Nome = "Turma 1", PossuiCodafListaPresenca = true };
+            var turma2 = new PropostaTurmaDto { Id = 20, Nome = "Turma 2", PossuiCodafListaPresenca = false };
 
             var propostaDto = new PropostaComTurmasDto
             {
@@ -152,8 +152,10 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafCursosNaoHomologad
             var turmas = resultado.Dados!.Turmas.ToList();
             turmas[0].Descricao.Should().Be("Turma 1 01/03/2026 até 10/03/2026");
             turmas[0].Nome.Should().Be("Turma 1");
+            turmas[0].PossuiCodafListaPresenca.Should().BeTrue();
             turmas[1].Descricao.Should().Be("Turma 2 15/03/2026");
             turmas[1].Nome.Should().Be("Turma 2");
+            turmas[1].PossuiCodafListaPresenca.Should().BeFalse();
 
             _servicoPeriodoEncontroPropostaMock.Verify(s => s.ObterPeriodoEncontrosTurmaAsync(10), Times.Once);
             _servicoPeriodoEncontroPropostaMock.Verify(s => s.ObterPeriodoEncontrosTurmaAsync(20), Times.Once);

@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using System.Diagnostics.CodeAnalysis;
@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SME.ConectaFormacao.Aplicacao
 {
     [ExcludeFromCodeCoverage]
-    public class ObterPropostaTurmasComVagasPorIdQuery : IRequest<IEnumerable<RetornoListagemDTO>>
+    public class ObterPropostaTurmasComVagasPorIdQuery : IRequest<IEnumerable<PropostaTurmaInscricaoDTO>>
     {
         public ObterPropostaTurmasComVagasPorIdQuery(long propostaId, string? codigoDre = null, bool apenasPeriodoInscricaoVigente = false)
         {

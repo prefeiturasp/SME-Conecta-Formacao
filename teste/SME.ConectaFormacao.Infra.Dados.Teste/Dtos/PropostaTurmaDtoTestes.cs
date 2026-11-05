@@ -69,5 +69,21 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Dtos
             // Assert
             dto.Descricao.Should().Be("Turma 1");
         }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void PossuiCodafListaPresenca_DeveAtribuirERetornarValorCorretamente(bool possuiCodaf)
+        {
+            // Arrange & Act
+            var dto = new PropostaTurmaDto
+            {
+                Id = 1,
+                PossuiCodafListaPresenca = possuiCodaf
+            };
+
+            // Assert
+            dto.PossuiCodafListaPresenca.Should().Be(possuiCodaf);
+        }
     }
 }

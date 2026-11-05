@@ -37,7 +37,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("turmas/{propostaId}")]
-        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<PropostaTurmaInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterTurmas(
@@ -51,7 +51,7 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("turmas-em-inscricao/{propostaId}")]
-        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<PropostaTurmaInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterTurmasEmInscricao(

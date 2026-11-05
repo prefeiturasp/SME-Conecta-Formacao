@@ -8,6 +8,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Propostas
         public string Nome { get; set; } = string.Empty;
         public DateTime? DataInicio { get; set; }
         public DateTime? DataFim { get; set; }
+        public bool PossuiCodafListaPresenca { get; set; }
 
         public string Descricao
         {

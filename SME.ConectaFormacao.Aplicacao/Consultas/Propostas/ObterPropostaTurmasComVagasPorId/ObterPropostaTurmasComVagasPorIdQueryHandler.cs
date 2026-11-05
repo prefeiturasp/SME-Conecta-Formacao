@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Servicos.Interfaces;
@@ -15,9 +15,9 @@ namespace SME.ConectaFormacao.Aplicacao
         IRepositorioProposta repositorioProposta,
         IMapper mapper,
         IServicoPeriodoEncontroProposta servicoPeriodoEncontroProposta,
-        IRepositorioPropostaGrupoPeriodoInscricao repositorioPropostaGrupoPeriodoInscricao) : IRequestHandler<ObterPropostaTurmasComVagasPorIdQuery, IEnumerable<RetornoListagemDTO>>
+        IRepositorioPropostaGrupoPeriodoInscricao repositorioPropostaGrupoPeriodoInscricao) : IRequestHandler<ObterPropostaTurmasComVagasPorIdQuery, IEnumerable<PropostaTurmaInscricaoDTO>>
     {
-        public async Task<IEnumerable<RetornoListagemDTO>> Handle(ObterPropostaTurmasComVagasPorIdQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PropostaTurmaInscricaoDTO>> Handle(ObterPropostaTurmasComVagasPorIdQuery request, CancellationToken cancellationToken)
         {
             var proposta = await repositorioProposta.ObterPorId(request.PropostaId) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
@@ -41,11 +41,10 @@ namespace SME.ConectaFormacao.Aplicacao
             foreach (var turma in turmas)
                 turma.Nome += await servicoPeriodoEncontroProposta.ObterPeriodoEncontrosTurmaAsync(turma.Id);
 
-            var lista = mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
+            var lista = mapper.Map<IEnumerable<PropostaTurmaInscricaoDTO>>(turmas);
 
             StringComparer numComparer = StringComparer.Create(CultureInfo.CurrentCulture, CompareOptions.NumericOrdering);
-            lista = [.. lista.OrderBy(x => x.Descricao, numComparer)];
-            return lista;
+            return [.. lista.OrderBy(x => x.Descricao, numComparer)];
         }
     }
 }

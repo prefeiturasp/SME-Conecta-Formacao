@@ -75,7 +75,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var mockUseCase = new Mock<ICasoDeUsoObterTurmasInscricao>();
             var propostaId = _faker.Random.Long(1, 100);
             var codigoDre = _faker.Random.AlphaNumeric(5);
-            var resultadoEsperado = new List<RetornoListagemDTO>();
+            var resultadoEsperado = new List<PropostaTurmaInscricaoDTO>();
 
             mockUseCase.Setup(x => x.Executar(propostaId, codigoDre)).ReturnsAsync(resultadoEsperado);
 
@@ -94,7 +94,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var mockUseCase = new Mock<ICasoDeUsoObterTurmasInscricao>();
             var propostaId = _faker.Random.Long(1, 100);
             var codigoDre = _faker.Random.AlphaNumeric(5);
-            var resultadoEsperado = new List<RetornoListagemDTO>();
+            var resultadoEsperado = new List<PropostaTurmaInscricaoDTO>();
 
             mockUseCase.Setup(x => x.Executar(propostaId, codigoDre, false, true)).ReturnsAsync(resultadoEsperado);
 
@@ -114,7 +114,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var mockUseCase = new Mock<ICasoDeUsoObterTurmasInscricao>();
             var propostaId = _faker.Random.Long(1, 100);
             var codigoDre = _faker.Random.AlphaNumeric(5);
-            var resultadoEsperado = new List<RetornoListagemDTO>();
+            var resultadoEsperado = new List<PropostaTurmaInscricaoDTO>();
 
             mockUseCase.Setup(x => x.Executar(propostaId, codigoDre, false, true)).ReturnsAsync(resultadoEsperado);
 

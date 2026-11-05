@@ -1508,7 +1508,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     criado_login,
                     alterado_em,    
                     alterado_por,
-                    alterado_login
+                    alterado_login,
+                    exists (
+                        select 1 
+                        from public.codaf_lista_presenca clp 
+                        where clp.proposta_turma_id = proposta_turma.id 
+                          and not clp.excluido
+                    ) as PossuiCodafListaPresenca
                 from proposta_turma
                 where proposta_id = @propostaId 
                   and not excluido                
@@ -2197,7 +2203,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = $@"select 
                             pt.id, 
                             pt.proposta_id, 
-                            pt.nome
+                            pt.nome,
+                            exists (
+                                select 1 
+                                from public.codaf_lista_presenca clp 
+                                where clp.proposta_turma_id = pt.id 
+                                  and not clp.excluido
+                            ) as PossuiCodafListaPresenca
                         from proposta_turma pt
                         where pt.proposta_id = @propostaId 
                           and not pt.excluido
@@ -2656,7 +2668,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     p.nome_formacao AS NomeFormacao, 
                     p.numero_homologacao AS NumeroFormacao, 
                     pt.id AS Id, 
-                    pt.nome AS Nome
+                    pt.nome AS Nome,
+                    EXISTS (
+                        SELECT 1 
+                        FROM public.codaf_lista_presenca clp 
+                        WHERE clp.proposta_turma_id = pt.id 
+                          AND NOT clp.excluido
+                    ) AS PossuiCodafListaPresenca
                 FROM proposta p
                 LEFT JOIN public.proposta_turma AS pt ON pt.proposta_id = p.id AND NOT pt.excluido
                 WHERE p.id = @propostaId

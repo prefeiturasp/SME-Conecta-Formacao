@@ -108,8 +108,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 .ReturnsAsync(" - Encontros");
 
             _mocker.GetMock<IMapper>()
-                .Setup(m => m.Map<IEnumerable<RetornoListagemDTO>>(It.IsAny<IEnumerable<PropostaTurma>>()))
-                .Returns((IEnumerable<PropostaTurma> src) => src.Select(t => new RetornoListagemDTO { Id = t.Id, Descricao = t.Nome }));
+                .Setup(m => m.Map<IEnumerable<PropostaTurmaInscricaoDTO>>(It.IsAny<IEnumerable<PropostaTurma>>()))
+                .Returns((IEnumerable<PropostaTurma> src) => src.Select(t => new PropostaTurmaInscricaoDTO { Id = t.Id, Descricao = t.Nome, PossuiCodafListaPresenca = t.PossuiCodafListaPresenca }));
 
             // Act
             var resultado = (await _handler.Handle(query, CancellationToken.None)).ToList();
@@ -175,8 +175,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 .ReturnsAsync("");
 
             _mocker.GetMock<IMapper>()
-                .Setup(m => m.Map<IEnumerable<RetornoListagemDTO>>(It.IsAny<IEnumerable<PropostaTurma>>()))
-                .Returns((IEnumerable<PropostaTurma> src) => src.Select(t => new RetornoListagemDTO { Id = t.Id, Descricao = t.Nome }));
+                .Setup(m => m.Map<IEnumerable<PropostaTurmaInscricaoDTO>>(It.IsAny<IEnumerable<PropostaTurma>>()))
+                .Returns((IEnumerable<PropostaTurma> src) => src.Select(t => new PropostaTurmaInscricaoDTO { Id = t.Id, Descricao = t.Nome, PossuiCodafListaPresenca = t.PossuiCodafListaPresenca }));
 
             // Act
             var resultado = (await _handler.Handle(query, CancellationToken.None)).ToList();
@@ -185,6 +185,52 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
             resultado.Should().HaveCount(2);
             resultado.Select(x => x.Id).Should().Contain(new long[] { 1, 2 });
             resultado.Select(x => x.Id).Should().NotContain(3);
+        }
+
+        [Fact]
+        public async Task DadoTurmas_QuandoExecutar_EntaoDeveRetornarPossuiCodafListaPresencaCorretamente()
+        {
+            // Arrange
+            var query = new ObterPropostaTurmasComVagasPorIdQuery(1, null, false);
+            var proposta = new Proposta
+            {
+                Id = 1,
+                Situacao = SituacaoProposta.Publicada,
+                FormacaoHomologada = FormacaoHomologada.Sim
+            };
+
+            var turmas = new List<PropostaTurma>
+            {
+                new() { Id = 10, Nome = "Turma Com Codaf", PossuiCodafListaPresenca = true },
+                new() { Id = 20, Nome = "Turma Sem Codaf", PossuiCodafListaPresenca = false }
+            };
+
+            _mocker.GetMock<IRepositorioProposta>()
+                .Setup(r => r.ObterPorId(query.PropostaId))
+                .ReturnsAsync(proposta);
+
+            _mocker.GetMock<IRepositorioProposta>()
+                .Setup(r => r.ObterTurmasPorId(proposta.Id))
+                .ReturnsAsync(turmas);
+
+            _mocker.GetMock<IServicoPeriodoEncontroProposta>()
+                .Setup(s => s.ObterPeriodoEncontrosTurmaAsync(It.IsAny<long>()))
+                .ReturnsAsync("");
+
+            _mocker.GetMock<IMapper>()
+                .Setup(m => m.Map<IEnumerable<PropostaTurmaInscricaoDTO>>(It.IsAny<IEnumerable<PropostaTurma>>()))
+                .Returns((IEnumerable<PropostaTurma> src) => src.Select(t => new PropostaTurmaInscricaoDTO { Id = t.Id, Descricao = t.Nome, PossuiCodafListaPresenca = t.PossuiCodafListaPresenca }));
+
+            // Act
+            var resultado = (await _handler.Handle(query, CancellationToken.None)).ToList();
+
+            // Assert
+            resultado.Should().HaveCount(2);
+            var turmaComCodaf = resultado.First(x => x.Id == 10);
+            var turmaSemCodaf = resultado.First(x => x.Id == 20);
+
+            turmaComCodaf.PossuiCodafListaPresenca.Should().BeTrue();
+            turmaSemCodaf.PossuiCodafListaPresenca.Should().BeFalse();
         }
     }
 }
