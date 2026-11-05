@@ -7,6 +7,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Globalization;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -34,14 +35,16 @@ namespace SME.ConectaFormacao.Aplicacao
             if (request.ApenasPeriodoInscricaoVigente)
             {
                 var gruposInscricao = await repositorioPropostaGrupoPeriodoInscricao.ObterPorPropostaIdAsync(request.PropostaId);
-                turmas = turmas.Where(t => proposta.TurmaEstaEmPeriodoDeInscricao(t.Id, gruposInscricao)).ToList();
+                turmas = [.. turmas.Where(t => proposta.TurmaEstaEmPeriodoDeInscricao(t.Id, gruposInscricao))];
             }
 
             foreach (var turma in turmas)
                 turma.Nome += await servicoPeriodoEncontroProposta.ObterPeriodoEncontrosTurmaAsync(turma.Id);
 
             var lista = mapper.Map<IEnumerable<RetornoListagemDTO>>(turmas);
-            lista = lista.OrderBy(x => x.Descricao);
+
+            StringComparer numComparer = StringComparer.Create(CultureInfo.CurrentCulture, CompareOptions.NumericOrdering);
+            lista = [.. lista.OrderBy(x => x.Descricao, numComparer)];
             return lista;
         }
     }
