@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -140,6 +140,55 @@ namespace SME.ConectaFormacao.Domino.Teste.Entidades
             entidade.Status.Should().Be(StatusCodafListaPresenca.Iniciado);
         }
 
+
+        [Fact]
+        public void DadoCodafListaPresencaSemDataEnvioDf_QuandoMarcarComoEnviadaParaDf_EntaoDeveDefinirDataEnvioDfComDataAtual()
+        {
+            // Arrange
+            var entidade = CriarEntidadePadrao();
+            entidade.Iniciar();
+            entidade.DataEnvioDf.Should().BeNull();
+
+            // Act
+            entidade.MarcarComoEnviadaParaDf();
+
+            // Assert
+            entidade.Status.Should().Be(StatusCodafListaPresenca.AguardandoDf);
+            entidade.DataEnvioDf.Should().NotBeNull();
+            entidade.DataEnvioDf!.Value.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void DadoCodafListaPresencaComDataEnvioDfPreenchida_QuandoMarcarComoEnviadaParaDf_EntaoNaoDeveSobrescreverDataEnvioDfExistente()
+        {
+            // Arrange
+            var entidade = CriarEntidadePadrao();
+            entidade.Iniciar();
+            var dataEnvioDfAnterior = DateTime.Now.AddDays(-10);
+            entidade.DataEnvioDf = dataEnvioDfAnterior;
+
+            // Act
+            entidade.MarcarComoEnviadaParaDf();
+
+            // Assert
+            entidade.Status.Should().Be(StatusCodafListaPresenca.AguardandoDf);
+            entidade.DataEnvioDf.Should().Be(dataEnvioDfAnterior);
+        }
+
+        [Fact]
+        public void DadoCodafListaPresencaQueNaoPodeSerEnviadaParaDf_QuandoMarcarComoEnviadaParaDf_EntaoNaoDeveAlterarStatusNemDataEnvioDf()
+        {
+            // Arrange
+            var entidade = CriarEntidadePadrao();
+            entidade.DataEnvioDf.Should().BeNull();
+
+            // Act
+            entidade.MarcarComoEnviadaParaDf();
+
+            // Assert
+            entidade.Status.Should().Be(StatusCodafListaPresenca.Novo);
+            entidade.DataEnvioDf.Should().BeNull();
+        }
         private static CodafListaPresenca CriarEntidadePadrao()
         {
             return new CodafListaPresenca(
