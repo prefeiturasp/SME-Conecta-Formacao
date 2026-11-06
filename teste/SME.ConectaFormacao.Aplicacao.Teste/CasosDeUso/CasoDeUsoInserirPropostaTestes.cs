@@ -5,7 +5,10 @@ using MediatR;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Proposta;
+using SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPeriodo;
+using SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPeriodoInscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
+using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -112,5 +115,132 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             await act.Should().ThrowAsync<NegocioException>()
                 .WithMessage(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA_GRUPO_USUARIO);
         }
+
+        [Fact]
+        public async Task DadoPropostaComGruposPeriodosEGestaoInscricao_QuandoChamarExecutar_EntaoDeveSalvarAmbosGrupos()
+        {
+            // Arrange
+            var propostaDTO = new PropostaDTO
+            {
+                Situacao = SituacaoProposta.Cadastrada,
+                GruposPeriodos = [new PropostaGrupoPeriodoDto { DataInicio = DateTime.Today, DataFim = DateTime.Today.AddDays(5) }],
+                GruposPeriodosInscricao = [new PropostaGrupoPeriodoInscricaoDto { DataInicio = DateTime.Today, DataFim = DateTime.Today.AddDays(2) }]
+            };
+            var grupoUsuarioLogadoId = Guid.NewGuid();
+            var dres = new string[] { "DRE_1" };
+            var areaPromotora = new AreaPromotora { Id = _faker.Random.Long(1) };
+            var parametroDescricao = new ParametroSistema { Valor = "Descricao" };
+            var parametroUrl = new ParametroSistema { Valor = "http://url.com" };
+            var retornoDto = new RetornoDTO { Sucesso = true, EntidadeId = _faker.Random.Long(1) };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(grupoUsuarioLogadoId);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterDresUsuarioLogadoQuery>(), default)).ReturnsAsync(dres);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterAreaPromotoraPorGrupoIdEDresQuery>(), default)).ReturnsAsync(areaPromotora);
+            _mediatorMock.Setup(m => m.Send(It.Is<ObterParametroSistemaPorTipoEAnoQuery>(q => q.TipoParametroSistema == TipoParametroSistema.ComunicadoAcaoFormativaDescricao), default)).ReturnsAsync(parametroDescricao);
+            _mediatorMock.Setup(m => m.Send(It.Is<ObterParametroSistemaPorTipoEAnoQuery>(q => q.TipoParametroSistema == TipoParametroSistema.ComunicadoAcaoFormativaUrl), default)).ReturnsAsync(parametroUrl);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<InserirPropostaCommand>(), default)).ReturnsAsync(retornoDto);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaMovimentacaoCommand>(), default)).ReturnsAsync(true);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoCommand>(), default)).ReturnsAsync(Resultado.DeSucesso());
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoInscricaoCommand>(), default)).ReturnsAsync(Resultado.DeSucesso());
+
+            // Act
+            var resultado = await _sut.Executar(propostaDTO);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeTrue();
+            _mediatorMock.Verify(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoCommand>(), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoInscricaoCommand>(), default), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoErroAoSalvarGrupoPeriodoEmInserir_QuandoChamarExecutar_EntaoDeveLancarNegocioException()
+        {
+            // Arrange
+            var propostaDTO = new PropostaDTO
+            {
+                Situacao = SituacaoProposta.Cadastrada,
+                GruposPeriodos = [new PropostaGrupoPeriodoDto { DataInicio = DateTime.Today, DataFim = DateTime.Today.AddDays(5) }]
+            };
+            var grupoUsuarioLogadoId = Guid.NewGuid();
+            var dres = new string[] { "DRE_1" };
+            var areaPromotora = new AreaPromotora { Id = _faker.Random.Long(1) };
+            var retornoDto = new RetornoDTO { Sucesso = true, EntidadeId = _faker.Random.Long(1) };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(grupoUsuarioLogadoId);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterDresUsuarioLogadoQuery>(), default)).ReturnsAsync(dres);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterAreaPromotoraPorGrupoIdEDresQuery>(), default)).ReturnsAsync(areaPromotora);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterParametroSistemaPorTipoEAnoQuery>(), default)).ReturnsAsync(new ParametroSistema { Valor = "val" });
+            _mediatorMock.Setup(m => m.Send(It.IsAny<InserirPropostaCommand>(), default)).ReturnsAsync(retornoDto);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaMovimentacaoCommand>(), default)).ReturnsAsync(true);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoCommand>(), default)).ReturnsAsync(Erro.NaoEncontrado());
+
+            // Act
+            var act = async () => await _sut.Executar(propostaDTO);
+
+            // Assert
+            await act.Should().ThrowAsync<NegocioException>();
+        }
+
+        [Fact]
+        public async Task DadoErroAoSalvarGrupoPeriodoInscricaoEmInserir_QuandoChamarExecutar_EntaoDeveLancarNegocioException()
+        {
+            // Arrange
+            var propostaDTO = new PropostaDTO
+            {
+                Situacao = SituacaoProposta.Cadastrada,
+                GruposPeriodosInscricao = [new PropostaGrupoPeriodoInscricaoDto { DataInicio = DateTime.Today, DataFim = DateTime.Today.AddDays(2) }]
+            };
+            var grupoUsuarioLogadoId = Guid.NewGuid();
+            var dres = new string[] { "DRE_1" };
+            var areaPromotora = new AreaPromotora { Id = _faker.Random.Long(1) };
+            var retornoDto = new RetornoDTO { Sucesso = true, EntidadeId = _faker.Random.Long(1) };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(grupoUsuarioLogadoId);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterDresUsuarioLogadoQuery>(), default)).ReturnsAsync(dres);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterAreaPromotoraPorGrupoIdEDresQuery>(), default)).ReturnsAsync(areaPromotora);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterParametroSistemaPorTipoEAnoQuery>(), default)).ReturnsAsync(new ParametroSistema { Valor = "val" });
+            _mediatorMock.Setup(m => m.Send(It.IsAny<InserirPropostaCommand>(), default)).ReturnsAsync(retornoDto);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaMovimentacaoCommand>(), default)).ReturnsAsync(true);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoInscricaoCommand>(), default)).ReturnsAsync(Erro.NaoEncontrado());
+
+            // Act
+            var act = async () => await _sut.Executar(propostaDTO);
+
+            // Assert
+            await act.Should().ThrowAsync<NegocioException>();
+        }
+
+        [Fact]
+        public async Task DadoErroAoSalvarGrupoPeriodoInscricaoEEhProximoPasso_QuandoChamarExecutar_EntaoNaoDeveLancarNegocioException()
+        {
+            // Arrange
+            var propostaDTO = new PropostaDTO
+            {
+                Situacao = SituacaoProposta.Cadastrada,
+                EhProximoPasso = true,
+                GruposPeriodosInscricao = [new PropostaGrupoPeriodoInscricaoDto { DataInicio = DateTime.Today, DataFim = DateTime.Today.AddDays(2) }]
+            };
+            var grupoUsuarioLogadoId = Guid.NewGuid();
+            var dres = new string[] { "DRE_1" };
+            var areaPromotora = new AreaPromotora { Id = _faker.Random.Long(1) };
+            var retornoDto = new RetornoDTO { Sucesso = true, EntidadeId = _faker.Random.Long(1) };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterGrupoUsuarioLogadoQuery>(), default)).ReturnsAsync(grupoUsuarioLogadoId);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterDresUsuarioLogadoQuery>(), default)).ReturnsAsync(dres);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterAreaPromotoraPorGrupoIdEDresQuery>(), default)).ReturnsAsync(areaPromotora);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterParametroSistemaPorTipoEAnoQuery>(), default)).ReturnsAsync(new ParametroSistema { Valor = "val" });
+            _mediatorMock.Setup(m => m.Send(It.IsAny<InserirPropostaCommand>(), default)).ReturnsAsync(retornoDto);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaMovimentacaoCommand>(), default)).ReturnsAsync(true);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<SalvarPropostaGrupoPeriodoInscricaoCommand>(), default)).ReturnsAsync(Erro.Validacao("Erro"));
+
+            // Act
+            var resultado = await _sut.Executar(propostaDTO);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeTrue();
+        }
     }
 }
+
