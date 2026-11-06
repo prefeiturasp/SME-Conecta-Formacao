@@ -1,10 +1,8 @@
-﻿namespace SME.ConectaFormacao.Dominio.Entidades
+namespace SME.ConectaFormacao.Dominio.Entidades
 {
-    public class PropostaGrupoPeriodoTurma : EntidadeBaseAuditavel
+    public class PropostaGrupoPeriodoTurma : PropostaGrupoPeriodoTurmaBase
     {
         public long GrupoPeriodoId { get; set; }
-        public long PropostaTurmaId { get; set; }
         public PropostaGrupoPeriodo GrupoPeriodo { get; set; } = null!;
-        public PropostaTurma PropostaTurma { get; set; } = null!;
     }
 }

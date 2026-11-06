@@ -74,6 +74,7 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>()
             .AddScoped<ICasoDeUsoObterCriterioValidacaoInscricao, CasoDeUsoObterCriterioValidacaoInscricao>()
                 .AddScoped<IRepositorioPropostaGrupoPeriodo, RepositorioPropostaGrupoPeriodo>()
+                .AddScoped<IRepositorioPropostaGrupoPeriodoInscricao, RepositorioPropostaGrupoPeriodoInscricao>()
                 .AddScoped<ICasoDeUsoObterDetalhesPropostaComTurmasPorId, CasoDeUsoObterDetalhesPropostaComTurmasPorId>()
             ;
 

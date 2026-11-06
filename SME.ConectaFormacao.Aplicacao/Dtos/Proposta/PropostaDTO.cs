@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using System.ComponentModel.DataAnnotations;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
@@ -68,6 +68,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public IEnumerable<PropostaTipoInscricaoDTO> TiposInscricao { get; set; } = [];
         public IEnumerable<PropostaPareceristaDTO>? Pareceristas { get; set; } = [];
         public IEnumerable<PropostaGrupoPeriodoDto> GruposPeriodos { get; set; } = [];
+        public IEnumerable<PropostaGrupoPeriodoInscricaoDto> GruposPeriodosInscricao { get; set; } = [];
         public bool EhProximoPasso { get; set; }
     }
 }

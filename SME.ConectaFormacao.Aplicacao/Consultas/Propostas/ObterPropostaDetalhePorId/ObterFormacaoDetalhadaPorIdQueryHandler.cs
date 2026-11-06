@@ -16,7 +16,8 @@ namespace SME.ConectaFormacao.Aplicacao
     public class ObterFormacaoDetalhadaPorIdQueryHandler(
         IRepositorioProposta repositorioProposta, IMapper mapper,
         IContextoAplicacao contextoAplicacao,
-        IMediator mediator, ICacheDistribuido cacheDistribuido, IRepositorioUsuarioAcessibilidade repositorioUsuarioAcessibilidade) : 
+        IMediator mediator, ICacheDistribuido cacheDistribuido, IRepositorioUsuarioAcessibilidade repositorioUsuarioAcessibilidade,
+        IRepositorioPropostaGrupoPeriodoInscricao repositorioPropostaGrupoPeriodoInscricao) : 
         IRequestHandler<ObterFormacaoDetalhadaPorIdQuery, RetornoFormacaoDetalhadaDTO>
     {
 
@@ -62,6 +63,14 @@ namespace SME.ConectaFormacao.Aplicacao
                     retornoFormacaoDetalhadaDto.ImagemUrl = await mediator.Send(new ObterEnderecoArquivoServicoArmazenamentoQuery(formacaoDetalhada.ArquivoImagemDivulgacao.NomeArquivoFisico, false), cancellationToken);
 
                 await cacheDistribuido.SalvarAsync(chaveRedis, retornoFormacaoDetalhadaDto);
+            }
+
+            var proposta = await repositorioProposta.ObterPorId(request.Id);
+            if (proposta != null)
+            {
+                var gruposInscricao = await repositorioPropostaGrupoPeriodoInscricao.ObterPorPropostaIdAsync(request.Id);
+                retornoFormacaoDetalhadaDto.Turmas = [.. (retornoFormacaoDetalhadaDto.Turmas ?? [])
+                    .Where(t => proposta.TurmaEstaEmPeriodoDeInscricao(t.Id, gruposInscricao))];
             }
 
             if (retornoFormacaoDetalhadaDto.FormacaoHomologada != Dominio.Enumerados.FormacaoHomologada.Sim)
