@@ -41,17 +41,23 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPe
             return Resultado.DeSucesso();
         }
 
+        private static DateTime? ObterDataInscricaoFimEfetiva(DateTime? dataInscricaoFim)
+        {
+            if (!dataInscricaoFim.HasValue)
+                return null;
+
+            if (dataInscricaoFim.Value.TimeOfDay == TimeSpan.Zero)
+                return dataInscricaoFim.Value.Date.AddDays(1).AddMilliseconds(-1);
+
+            return dataInscricaoFim.Value;
+        }
+
         private static void AjustarDatasGruposInscricao(PropostaDTO propostaDto)
         {
             if (propostaDto.GruposPeriodosInscricao is null || !propostaDto.GruposPeriodosInscricao.Any())
                 return;
 
-            var dataInscricaoFimEfetivo = propostaDto.DataInscricaoFim.HasValue
-                ? (propostaDto.DataInscricaoFim.Value.TimeOfDay == TimeSpan.Zero
-                    ? propostaDto.DataInscricaoFim.Value.Date.AddDays(1).AddMilliseconds(-1)
-                    : propostaDto.DataInscricaoFim.Value)
-                : (DateTime?)null;
-
+            var dataInscricaoFimEfetivo = ObterDataInscricaoFimEfetiva(propostaDto.DataInscricaoFim);
             var horaInicioGeral = propostaDto.DataInscricaoInicio?.TimeOfDay ?? TimeSpan.Zero;
             var horaFimGeral = dataInscricaoFimEfetivo?.TimeOfDay ?? new TimeSpan(23, 59, 59);
 
@@ -73,11 +79,7 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPe
                 return true;
 
             var dataInscricaoInicio = propostaDto.DataInscricaoInicio;
-            var dataInscricaoFim = propostaDto.DataInscricaoFim.HasValue
-                ? (propostaDto.DataInscricaoFim.Value.TimeOfDay == TimeSpan.Zero
-                    ? propostaDto.DataInscricaoFim.Value.Date.AddDays(1).AddMilliseconds(-1)
-                    : propostaDto.DataInscricaoFim.Value)
-                : (DateTime?)null;
+            var dataInscricaoFim = ObterDataInscricaoFimEfetiva(propostaDto.DataInscricaoFim);
 
             return propostaDto.GruposPeriodosInscricao.All(gp =>
                 gp.DataInicio <= gp.DataFim &&
@@ -91,34 +93,59 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Propostas.SalvarPropostaGrupoPe
                 return Resultado.DeSucesso();
 
             var todasTurmasUsadas = new HashSet<long>();
-
             var grupos = propostaDto.GruposPeriodosInscricao.ToList();
+
             for (var i = 0; i < grupos.Count; i++)
             {
-                var gp = grupos[i];
-                var posicao = i + 1;
-                var identificacaoGrupo = $"posição {posicao}";
-
-                if (gp.PropostaTurmasIds is null || !gp.PropostaTurmasIds.Any())
-                    return Erro.Validacao($"O grupo de período na {identificacaoGrupo} deve conter pelo menos uma turma vinculada.");
-
-                var turmasDoGrupo = new HashSet<long>();
-
-                foreach (var turmaId in gp.PropostaTurmasIds)
-                {
-                    if (turmaId <= 0)
-                        return Erro.Validacao($"Foi informada uma turma com identificador inválido no grupo {identificacaoGrupo}.");
-
-                    if (!dicionarioTurmasValidas.TryGetValue(turmaId, out var nomeTurma))
-                        return Erro.Validacao($"Uma turma não reconhecida (Código interno: {turmaId}) foi informada no grupo {identificacaoGrupo}. Certifique-se de que ela pertence a esta proposta.");
-
-                    if (!turmasDoGrupo.Add(turmaId))
-                        return Erro.Validacao($"A turma '{nomeTurma}' foi inserida mais de uma vez no grupo {identificacaoGrupo}.");
-
-                    if (!todasTurmasUsadas.Add(turmaId))
-                        return Erro.Validacao($"A turma '{nomeTurma}' já está vinculada a outro período de inscrição customizado.");
-                }
+                var resultadoGrupo = ValidarTurmasDoGrupo(grupos[i], i + 1, dicionarioTurmasValidas, todasTurmasUsadas);
+                if (!resultadoGrupo.Sucesso)
+                    return resultadoGrupo;
             }
+
+            return Resultado.DeSucesso();
+        }
+
+        private static Resultado ValidarTurmasDoGrupo(
+            PropostaGrupoPeriodoInscricaoDto gp,
+            int posicao,
+            Dictionary<long, string> dicionarioTurmasValidas,
+            HashSet<long> todasTurmasUsadas)
+        {
+            var identificacaoGrupo = $"posição {posicao}";
+
+            if (gp.PropostaTurmasIds is null || !gp.PropostaTurmasIds.Any())
+                return Erro.Validacao($"O grupo de período na {identificacaoGrupo} deve conter pelo menos uma turma vinculada.");
+
+            var turmasDoGrupo = new HashSet<long>();
+
+            foreach (var turmaId in gp.PropostaTurmasIds)
+            {
+                var resultadoTurma = ValidarTurmaIndividual(turmaId, identificacaoGrupo, dicionarioTurmasValidas, turmasDoGrupo, todasTurmasUsadas);
+                if (!resultadoTurma.Sucesso)
+                    return resultadoTurma;
+            }
+
+            return Resultado.DeSucesso();
+        }
+
+        private static Resultado ValidarTurmaIndividual(
+            long turmaId,
+            string identificacaoGrupo,
+            Dictionary<long, string> dicionarioTurmasValidas,
+            HashSet<long> turmasDoGrupo,
+            HashSet<long> todasTurmasUsadas)
+        {
+            if (turmaId <= 0)
+                return Erro.Validacao($"Foi informada uma turma com identificador inválido no grupo {identificacaoGrupo}.");
+
+            if (!dicionarioTurmasValidas.TryGetValue(turmaId, out var nomeTurma))
+                return Erro.Validacao($"Uma turma não reconhecida (Código interno: {turmaId}) foi informada no grupo {identificacaoGrupo}. Certifique-se de que ela pertence a esta proposta.");
+
+            if (!turmasDoGrupo.Add(turmaId))
+                return Erro.Validacao($"A turma '{nomeTurma}' foi inserida mais de uma vez no grupo {identificacaoGrupo}.");
+
+            if (!todasTurmasUsadas.Add(turmaId))
+                return Erro.Validacao($"A turma '{nomeTurma}' já está vinculada a outro período de inscrição customizado.");
 
             return Resultado.DeSucesso();
         }
