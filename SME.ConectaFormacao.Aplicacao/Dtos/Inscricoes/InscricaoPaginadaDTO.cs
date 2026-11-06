@@ -11,6 +11,7 @@
         public string CargoFuncao { get; set; }
         public int? TipoVinculo { get; set; }
         public string Situacao { get; set; } //proxima
+        public string? SituacaoAprovacao { get; set; } 
         public bool PodeCancelar { get; set; } = true;
         public string Origem { get; set; }
         public bool IntegrarNoSga { get; set; }
