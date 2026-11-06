@@ -42,7 +42,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Queries
                        WHEN I.SITUACAO = 4 then 'Reprovado'
                        WHEN I.SITUACAO = 1 and CLP.ID IS NOT NULL AND CILP.APROVADO = true THEN 'Aprovado'
                        WHEN I.SITUACAO = 1 and CLP.ID IS NOT NULL AND CILP.APROVADO = false THEN 'Reprovado'
-                       WHEN I.SITUACAO = 1 and CLP.ID IS NULL THEN 'Em análise'
+                       WHEN I.SITUACAO = 1 and CLP.ID IS NULL THEN 'Em andamento'
                        ELSE null
             end as SituacaoAprovacao,
                        TO_CHAR(I.CRIADO_EM, 'YYYY-MM-DD') AS dataInscricao,
