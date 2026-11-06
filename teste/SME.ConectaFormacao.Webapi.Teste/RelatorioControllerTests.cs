@@ -41,6 +41,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
                 PeriodoDeRealizacaoFinal = _faker.Date.Future(),
                 SituacaoProposta = _faker.PickRandom<SituacaoProposta>(),
                 SituacaoInscricao = _faker.PickRandom<SituacaoInscricao>(),
+                SituacaoAprovacao = _faker.PickRandom<SituacaoAprovacao>(),
                 CargoPublicoAlvoId = _faker.Random.Long(1, 1000),
                 FuncaoId = _faker.Random.Long(1, 1000)
             };

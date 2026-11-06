@@ -121,6 +121,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.Relatorios
                 model.Ue ?? "N/A",
                 Periodo: FormatarDataPeriodo(model.DataRealizacaoInicio, model.DataRealizacaoFim) ?? "N/A",
                 model.SituacaoFormacao?.Nome() ?? "N/A",
+                model.SituacaoAprovacao?.Nome() ?? "N/A",
                 model.ModalidadeFormativa?.Nome() ?? "N/A",
                 model.PublicoAlvo ?? "N/A",
                 model.FuncaoEspecifica ?? "N/A",
