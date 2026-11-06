@@ -38,6 +38,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Queries
                        UA.NECESSITA_ADAPTACAO AS necessitaAdaptacao, 
                        UA.DESCRICAO_ADAPTACAO AS descricaoAdaptacao, 
                        I.SITUACAO AS situacaoInscricao, 
+                       CASE 
+                       WHEN I.SITUACAO = 4 then 'Reprovado'
+                       WHEN I.SITUACAO = 1 and CLP.ID IS NOT NULL AND CILP.APROVADO = true THEN 'Aprovado'
+                       WHEN I.SITUACAO = 1 and CLP.ID IS NOT NULL AND CILP.APROVADO = false THEN 'Reprovado'
+                       WHEN I.SITUACAO = 1 and CLP.ID IS NULL THEN 'Em andamento'
+                       ELSE null
+            end as SituacaoAprovacao,
                        TO_CHAR(I.CRIADO_EM, 'YYYY-MM-DD') AS dataInscricao,
                        TO_CHAR(I.CRIADO_EM, 'HH24:MI') AS horaInscricao,
                        NULL AS situacaoConclusaoCursista, 
@@ -82,6 +89,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Queries
                        LEFT JOIN PUBLIC.DRE D_FALLBACK ON UE.DRE_ID IS NULL 
                                                       AND D_FALLBACK.DRE_ID = COALESCE(NULLIF(I.CARGO_DRE_CODIGO, ''), NULLIF(I.FUNCAO_DRE_CODIGO, '')) 
                                                       AND NOT D_FALLBACK.EXCLUIDO 
+                -- Situação de aprovação da inscrição do cursista
+                       LEFT JOIN PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA CILP ON CILP.INSCRICAO_ID = I.ID AND NOT CILP.EXCLUIDO
+                       LEFT JOIN PUBLIC.CODAF_LISTA_PRESENCA CLP ON CLP.ID = CILP.CODAF_LISTA_PRESENCA_ID AND NOT CLP.EXCLUIDO
                 WHERE  NOT P.EXCLUIDO
                   AND  NOT PT.EXCLUIDO
             )
@@ -109,6 +119,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Queries
                    necessitaAdaptacao,
                    descricaoAdaptacao,
                    situacaoInscricao,
+                   situacaoAprovacao,
                    dataInscricao,
                    horaInscricao,
                    situacaoConclusaoCursista,
