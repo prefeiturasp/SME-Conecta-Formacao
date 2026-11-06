@@ -60,9 +60,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 """;
             const string sqlBaseOrderBy = """
                 ORDER  BY
-                        CASE WHEN CLP.DATA_ENVIO_DF IS NULL THEN 0
-                             ELSE 1
-                        END DESC,
                         CLP.DATA_ENVIO_DF ASC,
                         CLP.CRIADO_EM DESC
                 """;
@@ -188,7 +185,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                                WHERE CILP.CODAF_LISTA_PRESENCA_ID = CLP.ID AND CILP.APROVADO = TRUE
                            ) THEN TRUE
                            ELSE FALSE
-                       END AS possuiAprovacoes
+                       END AS possuiAprovacoes,
+                       CLP.DATA_ENVIO_DF as DataPrimeiroEnvioDf
                 {sqlBaseJoins}
                 {condicoesWhere}
                 {sqlBaseOrderBy}
