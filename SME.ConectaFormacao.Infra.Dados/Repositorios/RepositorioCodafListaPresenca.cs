@@ -532,6 +532,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                    CLP.PROPOSTA_TURMA_ID AS propostaTurmaId,
                    CLP.DATA_PUBLICACAO AS dataPublicacao,
                    CLP.DATA_PUBLICACAO_DOM AS dataPublicacaoDom,
+                   CLP.DATA_ENVIO_DF AS dataEnvioDf,
                    CLP.NUMERO_COMUNICADO AS numeroComunicado,
                    CLP.PAGINA_COMUNICADO_DOM AS paginaComunicadoDom,
                    CLP.CODIGO_CURSO_EOL AS codigoCursoEol,
