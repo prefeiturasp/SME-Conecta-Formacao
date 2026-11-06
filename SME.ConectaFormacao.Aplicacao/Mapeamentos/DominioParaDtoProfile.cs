@@ -294,6 +294,7 @@ namespace SME.ConectaFormacao.Aplicacao.Mapeamentos
                 .ForMember(dest => dest.IntegrarNoSga, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.IntegrarNoSGA))
                 .ForMember(dest => dest.Iniciado, opt => opt.MapFrom(o => o.PropostaTurma.Proposta.DataRealizacaoInicio.Value.Date <= DateTimeExtension.HorarioBrasilia().Date))
                 .ForMember(dest => dest.PodeCancelar, opt => opt.MapFrom(o => o.Situacao != Dominio.Enumerados.SituacaoInscricao.Cancelada && o.Situacao != Dominio.Enumerados.SituacaoInscricao.Transferida))
+                .ForMember(dest => dest.SituacaoAprovacao, opt => opt.MapFrom(o => o.SituacaoAprovacao))
                 .ForMember(dest => dest.DataInscricao, opt => opt.MapFrom(o => o.CriadoEm.ToString("dd/MM/yyyy HH:mm")));
 
             CreateMap<Inscricao, DadosListagemInscricaoPermissaoDto>()
