@@ -568,7 +568,39 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
                     g.DataInicio == new DateTime(2026, 11, 5, 14, 14, 0) &&
                     g.DataFim == new DateTime(2026, 11, 6, 14, 21, 0))), Times.Once);
         }
-    }
+    
+        [Fact]
+        public async Task DadoDataInscricaoFimNula_QuandoHandle_EntaoProcessaSemLancarExcecao()
+        {
+            // Arrange
+            var dto = new PropostaDTO
+            {
+                DataInscricaoInicio = null,
+                DataInscricaoFim = null,
+                GruposPeriodosInscricao =
+                [
+                    new PropostaGrupoPeriodoInscricaoDto
+                    {
+                        Id = 0,
+                        DataInicio = new DateTime(2026, 11, 4),
+                        DataFim = new DateTime(2026, 11, 5),
+                        PropostaTurmasIds = [1]
+                    }
+                ]
+            };
+            var comando = new SalvarPropostaGrupoPeriodoInscricaoCommand(1, dto);
+            _repositorioPropostaMock.Setup(r => r.ObterTurmasPorId(1)).ReturnsAsync([
+                new PropostaTurma { Id = 1, Nome = "Turma 1" }
+            ]);
+
+            // Act
+            var resultado = await _sut.Handle(comando, CancellationToken.None);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            _repositorioPropostaGrupoPeriodoInscricaoMock.Verify(r => r.Inserir(It.IsAny<PropostaGrupoPeriodoInscricao>()), Times.Once);
+        }
+}
 }
 
 

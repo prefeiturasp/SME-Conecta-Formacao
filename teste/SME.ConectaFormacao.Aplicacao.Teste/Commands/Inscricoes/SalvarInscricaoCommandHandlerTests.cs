@@ -5,6 +5,7 @@ using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.Comandos.Email.InscricaoEmEspera;
 using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao;
+using SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterPropostaGruposPeriodoInscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Enumerados;
@@ -504,8 +505,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
                 .Setup(m => m.Send(It.IsAny<ObterPropostaPorIdQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(propostaFake);
 
-            _mocker.GetMock<IRepositorioPropostaGrupoPeriodoInscricao>()
-                .Setup(r => r.ObterPorPropostaIdAsync(propostaFake.Id))
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaGruposPeriodoInscricaoQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { grupoExpirado });
 
             // Act
@@ -554,8 +555,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
                 .Setup(m => m.Send(It.IsAny<ObterPropostaPorIdQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(propostaFake);
 
-            _mocker.GetMock<IRepositorioPropostaGrupoPeriodoInscricao>()
-                .Setup(r => r.ObterPorPropostaIdAsync(propostaFake.Id))
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaGruposPeriodoInscricaoQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Enumerable.Empty<PropostaGrupoPeriodoInscricao>());
 
             // Act
@@ -612,8 +613,8 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
                 .Setup(m => m.Send(It.IsAny<ObterPropostaPorIdQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(propostaFake);
 
-            _mocker.GetMock<IRepositorioPropostaGrupoPeriodoInscricao>()
-                .Setup(r => r.ObterPorPropostaIdAsync(propostaFake.Id))
+            _mocker.GetMock<IMediator>()
+                .Setup(m => m.Send(It.IsAny<ObterPropostaGruposPeriodoInscricaoQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { grupoVigente });
 
             // Act
