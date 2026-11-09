@@ -5,6 +5,8 @@ using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -14,13 +16,15 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioProposta _repositorioProposta;
+        private readonly IServicoLogs? _servicoLogs;
 
-        public InserirPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
+        public InserirPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta, IServicoLogs? servicoLogs = null)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _servicoLogs = servicoLogs;
         }
 
         public async Task<RetornoDTO> Handle(InserirPropostaCommand request, CancellationToken cancellationToken)
@@ -41,26 +45,17 @@ namespace SME.ConectaFormacao.Aplicacao
             await _mediator.Send(new ValidarResponsavelDfCommand(proposta.RfResponsavelDf,
                 proposta.FormacaoHomologada, proposta.Situacao), cancellationToken);
 
-            var transacao = _transacao.Iniciar();
-            try
-            {
-                var id = await _repositorioProposta.Inserir(proposta);
+            var id = await PropostaTransacaoHelper.InserirComTransacaoAsync(
+                _transacao,
+                _repositorioProposta,
+                _mediator,
+                _servicoLogs,
+                proposta,
+                request.PropostaDTO.IntegrarNoSGA,
+                "InserirProposta",
+                cancellationToken);
 
-                await _mediator.Send(new SalvarPropostaCommand(id, proposta, null), cancellationToken);
-
-                transacao.Commit();
-
-                return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_INSERIDA_COM_SUCESSO, id), id);
-            }
-            catch
-            {
-                transacao.Rollback();
-                throw;
-            }
-            finally
-            {
-                transacao.Dispose();
-            }
+            return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_INSERIDA_COM_SUCESSO, id), id);
         }
     }
 }
