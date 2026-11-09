@@ -9,6 +9,8 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -18,13 +20,15 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioProposta _repositorioProposta;
+        private readonly IServicoLogs? _servicoLogs;
 
-        public AlterarPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
+        public AlterarPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta, IServicoLogs? servicoLogs = null)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _servicoLogs = servicoLogs;
         }
 
         public async Task<RetornoDTO> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
@@ -126,6 +130,19 @@ namespace SME.ConectaFormacao.Aplicacao
             try
             {
                 await _repositorioProposta.Atualizar(propostaDepois);
+
+                await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
+                    _servicoLogs,
+                    operacao: "AlterarProposta",
+                    propostaId: proposta.Id,
+                    valorBancoAnterior: proposta.IntegrarNoSGA,
+                    valorRecebidoDto: request.PropostaDTO.IntegrarNoSGA,
+                    valorFinalPersistido: propostaDepois.IntegrarNoSGA,
+                    nomeFormacao: propostaDepois.NomeFormacao,
+                    areaPromotoraId: propostaDepois.AreaPromotoraId,
+                    situacao: propostaDepois.Situacao.ToString(),
+                    usuario: propostaDepois.AlteradoLogin ?? propostaDepois.CriadoLogin
+                );
 
                 await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
                 transacao.Commit();
