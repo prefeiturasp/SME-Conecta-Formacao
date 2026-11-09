@@ -100,5 +100,59 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             transacaoMock.Verify(t => t.Commit(), Times.Once);
             transacaoMock.Verify(t => t.Rollback(), Times.Never);
         }
+
+        [Fact]
+        public async Task DadoPropostaComIntegrarNoSgaNuloNoDto_QuandoExecutarHandle_EntaoDeveManterIntegrarNoSgaDoBanco()
+        {
+            // Arrange
+            var comando = new AlterarPropostaRascunhoCommand(1, new PropostaDTO { IntegrarNoSGA = null });
+            var propostaBanco = new Proposta { Id = 1, IntegrarNoSGA = true };
+            var propostaMapeada = new Proposta { Id = 1 };
+            var transacaoMock = new Mock<IDbTransaction>();
+
+            _repositorioPropostaMock.Setup(r => r.ObterPorId(1)).ReturnsAsync(propostaBanco);
+            _mapperMock.Setup(m => m.Map<Proposta>(comando.PropostaDTO)).Returns(propostaMapeada);
+            _transacaoMock.Setup(t => t.Iniciar()).Returns(transacaoMock.Object);
+
+            Proposta? propostaPersistida = null;
+            _repositorioPropostaMock.Setup(r => r.Atualizar(It.IsAny<Proposta>()))
+                .Callback<Proposta>(p => propostaPersistida = p)
+                .ReturnsAsync((Proposta p) => p);
+
+            // Act
+            var resultado = await _handler.Handle(comando, CancellationToken.None);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            propostaPersistida.Should().NotBeNull();
+            propostaPersistida!.IntegrarNoSGA.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task DadoPropostaComIntegrarNoSgaPreenchidoNoDto_QuandoExecutarHandle_EntaoDeveAtualizarIntegrarNoSga()
+        {
+            // Arrange
+            var comando = new AlterarPropostaRascunhoCommand(1, new PropostaDTO { IntegrarNoSGA = false });
+            var propostaBanco = new Proposta { Id = 1, IntegrarNoSGA = true };
+            var propostaMapeada = new Proposta { Id = 1 };
+            var transacaoMock = new Mock<IDbTransaction>();
+
+            _repositorioPropostaMock.Setup(r => r.ObterPorId(1)).ReturnsAsync(propostaBanco);
+            _mapperMock.Setup(m => m.Map<Proposta>(comando.PropostaDTO)).Returns(propostaMapeada);
+            _transacaoMock.Setup(t => t.Iniciar()).Returns(transacaoMock.Object);
+
+            Proposta? propostaPersistida = null;
+            _repositorioPropostaMock.Setup(r => r.Atualizar(It.IsAny<Proposta>()))
+                .Callback<Proposta>(p => propostaPersistida = p)
+                .ReturnsAsync((Proposta p) => p);
+
+            // Act
+            var resultado = await _handler.Handle(comando, CancellationToken.None);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            propostaPersistida.Should().NotBeNull();
+            propostaPersistida!.IntegrarNoSGA.Should().BeFalse();
+        }
     }
 }
