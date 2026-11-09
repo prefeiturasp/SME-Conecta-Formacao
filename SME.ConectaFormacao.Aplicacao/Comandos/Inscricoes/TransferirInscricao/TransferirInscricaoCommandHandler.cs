@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricaoManual;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -7,12 +7,14 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Net;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
     public class TransferirInscricaoCommandHandler(
         IRepositorioInscricao repositorioInscricao, IMediator mediator, IRepositorioProposta repositorioProposta, 
-        IRepositorioUsuario repositorioUsuario) : 
+        IRepositorioUsuario repositorioUsuario, IServicoLogs? servicoLogs = null) : 
         IRequestHandler<TransferirInscricaoCommand, RetornoInscricaoDTO>
     {
         public async Task<RetornoInscricaoDTO> Handle(TransferirInscricaoCommand request, CancellationToken cancellationToken)
@@ -94,7 +96,19 @@ namespace SME.ConectaFormacao.Aplicacao
                         if (proposta == null)
                             throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
-                        await repositorioProposta.AtualizarIntegrarNoSGA(proposta.Id, PropostaIntegrarNoSGA.NAO.ToBool());
+                        await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
+                            servicoLogs,
+                            operacao: "TransferirInscricao",
+                            propostaId: proposta.Id,
+                            valorBancoAnterior: proposta.IntegrarNoSGA,
+                            valorRecebidoDto: null,
+                            valorFinalPersistido: proposta.IntegrarNoSGA,
+                            nomeFormacao: proposta.NomeFormacao,
+                            areaPromotoraId: proposta.AreaPromotoraId,
+                            situacao: proposta.Situacao.ToString(),
+                            usuario: cursista.Rf,
+                            detalhesAdicionais: $"Transferência da inscrição ID {inscricao.Id} da turma {request.InscricaoTransferenciaDTO.IdTurmaOrigem} para turma {request.InscricaoTransferenciaDTO.IdTurmaDestino}. IntegrarNoSGA mantido como {proposta.IntegrarNoSGA}."
+                        );
 
                         await mediator.Send(new SalvarInscricaoManualCommand(inscricaoNovaManual, true));
 

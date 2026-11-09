@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Moq;
 using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
@@ -97,6 +97,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Inscricoes
 
             Assert.Equal((int)HttpStatusCode.OK, resultado.Status);
             Assert.Contains("sucesso", resultado.Mensagem, StringComparison.OrdinalIgnoreCase);
+            _repoProposta.Verify(r => r.AtualizarIntegrarNoSGA(It.IsAny<long>(), It.IsAny<bool>()), Times.Never);
         }
 
         [Fact]

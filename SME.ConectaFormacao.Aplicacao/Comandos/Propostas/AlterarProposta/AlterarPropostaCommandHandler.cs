@@ -9,6 +9,8 @@ using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Text;
+using SME.ConectaFormacao.Aplicacao.Utilitarios;
+using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao
 {
@@ -18,13 +20,15 @@ namespace SME.ConectaFormacao.Aplicacao
         private readonly IMapper _mapper;
         private readonly ITransacao _transacao;
         private readonly IRepositorioProposta _repositorioProposta;
+        private readonly IServicoLogs? _servicoLogs;
 
-        public AlterarPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta)
+        public AlterarPropostaCommandHandler(IMediator mediator, IMapper mapper, ITransacao transacao, IRepositorioProposta repositorioProposta, IServicoLogs? servicoLogs = null)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _transacao = transacao ?? throw new ArgumentNullException(nameof(transacao));
             _repositorioProposta = repositorioProposta ?? throw new ArgumentNullException(nameof(repositorioProposta));
+            _servicoLogs = servicoLogs;
         }
 
         public async Task<RetornoDTO> Handle(AlterarPropostaCommand request, CancellationToken cancellationToken)
@@ -72,6 +76,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
             propostaDepois.Id = proposta.Id;
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
+            propostaDepois.IntegrarNoSGA = request.PropostaDTO.IntegrarNoSGA ?? proposta.IntegrarNoSGA;
             propostaDepois.AjustarDatasInscricao();
             propostaDepois.ManterCriador(proposta);
             propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
@@ -121,33 +126,26 @@ namespace SME.ConectaFormacao.Aplicacao
             if (erros.Any())
                 throw new NegocioException(erros);
 
-            var transacao = _transacao.Iniciar();
-            try
-            {
-                await _repositorioProposta.Atualizar(propostaDepois);
+            await PropostaTransacaoHelper.AtualizarComTransacaoAsync(
+                _transacao,
+                _repositorioProposta,
+                _mediator,
+                _servicoLogs,
+                proposta,
+                propostaDepois,
+                request.PropostaDTO.IntegrarNoSGA,
+                "AlterarProposta",
+                cancellationToken);
 
-                await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
-                transacao.Commit();
+            var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
 
-                var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
-
-                if (!ehPropostaPublicada)
-                    return RetornoDTO.RetornarSucesso(mensagem.ToString(), request.Id);
-                
-                if (ehPropostaAutomatica)
-                    mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
-
+            if (!ehPropostaPublicada)
                 return RetornoDTO.RetornarSucesso(mensagem.ToString(), request.Id);
-            }
-            catch
-            {
-                transacao.Rollback();
-                throw;
-            }
-            finally
-            {
-                transacao.Dispose();
-            }
+            
+            if (ehPropostaAutomatica)
+                mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
+
+            return RetornoDTO.RetornarSucesso(mensagem.ToString(), request.Id);
         }
     }
 }
