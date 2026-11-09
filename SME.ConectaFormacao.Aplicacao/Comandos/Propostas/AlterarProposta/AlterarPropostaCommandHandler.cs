@@ -126,46 +126,26 @@ namespace SME.ConectaFormacao.Aplicacao
             if (erros.Any())
                 throw new NegocioException(erros);
 
-            var transacao = _transacao.Iniciar();
-            try
-            {
-                await _repositorioProposta.Atualizar(propostaDepois);
+            await PropostaTransacaoHelper.AtualizarComTransacaoAsync(
+                _transacao,
+                _repositorioProposta,
+                _mediator,
+                _servicoLogs,
+                proposta,
+                propostaDepois,
+                request.PropostaDTO.IntegrarNoSGA,
+                "AlterarProposta",
+                cancellationToken);
 
-                await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
-                    _servicoLogs,
-                    operacao: "AlterarProposta",
-                    propostaId: proposta.Id,
-                    valorBancoAnterior: proposta.IntegrarNoSGA,
-                    valorRecebidoDto: request.PropostaDTO.IntegrarNoSGA,
-                    valorFinalPersistido: propostaDepois.IntegrarNoSGA,
-                    nomeFormacao: propostaDepois.NomeFormacao,
-                    areaPromotoraId: propostaDepois.AreaPromotoraId,
-                    situacao: propostaDepois.Situacao.ToString(),
-                    usuario: propostaDepois.AlteradoLogin ?? propostaDepois.CriadoLogin
-                );
+            var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
 
-                await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
-                transacao.Commit();
-
-                var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
-
-                if (!ehPropostaPublicada)
-                    return RetornoDTO.RetornarSucesso(mensagem.ToString(), request.Id);
-                
-                if (ehPropostaAutomatica)
-                    mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
-
+            if (!ehPropostaPublicada)
                 return RetornoDTO.RetornarSucesso(mensagem.ToString(), request.Id);
-            }
-            catch
-            {
-                transacao.Rollback();
-                throw;
-            }
-            finally
-            {
-                transacao.Dispose();
-            }
+            
+            if (ehPropostaAutomatica)
+                mensagem.Append(MensagemNegocio.PROPOSTA_PUBLICADA_ALTERADA_COM_INSCRICAO_AUTOMATICA);
+
+            return RetornoDTO.RetornarSucesso(mensagem.ToString(), request.Id);
         }
     }
 }

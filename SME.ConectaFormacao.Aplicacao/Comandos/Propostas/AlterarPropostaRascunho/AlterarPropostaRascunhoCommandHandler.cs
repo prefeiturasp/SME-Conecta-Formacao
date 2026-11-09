@@ -43,39 +43,18 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;
             propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
 
-            var transacao = _transacao.Iniciar();
-            try
-            {
-                await _repositorioProposta.Atualizar(propostaDepois);
+            await PropostaTransacaoHelper.AtualizarComTransacaoAsync(
+                _transacao,
+                _repositorioProposta,
+                _mediator,
+                _servicoLogs,
+                proposta,
+                propostaDepois,
+                request.PropostaDTO.IntegrarNoSGA,
+                "AlterarPropostaRascunho",
+                cancellationToken);
 
-                await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
-                    _servicoLogs,
-                    operacao: "AlterarPropostaRascunho",
-                    propostaId: proposta.Id,
-                    valorBancoAnterior: proposta.IntegrarNoSGA,
-                    valorRecebidoDto: request.PropostaDTO.IntegrarNoSGA,
-                    valorFinalPersistido: propostaDepois.IntegrarNoSGA,
-                    nomeFormacao: propostaDepois.NomeFormacao,
-                    areaPromotoraId: propostaDepois.AreaPromotoraId,
-                    situacao: propostaDepois.Situacao.ToString(),
-                    usuario: propostaDepois.AlteradoLogin ?? propostaDepois.CriadoLogin
-                );
-
-                await _mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, proposta.ArquivoImagemDivulgacaoId), cancellationToken);
-
-                transacao.Commit();
-
-                return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id), request.Id);
-            }
-            catch
-            {
-                transacao.Rollback();
-                throw;
-            }
-            finally
-            {
-                transacao.Dispose();
-            }
+            return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id), request.Id);
         }
     }
 }

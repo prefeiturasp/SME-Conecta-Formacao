@@ -35,40 +35,17 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.Situacao = SituacaoProposta.Rascunho;
             proposta.AjustarDatasInscricao();
 
-            var transacao = _transacao.Iniciar();
+            var id = await PropostaTransacaoHelper.InserirComTransacaoAsync(
+                _transacao,
+                _repositorioProposta,
+                _mediator,
+                _servicoLogs,
+                proposta,
+                request.PropostaDTO.IntegrarNoSGA,
+                "InserirPropostaRascunho",
+                cancellationToken);
 
-            try
-            {
-                var id = await _repositorioProposta.Inserir(proposta);
-
-                await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
-                    _servicoLogs,
-                    operacao: "InserirPropostaRascunho",
-                    propostaId: id,
-                    valorBancoAnterior: null,
-                    valorRecebidoDto: request.PropostaDTO.IntegrarNoSGA,
-                    valorFinalPersistido: proposta.IntegrarNoSGA,
-                    nomeFormacao: proposta.NomeFormacao,
-                    areaPromotoraId: proposta.AreaPromotoraId,
-                    situacao: proposta.Situacao.ToString(),
-                    usuario: proposta.CriadoLogin
-                );
-
-                await _mediator.Send(new SalvarPropostaCommand(id, proposta, null), cancellationToken);
-
-                transacao.Commit();
-
-                return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_INSERIDA_COM_SUCESSO, id), id);
-            }
-            catch
-            {
-                transacao.Rollback();
-                throw;
-            }
-            finally
-            {
-                transacao.Dispose();
-            }
+            return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_INSERIDA_COM_SUCESSO, id), id);
         }
     }
 }

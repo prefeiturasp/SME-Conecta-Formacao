@@ -45,39 +45,17 @@ namespace SME.ConectaFormacao.Aplicacao
             await _mediator.Send(new ValidarResponsavelDfCommand(proposta.RfResponsavelDf,
                 proposta.FormacaoHomologada, proposta.Situacao), cancellationToken);
 
-            var transacao = _transacao.Iniciar();
-            try
-            {
-                var id = await _repositorioProposta.Inserir(proposta);
+            var id = await PropostaTransacaoHelper.InserirComTransacaoAsync(
+                _transacao,
+                _repositorioProposta,
+                _mediator,
+                _servicoLogs,
+                proposta,
+                request.PropostaDTO.IntegrarNoSGA,
+                "InserirProposta",
+                cancellationToken);
 
-                await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
-                    _servicoLogs,
-                    operacao: "InserirProposta",
-                    propostaId: id,
-                    valorBancoAnterior: null,
-                    valorRecebidoDto: request.PropostaDTO.IntegrarNoSGA,
-                    valorFinalPersistido: proposta.IntegrarNoSGA,
-                    nomeFormacao: proposta.NomeFormacao,
-                    areaPromotoraId: proposta.AreaPromotoraId,
-                    situacao: proposta.Situacao.ToString(),
-                    usuario: proposta.CriadoLogin
-                );
-
-                await _mediator.Send(new SalvarPropostaCommand(id, proposta, null), cancellationToken);
-
-                transacao.Commit();
-
-                return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_INSERIDA_COM_SUCESSO, id), id);
-            }
-            catch
-            {
-                transacao.Rollback();
-                throw;
-            }
-            finally
-            {
-                transacao.Dispose();
-            }
+            return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_INSERIDA_COM_SUCESSO, id), id);
         }
     }
 }
