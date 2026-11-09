@@ -72,6 +72,7 @@ namespace SME.ConectaFormacao.Aplicacao
             var propostaDepois = _mapper.Map<Proposta>(request.PropostaDTO);
             propostaDepois.Id = proposta.Id;
             propostaDepois.AreaPromotoraId = proposta.AreaPromotoraId;
+            propostaDepois.IntegrarNoSGA = request.PropostaDTO.IntegrarNoSGA ?? proposta.IntegrarNoSGA;
             propostaDepois.AjustarDatasInscricao();
             propostaDepois.ManterCriador(proposta);
             propostaDepois.AcaoFormativaTexto = proposta.AcaoFormativaTexto;

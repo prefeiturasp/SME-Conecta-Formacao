@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricaoManual;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -94,7 +94,7 @@ namespace SME.ConectaFormacao.Aplicacao
                         if (proposta == null)
                             throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA, HttpStatusCode.NotFound);
 
-                        await repositorioProposta.AtualizarIntegrarNoSGA(proposta.Id, PropostaIntegrarNoSGA.NAO.ToBool());
+
 
                         await mediator.Send(new SalvarInscricaoManualCommand(inscricaoNovaManual, true));
 
