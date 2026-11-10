@@ -13,6 +13,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Relatorios
         public DateTime? DataRealizacaoInicio { get; set; }
         public DateTime? DataRealizacaoFim { get; set; }
         public SituacaoProposta? SituacaoFormacao { get; set; }
+        public SituacaoAprovacao? SituacaoAprovacao { get; set; }
         public Formato? ModalidadeFormativa { get; set; }
         public string? PublicoAlvo { get; set; }
         public string? FuncaoEspecifica { get; set; }

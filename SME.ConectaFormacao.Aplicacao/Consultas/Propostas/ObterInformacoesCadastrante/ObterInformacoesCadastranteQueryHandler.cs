@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
@@ -31,8 +31,9 @@ namespace SME.ConectaFormacao.Aplicacao
                 areaPromotora = await _mediator.Send(new ObterAreaPromotoraPorIdQuery(proposta.AreaPromotoraId), cancellationToken) ??
                     throw new NegocioException(MensagemNegocio.AREA_PROMOTORA_NAO_ENCONTRADA, System.Net.HttpStatusCode.NotFound);
 
-                usuario = await _mediator.Send(new ObterUsuarioPorLoginQuery(proposta.CriadoLogin), cancellationToken) ??
-                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO, System.Net.HttpStatusCode.NotFound);
+                usuario = !string.IsNullOrWhiteSpace(proposta.CriadoLogin)
+                    ? await _mediator.Send(new ObterUsuarioPorLoginQuery(proposta.CriadoLogin), cancellationToken)
+                    : null;
             }
             else
             {
@@ -47,8 +48,8 @@ namespace SME.ConectaFormacao.Aplicacao
 
             var informacoesCadastrante = _mapper.Map<PropostaInformacoesCadastranteDTO>(areaPromotora);
 
-            informacoesCadastrante.UsuarioLogadoNome = usuario.Nome;
-            informacoesCadastrante.UsuarioLogadoEmail = usuario.Email;
+            informacoesCadastrante.UsuarioLogadoNome = usuario?.Nome ?? string.Empty;
+            informacoesCadastrante.UsuarioLogadoEmail = usuario?.Email ?? string.Empty;
 
             return informacoesCadastrante;
         }

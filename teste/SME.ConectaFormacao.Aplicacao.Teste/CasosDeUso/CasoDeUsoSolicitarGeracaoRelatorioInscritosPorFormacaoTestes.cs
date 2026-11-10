@@ -8,6 +8,8 @@ using SME.ConectaFormacao.Aplicacao.Comandos.PublicarNaFilaRabbit;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Aplicacao.Dtos.Relatorios;
 using SME.ConectaFormacao.Infra;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Relatorios;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -149,6 +151,42 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
                 It.IsAny<string>()), Times.Once); // Ajustado para corresponder à assinatura da interface IServicoLogs
         }
 
+
+        [Fact]
+        public async Task DadoFiltroComSituacaoAprovacao_QuandoExecutarAsync_EntaoDevePublicarMensagemComSituacaoAprovacao()
+        {
+            // Arrange
+            var filtro = GerarFiltroValido();
+            filtro.SituacaoAprovacao = SituacaoAprovacao.Aprovado;
+            var usuarioLogado = GerarUsuarioValido();
+
+            ConfigurarContextoBasico(usuarioLogado.Login, usuarioLogado.Nome);
+
+            _repositorioUsuarioMock
+                .Setup(r => r.ObterPorLogin(It.IsAny<string>()))
+                .ReturnsAsync(usuarioLogado);
+
+            _timeProviderMock.Setup(t => t.GetUtcNow()).Returns(DateTimeOffset.UtcNow);
+            _timeProviderMock.Setup(t => t.LocalTimeZone).Returns(TimeZoneInfo.Local);
+
+            PublicarNaFilaRabbitCommand? comandoPublicado = null;
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<PublicarNaFilaRabbitCommand>(), default))
+                .Callback<IRequest<bool>, CancellationToken>((cmd, _) => comandoPublicado = cmd as PublicarNaFilaRabbitCommand)
+                .ReturnsAsync(true);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(filtro);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeTrue();
+
+            comandoPublicado.Should().NotBeNull();
+            var mensagem = comandoPublicado!.Filtros as SolicitacaoRelatorioInscritosPorFormacaoMensagem;
+            mensagem.Should().NotBeNull();
+            mensagem!.Filtros.SituacaoAprovacao.Should().Be(SituacaoAprovacao.Aprovado);
+        }
         #region Métodos Privados Auxiliares
 
         private void ConfigurarContextoBasico(string login, string nome)

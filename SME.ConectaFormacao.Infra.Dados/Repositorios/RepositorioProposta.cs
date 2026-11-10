@@ -1508,7 +1508,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     criado_login,
                     alterado_em,    
                     alterado_por,
-                    alterado_login
+                    alterado_login,
+                    exists (
+                        select 1 
+                        from public.codaf_lista_presenca clp 
+                        where clp.proposta_turma_id = proposta_turma.id 
+                          and not clp.excluido
+                    ) as PossuiCodafListaPresenca
                 from proposta_turma
                 where proposta_id = @propostaId 
                   and not excluido                
@@ -2198,7 +2204,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = $@"select 
                             pt.id, 
                             pt.proposta_id, 
-                            pt.nome
+                            pt.nome,
+                            exists (
+                                select 1 
+                                from public.codaf_lista_presenca clp 
+                                where clp.proposta_turma_id = pt.id 
+                                  and not clp.excluido
+                            ) as PossuiCodafListaPresenca
                         from proposta_turma pt
                         where pt.proposta_id = @propostaId 
                           and not pt.excluido
@@ -2658,12 +2670,14 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     p.numero_homologacao AS NumeroFormacao, 
                     pt.id AS Id, 
                     pt.nome AS Nome,
-                    COALESCE(pgp.data_inicio, p.data_realizacao_inicio) AS DataInicio,
-                    COALESCE(pgp.data_fim, p.data_realizacao_fim) AS DataFim
+                    EXISTS (
+                        SELECT 1 
+                        FROM public.codaf_lista_presenca clp 
+                        WHERE clp.proposta_turma_id = pt.id 
+                          AND NOT clp.excluido
+                    ) AS PossuiCodafListaPresenca
                 FROM proposta p
-                INNER JOIN public.proposta_turma AS pt ON pt.proposta_id = p.id
-                LEFT JOIN public.proposta_grupo_periodo_turma AS pgpt ON pt.id = pgpt.proposta_turma_id
-                LEFT JOIN public.proposta_grupo_periodo AS pgp ON pgp.id = pgpt.grupo_periodo_id AND pgp.proposta_id = p.id
+                LEFT JOIN public.proposta_turma AS pt ON pt.proposta_id = p.id AND NOT pt.excluido
                 WHERE p.id = @propostaId
                   AND p.FORMACAO_HOMOLOGADA = ANY(@formacoesHomologadas)
                   AND NOT p.excluido;";
@@ -2686,10 +2700,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         propostaDictionary.Add(propostaEntry.Id, propostaEntry);
                     }
 
-                    if (turma != null && turma.Id > 0)
+                    if (turma != null && turma.Id > 0 && !propostaEntry.Turmas.Any(t => t.Id == turma.Id))
                         propostaEntry.Turmas.Add(turma);
-
-                    propostaEntry.Turmas = [.. propostaEntry.Turmas.OrderBy(t => t.Descricao)];
 
                     return propostaEntry;
                 }, parameters, splitOn: "Id"

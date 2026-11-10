@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using MediatR;
 using Moq;
@@ -587,6 +587,81 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             transacaoDbMock.Verify(t => t.Commit(), Times.Once);
             transacaoDbMock.Verify(t => t.Dispose(), Times.Once);
             transacaoDbMock.Verify(t => t.Rollback(), Times.Never);
+        }
+
+
+        [Fact]
+        public async Task DadoPropostaComIntegrarNoSgaNuloNoDto_QuandoAlterarProposta_EntaoDeveManterIntegrarNoSgaDoBanco()
+        {
+            // Arrange
+            ConfigurarDependenciasIniciaisComSucesso();
+            ConfigurarMapeamentoEComandosIntermediarios();
+            ConfigurarTransacaoComSucesso();
+
+            var propostaBanco = new Proposta
+            {
+                Id = 1,
+                Situacao = Dominio.Enumerados.SituacaoProposta.Cadastrada,
+                IntegrarNoSGA = true
+            };
+
+            _repositorioProposta
+                .Setup(r => r.ObterPorId(1))
+                .ReturnsAsync(propostaBanco);
+
+            var comando = CriarComandoValidoParaValidacoesFinais();
+            comando.PropostaDTO.IntegrarNoSGA = null;
+
+            Proposta propostaPersistida = null!;
+            _repositorioProposta
+                .Setup(r => r.Atualizar(It.IsAny<Proposta>()))
+                .Callback<Proposta>(p => propostaPersistida = p)
+                .ReturnsAsync((Proposta p) => p);
+
+            // Act
+            var resultado = await _sut.Handle(comando, CancellationToken.None);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            propostaPersistida.Should().NotBeNull();
+            propostaPersistida.IntegrarNoSGA.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task DadoPropostaComIntegrarNoSgaPreenchidoNoDto_QuandoAlterarProposta_EntaoDeveAtualizarIntegrarNoSga()
+        {
+            // Arrange
+            ConfigurarDependenciasIniciaisComSucesso();
+            ConfigurarMapeamentoEComandosIntermediarios();
+            ConfigurarTransacaoComSucesso();
+
+            var propostaBanco = new Proposta
+            {
+                Id = 1,
+                Situacao = Dominio.Enumerados.SituacaoProposta.Cadastrada,
+                IntegrarNoSGA = true
+            };
+
+            _repositorioProposta
+                .Setup(r => r.ObterPorId(1))
+                .ReturnsAsync(propostaBanco);
+
+            var comando = CriarComandoValidoParaValidacoesFinais();
+            comando.PropostaDTO.IntegrarNoSGA = false;
+
+            Proposta propostaPersistida = null!;
+            _repositorioProposta
+                .Setup(r => r.Atualizar(It.IsAny<Proposta>()))
+                .Callback<Proposta>(p => propostaPersistida = p)
+                .ReturnsAsync((Proposta p) => p);
+
+            // Act
+            var resultado = await _sut.Handle(comando, CancellationToken.None);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            propostaPersistida.Should().NotBeNull();
+            propostaPersistida.IntegrarNoSGA.Should().BeFalse();
         }
 
         #region Factory Methods

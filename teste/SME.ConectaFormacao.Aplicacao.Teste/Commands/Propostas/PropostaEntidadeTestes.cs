@@ -48,5 +48,66 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
 
             proposta.DataInscricaoFim.Should().BeNull();
         }
+
+        [Fact]
+        public void DadoTurmaComPeriodoCustomizado_QuandoDentroDoPeriodoCustomizado_EntaoDeveRetornarVerdadeiro()
+        {
+            // Arrange
+            var proposta = new Proposta
+            {
+                DataInscricaoInicio = new DateTime(2026, 10, 1),
+                DataInscricaoFim = new DateTime(2026, 10, 31)
+            };
+
+            var grupo = new PropostaGrupoPeriodoInscricao
+            {
+                Id = 1,
+                DataInicio = new DateTime(2026, 10, 5),
+                DataFim = new DateTime(2026, 10, 15)
+            };
+            grupo.AdicionarTurma(100);
+
+            // Act & Assert
+            proposta.TurmaEstaEmPeriodoDeInscricao(100, new[] { grupo }, new DateTime(2026, 10, 10)).Should().BeTrue();
+            proposta.TurmaEstaEmPeriodoDeInscricao(100, new[] { grupo }, new DateTime(2026, 10, 16)).Should().BeFalse();
+        }
+
+        [Fact]
+        public void DadoTurmaSemPeriodoCustomizado_QuandoDentroDoPeriodoGlobal_EntaoDeveRetornarVerdadeiro()
+        {
+            // Arrange
+            var proposta = new Proposta
+            {
+                DataInscricaoInicio = new DateTime(2026, 10, 1),
+                DataInscricaoFim = new DateTime(2026, 10, 31)
+            };
+
+            // Act & Assert
+            proposta.TurmaEstaEmPeriodoDeInscricao(200, null, new DateTime(2026, 10, 15)).Should().BeTrue();
+            proposta.TurmaEstaEmPeriodoDeInscricao(200, Enumerable.Empty<PropostaGrupoPeriodoInscricao>(), new DateTime(2026, 11, 1)).Should().BeFalse();
+        }
+
+        [Fact]
+        public void DadoTurmaComVinculoExcluido_QuandoConsultar_EntaoDeveUsarPeriodoGlobal()
+        {
+            // Arrange
+            var proposta = new Proposta
+            {
+                DataInscricaoInicio = new DateTime(2026, 10, 1),
+                DataInscricaoFim = new DateTime(2026, 10, 31)
+            };
+
+            var grupo = new PropostaGrupoPeriodoInscricao
+            {
+                Id = 1,
+                DataInicio = new DateTime(2026, 10, 5),
+                DataFim = new DateTime(2026, 10, 10)
+            };
+            grupo.AdicionarTurma(100);
+            grupo.TurmasVinculadas.First().Excluido = true;
+
+            // Act & Assert (data 2026-10-20 está fora do grupo, mas dentro do global)
+            proposta.TurmaEstaEmPeriodoDeInscricao(100, new[] { grupo }, new DateTime(2026, 10, 20)).Should().BeTrue();
+        }
     }
 }
