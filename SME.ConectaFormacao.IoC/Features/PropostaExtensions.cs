@@ -58,6 +58,7 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoEnviarProposta, CasoDeUsoEnviarProposta>()
             .AddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>()
             .AddScoped<ICasoDeUsoSalvarNumeroHomologacaoProposta, CasoDeUsoSalvarNumeroHomologacaoProposta>()
+            .AddScoped<ICasoDeUsoObterNumeroHomologacaoProposta, CasoDeUsoObterNumeroHomologacaoProposta>()
             .AddScoped<ICasoDeUsoObterTodosFormatos, CasoDeUsoObterTodosFormatos>()
             .AddScoped<ICasoDeUsoGerarPropostaTurmaVaga, CasoDeUsoGerarPropostaTurmaVaga>()
             .AddScoped<ICasoDeUsoRemoverParecerDaProposta, CasoDeUsoRemoverParecerDaProposta>()

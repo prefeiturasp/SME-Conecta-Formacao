@@ -2875,5 +2875,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return proposta;
         }
-    }
+    
+        public async Task<long?> ObterNumeroHomologacaoPorPropostaIdAsync(long propostaId)
+        {
+            const string query = """
+                SELECT p.numero_homologacao
+                FROM public.proposta p
+                WHERE p.id = @propostaId
+                  AND NOT p.excluido;
+                """;
+
+            using var conn = conexao.Obter();
+            return await conn.QueryFirstOrDefaultAsync<long?>(query, new { propostaId });
+        }
+}
 }
