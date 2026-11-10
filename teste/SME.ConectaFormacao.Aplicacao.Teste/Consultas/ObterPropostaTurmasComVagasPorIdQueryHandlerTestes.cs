@@ -100,7 +100,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 .ReturnsAsync(proposta);
 
             _mocker.GetMock<IRepositorioProposta>()
-                .Setup(r => r.ObterTurmasPorId(proposta.Id))
+                .Setup(r => r.ObterTurmasComVagaPorId(query.PropostaId, query.CodigoDre))
                 .ReturnsAsync(turmas);
 
             _mocker.GetMock<IServicoPeriodoEncontroProposta>()
@@ -163,7 +163,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 .ReturnsAsync(proposta);
 
             _mocker.GetMock<IRepositorioProposta>()
-                .Setup(r => r.ObterTurmasPorId(proposta.Id))
+                .Setup(r => r.ObterTurmasComVagaPorId(query.PropostaId, query.CodigoDre))
                 .ReturnsAsync(turmas);
 
             _mocker.GetMock<IRepositorioPropostaGrupoPeriodoInscricao>()
@@ -210,7 +210,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 .ReturnsAsync(proposta);
 
             _mocker.GetMock<IRepositorioProposta>()
-                .Setup(r => r.ObterTurmasPorId(proposta.Id))
+                .Setup(r => r.ObterTurmasComVagaPorId(query.PropostaId, query.CodigoDre))
                 .ReturnsAsync(turmas);
 
             _mocker.GetMock<IServicoPeriodoEncontroProposta>()
