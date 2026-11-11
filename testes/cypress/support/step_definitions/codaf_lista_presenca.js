@@ -1,4 +1,4 @@
-import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
+import { Given, When, Then, Before  } from "@badeball/cypress-cucumber-preprocessor"
 
 const Dado = Given
 const Quando = When
@@ -14,7 +14,7 @@ Before(() => {
 })
 
 Dado('que possuo um token válido no endpoint CodafListaPresenca', function () {
-  expect(token, 'valido').to.exist
+  expect(Boolean(token), 'token de acesso foi informado').to.be.true
 })
 
 // Buscar dados de presença do Codaf

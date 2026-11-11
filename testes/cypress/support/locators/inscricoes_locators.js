@@ -14,8 +14,8 @@ class Inscricoes_Localizadores {
   tbl_finalizadas = () => '#rc-tabs-0-tab-finalizadas'
   input_nome_finalizada = () => '#rc-tabs-0-panel-finalizadas > .ant-form > [style="margin-left: -8px; margin-right: -8px; row-gap: 16px;"] > :nth-child(1) > .ant-form-item > .ant-row > .ant-form-item-control > .ant-form-item-control-input > .ant-form-item-control-input-content > .ant-input-affix-wrapper > #NomeFormacao'
   input_situacao_finalizada = () => '#rc-tabs-0-panel-finalizadas #SituacaoInscricao'
-  input_periodo_inicial_finalizada = () => '#rc-tabs-0-panel-finalizadas > .ant-form > [style="margin-left: -8px; margin-right: -8px; row-gap: 16px;"] > :nth-child(3) > .ant-form-item > .ant-row > .ant-form-item-control > .ant-form-item-control-input > .ant-form-item-control-input-content > .ant-picker > :nth-child(1) > #periodo'
-  input_periodo_final_finalizada = () => '#rc-tabs-0-panel-finalizadas > .ant-form > [style="margin-left: -8px; margin-right: -8px; row-gap: 16px;"] > :nth-child(3) > .ant-form-item > .ant-row > .ant-form-item-control > .ant-form-item-control-input > .ant-form-item-control-input-content > .ant-picker > :nth-child(1) > #periodo'
+  input_periodo_inicial_finalizada = () => '#rc-tabs-0-panel-finalizadas input[date-range="start"]'
+  input_periodo_final_finalizada = () => '#rc-tabs-0-panel-finalizadas input[date-range="end"]'
   btn_explorar_formacoes = () => '#CF_BUTTON_NOVO'
 
   // editar  

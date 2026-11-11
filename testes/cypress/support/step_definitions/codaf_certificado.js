@@ -1,4 +1,4 @@
-import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
+import { Given, When, Then, Before  } from "@badeball/cypress-cucumber-preprocessor"
 
 const Dado = Given
 const Quando = When
@@ -13,7 +13,7 @@ Before(() => {
 })
 
 Dado('que possuo um token válido do CodafCertificado', function () {
-  expect(token, 'valido').to.exist
+  expect(Boolean(token), 'token de acesso foi informado').to.be.true
 })
 
 // Retornar todos meus certificados

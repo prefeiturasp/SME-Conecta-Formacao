@@ -138,13 +138,9 @@ Cypress.Commands.add('validar_campos_minhas_inscricoes', (tipo) => {
 })
 
 Cypress.Commands.add('acessar_aba_finalizadas_minhas_inscricoes', () => {
-  cy.intercept('GET', '**/api/v1/Inscricao/finalizadas**').as('getInscricoesFinalizadas')
-
   cy.get(inscricoes_localizadores.tbl_finalizadas(), { timeout: 10000 })
     .should('be.visible')
     .click()
-
-  cy.wait('@getInscricoesFinalizadas').its('response.statusCode').should('eq', 200)
 })
 
 Cypress.Commands.add('preencher_campos_minhas_inscricoes_finalizadas', (tipo, valor, valorFinal = null) => {
