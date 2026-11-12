@@ -112,5 +112,30 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             transacaoDbMock.Verify(t => t.Rollback(), Times.Once);
             transacaoDbMock.Verify(t => t.Commit(), Times.Never);
         }
+
+        [Fact]
+        public async Task DadoTurmaComCodafExistente_QuandoExecutar_EntaoDeveRetornarErroNegocio()
+        {
+            // Arrange
+            var codafCursoNaoHomologadoCadastroDto = new CodafCursoNaoHomologadoCadastroDto
+            {
+                PropostaId = _faker.Random.Long(1, long.MaxValue),
+                PropostaTurmaId = _faker.Random.Long(1, long.MaxValue),
+                Observacao = _faker.Lorem.Sentence()
+            };
+
+            _repositorioCodafMock
+                .Setup(r => r.TurmaJaTemCodafAsync(codafCursoNaoHomologadoCadastroDto.PropostaTurmaId))
+                .ReturnsAsync(true);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(codafCursoNaoHomologadoCadastroDto);
+
+            // Assert
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.RegraDeNegocio);
+            resultado.MensagensErro.Should().Contain("Já existe um CODAF cadastrado para esta turma.");
+            _repositorioCodafMock.Verify(r => r.Inserir(It.IsAny<CodafCursoNaoHomologado>()), Times.Never);
+        }
     }
 }
