@@ -1,4 +1,4 @@
-import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
+import { Given, When, Then, Before  } from "@badeball/cypress-cucumber-preprocessor"
 
 const Dado = Given
 const Quando = When
@@ -26,59 +26,22 @@ Quando('envio uma requisição POST em Proposta', function () {
       Authorization: `Bearer ${token}`
     },
     body: {
-      ehProximoPasso: false,
-      situacao: 2,
-      formacaoHomologada: 1,
-      tipoFormacao: 1,
-      formato: 2,
-      dreIdPropostas: null,
-      nomeFormacao: 'Teste automatizado',
-      quantidadeTurmas: '1',
-      quantidadeVagasTurma: '1',
-      funcaoEspecificaOutros: '',
-      publicoAlvoOutros: '',
-      criterioValidacaoInscricaoOutros: '',
-      sobreEsteCurso: '',
-      outrosCriterios: '',
-      cursoComCertificado: false,
-      tipoEmissor: null,
-      idEmissor: null,
-      acaoInformativa: false,
-      acaoFormativaTexto: '',
-      acaoFormativaLink: '',
-      integrarNoSGA: true,
-      desativarAnoEhComponente: false,
-      revalidacao: false,
-      numeroHomologacao: null,
-      tiposInscricao: [
-        { tipoInscricao: 4 },
-        { tipoInscricao: 2 }
-      ],
-      publicosAlvo: [
-        { cargoFuncaoId: 1 }
-      ],
-      funcoesEspecificas: [],
-      vagasRemanecentes: [],
-      criteriosValidacaoInscricao: [
-        { criterioValidacaoInscricaoId: 1 }
-      ],
-      palavrasChaves: [],
-      criterioCertificacao: [],
-      dres: [
-        { dreId: 3 }
-      ],
-      modalidades: [],
-      anosTurmas: [],
-      componentesCurriculares: [],
-      turmas: [
-        {
-          nome: 'Turma 1',
-          dresIds: [3]
-        }
-      ],
-      gruposPeriodos: [],
-      pareceristas: []
-    },
+    "ehProximoPasso": false,
+    "situacao": 2,
+    "formacaoHomologada": 1,
+    "tipoFormacao": 1,
+    "formato": 2,
+    "dreIdPropostas": null,
+    "nomeFormacao": "Teste automatizado",
+    "quantidadeTurmas": "1",
+    "quantidadeVagasTurma": "1",
+    "funcaoEspecificaOutros": "",
+    "publicoAlvoOutros": "",
+    "criterioValidacaoInscricaoOutros": "",
+    "sobreEsteCurso": "",
+    "outrosCriterios": "",
+    "cursoComCertificado": false
+  },
     failOnStatusCode: false
   }).as('response')
 })

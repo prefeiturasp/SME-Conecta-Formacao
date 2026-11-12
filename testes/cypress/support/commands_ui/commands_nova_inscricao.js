@@ -61,7 +61,6 @@ Cypress.Commands.add('validar_detalhes_formacoes', () => {
 })
 
 Cypress.Commands.add('enviar_proximas_formacoes', () => {
-  cy.intercept('GET', '**/api/v1/Inscricao/turmas/**').as('getTurmas')
   cy.intercept('POST', '**/api/v1/Inscricao').as('postInscricao')
 
   cy.gerar_token().then((token) => {
@@ -73,8 +72,6 @@ Cypress.Commands.add('enviar_proximas_formacoes', () => {
     cy.get(nova_inscricao_localizadores.btn_enviar_inscricao())
       .should('be.visible')
       .click()
-
-    cy.wait('@getTurmas')
 
     cy.get(nova_inscricao_localizadores.input_turma(), { timeout: 10000 })
       .should('exist')

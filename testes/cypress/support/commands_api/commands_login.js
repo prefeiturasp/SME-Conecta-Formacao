@@ -17,7 +17,7 @@ Cypress.Commands.add('gerar_token', () => {
   const tokenExistente = Cypress.env('TOKEN')
 
   if (tokenExistente) {
-    return cy.wrap(tokenExistente)
+  return cy.then(() => tokenExistente)
   }
 
   return cy.request({

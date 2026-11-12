@@ -189,14 +189,8 @@ Cypress.Commands.add('criar_lista_presenca', () => {
     .should('be.visible')
     .click({ scrollBehavior: false })
 
-  cy.intercept('GET', '**/api/v1/CodafListaPresenca/turmas/*/possui-lista').as('listar_turmas')
-
   cy.get(lista_presenca_localizadores.campo_turma(), { timeout: 30000 })
     .click({ scrollBehavior: false })
-
-  cy.wait('@listar_turmas', { timeout: 30000 })
-    .its('response.statusCode')
-    .should('eq', 200)
 
   cy.get(lista_presenca_localizadores.opcao_turma(), { timeout: 30000 })
     .should('be.visible')

@@ -1,4 +1,4 @@
-import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
+import { Given, When, Then, Before  } from "@badeball/cypress-cucumber-preprocessor"
 
 const Dado = Given
 const Quando = When
@@ -13,7 +13,7 @@ Before(() => {
 })
 
 Dado('que possuo um token válido no endpoint Usuario', function () {
-  expect(token, 'valido').to.exist
+  expect(Boolean(token), 'token de acesso foi informado').to.be.true
 })
 
 // Buscar cadastro do usuário
@@ -31,13 +31,12 @@ Quando('envio uma requisição GET buscar o usuário', function () {
 
 Então('retorna o status 200 com cadastro do usuário', function () {
   cy.get('@response').then((response) => {
-    expect(response.status).to.eq(404)
- // Alterado até corrigir o carregamento de usuário
- // expect(response.body).to.be.an('object')
- //  expect(response.body).to.have.property('nome')
-//  expect(response.body).to.have.property('cpf')
-// expect(response.body).to.have.property('login')
-// expect(response.body).to.have.property('email')
+    expect(response.status).to.eq(200)
+    expect(response.body).to.be.an('object')
+    expect(response.body).to.have.property('nome')
+    expect(response.body).to.have.property('cpf')
+    expect(response.body).to.have.property('login')
+    expect(response.body).to.have.property('email')
   })
 })
 
