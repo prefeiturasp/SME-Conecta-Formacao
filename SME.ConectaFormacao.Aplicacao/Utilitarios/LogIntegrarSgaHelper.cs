@@ -1,4 +1,3 @@
-using System.Text.Json;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Servicos.Log;
@@ -61,7 +60,7 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
                     dataHoraBrasilia = DateTimeExtension.HorarioBrasilia().ToString("yyyy-MM-dd HH:mm:ss")
                 };
 
-                var observacaoJson = JsonSerializer.Serialize(observacaoObj, new JsonSerializerOptions { WriteIndented = false });
+                var observacaoJson = observacaoObj.ObjetoParaJson();
 
                 await servicoLogs.Enviar(
                     mensagem: mensagem,
