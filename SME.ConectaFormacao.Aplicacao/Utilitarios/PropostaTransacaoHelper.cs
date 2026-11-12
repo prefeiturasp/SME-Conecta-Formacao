@@ -25,15 +25,18 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
 
                 await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
                     servicoLogs,
-                    operacao: operacao,
-                    propostaId: id,
-                    valorBancoAnterior: null,
-                    valorRecebidoDto: integrarNoSgaDto,
-                    valorFinalPersistido: proposta.IntegrarNoSGA,
-                    nomeFormacao: proposta.NomeFormacao,
-                    areaPromotoraId: proposta.AreaPromotoraId,
-                    situacao: proposta.Situacao.ToString(),
-                    usuario: proposta.CriadoLogin
+                    new LogIntegrarSgaParametros
+                    {
+                        Operacao = operacao,
+                        PropostaId = id,
+                        ValorBancoAnterior = null,
+                        ValorRecebidoDto = integrarNoSgaDto,
+                        ValorFinalPersistido = proposta.IntegrarNoSGA,
+                        NomeFormacao = proposta.NomeFormacao,
+                        AreaPromotoraId = proposta.AreaPromotoraId,
+                        Situacao = proposta.Situacao.ToString(),
+                        Usuario = proposta.CriadoLogin
+                    }
                 );
 
                 await mediator.Send(new SalvarPropostaCommand(id, proposta, null), cancellationToken);
@@ -70,15 +73,18 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
 
                 await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
                     servicoLogs,
-                    operacao: operacao,
-                    propostaId: propostaBanco.Id,
-                    valorBancoAnterior: propostaBanco.IntegrarNoSGA,
-                    valorRecebidoDto: integrarNoSgaDto,
-                    valorFinalPersistido: propostaDepois.IntegrarNoSGA,
-                    nomeFormacao: propostaDepois.NomeFormacao,
-                    areaPromotoraId: propostaDepois.AreaPromotoraId,
-                    situacao: propostaDepois.Situacao.ToString(),
-                    usuario: propostaDepois.AlteradoLogin ?? propostaDepois.CriadoLogin
+                    new LogIntegrarSgaParametros
+                    {
+                        Operacao = operacao,
+                        PropostaId = propostaBanco.Id,
+                        ValorBancoAnterior = propostaBanco.IntegrarNoSGA,
+                        ValorRecebidoDto = integrarNoSgaDto,
+                        ValorFinalPersistido = propostaDepois.IntegrarNoSGA,
+                        NomeFormacao = propostaDepois.NomeFormacao,
+                        AreaPromotoraId = propostaDepois.AreaPromotoraId,
+                        Situacao = propostaDepois.Situacao.ToString(),
+                        Usuario = propostaDepois.AlteradoLogin ?? propostaDepois.CriadoLogin
+                    }
                 );
 
                 await mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, propostaBanco.ArquivoImagemDivulgacaoId), cancellationToken);
