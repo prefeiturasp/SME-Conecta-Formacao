@@ -127,15 +127,18 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(erros);
 
             await PropostaTransacaoHelper.AtualizarComTransacaoAsync(
-                _transacao,
-                _repositorioProposta,
-                _mediator,
-                _servicoLogs,
-                proposta,
-                propostaDepois,
-                request.PropostaDTO.IntegrarNoSGA,
-                "AlterarProposta",
-                cancellationToken);
+                new AtualizarPropostaTransacaoParametros
+                {
+                    TransacaoManager = _transacao,
+                    RepositorioProposta = _repositorioProposta,
+                    Mediator = _mediator,
+                    ServicoLogs = _servicoLogs,
+                    PropostaBanco = proposta,
+                    PropostaDepois = propostaDepois,
+                    IntegrarNoSgaDto = request.PropostaDTO.IntegrarNoSGA,
+                    Operacao = "AlterarProposta",
+                    CancellationToken = cancellationToken
+                });
 
             var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
 

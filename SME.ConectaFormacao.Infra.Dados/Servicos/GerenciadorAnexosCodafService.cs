@@ -1,4 +1,5 @@
-﻿using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Dominio.Servicos.Interfaces;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using SME.ConectaFormacao.Infra.Servicos.Armazenamento.Interfaces;
@@ -11,8 +12,12 @@ namespace SME.ConectaFormacao.Infra.Dados.Servicos
     {
         public async Task ProcessarAnexosAsync(long codafListaPresencaId, IEnumerable<CodafAnexo> anexos)
         {
-            var anexosAtuais = await repositorioCodafAnexo.ObterPorCodafIdAsync(codafListaPresencaId);
             var novosAnexos = anexos ?? [];
+
+            if (novosAnexos.Any(a => a.ArquivoCodigo == Guid.Empty))
+                throw new NegocioException("O código do arquivo é obrigatório e não pode ser vazio.");
+
+            var anexosAtuais = await repositorioCodafAnexo.ObterPorCodafIdAsync(codafListaPresencaId);
 
             var idsNovos = novosAnexos.Select(x => x.ArquivoCodigo).ToHashSet();
             var anexosParaRemover = anexosAtuais.Where(a => !idsNovos.Contains(a.ArquivoCodigo)).ToList();
