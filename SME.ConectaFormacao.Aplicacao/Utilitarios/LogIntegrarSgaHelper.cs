@@ -4,58 +4,65 @@ using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao.Utilitarios
 {
+    public sealed class LogIntegrarSgaParametros
+    {
+        public string Operacao { get; init; } = string.Empty;
+        public long PropostaId { get; init; }
+        public bool? ValorBancoAnterior { get; init; }
+        public bool? ValorRecebidoDto { get; init; }
+        public bool ValorFinalPersistido { get; init; }
+        public string? NomeFormacao { get; init; }
+        public long? AreaPromotoraId { get; init; }
+        public string? Situacao { get; init; }
+        public string? Usuario { get; init; }
+        public string? DetalhesAdicionais { get; init; }
+    }
+
     public static class LogIntegrarSgaHelper
     {
         public const string Tag = "[INTEGRA_SGA]";
 
         public static async Task RegistrarLogSgaAsync(
             IServicoLogs? servicoLogs,
-            string operacao,
-            long propostaId,
-            bool? valorBancoAnterior,
-            bool? valorRecebidoDto,
-            bool valorFinalPersistido,
-            string? nomeFormacao = null,
-            long? areaPromotoraId = null,
-            string? situacao = null,
-            string? usuario = null,
-            string? detalhesAdicionais = null)
+            LogIntegrarSgaParametros parametros)
         {
             if (servicoLogs == null)
                 return;
 
             try
             {
-                var mudouDeTrueParaFalse = valorBancoAnterior == true && !valorFinalPersistido;
+                var mudouDeTrueParaFalse = parametros.ValorBancoAnterior == true && !parametros.ValorFinalPersistido;
                 var nivel = mudouDeTrueParaFalse ? LogNivel.Alerta : LogNivel.Informacao;
 
-                var decisao = valorRecebidoDto == null
-                    ? "DTO enviou NULL/INDEFINIDO -> Valor do banco foi PRESERVADO"
-                    : (valorBancoAnterior.HasValue && valorBancoAnterior.Value != valorFinalPersistido)
-                        ? $"Valor ALTERADO de {valorBancoAnterior} para {valorFinalPersistido} conforme DTO"
-                        : $"Valor DEFINIDO/MANTIDO como {valorFinalPersistido} conforme DTO";
+                string decisao;
+                if (parametros.ValorRecebidoDto == null)
+                    decisao = "DTO enviou NULL/INDEFINIDO -> Valor do banco foi PRESERVADO";
+                else if (parametros.ValorBancoAnterior.HasValue && parametros.ValorBancoAnterior.Value != parametros.ValorFinalPersistido)
+                    decisao = $"Valor ALTERADO de {parametros.ValorBancoAnterior} para {parametros.ValorFinalPersistido} conforme DTO";
+                else
+                    decisao = $"Valor DEFINIDO/MANTIDO como {parametros.ValorFinalPersistido} conforme DTO";
 
-                var bancoStr = valorBancoAnterior.HasValue ? valorBancoAnterior.Value.ToString().ToUpper() : "N/A";
-                var dtoStr = valorRecebidoDto.HasValue ? valorRecebidoDto.Value.ToString().ToUpper() : "NULL";
-                var finalStr = valorFinalPersistido.ToString().ToUpper();
+                var bancoStr = parametros.ValorBancoAnterior.HasValue ? parametros.ValorBancoAnterior.Value.ToString().ToUpper() : "N/A";
+                var dtoStr = parametros.ValorRecebidoDto.HasValue ? parametros.ValorRecebidoDto.Value.ToString().ToUpper() : "NULL";
+                var finalStr = parametros.ValorFinalPersistido.ToString().ToUpper();
 
-                var mensagem = $"{Tag} [{operacao}] PropostaId: {propostaId} | Banco: {bancoStr} | DTO: {dtoStr} | Final: {finalStr} | {decisao}";
+                var mensagem = $"{Tag} [{parametros.Operacao}] PropostaId: {parametros.PropostaId} | Banco: {bancoStr} | DTO: {dtoStr} | Final: {finalStr} | {decisao}";
 
                 var observacaoObj = new
                 {
                     tag = Tag,
-                    operacao,
-                    propostaId,
-                    nomeFormacao = nomeFormacao ?? "N/A",
-                    areaPromotoraId,
-                    situacao = situacao ?? "N/A",
-                    valorBancoAnterior,
-                    valorRecebidoDTO = valorRecebidoDto,
-                    valorFinalPersistido,
+                    operacao = parametros.Operacao,
+                    propostaId = parametros.PropostaId,
+                    nomeFormacao = parametros.NomeFormacao ?? "N/A",
+                    areaPromotoraId = parametros.AreaPromotoraId,
+                    situacao = parametros.Situacao ?? "N/A",
+                    valorBancoAnterior = parametros.ValorBancoAnterior,
+                    valorRecebidoDTO = parametros.ValorRecebidoDto,
+                    valorFinalPersistido = parametros.ValorFinalPersistido,
                     mudouDeTrueParaFalse,
                     decisao,
-                    usuario = usuario ?? "N/A",
-                    detalhesAdicionais,
+                    usuario = parametros.Usuario ?? "N/A",
+                    detalhesAdicionais = parametros.DetalhesAdicionais,
                     dataHoraUtc = DateTime.UtcNow,
                     dataHoraBrasilia = DateTimeExtension.HorarioBrasilia().ToString("yyyy-MM-dd HH:mm:ss")
                 };
