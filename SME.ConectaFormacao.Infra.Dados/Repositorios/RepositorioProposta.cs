@@ -2675,7 +2675,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         FROM public.codaf_lista_presenca clp 
                         WHERE clp.proposta_turma_id = pt.id 
                           AND NOT clp.excluido
-                    ) AS PossuiCodafListaPresenca
+                    ) AS PossuiCodafListaPresenca,
+                    EXISTS (
+                        SELECT 1 
+                        FROM public.codaf_curso_nao_homologado ccnh 
+                        WHERE ccnh.proposta_turma_id = pt.id 
+                          AND NOT ccnh.excluido
+                    ) AS PossuiCodafCursoNaoHomologado
                 FROM proposta p
                 LEFT JOIN public.proposta_turma AS pt ON pt.proposta_id = p.id AND NOT pt.excluido
                 WHERE p.id = @propostaId

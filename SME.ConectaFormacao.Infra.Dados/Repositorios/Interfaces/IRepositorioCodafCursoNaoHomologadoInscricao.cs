@@ -7,7 +7,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
     public interface IRepositorioCodafCursoNaoHomologadoInscricao : IRepositorioBaseAuditavel<CodafCursoNaoHomologadoInscricao>
     {
-        Task<ResultadoPaginado<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto>> ObterInscritosPorTurmaAsync(long propostaTurmaId, int numeroPagina, int numeroRegistros);
+        Task<ResultadoPaginado<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto>> ObterInscritosPorTurmaAsync(long propostaTurmaId, int numeroPagina, int numeroRegistros, long? codafCursoNaoHomologadoId = null);
         Task InserirVariosAsync(IEnumerable<CodafCursoNaoHomologadoInscricao> inscritosCursoNaoHomologado);
         Task ExcluirPorCursoNaoHomologadoIdAsync(long codafCursoNaoHomologadoId);
     }

@@ -9,6 +9,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Propostas
         public DateTime? DataInicio { get; set; }
         public DateTime? DataFim { get; set; }
         public bool PossuiCodafListaPresenca { get; set; }
+        public bool PossuiCodafCursoNaoHomologado { get; set; }
 
         public string Descricao
         {

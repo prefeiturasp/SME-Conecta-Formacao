@@ -17,6 +17,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
     public class RepositorioCodafCursoNaoHomologado(IConectaFormacaoConexao conexao, IContextoAplicacao contexto) :
         RepositorioBaseAuditavel<CodafCursoNaoHomologado>(contexto, conexao), IRepositorioCodafCursoNaoHomologado
     {
+        public async Task<bool> TurmaJaTemCodafAsync(long propostaTurmaId)
+        {
+            const string query = """
+                SELECT 1
+                FROM PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO
+                WHERE PROPOSTA_TURMA_ID = @propostaTurmaId
+                  AND NOT EXCLUIDO
+                LIMIT 1
+                """;
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, new { propostaTurmaId });
+        }
         public async Task<ResultadoPaginado<ListagemResultadoCodafCursoNaoHomologadoDto>> ObterListagemResultadoCodafCursoNaoHomologadoPorFiltroAsync(FiltroListagemResultadoCodafCursoNaoHomologadoDto filtro)
         {
             const string sqlBaseJoins = """
