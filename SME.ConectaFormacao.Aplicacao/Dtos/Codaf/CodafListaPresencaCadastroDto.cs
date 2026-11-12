@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
 {
@@ -23,6 +23,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
         public CodafListaPresencaCadastroValidator()
         {
             RuleForEach(c => c.Inscritos).SetValidator(new CodafInscritoListaPresencaSalvarValidator());
+            RuleForEach(c => c.Anexos).SetValidator(new CodafAnexoSalvarValidator());
             RuleFor(c => c.Inscritos)
                 .Must(inscritos =>
                 {
