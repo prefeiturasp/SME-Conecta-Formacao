@@ -147,7 +147,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var paginacaoDto = new PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>([], 0, 10);
             var resultadoSucesso = Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>>.DeSucesso(paginacaoDto);
             _casoDeUsoListarInscritosTurmaMock
-                .Setup(c => c.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros))
+                .Setup(c => c.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros, null))
                 .ReturnsAsync(resultadoSucesso);
 
             // Act
@@ -156,7 +156,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Assert
             var objectResult = resultado.Should().BeOfType<OkObjectResult>().Subject;
             objectResult.StatusCode.Should().Be(200);
-            _casoDeUsoListarInscritosTurmaMock.Verify(c => c.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros), Times.Once);
+            _casoDeUsoListarInscritosTurmaMock.Verify(c => c.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros, null), Times.Once);
         }
 
         [Fact]
