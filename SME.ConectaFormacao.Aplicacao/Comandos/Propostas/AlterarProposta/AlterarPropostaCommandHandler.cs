@@ -94,9 +94,12 @@ namespace SME.ConectaFormacao.Aplicacao
             if (!string.IsNullOrEmpty(validarDatas))
                 erros.Add(validarDatas);
 
-            var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTurmaCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
-            if (!string.IsNullOrEmpty(errosRegente))
-                erros.Add(errosRegente);
+            if (propostaDepois.TipoFormacao != TipoFormacao.Conferencia)
+            {
+                var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTurmaCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
+                if (!string.IsNullOrEmpty(errosRegente))
+                    erros.Add(errosRegente);
+            }
 
             var errosInformacoesGerais = await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
             if (errosInformacoesGerais.Any())

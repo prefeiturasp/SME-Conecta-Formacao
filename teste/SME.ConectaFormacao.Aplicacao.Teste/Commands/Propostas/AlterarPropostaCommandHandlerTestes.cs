@@ -6,6 +6,7 @@ using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Excecoes;
 using SME.ConectaFormacao.Infra.Dados;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
@@ -321,6 +322,56 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
             var excecao = await act.Should().ThrowAsync<NegocioException>();
 
             excecao.Which.Mensagens.Should().Contain(mensagemErro);
+        }
+
+        [Fact]
+        public async Task DadoPropostaTipoConferencia_QuandoProcessarComando_NaoDeveValidarRegenteTurma()
+        {
+            // Arrange
+            var comando = CriarComandoValidoParaValidacoesFinais();
+            var proposta = CriarPropostaValida();
+            proposta.TipoFormacao = TipoFormacao.Conferencia;
+
+            ConfigurarDependenciasIniciaisComSucesso();
+            ConfigurarMapeamentoEComandosIntermediarios();
+            ConfigurarTransacaoComSucesso();
+
+            _mapper
+                .Setup(m => m.Map<Proposta>(It.IsAny<PropostaDTO>()))
+                .Returns(proposta);
+
+            // Act
+            var resultado = await _sut.Handle(comando, CancellationToken.None);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            _mediator.Verify(m => m.Send(It.IsAny<ValidarSeExisteRegenteTurmaCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData(TipoFormacao.Curso)]
+        [InlineData(TipoFormacao.Evento)]
+        public async Task DadoPropostaTipoCursoOuEvento_QuandoProcessarComando_DeveValidarRegenteTurma(TipoFormacao tipoFormacao)
+        {
+            // Arrange
+            var comando = CriarComandoValidoParaValidacoesFinais();
+            var proposta = CriarPropostaValida();
+            proposta.TipoFormacao = tipoFormacao;
+
+            ConfigurarDependenciasIniciaisComSucesso();
+            ConfigurarMapeamentoEComandosIntermediarios();
+            ConfigurarTransacaoComSucesso();
+
+            _mapper
+                .Setup(m => m.Map<Proposta>(It.IsAny<PropostaDTO>()))
+                .Returns(proposta);
+
+            // Act
+            var resultado = await _sut.Handle(comando, CancellationToken.None);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            _mediator.Verify(m => m.Send(It.IsAny<ValidarSeExisteRegenteTurmaCommand>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
