@@ -7,6 +7,8 @@ namespace SME.ConectaFormacao.Dominio.Enumerados
         [Display(Name = "Curso")]
         Curso = 1,
         [Display(Name = "Evento")]
-        Evento = 2
+        Evento = 2,
+        [Display(Name = "Conferência")]
+        Conferencia = 3
     }
 }
