@@ -98,16 +98,19 @@ namespace SME.ConectaFormacao.Aplicacao
 
                         await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
                             servicoLogs,
-                            operacao: "TransferirInscricao",
-                            propostaId: proposta.Id,
-                            valorBancoAnterior: proposta.IntegrarNoSGA,
-                            valorRecebidoDto: null,
-                            valorFinalPersistido: proposta.IntegrarNoSGA,
-                            nomeFormacao: proposta.NomeFormacao,
-                            areaPromotoraId: proposta.AreaPromotoraId,
-                            situacao: proposta.Situacao.ToString(),
-                            usuario: cursista.Rf,
-                            detalhesAdicionais: $"Transferência da inscrição ID {inscricao.Id} da turma {request.InscricaoTransferenciaDTO.IdTurmaOrigem} para turma {request.InscricaoTransferenciaDTO.IdTurmaDestino}. IntegrarNoSGA mantido como {proposta.IntegrarNoSGA}."
+                            new LogIntegrarSgaParametros
+                            {
+                                Operacao = "TransferirInscricao",
+                                PropostaId = proposta.Id,
+                                ValorBancoAnterior = proposta.IntegrarNoSGA,
+                                ValorRecebidoDto = null,
+                                ValorFinalPersistido = proposta.IntegrarNoSGA,
+                                NomeFormacao = proposta.NomeFormacao,
+                                AreaPromotoraId = proposta.AreaPromotoraId,
+                                Situacao = proposta.Situacao.ToString(),
+                                Usuario = cursista.Rf,
+                                DetalhesAdicionais = $"Transferência da inscrição ID {inscricao.Id} da turma {request.InscricaoTransferenciaDTO.IdTurmaOrigem} para turma {request.InscricaoTransferenciaDTO.IdTurmaDestino}. IntegrarNoSGA mantido como {proposta.IntegrarNoSGA}."
+                            }
                         );
 
                         await mediator.Send(new SalvarInscricaoManualCommand(inscricaoNovaManual, true));
