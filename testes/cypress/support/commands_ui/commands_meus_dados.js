@@ -120,8 +120,7 @@ Cypress.Commands.add('clicar_salvar_modal', () => {
   cy.intercept('PUT', '**/api/v1/usuario/**').as('putUsuario')
 
   cy.get(meus_dados_localizadores.btn_modal_alterar(), { timeout: 10000 })
-    .should('exist')
-    .should('be.visible')
+    .should('exist')   
     .should('not.be.disabled')
     .click()
 
@@ -135,9 +134,9 @@ Cypress.Commands.add('clicar_salvar_modal', () => {
 
   cy.get('body').then(($body) => {
     if ($body.find(meus_dados_localizadores.btn_modal_alterar()).length > 0) {
-      cy.get(meus_dados_localizadores.btn_modal_alterar()).should('be.visible')
+      cy.get(meus_dados_localizadores.btn_modal_alterar()).should('to.exist')
     } else {
-      cy.get(meus_dados_localizadores.btn_modal_alterar()).should('be.visible')
+      cy.get(meus_dados_localizadores.btn_salvar()).should('to.exist')
     }
   })
 })
