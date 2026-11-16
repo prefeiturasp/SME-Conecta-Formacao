@@ -388,16 +388,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             sql += " limit @numeroRegistros offset @registrosIgnorados ";
 
-            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Proposta, Inscricao>(
+            return conexao.Obter().QueryAsync<Inscricao, string?, PropostaTurma, Proposta, Inscricao>(
                 sql,
-                (inscricao, propostaTurma, proposta) =>
+                (inscricao, situacaoAprovacao, propostaTurma, proposta) =>
                 {
+                    inscricao.SituacaoAprovacao = situacaoAprovacao;
                     propostaTurma.Proposta = proposta;
                     inscricao.PropostaTurma = propostaTurma;
                     return inscricao;
                 },
                 parametros,
-                splitOn: "proposta_turma_id,proposta_id");
+                splitOn: "SituacaoAprovacao,proposta_turma_id,proposta_id");
         }
 
         public Task<int> ObterTotalRegistrosPorInscricoesFinalizadas(long usuarioId, InscricaoFinalizadaFiltro filtro)
