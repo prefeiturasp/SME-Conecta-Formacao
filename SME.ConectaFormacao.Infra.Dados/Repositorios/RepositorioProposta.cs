@@ -1601,19 +1601,33 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task InserirTurmas(long propostaId, IEnumerable<PropostaTurma> propostaTurmas)
         {
+            const string sql = @"
+                INSERT INTO proposta_turma (
+                    proposta_id, nome, excluido, criado_em, criado_por, criado_login, alterado_em, alterado_por, alterado_login
+                ) VALUES (
+                    @PropostaId, @Nome, @Excluido, @CriadoEm, @CriadoPor, @CriadoLogin, @AlteradoEm, @AlteradoPor, @AlteradoLogin
+                ) RETURNING id;";
+
             foreach (var propostaTurma in propostaTurmas)
             {
                 PreencherAuditoriaCriacao(propostaTurma);
 
                 propostaTurma.PropostaId = propostaId;
-                propostaTurma.Id = (long)await conexao.Obter().InsertAsync(propostaTurma);
+                propostaTurma.Id = await conexao.Obter().ExecuteScalarAsync<long>(sql, propostaTurma);
             }
         }
 
         public async Task InserirTurma(PropostaTurma propostaTurma)
         {
+            const string sql = @"
+                INSERT INTO proposta_turma (
+                    proposta_id, nome, excluido, criado_em, criado_por, criado_login, alterado_em, alterado_por, alterado_login
+                ) VALUES (
+                    @PropostaId, @Nome, @Excluido, @CriadoEm, @CriadoPor, @CriadoLogin, @AlteradoEm, @AlteradoPor, @AlteradoLogin
+                ) RETURNING id;";
+
             PreencherAuditoriaCriacao(propostaTurma);
-            propostaTurma.Id = (long)await conexao.Obter().InsertAsync(propostaTurma);
+            propostaTurma.Id = await conexao.Obter().ExecuteScalarAsync<long>(sql, propostaTurma);
         }
 
         public async Task InserirPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres)
@@ -1743,11 +1757,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task AtualizarTurmas(long propostaId, IEnumerable<PropostaTurma> propostaTurmas)
         {
+            const string sql = @"
+                UPDATE proposta_turma SET
+                    nome = @Nome,
+                    alterado_em = @AlteradoEm,
+                    alterado_por = @AlteradoPor,
+                    alterado_login = @AlteradoLogin
+                WHERE id = @Id AND NOT excluido;";
+
             foreach (var propostaTurma in propostaTurmas)
             {
                 PreencherAuditoriaAlteracao(propostaTurma);
                 propostaTurma.Nome = propostaTurma.Nome.ToUpper();
-                await conexao.Obter().UpdateAsync(propostaTurma);
+                await conexao.Obter().ExecuteAsync(sql, propostaTurma);
             }
         }
 
