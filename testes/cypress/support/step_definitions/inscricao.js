@@ -173,19 +173,18 @@ Quando('envio uma requisição GET em inscrição encerradas', function () {
 
 Então('retorna o status 200 com inscrição finalizada', function () {
   cy.get('@response').then((response) => {
-    expect(response.status).to.eq(500)
-    // Aguardando correção
-    //expect(response.body).to.be.an('object')
-    //expect(response.body).to.have.property('items')
-    //expect(response.body.items).to.be.an('array')
+    expect(response.status).to.eq(200)
+    expect(response.body).to.be.an('object')
+    expect(response.body).to.have.property('items')
+    expect(response.body.items).to.be.an('array')
 
-    //  response.body.items.forEach((item) => {
-    //  expect(item).to.have.property('codigoFormacao')
-    //  expect(item).to.have.property('nomeFormacao')
-    //  expect(item).to.have.property('nomeTurma')
-    //  expect(item).to.have.property('datas')
-    //  expect(item).to.have.property('cargoFuncaoCodigo')
-    // })
+    response.body.items.forEach((item) => {
+    expect(item).to.have.property('codigoFormacao')
+    expect(item).to.have.property('nomeFormacao')
+    expect(item).to.have.property('nomeTurma')
+    expect(item).to.have.property('datas')
+    expect(item).to.have.property('cargoFuncaoCodigo')
+   })
   })
 })
 
