@@ -15,12 +15,15 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
           IRepositorioCodafCursoNaoHomologadoInscricao
     {
 
-        public async Task<ResultadoPaginado<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto>> ObterInscritosPorTurmaAsync(long propostaTurmaId, int numeroPagina, int numeroRegistros)
+        public async Task<ResultadoPaginado<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto>> ObterInscritosPorTurmaAsync(long propostaTurmaId, int numeroPagina, int numeroRegistros, long? codafCursoNaoHomologadoId = null)
         {
             const string sqlBase = """
                 FROM   PUBLIC.INSCRICAO AS I
                        INNER JOIN PUBLIC.USUARIO AS U  ON U.ID = I.USUARIO_ID 
-                       LEFT JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CI ON CI.INSCRICAO_ID = I.ID AND NOT CI.EXCLUIDO
+                       LEFT JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO_INSCRICAO AS CI
+                              ON CI.INSCRICAO_ID = I.ID
+                             AND CI.CODAF_CURSO_NAO_HOM_ID = @codafCursoNaoHomologadoId
+                             AND NOT CI.EXCLUIDO
                 WHERE NOT U.EXCLUIDO
                 AND NOT I.EXCLUIDO 
                 AND I.SITUACAO = @situacao
@@ -42,6 +45,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var parametros = new DynamicParameters();
             parametros.Add("propostaTurmaId", propostaTurmaId);
             parametros.Add("situacao", SituacaoInscricao.Confirmada);
+            parametros.Add("codafCursoNaoHomologadoId", codafCursoNaoHomologadoId);
             var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, parametros);
             if (totalRegistros == 0)
                 return new()

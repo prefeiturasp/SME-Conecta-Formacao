@@ -74,9 +74,9 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>>), 400)]
         [ProducesResponseType(typeof(Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>>), 500)]
         public async Task<IActionResult> ObterInscritosPorTurma(long propostaTurmaId, [FromServices] ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado casoDeUso,
-            [FromQuery] int numeroPagina = 1, [FromQuery] int numeroRegistros = 10)
+            [FromQuery] int numeroPagina = 1, [FromQuery] int numeroRegistros = 10, [FromQuery] long? codafCursoNaoHomologadoId = null)
         {
-            var resultado = await casoDeUso.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros);
+            var resultado = await casoDeUso.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros, codafCursoNaoHomologadoId);
             return ProcessarResultado(resultado);
         }
 

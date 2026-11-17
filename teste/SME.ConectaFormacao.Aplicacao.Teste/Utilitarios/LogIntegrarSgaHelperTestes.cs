@@ -32,15 +32,18 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Utilitarios
             // Act
             await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
                 _servicoLogsMock.Object,
-                operacao: "AlterarProposta",
-                propostaId: 123,
-                valorBancoAnterior: true,
-                valorRecebidoDto: false,
-                valorFinalPersistido: false,
-                nomeFormacao: "Curso Teste",
-                areaPromotoraId: 10,
-                situacao: "Cadastrada",
-                usuario: "diegomoreno"
+                new LogIntegrarSgaParametros
+                {
+                    Operacao = "AlterarProposta",
+                    PropostaId = 123,
+                    ValorBancoAnterior = true,
+                    ValorRecebidoDto = false,
+                    ValorFinalPersistido = false,
+                    NomeFormacao = "Curso Teste",
+                    AreaPromotoraId = 10,
+                    Situacao = "Cadastrada",
+                    Usuario = "diegomoreno"
+                }
             );
 
             // Assert
@@ -76,15 +79,18 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Utilitarios
             // Act
             await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
                 _servicoLogsMock.Object,
-                operacao: "AlterarPropostaRascunho",
-                propostaId: 456,
-                valorBancoAnterior: true,
-                valorRecebidoDto: null,
-                valorFinalPersistido: true,
-                nomeFormacao: "Curso Rascunho",
-                areaPromotoraId: 20,
-                situacao: "Rascunho",
-                usuario: "admin"
+                new LogIntegrarSgaParametros
+                {
+                    Operacao = "AlterarPropostaRascunho",
+                    PropostaId = 456,
+                    ValorBancoAnterior = true,
+                    ValorRecebidoDto = null,
+                    ValorFinalPersistido = true,
+                    NomeFormacao = "Curso Rascunho",
+                    AreaPromotoraId = 20,
+                    Situacao = "Rascunho",
+                    Usuario = "admin"
+                }
             );
 
             // Assert
@@ -105,11 +111,14 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Utilitarios
             // Act
             var act = async () => await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
                 null,
-                operacao: "InserirProposta",
-                propostaId: 789,
-                valorBancoAnterior: null,
-                valorRecebidoDto: true,
-                valorFinalPersistido: true
+                new LogIntegrarSgaParametros
+                {
+                    Operacao = "InserirProposta",
+                    PropostaId = 789,
+                    ValorBancoAnterior = null,
+                    ValorRecebidoDto = true,
+                    ValorFinalPersistido = true
+                }
             );
 
             // Assert

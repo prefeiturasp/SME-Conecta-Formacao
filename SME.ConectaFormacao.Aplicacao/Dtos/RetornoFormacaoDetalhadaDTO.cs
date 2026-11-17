@@ -28,5 +28,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos
         public UsuarioAcessibilidadeDto? UsuarioAcessibilidade { get; set; }
         public bool CursoComCertificado { get; set; }
         public long? CodigoEventoSigpec { get; set; }
+        public long? NumeroHomologacao { get; set; }
     }
 }

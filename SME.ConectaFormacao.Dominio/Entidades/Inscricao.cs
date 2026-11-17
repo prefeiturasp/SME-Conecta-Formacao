@@ -1,4 +1,4 @@
-﻿using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.Enumerados;
 
 namespace SME.ConectaFormacao.Dominio.Entidades
 {
@@ -21,6 +21,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public SituacaoInscricao? SituacaoAnterior { get; set; }
         public OrigemInscricao Origem { get; set; }
         public string? MotivoCancelamento { get; set; }
+        public string? SituacaoAprovacao { get; set; }
 
         public PropostaTurma PropostaTurma { get; set; } = new();
 

@@ -37,16 +37,30 @@ namespace SME.ConectaFormacao.Webapi.Controllers
         }
 
         [HttpGet("turmas/{propostaId}")]
-        [ProducesResponseType(typeof(IEnumerable<RetornoListagemDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<PropostaTurmaInscricaoDTO>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
         public async Task<IActionResult> ObterTurmas(
             [FromServices] ICasoDeUsoObterTurmasInscricao casoDeUsoObterTurmasInscricao,
             [FromRoute] long propostaId,
             [FromQuery] string? codigoDre = null,
+            [FromQuery] bool comCodaf = false,
+            [FromQuery] bool apenasPeriodoInscricaoVigente = false)
+        {
+            return Ok(await casoDeUsoObterTurmasInscricao.Executar(propostaId, codigoDre, comCodaf, apenasPeriodoInscricaoVigente));
+        }
+
+        [HttpGet("turmas-em-inscricao/{propostaId}")]
+        [ProducesResponseType(typeof(IEnumerable<PropostaTurmaInscricaoDTO>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterTurmasEmInscricao(
+            [FromServices] ICasoDeUsoObterTurmasInscricao casoDeUsoObterTurmasInscricao,
+            [FromRoute] long propostaId,
+            [FromQuery] string? codigoDre = null,
             [FromQuery] bool comCodaf = false)
         {
-            return Ok(await casoDeUsoObterTurmasInscricao.Executar(propostaId, codigoDre, comCodaf));
+            return Ok(await casoDeUsoObterTurmasInscricao.Executar(propostaId, codigoDre, comCodaf, apenasPeriodoInscricaoVigente: true));
         }
 
         [HttpGet]

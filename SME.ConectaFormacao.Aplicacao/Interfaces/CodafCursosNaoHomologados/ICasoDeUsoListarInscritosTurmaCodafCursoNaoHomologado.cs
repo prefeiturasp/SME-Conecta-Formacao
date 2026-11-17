@@ -6,6 +6,6 @@ namespace SME.ConectaFormacao.Aplicacao.Interfaces.CodafCursosNaoHomologados
 {
     public interface ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado
     {
-        Task<Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>>> ExecutarAsync(long propostaTurmaId, int numeroPagina = 1, int numeroRegistros = 10);
+        Task<Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>>> ExecutarAsync(long propostaTurmaId, int numeroPagina = 1, int numeroRegistros = 10, long? codafCursoNaoHomologadoId = null);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using SME.ConectaFormacao.Aplicacao.Comandos.Email.InscricaoEmEspera;
+using SME.ConectaFormacao.Aplicacao.Consultas.Propostas.ObterPropostaGruposPeriodoInscricao;
 using SME.ConectaFormacao.Aplicacao.Dtos.Proposta;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
@@ -67,6 +68,10 @@ namespace SME.ConectaFormacao.Aplicacao.Comandos.Inscricoes.SalvarInscricao
 
             var proposta = await mediator.Send(new ObterPropostaPorIdQuery(propostaTurma.PropostaId), cancellationToken) ??
                 throw new NegocioException(MensagemNegocio.PROPOSTA_NAO_ENCONTRADA);
+
+            var gruposInscricao = await mediator.Send(new ObterPropostaGruposPeriodoInscricaoQuery(proposta.Id), cancellationToken);
+            if (!proposta.TurmaEstaEmPeriodoDeInscricao(inscricao.PropostaTurmaId, gruposInscricao))
+                throw new NegocioException(MensagemNegocio.INSCRICAO_FORA_DO_PERIODO_INSCRICAO);
 
             var formacaoHomologada = proposta.FormacaoHomologada == FormacaoHomologada.Sim;
             await PersistirInscricao(formacaoHomologada, inscricao);

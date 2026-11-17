@@ -75,7 +75,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var mockUseCase = new Mock<ICasoDeUsoObterTurmasInscricao>();
             var propostaId = _faker.Random.Long(1, 100);
             var codigoDre = _faker.Random.AlphaNumeric(5);
-            var resultadoEsperado = new List<RetornoListagemDTO>();
+            var resultadoEsperado = new List<PropostaTurmaInscricaoDTO>();
 
             mockUseCase.Setup(x => x.Executar(propostaId, codigoDre)).ReturnsAsync(resultadoEsperado);
 
@@ -85,6 +85,46 @@ namespace SME.ConectaFormacao.Webapi.Teste
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(resultado);
             Assert.Same(resultadoEsperado, okResult.Value);
+        }
+
+        [Fact]
+        public async Task Dado_FiltrosComApenasPeriodoInscricaoVigente_Quando_ObterTurmas_Entao_ChamarCasoDeUsoComParametroERetornarLista()
+        {
+            // Arrange
+            var mockUseCase = new Mock<ICasoDeUsoObterTurmasInscricao>();
+            var propostaId = _faker.Random.Long(1, 100);
+            var codigoDre = _faker.Random.AlphaNumeric(5);
+            var resultadoEsperado = new List<PropostaTurmaInscricaoDTO>();
+
+            mockUseCase.Setup(x => x.Executar(propostaId, codigoDre, false, true)).ReturnsAsync(resultadoEsperado);
+
+            // Act
+            var resultado = await _controller.ObterTurmas(mockUseCase.Object, propostaId, codigoDre, false, apenasPeriodoInscricaoVigente: true);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(resultado);
+            Assert.Same(resultadoEsperado, okResult.Value);
+            mockUseCase.Verify(x => x.Executar(propostaId, codigoDre, false, true), Times.Once);
+        }
+
+        [Fact]
+        public async Task Dado_PropostaId_Quando_ObterTurmasEmInscricao_Entao_ChamarCasoDeUsoComApenasPeriodoInscricaoVigenteTrue()
+        {
+            // Arrange
+            var mockUseCase = new Mock<ICasoDeUsoObterTurmasInscricao>();
+            var propostaId = _faker.Random.Long(1, 100);
+            var codigoDre = _faker.Random.AlphaNumeric(5);
+            var resultadoEsperado = new List<PropostaTurmaInscricaoDTO>();
+
+            mockUseCase.Setup(x => x.Executar(propostaId, codigoDre, false, true)).ReturnsAsync(resultadoEsperado);
+
+            // Act
+            var resultado = await _controller.ObterTurmasEmInscricao(mockUseCase.Object, propostaId, codigoDre, false);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(resultado);
+            Assert.Same(resultadoEsperado, okResult.Value);
+            mockUseCase.Verify(x => x.Executar(propostaId, codigoDre, false, true), Times.Once);
         }
 
         [Fact]
