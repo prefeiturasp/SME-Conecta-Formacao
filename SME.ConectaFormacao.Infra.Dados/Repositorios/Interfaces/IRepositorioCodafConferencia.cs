@@ -2,6 +2,7 @@ using SME.ConectaFormacao.Dominio.Entidades;
 using SME.ConectaFormacao.Dominio.Repositorios;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafConferencias;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
 {
@@ -11,5 +12,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<CodafConferencia?> ObterPorIdDetalhadoAsync(long id);
         Task ExcluirAsync(long id);
         Task<bool> TurmaJaTemCodafAsync(long propostaTurmaId, long? codafConferenciaId = null);
+        Task<PropostaComTurmasDto?> ObterDetalhesPropostaConferenciaComTurmasPorIdAsync(long propostaId);
     }
 }

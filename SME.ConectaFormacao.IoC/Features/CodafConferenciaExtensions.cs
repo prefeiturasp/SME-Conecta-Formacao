@@ -26,6 +26,7 @@ namespace SME.ConectaFormacao.IoC.Features
                 .AddScoped<ICasoDeUsoAtualizarCodafConferencia, CasoDeUsoAtualizarCodafConferencia>()
                 .AddScoped<ICasoDeUsoExcluirCodafConferencia, CasoDeUsoExcluirCodafConferencia>()
                 .AddScoped<ICasoDeUsoObterCodafConferenciaPorId, CasoDeUsoObterCodafConferenciaPorId>()
+                .AddScoped<ICasoDeUsoObterDetalhesPropostaConferenciaComTurmasPorId, CasoDeUsoObterDetalhesPropostaConferenciaComTurmasPorId>()
                 .AddScoped<ICasoDeUsoTurmaPossuiCodafConferencia, CasoDeUsoTurmaPossuiCodafConferencia>()
                 .AddScoped<ICasoDeUsoUploadAnexoTemporarioCodafConferencia, CasoDeUsoUploadAnexoTemporarioCodafConferencia>()
                 .AddScoped<CodafConferenciaDependencias>()

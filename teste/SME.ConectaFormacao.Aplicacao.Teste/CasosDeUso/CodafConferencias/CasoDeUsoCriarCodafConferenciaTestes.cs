@@ -99,6 +99,34 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafConferencias
         }
 
         [Fact]
+        public async Task DadoPropostaNaoPublicada_QuandoExecutar_EntaoDeveRetornarErroNegocio()
+        {
+            // Arrange
+            var dto = new CodafConferenciaCadastroDto
+            {
+                PropostaId = _faker.Random.Long(1, 1000),
+                PropostaTurmaId = _faker.Random.Long(1, 1000)
+            };
+
+            _repositorioPropostaMock
+                .Setup(r => r.ObterNaoExcluidosPorIdAsync(dto.PropostaId))
+                .ReturnsAsync(new Proposta
+                {
+                    Id = dto.PropostaId,
+                    TipoFormacao = TipoFormacao.Conferencia,
+                    Situacao = SituacaoProposta.Rascunho
+                });
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(dto);
+
+            // Assert
+            resultado.Sucesso.Should().BeFalse();
+            resultado.TipoFalha.Should().Be(TipoFalha.RegraDeNegocio);
+            resultado.MensagensErro.Should().Contain("A proposta informada deve estar com a situação Publicada.");
+        }
+
+        [Fact]
         public async Task DadoTurmaJaPossuiCodaf_QuandoExecutar_EntaoDeveRetornarErroNegocio()
         {
             // Arrange
@@ -110,7 +138,12 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafConferencias
 
             _repositorioPropostaMock
                 .Setup(r => r.ObterNaoExcluidosPorIdAsync(dto.PropostaId))
-                .ReturnsAsync(new Proposta { Id = dto.PropostaId, TipoFormacao = TipoFormacao.Conferencia });
+                .ReturnsAsync(new Proposta
+                {
+                    Id = dto.PropostaId,
+                    TipoFormacao = TipoFormacao.Conferencia,
+                    Situacao = SituacaoProposta.Publicada
+                });
 
             _repositorioCodafMock
                 .Setup(r => r.TurmaJaTemCodafAsync(dto.PropostaTurmaId, null))
@@ -147,7 +180,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafConferencias
 
             _repositorioPropostaMock
                 .Setup(r => r.ObterNaoExcluidosPorIdAsync(dto.PropostaId))
-                .ReturnsAsync(new Proposta { Id = dto.PropostaId, TipoFormacao = TipoFormacao.Conferencia });
+                .ReturnsAsync(new Proposta { Id = dto.PropostaId, TipoFormacao = TipoFormacao.Conferencia, Situacao = SituacaoProposta.Publicada });
 
             _repositorioCodafMock
                 .Setup(r => r.TurmaJaTemCodafAsync(dto.PropostaTurmaId, null))
@@ -206,7 +239,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafConferencias
 
             _repositorioPropostaMock
                 .Setup(r => r.ObterNaoExcluidosPorIdAsync(dto.PropostaId))
-                .ReturnsAsync(new Proposta { Id = dto.PropostaId, TipoFormacao = TipoFormacao.Conferencia });
+                .ReturnsAsync(new Proposta { Id = dto.PropostaId, TipoFormacao = TipoFormacao.Conferencia, Situacao = SituacaoProposta.Publicada });
 
             _repositorioCodafMock
                 .Setup(r => r.TurmaJaTemCodafAsync(dto.PropostaTurmaId, null))
@@ -248,7 +281,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafConferencias
 
             _repositorioPropostaMock
                 .Setup(r => r.ObterNaoExcluidosPorIdAsync(dto.PropostaId))
-                .ReturnsAsync(new Proposta { Id = dto.PropostaId, TipoFormacao = TipoFormacao.Conferencia });
+                .ReturnsAsync(new Proposta { Id = dto.PropostaId, TipoFormacao = TipoFormacao.Conferencia, Situacao = SituacaoProposta.Publicada });
 
             _repositorioCodafMock
                 .Setup(r => r.TurmaJaTemCodafAsync(dto.PropostaTurmaId, null))

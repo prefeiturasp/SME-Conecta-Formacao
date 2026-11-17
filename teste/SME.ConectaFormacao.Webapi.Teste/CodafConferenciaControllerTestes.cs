@@ -9,6 +9,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafConferencias;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafConferencias;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Webapi.Controllers;
 
 namespace SME.ConectaFormacao.Webapi.Teste
@@ -22,6 +23,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
         private readonly Mock<ICasoDeUsoObterCodafConferenciaPorId> _casoDeUsoObterPorIdMock;
         private readonly Mock<ICasoDeUsoListarInscritosTurmaCodafConferencia> _casoDeUsoListarInscritosTurmaMock;
         private readonly Mock<ICasoDeUsoTurmaPossuiCodafConferencia> _casoDeUsoTurmaPossuiCodafMock;
+        private readonly Mock<ICasoDeUsoObterDetalhesPropostaConferenciaComTurmasPorId> _casoDeUsoObterDetalhesPropostaMock;
         private readonly Mock<ICasoDeUsoUploadAnexoTemporarioCodafConferencia> _casoDeUsoUploadMock;
         private readonly CodafConferenciaController _sut;
         private readonly Faker _faker;
@@ -36,6 +38,7 @@ namespace SME.ConectaFormacao.Webapi.Teste
             _casoDeUsoObterPorIdMock = mocker.GetMock<ICasoDeUsoObterCodafConferenciaPorId>();
             _casoDeUsoListarInscritosTurmaMock = mocker.GetMock<ICasoDeUsoListarInscritosTurmaCodafConferencia>();
             _casoDeUsoTurmaPossuiCodafMock = mocker.GetMock<ICasoDeUsoTurmaPossuiCodafConferencia>();
+            _casoDeUsoObterDetalhesPropostaMock = mocker.GetMock<ICasoDeUsoObterDetalhesPropostaConferenciaComTurmasPorId>();
             _casoDeUsoUploadMock = mocker.GetMock<ICasoDeUsoUploadAnexoTemporarioCodafConferencia>();
 
             _sut = mocker.CreateInstance<CodafConferenciaController>();
@@ -148,6 +151,26 @@ namespace SME.ConectaFormacao.Webapi.Teste
             var objectResult = resultado.Should().BeOfType<OkObjectResult>().Subject;
             objectResult.StatusCode.Should().Be(200);
             _casoDeUsoListarInscritosTurmaMock.Verify(c => c.ExecutarAsync(propostaTurmaId, 1, 10, null), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoPropostaId_QuandoObterDetalhesPropostaComTurmasPorId_EntaoDeveRetornarOk()
+        {
+            // Arrange
+            var propostaId = _faker.Random.Long(1, 100);
+            var propostaDto = new PropostaComTurmasDto { Id = propostaId, NomeFormacao = "Conferência" };
+            var resultadoSucesso = Resultado<PropostaComTurmasDto?>.DeSucesso(propostaDto);
+            _casoDeUsoObterDetalhesPropostaMock
+                .Setup(c => c.ExecutarAsync(propostaId))
+                .ReturnsAsync(resultadoSucesso);
+
+            // Act
+            var resultado = await _sut.ObterDetalhesPropostaComTurmasPorId(propostaId, _casoDeUsoObterDetalhesPropostaMock.Object);
+
+            // Assert
+            var objectResult = resultado.Should().BeOfType<OkObjectResult>().Subject;
+            objectResult.StatusCode.Should().Be(200);
+            _casoDeUsoObterDetalhesPropostaMock.Verify(c => c.ExecutarAsync(propostaId), Times.Once);
         }
 
         [Fact]

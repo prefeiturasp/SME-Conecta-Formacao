@@ -20,6 +20,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafConferencias
             if (proposta.TipoFormacao != TipoFormacao.Conferencia)
                 return Erro.Negocio("A proposta informada não é do tipo Conferência.");
 
+            if (proposta.Situacao != SituacaoProposta.Publicada)
+                return Erro.Negocio("A proposta informada deve estar com a situação Publicada.");
+
             var jaPossuiCodaf = await dependencias.RepositorioCodaf.TurmaJaTemCodafAsync(dto.PropostaTurmaId);
             if (jaPossuiCodaf)
                 return Erro.Negocio("Já existe um CODAF cadastrado para esta turma.");

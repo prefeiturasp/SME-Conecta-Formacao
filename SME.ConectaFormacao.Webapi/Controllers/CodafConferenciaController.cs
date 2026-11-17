@@ -6,6 +6,7 @@ using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafConferencias;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafConferencias;
 using SME.ConectaFormacao.Dominio.Comum;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Webapi.Filtros;
 
 namespace SME.ConectaFormacao.Webapi.Controllers
@@ -90,6 +91,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             [FromQuery] long? codafConferenciaId = null)
         {
             var resultado = await casoDeUso.ExecutarAsync(propostaTurmaId, numeroPagina, numeroRegistros, codafConferenciaId);
+            return ProcessarResultado(resultado);
+        }
+
+        [HttpGet("propostas/{propostaId:long}/detalhes-com-turmas")]
+        [ProducesResponseType(typeof(Resultado<PropostaComTurmasDto?>), 200)]
+        [ProducesResponseType(typeof(Resultado<PropostaComTurmasDto?>), 400)]
+        public async Task<IActionResult> ObterDetalhesPropostaComTurmasPorId(
+            long propostaId,
+            [FromServices] ICasoDeUsoObterDetalhesPropostaConferenciaComTurmasPorId casoDeUso)
+        {
+            var resultado = await casoDeUso.ExecutarAsync(propostaId);
             return ProcessarResultado(resultado);
         }
 

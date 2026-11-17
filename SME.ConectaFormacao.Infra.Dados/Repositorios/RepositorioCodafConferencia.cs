@@ -1,9 +1,11 @@
 using Dapper;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Dominio.Extensoes;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafConferencias;
+using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
@@ -27,6 +29,64 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 """;
 
             return await conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, new { propostaTurmaId, codafConferenciaId });
+        }
+
+        public async Task<PropostaComTurmasDto?> ObterDetalhesPropostaConferenciaComTurmasPorIdAsync(long propostaId)
+        {
+            const string query = """
+                SELECT
+                    p.id AS Id,
+                    p.nome_formacao AS NomeFormacao,
+                    p.numero_homologacao AS NumeroFormacao,
+                    pt.id AS Id,
+                    pt.nome AS Nome,
+                    COALESCE(pgp.data_inicio, p.data_realizacao_inicio) AS DataInicio,
+                    COALESCE(pgp.data_fim, p.data_realizacao_fim) AS DataFim,
+                    EXISTS (
+                        SELECT 1
+                        FROM public.codaf_conferencia cc
+                        WHERE cc.proposta_turma_id = pt.id
+                          AND NOT cc.excluido
+                    ) AS PossuiCodafConferencia
+                FROM proposta p
+                LEFT JOIN public.proposta_turma AS pt ON pt.proposta_id = p.id AND NOT pt.excluido
+                LEFT JOIN public.proposta_grupo_periodo_turma AS pgpt ON pt.id = pgpt.proposta_turma_id
+                LEFT JOIN public.proposta_grupo_periodo AS pgp ON pgp.id = pgpt.grupo_periodo_id AND pgp.proposta_id = p.id
+                WHERE p.id = @propostaId
+                  AND p.tipo_formacao = @tipoFormacao
+                  AND p.situacao = @situacao
+                  AND NOT p.excluido;
+                """;
+
+            var parameters = new
+            {
+                propostaId,
+                tipoFormacao = (int)TipoFormacao.Conferencia,
+                situacao = (int)SituacaoProposta.Publicada
+            };
+
+            var propostaDictionary = new Dictionary<long, PropostaComTurmasDto>();
+
+            await conexao.Obter().QueryAsync<PropostaComTurmasDto, PropostaTurmaDto, PropostaComTurmasDto>(
+                query,
+                (proposta, turma) =>
+                {
+                    if (!propostaDictionary.TryGetValue(proposta.Id, out var propostaEntry))
+                    {
+                        propostaEntry = proposta;
+                        propostaEntry.Turmas = [];
+                        propostaDictionary.Add(propostaEntry.Id, propostaEntry);
+                    }
+
+                    if (turma != null && turma.Id > 0 && !propostaEntry.Turmas.Any(t => t.Id == turma.Id))
+                        propostaEntry.Turmas.Add(turma);
+
+                    return propostaEntry;
+                },
+                parameters,
+                splitOn: "Id");
+
+            return propostaDictionary.Values.FirstOrDefault();
         }
 
         public async Task<ResultadoPaginado<ListagemResultadoCodafConferenciaDto>> ObterListagemPorFiltroAsync(FiltroListagemResultadoCodafConferenciaDto filtro)
