@@ -21,7 +21,7 @@ namespace SME.ConectaFormacao.Aplicacao
         public async Task<PropostaInformacoesCadastranteDTO> Handle(ObterInformacoesCadastranteQuery request, CancellationToken cancellationToken)
         {
             AreaPromotora areaPromotora;
-            Usuario usuario;
+            Usuario? usuario;
 
             if (request.PropostaId.HasValue)
             {

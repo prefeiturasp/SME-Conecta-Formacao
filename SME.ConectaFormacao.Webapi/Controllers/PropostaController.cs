@@ -364,6 +364,17 @@ namespace SME.ConectaFormacao.Webapi.Controllers
             return Ok(await useCase.Executar(propostaId));
         }
 
+        [HttpGet("{id:long}/numero-homologacao")]
+        [ProducesResponseType(typeof(PropostaNumeroHomologacaoDto), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 400)]
+        [ProducesResponseType(typeof(RetornoBaseDTO), 500)]
+        public async Task<IActionResult> ObterNumeroHomologacaoPorPropostaId(
+            [FromServices] ICasoDeUsoObterNumeroHomologacaoProposta useCase,
+            [FromRoute] long id)
+        {
+            return ProcessarResultado(await useCase.ExecutarAsync(id));
+        }
+
         [HttpPatch("{id}/numero-homologacao")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDTO), 400)]

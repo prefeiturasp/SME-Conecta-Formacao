@@ -86,6 +86,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Proposta
         public bool? Revalidacao { get; set; }
         public string? JustificativaRevalidacao { get; set; }
         public IEnumerable<PropostaGrupoPeriodoDto> GruposPeriodos { get; set; } = [];
+        public IEnumerable<PropostaGrupoPeriodoInscricaoDto> GruposPeriodosInscricao { get; set; } = [];
         public string? AnexoUrl { get; set; }
         public bool PossuiCodaf { get; set; }
     }

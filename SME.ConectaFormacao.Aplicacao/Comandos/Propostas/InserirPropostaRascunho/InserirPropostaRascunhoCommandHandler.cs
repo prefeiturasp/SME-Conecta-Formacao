@@ -36,14 +36,17 @@ namespace SME.ConectaFormacao.Aplicacao
             proposta.AjustarDatasInscricao();
 
             var id = await PropostaTransacaoHelper.InserirComTransacaoAsync(
-                _transacao,
-                _repositorioProposta,
-                _mediator,
-                _servicoLogs,
-                proposta,
-                request.PropostaDTO.IntegrarNoSGA,
-                "InserirPropostaRascunho",
-                cancellationToken);
+                new InserirPropostaTransacaoParametros
+                {
+                    TransacaoManager = _transacao,
+                    RepositorioProposta = _repositorioProposta,
+                    Mediator = _mediator,
+                    ServicoLogs = _servicoLogs,
+                    Proposta = proposta,
+                    IntegrarNoSgaDto = request.PropostaDTO.IntegrarNoSGA,
+                    Operacao = "InserirPropostaRascunho",
+                    CancellationToken = cancellationToken
+                });
 
             return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_INSERIDA_COM_SUCESSO, id), id);
         }

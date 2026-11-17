@@ -10,6 +10,7 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public long PropostaTurmaId { get; private set; }
         public DateTime? DataPublicacao { get; private set; }
         public DateTime? DataPublicacaoDom { get; private set; }
+        public DateTime? DataEnvioDf { get; set; }
         public short? NumeroComunicado { get; private set; }
         public short? PaginaComunicadoDom { get; private set; }
         public int? CodigoCursoEol { get; private set; }
@@ -67,7 +68,13 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         public void MarcarComoEnviadaParaDf()
         {
             if (PodeSerEnviadaParaDf())
+            {
                 Status = StatusCodafListaPresenca.AguardandoDf;
+
+                //só salva se ainda não tiver dado no campo. Pois será o primeiro envio
+                if (DataEnvioDf is null)
+                    DataEnvioDf = DateTime.Now;
+            }
         }
 
         public bool PodeSerEnviadaParaDf()

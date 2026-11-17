@@ -99,9 +99,12 @@ namespace SME.ConectaFormacao.Aplicacao
             if (!string.IsNullOrEmpty(validarDatas))
                 erros.Add(validarDatas);
 
-            var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTurmaCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
-            if (!string.IsNullOrEmpty(errosRegente))
-                erros.Add(errosRegente);
+            if (propostaDepois.TipoFormacao != TipoFormacao.Conferencia)
+            {
+                var errosRegente = await _mediator.Send(new ValidarSeExisteRegenteTurmaCommand(request.Id, propostaDepois.QuantidadeTurmas ?? 0), cancellationToken);
+                if (!string.IsNullOrEmpty(errosRegente))
+                    erros.Add(errosRegente);
+            }
 
             var errosInformacoesGerais = await _mediator.Send(new ValidarInformacoesGeraisCommand(request.PropostaDTO), cancellationToken);
             if (errosInformacoesGerais.Any())
@@ -127,15 +130,18 @@ namespace SME.ConectaFormacao.Aplicacao
                 throw new NegocioException(erros);
 
             await PropostaTransacaoHelper.AtualizarComTransacaoAsync(
-                _transacao,
-                _repositorioProposta,
-                _mediator,
-                _servicoLogs,
-                proposta,
-                propostaDepois,
-                request.PropostaDTO.IntegrarNoSGA,
-                "AlterarProposta",
-                cancellationToken);
+                new AtualizarPropostaTransacaoParametros
+                {
+                    TransacaoManager = _transacao,
+                    RepositorioProposta = _repositorioProposta,
+                    Mediator = _mediator,
+                    ServicoLogs = _servicoLogs,
+                    PropostaBanco = proposta,
+                    PropostaDepois = propostaDepois,
+                    IntegrarNoSgaDto = request.PropostaDTO.IntegrarNoSGA,
+                    Operacao = "AlterarProposta",
+                    CancellationToken = cancellationToken
+                });
 
             var mensagem = new StringBuilder(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id));
 

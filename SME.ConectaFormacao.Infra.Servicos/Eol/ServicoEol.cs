@@ -134,7 +134,7 @@ namespace SME.ConectaFormacao.Infra.Servicos.Eol
             var resposta = await httpClient.GetAsync(EndpointsEolConstantes.OBTER_DADOS_SERVIDOR_EOL.Parametros(rfServidor));
 
             if (!resposta.IsSuccessStatusCode)
-                throw new NegocioException(MensagemNegocio.ERRO_OBTER_DADOS_SERVIDOR_POR_RF_EOL, resposta.StatusCode);
+                return null;
 
             var json = await resposta.Content.ReadAsStringAsync();
             return json.JsonParaObjeto<UsuarioEolDto>();

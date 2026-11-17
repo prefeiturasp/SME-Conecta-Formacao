@@ -38,7 +38,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             // Arrange
             var propostaTurmaId = _faker.Random.Long(1, 1000);
             repositorioCodafCursoNaoHomologadoInscricaoMock
-                .Setup(r => r.ObterInscritosPorTurmaAsync(propostaTurmaId, It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(r => r.ObterInscritosPorTurmaAsync(propostaTurmaId, It.IsAny<int>(), It.IsAny<int>(), It.IsAny<long?>()))
                 .ReturnsAsync(new ResultadoPaginado<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto>
                 {
                     Itens = [],
@@ -60,6 +60,36 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             resultado.Sucesso.Should().BeTrue();
             resultado.Dados.Should().NotBeNull();
             resultado.Dados.Should().BeEquivalentTo(inscritosDto);
+        }
+
+        [Fact]
+        public async Task DadoCodafCursoNaoHomologadoId_QuandoExecutar_DeveRepassarIdParaRepositorio()
+        {
+            // Arrange
+            var propostaTurmaId = _faker.Random.Long(1, 1000);
+            var codafId = _faker.Random.Long(1, 1000);
+            repositorioCodafCursoNaoHomologadoInscricaoMock
+                .Setup(r => r.ObterInscritosPorTurmaAsync(propostaTurmaId, 1, 10, codafId))
+                .ReturnsAsync(new ResultadoPaginado<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto>
+                {
+                    Itens = [],
+                    PaginaAtual = 1,
+                    TamanhoPagina = 10,
+                    TotalRegistros = 0
+                });
+
+            mapperMock.Setup(m => m.Map<List<CodafCursoNaoHomologadoInscritoTurmaDto>>(
+                It.IsAny<IEnumerable<ResultadoInscritoTurmaCodafCursoNaoHomologadoDto>>()))
+                .Returns([]);
+
+            // Act
+            var resultado = await casoDeUsoListarInscritosTurmaCodafCursoNaoHomologado.ExecutarAsync(propostaTurmaId, 1, 10, codafId);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            repositorioCodafCursoNaoHomologadoInscricaoMock.Verify(
+                r => r.ObterInscritosPorTurmaAsync(propostaTurmaId, 1, 10, codafId),
+                Times.Once);
         }
     }
 }

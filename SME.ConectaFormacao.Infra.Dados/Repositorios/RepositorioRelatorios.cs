@@ -64,6 +64,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoProposta, " AND situacaoFormacao = @situacaoFormacao ", "situacaoFormacao");
             AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoInscricao, " AND situacaoInscricao = @situacaoInscricao ", "situacaoInscricao");
+            AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.SituacaoAprovacao, " AND situacaoAprovacao = @situacaoAprovacao ", "situacaoAprovacao");
             AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.Formato, " AND modalidadeFormativa = @formato ", "formato");
             AdicionarFiltroOpcional(condicoes, parametros, (int?)filtro.Modalidade, " AND etapaModalidade = @modalidade ", "modalidade");
 

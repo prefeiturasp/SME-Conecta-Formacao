@@ -297,6 +297,74 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             eventoCapturado.Notificacao.Tipo.Should().Be(NotificacaoTipo.Relatorio);
         }
 
+
+        [Fact]
+        public async Task DadoInscritosComSituacaoAprovacao_QuandoExecutar_EntaoCampoDeveSerMapeadoFormatadoCorretamente()
+        {
+            // Arrange
+            var filtroValido = new FiltroRelatorioInscritosPorFormacaoDto { PropostaId = 101 };
+            var mensagemRabbit = CriarMensagemRabbit(filtroValido);
+            var usuarioDb = new Usuario { Id = 1, Nome = "Gestor", Login = "123456" };
+
+            var modelAprovado = new InscritoFormacaoQueryModel
+            {
+                CodigoFormacao = "1",
+                NomeCursista = "Cursista Aprovado",
+                RfCpf = "11111111111",
+                SituacaoAprovacao = SituacaoAprovacao.Aprovado
+            };
+
+            var modelReprovado = new InscritoFormacaoQueryModel
+            {
+                CodigoFormacao = "2",
+                NomeCursista = "Cursista Reprovado",
+                RfCpf = "22222222222",
+                SituacaoAprovacao = SituacaoAprovacao.Reprovado
+            };
+
+            var modelEmAndamento = new InscritoFormacaoQueryModel
+            {
+                CodigoFormacao = "3",
+                NomeCursista = "Cursista Em Andamento",
+                RfCpf = "33333333333",
+                SituacaoAprovacao = SituacaoAprovacao.EmAndamento
+            };
+
+            var modelSemSituacao = new InscritoFormacaoQueryModel
+            {
+                CodigoFormacao = "4",
+                NomeCursista = "Cursista Sem Situacao",
+                RfCpf = "44444444444",
+                SituacaoAprovacao = null
+            };
+
+            _repositorioUsuarioMock.Setup(r => r.ObterPorId(It.IsAny<long>())).ReturnsAsync(usuarioDb);
+            _repositorioRelatoriosMock.Setup(r => r.ObterDadosRelatorioInscritosPorFormacaoAsync(It.IsAny<FiltroRelatorioInscritosPorFormacaoDto>()))
+                                      .ReturnsAsync([modelAprovado, modelReprovado, modelEmAndamento, modelSemSituacao]);
+
+            RelatorioInscritosFormacaoDto? dtoRecebido = null;
+            _geradorRelatorioMock.Setup(g => g.GerarEArmazenarRelatorioAsync(It.IsAny<RelatorioInscritosFormacaoDto>()))
+                                 .Callback<RelatorioInscritosFormacaoDto>(d => dtoRecebido = d)
+                                 .ReturnsAsync("https://url/relatorio.xlsx");
+
+            _mediatorMock.Setup(m => m.Publish(It.IsAny<NotificarRelatorioEmitidoEvento>(), It.IsAny<CancellationToken>()))
+                         .Returns(Task.CompletedTask);
+
+            // Act
+            var resultado = await _sut.Executar(mensagemRabbit);
+
+            // Assert
+            resultado.Should().BeTrue();
+            dtoRecebido.Should().NotBeNull();
+
+            var inscritos = dtoRecebido!.Inscritos.ToList();
+            inscritos.Count.Should().Be(4);
+
+            inscritos[0].SituacaoAprovacao.Should().Be("Aprovado");
+            inscritos[1].SituacaoAprovacao.Should().Be("Reprovado");
+            inscritos[2].SituacaoAprovacao.Should().Be("Em andamento");
+            inscritos[3].SituacaoAprovacao.Should().Be("N/A");
+        }
         private static MensagemRabbit CriarMensagemRabbit(FiltroRelatorioInscritosPorFormacaoDto filtro)
         {
             var solicitacaoDto = new SolicitacaoRelatorioInscritosPorFormacaoMensagem(

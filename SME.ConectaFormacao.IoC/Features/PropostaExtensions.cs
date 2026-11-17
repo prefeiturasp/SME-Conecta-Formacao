@@ -58,6 +58,7 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoEnviarProposta, CasoDeUsoEnviarProposta>()
             .AddScoped<ICasoDeUsoDevolverProposta, CasoDeUsoDevolverProposta>()
             .AddScoped<ICasoDeUsoSalvarNumeroHomologacaoProposta, CasoDeUsoSalvarNumeroHomologacaoProposta>()
+            .AddScoped<ICasoDeUsoObterNumeroHomologacaoProposta, CasoDeUsoObterNumeroHomologacaoProposta>()
             .AddScoped<ICasoDeUsoObterTodosFormatos, CasoDeUsoObterTodosFormatos>()
             .AddScoped<ICasoDeUsoGerarPropostaTurmaVaga, CasoDeUsoGerarPropostaTurmaVaga>()
             .AddScoped<ICasoDeUsoRemoverParecerDaProposta, CasoDeUsoRemoverParecerDaProposta>()
@@ -74,6 +75,7 @@ namespace SME.ConectaFormacao.IoC.Features
             .AddScoped<ICasoDeUsoObterRoteiroPropostaFormativa, CasoDeUsoObterRoteiroPropostaFormativa>()
             .AddScoped<ICasoDeUsoObterCriterioValidacaoInscricao, CasoDeUsoObterCriterioValidacaoInscricao>()
                 .AddScoped<IRepositorioPropostaGrupoPeriodo, RepositorioPropostaGrupoPeriodo>()
+                .AddScoped<IRepositorioPropostaGrupoPeriodoInscricao, RepositorioPropostaGrupoPeriodoInscricao>()
                 .AddScoped<ICasoDeUsoObterDetalhesPropostaComTurmasPorId, CasoDeUsoObterDetalhesPropostaComTurmasPorId>()
             ;
 

@@ -11,6 +11,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
             Map(c => c.PropostaId).ToColumn("proposta_id");
             Map(c => c.DataPublicacao).ToColumn("data_publicacao");
             Map(c => c.DataPublicacaoDom).ToColumn("data_publicacao_dom");
+            Map(c => c.DataEnvioDf).ToColumn("data_envio_df");
             Map(c => c.NumeroComunicado).ToColumn("numero_comunicado");
             Map(c => c.PaginaComunicadoDom).ToColumn("pagina_comunicado_dom");
             Map(c => c.CodigoCursoEol).ToColumn("codigo_curso_eol");

@@ -6,37 +6,58 @@ using SME.ConectaFormacao.Infra.Servicos.Log;
 
 namespace SME.ConectaFormacao.Aplicacao.Utilitarios
 {
+    public sealed class InserirPropostaTransacaoParametros
+    {
+        public ITransacao TransacaoManager { get; init; } = null!;
+        public IRepositorioProposta RepositorioProposta { get; init; } = null!;
+        public IMediator Mediator { get; init; } = null!;
+        public IServicoLogs? ServicoLogs { get; init; }
+        public Proposta Proposta { get; init; } = null!;
+        public bool? IntegrarNoSgaDto { get; init; }
+        public string Operacao { get; init; } = string.Empty;
+        public CancellationToken CancellationToken { get; init; }
+    }
+
+    public sealed class AtualizarPropostaTransacaoParametros
+    {
+        public ITransacao TransacaoManager { get; init; } = null!;
+        public IRepositorioProposta RepositorioProposta { get; init; } = null!;
+        public IMediator Mediator { get; init; } = null!;
+        public IServicoLogs? ServicoLogs { get; init; }
+        public Proposta PropostaBanco { get; init; } = null!;
+        public Proposta PropostaDepois { get; init; } = null!;
+        public bool? IntegrarNoSgaDto { get; init; }
+        public string Operacao { get; init; } = string.Empty;
+        public CancellationToken CancellationToken { get; init; }
+    }
+
     public static class PropostaTransacaoHelper
     {
         public static async Task<long> InserirComTransacaoAsync(
-            ITransacao transacaoManager,
-            IRepositorioProposta repositorioProposta,
-            IMediator mediator,
-            IServicoLogs? servicoLogs,
-            Proposta proposta,
-            bool? integrarNoSgaDto,
-            string operacao,
-            CancellationToken cancellationToken)
+            InserirPropostaTransacaoParametros parametros)
         {
-            var transacao = transacaoManager.Iniciar();
+            var transacao = parametros.TransacaoManager.Iniciar();
             try
             {
-                var id = await repositorioProposta.Inserir(proposta);
+                var id = await parametros.RepositorioProposta.Inserir(parametros.Proposta);
 
                 await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
-                    servicoLogs,
-                    operacao: operacao,
-                    propostaId: id,
-                    valorBancoAnterior: null,
-                    valorRecebidoDto: integrarNoSgaDto,
-                    valorFinalPersistido: proposta.IntegrarNoSGA,
-                    nomeFormacao: proposta.NomeFormacao,
-                    areaPromotoraId: proposta.AreaPromotoraId,
-                    situacao: proposta.Situacao.ToString(),
-                    usuario: proposta.CriadoLogin
+                    parametros.ServicoLogs,
+                    new LogIntegrarSgaParametros
+                    {
+                        Operacao = parametros.Operacao,
+                        PropostaId = id,
+                        ValorBancoAnterior = null,
+                        ValorRecebidoDto = parametros.IntegrarNoSgaDto,
+                        ValorFinalPersistido = parametros.Proposta.IntegrarNoSGA,
+                        NomeFormacao = parametros.Proposta.NomeFormacao,
+                        AreaPromotoraId = parametros.Proposta.AreaPromotoraId,
+                        Situacao = parametros.Proposta.Situacao.ToString(),
+                        Usuario = parametros.Proposta.CriadoLogin
+                    }
                 );
 
-                await mediator.Send(new SalvarPropostaCommand(id, proposta, null), cancellationToken);
+                await parametros.Mediator.Send(new SalvarPropostaCommand(id, parametros.Proposta, null), parametros.CancellationToken);
 
                 transacao.Commit();
                 return id;
@@ -53,35 +74,30 @@ namespace SME.ConectaFormacao.Aplicacao.Utilitarios
         }
 
         public static async Task AtualizarComTransacaoAsync(
-            ITransacao transacaoManager,
-            IRepositorioProposta repositorioProposta,
-            IMediator mediator,
-            IServicoLogs? servicoLogs,
-            Proposta propostaBanco,
-            Proposta propostaDepois,
-            bool? integrarNoSgaDto,
-            string operacao,
-            CancellationToken cancellationToken)
+            AtualizarPropostaTransacaoParametros parametros)
         {
-            var transacao = transacaoManager.Iniciar();
+            var transacao = parametros.TransacaoManager.Iniciar();
             try
             {
-                await repositorioProposta.Atualizar(propostaDepois);
+                await parametros.RepositorioProposta.Atualizar(parametros.PropostaDepois);
 
                 await LogIntegrarSgaHelper.RegistrarLogSgaAsync(
-                    servicoLogs,
-                    operacao: operacao,
-                    propostaId: propostaBanco.Id,
-                    valorBancoAnterior: propostaBanco.IntegrarNoSGA,
-                    valorRecebidoDto: integrarNoSgaDto,
-                    valorFinalPersistido: propostaDepois.IntegrarNoSGA,
-                    nomeFormacao: propostaDepois.NomeFormacao,
-                    areaPromotoraId: propostaDepois.AreaPromotoraId,
-                    situacao: propostaDepois.Situacao.ToString(),
-                    usuario: propostaDepois.AlteradoLogin ?? propostaDepois.CriadoLogin
+                    parametros.ServicoLogs,
+                    new LogIntegrarSgaParametros
+                    {
+                        Operacao = parametros.Operacao,
+                        PropostaId = parametros.PropostaBanco.Id,
+                        ValorBancoAnterior = parametros.PropostaBanco.IntegrarNoSGA,
+                        ValorRecebidoDto = parametros.IntegrarNoSgaDto,
+                        ValorFinalPersistido = parametros.PropostaDepois.IntegrarNoSGA,
+                        NomeFormacao = parametros.PropostaDepois.NomeFormacao,
+                        AreaPromotoraId = parametros.PropostaDepois.AreaPromotoraId,
+                        Situacao = parametros.PropostaDepois.Situacao.ToString(),
+                        Usuario = parametros.PropostaDepois.AlteradoLogin ?? parametros.PropostaDepois.CriadoLogin
+                    }
                 );
 
-                await mediator.Send(new SalvarPropostaCommand(propostaDepois.Id, propostaDepois, propostaBanco.ArquivoImagemDivulgacaoId), cancellationToken);
+                await parametros.Mediator.Send(new SalvarPropostaCommand(parametros.PropostaDepois.Id, parametros.PropostaDepois, parametros.PropostaBanco.ArquivoImagemDivulgacaoId), parametros.CancellationToken);
 
                 transacao.Commit();
             }

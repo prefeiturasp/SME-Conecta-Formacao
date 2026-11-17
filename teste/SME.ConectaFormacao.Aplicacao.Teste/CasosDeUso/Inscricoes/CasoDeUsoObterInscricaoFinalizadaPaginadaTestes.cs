@@ -7,12 +7,6 @@ using SME.ConectaFormacao.Aplicacao.CasosDeUso.Inscricoes;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
 using SME.ConectaFormacao.Dominio.Contexto;
-using SME.ConectaFormacao.Infra.Dados.Dtos.Inscricoes;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 using EntidadeUsuario = SME.ConectaFormacao.Dominio.Entidades.Usuario;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.Inscricoes

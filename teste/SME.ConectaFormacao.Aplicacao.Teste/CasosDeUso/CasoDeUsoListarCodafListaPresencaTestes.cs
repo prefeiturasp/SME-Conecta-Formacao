@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Bogus;
 using FluentAssertions;
 using Moq;
@@ -6,6 +6,7 @@ using Moq.AutoMock;
 using SME.ConectaFormacao.Aplicacao.CasosDeUso.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
+using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Dominio.Constantes;
 using SME.ConectaFormacao.Dominio.Contexto;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
@@ -210,6 +211,119 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             _repositorioCodafListaPresencaMock.Verify(
                 r => r.ObterListagemResultadoCodafListaPresencaPorFiltroAsync(It.Is<FiltroListagemResultadoCodafListaPresencaDto>(f => f.PerfilRestrito == true)),
                 Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoItensComDataPrimeiroEnvioDf_QuandoChamarExecutar_DeveRetornarItensComDataPrimeiroEnvioDf()
+        {
+            var dataEnvio = _faker.Date.Recent();
+            var filtroDto = new FiltroListaPresencaCodafDto
+            {
+                NomeFormacao = _faker.Lorem.Word(),
+                CodigoFormacao = _faker.Random.Int(1),
+                DataEnvioDf = dataEnvio,
+                NumeroPagina = 1,
+                NumeroRegistros = 10
+            };
+            var filtroRepositorioDto = new FiltroListagemResultadoCodafListaPresencaDto
+            {
+                NomeFormacao = filtroDto.NomeFormacao,
+                CodigoFormacao = filtroDto.CodigoFormacao.ToString(),
+                DataEnvioDf = filtroDto.DataEnvioDf,
+                Pagina = filtroDto.NumeroPagina,
+                TamanhoPagina = filtroDto.NumeroRegistros,
+                PerfilRestrito = false
+            };
+            var itensRepositorio = new List<ListagemResultadoCodafListaPresencaDto>
+            {
+                new()
+                {
+                    Id = 1,
+                    NomeFormacao = _faker.Lorem.Word(),
+                    NomeTurma = _faker.Lorem.Word(),
+                    NomeAreaPromotora = _faker.Lorem.Word(),
+                    DataPrimeiroEnvioDf = dataEnvio
+                },
+                new()
+                {
+                    Id = 2,
+                    NomeFormacao = _faker.Lorem.Word(),
+                    NomeTurma = _faker.Lorem.Word(),
+                    NomeAreaPromotora = _faker.Lorem.Word(),
+                    DataPrimeiroEnvioDf = null
+                }
+            };
+            var resultadoRepositorio = new ResultadoPaginado<ListagemResultadoCodafListaPresencaDto>
+            {
+                Itens = itensRepositorio,
+                TotalRegistros = 2,
+                TamanhoPagina = 10
+            };
+            var itensDto = new List<ListaPresencaCodafResumoDto>
+            {
+                new()
+                {
+                    Id = 1,
+                    NomeFormacao = itensRepositorio[0].NomeFormacao,
+                    NomeTurma = itensRepositorio[0].NomeTurma,
+                    NomeAreaPromotora = itensRepositorio[0].NomeAreaPromotora,
+                    DataPrimeiroEnvioDf = dataEnvio
+                },
+                new()
+                {
+                    Id = 2,
+                    NomeFormacao = itensRepositorio[1].NomeFormacao,
+                    NomeTurma = itensRepositorio[1].NomeTurma,
+                    NomeAreaPromotora = itensRepositorio[1].NomeAreaPromotora,
+                    DataPrimeiroEnvioDf = null
+                }
+            };
+
+            _contextoAplicacaoMock.Setup(c => c.IdPerfilUsuario).Returns(Perfis.ADMIN_DF);
+            _mapperMock.Setup(m => m.Map<FiltroListagemResultadoCodafListaPresencaDto>(filtroDto))
+                .Returns(filtroRepositorioDto);
+            _repositorioCodafListaPresencaMock.Setup(r => r.ObterListagemResultadoCodafListaPresencaPorFiltroAsync(It.IsAny<FiltroListagemResultadoCodafListaPresencaDto>()))
+                .ReturnsAsync(resultadoRepositorio);
+            _mapperMock.Setup(m => m.Map<List<ListaPresencaCodafResumoDto>>(resultadoRepositorio.Itens))
+                .Returns(itensDto);
+
+            var resultado = await _casoDeUsoListarCodafListaPresenca.ExecutarAsync(filtroDto);
+
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeTrue();
+            resultado.Dados?.Items.Should().HaveCount(2);
+            resultado.Dados?.Items.Should().BeEquivalentTo(itensDto);
+            resultado.Dados?.Items.First().DataPrimeiroEnvioDf.Should().Be(dataEnvio);
+            resultado.Dados?.Items.Last().DataPrimeiroEnvioDf.Should().BeNull();
+        }
+
+        [Fact]
+        public void DadoListagemResultadoCodafListaPresencaDtoComDataPrimeiroEnvioDf_QuandoMapearParaListaPresencaCodafResumoDto_DeveMapearDataPrimeiroEnvioDfCorretamente()
+        {
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<CodafProfile>(), new Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory());
+            var mapper = config.CreateMapper();
+            var dataEnvio = _faker.Date.Recent();
+
+            var itemComData = new ListagemResultadoCodafListaPresencaDto
+            {
+                Id = 1,
+                NomeTurma = _faker.Lorem.Word(),
+                NomeAreaPromotora = _faker.Lorem.Word(),
+                DataPrimeiroEnvioDf = dataEnvio
+            };
+            var itemSemData = new ListagemResultadoCodafListaPresencaDto
+            {
+                Id = 2,
+                NomeTurma = _faker.Lorem.Word(),
+                NomeAreaPromotora = _faker.Lorem.Word(),
+                DataPrimeiroEnvioDf = null
+            };
+
+            var dtoComData = mapper.Map<ListaPresencaCodafResumoDto>(itemComData);
+            var dtoSemData = mapper.Map<ListaPresencaCodafResumoDto>(itemSemData);
+
+            dtoComData.DataPrimeiroEnvioDf.Should().Be(dataEnvio);
+            dtoSemData.DataPrimeiroEnvioDf.Should().BeNull();
         }
     }
 }

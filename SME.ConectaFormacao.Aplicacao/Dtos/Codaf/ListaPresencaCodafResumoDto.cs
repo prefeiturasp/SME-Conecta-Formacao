@@ -15,5 +15,6 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.Codaf
         public string? CodigoCursoEol { get; set; }
         public string? CodigoNivel { get; set; }       
         public bool PossuiAprovacoes { get; set; }
+        public DateTime? DataPrimeiroEnvioDf { get; set; }
     }
 }

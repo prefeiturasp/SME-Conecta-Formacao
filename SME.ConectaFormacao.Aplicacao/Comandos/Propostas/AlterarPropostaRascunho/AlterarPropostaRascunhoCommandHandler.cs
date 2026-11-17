@@ -44,15 +44,18 @@ namespace SME.ConectaFormacao.Aplicacao
             propostaDepois.AcaoFormativaLink = proposta.AcaoFormativaLink;
 
             await PropostaTransacaoHelper.AtualizarComTransacaoAsync(
-                _transacao,
-                _repositorioProposta,
-                _mediator,
-                _servicoLogs,
-                proposta,
-                propostaDepois,
-                request.PropostaDTO.IntegrarNoSGA,
-                "AlterarPropostaRascunho",
-                cancellationToken);
+                new AtualizarPropostaTransacaoParametros
+                {
+                    TransacaoManager = _transacao,
+                    RepositorioProposta = _repositorioProposta,
+                    Mediator = _mediator,
+                    ServicoLogs = _servicoLogs,
+                    PropostaBanco = proposta,
+                    PropostaDepois = propostaDepois,
+                    IntegrarNoSgaDto = request.PropostaDTO.IntegrarNoSGA,
+                    Operacao = "AlterarPropostaRascunho",
+                    CancellationToken = cancellationToken
+                }); 
 
             return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id), request.Id);
         }
