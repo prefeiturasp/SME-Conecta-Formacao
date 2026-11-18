@@ -26,7 +26,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        INNER JOIN PUBLIC.USUARIO AS U ON U.ID = I.USUARIO_ID 
                        LEFT JOIN PUBLIC.CODAF_CONFERENCIA_INSCRICAO AS CCI
                               ON CCI.INSCRICAO_ID = I.ID
-                             AND (CAST(@codafConferenciaId AS BIGINT) IS NULL OR CCI.CODAF_CONFERENCIA_ID = @codafConferenciaId)
+                             AND CCI.CODAF_CONFERENCIA_ID = @codafConferenciaId
                              AND NOT CCI.EXCLUIDO
                 WHERE NOT U.EXCLUIDO
                 AND NOT I.EXCLUIDO 
