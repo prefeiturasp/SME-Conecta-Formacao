@@ -52,14 +52,18 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafConferencias
             {
                 Id = 1,
                 NomeTurma = "Turma 1",
-                NomeAreaPromotora = "DRE"
+                NomeAreaPromotora = "DRE",
+                Status = StatusCodafConferencia.Iniciado,
+                StatusCertificacaoTurma = StatusCertificacaoTurma.PendenteEmissaoRemessa
             };
 
             var itemDto = new CodafConferenciaResumoDto
             {
                 Id = 1,
                 NomeTurma = "Turma 1",
-                NomeAreaPromotora = "DRE"
+                NomeAreaPromotora = "DRE",
+                Status = StatusCodafConferencia.Iniciado,
+                StatusCertificacaoTurma = StatusCertificacaoTurma.PendenteEmissaoRemessa
             };
 
             _mapperMock
@@ -88,6 +92,54 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafConferencias
             resultado.Dados.Should().NotBeNull();
             resultado.Dados!.TotalRegistros.Should().Be(1);
             resultado.Dados.Items.Should().ContainSingle().Which.Id.Should().Be(1);
+            resultado.Dados.Items.First().StatusCertificacaoTurma.Should().Be(StatusCertificacaoTurma.PendenteEmissaoRemessa);
+        }
+
+        [Fact]
+        public async Task DadoFiltroSemRegistros_QuandoExecutar_EntaoDeveRetornarListaPaginadaVazia()
+        {
+            // Arrange
+            var filtro = new FiltroCodafConferenciaDto
+            {
+                NomeFormacao = "Inexistente",
+                NumeroPagina = 2,
+                NumeroRegistros = 20
+            };
+
+            var filtroRepo = new FiltroListagemResultadoCodafConferenciaDto
+            {
+                NomeFormacao = "Inexistente",
+                Pagina = 2,
+                TamanhoPagina = 20
+            };
+
+            _mapperMock
+                .Setup(m => m.Map<FiltroListagemResultadoCodafConferenciaDto>(filtro))
+                .Returns(filtroRepo);
+
+            _repositorioMock
+                .Setup(r => r.ObterListagemPorFiltroAsync(filtroRepo))
+                .ReturnsAsync(new ResultadoPaginado<ListagemResultadoCodafConferenciaDto>
+                {
+                    Itens = [],
+                    TotalRegistros = 0,
+                    PaginaAtual = 2,
+                    TamanhoPagina = 20
+                });
+
+            _mapperMock
+                .Setup(m => m.Map<List<CodafConferenciaResumoDto>>(It.IsAny<IEnumerable<ListagemResultadoCodafConferenciaDto>>()))
+                .Returns([]);
+
+            // Act
+            var resultado = await _sut.ExecutarAsync(filtro);
+
+            // Assert
+            resultado.Sucesso.Should().BeTrue();
+            resultado.Dados.Should().NotBeNull();
+            resultado.Dados!.TotalRegistros.Should().Be(0);
+            resultado.Dados.Items.Should().BeEmpty();
+            _repositorioMock.Verify(r => r.ObterListagemPorFiltroAsync(filtroRepo), Times.Once);
         }
     }
 }

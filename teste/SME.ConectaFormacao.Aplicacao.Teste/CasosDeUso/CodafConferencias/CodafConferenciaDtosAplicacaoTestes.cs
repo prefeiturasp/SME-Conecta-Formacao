@@ -1,7 +1,11 @@
+using AutoMapper;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using SME.ConectaFormacao.Aplicacao.Dtos.Codaf;
 using SME.ConectaFormacao.Aplicacao.Dtos.CodafConferencias;
+using SME.ConectaFormacao.Aplicacao.Mapeamentos;
 using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Infra.Dados.Dtos.CodafConferencias;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafConferencias
 {
@@ -79,6 +83,7 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafConferencias
                 NomeTurma = "Turma A",
                 NomeAreaPromotora = "DRE",
                 Status = StatusCodafConferencia.Iniciado,
+                StatusCertificacaoTurma = StatusCertificacaoTurma.PendenteEmissaoRemessa,
                 CodigoCursoEol = 567,
                 CodigoNivel = 1,
                 PossuiAprovacoes = true,
@@ -118,10 +123,47 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso.CodafConferencias
             resumoDto.NomeFormacao.Should().Be("Formação");
             resumoDto.CodigoFormacao.Should().Be(100);
             resumoDto.Status.Should().Be(StatusCodafConferencia.Iniciado);
+            resumoDto.StatusCertificacaoTurma.Should().Be(StatusCertificacaoTurma.PendenteEmissaoRemessa);
             resumoDto.CodigoCursoEol.Should().Be(567);
             resumoDto.CodigoNivel.Should().Be(1);
             resumoDto.PossuiAprovacoes.Should().BeTrue();
             resumoDto.CriadoEm.Should().Be(agora);
+        }
+
+        [Fact]
+        public void DadoListagemResultadoCodafConferenciaDto_QuandoMapearParaCodafConferenciaResumoDto_EntaoDeveMapearStatusCertificacaoTurma()
+        {
+            // Arrange
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<CodafConferenciaProfile>(), new NullLoggerFactory());
+            var mapper = config.CreateMapper();
+            var agora = DateTime.UtcNow;
+
+            var origem = new ListagemResultadoCodafConferenciaDto
+            {
+                Id = 15,
+                NumeroHomologacao = 20262,
+                NomeFormacao = "Conferência Municipal",
+                CodigoFormacao = 446,
+                NomeTurma = "Turma Única",
+                NomeAreaPromotora = "COPED",
+                Status = StatusCodafConferencia.Aguardando,
+                StatusCertificacaoTurma = StatusCertificacaoTurma.DisponivelParaEmissao,
+                CodigoCursoEol = 1234,
+                CodigoNivel = 2,
+                PossuiAprovacoes = true,
+                CriadoEm = agora
+            };
+
+            // Act
+            var destino = mapper.Map<CodafConferenciaResumoDto>(origem);
+
+            // Assert
+            destino.Id.Should().Be(15);
+            destino.Status.Should().Be(StatusCodafConferencia.Aguardando);
+            destino.StatusCertificacaoTurma.Should().Be(StatusCertificacaoTurma.DisponivelParaEmissao);
+            destino.CodigoCursoEol.Should().Be(1234);
+            destino.PossuiAprovacoes.Should().BeTrue();
+            destino.CriadoEm.Should().Be(agora);
         }
     }
 }
