@@ -13,6 +13,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Queries
                    PT.NOME AS nomeTurma,
                    AP.NOME AS nomeAreaPromotora,
                    CC.STATUS,
+                   CASE
+                       WHEN P.CURSO_COM_CERTIFICADO = FALSE THEN 0
+                       ELSE 1
+                   END AS statusCertificacaoTurma,
                    CC.CODIGO_CURSO_EOL AS codigoCursoEol,
                    CC.CODIGO_NIVEL AS codigoNivel,
                    CC.CRIADO_EM AS criadoEm,

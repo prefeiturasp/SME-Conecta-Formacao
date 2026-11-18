@@ -79,6 +79,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Dtos
                 NomeTurma = "Turma 1",
                 NomeAreaPromotora = "DRE Ipiranga",
                 Status = StatusCodafConferencia.Aguardando,
+                StatusCertificacaoTurma = StatusCertificacaoTurma.PendenteEmissaoRemessa,
                 CodigoCursoEol = 999,
                 CodigoNivel = 1,
                 PossuiAprovacoes = true,
@@ -103,6 +104,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Teste.Dtos
             item.NomeTurma.Should().Be("Turma 1");
             item.NomeAreaPromotora.Should().Be("DRE Ipiranga");
             item.Status.Should().Be(StatusCodafConferencia.Aguardando);
+            item.StatusCertificacaoTurma.Should().Be(StatusCertificacaoTurma.PendenteEmissaoRemessa);
             item.CodigoCursoEol.Should().Be(999);
             item.CodigoNivel.Should().Be(1);
             item.PossuiAprovacoes.Should().BeTrue();
