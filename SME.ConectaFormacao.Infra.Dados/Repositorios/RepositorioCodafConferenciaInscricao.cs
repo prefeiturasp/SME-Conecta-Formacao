@@ -5,6 +5,7 @@ using SME.ConectaFormacao.Dominio.Enumerados;
 using SME.ConectaFormacao.Infra.Dados.Dtos;
 using SME.ConectaFormacao.Infra.Dados.Dtos.CodafConferencias;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Infra.Dados.Repositorios
@@ -25,7 +26,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                        INNER JOIN PUBLIC.USUARIO AS U ON U.ID = I.USUARIO_ID 
                        LEFT JOIN PUBLIC.CODAF_CONFERENCIA_INSCRICAO AS CCI
                               ON CCI.INSCRICAO_ID = I.ID
-                             AND (@codafConferenciaId IS NULL OR CCI.CODAF_CONFERENCIA_ID = @codafConferenciaId)
+                             AND (CAST(@codafConferenciaId AS BIGINT) IS NULL OR CCI.CODAF_CONFERENCIA_ID = @codafConferenciaId)
                              AND NOT CCI.EXCLUIDO
                 WHERE NOT U.EXCLUIDO
                 AND NOT I.EXCLUIDO 
@@ -48,7 +49,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var parametros = new DynamicParameters();
             parametros.Add("propostaTurmaId", propostaTurmaId);
             parametros.Add("situacao", SituacaoInscricao.Confirmada);
-            parametros.Add("codafConferenciaId", codafConferenciaId);
+            parametros.Add("codafConferenciaId", codafConferenciaId, DbType.Int64);
             var totalRegistros = await conn.ExecuteScalarAsync<int>(sqlCount, parametros);
             if (totalRegistros == 0)
                 return new()

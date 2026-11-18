@@ -8,6 +8,7 @@ using SME.ConectaFormacao.Infra.Dados.Dtos.CodafConferencias;
 using SME.ConectaFormacao.Infra.Dados.Dtos.Propostas;
 using SME.ConectaFormacao.Infra.Dados.Queries;
 using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
@@ -23,12 +24,16 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 SELECT 1
                 FROM PUBLIC.CODAF_CONFERENCIA
                 WHERE PROPOSTA_TURMA_ID = @propostaTurmaId
-                  AND (@codafConferenciaId IS NULL OR ID <> @codafConferenciaId)
+                  AND (CAST(@codafConferenciaId AS BIGINT) IS NULL OR ID <> @codafConferenciaId)
                   AND NOT EXCLUIDO
                 LIMIT 1
                 """;
 
-            return await conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, new { propostaTurmaId, codafConferenciaId });
+            var parametros = new DynamicParameters();
+            parametros.Add("propostaTurmaId", propostaTurmaId, DbType.Int64);
+            parametros.Add("codafConferenciaId", codafConferenciaId, DbType.Int64);
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<bool>(query, parametros);
         }
 
         public async Task<PropostaComTurmasDto?> ObterDetalhesPropostaConferenciaComTurmasPorIdAsync(long propostaId)
