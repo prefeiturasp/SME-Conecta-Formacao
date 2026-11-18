@@ -113,5 +113,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<PropostaComTurmasDto?> ObterDetalhesPropostaComTurmasPorIdAsync(long propostaId, bool formacoesHomologadas);
         Task<(long? formacaoAnteriorId, long? formacaoPosteriorId)> ObterFormacoesSeguintesEAnteriorPorIdAsync(long propostaId, FiltroListaFormacaoPropostaDto filtro);
         Task<PropostaLaudaCompletaDto?> ObterDadosLaudaCompletaAsync(long propostaId);
+        Task<long?> ObterNumeroHomologacaoPorPropostaIdAsync(long propostaId);
     }
 }

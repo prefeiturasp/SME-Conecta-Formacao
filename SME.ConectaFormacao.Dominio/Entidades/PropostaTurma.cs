@@ -1,4 +1,4 @@
-﻿namespace SME.ConectaFormacao.Dominio.Entidades
+namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class PropostaTurma : EntidadeBaseAuditavel, ICloneable
     {
@@ -9,6 +9,7 @@
         public IEnumerable<PropostaTurmaDre> Dres { get; set; } = [];
         public Proposta Proposta { get; set; } = new();
         public CodafListaPresenca? CodafListaPresenca { get; set; }
+        public bool PossuiCodafListaPresenca { get; set; }
 
         public object Clone()
         {

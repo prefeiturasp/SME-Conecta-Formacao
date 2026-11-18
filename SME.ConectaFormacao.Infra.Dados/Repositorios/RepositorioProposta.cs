@@ -1508,7 +1508,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     criado_login,
                     alterado_em,    
                     alterado_por,
-                    alterado_login
+                    alterado_login,
+                    exists (
+                        select 1 
+                        from public.codaf_lista_presenca clp 
+                        where clp.proposta_turma_id = proposta_turma.id 
+                          and not clp.excluido
+                    ) as PossuiCodafListaPresenca
                 from proposta_turma
                 where proposta_id = @propostaId 
                   and not excluido                
@@ -1595,19 +1601,33 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task InserirTurmas(long propostaId, IEnumerable<PropostaTurma> propostaTurmas)
         {
+            const string sql = @"
+                INSERT INTO proposta_turma (
+                    proposta_id, nome, excluido, criado_em, criado_por, criado_login, alterado_em, alterado_por, alterado_login
+                ) VALUES (
+                    @PropostaId, @Nome, @Excluido, @CriadoEm, @CriadoPor, @CriadoLogin, @AlteradoEm, @AlteradoPor, @AlteradoLogin
+                ) RETURNING id;";
+
             foreach (var propostaTurma in propostaTurmas)
             {
                 PreencherAuditoriaCriacao(propostaTurma);
 
                 propostaTurma.PropostaId = propostaId;
-                propostaTurma.Id = (long)await conexao.Obter().InsertAsync(propostaTurma);
+                propostaTurma.Id = await conexao.Obter().ExecuteScalarAsync<long>(sql, propostaTurma);
             }
         }
 
         public async Task InserirTurma(PropostaTurma propostaTurma)
         {
+            const string sql = @"
+                INSERT INTO proposta_turma (
+                    proposta_id, nome, excluido, criado_em, criado_por, criado_login, alterado_em, alterado_por, alterado_login
+                ) VALUES (
+                    @PropostaId, @Nome, @Excluido, @CriadoEm, @CriadoPor, @CriadoLogin, @AlteradoEm, @AlteradoPor, @AlteradoLogin
+                ) RETURNING id;";
+
             PreencherAuditoriaCriacao(propostaTurma);
-            propostaTurma.Id = (long)await conexao.Obter().InsertAsync(propostaTurma);
+            propostaTurma.Id = await conexao.Obter().ExecuteScalarAsync<long>(sql, propostaTurma);
         }
 
         public async Task InserirPropostaTurmasDres(IEnumerable<PropostaTurmaDre> propostaTurmasDres)
@@ -1737,11 +1757,19 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
         public async Task AtualizarTurmas(long propostaId, IEnumerable<PropostaTurma> propostaTurmas)
         {
+            const string sql = @"
+                UPDATE proposta_turma SET
+                    nome = @Nome,
+                    alterado_em = @AlteradoEm,
+                    alterado_por = @AlteradoPor,
+                    alterado_login = @AlteradoLogin
+                WHERE id = @Id AND NOT excluido;";
+
             foreach (var propostaTurma in propostaTurmas)
             {
                 PreencherAuditoriaAlteracao(propostaTurma);
                 propostaTurma.Nome = propostaTurma.Nome.ToUpper();
-                await conexao.Obter().UpdateAsync(propostaTurma);
+                await conexao.Obter().ExecuteAsync(sql, propostaTurma);
             }
         }
 
@@ -2040,6 +2068,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                 p.link_inscricoes_externa as LinkParaInscricoesExterna,
                 p.curso_com_certificado as CursoComCertificado,
                 p.codigo_evento_sigpec as CodigoEventoSigpec,
+                p.numero_homologacao as NumeroHomologacao,
                 not exists(select 1 from public.proposta_tipo_inscricao pti where pti.proposta_id = p.id and pti.tipo_inscricao = 5) as PodeEnviarInscricao
             from proposta p
             inner join proposta_tipo_inscricao pti on pti.proposta_id = p.id
@@ -2197,7 +2226,13 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             var query = $@"select 
                             pt.id, 
                             pt.proposta_id, 
-                            pt.nome
+                            pt.nome,
+                            exists (
+                                select 1 
+                                from public.codaf_lista_presenca clp 
+                                where clp.proposta_turma_id = pt.id 
+                                  and not clp.excluido
+                            ) as PossuiCodafListaPresenca
                         from proposta_turma pt
                         where pt.proposta_id = @propostaId 
                           and not pt.excluido
@@ -2657,12 +2692,20 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                     p.numero_homologacao AS NumeroFormacao, 
                     pt.id AS Id, 
                     pt.nome AS Nome,
-                    COALESCE(pgp.data_inicio, p.data_realizacao_inicio) AS DataInicio,
-                    COALESCE(pgp.data_fim, p.data_realizacao_fim) AS DataFim
+                    EXISTS (
+                        SELECT 1 
+                        FROM public.codaf_lista_presenca clp 
+                        WHERE clp.proposta_turma_id = pt.id 
+                          AND NOT clp.excluido
+                    ) AS PossuiCodafListaPresenca,
+                    EXISTS (
+                        SELECT 1 
+                        FROM public.codaf_curso_nao_homologado ccnh 
+                        WHERE ccnh.proposta_turma_id = pt.id 
+                          AND NOT ccnh.excluido
+                    ) AS PossuiCodafCursoNaoHomologado
                 FROM proposta p
-                INNER JOIN public.proposta_turma AS pt ON pt.proposta_id = p.id
-                LEFT JOIN public.proposta_grupo_periodo_turma AS pgpt ON pt.id = pgpt.proposta_turma_id
-                LEFT JOIN public.proposta_grupo_periodo AS pgp ON pgp.id = pgpt.grupo_periodo_id AND pgp.proposta_id = p.id
+                LEFT JOIN public.proposta_turma AS pt ON pt.proposta_id = p.id AND NOT pt.excluido
                 WHERE p.id = @propostaId
                   AND p.FORMACAO_HOMOLOGADA = ANY(@formacoesHomologadas)
                   AND NOT p.excluido;";
@@ -2685,10 +2728,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
                         propostaDictionary.Add(propostaEntry.Id, propostaEntry);
                     }
 
-                    if (turma != null && turma.Id > 0)
+                    if (turma != null && turma.Id > 0 && !propostaEntry.Turmas.Any(t => t.Id == turma.Id))
                         propostaEntry.Turmas.Add(turma);
-
-                    propostaEntry.Turmas = [.. propostaEntry.Turmas.OrderBy(t => t.Descricao)];
 
                     return propostaEntry;
                 }, parameters, splitOn: "Id"
@@ -2863,5 +2904,18 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             return proposta;
         }
-    }
+    
+        public async Task<long?> ObterNumeroHomologacaoPorPropostaIdAsync(long propostaId)
+        {
+            const string query = """
+                SELECT p.numero_homologacao
+                FROM public.proposta p
+                WHERE p.id = @propostaId
+                  AND NOT p.excluido;
+                """;
+
+            using var conn = conexao.Obter();
+            return await conn.QueryFirstOrDefaultAsync<long?>(query, new { propostaId });
+        }
+}
 }

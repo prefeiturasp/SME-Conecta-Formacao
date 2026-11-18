@@ -13,6 +13,10 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
     {
         public async Task<Resultado<CodafCursoNaoHomologadoDetalhadoDto>> ExecutarAsync(CodafCursoNaoHomologadoCadastroDto codafCursoNaoHomologadoCadastroDto)
         {
+            var jaPossuiCodaf = await dependencias.RepositorioCodaf.TurmaJaTemCodafAsync(codafCursoNaoHomologadoCadastroDto.PropostaTurmaId);
+            if (jaPossuiCodaf)
+                return Erro.Negocio("Já existe um CODAF cadastrado para esta turma.");
+
             var codafCursoNaoHomologado = new CodafCursoNaoHomologado(
                 codafCursoNaoHomologadoCadastroDto.PropostaId,
                 codafCursoNaoHomologadoCadastroDto.PropostaTurmaId, codafCursoNaoHomologadoCadastroDto.Observacao);

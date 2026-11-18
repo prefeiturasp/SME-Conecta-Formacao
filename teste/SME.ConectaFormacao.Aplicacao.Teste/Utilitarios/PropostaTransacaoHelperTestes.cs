@@ -47,14 +47,17 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Utilitarios
 
             // Act
             var id = await PropostaTransacaoHelper.InserirComTransacaoAsync(
-                _transacaoMock.Object,
-                _repositorioPropostaMock.Object,
-                _mediatorMock.Object,
-                _servicoLogsMock.Object,
-                proposta,
-                integrarNoSgaDto: true,
-                operacao: "InserirProposta",
-                CancellationToken.None);
+                new InserirPropostaTransacaoParametros
+                {
+                    TransacaoManager = _transacaoMock.Object,
+                    RepositorioProposta = _repositorioPropostaMock.Object,
+                    Mediator = _mediatorMock.Object,
+                    ServicoLogs = _servicoLogsMock.Object,
+                    Proposta = proposta,
+                    IntegrarNoSgaDto = true,
+                    Operacao = "InserirProposta",
+                    CancellationToken = CancellationToken.None
+                });
 
             // Assert
             id.Should().Be(999);
@@ -77,14 +80,17 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Utilitarios
 
             // Act
             var act = async () => await PropostaTransacaoHelper.InserirComTransacaoAsync(
-                _transacaoMock.Object,
-                _repositorioPropostaMock.Object,
-                _mediatorMock.Object,
-                _servicoLogsMock.Object,
-                proposta,
-                integrarNoSgaDto: null,
-                operacao: "InserirProposta",
-                CancellationToken.None);
+                new InserirPropostaTransacaoParametros
+                {
+                    TransacaoManager = _transacaoMock.Object,
+                    RepositorioProposta = _repositorioPropostaMock.Object,
+                    Mediator = _mediatorMock.Object,
+                    ServicoLogs = _servicoLogsMock.Object,
+                    Proposta = proposta,
+                    IntegrarNoSgaDto = null,
+                    Operacao = "InserirProposta",
+                    CancellationToken = CancellationToken.None
+                });
 
             // Assert
             await act.Should().ThrowAsync<InvalidOperationException>();
@@ -110,15 +116,18 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Utilitarios
 
             // Act
             await PropostaTransacaoHelper.AtualizarComTransacaoAsync(
-                _transacaoMock.Object,
-                _repositorioPropostaMock.Object,
-                _mediatorMock.Object,
-                _servicoLogsMock.Object,
-                propostaBanco,
-                propostaDepois,
-                integrarNoSgaDto: null,
-                operacao: "AlterarProposta",
-                CancellationToken.None);
+                new AtualizarPropostaTransacaoParametros
+                {
+                    TransacaoManager = _transacaoMock.Object,
+                    RepositorioProposta = _repositorioPropostaMock.Object,
+                    Mediator = _mediatorMock.Object,
+                    ServicoLogs = _servicoLogsMock.Object,
+                    PropostaBanco = propostaBanco,
+                    PropostaDepois = propostaDepois,
+                    IntegrarNoSgaDto = null,
+                    Operacao = "AlterarProposta",
+                    CancellationToken = CancellationToken.None
+                });
 
             // Assert
             _repositorioPropostaMock.Verify(r => r.Atualizar(propostaDepois), Times.Once);
@@ -141,15 +150,18 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Utilitarios
 
             // Act
             var act = async () => await PropostaTransacaoHelper.AtualizarComTransacaoAsync(
-                _transacaoMock.Object,
-                _repositorioPropostaMock.Object,
-                _mediatorMock.Object,
-                _servicoLogsMock.Object,
-                propostaBanco,
-                propostaDepois,
-                integrarNoSgaDto: null,
-                operacao: "AlterarProposta",
-                CancellationToken.None);
+                new AtualizarPropostaTransacaoParametros
+                {
+                    TransacaoManager = _transacaoMock.Object,
+                    RepositorioProposta = _repositorioPropostaMock.Object,
+                    Mediator = _mediatorMock.Object,
+                    ServicoLogs = _servicoLogsMock.Object,
+                    PropostaBanco = propostaBanco,
+                    PropostaDepois = propostaDepois,
+                    IntegrarNoSgaDto = null,
+                    Operacao = "AlterarProposta",
+                    CancellationToken = CancellationToken.None
+                });
 
             // Assert
             await act.Should().ThrowAsync<InvalidOperationException>();

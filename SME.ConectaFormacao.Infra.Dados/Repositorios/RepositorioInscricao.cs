@@ -306,11 +306,22 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             }
             else
             {
+                parametros.Add("statusCodafFinalizado", (int)StatusCodafListaPresenca.Finalizado);
+                parametros.Add("situacaoCancelada", (int)SituacaoInscricao.Cancelada);
+                parametros.Add("situacaoConfirmada", (int)SituacaoInscricao.Confirmada);
+
                 sql.Append(@"
             select i.id,
                    i.situacao,
                    i.origem,
                    i.criado_em,
+                   case 
+                       when i.situacao = @situacaoCancelada then 'Reprovado'
+                       when i.situacao = @situacaoConfirmada and clp.id is not null and cilp.aprovado = true then 'Aprovado'
+                       when i.situacao = @situacaoConfirmada and clp.id is not null and cilp.aprovado = false then 'Reprovado'
+                       when i.situacao = @situacaoConfirmada and clp.id is null then 'Aguardando resultado'
+                       else null
+                   end as SituacaoAprovacao,
                    i.proposta_turma_id,
                    pt.nome,
                    pt.proposta_id,
@@ -322,6 +333,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
             from inscricao i
             inner join proposta_turma pt on pt.id = i.proposta_turma_id
             inner join proposta p on p.id = pt.proposta_id
+            left join codaf_lista_presenca clp on clp.proposta_turma_id = pt.id and clp.status = @statusCodafFinalizado and not clp.excluido
+            left join codaf_inscricao_lista_presenca cilp on cilp.codaf_lista_presenca_id = clp.id and cilp.inscricao_id = i.id and not cilp.excluido
             where not i.excluido
               and not p.excluido
               and i.usuario_id = @usuarioId
@@ -375,16 +388,17 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             sql += " limit @numeroRegistros offset @registrosIgnorados ";
 
-            return conexao.Obter().QueryAsync<Inscricao, PropostaTurma, Proposta, Inscricao>(
+            return conexao.Obter().QueryAsync<Inscricao, string?, PropostaTurma, Proposta, Inscricao>(
                 sql,
-                (inscricao, propostaTurma, proposta) =>
+                (inscricao, situacaoAprovacao, propostaTurma, proposta) =>
                 {
+                    inscricao.SituacaoAprovacao = situacaoAprovacao;
                     propostaTurma.Proposta = proposta;
                     inscricao.PropostaTurma = propostaTurma;
                     return inscricao;
                 },
                 parametros,
-                splitOn: "proposta_turma_id,proposta_id");
+                splitOn: "SituacaoAprovacao,proposta_turma_id,proposta_id");
         }
 
         public Task<int> ObterTotalRegistrosPorInscricoesFinalizadas(long usuarioId, InscricaoFinalizadaFiltro filtro)

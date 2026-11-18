@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using Moq;
 using SME.ConectaFormacao.Aplicacao.Dtos.Inscricoes;
@@ -9,7 +9,6 @@ using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 
 namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 {
-
     public class ObterInscricaoFinalizadaPaginadaQueryHandlerTestes
     {
         private readonly Mock<IRepositorioInscricao> _repositorioMock;
@@ -85,14 +84,14 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 filtro);
 
             var inscricoes = new List<Inscricao>
-        {
-            new Inscricao()
-        };
+            {
+                new Inscricao()
+            };
 
             var dtoList = new List<InscricaoPaginadaDTO>
-        {
-            new InscricaoPaginadaDTO { Id = 100 }
-        };
+            {
+                new InscricaoPaginadaDTO { Id = 100 }
+            };
 
             var cargoFuncao = new CargoFuncaoDTO
             {
@@ -151,16 +150,16 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
                 filtro);
 
             var inscricoes = new List<Inscricao>
-        {
-            new Inscricao(),
-            new Inscricao()
-        };
+            {
+                new Inscricao(),
+                new Inscricao()
+            };
 
             var dtoList = new List<InscricaoPaginadaDTO>
-        {
-            new InscricaoPaginadaDTO { Id = 1 },
-            new InscricaoPaginadaDTO { Id = 2 }
-        };
+            {
+                new InscricaoPaginadaDTO { Id = 1 },
+                new InscricaoPaginadaDTO { Id = 2 }
+            };
 
             _repositorioMock
                 .Setup(r => r.ObterTotalRegistrosPorInscricoesFinalizadas(1, filtro))
@@ -188,6 +187,48 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Consultas
 
             // Assert
             _repositorioMock.Verify(r => r.ObterCargoFuncaoPorId(It.IsAny<long>()), Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task Handle_DeveManterSituacaoAprovacao_QuandoExistiremRegistros()
+        {
+            // Arrange
+            var usuarioId = 1L;
+            var filtro = new InscricaoFinalizadaFiltro();
+            var query = new ObterInscricaoFinalizadaPaginadaQuery(usuarioId, 1, 10, filtro);
+
+            var inscricoes = new List<Inscricao>
+            {
+                new Inscricao { Id = 10, SituacaoAprovacao = "Aprovado" }
+            };
+
+            var dtoList = new List<InscricaoPaginadaDTO>
+            {
+                new InscricaoPaginadaDTO { Id = 10, SituacaoAprovacao = "Aprovado" }
+            };
+
+            _repositorioMock
+                .Setup(r => r.ObterTotalRegistrosPorInscricoesFinalizadas(usuarioId, filtro))
+                .ReturnsAsync(1);
+
+            _repositorioMock
+                .Setup(r => r.ObterDadosPaginadosPorInscricoesFinalizadas(usuarioId, 1, 10, filtro))
+                .ReturnsAsync(inscricoes);
+
+            _mapperMock
+                .Setup(m => m.Map<IEnumerable<InscricaoPaginadaDTO>>(inscricoes))
+                .Returns(dtoList);
+
+            _repositorioMock
+                .Setup(r => r.ObterCargoFuncaoPorId(10))
+                .ReturnsAsync(new CargoFuncaoDTO { CargoFuncaoCodigo = "C1", CargoFuncaoNome = "Professor", TipoVinculo = 1 });
+
+            // Act
+            var resultado = await _handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Items.First().SituacaoAprovacao.Should().Be("Aprovado");
         }
     }
 }

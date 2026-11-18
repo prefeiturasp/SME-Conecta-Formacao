@@ -83,6 +83,17 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.Commands.Propostas
         }
 
         [Fact]
+        public void Deve_nao_retornar_erro_quando_tipo_formacao_for_conferencia()
+        {
+            var dto = CriarDtoValido();
+            dto.TipoFormacao = TipoFormacao.Conferencia;
+
+            var result = validator.TestValidate(new InserirPropostaCommand(1, dto));
+
+            result.ShouldNotHaveValidationErrorFor("TipoFormacao");
+        }
+
+        [Fact]
         public void Deve_exigir_id_emissor_quando_curso_com_certificado()
         {
             var dto = CriarDtoValido();

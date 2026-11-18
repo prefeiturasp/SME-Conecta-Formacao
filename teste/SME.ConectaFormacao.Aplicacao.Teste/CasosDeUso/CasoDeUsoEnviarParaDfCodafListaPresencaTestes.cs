@@ -1,4 +1,4 @@
-﻿using Bogus;
+using Bogus;
 using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
@@ -145,6 +145,70 @@ namespace SME.ConectaFormacao.Aplicacao.Teste.CasosDeUso
             resultado.Sucesso.Should().BeFalse();
             resultado.TipoFalha.Should().Be(TipoFalha.ErroInterno);
             transacaoMock.Verify(t => t.Rollback(), Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmaListaSemDataEnvioDfSalvaNoBanco_QuandoExecutar_EntaoDeveSalvarComDataEnvioDfPreenchida()
+        {
+            // Arrange
+            var codafListPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null);
+            codafListPresenca.Iniciar();
+            codafListPresenca.DataEnvioDf = null;
+
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterPorIdDetalhadoAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafListPresenca);
+            _validadorCodafListaPresencaServiceMock
+                .Setup(v => v.ValidarParaEnvioAoDfAsync(codafListPresenca))
+                .ReturnsAsync((Erro?)null);
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+
+            // Act
+            var resultado = await _casoDeUsoEnviarParaDfCodafListaPresenca.ExecutarAsync(codafListPresenca.Id);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeTrue();
+            _repositorioCodafListaPresencaMock
+                .Verify(r => r.Atualizar(It.Is<CodafListaPresenca>(c => c.Id == codafListPresenca.Id && c.DataEnvioDf.HasValue))
+                , Times.Once);
+        }
+
+        [Fact]
+        public async Task DadoUmaListaComDataEnvioDfJaSalvaNoBanco_QuandoExecutarNovamente_EntaoDeveManterDataEnvioDfOriginal()
+        {
+            // Arrange
+            var dataEnvioOriginal = DateTime.Now.AddDays(-5);
+            var codafListPresenca = new CodafListaPresenca(1, 1, new(null, null, null, null, null, null, null), null);
+            codafListPresenca.Iniciar();
+            codafListPresenca.MarcarComoEnviadaParaDf();
+            // Simula devolução para correção e data original que veio do banco
+            codafListPresenca.MarcarComoDevolvidaParaCorrecao();
+            codafListPresenca.DataEnvioDf = dataEnvioOriginal;
+
+            _repositorioCodafListaPresencaMock
+                .Setup(r => r.ObterPorIdDetalhadoAsync(It.IsAny<long>()))
+                .ReturnsAsync(codafListPresenca);
+            _validadorCodafListaPresencaServiceMock
+                .Setup(v => v.ValidarParaEnvioAoDfAsync(codafListPresenca))
+                .ReturnsAsync((Erro?)null);
+            var transacaoMock = new Mock<IDbTransaction>();
+            _transacaoMock
+                .Setup(t => t.Iniciar())
+                .Returns(transacaoMock.Object);
+
+            // Act
+            var resultado = await _casoDeUsoEnviarParaDfCodafListaPresenca.ExecutarAsync(codafListPresenca.Id);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Sucesso.Should().BeTrue();
+            _repositorioCodafListaPresencaMock
+                .Verify(r => r.Atualizar(It.Is<CodafListaPresenca>(c => c.Id == codafListPresenca.Id && c.DataEnvioDf == dataEnvioOriginal))
+                , Times.Once);
         }
     }
 }

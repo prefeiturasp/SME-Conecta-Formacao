@@ -25,6 +25,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.Relatorios
         }
         public SituacaoProposta? SituacaoProposta { get; set; }
         public SituacaoInscricao? SituacaoInscricao { get; set; }
+        public SituacaoAprovacao? SituacaoAprovacao { get; set; }
         public long? CargoPublicoAlvoId { get; set; }
         public long? FuncaoId { get; set; }
         public Modalidade? Modalidade { get; set; }

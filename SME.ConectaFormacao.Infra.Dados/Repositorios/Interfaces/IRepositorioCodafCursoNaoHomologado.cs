@@ -13,5 +13,6 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces
         Task<int> ObterStatusDeclaracaoTurmaAsync(long id);
         Task<DadosPrincipaisRelatorioCodafCursoNaoHomologadoDto?> ObterDadosRelatorioAsync(long id);
         Task<bool> PossuiPorPropostaIdAsync(long propostaId);
+        Task<bool> TurmaJaTemCodafAsync(long propostaTurmaId);
     }
 }

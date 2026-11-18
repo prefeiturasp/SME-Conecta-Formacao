@@ -12,9 +12,9 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafCursosNaoHomologados
         IMapper mapper) : ICasoDeUsoListarInscritosTurmaCodafCursoNaoHomologado
     {
         public async Task<Resultado<PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>>>
-            ExecutarAsync(long propostaTurmaId, int numeroPagina = 1, int numeroRegistros = 10)
+            ExecutarAsync(long propostaTurmaId, int numeroPagina = 1, int numeroRegistros = 10, long? codafCursoNaoHomologadoId = null)
         {
-            var resultado = await repositorio.ObterInscritosPorTurmaAsync(propostaTurmaId, numeroPagina, numeroRegistros);
+            var resultado = await repositorio.ObterInscritosPorTurmaAsync(propostaTurmaId, numeroPagina, numeroRegistros, codafCursoNaoHomologadoId);
 
             var inscritosDto = new PaginacaoResultadoDto<CodafCursoNaoHomologadoInscritoTurmaDto>(
                 mapper.Map<List<CodafCursoNaoHomologadoInscritoTurmaDto>>(resultado.Itens),

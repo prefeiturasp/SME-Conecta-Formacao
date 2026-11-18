@@ -23,5 +23,6 @@ namespace SME.ConectaFormacao.Dominio.ObjetosDeValor
         public bool PodeEnviarInscricao { get; set; }
         public bool CursoComCertificado { get; set; }
         public long? CodigoEventoSigpec { get; set; }
+        public long? NumeroHomologacao { get; set; }
     }
 }
