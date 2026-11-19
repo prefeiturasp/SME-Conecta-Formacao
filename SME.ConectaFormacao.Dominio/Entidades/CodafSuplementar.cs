@@ -5,7 +5,9 @@ namespace SME.ConectaFormacao.Dominio.Entidades
 {
     public class CodafSuplementar : EntidadeBaseAuditavel
     {
-        public long CodafId { get; private set; }
+        public long? CodafId { get; private set; }
+        public long? CodafCursoNaoHomologadoId { get; private set; }
+        public TipoCodafSuplementar Tipo { get; private set; }
         public DateTime? DataPublicacao { get; private set; }
         public DateTime? DataPublicacaoDom { get; private set; }
         public short? NumeroComunicado { get; private set; }
@@ -29,13 +31,27 @@ namespace SME.ConectaFormacao.Dominio.Entidades
         {
             CodafId = codafListaPresencaId;
             Status = StatusCodafSuplementar.Iniciado;
+            Tipo = TipoCodafSuplementar.Homologado;
         }
 
         public CodafSuplementar(long codafListaPresencaId, DadosPublicacaoLista dadosPublicacao)
         {
             CodafId = codafListaPresencaId;
             Status = StatusCodafSuplementar.Iniciado;
+            Tipo = TipoCodafSuplementar.Homologado;
             AtribuirDadosPublicacao(dadosPublicacao);
+        }
+
+        public static CodafSuplementar CriarNaoHomologado(long codafCursoNaoHomologadoId, DadosPublicacaoLista dadosPublicacao)
+        {
+            var codafSuplementar = new CodafSuplementar
+            {
+                CodafCursoNaoHomologadoId = codafCursoNaoHomologadoId,
+                Tipo = TipoCodafSuplementar.NaoHomologado,
+                Status = StatusCodafSuplementar.Iniciado
+            };
+            codafSuplementar.AtribuirDadosPublicacao(dadosPublicacao);
+            return codafSuplementar;
         }
 
         public void AtualizarInformacoes(DadosPublicacaoLista dadosPublicacao)

@@ -4,6 +4,9 @@ using SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares;
 using SME.ConectaFormacao.Aplicacao.Interfaces.CodafSuplementares;
 using SME.ConectaFormacao.Dominio.Comum;
 using SME.ConectaFormacao.Dominio.Entidades;
+using SME.ConectaFormacao.Dominio.Enumerados;
+using SME.ConectaFormacao.Dominio.ObjetosDeValor;
+using SME.ConectaFormacao.Infra.Dados.Repositorios.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
@@ -11,7 +14,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
     [ExcludeFromCodeCoverage]
     public class CasoDeUsoCriarCodafSuplementar(
         CodafSuplementarDependencias dependencias,
-        IValidator<CodafSuplementarCadastroDto> validator) : ICasoDeUsoCriarCodafSuplementar
+        IValidator<CodafSuplementarCadastroDto> validator,
+        IRepositorioCodafCursoNaoHomologado repositorioCodafNaoHomologado) : ICasoDeUsoCriarCodafSuplementar
     {
         public async Task<Resultado<CodafSuplementarDetalhadoDto>> ExecutarAsync(CodafSuplementarCadastroDto codafSuplementarCadastroDto)
         {
@@ -19,19 +23,40 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
             if (!validationResult.IsValid)
                 return validationResult.ToErroValidacao();
 
-            var codafOriginal = await dependencias.RepositorioLista.ObterNaoExcluidosPorIdAsync(codafSuplementarCadastroDto.CodafId);
+            var dadosPublicacao = new DadosPublicacaoLista(
+                codafSuplementarCadastroDto.DataPublicacao,
+                codafSuplementarCadastroDto.DataPublicacaoDom,
+                codafSuplementarCadastroDto.NumeroComunicado,
+                codafSuplementarCadastroDto.PaginaComunicadoDom,
+                codafSuplementarCadastroDto.CodigoCursoEol,
+                codafSuplementarCadastroDto.CodigoNivel,
+                codafSuplementarCadastroDto.Observacao);
 
-            if (codafOriginal is null)
-                return Erro.Validacao("Codaf não encontrado para a turma informada");
+            long propostaId;
+            CodafSuplementar codafSuplementar;
 
-            var codafSuplementar = new CodafSuplementar(codafSuplementarCadastroDto.CodafId,
-                new(codafSuplementarCadastroDto.DataPublicacao,
-                    codafSuplementarCadastroDto.DataPublicacaoDom,
-                    codafSuplementarCadastroDto.NumeroComunicado,
-                    codafSuplementarCadastroDto.PaginaComunicadoDom,
-                    codafSuplementarCadastroDto.CodigoCursoEol,
-                    codafSuplementarCadastroDto.CodigoNivel,
-                    codafSuplementarCadastroDto.Observacao));
+            if (codafSuplementarCadastroDto.Tipo == TipoCodafSuplementar.NaoHomologado)
+            {
+                var codafNaoHomologado = await repositorioCodafNaoHomologado
+                    .ObterNaoExcluidosPorIdAsync(codafSuplementarCadastroDto.CodafCursoNaoHomologadoId!.Value);
+
+                if (codafNaoHomologado is null)
+                    return Erro.Validacao("Codaf não homologado não encontrado para a turma informada");
+
+                propostaId = codafNaoHomologado.PropostaId;
+                codafSuplementar = CodafSuplementar.CriarNaoHomologado(codafNaoHomologado.Id, dadosPublicacao);
+            }
+            else
+            {
+                var codafOriginal = await dependencias.RepositorioLista.ObterNaoExcluidosPorIdAsync(codafSuplementarCadastroDto.CodafId);
+
+                if (codafOriginal is null)
+                    return Erro.Validacao("Codaf não encontrado para a turma informada");
+
+                propostaId = codafOriginal.PropostaId;
+                codafSuplementar = new CodafSuplementar(codafSuplementarCadastroDto.CodafId, dadosPublicacao);
+            }
+
 
             using var transacaoDb = dependencias.Transacao.Iniciar();
 
@@ -62,8 +87,8 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                     DataPublicacao = codafSuplementar.DataPublicacao,
                     DataPublicacaoDom = codafSuplementar.DataPublicacaoDom,
                     Id = codafSuplementar.Id,
-                    CodigoFormacao = codafOriginal.PropostaId,
-                    PropostaId = codafOriginal.PropostaId
+                    CodigoFormacao = propostaId,
+                    PropostaId = propostaId
                 };
 
                 return codafSuplementarDetalhadoDto;
