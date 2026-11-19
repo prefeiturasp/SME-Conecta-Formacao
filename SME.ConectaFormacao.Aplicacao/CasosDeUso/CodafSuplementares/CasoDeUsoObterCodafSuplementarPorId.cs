@@ -35,7 +35,7 @@ namespace SME.ConectaFormacao.Aplicacao.CasosDeUso.CodafSuplementares
                 codafSuplementarDto.Turma = new() { 
                     Id = codafSuplementar.PropostaTurma.Id, 
                     Descricao = codafSuplementar.PropostaTurma.Nome + await servicoPeriodoEncontroProposta.ObterPeriodoEncontrosTurmaAsync(codafSuplementar.PropostaTurma.Id),
-                    CodafId = codafSuplementar.CodafId,
+                    CodafId = codafSuplementar.CodafId ?? 0,
                 };
             return codafSuplementarDto;
         }
