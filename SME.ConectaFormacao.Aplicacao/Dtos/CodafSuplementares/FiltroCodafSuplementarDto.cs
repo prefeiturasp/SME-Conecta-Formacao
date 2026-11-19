@@ -11,6 +11,7 @@ namespace SME.ConectaFormacao.Aplicacao.Dtos.CodafSuplementares
         public long? AreaPromotoraId { get; set; }
         public StatusCodafListaPresenca? Status { get; set; }
         public DateTime? DataEnvioDf { get; set; }
+        public TipoCodafSuplementar Tipo { get; set; } = TipoCodafSuplementar.Homologado;
         public required int NumeroPagina { get; set; } = 1;
         public required int NumeroRegistros { get; set; } = 10;
     }

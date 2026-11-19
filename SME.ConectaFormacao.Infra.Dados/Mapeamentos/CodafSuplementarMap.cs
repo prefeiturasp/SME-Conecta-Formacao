@@ -8,6 +8,8 @@ namespace SME.ConectaFormacao.Infra.Dados.Mapeamentos
         {
             ToTable("codaf_suplementar");
             Map(c => c.CodafId).ToColumn("codaf_lista_presenca_id");
+            Map(c => c.CodafCursoNaoHomologadoId).ToColumn("codaf_curso_nao_homologado_id");
+            Map(c => c.Tipo).ToColumn("tipo");
             Map(c => c.DataPublicacao).ToColumn("data_publicacao");
             Map(c => c.DataPublicacaoDom).ToColumn("data_publicacao_dom");
             Map(c => c.NumeroComunicado).ToColumn("numero_comunicado");

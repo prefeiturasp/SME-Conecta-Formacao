@@ -21,9 +21,10 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
         {
             const string sqlBaseJoins = """
                 FROM  PUBLIC.CODAF_SUPLEMENTAR AS CS
-                INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID 
-                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON CLP.PROPOSTA_TURMA_ID = PT.ID
-                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID 
+                LEFT JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID
+                LEFT JOIN PUBLIC.CODAF_CURSO_NAO_HOMOLOGADO AS CCNH ON CS.CODAF_CURSO_NAO_HOMOLOGADO_ID = CCNH.ID
+                INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.ID = COALESCE(CLP.PROPOSTA_TURMA_ID, CCNH.PROPOSTA_TURMA_ID)
+                INNER JOIN PUBLIC.PROPOSTA AS P ON PT.PROPOSTA_ID = P.ID
                 INNER JOIN PUBLIC.AREA_PROMOTORA AS AP ON P.AREA_PROMOTORA_ID = AP.ID
                 """;
             const string sqlBaseOrderBy = """
@@ -33,6 +34,9 @@ namespace SME.ConectaFormacao.Infra.Dados.Repositorios
 
             var condicoesWhere = new StringBuilder("WHERE NOT CS.EXCLUIDO AND NOT PT.EXCLUIDO AND NOT P.EXCLUIDO ");
             var parametros = new DynamicParameters();
+
+            condicoesWhere.Append(" AND CS.TIPO = @tipo ");
+            parametros.Add("tipo", (int)filtro.Tipo);
 
             if (!string.IsNullOrWhiteSpace(filtro.NomeFormacao))
             {

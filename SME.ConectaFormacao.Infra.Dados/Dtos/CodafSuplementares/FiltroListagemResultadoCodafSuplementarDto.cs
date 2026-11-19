@@ -11,6 +11,7 @@ namespace SME.ConectaFormacao.Infra.Dados.Dtos.CodafSuplementares
         public long? PropostaTurmaId { get; set; }
         public long? AreaPromotoraId { get; set; }
         public StatusCodafSuplementar? Status { get; set; }
+        public TipoCodafSuplementar Tipo { get; set; }
         public required int Pagina { get; set; }
         public required int TamanhoPagina { get; set; }
     }
