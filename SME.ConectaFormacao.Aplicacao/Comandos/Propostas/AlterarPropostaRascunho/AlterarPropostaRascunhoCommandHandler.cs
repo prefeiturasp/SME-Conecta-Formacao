@@ -55,7 +55,7 @@ namespace SME.ConectaFormacao.Aplicacao
                     IntegrarNoSgaDto = request.PropostaDTO.IntegrarNoSGA,
                     Operacao = "AlterarPropostaRascunho",
                     CancellationToken = cancellationToken
-                });
+                }); 
 
             return RetornoDTO.RetornarSucesso(string.Format(MensagemNegocio.PROPOSTA_X_ALTERADA_COM_SUCESSO, request.Id), request.Id);
         }

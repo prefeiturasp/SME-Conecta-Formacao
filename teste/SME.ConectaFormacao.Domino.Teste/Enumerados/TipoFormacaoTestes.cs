@@ -53,6 +53,7 @@ namespace SME.ConectaFormacao.Domino.Teste.Enumerados
             atributo!.Name.Should().Be("Conferência");
         }
 
+
         [Theory]
         [InlineData(TipoFormacao.Curso, 1, "Curso")]
         [InlineData(TipoFormacao.Evento, 2, "Evento")]
@@ -62,9 +63,15 @@ namespace SME.ConectaFormacao.Domino.Teste.Enumerados
             int valorEsperado,
             string nomeEsperado)
         {
+            // Arrange & Act
+            var membro = typeof(TipoFormacao).GetMember(tipoFormacao.ToString())[0];
+            var atributo = membro.GetCustomAttribute<DisplayAttribute>();
+
             // Assert
             ((int)tipoFormacao).Should().Be(valorEsperado);
             tipoFormacao.Nome().Should().Be(nomeEsperado);
+            atributo.Should().NotBeNull();
+            atributo!.Name.Should().Be(nomeEsperado);
             Enum.IsDefined(typeof(TipoFormacao), tipoFormacao).Should().BeTrue();
         }
 
